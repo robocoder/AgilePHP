@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE phpunit SYSTEM "../src/phpunit.dtd">
+
+<phpunit>
+
+  <testsuite name="AgilePHP">
+
+  	<file>PersistenceManagerTest.php</file>
+  	<file>RenderersTest.php</file>
+    <file>AnnotationTest.php</file>
+  	<file>InterceptorTest.php</file>
+
+  </testsuite>
+
+</phpunit>

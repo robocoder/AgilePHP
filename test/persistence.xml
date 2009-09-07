@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE persistence SYSTEM "../src/persistence/persistence.dtd">
+
+<persistence>
+
+	<database id="db1" name="agilephp_test" type="mysql" hostname="localhost" username="php" password="php007">
+
+		<table name="inventory" model="Inventory" display="Inventory" description="Product inventory">
+			<column name="id" visible="false" type="integer" primaryKey="true" autoIncrement="true"/>
+			<column name="name" type="varchar" length="255" required="true"/>
+			<column name="description" type="varchar" length="255" required="true"/>
+			<column name="price" type="float" required="true"/>
+			<column name="category" type="varchar" length="255" required="true"/>
+			<column name="image" type="blob" required="true"/>
+			<column name="video" type="blob" />
+		</table>
+		
+		<table name="mailing" model="Mailing" display="Mailing List" description="People on your mailing list">
+			<column name="id" type="integer" visible="false" required="true" primaryKey="true" autoIncrement="true" description="Unique ID"/>
+			<column name="name" type="varchar" length="150" required="true" description="Name of recipient"/>
+			<column name="email" type="varchar" length="150" required="true" description="Email address of recipient"/>
+			<column name="enabled" type="bit" length="1" description="Opt In/Out Flag"/>
+		</table>
+
+		<!-- AgilePHP Identity -->
+
+		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
+			<column name="username" type="varchar" length="150" primaryKey="true" required="true"/>
+			<column name="password" type="varchar" length="255" required="true"/>
+			<column name="email" type="varchar" display="Email" length="255" required="true"/>
+			<column name="created" type="datetime" required="true"/>
+			<column name="last_login" property="lastLogin" display="Last Login" type="datetime"/>
+			<column name="roleId" type="varchar" length="25">
+				<foreignKey name="FK_UserRoles" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE"
+	  							 table="roles" column="name" controller="RoleController" select="name"/>
+			</column>
+	  		<column name="sessionId" type="varchar" length="21">
+	  			<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
+	  							 table="sessions" column="id" controller="SessionController"/>
+	  		</column>
+	 	</table>
+	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
+			<column name="name" type="varchar" length="25" primaryKey="true" required="true"/>
+			<column name="description" type="text"/>
+	 	</table>
+
+		<!-- AgilePHP Session -->
+
+		<table name="sessions" display="Session" isSession="true" model="Session" description="User sessions">
+			<column name="id" type="varchar" length="21" primaryKey="true" description="Unique ID"/>
+			<column name="data" type="text" description="Name of recipient"/>
+			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP"/>
+		</table>
+
+	</database>
+
+</persistence>

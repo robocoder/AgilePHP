@@ -1,0 +1,55 @@
+# AgilePHP Framework :: The Rapid "for developers" PHP5 framework
+# Copyright (C) 2009 Make A Byte, inc
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+----------------
+** Extensions **
+----------------
+--with-apxs2				(Dynamic apache support)
+--with-pdo-<database type>	(required for each database you want to use)
+--enable-mbstring			(XML/XSLT controllers use this to convert data to entities)
+--with-gettext				(i18n Internationalization)
+--with-xsl					(Controllers involved with XSLT)
+--with-mcrypt				(Crypto encrypt/decrypt methods)
+
+
+---------------------
+** PHPUnit Testing **
+---------------------
+To use the testing packages, and TDD features, install PHP Unit 3 via PEAR.
+
+pear channel-discover pear.phpunit.de
+pear install phpunit/PHPUnit
+
+
+----------
+** TODO **
+----------
+ > Add constructor argument support to InterceptorProxy
+ > Iron out RequestScope CSFR issues in regards to destroying session
+  > Persistence framework needs to support many-to-many relationships
+ > Need to revisit PersistenceRenderer and make an easy way to
+   allow different client side rendering libraries like jquery, dojo, extjs, etc (adapter?)
+ > Add calendar, spinner, date picker, and other widgets to persistence rendering
+ > AJAX Push / Comet (PHP socket daemon?)
+ > Create dialect classes for the following database servers:
+ 	pgsql
+	firebird
+	informix
+	oracle
+	dblib
+	ibm
+ > Finish Form::toJSON method (this should probably use AJAXRenderer)

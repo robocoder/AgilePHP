@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title><?php echo $title; ?></title>
+		<?php echo '<link href="' . AgilePHP::getFramework()->getDocumentRoot() . '/view/css/style.css" type="text/css" rel="stylesheet"/>'; ?>
+	</head>
+
+	<body>
+		<?php require_once 'header.html'; ?>
+
+		<form method="post" action="<?php echo AgilePHP::getFramework()->getRequestBase(); ?>/LoginController/login">
+
+			<table border="0">
+				<tr>
+					<th colspan="2" class="tableHeader">Login</th>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div style="text-align: center;"><?php if( isset( $error ) ) echo '<span class="error">' . $error . '</span>'; ?></div>
+					</td>
+				</tr>			
+				<tr>
+					<td>Username</td>
+					<td><input type="text" name="username"/></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input type="password" name="password"/></td>
+				</tr>
+				<tr>
+					<td> </td>
+					<td>
+						<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="<?= $request_token ?>"/>
+						<input type="submit" value="Login"/>
+						<?php echo '<a href="' . AgilePHP::getFramework()->getRequestBase() . '/LoginController/oops">Forgot Password</a>'; ?>
+					</td>					
+				</tr>
+			</table>
+		</form>
+
+		<?php require_once 'footer.html'; ?>
+	</body>
+</html>

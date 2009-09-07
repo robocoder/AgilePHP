@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class MVC</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class MVC</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">AgilePHP :: Model-View-Control (MVC)</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jeremy Hahn</li>
+				<li><span class="field">version:</span> 0.1a</li>
+				<li><span class="field">copyright:</span> Make A Byte, inc</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_MVC.php.html">/MVC.php</a> (line <span class="field">30</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																												<div class="method-definition">
+					static 						<span class="method-result">Singleton</span>
+										<a href="#getInstance" title="details" class="method-name">getInstance</a>
+										()
+									</div>
+																																																
+												<div class="method-definition">
+											<span class="method-result">A</span>
+										<a href="#createCustomRenderer" title="details" class="method-name">createCustomRenderer</a>
+											(<span class="var-type">$renderer</span>&nbsp;<span class="var-name">$renderer</span>, [<span class="var-type">$classpath</span>&nbsp;<span class="var-name">$classpath</span> = <span class="var-default">''</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">An</span>
+										<a href="#createDefaultRenderer" title="details" class="method-name">createDefaultRenderer</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">An</span>
+										<a href="#createRenderer" title="details" class="method-name">createRenderer</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$renderer</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getAction" title="details" class="method-name">getAction</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getController" title="details" class="method-name">getController</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getDefaultAction" title="details" class="method-name">getDefaultAction</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getDefaultController" title="details" class="method-name">getDefaultController</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getDefaultRenderer" title="details" class="method-name">getDefaultRenderer</a>
+										()
+									</div>
+																								<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#processRequest" title="details" class="method-name">processRequest</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setConfig" title="details" class="method-name">setConfig</a>
+											(<span class="var-type">$config</span>&nbsp;<span class="var-name">$config</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDefaultAction" title="details" class="method-name">setDefaultAction</a>
+											(<span class="var-type">$name</span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDefaultController" title="details" class="method-name">setDefaultController</a>
+											(<span class="var-type">$name</span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDefaultRenderer" title="details" class="method-name">setDefaultRenderer</a>
+											(<span class="var-type">$renderer</span>&nbsp;<span class="var-name">$renderer</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodgetInstance" id="getInstance"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method getInstance</span> (line <span class="line-number">54</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a singleton instance of MVC</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> instance of MVC</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">Singleton</span>
+		<span class="method-name">
+			getInstance
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+
+<a name="methodcreateCustomRenderer" id="createCustomRenderer"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">createCustomRenderer</span> (line <span class="line-number">293</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a new instance of the specified renderer. The renderer is loaded from  the web app 'classes' directory.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> new instance of the custom renderer</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">A</span>
+		<span class="method-name">
+			createCustomRenderer
+		</span>
+					(<span class="var-type">$renderer</span>&nbsp;<span class="var-name">$renderer</span>, [<span class="var-type">$classpath</span>&nbsp;<span class="var-name">$classpath</span> = <span class="var-default">''</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$renderer</span>
+				<span class="var-name">$renderer</span><span class="var-description">: The name of the custom view renderer</span>			</li>
+					<li>
+				<span class="var-type">$classpath</span>
+				<span class="var-name">$classpath</span><span class="var-description">: A relative child path under the webapp's 'classes' folder where the renderer is located.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcreateDefaultRenderer" id="createDefaultRenderer"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">createDefaultRenderer</span> (line <span class="line-number">252</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a new instance of the default view renderer</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> instance of the default renderer</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">An</span>
+		<span class="method-name">
+			createDefaultRenderer
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodcreateRenderer" id="createRenderer"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">createRenderer</span> (line <span class="line-number">272</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a new instance of the specified view renderer</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> instance of the specified renderer</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">An</span>
+		<span class="method-name">
+			createRenderer
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$renderer</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$renderer</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetAction" id="getAction"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getAction</span> (line <span class="line-number">175</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the action currently being invoked.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> name of the action currently being invoked.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getAction
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetController" id="getController"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getController</span> (line <span class="line-number">165</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the name of the controller currently in use.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> name of the controller in use by the MVC component.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getController
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetDefaultAction" id="getDefaultAction"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getDefaultAction</span> (line <span class="line-number">134</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the name of a default action method if one is not specified  in the request URI. Default is 'index'.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> name of the default action method</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getDefaultAction
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetDefaultController" id="getDefaultController"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getDefaultController</span> (line <span class="line-number">111</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the name of a default controller if one is not specified  in the request URI. Default is 'IndexController'.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> name of the default controller</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getDefaultController
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetDefaultRenderer" id="getDefaultRenderer"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getDefaultRenderer</span> (line <span class="line-number">155</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the name of the default view renderer</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> default view renderer</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getDefaultRenderer
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodprocessRequest" id="processRequest"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">processRequest</span> (line <span class="line-number">190</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Parses the current request URI to obtain the controller, action method, and arguments  present for this request and then performs the invocation. If these parameters ARE NOT  present, the default controller and default action method are used instead.</p>
+<p class="description"><p>NOTE: The URI requirement to communicate with this MVC system is as follows        http://domain.com/ScriptName.php/ControllerName/ActionMethod/arg1/arg2/arg3/etc...</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			processRequest
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodsetConfig" id="setConfig"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setConfig</span> (line <span class="line-number">69</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Initalizes the MVC component with agilephp.xml configuration.</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> AgilePHP_Exception If $config is not an instance of SimpleXMLElement</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setConfig
+		</span>
+					(<span class="var-type">$config</span>&nbsp;<span class="var-name">$config</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$config</span>
+				<span class="var-name">$config</span><span class="var-description">: SimpleXMLElement containing the MVC configuration.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDefaultAction" id="setDefaultAction"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDefaultAction</span> (line <span class="line-number">123</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the name of the default action method if one is not specified  in the request URI. Default is 'index'.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDefaultAction
+		</span>
+					(<span class="var-type">$name</span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$name</span>
+				<span class="var-name">$name</span><span class="var-description">: The name of the default action method</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDefaultController" id="setDefaultController"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDefaultController</span> (line <span class="line-number">100</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the name of the default controller which is used if one is not  specified in the request URI. Default is 'IndexController'.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDefaultController
+		</span>
+					(<span class="var-type">$name</span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$name</span>
+				<span class="var-name">$name</span><span class="var-description">: The name of the controller</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDefaultRenderer" id="setDefaultRenderer"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDefaultRenderer</span> (line <span class="line-number">145</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the name of the default view renderer. Default is 'PHTMLRenderer'.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDefaultRenderer
+		</span>
+					(<span class="var-type">$renderer</span>&nbsp;<span class="var-name">$renderer</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$renderer</span>
+				<span class="var-name">$renderer</span><span class="var-description">: The name of a view renderer to use as the default</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 07 Sep 2009 16:01:06 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</div></body>
+</html>

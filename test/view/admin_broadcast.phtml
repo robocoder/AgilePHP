@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<?php require_once 'head.phtml'; ?>
+	</head>
+
+	<body>
+			<?php if( !isset( $message ) ) { ?>
+			<form name="frmBroadcast" method="POST" action="/AgilePHP/test/index.php/MailingController/mailingBroadcast/true">
+				<table border="0">
+					<tr>
+						<td>Subject</td>
+						<td><input type="text" name="subject" size="27"/></td>
+					</tr>
+					<tr>
+						<td>Body</td>
+						<td><textarea name="body" rows="10" cols="30"></textarea></td>
+					</tr>
+					<tr>
+						<td>Signature</td>
+						<td><input type="text" name="signature" value=" --Colomusa.net" size="27"/></td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td><input type="submit" value="Send Broadcast!"/></td>
+					</tr>
+				</table>
+			</form>
+			<?php }
+			      else {
+
+			      	if( isset( $error ) ) {
+			?>
+						<span class="error">Error: <?php echo $error; ?></span>
+			<?php     		
+			      	}
+			      	else if( isset( $message ) ) {
+			 ?>
+			 			<span class="info"><?php echo $message; ?></span>
+			 <?php 
+			      	}
+			
+			 } ?>
+	</body>
+</html>

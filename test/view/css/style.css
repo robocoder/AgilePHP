@@ -1,0 +1,94 @@
+@CHARSET "UTF-8";
+
+a {
+
+	text-decoration: none;	
+}
+
+.error {
+
+	font-family:tahoma;
+	line-height:14px;
+	font-size: 18px;
+	color: #FF0000;
+}
+
+.agilephpGeneratedTableDescription {
+
+	color: #000000;
+	font-family:tahoma;
+	font-size: 16px;
+	font-weight: bolder;
+	line-height: 14px;
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+.agilephpGeneratedTable {
+	
+	color:#636363;
+	font-family:tahoma;
+	font-size: 16px;
+	line-height:14px;
+	border-collapse : collapse;
+}
+
+.agilephpGeneratedHeader {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:11px;
+	line-height:14px;
+	text-decoration: none;
+}
+
+.agilephpGeneratedHighlight {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+	line-height:14px;
+	background-color: #C9C9C9;
+}
+
+.agilephpGeneratedRow1 {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+	line-height:14px;
+	background-color: #FFFFFF;
+}
+
+.agilephpGeneratedRow2 {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+	line-height:14px;
+	background-color: #F9F9F9;
+}
+
+.agilephpGeneratedPaginationTable {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+	line-height:14px;
+}
+
+.agilephpGeneratedPaginationHeader {
+	
+	color:#636363;
+	font-family:tahoma;
+	font-size:12px;
+	line-height:14px;
+}
+
+.agilephpGeneratedPaginationRecordCount {
+	
+	color:#636363;
+	font-family:tahoma;
+	font-size:12px;
+	line-height:14px;
+}

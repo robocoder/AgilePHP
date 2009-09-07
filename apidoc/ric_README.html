@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title></title>
+			<link rel="stylesheet" href="media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+						<h1 align="center">README</h1>
+<pre>
+# AgilePHP Framework :: The Rapid &quot;for developers&quot; PHP5 framework
+# Copyright (C) 2009 Make A Byte, inc
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+
+
+----------------
+** Extensions **
+----------------
+--with-apxs2				(Dynamic apache support)
+--with-pdo-&lt;database type&gt;	(required for each database you want to use)
+--enable-mbstring			(XML/XSLT controllers use this to convert data to entities)
+--with-gettext				(i18n Internationalization)
+--with-xsl					(Controllers involved with XSLT)
+--with-mcrypt				(Crypto encrypt/decrypt methods)
+
+
+---------------------
+** PHPUnit Testing **
+---------------------
+To use the testing packages, and TDD features, install PHP Unit 3 via PEAR.
+
+pear channel-discover pear.phpunit.de
+pear install phpunit/PHPUnit
+
+
+----------
+** TODO **
+----------
+ &gt; Add constructor argument support to InterceptorProxy
+ &gt; Iron out RequestScope CSFR issues in regards to destroying session
+  &gt; Persistence framework needs to support many-to-many relationships
+ &gt; Need to revisit PersistenceRenderer and make an easy way to
+   allow different client side rendering libraries like jquery, dojo, extjs, etc (adapter?)
+ &gt; Add calendar, spinner, date picker, and other widgets to persistence rendering
+ &gt; AJAX Push / Comet (PHP socket daemon?)
+ &gt; Create dialect classes for the following database servers:
+ 	pgsql
+	firebird
+	informix
+	oracle
+	dblib
+	ibm
+ &gt; Finish Form::toJSON method (this should probably use AJAXRenderer)
+</pre>
+	<p class="notes" id="credit">
+		Documentation generated on Mon, 07 Sep 2009 16:01:02 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</body>
+</html>

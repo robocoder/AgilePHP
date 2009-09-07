@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>AgilePHP JavaScript Remoting</title>
+		<script type="text/javascript" src="/AgilePHP/test/index.php/RemotingController/getBaseJS/true"></script>
+		<script type="text/javascript" src="/AgilePHP/test/index.php/RemotingController/load/RMITest"></script>
+		<script type="text/javascript" src="/AgilePHP/test/index.php/RemotingController/load/RMITest2/true"></script>
+		<script type="text/javascript">
+
+			/** XMLHttpRequest AJAX request with innerHTML update on completion */
+			function update() {
+	
+					 // Performs the AJAX request and then updates the <div id="content"></div> innerHTML with the responseText
+					 new AgilePHP.XHR().updater( AgilePHP.getRequestBase() + '/AJAXController/testUpdater', 'content' );
+			}
+
+			/** XMLHttpRequest AJAX form post */
+			function doFormSubmit( form ) {
+
+				     var url = AgilePHP.getRequestBase() + '/AJAXController/formSubmit';
+				     new AgilePHP.XHR().formSubmit( url, form, formSubmitCallback );
+				     document.getElementById( 'submit' ).disabled = true;
+			}
+			function formSubmitCallback( o ) {
+	
+					 AgilePHP.debug( 'formSubmitCallback' );
+					 AgilePHP.debug( o );
+	
+					 var response = eval( '(' + o.responseText + ')' );
+					 document.getElementById( 'submit' ).disabled = false;
+					 document.getElementById( 'formSubmitResponse' ).innerHTML = response.result;
+			}
+	
+			/** AgilePHP Remoting */
+			function mycallback( o ) {
+
+					 var response = eval( '(' + o.responseText + ')' );
+					 AgilePHP.debug( 'response' );
+					 AgilePHP.debug( response );
+
+					 if( typeof response == 'AgilePHP_RemotingException' )
+						 alert( 'An error occurred: ' + response.message );
+
+					 AgilePHP.debug( 'mycallback' );
+					 AgilePHP.debug( o );
+			}
+			function mySecondCallback( o ) {
+
+					 AgilePHP.debug( 'mySecondCallback' );
+					 AgilePHP.debug( o );
+			}
+
+			/**
+			 * Stubs are created by the SCRIPT tags in the HEAD of this document.
+			 * The RemotingController/load uses the AgilePHP Remoting component
+			 * to build a javascript stub which works with the AgilePHP client
+			 * side javascript to perform communication and marshalling/unmarshalling
+			 * of data between the client and the server.
+			 */
+	
+			// Obtain the remoting stub instance and set the callback handler
+			var stub = AgilePHP.Remoting.getStub( 'RMITest' );
+			stub.setCallback( mycallback );
+	
+			// Instantiate the remote PHP object and invoke a few #@RemoteMethod's
+			var rmi = new RMITest( 'test1', 'test2', 'test3' );
+			AgilePHP.debug( rmi.testme( 'arg1', 'arg2' ) );
+			AgilePHP.debug( rmi.setTest2( '1111' ) );
+			rmi.testme2();  // Access denied by #@Restrict( name = 'foo' )
+			AgilePHP.debug( rmi.show() );
+	
+			// RMITest2 is kept stateful within AgilePHP SessionScope
+			var stub2 = AgilePHP.Remoting.getStub( 'RMITest2' );
+			stub2.setCallback( mySecondCallback );
+	
+			var rmi2 = new RMITest2();
+			rmi2.testme( 'arg3', 'arg4' );
+			rmi2.testme2( 'arg3', 'arg4' );
+		</script>
+	</head>
+	<body>
+		<input type="button" value="Test AgilePHP.XHR().updater" onclick="update()"/>
+		<div id="content"></div>
+
+		<form name="frmTestAjaxForm" onSubmit="doFormSubmit( this ); return false;">
+			<table border="0">
+				<tr>
+					<td>Text</td>
+					<td><input type="text" name="field1"/></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input type="password" name="field2"/></td>
+				</tr>
+				<tr>
+					<td>Checkbox</td>
+					<td>
+						Item 1: <input type="checkbox" name="chk1"/>
+						<br/>
+						Item 2: <input type="checkbox" name="chk2"/>
+						<br/>
+						Item 3: <input type="checkbox" name="chk3"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Radio</td>
+					<td>
+						Item 1: <input type="radio" name="radio1" value="choice1"/>
+						<br/>
+						Item 2: <input type="radio" name="radio1" value="choice2"/>
+						<br/>
+						Item 3: <input type="radio" name="radio1" value="choice3"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Select</td>
+					<td>
+						<select name="selector1">
+							<option value="selVal1">Item 1</option>
+							<option value="selVal2">Item 2</option>
+							<option value="selVal3">Item 3</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>Textarea</td>
+					<td><textarea name="myTextArea"></textarea></td>
+				</tr>
+				<tr>
+					<td><input id="submit" type="submit" name="Submit"></input></td>
+				</tr>
+			</table>
+			<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="this_will_make_the_request_fail___remove me and watch it work!"/>
+		</form>
+		<div id="formSubmitResponse"></div>
+	</body>
+</html>
