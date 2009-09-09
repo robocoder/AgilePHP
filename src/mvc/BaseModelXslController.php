@@ -236,6 +236,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     	       				 $this->getModelPersistenceAction() . '/' . $pkeyValues . '/' . $this->getPage();
 
 	     	       $model = $this->getPersistenceManager()->find( $this->getModel() );
+	     	       if( !$model ) $model = $this->getModel();
 
 	     	       $token = Scope::getInstance()->getRequestScope()->createToken();
 	     	       $name = $this->getModelName();
