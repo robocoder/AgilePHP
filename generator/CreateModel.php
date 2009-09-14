@@ -63,7 +63,6 @@ class CreateModel extends AgilePHPGen {
       private function createModel() {
 
       	      $class = "class " . $this->modelName . " {\n\n";
-
               foreach( $this->properties as $key => $value ) {
 
                        if( is_numeric( $key ) )
@@ -118,7 +117,7 @@ class CreateModel extends AgilePHPGen {
       		  		   if( (string)$tableXml->attributes()->model == $this->modelName )
       		  		   	   PHPUnit_Framework_Assert::Fail( 'Failed to update persistence.xml. Table element already exists.' );
       		  }
-
+      		  /*
       		  $table = $this->xml->database->addChild( 'table' );
       		  $table->addAttribute( 'name', strtolower( $this->modelName ) );
       		  $table->addAttribute( 'model', $this->modelName );
@@ -132,7 +131,25 @@ class CreateModel extends AgilePHPGen {
       		  		   $column->addAttribute( 'length', '255' );
       		  }
 
-      	      $this->xml->asXML( $this->getCache()->getProjectRoot() . '/persistence.xml' );
+      	      //$this->xml->asXML( $this->getCache()->getProjectRoot() . '/persistence.xml' );
+      		   */
+
+      		  $xml = "\t<table name=\"" . strtolower( $this->modelName ) . "\" model=\"" . $this->modelName . "\" display=\"\" description=\"\">\n";
+      		  $clazz = new ReflectionClass( $this->instance );
+      		  foreach( $clazz->getProperties() as $property )
+      		  		   $xml .= "\t\t\t<column name=\"" . $property->name . "\" type=\"\" length=\"\"/>\n";
+
+      		  $xml .= "\t\t</table>\n\t</database>\n";
+
+      		  $h = fopen( $this->getCache()->getProjectRoot() . '/persistence.xml', 'r' );
+      		  $data = '';
+      		  while( !feof( $h ) )
+      		  		 $data .= fgets( $h, 4096 );
+      		  fclose( $h );
+
+      		  $h = fopen( $this->getCache()->getProjectRoot() . '/persistence.xml', 'w' );
+      		  fwrite( $h, str_replace( '</database>', $xml, $data ) );
+      		  fclose( $h );
       }
 }
 ?>

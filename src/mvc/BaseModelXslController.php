@@ -26,7 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
+ * @version 0.2a
  * @abstract
  */
 abstract class BaseModelXslController extends BaseModelXmlController {
@@ -242,7 +242,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     	       $name = $this->getModelName();
 	     	       $form = $table->hasBlobColumn() ? new Form( $model, 'frm' . $name, $name, $action, 'multipart/form-data', $token )
 	     	       							       : new Form( $model, 'frm' . $name, $name, $action, null, $token );
-
+				   $form->setMode( $this->getModelPersistenceAction() );
 	     	       $xsl = $form->getXSL( $pkeyValues, $this->getPage() );
 			       Logger::getInstance()->debug( 'BaseModelXslController::getModelListXSL returning XSL ' . $xsl );
 

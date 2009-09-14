@@ -1,0 +1,45 @@
+0.2a
+----
+
+- Bug fix to Form::getHTML and Form::getXSL $action variables. Updated
+  to use $this->getMode() as initially intended.
+
+- Bug fix to BaseModelXslController::getModelFormXSL(). Empty find result
+  was causing the returned null result to be passed into the Form constructor
+  resulting in an exception. Now if the find comes back empty $model is set to
+  the $model defined in the action Controller.
+  
+- Bug fix to Form::getXSL. Textarea needed xsl:value-of element instead of xpath. Also
+  xsl:if statement was added to test for null database value and if so, add an xsl
+  comment inside of the textarea to keep the if element from collapsing
+  
+- Bug fix to Form::getForeignKeySelection. Search results containing a single row
+  were not displaying due to foreach loop expecting an array (multiple items). Added
+  else if to check to test result as object type and if so, display the single item.
+  
+- Updated Column::getViewDisplayName so that column names are returned as a proper name
+
+- Bug fix to Form::getForeignKeySelection. Error occurred when foreign model instance accessor
+  was null.
+  
+- Removed &#8201; from both Form::getHTML and Form::getXSL. Was causing strange characters to appear
+  in some cases.
+
+- Bug fix to AgilePHP.MVC javascript object. processRequest now uses its parameters property
+  instead of an argument.
+  
+- Refactored AJAXRenderer::toJSON so that the object name is no longer returned.
+
+- Bug fix to Form::getXSL. Textarea is now formatted using mbstring to ensure encoding integrity.
+
+- Refactored BaseModelActionController::setModelValues() from private to protected. Same with setPrimaryKeys.
+
+- Refactored BaseModelActionController::__construct to throw AgilePHP_NotLoggedInException and AgilePHP_AccessDeniedException
+  instead of just AgilePHP_NotLoggedInException with different messages. Also remoked private revokeAccess method.
+
+- Bug fix to Identity::resetPassword. Was using invalid session handle resulting in invalid object error.
+
+- More work on generator. Big ones are now CreateModel is not munging up persistence.xml configuration to it can
+  be reliably used to create models and now projects can be created with Eclipse Galileo PHP and Netbeans 6.7.1 support.
+
+- Added LICENSE and CHANGELOG to project

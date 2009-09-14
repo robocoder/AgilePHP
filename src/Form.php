@@ -26,7 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class Form {
 
@@ -220,11 +220,13 @@ class Form {
 	  		 $table = $pm->getTableByModel( $this->model );
 	  		 foreach( $table->getColumns() as $column ) {
 
+	  		 		  if( !$column->isVisible() ) continue;
+
 			  		  $name = $column->getModelPropertyName();
 			  		  $displayName = $column->getViewDisplayName();
 			  		  $accessor = $pm->toAccessor( $name );
 			  		  $value = $this->getModel()->$accessor();
-
+			  		  
 			  		  $html .= '<tr>';
 
 			  		  // Process foreign keys first
@@ -300,11 +302,11 @@ class Form {
 	  		 }
 
 	  		 $html .= '<tr>
- 						<td>&#8201;</td>
+ 						<td> </td>
 						<td>';
-	  		 $html .= $action == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
+	  		 $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
         							 : '<input type="submit" value="Update"/>
-								<input type="button" value="Delete" onclick="javascript:AgilePHP.Persistence.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
+									   <input type="button" value="Delete" onclick="javascript:AgilePHP.Persistence.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
         							   '\', \'' . $pkeyValues . '\', \'' . $this->getPage() . 
         							   '\', \'' . MVC::getInstance()->getController() . '\', \'' . MVC::getInstance()->getAction() . '/delete\' )"/>
         							   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';
@@ -348,18 +350,27 @@ class Form {
 
           	 $html = '<select name="' . $property . '">';
 
-          	 // Create each of the option values. If the foreign key value matches the
-          	 // selected foreign model property value, the item is shown as the default.
-          	 foreach( $foreignModels as $fModel ) {
+	  		 if( is_array( $foreignModels ) ) {
 
-          	 		  $fAccessor = $pm->toAccessor( $selectedProperty );
-          	 		  $fkInstanceAccessor = $pm->toAccessor( $foreignKey->getReferencedTableInstance()->getModel() );
+	          	 // Create each of the option values. If the foreign key value matches the
+	          	 // selected foreign model property value, the item is shown as the default.
+	          	 foreach( $foreignModels as $fModel ) {
+	
+	          	 		  $fAccessor = $pm->toAccessor( $selectedProperty );
+	          	 		  $fkInstanceAccessor = $pm->toAccessor( $foreignKey->getReferencedTableInstance()->getModel() );
+	
+	          	 		  if( is_object( $this->getModel()->$fkInstanceAccessor() ) && 
+	          	 		  			$this->getModel()->$fkInstanceAccessor()->$fAccessor() == $fModel->$fAccessor() )
+	          	 		  	  $html .= '<option value="' . $fModel->$fAccessor() . '" selected="yes">' . $fModel->$fAccessor() . '</option>';
+	          	 		  else
+	          	 		  	  $html .= '<option value="' . $fModel->$fAccessor() . '">' . $fModel->$fAccessor() . '</option>';
+	          	 }
+          	 }
 
-          	 		  if( $this->getModel()->$fkInstanceAccessor()->$fAccessor() == $fModel->$fAccessor() )
-          	 		  	  $html .= '<option value="' . $fModel->$fAccessor() . '" selected="yes">' . $fModel->$fAccessor() . '</option>';
-          	 		  else
-          	 		  	  $html .= '<option value="' . $fModel->$fAccessor() . '">' . $fModel->$fAccessor() . '</option>';
-          	 		  
+          	 else if( is_object( $foreignModels ) ) {
+          	 	
+          	 	  $fAccessor = $pm->toAccessor( $selectedProperty );
+	          	  $html .= '<option value="' . $foreignModels->$fAccessor() . '" selected="yes">' . $foreignModels->$fAccessor() . '</option>';
           	 }
 
           	 $html .= '</select>';
@@ -390,6 +401,8 @@ class Form {
 						  		 $pm = new PersistenceManager();
 						  		 $table = $pm->getTableByModel( $this->model );
 						  		 foreach( $table->getColumns() as $column ) {
+
+						  		 		  if( !$column->isVisible() ) continue;
 
 								  		  $name = $column->getModelPropertyName();
 								  		  $displayName = $column->getViewDisplayName();
@@ -445,11 +458,16 @@ class Form {
 										  	  	       		: '<td><input type="checkbox" name="' . $name . '" value="1"/></td>';
 										  }
 
-										  // Textarea
+						  		 		  // Textarea
 										  else if( $column->getType() == 'text' ) {
-					
+
+										  	  $xslValue = mb_convert_encoding( html_entity_decode( $value ), 'UTF-8', 'ISO-8859-1' );
+
 											  $xsl .= '<td>' . $displayName . '</td>
-											  		   <td><textarea name="' . $name . '">{/Form/' . $table->getModel() . '/' . $name . '}</textarea></td>';
+											  		   <td><textarea name="' . $name . '">';
+											  				if( !$xslValue ) $xsl .= '<xsl:comment/>';
+											  				$xsl .= '<xsl:value-of select="/Form/' . $table->getModel() . '/' . $name . '"/></textarea>
+							  		 				   </td>';
 										  }
 					
 										  // File upload
@@ -470,9 +488,9 @@ class Form {
 						  		 }
 
 	  		   $xsl .= '<tr>
-		 				  <td>&#8201;</td>
+		 				  <td> </td>
 						  <td>';
-        	              $xsl .= $action == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
+        	              $xsl .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
         				        						 : '<input type="submit" value="Update"/>
 															<input type="button" value="Delete" onclick="javascript:AgilePHP.Persistence.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
         													   '\', \'' . $pkeyValues . '\', \'' . $page . 

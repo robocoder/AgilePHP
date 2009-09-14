@@ -5,6 +5,12 @@ require_once 'util/jsmin-1.1.1.php';
 
 class CreateView extends AgilePHPGen {
 
+	  /**
+	   * Displays a list of template views from AgilePHP/generator/templates/views
+	   * that when selected, is copied to the current web application project directory.
+	   *  
+	   * @return void
+	   */
 	  public function testCreateController() {
 
 	  		 echo "Please select from the following views:\n\n";
@@ -17,13 +23,16 @@ class CreateView extends AgilePHPGen {
 
 		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
 
-		   	      	  $i++;
-
 		   	      	  $file = str_replace( './templates/views/', '', $file );
+		   	      	  if( substr( $file, 0, 4 ) == '.svn' ) continue;
+
+		   	      	  $i++;
 			 		  $views[$i] = $file;
-			 		  echo "[$i] $file\n";
 			      }
 		 	 }
+		 	 foreach( $views as $index => $name )
+		 	 		echo "[$index] $name\n";
+		 	 
 		 	 $input = $this->prompt( '' );
 
 		 	 if( !array_key_exists( $input, $views ) )

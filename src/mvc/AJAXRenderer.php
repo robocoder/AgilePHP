@@ -26,7 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
+ * @version 0.2a
  */
 class AJAXRenderer extends BaseRenderer {
 
@@ -202,7 +202,7 @@ class AJAXRenderer extends BaseRenderer {
 		  		  if( $class->getName() == 'stdClass' )
 		  		  	  return json_encode( $data );
 
-	  		  	  $json .= $class->getName() . ' : { ';
+	  		  	  $json .= '{ ';
 
 		  		  $properties = $class->getProperties();
 			  	  for( $i=0; $i<count( $properties ); $i++ ) {

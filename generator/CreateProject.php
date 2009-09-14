@@ -1,6 +1,7 @@
 <?php
 
 require_once 'util/AgilePHPGen.php';
+require_once 'util/IDEIntegration.php';
 
 class CreateProject extends AgilePHPGen {
 
@@ -29,7 +30,7 @@ class CreateProject extends AgilePHPGen {
 	  		 }
 	  		 $cache->setProjectHome( $projectHome );
 
-	  		 $projectName = $this->prompt( 'Enter project name' );
+	  		 $projectName = $this->prompt( 'Enter project name:' );
 	  		 if( !file_exists( $projectHome . '/' . $projectName ) ) {
 
 		  		 if( !mkdir( $projectHome . '/' . $projectName ) ) {
@@ -49,7 +50,11 @@ class CreateProject extends AgilePHPGen {
 	  		 $view = $root . '/view';
 	  		 if( !mkdir( $view ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project view directory at \'' . $view . '\'.' );
-	  		 
+
+	  		 $css = $root . '/view/css';
+	  		 if( !mkdir( $css ) )
+	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project css directory at \'' . $css . '\'.' );
+
 	  		 $control = $root . '/control';
 	  		 if( !mkdir( $control ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project controllers directory at \'' . $control . '\'.' );
@@ -98,10 +103,19 @@ class CreateProject extends AgilePHPGen {
 	  		 	 echo "What type of database server are you using?\nAgilePHP> ";
 	  		 	 $this->showDBTypes();
 	  		 	 $cache->setDBType( $this->getDBType( trim( fgets( STDIN ) ) ) );
-	  		 	 $cache->setDBHost( $this->prompt( 'Database Server hostname?' ) ); 
-	  		 	 $cache->setDBName( $this->prompt( 'Database name?' ) );
-	  		 	 $cache->setDBUser( $this->prompt( 'Username to connect?' ) );
-	  		 	 $cache->setDBPass( $this->prompt( 'Password to connect?' ) );
+	  		 	 
+	  		 	 if( $cache->getDBType() != 'sqlite' ) {
+
+		  		 	 $cache->setDBHost( $this->prompt( 'Database Server hostname?' ) ); 
+		  		 	 $cache->setDBName( $this->prompt( 'Database name?' ) );
+		  		 	 $cache->setDBUser( $this->prompt( 'Username to connect?' ) );
+		  		 	 $cache->setDBPass( $this->prompt( 'Password to connect?' ) );
+	  		 	 }
+	  		 	 else {
+
+	  		 	 	 $cache->setDBHost( $cache->getProjectHome() );
+	  		 	 	 $cache->setDBName( $this->prompt( 'Database name?' ) );
+	  		 	 }
 
 	  		 	 $this->saveCache( $cache );
 
@@ -110,7 +124,12 @@ class CreateProject extends AgilePHPGen {
 	  		 }
 
 	  		 $this->createAgilePhpXML( $cache->getLogging(), $cache->getInterceptors(), $cache->getIdentity(), $cache->getCrypto() );
-	  		 $this->createAccessFile();
+	  		 $this->createAccessFile( ($cache->getDBType() == 'sqlite' ? true : false ) );
+	  		 $this->createIndexDotPHP();
+	  		 $this->createStyleSheet();
+
+	  		 $answer = $this->prompt( 'Would you like IDE support? (Y/N)' );
+	  		 if( strtolower( $answer ) == 'y' ) new IDEIntegration();
 	  }
 
 	  /**
@@ -196,9 +215,6 @@ class CreateProject extends AgilePHPGen {
 	  		  $data .= "<!DOCTYPE agilephp SYSTEM \"AgilePHP/agilephp.dtd\">\n";
 	  		  $data .= "<agilephp>\n";
 
-			  if( $interceptors )	  		 
-				  $data .= "\t<interceptors/>\n";
-
 			  if( $debug )
 			 	  $data .= "\t<logger level=\"debug\"/>\n";
 
@@ -207,6 +223,9 @@ class CreateProject extends AgilePHPGen {
 
 			  if( $crypto )
 			 	  $data .= "\t<crypto algorithm=\"sha256\" />\n";
+
+		 	  if( $interceptors )	  		 
+				  $data .= "\t<interceptors/>\n";
 
 			  $data .= '</agilephp>';
 
@@ -217,7 +236,7 @@ class CreateProject extends AgilePHPGen {
 	  		  if( !file_exists( $this->getCache()->getProjectRoot() . '/agilephp.xml' ) )
 	  		 	  PHPUnit_Framework_Assert::fail( 'Could not create default agilephp.xml file' );
 	  }
-	  
+
 	  private function showDBTypes() {
 	  	
 	  		  echo "\n[1] SQLite\n";
@@ -229,7 +248,7 @@ class CreateProject extends AgilePHPGen {
 	  		  echo "[7] dblib\n";
 	  		  echo "[8] IBM\n";
 	  }
-	  
+
 	  private function getDBType( $choice ) {
 	  	
 	  	      switch( (int)$choice ) {
@@ -263,7 +282,7 @@ class CreateProject extends AgilePHPGen {
 	  	      }
 	  }
 
-	  private function createAccessFile() {
+	  private function createAccessFile( $sqlite = false ) {
 
 	  		  $data = "<Files .htaccess>\n";
 	  		  $data .= "\torder deny,allow\n";
@@ -278,6 +297,14 @@ class CreateProject extends AgilePHPGen {
 			  $data .= "\tdeny from all\n";
 			  $data .= "</Files>";
 
+			  if( $sqlite ) {
+
+			  	  $data .= "\n<Files " . $this->getCache()->getDBName() . ".sqlite>\n";
+			  	  $data .= "\torder deny,allow\n";
+			  	  $data .= "\tdeny from all\n";
+			  	  $data .= "</Files>";
+		  	  }
+
 	  		  $htaccess = $this->getCache()->getProjectRoot() . '/.htaccess';
 
 	  		  $h = fopen( $htaccess, 'w' );
@@ -285,6 +312,150 @@ class CreateProject extends AgilePHPGen {
 	  		  fclose( $h );
 
 	  		  chmod( $htaccess, 0600 );
+	  }
+
+	  private function createIndexDotPHP() {
+	  	
+	  	      $code = '<?php
+/**
+ * AgilePHP Generated Index Page
+ * ' . $this->getCache()->getProjectName() . '
+ * 
+ * @package ' . $this->getCache()->getProjectName() . '
+ */
+
+/**
+ * This is the default index page that handles all requests for the web application.
+ * Here, we load the core AgilePHP framework and call upon the Model-View-Control
+ * component to parse and handle the current request. All calls are wrapped in a
+ * try/catch which redirects the website visitor to the view/error.phtml page on error.
+ * 
+ * @author agilephp
+ * @version 0.1
+ */
+ require_once \'AgilePHP/AgilePHP.php\';
+
+ try {
+		$agilephp = AgilePHP::getFramework();  	
+		$agilephp->setDefaultTimezone( \'America/New_York\' );
+
+		MVC::getInstance()->processRequest();
+ }
+ catch( Exception $e ) {
+
+  	     Logger::getInstance()->error( $e->getMessage() );
+
+		 $renderer = new PHTMLRenderer();
+		 $renderer->set( \'title\', \'' . $this->getCache()->getProjectName() . ' :: Error Page\' );
+		 $renderer->set( \'error\', $e->getMessage() . ($agilephp->isInDebugMode() ? \'<br>\' . $e->getTraceAsString() : \'\' ) );
+		 $renderer->render( \'error\' );
+ }
+?>';
+	  	 	  $h = fopen( $this->getCache()->getProjectRoot() . '/index.php', 'w' );
+	  		  fwrite( $h, $code );
+	  		  fclose( $h );    
+	  }
+	  
+	  private function createStyleSheet() {
+	  	
+	  		  $style = '/** AgilePHP Styles */
+a {
+
+	text-decoration: none;	
+}
+.info {
+
+	font-family:tahoma;
+	font-size: 12px;	
+}
+
+.error {
+
+	font-family:tahoma;
+	font-size: 12px;
+	color: #FF0000;
+}
+
+.tableHeader {
+
+	color: #636363;
+	font-family: tahoma;
+	font-size: 11px;
+}
+
+.agilephpGeneratedTableDescription {
+
+	color: #000000;
+	font-family:tahoma;
+	font-size: 16px;
+	font-weight: bolder;
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+.agilephpGeneratedTable {
+	
+	color:#636363;
+	font-family:tahoma;
+	font-size: 16px;
+	border-collapse : collapse;
+}
+
+.agilephpGeneratedHeader {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:11px;
+	text-decoration: none;
+}
+
+.agilephpGeneratedHighlight {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+	background-color: #C9C9C9;
+}
+
+.agilephpGeneratedRow1 {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+	background-color: #FFFFFF;
+}
+
+.agilephpGeneratedRow2 {
+
+	color: #636363;
+	font-family:tahoma;
+	font-size:10px;
+	background-color: #F9F9F9;
+}
+
+.agilephpGeneratedPaginationTable {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+}
+
+.agilephpGeneratedPaginationHeader {
+	
+	color:#636363;
+	font-family:tahoma;
+	font-size:12px;
+}
+
+.agilephpGeneratedPaginationRecordCount {
+	
+	color:#636363;
+	font-family:tahoma;
+	font-size:12px;
+}';
+	  		  $h = fopen( $this->getCache()->getProjectRoot() . '/view/css/style.css', 'w' );
+	  		  fwrite( $h, $style );
+	  		  fclose( $h );    
 	  }
 }
 ?>

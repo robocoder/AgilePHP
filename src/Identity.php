@@ -42,7 +42,7 @@ require_once 'identity/Role.php';
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class Identity implements IdentityManager {
 
@@ -332,20 +332,22 @@ class Identity implements IdentityManager {
 
 	  		 $this->session->setSessionId( $sessionId );
 
-	  		 if( $token !== $session->get( 'resetPasswordToken' ) )
+	  		 if( $token !== $this->session->get( 'resetPasswordToken' ) )
 	  		 	 throw new AgilePHP_Exception( 'Invalid token: ' . $token );
 
 	  		 $newPassword = $this->createResetPasswordToken();
 	  		 $subject = AgilePHP::getFramework()->getAppName() . ' :: New Password';
 	  		 $body = 'Your new password is: ' . $newPassword;
 
-	  		 $this->setUsername( $session->get( 'username' ) );
+	  		 $this->setUsername( $this->session->get( 'username' ) );
 	  		 $this->refresh();
 	  		 $this->setPassword( $newPassword );
 	  		 $this->merge();
 
 	  		 if( !mail( $this->getModel()->getEmail(), $subject, $body, $this->getMailHeaders() ) )
 	  		 	 throw new AgilePHP_Exception( 'Error sending reset password email.' );
+
+	  		 $this->session->destroy();
 	  }
 
 	  /**
@@ -419,7 +421,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function isLoggedIn() {
 
-	  		 return (isset( $this->session ) && $this->session->get( 'IDENTITY_LOGGEDIN' )) ? true : false;
+	  		 return (isset( $this->session ) && $this->session->get( 'IDENTITY_LOGGEDIN' ) ) ? true : false;
 	  }
 
 	  /**

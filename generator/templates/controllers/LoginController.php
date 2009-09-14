@@ -47,6 +47,7 @@ class LoginController extends BaseController {
 
 			 if( !Identity::getInstance()->login( $username, $password ) ) {
 
+			 	 Scope::getInstance()->getRequestScope()->invalidate();
 	  	      	 $this->getRenderer()->set( 'error', 'Invalid username/password' );
 	  	      	 $this->getRenderer()->render( 'login' );
 	  	      	 return;
@@ -67,7 +68,7 @@ class LoginController extends BaseController {
 	  }
 
 	  /**
-	   * Displays the forgot password form
+	   * Displays the forgot password form :)
 	   * 
 	   * @return void
 	   */
@@ -77,7 +78,8 @@ class LoginController extends BaseController {
 	  }
 
 	  /**
-	   * Uses the AgilePHP Identity component to send the user a password reset email.
+	   * Uses the AgilePHP Identity component to send the user a link
+	   * to click which resets their password when clicked.
 	   * 
 	   * @return void
 	   */
@@ -132,6 +134,7 @@ class LoginController extends BaseController {
 
 	  		 		$this->getRenderer()->set( 'error', $e->getMessage() );
 	  		 		$this->getRenderer()->render( 'error' );
+	  		 		return;
 	  		 }
 
 	  		 $this->getRenderer()->set( 'info', 'Your new password has been sent to your email address.' );
@@ -139,7 +142,7 @@ class LoginController extends BaseController {
 	  }
 
 	  /**
-	   * Renders the admin PHTML view.
+	   * Renders the admin view.
 	   * 
 	   * @return void
 	   */
@@ -150,7 +153,7 @@ class LoginController extends BaseController {
 	  }
 
 	  /**
-	   * Renders the login PHTML view.
+	   * Renders the login view.
 	   * 
 	   * @return void
 	   */
@@ -162,13 +165,13 @@ class LoginController extends BaseController {
 	  }
 
 	  /**
-	   * Renders the forgot password PHTML view.
+	   * Renders the forgot password view.
 	   * 
 	   * @return void
 	   */
 	  private function showForgotPassword() {
 
-	  		  $this->getRenderer()->set( 'title', 'Administration :: Forgot Password' );
+	  		  $this->getRenderer()->set( 'title', 'Administration :: Login :: Forgot Password' );
 	  		  $this->getRenderer()->set( 'request_token', Scope::getRequestScope()->createToken() );
 	  	      $this->getRenderer()->render( 'forgotPassword' );
 	  }

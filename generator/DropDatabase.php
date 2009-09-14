@@ -5,6 +5,12 @@ require_once '../src/AgilePHP.php';
 
 class DropDatabase extends AgilePHPGen {
 
+	  /**
+	   * Drops/destroys the database defined in the current web application
+	   * persistence.xml file.
+	   * 
+	   * @return void
+	   */
 	  public function testCreateDatabase() {
 
 	  		 $agilephp = AgilePHP::getFramework();

@@ -23,7 +23,7 @@ var AgilePHP = {
 
 		author : 'Jeremy Hahn',
 		copyright: 'Make A Byte, inc.',
-		version : '0.1a',
+		version : '0.2a',
 		licence : 'GNU General Public License',
 		package : 'com.makeabyte.agilephp',
 
@@ -448,7 +448,7 @@ var AgilePHP = {
 
 			controller : 'IndexController',
 			action : 'index',
-			parameters : null,
+			parameters : [],
 
 			/**
 			 * Sets the name of the MVC controller to send the request
@@ -517,12 +517,12 @@ var AgilePHP = {
 			 * @param arguments {String} A string of arguments delimited by a forward slash '/'
 			 * @return If no callback function is supplied, the call is treated synchronously and the result is returned. 
 			 */
-			processRequest : function( callback, arguments ) {
+			processRequest : function( callback ) {
 
-				    var url = AgilePHP.getRequestBase() + '/' + AgilePHP.MVC.getController() + '/' + AgilePHP.MVC.getAction();
+				    var url = AgilePHP.getRequestBase() + '/' + this.getController() + '/' + this.getAction();
 
-				    if( arguments != undefined )
-				    	url += arguments;
+				    if( this.parameters.length )
+				    	url += '/' + this.parameters.join( '/' );
 
 				    if( callback != undefined )
 				    	new AgilePHP.XHR().request( url, callback )

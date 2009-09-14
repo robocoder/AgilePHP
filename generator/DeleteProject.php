@@ -9,6 +9,11 @@ class DeleteProject extends AgilePHPGen {
 	  		 parent::__construct( false );
 	  }
 
+	  /**
+	   * Deletes the project found in the .agilephp-gen_cache file
+	   * 
+	   * @return void
+	   */
 	  public function test_deleteProject() {
 
 	  		 if( !$this->getCache() )
@@ -27,6 +32,13 @@ class DeleteProject extends AgilePHPGen {
 	  		 unlink( '.agilephp-gen_cache' );
 	  }
 
+	  /**
+	   * Performs a recursive file delete
+	   * 
+	   * @param $src The source directory to delete
+	   * @return True if successful or false on failure
+	   * @throws PHPUnit_Framework_Assert::fail
+	   */
 	  public function recursiveDelete( $src ) {
 
 		     $dir = opendir( $src );

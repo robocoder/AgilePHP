@@ -5,6 +5,11 @@ require_once 'util/jsmin-1.1.1.php';
 
 class BuildProject extends AgilePHPGen {
 
+	  /**
+	   * Builds the main project. Minimizes AgilePHP.js JavaScript.
+	   * 
+	   * @return void
+	   */	  
 	  public function testBuildProject() {
 
 	  		 // Minify AgilePHP client side JavaScript

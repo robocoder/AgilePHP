@@ -26,7 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.1a
+ * @version 0.2a
  */
 class Column {
 
@@ -431,7 +431,7 @@ class Column {
 	   */
 	  public function getViewDisplayName() {
 
-	  		 return $this->getDisplay() ? $this->getDisplay() : $this->getName();
+	  		 return $this->getDisplay() ? $this->getDisplay() : ucfirst( $this->getName() );
 	  }
 }
 ?>
