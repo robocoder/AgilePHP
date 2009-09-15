@@ -93,8 +93,15 @@ class CreateProject extends AgilePHPGen {
 	  		 $answer = $this->prompt( 'Would you like to use the AgilePHP SessionScope component? (Y/N)' );
 	  		 $cache->setSession( strtolower( $answer ) == 'y' ? true : false );
 
-	  		 $answer = $this->prompt( 'Will you be connecting to a database? (Y/N)' );
-	  		 $cache->setDatabase( strtolower( $answer ) == 'y' ? true : false );
+	  		 // Identity and Session components require a database
+	  		 if( $cache->getIdentity() != 'y' && $cache->getSession() != 'y' ) {
+
+		  		 $answer = $this->prompt( 'Will you be connecting to a database? (Y/N)' );
+		  		 $cache->setDatabase( strtolower( $answer ) == 'y' ? true : false );
+	  		 }
+	  		 else {
+	  		 	 $cache->setDatabase( 'y' );
+	  		 }
 
 	  		 $this->saveCache( $cache );
 

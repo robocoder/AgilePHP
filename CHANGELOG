@@ -39,7 +39,11 @@
 
 - Bug fix to Identity::resetPassword. Was using invalid session handle resulting in invalid object error.
 
-- More work on generator. Big ones are now CreateModel is not munging up persistence.xml configuration to it can
-  be reliably used to create models and now projects can be created with Eclipse Galileo PHP and Netbeans 6.7.1 support.
+- More work on generator. Big ones are now CreateModel is not munging up persistence.xml configuration so it can
+  be reliably used to create models and now projects can be created with Eclipse Galileo PHP and Netbeans 6.7.1 support :)
 
 - Added LICENSE and CHANGELOG to project
+
+- Started on integration with OpenAppstore. Used WSDL2PHP to create generator/util/AppstoreAPI.php which is used by
+  generator/InstallComponent.php to offer a list of components available for download/install. Everything seems to
+  be working here, perhaps revisit to do some cleanup at a later date.
