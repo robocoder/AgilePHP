@@ -35,6 +35,15 @@ pear channel-discover pear.phpunit.de
 pear install phpunit/PHPUnit
 
 
+---------------------
+**    Debugging    **
+---------------------
+Debug using FirePHP:
+
+pear channel-discover pear.firephp.org
+pear install firephp/FirePHPCore 
+
+
 ----------
 ** TODO **
 ----------

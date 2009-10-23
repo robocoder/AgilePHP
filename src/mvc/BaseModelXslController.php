@@ -179,6 +179,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 						 	   	   			      			     	  break;
 
 						 	   	   			      			     case 'one-to-many':
+						 	   	   			      			     case 'many-to-one':
 						 	   	   			      			     	
 						 	   	   			      			     	  $xsl .= '<td>
 						 	   	   			      			     	   			<xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
@@ -190,7 +191,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 						 	   	   			      			     	  break;
 
 				 	   	   			      			     	 	 default:
-				 	   	   			      			     	 	 	throw new AgilePHP_Exception( 'Unsupported relationship type \'' . $fkey->getReferencedTableInstance()->getType() . '\'.' );
+				 	   	   			      			     	 	 	throw new AgilePHP_Exception( 'Unsupported relationship type \'' . $fkey->getType() . '\'.' );
 			 	   	   			      			     	 }
 
 					 	   	   			      			 continue;

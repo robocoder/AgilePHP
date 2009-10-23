@@ -63,7 +63,7 @@ class Scope {
 	   * 				 HTTP HOST header.
 	   * @return A singleton instance of ApplicationScope
 	   */
-	  public function getApplicationScope( $appName = null ) {
+	  public static function getApplicationScope( $appName = null ) {
 
 	  		 require_once 'scope/ApplicationScope.php';
 
@@ -75,7 +75,7 @@ class Scope {
 	   * 
 	   * @return void
 	   */
-	  public function getSessionScope() {
+	  public static function getSessionScope() {
 
 	  		 require_once 'scope/SessionScope.php';
 
@@ -87,7 +87,7 @@ class Scope {
 	   * 
 	   * @return A singleton instance of RequestScope
 	   */
-	  public function getRequestScope() {
+	  public static function getRequestScope() {
 
 	  		 require_once 'scope/RequestScope.php';
 

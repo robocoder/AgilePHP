@@ -5,6 +5,12 @@ class RemotingController extends Remoting {
 	  public function __construct() { }
 
 	  /**
+	   * (non-PHPdoc)
+	   * @see src/mvc/BaseController#index()
+	   */
+	  public function index() { }
+
+	  /**
 	   * Loads the specified class
 	   *  
 	   * @param $class The class to remote

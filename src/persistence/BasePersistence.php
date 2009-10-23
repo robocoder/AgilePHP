@@ -40,13 +40,18 @@ require_once 'ForeignKey.php';
  */
 abstract class BasePersistence {
 
-		 private $PDOStatement;				// Internally used PDO::Statement
-		 private $maxResults = 25;			// Used during a call to 'find'
+		 private $PDOStatement;				 // Internally used PDO::Statement
+		 private $maxResults = 25;			 // Used during a call to 'find'
+		 private $distinct;					 // Sets SQL DISTINCT clause
+		 private $restrictions;				 // WHERE clause restrictions
+	     private $restrictionsLogic = 'AND'; // Logic operator to use in WHERE clause (and|or)
+	     private $orderBy;					 // Stores the column name to sort the result set by
+	     private $orderDirection;			 // The direction to sort the result set (Default is 'ASC')
 
-		 protected $pdo;					// PHP Data Objects
-	     protected $model;					// Domain model object (ActiveRecord)
-		 protected $database;				// Database object
-		 protected $transactionInProgress;	// True when a transaction is in progress
+		 protected $pdo;					 // PHP Data Objects
+	     protected $model;					 // Domain model object (ActiveRecord)
+		 protected $database;				 // Database object
+		 protected $transactionInProgress;	 // True when a transaction is in progress
 
 		 protected function __construct() { }
 
@@ -379,8 +384,6 @@ abstract class BasePersistence {
 
 			   		if( ($i + 1) < count( $columns ) )
 				   		$sql .= ', ';
-
-				   	$index++;
 			   }
 			   $sql .= ' );';
 
@@ -424,8 +427,17 @@ abstract class BasePersistence {
 			   	    	if( is_object( $model->$instanceAccessor() ) )
 			   	    		array_push( $values, $model->$instanceAccessor()->$accessor() );
 			   	    }
-			   	    else
+			   	    else {
+
+			   	    	if( $model->$accessor() == null )
+			   	    		continue;
+
+			   	    	array_push( $values, $model->$accessor() );
+
+			   	        /* TODO: this causes values left blank in a form to be updated to null - undesired!
 			   	    	array_push( $values, (($model->$accessor() == '') ? NULL : $model->$accessor()) );
+			   	    	*/
+			   	    }
 
 			   		$sql .= $columns[$i]->getName() . '=?';
 
@@ -500,9 +512,11 @@ abstract class BasePersistence {
 	    }
 
 	    /**
-	     * Attempts to locate the specified model by primary key value.
+	     * Attempts to locate the specified model by values. Any fields set in the object are used
+	     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
+	     * filter results.
 	     * 
-	     * @param $model A domain model object with its primary key field(s) set
+	     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
 	     * @throws AgilePHP_PersistenceException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
 	     */
@@ -518,8 +532,18 @@ abstract class BasePersistence {
 	  		   	     $pkeyColumns = $table->getPrimaryKeyColumns();
 	  		   		 if( $this->isEmpty( $model ) && $findAll == true ) {
 
-	    	   	         $sql = 'SELECT ' . (($this->getDistinct() == null) ? '*' : 'DISTINCT ' . $this->getDistinct()) . ' FROM ' . $table->getName() . ';';
-	    	   	         $this->setDistinct( null );
+	    	   	         $sql = 'SELECT ' . (($this->getDistinct() == null) ? '*' : 'DISTINCT ' . $this->getDistinct()) . ' FROM ' . $table->getName();
+	    	   	         
+	    	   	         $order = $this->getOrderBy();
+
+    	   	         	 $sql .= ($this->restrictions != null) ? $this->createRestrictSQL() : '';
+					 	 $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
+    	   	         	 $sql .= ';';
+
+    	   	         	 $this->setDistinct( null );
+    	   	         	 $this->setRestrictions( array() );
+    	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
+    	   	         	 $this->setOrderBy( null, 'ASC' );
 	    	   		 }
 	    	   		 else {
 	    	   		 		 if( !count( $pkeyColumns ) ) return null;
@@ -538,7 +562,7 @@ abstract class BasePersistence {
 						   		  $sql .= '' . $pkeyColumns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
 								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
 						     }
-						     $sql .= ($findAll == true ? ' LIMIT ' . $this->maxResults . ';' : ';');
+						     $sql .= ($findAll != true ? ' LIMIT ' . $this->maxResults . ';' : ';');
 	    	   		 }
 
 				     // Execute query
@@ -646,6 +670,84 @@ abstract class BasePersistence {
 
 	  	     $this->pdo = null;
 	  }
+
+	  /**
+	   * Sets the SQL 'order by' clause.
+	   * 
+	   * @param $column The column name to order the result set by
+	   * $param $direction The direction to sort the result set (ASC|DESC).
+	   * @return void
+	   */
+	  public function setOrderBy( $column, $direction ) {
+
+	         $this->orderBy = $column;
+	     	 $this->orderDirection = $direction;
+	  }
+
+	  /**
+	   * Returns an associative array containing the current 'orderBy' clause. The results
+	   * are returned with the name of the column as the index and the direction as the value.
+	   * 
+	   * @return An associative array containing the name of the column to sort as the key/index
+	   * 		and the direction of the sort order (ASC|DESC) as the value. 
+	   */
+	  public function getOrderBy() {
+
+	  		 if( !$this->orderBy )
+	  		 	 return null;
+
+	  	     return array( 'column' => $this->orderBy, 'direction' => $this->orderDirection );
+	  }
+
+	  /**
+	   * Sets WHERE clause restrictions
+	   * 
+	   * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array( 'id' => 21 ) )
+	   * @return void
+	   */
+	  public function setRestrictions( array $restrictions ) {
+
+	   		 $this->restrictions = $restrictions;
+	  }
+
+	  /**
+	   * Sets the restriction operator (and|or) used in SQL WHERE clause.
+	   * 
+	   * @param $operator The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.
+	   * @return void
+	   */
+	  public function setRestrictionsLogicOperator( $operator ) {
+
+	   	     if( strtolower( $operator ) !== 'and' && strtolower( $operator ) !== 'or' )
+	     	     throw new AgilePHP_PersistenceException( 'Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.' );
+
+	     	 $this->restrictionsLogic = $operator;
+	  }
+
+ 	  /**
+	   * Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.
+	   * 
+	   * @return The formatted SQL string
+	   */
+	  public function createRestrictSQL() {
+
+	     	 $restricts = null;
+			 if( count( $this->restrictions ) ) {
+
+			  	 $restricts = ' WHERE ';
+				 $index = 0;
+				 foreach( $this->restrictions as $key => $val ) {
+
+				   		  $index++;
+				   		  $restricts .= $key . '=\'' . $val . '\'';
+
+				   		  if( $index < count( $this->restrictions ) )
+				   			  $restricts .= ' ' . $this->restrictionsLogic . ' ';
+				 }
+			 }
+
+			 return $restricts;
+	     }
 
 	  /**
 	   * Returns the 'Table' object which is mapped to the specified 'Model'.

@@ -194,31 +194,36 @@ class MVC {
 	  	     // $matches[1] is the request base (for example /httpdocs/index.php)
 	  	     // $matches[2] is everything else after $matches[1]
 
-	  	  	 $mvcPieces = explode( '/', $matches[2] );
-		  	 array_shift( $mvcPieces ); // $matches[2] starts with forward slash which makes the first element empty
+	  	     if( count( $matches ) ) {
 
-		  	 // Assign controller and action
-	  	     $controller = (count($mvcPieces) > 0) ? $mvcPieces[0] : $this->getDefaultController(); 
-	  	     $action = (count( $mvcPieces ) > 1) ? $mvcPieces[1] : $this->getDefaultAction();
-
-	  	     // Remove controller and action from mvcPieces
-	  	     array_shift( $mvcPieces );
-	  	     array_shift( $mvcPieces );
-
-	  	     // Security, Security, Security.... 
-	  	     $controller = addslashes( strip_tags( $controller ) );
-	  	     $action = addslashes( strip_tags( $action ) );
-
-	  	     $this->controller = $controller;
-	  	     $this->action = $action;
+		  	  	 $mvcPieces = explode( '/', $matches[count($matches)-1] );
+			  	 array_shift( $mvcPieces ); // $matches[2] starts with forward slash which makes the first element empty
+	
+			  	 // Assign controller and action
+		  	     $controller = (count($mvcPieces) > 0) ? $mvcPieces[0] : $this->getDefaultController(); 
+		  	     $action = (count( $mvcPieces ) > 1) ? $mvcPieces[1] : $this->getDefaultAction();
+	
+		  	     // Remove controller and action from mvcPieces
+		  	     array_shift( $mvcPieces );
+		  	     array_shift( $mvcPieces );
+	
+		  	     // Security, Security, Security.... 
+		  	     $controller = addslashes( strip_tags( $controller ) );
+		  	     $action = addslashes( strip_tags( $action ) );
+	
+		  	     $this->controller = $controller;
+		  	     $this->action = $action;
+	  	     }
 
 	  	     // Use reflection to invoke the requested controller/method/args
-	  	     $defaultController = $this->getDefaultController();
-	  	     $oController = $controller ? new $controller : new $defaultController;
+		  	 $defaultController = $this->getDefaultController();
+		  	 $controller = isset( $controller ) ? $controller : $defaultController;
+		  	 $action = isset( $action ) ? $action : $this->getDefaultAction();
+	  	     $oController = new $controller;
 
 	  	   //  try {
 			  	     $class = new ReflectionClass( $oController );
-			  	     $m = $class->getMethod( $action ? $action : $this->getDefaultAction() );
+			  	     $m = $class->getMethod( $action );
 		
 			  	     if( isset( $mvcPieces ) ) {
 		

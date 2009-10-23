@@ -108,8 +108,7 @@ abstract class BaseModelXmlController extends BaseModelController {
 	  			   $xml .= '<fieldCount>' . $fieldCount . '</fieldCount>
 	  			 	   	</Form>';
 
-	  			   Logger::getInstance()->debug( 'BaseModelXmlController::getModelAsFormXML called with parameters pkeyFields = ' . $pkeyFields . 
-	  			   			  ', controller = ' . $controller . ', action = ' . $action );
+	  			   Logger::getInstance()->debug( 'BaseModelXmlController::getModelAsFormXML called with parameters controller = ' . $controller . ', action = ' . $action );
 	  			   Logger::getInstance()->debug( 'BaseModelXmlController::getModelAsFormXML returning xml ' . $xml );
 
   			 	   return $xml;

@@ -30,7 +30,7 @@
  * @version 0.1a
  * @abstract
  */
-abstract class Remoting {
+abstract class Remoting extends BaseController {
 
 	  	 private $class;
 

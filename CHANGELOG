@@ -47,3 +47,15 @@
 - Started on integration with OpenAppstore. Used WSDL2PHP to create generator/util/AppstoreAPI.php which is used by
   generator/InstallComponent.php to offer a list of components available for download/install. Everything seems to
   be working here, perhaps revisit to do some cleanup at a later date.
+  
+- Bug fix to BasePersistence::isEmpty. Was not returning accurate result. Changed from using accessors to using reflection
+  and checking property values.
+  
+- Remoting now extends BaseController to allow easy access to getBaseJS method to output AgilePHP client side javascript.
+
+- Removed all 'class' property names from AgilePHP.js client side library since it was causing parse errors in IE.
+
+- Added many-to-one support to BaseModelXslController::getModelListXSL and fixed bug in getModelListXSL throw clause for unsupported
+  relationship types. 
+  
+- Fixed "Call-time pass-by-reference has been deprecated" deprecation warnings when running under PHP 5.3+.

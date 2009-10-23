@@ -588,7 +588,7 @@ require_once 'annotation/annotations/AroundInvoke.php';
 
 function __autoload_interceptions( $class ) {
 
-  	     $classAnnotations = &Annotation::getClassAsArray( &$class );
+  	     $classAnnotations = &Annotation::getClassAsArray( $class );
   	     if( count( $classAnnotations ) ) {
 
 		     foreach( $classAnnotations as $annotation ) {
@@ -603,7 +603,7 @@ function __autoload_interceptions( $class ) {
 			 }
   	     }
 
-		 $annotatedMethods = &Annotation::getMethodsAsArray( &$class );	  	     
+		 $annotatedMethods = &Annotation::getMethodsAsArray( $class );	  	     
 	 	 if( count( $annotatedMethods ) ) {
 
 			 foreach( $annotatedMethods as $methodName => $methodAnnotation ) {
@@ -621,7 +621,7 @@ function __autoload_interceptions( $class ) {
 			 }
   	     }
 
-  	     $annotatedProperties = &Annotation::getPropertiesAsArray( &$class );	  	     
+  	     $annotatedProperties = &Annotation::getPropertiesAsArray( $class );	  	     
 	 	 if( count( $annotatedProperties ) ) {
 
 			 foreach( $annotatedProperties as $fieldName => $fieldAnnotation ) {

@@ -22,7 +22,7 @@ class InstallComponent extends AgilePHPGen {
 
 	  		 if( !file_exists( $file ) ) {
 
-	  		 	 $defaultEndpoint = 'http://www.makeabyte.com/appstore/api?wsdl';
+	  		 	 $defaultEndpoint = 'http://10.255.1.81:8080/appstore/api?wsdl';
 
 	  		 	 $config = new OpenAppstoreConfig();
 	  		 	 

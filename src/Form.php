@@ -213,7 +213,7 @@ class Form {
 	  	     $action = $this->action == null ? '' : ' action="' . $this->action . '" ';
 	  	     $enctype = $this->enctype == null ? '' : ' enctype="' . $this->enctype . '" ';
 
-	  		 $html = '<form ' . $id . $name . $method . $action . $enctype . ' method="post">';
+	  		 $html = '<form ' . $id . $name . $action . $enctype . ' method="post">';
 	  		 $html .= '<table class="agilephpGeneratedTable" border="0">';
 
 	  		 $pm = new PersistenceManager();
@@ -226,11 +226,17 @@ class Form {
 			  		  $displayName = $column->getViewDisplayName();
 			  		  $accessor = $pm->toAccessor( $name );
 			  		  $value = $this->getModel()->$accessor();
-			  		  
+
 			  		  $html .= '<tr>';
 
+	  				  if( !$column->isVisible() ) {
+
+	  		 		  	  if( $column->isPrimaryKey() )
+		 	      	  	  	  $xsl .= '<input type="hidden" name="' . $name . '" value="' . $value . '"/>';
+	  		 		  }
+
 			  		  // Process foreign keys first
-			  		  if( $column->isForeignKey() ) {
+			  		  else if( $column->isForeignKey() ) {
 
 			  		  	  $html .= '<td>' . $displayName . '</td>
 			  		  	  		    <td>' . $this->getForeignKeySelection( $column->getForeignKey() ) . '</td>';
@@ -280,7 +286,7 @@ class Form {
 					  else if( $column->getType() == 'text' ) {
 
 						  $html .= '<td>' . $displayName . '</td>
-						  			<td><textarea name="' . $name . '"></textarea></td>';
+						  			<td><textarea name="' . stripslashes( $name ) . '"></textarea></td>';
 					  }
 
 					  // File upload
@@ -295,7 +301,7 @@ class Form {
 					  else {
 
 		  		  		  $html .= '<td>' . $displayName . '</td>
-		  		  		  			<td><input type="text" name="' . $name . '" value="' . $value . '"/></td>';
+		  		  		  			<td><input type="text" name="' . $name . '" value="' . stripslashes( $value ) . '"/></td>';
 					  }
 
 	  		  		  $html .= '</tr>';
@@ -395,14 +401,12 @@ class Form {
 
 	  		 $xsl = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	  		 		 	<xsl:template match="Form">
-	  		 		 		<form ' . $id . $name . $method . $action . $enctype . ' method="post">
+	  		 		 		<form ' . $id . $name . $action . $enctype . ' method="post">
 	  		 		 			<table class="agilephpGeneratedTable" border="0">';
 
 						  		 $pm = new PersistenceManager();
 						  		 $table = $pm->getTableByModel( $this->model );
 						  		 foreach( $table->getColumns() as $column ) {
-
-						  		 		  if( !$column->isVisible() ) continue;
 
 								  		  $name = $column->getModelPropertyName();
 								  		  $displayName = $column->getViewDisplayName();
@@ -411,8 +415,14 @@ class Form {
 
 								  		  $xsl .= '<tr>';
 
+						  		 		  if( !$column->isVisible() ) {
+						  		 		  	
+						  		 		  	  if( $column->isPrimaryKey() )
+					  		 	      	  	  	  $xsl .= '<input type="hidden" name="' . $name . '" value="{/Form/' . $table->getModel() . '/' . $name . '}"/>';
+						  		 		  }
+
 								  		  // Process foreign keys first
-								  		  if( $column->isForeignKey() ) {
+								  		  else if( $column->isForeignKey() ) {
 					
 								  		  	  $xsl .= '<td>' . $displayName . '</td>
 								  		  	  		   <td>' . $this->getForeignKeySelection( $column->getForeignKey() ) . '</td>';
@@ -469,12 +479,18 @@ class Form {
 											  				$xsl .= '<xsl:value-of select="/Form/' . $table->getModel() . '/' . $name . '"/></textarea>
 							  		 				   </td>';
 										  }
-					
+
 										  // File upload
 										  else if( $column->getType() == 'blob' ) {
 
-											  $xsl .= '<td>' . $displayName . '</td>
-											  		   <td><input type="file" name="' . $name . '" value="{/Form/' . $table->getModel() . '/' . $name . '}"/></td>';
+											  $xsl .= '<td>' . $displayName . '</td>';
+											  			
+											  $xsl .= ($this->getMode() == 'merge') ?
+											  	           '<td><img border="0" height="30" width="200" src="{/Form/' . $table->getModel() . '/' . $name . '}"/>
+											  	               <br/>
+											  	  		       <input type="file" name="' . $name . '" value="{/Form/' . $table->getModel() . '/' . $name . '}"/>
+											  	  		   </td>'
+											  	  		   : '<td><input type="file" name="' . $name . '" value="{/Form/' . $table->getModel() . '/' . $name . '}"/></td>';
 										  }
 
 										  // Default element (textfield)

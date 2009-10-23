@@ -154,13 +154,18 @@ class AnnotatedClass extends ReflectionClass {
 	   * Returns an array of AnnotatedMethod objects, one for each method in the
 	   * class which contains an annotation.
 	   * 
+	   * @param $filter The filter
 	   * @return Array of AnnotatedMethod objects.
+	   * @see http://php.net/manual/en/reflectionclass.getmethods.php
 	   */
-	  public function getMethods() {
+	  public function getMethods( $filter ) {
+
+	  		 if( !$filter )
+	  		 	 $filter = ReflectionMethod::IS_PUBLIC + ReflectionMethod::IS_PROTECTED + ReflectionMethod::IS_PRIVATE;
 
 	  		 $methods = array();
-	  		 foreach( parent::getMethods() as $method ) {
-	  		 	
+	  		 foreach( $this->getMethods( $filter ) as $method ) {
+
 	  		 	  $m = new AnnotatedMethod( parent::getName(), $method->name );
 	  		 	  if( $m->isAnnotated() )
 	  		 	  	  array_push( $methods, $m );
@@ -184,13 +189,18 @@ class AnnotatedClass extends ReflectionClass {
 	   * Returns an array of AnnotatedProperty objects; one for each property
 	   * in the class which contains an annotation.
 	   * 
+	   * @param $filter The optional filter
 	   * @return Array of AnnotatedProperty objects.
+	   * @see http://www.php.net/manual/en/reflectionclass.getproperties.php
 	   */
-	  public function getProperties() {
+	  public function getProperties( $filter ) {
+
+	  		 if( !$filter )
+	  		 	 $filter = ReflectionProperty::IS_PUBLIC + ReflectionProperty::IS_PROTECTED + ReflectionProperty::IS_PRIVATE;
 
 	  		 $properties = array();
-	  		 foreach( parent::getProperties() as $property ) {
-	  		 	
+	  		 foreach( parent::getProperties( $filter ) as $property ) {
+
 	  		 		$p = new AnnotatedProperty( parent::getName(), $property->name );
 	  		 		if( $p->isAnnotated() )
 	  		 			array_push( $properties, $p );

@@ -23,13 +23,13 @@ var AgilePHP = {
 
 		author : 'Jeremy Hahn',
 		copyright: 'Make A Byte, inc.',
-		version : '0.2a',
+		version : '0.1a',
 		licence : 'GNU General Public License',
 		package : 'com.makeabyte.agilephp',
 
 		requestBase : '/index.php',
 		debugMode : false,
-
+		
 		/**
 		 * Sets the path relative to DocumentRoot which handles application
 		 * requests. Defaults to /index.php.
@@ -569,13 +569,13 @@ var AgilePHP = {
 			 * Returns the client side stub responsible for a remote communication
 			 * with a PHP object.
 			 * 
-			 * @param class {String} The name of the class to retrieve the Stub for.
+			 * @param clazz {String} The name of the class to retrieve the Stub for.
 			 * @return {Object} The client side remoting Stub
 			 */
-			getStub : function( class ) {
+			getStub : function( clazz ) {
 			
 				for( var i=0; i<this.stubs.length; i++ )
-					if( this.stubs[i].class == class )
+					if( this.stubs[i].clazz == clazz )
 						return this.stubs[i];
 			},
 
@@ -583,11 +583,11 @@ var AgilePHP = {
 			 * Constructor for a client side Stub, responsible for handling
 			 * remoting calls to a server side PHP object.
 			 * 
-			 * @param {string} class The name of the server side PHP class to remote
+			 * @param {string} clazz The name of the server side PHP class to remote
 			 */
-			Stub : function( class ) {
+			Stub : function( clazz ) {
 
-				this.class = class;
+				this.clazz = clazz;
 				this.callback = null;
 
 				/**
@@ -613,13 +613,13 @@ var AgilePHP = {
 				 */
 				AgilePHP.Remoting.Stub.prototype.invoke = function( method, parameters, instance ) {
 
-					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.class + '\' ).invoke' );
+					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.clazz + '\' ).invoke' );
 					 AgilePHP.debug( method );
 					 AgilePHP.debug( parameters );
 					 AgilePHP.debug( instance );
 
 					 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invoke';
-					 var data = 'class=' + this.class + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
+					 var data = 'class=' + this.clazz + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
 
 					 if( parameters != undefined ) {
 
@@ -653,13 +653,13 @@ var AgilePHP = {
 				 */
 				AgilePHP.Remoting.Stub.prototype.invokeStateful = function( method, parameters, instance ) {
 
-					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.class + '\' ).invokeStateful' );
+					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.clazz + '\' ).invokeStateful' );
 					 AgilePHP.debug( method );
 					 AgilePHP.debug( parameters );
 					 AgilePHP.debug( instance );
 
 					 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invokeStateful';
-					 var data = 'class=' + this.class + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
+					 var data = 'class=' + this.clazz + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
 
 					 if( parameters != undefined ) {
 
@@ -695,13 +695,13 @@ var AgilePHP = {
 				 */
 				AgilePHP.Remoting.Stub.prototype.invokeIntercepted = function( method, parameters, instance ) {
 
-					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.class + '\' ).invokeIntercepted' );
+					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.clazz + '\' ).invokeIntercepted' );
 					 AgilePHP.debug( method );
 					 AgilePHP.debug( parameters );
 					 AgilePHP.debug( instance );
 
 					 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invokeIntercepted';
-					 var data = 'class=' + this.class + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
+					 var data = 'class=' + this.clazz + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
 
 					 if( parameters != undefined ) {
 
@@ -737,13 +737,13 @@ var AgilePHP = {
 				 */ 
 				AgilePHP.Remoting.Stub.prototype.invokeInterceptedStateful = function( method, parameters, instance ) {
 					
-					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.class + '\' ).invokeInterceptedStateful' );
+					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.clazz + '\' ).invokeInterceptedStateful' );
 					 AgilePHP.debug( method );
 					 AgilePHP.debug( parameters );
 					 AgilePHP.debug( instance );
 
 					 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invokeInterceptedStateful';
-					 var data = 'class=' + this.class + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
+					 var data = 'class=' + this.clazz + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
 
 					 if( parameters != undefined ) {
 

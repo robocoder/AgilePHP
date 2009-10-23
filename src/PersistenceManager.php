@@ -47,11 +47,7 @@ class PersistenceManager {
 	  private $count; 	    				// Total number of records in the table
 	  private $page;							// Holds the current page number
 	  private $pageCount;					// Total number of pages
-	  private $restrictions;					// WHERE clause restrictions
-	  private $restrictionsLogic = 'AND';	// Logic operator to use in WHERE clause (and|or)
 	  private $groupBy;						// The column to group the SQL query result set by
-	  private $orderBy;						// Stores the column name to sort the result set by
-	  private $orderDirection;				// The direction to sort the result set (Default is 'ASC')
 	  private $model;						// Stores an ActiveRecord model
 
 	  /**
@@ -431,7 +427,7 @@ class PersistenceManager {
 	      */
 	     public function setRestrictions( array $restrictions ) {
 
-	     		   $this->restrictions = $restrictions;
+	     		$this->dialect->setRestrictions( $restrictions );
 	     }
 
 	     /**
@@ -442,10 +438,7 @@ class PersistenceManager {
 	      */
 	     public function setRestrictionsLogicOperator( $operator ) {
 
-	     	       if( strtolower( $operator ) !== 'and' && strtolower( $operator ) !== 'or' )
-	     	    	   throw new AgilePHP_PersistenceException( 'Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.' );
-
-	     	       $this->restrictionsLogic = $operator;
+	     	    $this->dialect->setRestrictionsLogicOperator( $operator );
 	     }
 
 	     /**
@@ -468,8 +461,7 @@ class PersistenceManager {
 	      */
 	     public function setOrderBy( $column, $direction ) {
 
-	     		   $this->orderBy = $column;
-	     		   $this->orderDirection = $direction;
+	     		$this->dialect->setOrderBy( $column, $direction );
 	     }
 
 	     /**
@@ -481,7 +473,7 @@ class PersistenceManager {
 	      */
 	     public function getOrderBy() {
 
-	     		   return array( 'column' => $this->orderBy, 'direction' => $this->orderDirection );
+	     		return $this->dialect->getOrderBy();
 	     }
 
 	     /**
@@ -835,10 +827,9 @@ class PersistenceManager {
 
   			 	   $this->sql = null;
   			 	   $this->groupBy = null;
-  			 	   $this->orderBy = null;
-  			 	   $this->orderDirection = 'ASC';
-  			 	   $this->restrictions = null;
-  			 	   $this->restrictionsLogic = 'AND';
+  			 	   $this->dialect->setOrderBy( null, 'ASC' );
+  			 	   $this->dialect->setRestrictions( array() );
+  			 	   $this->dialect->setRestrictionsLogicOperator( 'AND' );
 	     }
 
 		 /**
@@ -852,10 +843,11 @@ class PersistenceManager {
 
 	     	 	 $offset = ($this->getPage() - 1) * $this->getMaxResults();
 	     	     if( $offset < 0 ) $offset = 0;
+	     	     $order = $this->getOrderBy();
 
 	     	     $this->sql = 'SELECT * FROM ' . $this->getTableName();
 				 $this->sql .= ($this->groupBy == null) ? '' : ' GROUP BY ' . $this->groupBy;
-				 $this->sql .= ($this->orderBy == null) ? '' : ' ORDER BY ' . $this->orderBy . ' ' . $this->orderDirection;
+				 $this->sql .= ($order == null) ? '' : ' ORDER BY ' . $order['column'] . ' ' . $order['direction'];
 				 $this->sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
 				 $this->sql .= ($offset > 0) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() . ';' 
 											 : ' LIMIT ' . $this->getMaxResults() . ';';
@@ -882,22 +874,7 @@ class PersistenceManager {
 	      */
 	     private function createRestrictSQL() {
 
-	     		 $restricts = null;
-				 if( count( $this->restrictions ) ) {
-
-				  	 $restricts = ' WHERE ';
-					 $index = 0;
-					 foreach( $this->restrictions as $key => $val ) {
-
-					   		  $index++;
-					   		  $restricts .= $key . '=\'' . $val . '\'';
-
-					   		  if( $index < count( $this->restrictions ) )
-					   			  $restricts .= ' ' . $this->restrictionsLogic . ' ';
-					 }
-				 }
-
-				 return $restricts;
+	     		 return $this->dialect->createRestrictSQL();
 	     }
 }
 ?>

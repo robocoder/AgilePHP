@@ -26,7 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.2a
+ * @version 0.1a
  * @abstract
  */
 abstract class BaseModelActionController extends BaseModelXslController {
@@ -259,12 +259,11 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * from a form submit and set the model properties defined in the extension
 	      * class. This method expects the form element names to match the name
 	      * of the model's property.
-	      *  
+	      * 
 	      * @return void
 	      */
 	     protected function setModelValues() {
 
-	     		   $hasBit = false;
 	  		       $request = Scope::getInstance()->getRequestScope();
 	     	       $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
 
@@ -288,7 +287,6 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	  		     		  	  	    return;
 	  		     		  	    }
 
-	  		     		  	    $name = 'password';
 	  		     		  	    $hashed = Crypto::getInstance()->getDigest( $value );
 	  		     		  	    $this->getModel()->setPassword( $hashed );
 
@@ -313,8 +311,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 		     		   			   }
 
 		     		   			   // Type cast to PHP data type from database types in persistence.xml
-		     		   			   if( $column->getProperty() == $propertyName ||
-		     		   				 	    $column->getName() == $propertyName ) {
+		     		   			   if( $column->getModelPropertyName() == $name ) {
 
 				     		   			   switch( $column->getType() ) {
 
@@ -362,10 +359,6 @@ abstract class BaseModelActionController extends BaseModelXslController {
 							 	       	  		  		$this->getModel()->$mutator( date( 'c', strtotime( $value ) ) );
 							 	       	  		  		break;
 
-							 	       	  		   case 'blob':
-							 	       	  		  	 	$this->getModel()->$mutator( file_get_contents( $_FILES[ $value ]['tmp_name'] ) );
-							 	       	  		  	 	break;
-
 							 	       	  		   default:
 							 	       	  		   		Logger::getInstance()->debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $column->getType() .
 							 	       	  		   									  '\'. Using (sanitized) value \'' . $value . '\'.' );
@@ -375,6 +368,6 @@ abstract class BaseModelActionController extends BaseModelXslController {
 		     		   			  }
 	  		 	  	      }
 	  		     }
-	     }
+	     }		
 }
 ?>

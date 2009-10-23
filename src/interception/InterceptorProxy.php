@@ -65,7 +65,7 @@ class InterceptorProxy {
 
 	     		 	 	 		  if( $interceptorMethod->hasAnnotation( 'AroundInvoke' ) ) {
 
-	     		 	 	 	 	   	  $invocationCtx = new InvocationContext( &$this->object, null, null, $interception->getInterceptor() );
+	     		 	 	 	 	   	  $invocationCtx = new InvocationContext( $this->object, null, null, $interception->getInterceptor() );
 						              $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
 
 						              // Only execute the interceptor if the InvocationContext has had its proceed() method invoked.
@@ -73,7 +73,7 @@ class InterceptorProxy {
 
 										  $m = $class->getMethod( $ctx->getMethod() );
 										  if( $m !== null )
-										  	  $ctx->getParameters() ? $m->invokeArgs( &$this->object, $ctx->getParameters() ) : $m->invoke( &$this->object );
+										  	  $ctx->getParameters() ? $m->invokeArgs( $this->object, $ctx->getParameters() ) : $m->invoke( $this->object );
 						              }
 	     		 	 	 		  }
 		     		 	 }
@@ -89,13 +89,13 @@ class InterceptorProxy {
 		     		 	 $property = $interception->getProperty();
 		     		 	 if( $interception->getInterceptor() instanceof In ) {
 
-		     		 	 	 $p = new ReflectionProperty( &$this->object, $interception->getProperty() );
+		     		 	 	 $p = new ReflectionProperty( $this->object, $interception->getProperty() );
 
 		     		 	 	 if( !$p->isPublic() )
 		     		 	 	 	 throw new AgilePHP_InterceptionException( '@In interceptor requires public context at \'' . $proxiedClass .
 		     		 	 	 	 		 '::' . $interception->getProperty() . '\'.' );
 
-		     		 	 	 $p->setValue( &$this->object, $interception->getInterceptor()->class );
+		     		 	 	 $p->setValue( $this->object, $interception->getInterceptor()->class );
 		     		 	 }
 		     		 }
 		     }
@@ -137,8 +137,8 @@ class InterceptorProxy {
 	  public function __get( $property ) {
 
 	  	     try {
-		  		   $rp = new ReflectionProperty( &$this->object, $property );
-	  	  		   return $rp->getValue( &$this->object );
+		  		   $rp = new ReflectionProperty( $this->object, $property );
+	  	  		   return $rp->getValue( $this->object );
 	  	     }
 	  	     catch( ReflectionException $re ) {
 
@@ -157,8 +157,8 @@ class InterceptorProxy {
   	  public function __set( $property, $value ) {
 
   	  		 try {
-		  		   $rp = new ReflectionProperty( &$this->object, $property );
-	  	  		   return $rp->setValue( &$this->object, $value );
+		  		   $rp = new ReflectionProperty( $this->object, $property );
+	  	  		   return $rp->setValue( $this->object, $value );
 	  	     }
 	  	     catch( ReflectionException $re ) {
 
@@ -200,7 +200,7 @@ class InterceptorProxy {
   	   */
 	  public function __call( $method, $args ) {
 
-	  		 $class = new ReflectionClass( &$this->object );
+	  		 $class = new ReflectionClass( $this->object );
 
 	  		 // Invoke interceptor if AgilePHP contains an Interception for this method call
 	  		 $interceptions = AgilePHP::getFramework()->getInterceptions();
@@ -217,7 +217,7 @@ class InterceptorProxy {
 
 			     		 	 	 	 	   if( $interceptorMethod->hasAnnotation( 'AroundInvoke' ) ) {
 
-			     		 	 	 	 	   	   $invocationCtx = new InvocationContext( &$this->object, $method, $args, $interception->getInterceptor() );
+			     		 	 	 	 	   	   $invocationCtx = new InvocationContext( $this->object, $method, $args, $interception->getInterceptor() );
 								               $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
 
 								              // Only execute the intercepted __call if the InvocationContext has had its proceed() method invoked.
@@ -225,7 +225,7 @@ class InterceptorProxy {
 
 												  $m = $class->getMethod( $ctx->getMethod() );
 												  if( $m !== null )
-												  	  return $args ? $m->invokeArgs( &$this->object, $ctx->getParameters() ) : $m->invoke( &$this->object );
+												  	  return $args ? $m->invokeArgs( $this->object, $ctx->getParameters() ) : $m->invoke( $this->object );
 								              }
 			     		 	 	 		   }
 			     		 	 	  }
@@ -238,7 +238,7 @@ class InterceptorProxy {
 	  		 if( !isset( $invocationCtx ) ) {
 
 			     $m = $class->getMethod( $method );
-			     return $args ? $m->invokeArgs( &$this->object, $args ) : $m->invoke( &$this->object, $args );
+			     return $args ? $m->invokeArgs( $this->object, $args ) : $m->invoke( $this->object, $args );
 	  		 }
 	  }
 }

@@ -34,5 +34,19 @@ class AJAXController extends BaseController {
 
 	  		 $this->renderer->render( $stdClass );
 	  }
+
+	  /**
+	   * Server-side logic which demonstrates jQuery integration with AgilePHP
+	   * using AJAXRenderer to output JSON.
+	   * 
+	   * @return void
+	   */
+	  public function jqueryExample() {
+
+	  		 $pm = new PersistenceManager();
+	  		 $models = $pm->find( new User(), true );
+
+	  		 $this->renderer->renderNoHeader( $models );
+	  }
 }
 ?>
