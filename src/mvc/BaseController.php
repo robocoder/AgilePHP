@@ -64,7 +64,7 @@ abstract class BaseController {
 	      */
 	     protected function createRenderer( $renderer ) {
 
-	     	       AgilePHP::getInstance()->getMVC()->createRenderer( $renderer ); 
+	     	       $this->renderer = AgilePHP::getFramework()->getMVC()->createRenderer( $renderer ); 
 	     }
 
 	     /**
@@ -76,7 +76,7 @@ abstract class BaseController {
 	      */
 	     protected function createCustomRenderer( $renderer ) {
 
-	     	       AgilePHP::getInstance()->getMVC()->createCustomRenderer( $renderer ); 
+	     	       $this->renderer = AgilePHP::getFramework()->getMVC()->createCustomRenderer( $renderer ); 
 	     }
 
 	     /**

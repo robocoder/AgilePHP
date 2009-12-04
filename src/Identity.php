@@ -53,6 +53,7 @@ class Identity implements IdentityManager {
 
 	  private $isCustomModel;
 	  private $resetPasswordUrl;
+	  private $confirmationUrl;
 
 	  private $session;
 
@@ -80,7 +81,11 @@ class Identity implements IdentityManager {
 	  		  $passwordResetUrl = (string)$xml->identity->attributes()->resetPasswordUrl;
 	  		  if( $passwordResetUrl )
 	  		      $this->resetPasswordUrl = $passwordResetUrl;
-
+	  		      
+	  		  $confirmUrl = (string)$xml->identity->attributes()->confirmationUrl;
+	  		  if( $confirmUrl )
+	  		      $this->confirmationUrl = $confirmUrl;
+	  		      
 	  		  $this->session = Scope::getInstance()->getSessionScope();
 
 	  		  // Initalize Identity from previous session if one exits
@@ -120,7 +125,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#setModel($model)
+	   * @see AgilePHP/core/IdentityManager#setModel($model)
 	   */
 	  public function setModel( $model ) {
 
@@ -129,7 +134,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#getModel()
+	   * @see AgilePHP/core/IdentityManager#getModel()
 	   */
 	  public function getModel() {
 
@@ -138,7 +143,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#setUsername($username)
+	   * @see AgilePHP/core/IdentityManager#setUsername($username)
 	   */
 	  public function setUsername( $username ) {
 
@@ -150,7 +155,7 @@ class Identity implements IdentityManager {
 	   * component.
 	   * 
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#setPassword($password)
+	   * @see AgilePHP/core/IdentityManager#setPassword($password)
 	   */
 	  public function setPassword( $password ) {
 
@@ -160,7 +165,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#getUsername()
+	   * @see AgilePHP/core/IdentityManager#getUsername()
 	   */
 	  public function getUsername() {
 
@@ -169,7 +174,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#getPassword()
+	   * @see AgilePHP/core/IdentityManager#getPassword()
 	   */
 	  public function getPassword() {
 
@@ -178,7 +183,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#setEmail($email)
+	   * @see AgilePHP/core/IdentityManager#setEmail($email)
 	   */
 	  public function setEmail( $email ) {
 
@@ -187,7 +192,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#getEmail()
+	   * @see AgilePHP/core/IdentityManager#getEmail()
 	   */
 	  public function getEmail() {
 
@@ -196,7 +201,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#setCreated($dateTime)
+	   * @see AgilePHP/core/IdentityManager#setCreated($dateTime)
 	   */
 	  public function setCreated( $dateTime ) {
 
@@ -205,7 +210,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#getCreated()
+	   * @see AgilePHP/core/IdentityManager#getCreated()
 	   */
 	  public function getCreated() {
 	  	
@@ -214,7 +219,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#setLastLogin($dateTime)
+	   * @see AgilePHP/core/IdentityManager#setLastLogin($dateTime)
 	   */
 	  public function setLastLogin( $dateTime ) {
 	  	
@@ -223,11 +228,29 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#getLastLogin()
+	   * @see AgilePHP/core/IdentityManager#getLastLogin()
 	   */
 	  public function getLastLogin() {
 
 	  		 return $this->getModel()->getLastLogin();
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see AgilePHP/identity/IdentityManager#setEnabled($value)
+	   */
+	  public function setEnabled( $value ) {
+
+	  		 $this->getModel()->setEnabled( $value );
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see AgilePHP/identity/IdentityManager#getEnabled()
+	   */
+	  public function getEnabled() {
+
+	  		 return ord( $this->getModel()->getEnabled() ) == 1;
 	  }
 
 	  /**
@@ -241,7 +264,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#getRole()
+	   * @see AgilePHP/core/IdentityManager#getRole()
 	   */
 	  public function getRole() {
 
@@ -250,7 +273,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#hasRole($role)
+	   * @see AgilePHP/core/IdentityManager#hasRole($role)
 	   */
 	  public function hasRole( $role ) {
 
@@ -262,7 +285,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#revokeRole($role)
+	   * @see AgilePHP/core/IdentityManager#revokeRole($role)
 	   */
 	  public function revokeRole() {
 
@@ -271,7 +294,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#setPasswordResetUrl($url)
+	   * @see AgilePHP/core/IdentityManager#setPasswordResetUrl($url)
 	   */
 	  public function setPasswordResetUrl( $url ) {
 	  	
@@ -280,7 +303,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#getPasswordResetUrl()
+	   * @see AgilePHP/core/IdentityManager#getPasswordResetUrl()
 	   */
 	  public function getPasswordResetUrl()  {
 
@@ -289,7 +312,16 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#forgotPassword()
+	   * @see AgilePHP/identity/IdentityManager#getConfirmationUrl()
+	   */
+	  public function getConfirmationUrl() {
+
+	  		 return $this->confirmationUrl;
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see AgilePHP/core/IdentityManager#forgotPassword()
 	   */
 	  public function forgotPassword() {
 
@@ -302,7 +334,7 @@ class Identity implements IdentityManager {
 	  		 if( !$this->getModel()->getEmail() )
 	  		 	 throw new AgilePHP_Exception( 'Identity::forgotPassword requires a valid email property value for model \'' . $this->getModelName() . '\'.' );
 
-	  		 $token = $this->createResetPasswordToken();
+	  		 $token = $this->createToken();
 	  		 $this->session->set( 'resetPasswordToken', $token );
 	  		 $this->session->set( 'username', $this->getUsername() );
 
@@ -326,7 +358,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#resetPassword()
+	   * @see AgilePHP/core/IdentityManager#resetPassword()
 	   */
 	  public function resetPassword( $token, $sessionId ) {
 
@@ -335,7 +367,7 @@ class Identity implements IdentityManager {
 	  		 if( $token !== $this->session->get( 'resetPasswordToken' ) )
 	  		 	 throw new AgilePHP_Exception( 'Invalid token: ' . $token );
 
-	  		 $newPassword = $this->createResetPasswordToken();
+	  		 $newPassword = $this->createToken();
 	  		 $subject = AgilePHP::getFramework()->getAppName() . ' :: New Password';
 	  		 $body = 'Your new password is: ' . $newPassword;
 
@@ -344,8 +376,62 @@ class Identity implements IdentityManager {
 	  		 $this->setPassword( $newPassword );
 	  		 $this->merge();
 
-	  		 if( !mail( $this->getModel()->getEmail(), $subject, $body, $this->getMailHeaders() ) )
+	  		 if( !mail( $this->getEmail(), $subject, $body, $this->getMailHeaders() ) )
 	  		 	 throw new AgilePHP_Exception( 'Error sending reset password email.' );
+
+	  		 $this->session->destroy();
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see AgilePHP/identity/IdentityManager#register($username, $email, $password, $role)
+	   */
+	  public function register() {
+
+	  		 $token = $this->createToken();
+
+	  		 $this->session->set( 'activationToken', $token );
+	  		 $this->session->set( 'username', $this->getUsername() );
+	  		 $this->session->persist();
+
+	  		 $this->setCreated( strtotime( 'now' ) );
+	  		 $this->setEnabled( 0 );
+	  		 $this->getModel()->setSessionId( $this->session->getSessionId() );
+	  		 $this->persist();
+
+	  		 // Send email
+	  		 $subject = AgilePHP::getFramework()->getAppName() . ' :: Registration Confirmation';
+	  		 $body = 'Click on the following link to confirm your registration: ' . $this->getConfirmationUrl() . '/' .
+	  		 		 $token . '/' . $this->session->getSessionId();
+
+	  		 if( !mail( $this->getEmail(), $subject, $body, $this->getMailHeaders() ) )
+	  		 	 throw new AgilePHP_Exception( 'Error sending registration email.' );
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see AgilePHP/identity/IdentityManager#confirm($token, $sessionId)
+	   */
+	  public function confirm( $token, $sessionId ) {
+
+	  		 $this->session->setSessionId( $sessionId );
+
+	  		 if( $token !== $this->session->get( 'activationToken' ) )
+	  		 	 throw new AgilePHP_Exception( 'Invalid token: ' . $token );
+
+	  		 $user = new User();
+	  		 $user->setUsername( $this->session->get( 'username' ) );
+
+	  		 $pm = new PersistenceManager();
+
+	  		 $persistedUser = $pm->find( $user );
+	  		 
+	  		 if( !$persistedUser )
+	  		 	  throw new AgilePHP_Exception( 'User not found' );
+
+	  		 $this->setModel( $persistedUser );
+	  		 $this->setEnabled( 1 );
+	  		 $this->merge();
 
 	  		 $this->session->destroy();
 	  }
@@ -359,7 +445,7 @@ class Identity implements IdentityManager {
 	   * @return True if the authentication was successful, false otherwise.
 	   * 
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#authenticate()
+	   * @see AgilePHP/core/IdentityManager#authenticate()
 	   */
 	  public function login( $username, $password ) {
 
@@ -386,7 +472,7 @@ class Identity implements IdentityManager {
 	  		 	 foreach( $this->getModel()->getRoles() as $Role ) {
 	
 		  		 		  if( $this->getModel()->getRoleId() == $Role->getName() ) {
-	
+
 		  		 		  	  $this->setRole( $Role );
 		  		 		  	  break;
 		  		 		  }
@@ -396,6 +482,7 @@ class Identity implements IdentityManager {
 	  		 // The session needs to be persisted first to avoid primary key constraint violation
   	  		 $this->session->set( 'IDENTITY_LOGGEDIN', true );
 	  		 $this->session->set( 'IDENTITY_USERNAME', $this->getUsername() );
+
 	  		 if( !$this->session->isPersisted() )
 	  		 	 $this->session->persist();
 
@@ -407,7 +494,7 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see AgilePHP/core/Identity#logout()
+	   * @see AgilePHP/core/IdentityManager#logout()
 	   */
 	  public function logout() {
 
@@ -478,12 +565,12 @@ class Identity implements IdentityManager {
 	  }
 
 	  /**
-	   * Generates a variable length character token used to reset the identity's password.
+	   * Generates a variable length character token used to sign requests.
 	   * 
 	   * @return Variable length token that must be present in the reset password
 	   * 	     url in order to successfully complete the process.
 	   */
-	  private function createResetPasswordToken() {
+	  private function createToken() {
 
 			  $numbers = '1234567890';
 			  $lcase = 'abcdefghijklmnopqrstuvwzyz';
@@ -516,13 +603,13 @@ class Identity implements IdentityManager {
 	   */
 	  private function getMailHeaders() {
 
-	  		 $headers = 'From: ' . AgilePHP::getFramework()->getAppName() . ' <no-reply@' . AgilePHP::getFramework()->getAppName() . '>' . "\n";
-	  		 $headers .= 'To: ' . $this->getModel()->getUsername() . ' <' . $this->getModel()->getEmail() . '>' . "\n";
-        	 $headers .= 'Reply-To: ' . $this->getModel()->getEmail() . "\n";
-          	 $headers .= 'Return-Path: ' . $this->getModel()->getEmail() . "\n";
-        	 $headers .= 'X-mailer: AgilePHP Framework on PHP (' . phpversion() . ')' . "\n";
+	  		  $headers = 'From: ' . AgilePHP::getFramework()->getAppName() . ' <no-reply@' . AgilePHP::getFramework()->getAppName() . '>' . "\n";
+	  		  $headers .= 'To: ' . $this->getModel()->getUsername() . ' <' . $this->getModel()->getEmail() . '>' . "\n";
+        	  $headers .= 'Reply-To: ' . $this->getModel()->getEmail() . "\n";
+          	  $headers .= 'Return-Path: ' . $this->getModel()->getEmail() . "\n";
+        	  $headers .= 'X-mailer: AgilePHP Framework on PHP (' . phpversion() . ')' . "\n";
 
-        	 return $headers;
+        	  return $headers;
 	  }
 
 	  /**

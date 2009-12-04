@@ -26,7 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.identity
- * @version 0.1a
+ * @version 0.3a
  */
 interface IdentityManager {
 
@@ -122,6 +122,19 @@ interface IdentityManager {
 		  public function getLastLogin();
 
 		  /**
+		   * Sets the enabled status of the user
+		   *  
+		   * @return void
+		   */
+		  public function setEnabled( $value );
+
+		  /**
+		   * Gets the enabled status of the user 
+		   * @return boolean
+		   */
+		  public function getEnabled();
+
+		  /**
 		   * Sets the url used to reset the identity's password.
 		   * 
 		   * @param $url The url which should reset the users password when its clicked
@@ -134,6 +147,12 @@ interface IdentityManager {
 		   * @return void
 		   */
 		  public function getPasswordResetUrl();
+
+		  /**
+		   * Returns the url which is sent to the identity that when clicked confirms/activates their account.
+		   * @return void
+		   */
+		  public function getConfirmationUrl();
 
 		  /**
 		   * Sends the identity an email to the address stored in the stateful domain object
@@ -154,6 +173,25 @@ interface IdentityManager {
 		   * @return void
 		   */
 		  public function resetPassword( $token, $sessionId );
+
+		  /**
+		   * Registers a new user account by creating a disabled user and sending
+		   * an activation email to the new user. The activation email calls activate
+		   * to allow the user to enable the account.
+		   *
+		   * @return void
+		   */
+		  public function register();
+
+		  /**
+		   * Confirms/activates a pending registration
+		   * 
+		   * @param $token The confirmation token
+		   * @param $sessionId The session id used to register
+		   * @return void
+		   * @throws AgilePHP_Exception If token is invalid
+		   */
+		  public function confirm( $token, $sessionId );
 
   		  /**
 		   * Sets the identity's role

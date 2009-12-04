@@ -1,61 +1,21 @@
-0.2a
+0.3a
 ----
 
-- Bug fix to Form::getHTML and Form::getXSL $action variables. Updated
-  to use $this->getMode() as initially intended.
-
-- Bug fix to BaseModelXslController::getModelFormXSL(). Empty find result
-  was causing the returned null result to be passed into the Form constructor
-  resulting in an exception. Now if the find comes back empty $model is set to
-  the $model defined in the action Controller.
-  
-- Bug fix to Form::getXSL. Textarea needed xsl:value-of element instead of xpath. Also
-  xsl:if statement was added to test for null database value and if so, add an xsl
-  comment inside of the textarea to keep the if element from collapsing
-  
-- Bug fix to Form::getForeignKeySelection. Search results containing a single row
-  were not displaying due to foreach loop expecting an array (multiple items). Added
-  else if to check to test result as object type and if so, display the single item.
-  
-- Updated Column::getViewDisplayName so that column names are returned as a proper name
-
-- Bug fix to Form::getForeignKeySelection. Error occurred when foreign model instance accessor
-  was null.
-  
-- Removed &#8201; from both Form::getHTML and Form::getXSL. Was causing strange characters to appear
-  in some cases.
-
-- Bug fix to AgilePHP.MVC javascript object. processRequest now uses its parameters property
-  instead of an argument.
-  
-- Refactored AJAXRenderer::toJSON so that the object name is no longer returned.
-
-- Bug fix to Form::getXSL. Textarea is now formatted using mbstring to ensure encoding integrity.
-
-- Refactored BaseModelActionController::setModelValues() from private to protected. Same with setPrimaryKeys.
-
-- Refactored BaseModelActionController::__construct to throw AgilePHP_NotLoggedInException and AgilePHP_AccessDeniedException
-  instead of just AgilePHP_NotLoggedInException with different messages. Also remoked private revokeAccess method.
-
-- Bug fix to Identity::resetPassword. Was using invalid session handle resulting in invalid object error.
-
-- More work on generator. Big ones are now CreateModel is not munging up persistence.xml configuration so it can
-  be reliably used to create models and now projects can be created with Eclipse Galileo PHP and Netbeans 6.7.1 support :)
-
-- Added LICENSE and CHANGELOG to project
-
-- Started on integration with OpenAppstore. Used WSDL2PHP to create generator/util/AppstoreAPI.php which is used by
-  generator/InstallComponent.php to offer a list of components available for download/install. Everything seems to
-  be working here, perhaps revisit to do some cleanup at a later date.
-  
-- Bug fix to BasePersistence::isEmpty. Was not returning accurate result. Changed from using accessors to using reflection
-  and checking property values.
-  
-- Remoting now extends BaseController to allow easy access to getBaseJS method to output AgilePHP client side javascript.
-
-- Removed all 'class' property names from AgilePHP.js client side library since it was causing parse errors in IE.
-
-- Added many-to-one support to BaseModelXslController::getModelListXSL and fixed bug in getModelListXSL throw clause for unsupported
-  relationship types. 
-  
-- Fixed "Call-time pass-by-reference has been deprecated" deprecation warnings when running under PHP 5.3+.
+- Bug fix to BasePersistence::merge. Some update queries were resulting in a tailing comma on last column name resulting in broken update query.
+- Bug fixes to generator/templates/views. Several files contained broken links due to an extra double quote in the href paths.
+- Added "admin_navigation.phtml" to generator/templates/views.
+- Warning fix to SessionScope::get when $this->session->getData() was null.
+- Bug fix to MVC::BaseController. AgilePHP::getInstance() refactored to AgilePHP::getFramework() and set BaseController::renderer to created instances.
+- Added XHR().eval method to AgilePHP.js client side library
+- Bug fix to BasePersistence::execute. Refactored debug logging entry from implode to use print_r( $inputParameters, true )
+- Added User::enabled property and added 'register' and 'confirm' methods to identity component. Effected files are:
+	o Identity.php
+	o IdentityManager.php
+	o IdentityModel.php
+	o User.php
+	o agilephp.dtd
+- E_STRICT bug fix to AgilePHP.php line 665
+- Bug fixes to MVC class. Class fields 'action' and 'controller' were not being set by processRequest() method. Also fixed error caused by trailing
+  forward slash with no controller specified (ie, /index.php/).
+- Added iv and key attributes to crypto component agilephp.dtd. Added support to Crypto php component to self populate its iv and key fields based
+  on agilephp.xml if present

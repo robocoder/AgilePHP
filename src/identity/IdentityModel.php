@@ -26,7 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
- * @version 0.1a
+ * @version 0.3a
  */
 interface IdentityModel {
 
@@ -50,5 +50,8 @@ interface IdentityModel {
 
 		  public function setSessionId( $sessionId );
 		  public function getSessionId();
+
+		  public function setEnabled( $value );
+		  public function getEnabled();
 }
 ?>

@@ -37,6 +37,7 @@ class User implements IdentityModel {
 	  private $lastLogin;
 	  private $roleId;
 	  private $sessionId;
+	  private $enabled;
 
 	  private $Session;
 	  private $Role;
@@ -132,6 +133,16 @@ class User implements IdentityModel {
 	  public function getSessionId() {
 
 	  		return $this->sessionId;
+	  }
+
+	  public function setEnabled( $value ) {
+
+	  		 $this->enabled = $value;
+	  }
+
+	  public function getEnabled() {
+
+	  		 return $this->enabled;
 	  }
 
 	  public function setSession( Session $session ) {

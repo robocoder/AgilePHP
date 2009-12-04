@@ -25,7 +25,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
- * @version 0.1a
+ * @version 0.3a
  */
 class SessionScope {
 
@@ -134,11 +134,14 @@ class SessionScope {
 	   */
 	  public function get( $key ) {
 
+	  		 if( !$this->session->getData() )
+	  		 	 return;
+
 	  		 $store = unserialize( $this->session->getData() );
 	  		 if( isset( $store[$key] ) )
   	     	 	 return $store[$key];
 
-			 return null;
+			 return;
 	  }
 
 	  /**
@@ -153,6 +156,28 @@ class SessionScope {
 	  		 $store = unserialize( $this->getSession()->getData() );
 	  		 $store[$key] = $value;
 	  		 $this->getSession()->setData( serialize( $store ) );
+	  }
+
+	  /**
+	   * Refreshes the session by loading a fresh version from the database
+	   * 
+	   * @return void
+	   */
+	  public function refresh() {
+
+		     $pm = new PersistenceManager();
+  	 	 	 $persistedSession = $pm->find( $this->session );
+
+  	 	 	 if( $persistedSession ) {
+
+  	 	 	  	 $this->session->setData( $persistedSession->getData() );
+  	 	 	  	 $this->oldSession->setData( $persistedSession->getData() );
+  	 	 	 }
+  	 	 	 else {
+  	 	 	 	
+  	 	 	 	 $this->session->setData( array() );
+  	 	 	  	 $this->oldSession->setData( array() );
+  	 	 	 }
 	  }
 
 	  /**

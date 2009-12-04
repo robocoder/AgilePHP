@@ -233,6 +233,17 @@ var AgilePHP = {
 			},
 
 			/**
+			 * Evaluates an XMLHttpRequest response object and returns the result
+			 * 
+			 * @param xhr {XMLHttpRequest} The XMLHttpRequest object to evaluate
+			 * @return The evaluation result
+			 */
+			this.eval = function( xhr ) {
+
+				return eval( '(' + xhr.responseText + ')' );
+			},
+
+			/**
 			 * Creates an XMLHttpRequest GET request to the server
 			 * 
 			 * @param url {String} The url to send the request

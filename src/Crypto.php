@@ -32,6 +32,8 @@ class Crypto {
 
 	  private static $instance;
 	  private $algorithm;
+	  private $iv;
+	  private $key;
 
 	  /**
 	   * Initalizes the Crypto component with the hasing algorithm defined in agilephp.xml
@@ -42,8 +44,16 @@ class Crypto {
 
 	  		 $xml = AgilePHP::getFramework()->getXmlConfiguration();
 
-	  	     if( $xml->crypto )
+	  	     if( $xml->crypto ) {
+
 	  		  	 $this->setAlgorithm( (string)$xml->crypto->attributes()->algorithm );
+
+	  		  	 if( $xml->crypto->attributes()->iv )
+	  		  	 	 $this->iv = (string)$xml->crypto->attributes()->iv;
+	  		  	 	 
+	  		  	 if( $xml->crypto->attributes()->key )
+	  		  	 	 $this->key = (string)$xml->crypto->attributes()->key;
+	  	     }
 	  }
 
 	  /**
@@ -85,8 +95,29 @@ class Crypto {
 	   * @return The name of the hashing algorithm
 	   */
 	  public function getAlgorithm() {
-	  	
+
 	  		 return $this->algorithm;
+	  }
+
+	  /**
+	   * Returns the iv as configured in agilephp.xml for the crypto component if one was defined.
+	   * NOTE: The iv must be base64 encoded
+	   * 
+	   * @return String The base64 decoded iv configured in agilephp.xml
+	   */
+	  public function getIV() {
+
+	  		 return base64_decode( $this->iv );
+	  }
+
+	  /**
+	   * Returns the key as configured in agilephp.xml for the crypto component if one was defined.
+	   * 
+	   * @return String The iv configured in agilephp.xml for the crypto component
+	   */
+	  public function getKey() {
+
+	  		 return $this->key;
 	  }
 
 	  /**
@@ -197,9 +228,22 @@ class Crypto {
 
 	  /* Cryptography */
 
-	  public function createIV() {
+	  /**
+	   * Creates an IV suitable for the specified cipher using the MCRYPT_MODE_CBC module.
+	   * NOTE: You can use this method to create an IV for use in agilephp.xml for the Crypto
+	   * 	   component to use. Simply base64_encode the return value and place it in the crypto
+	   * 	   components iv attribute in agilephp.xml.
+	   * 
+	   * @param $cipher The cipher to use. This depends on the encryption algorithm you are using:
+	   * 		encrypt/decrypt_3des     = MCRYPT_TripleDES
+	   * 		encrypt/decrypt_blowfish = MCRYPT_BLOWFISH
+	   * 		encrypt/decrypt_aes256   = MCRYPT_RIJNDAEL_256
+	   *  
+	   * @return The initial value (iv) as created by mcrypt_create_iv.
+	   */
+	  public function createIV( $cipher = MCRYPT_TripleDES ) {
 
-	  		 return mcrypt_create_iv( mcrypt_get_block_size( MCRYPT_TripleDES, MCRYPT_MODE_CBC ), MCRYPT_DEV_RANDOM );
+	  		 return mcrypt_create_iv( mcrypt_get_block_size( $cipher, MCRYPT_MODE_CBC ), MCRYPT_DEV_RANDOM );
 	  }
 
 	  /**
@@ -212,6 +256,10 @@ class Crypto {
 	   */
 	  public function encrypt_3des( $iv, $key, $data ) {
 
+	  		 $size = mcrypt_get_key_size( MCRYPT_TripleDES, MCRYPT_MODE_CBC );
+	  		 if( strlen( $key ) > $size )
+	  		 	 $key = substr( $key, 0, $size );
+
 	  		 return mcrypt_cbc( MCRYPT_TripleDES, $key, $data, MCRYPT_ENCRYPT, $iv );
 	  }
 	  
@@ -223,6 +271,10 @@ class Crypto {
 	   * @return Plain text, decrypted data if a proper key was supplied
 	   */
 	  public function decrypt_3des( $iv, $key, $data ) {
+
+	  		 $size = mcrypt_get_key_size( MCRYPT_TripleDES, MCRYPT_MODE_CBC );
+	  		 if( strlen( $key ) > $size )
+	  		 	 $key = substr( $key, 0, $size );
 
 	  		 return trim( mcrypt_cbc( MCRYPT_TripleDES, $key, $data, MCRYPT_DECRYPT, $iv ) );
 	  }
@@ -237,6 +289,10 @@ class Crypto {
 	   */
 	  public function encrypt_blowfish( $iv, $key, $data ) {
 
+	  		 $size = mcrypt_get_key_size( MCRYPT_BLOWFISH, MCRYPT_MODE_CBC );
+	  		 if( strlen( $key ) > $size )
+	  		 	 $key = substr( $key, 0, $size );
+
 	  		 return mcrypt_cbc( MCRYPT_BLOWFISH, $key, $data, MCRYPT_ENCRYPT, $iv );
 	  }
 
@@ -250,6 +306,10 @@ class Crypto {
 	   */
 	  public function decrypt_blowfish( $iv, $key, $data ) {
 
+	  		 $size = mcrypt_get_key_size( MCRYPT_BLOWFISH, MCRYPT_MODE_CBC );
+	  		 if( strlen( $key ) > $size )
+	  		 	 $key = substr( $key, 0, $size );
+
 	  		 return trim( mcrypt_cbc( MCRYPT_BLOWFISH, $key, $data, MCRYPT_DECRYPT, $iv ) );
 	  }
 
@@ -262,6 +322,10 @@ class Crypto {
 	   */
 	  public function encrypt_aes256( $iv, $key, $data ) {
 
+	  		 $size = mcrypt_get_key_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC );
+	  		 if( strlen( $key ) > $size )
+	  		 	 $key = substr( $key, 0, $size );
+
 	  		 return mcrypt_cbc( MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_ENCRYPT, $iv );
 	  }
 
@@ -273,6 +337,10 @@ class Crypto {
 	   * @return AES 256 decrypted data if a proper key was supplied
 	   */
 	  public function decrypt_aes256( $iv, $key, $data ) {
+
+	  		 $size = mcrypt_get_key_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC );
+	  		 if( strlen( $key ) > $size )
+	  		 	 $key = substr( $key, 0, $size );
 
 	  		 return trim( mcrypt_cbc( MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_DECRYPT, $iv ) );
 	  }

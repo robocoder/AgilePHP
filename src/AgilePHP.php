@@ -25,7 +25,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.3a
  * @static
  */
 class AgilePHP {
@@ -662,7 +662,8 @@ function __autoload_class( $class ) {
 		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
 		   	      	  substr( $file, -4 ) != 'view' ) {
 
-			 		  if( array_pop( explode( '/', $file ) ) == $class . '.php' ) {
+		   	      	  $array = explode( '/', $file );
+			 		  if( array_pop( $array ) == $class . '.php' ) {
 
 		     	 		  require_once $file;
 			 		      return;

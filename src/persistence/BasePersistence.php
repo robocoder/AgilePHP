@@ -243,7 +243,7 @@ abstract class BasePersistence {
 
 	  		    Logger::getInstance()->debug( 'BasePersistence::execute Executing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
-			  	     					'prepared statement with $inputParameters ' . implode( ',', $inputParameters ) );
+			  	     					'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
 			  	$params = (count($inputParameters)) ? $inputParameters : null;
 			  	try {
@@ -407,11 +407,13 @@ abstract class BasePersistence {
 
 	    	   $this->model = $model;
 	  	       $values = array();
+	  	       $cols = array();
 			   $this->validate( $table );
 
 			   $sql = 'UPDATE ' . $table->getName() . ' SET ';
 
 	  		   $columns = $table->getColumns();
+	  		   $naCount = 0;
 			   for( $i=0; $i<count( $columns ); $i++ ) {
 
 			   	    if( $columns[$i]->isPrimaryKey() || $columns[$i]->isAutoIncrement() )
@@ -429,23 +431,18 @@ abstract class BasePersistence {
 			   	    }
 			   	    else {
 
-			   	    	if( $model->$accessor() == null )
+			   	    	if( $model->$accessor() == null ) {
+
+			   	    		$naCount++;
 			   	    		continue;
+			   	    	}
 
 			   	    	array_push( $values, $model->$accessor() );
-
-			   	        /* TODO: this causes values left blank in a form to be updated to null - undesired!
-			   	    	array_push( $values, (($model->$accessor() == '') ? NULL : $model->$accessor()) );
-			   	    	*/
 			   	    }
-
-			   		$sql .= $columns[$i]->getName() . '=?';
-
-			   		if( ($i + 1) < count( $columns ) )
-			   			$sql .= ', ';
+			   	    array_push( $cols, $columns[$i]->getName() );
 			   }
 
-			   $sql .= ' WHERE ';
+			   $sql .= implode( $cols, '=?, ' ) . '=? WHERE ';
 
 			   $pkeyColumns = $table->getPrimaryKeyColumns();
 			   for( $i=0; $i<count( $pkeyColumns ); $i++ ) {

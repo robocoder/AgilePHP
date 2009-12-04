@@ -198,9 +198,9 @@ class MVC {
 
 		  	  	 $mvcPieces = explode( '/', $matches[count($matches)-1] );
 			  	 array_shift( $mvcPieces ); // $matches[2] starts with forward slash which makes the first element empty
-	
+
 			  	 // Assign controller and action
-		  	     $controller = (count($mvcPieces) > 0) ? $mvcPieces[0] : $this->getDefaultController(); 
+		  	     $controller = (count($mvcPieces) > 0 && $mvcPieces[0] != '') ? $mvcPieces[0] : $this->getDefaultController(); 
 		  	     $action = (count( $mvcPieces ) > 1) ? $mvcPieces[1] : $this->getDefaultAction();
 	
 		  	     // Remove controller and action from mvcPieces
@@ -216,29 +216,28 @@ class MVC {
 	  	     }
 
 	  	     // Use reflection to invoke the requested controller/method/args
-		  	 $defaultController = $this->getDefaultController();
-		  	 $controller = isset( $controller ) ? $controller : $defaultController;
-		  	 $action = isset( $action ) ? $action : $this->getDefaultAction();
-	  	     $oController = new $controller;
+		  	 $this->controller = isset( $controller ) ? $controller : $this->getDefaultController();
+		  	 $this->action = isset( $action ) ? $action : $this->getDefaultAction();
+	  	     $oController = new $this->controller;
 
 	  	   //  try {
 			  	     $class = new ReflectionClass( $oController );
-			  	     $m = $class->getMethod( $action );
-		
+			  	     $m = $class->getMethod( $this->action );
+
 			  	     if( isset( $mvcPieces ) ) {
-		
+
 			  	     	 foreach( $mvcPieces as $key => $val )
 				  	     	 $mvcPieces[$key] = addslashes( strip_tags( $val ) );
-		
-				  	     Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $controller . 
-				  	     			'\', action \'' . $action . '\', args \'' . implode( ',', $mvcPieces  ) . '\'.' );
-				  	     
+
+				  	     Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+				  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $mvcPieces  ) . '\'.' );
+
 				  	     $m->invokeArgs( $oController, $mvcPieces );
 			  	     }
 			  	     else {
 
-			  	     	 Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $controller . 
-				  	     			'\', action \'' . $action . '\'.' );
+			  	     	 Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+				  	     			'\', action \'' . $this->action . '\'.' );
 		
 			  	     	 $m->invoke( $oController );
 			  	     }
