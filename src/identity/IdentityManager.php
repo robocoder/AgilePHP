@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,20 +20,19 @@
  */
 
 /**
- * AgilePHP :: IdentityManager
- * Interface for Identity component
+ * Interface for AgilePHP Identity component.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.identity
- * @version 0.3a
+ * @version 0.4a
  */
 interface IdentityManager {
 
 		  /**
 		   * Sets the domain object model which the IdentityManager will manage.
 		   * 
-		   * @param $model The domain object model for IdentityManager to manage
+		   * @param Object $model The domain object model for IdentityManager to manage
 		   * @return void
 		   */
 		  public function setModel( $model );
@@ -48,7 +47,7 @@ interface IdentityManager {
 		  /**
 		   * Sets the username for the identity which IdentityManager is managing.
 		   *   
-		   * @param $username The username of the identity.
+		   * @param String $username The username of the identity.
 		   * @return void
 		   */
 		  public function setUsername( $username );
@@ -63,7 +62,7 @@ interface IdentityManager {
 		  /**
 		   * Sets the password for the identity which IdentityManager is managing.
 		   * 
-		   * @param $password The identity's password
+		   * @param String $password The identity's password
 		   * @return void
 		   */
 		  public function setPassword( $password );
@@ -79,7 +78,7 @@ interface IdentityManager {
 		  /**
 		   * Sets the identity's email address.
 		   * 
-		   * @param $email A valid email addresss containing for the idenity
+		   * @param String $email A valid email addresss containing for the idenity
 		   * @return void 
 		   */
 		  public function setEmail( $email );
@@ -94,7 +93,7 @@ interface IdentityManager {
 		  /**
 		   * Denotes when the identity was created.
 		   * 
-		   * @param $dateTime The dateTime when this identity was created.
+		   * @param Date $dateTime The dateTime when this identity was created.
 		   * @return void
 		   */
 		  public function setCreated( $dateTime );
@@ -109,7 +108,7 @@ interface IdentityManager {
 		  /**
 		   * Sets the dateTime when this identity last logged in
 		   * 
-		   * @param $dateTime The dateTime when the identity last logged in
+		   * @param Date $dateTime The dateTime when the identity last logged in
 		   * @return void
 		   */
 		  public function setLastLogin( $dateTime );
@@ -124,6 +123,7 @@ interface IdentityManager {
 		  /**
 		   * Sets the enabled status of the user
 		   *  
+		   * @param bool True to enable the user account, false to disable. 
 		   * @return void
 		   */
 		  public function setEnabled( $value );
@@ -137,20 +137,22 @@ interface IdentityManager {
 		  /**
 		   * Sets the url used to reset the identity's password.
 		   * 
-		   * @param $url The url which should reset the users password when its clicked
-		   * @return false
+		   * @param String $url The url which should reset the users password when its clicked
+		   * @return void
 		   */
 		  public function setPasswordResetUrl( $url );
 
 		  /**
 		   * Returns the url which is sent to the identity that when clicked resets their password.
-		   * @return void
+		   * 
+		   * @return String
 		   */
 		  public function getPasswordResetUrl();
 
 		  /**
 		   * Returns the url which is sent to the identity that when clicked confirms/activates their account.
-		   * @return void
+		   * 
+		   * @return String
 		   */
 		  public function getConfirmationUrl();
 
@@ -168,8 +170,8 @@ interface IdentityManager {
 		   * Resets the password to a hashed random string. This operation uses the AgilePHP
 		   * Crypto component to ensure standard hashing across the application. 
 		   * 
-		   * @param $token A randomly generated token required to reset the password
-		   * @param $sessionId The sessionId of the user who requested the new password
+		   * @param String $token A randomly generated token required to reset the password
+		   * @param String $sessionId The sessionId of the user who requested the new password
 		   * @return void
 		   */
 		  public function resetPassword( $token, $sessionId );
@@ -180,14 +182,15 @@ interface IdentityManager {
 		   * to allow the user to enable the account.
 		   *
 		   * @return void
+		   * @throws AgilePHP_Exception IF there was an error sending the registration email.
 		   */
 		  public function register();
 
 		  /**
 		   * Confirms/activates a pending registration
 		   * 
-		   * @param $token The confirmation token
-		   * @param $sessionId The session id used to register
+		   * @param String $token The confirmation token
+		   * @param String $sessionId The session id used to register
 		   * @return void
 		   * @throws AgilePHP_Exception If token is invalid
 		   */
@@ -211,7 +214,7 @@ interface IdentityManager {
 		  /**
 		   * Checks to see if the identity has the specified role.
 		   *  
-		   * @param $role The name of a role
+		   * @param String $role The name of a role
 		   * @return True if the identity has the specified role, false otherwise.
 		   */
 		  public function hasRole( $role );
@@ -226,8 +229,8 @@ interface IdentityManager {
 		  /**
 		   * Authenticates/logs in an identity and returns a boolean response.
 		   * 
-		   * @param $username The username to authenticate
-		   * @param $password The password to authenticate
+		   * @param String $username The username to authenticate
+		   * @param String $password The password to authenticate
 		   * @return True if the username and password are valid, false otherwise.
 		   */
 		  public function login( $username, $password );
@@ -260,9 +263,10 @@ interface IdentityManager {
 		   * @return void
 		   */
 		  public function merge();
-		  
+
 		  /**
 		   * Deletes the domain object model which the IdentityManager is managing.
+		   * 
 		   * @return void
 		   */
 		  public function delete();

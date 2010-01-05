@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: Crypto 
  * Provides one way hashing and encryption
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class Crypto {
 
@@ -60,6 +59,7 @@ class Crypto {
 	   * Returns a singleton instance of Crypto
 	   * 
 	   * @return Singleton instance of Crypto
+	   * @static
 	   */
 	  public static function getInstance() {
 
@@ -72,9 +72,9 @@ class Crypto {
 	  /**
 	   * Sets the algorithm for the Crypto component for use with getDigest.
 	   * 
-	   * @param $algorithm The algorithm to perform the hashing operation with.
-	   * 				   NOTE: getSupportedHashAlgorithms() will return a list of
-	   * 						 algorithms available on the server.
+	   * @param String $algorithm The algorithm to perform the hashing operation with.
+	   * 					      NOTE: getSupportedHashAlgorithms() will return a list of
+	   * 						        algorithms available on the server.
 	   * @return void
 	   * @throws AgilePHP_Exception If passed a hashing name not available in
 	   * 							getSupportedHashAlgorithms().
@@ -125,8 +125,8 @@ class Crypto {
 	   * in agilephp.xml for the Crypto component or you must manually set the algorithm
 	   * with a call to 'setAlgorithm()'.
 	   * 
-	   * @param $data The data to hash
-	   * @return The hashed string
+	   * @param mixed $data The data to hash
+	   * @return String The hashed string
 	   */
 	  public function getDigest( $data ) {
 
@@ -136,8 +136,8 @@ class Crypto {
 	  /**
 	   * Returns a hashed MD5 string.
 	   * 
-	   * @param $data The data to hash
-	   * @return The hashed MD5 string
+	   * @param mixed $data The data to hash
+	   * @return String The hashed MD5 string
 	   */
 	  public function md5( $data ) {
 
@@ -148,7 +148,7 @@ class Crypto {
 	   * Returns an SHA1 hashed string.
 	   * 
 	   * @param $data The data to hash
-	   * @return The hashed SHA1 string
+	   * @return String The hashed SHA1 string
 	   */
 	  public function sha1( $data ) {
 
@@ -158,8 +158,8 @@ class Crypto {
 	  /**
 	   * Returns an SHA256 hashed string.
 	   * 
-	   * @param $data The data to hash
-	   * @return The hashed SHA256 string
+	   * @param mixed $data The data to hash
+	   * @return String The hashed SHA256 string
 	   */
 	  public function sha256( $data ) {
 
@@ -169,8 +169,8 @@ class Crypto {
 	  /**
 	   * Returns an SHA384 hashed string.
 	   * 
-	   * @param $data The data to hash
-	   * @return The hashed SHA384 string
+	   * @param mixed $data The data to hash
+	   * @return String The hashed SHA384 string
 	   */
 	  public function sha384( $data ) {
 
@@ -181,7 +181,7 @@ class Crypto {
 	   * Returns an SHA512 hashed string.
 	   * 
 	   * @param $data The data to hash
-	   * @return The hashed SHA512 string
+	   * @return String The hashed SHA512 string
 	   */
 	  public function sha512( $data ) {
 
@@ -191,8 +191,8 @@ class Crypto {
 	  /**
 	   * Returns an CRC32 hashed string.
 	   * 
-	   * @param $data The data to hash
-	   * @return The hashed CRC32 string
+	   * @param mixed $data The data to hash
+	   * @return String The hashed CRC32 string
 	   */
 	  public function crc32( $data ) {
 
@@ -202,12 +202,12 @@ class Crypto {
 	  /**
 	   * Returns the hashed $data parameter according to the defined $algorithm
 	   * parameter.
-	   * 
-	   * @param The algorithm to hash the defined data with. NOTE: You can get
-	   * 		a list of supported algorithms on the server with a call to
-	   * 	    getSupportedHashAlgorithms().
-	   * @param $data The data to hash
-	   * @return The hashed SHA1 string
+	   * String
+	   * @param String $algorithm The algorithm to hash the defined data with. NOTE: You can get
+	   * 						  a list of supported algorithms on the server with a call to
+	   * 	    				  getSupportedHashAlgorithms().
+	   * @param mixed $data The data to hash
+	   * @return String The hashed SHA1 string
 	   */
 	  public function hash( $algorithm, $data ) {
 
@@ -218,8 +218,7 @@ class Crypto {
 	   * Returns an array of supported hashing algorithms on the current
 	   * PHP enabled web server.
 	   * 
-	   * @return An array of supported hashing algorithms in the current
-	   * 		 instance of PHP.
+	   * @return array An array of supported hashing algorithms available to PHP.
 	   */
 	  public function getSupportedHashAlgorithms() {
 
@@ -234,12 +233,13 @@ class Crypto {
 	   * 	   component to use. Simply base64_encode the return value and place it in the crypto
 	   * 	   components iv attribute in agilephp.xml.
 	   * 
-	   * @param $cipher The cipher to use. This depends on the encryption algorithm you are using:
-	   * 		encrypt/decrypt_3des     = MCRYPT_TripleDES
-	   * 		encrypt/decrypt_blowfish = MCRYPT_BLOWFISH
-	   * 		encrypt/decrypt_aes256   = MCRYPT_RIJNDAEL_256
+	   * @param CONST $cipher The cipher to use. This depends on the encryption algorithm you are using:
+	   * 					  encrypt/decrypt_3des     = MCRYPT_TripleDES
+	   * 					  encrypt/decrypt_blowfish = MCRYPT_BLOWFISH
+	   * 					  encrypt/decrypt_aes256   = MCRYPT_RIJNDAEL_256
+	   * 					  Defaults to MCRYPT_TripleDES
 	   *  
-	   * @return The initial value (iv) as created by mcrypt_create_iv.
+	   * @return String The initial value (iv) as created by mcrypt_create_iv.
 	   */
 	  public function createIV( $cipher = MCRYPT_TripleDES ) {
 
@@ -249,10 +249,10 @@ class Crypto {
 	  /**
 	   * Encrypts the specified data using Triple DES.
 	   * 
-	   * @param $iv The IV/salt
-	   * @param $key The secret key used to encrypt the data
-	   * @param $data The data to encrypt
-	   * @return Triple DES encrypted string
+	   * @param String $iv The IV/salt
+	   * @param String $key The secret key used to encrypt the data
+	   * @param mixed $data The data to encrypt
+	   * @return byte[] Triple DES encrypted string
 	   */
 	  public function encrypt_3des( $iv, $key, $data ) {
 
@@ -262,13 +262,13 @@ class Crypto {
 
 	  		 return mcrypt_cbc( MCRYPT_TripleDES, $key, $data, MCRYPT_ENCRYPT, $iv );
 	  }
-	  
+
 	  /**
 	   * Decrypts Triple DES data 
-	   * @param $iv The IV/salt
-	   * @param $key The secret key used to encrypt the data
-	   * @param $data The data to encrypt
-	   * @return Plain text, decrypted data if a proper key was supplied
+	   * @param String $iv The IV/salt
+	   * @param String $key The secret key used to encrypt the data
+	   * @param mixed $data The data to encrypt
+	   * @return byte[] Plain text, decrypted data if a proper key was supplied
 	   */
 	  public function decrypt_3des( $iv, $key, $data ) {
 
@@ -282,10 +282,10 @@ class Crypto {
 	  /**
 	   * Encrypts the specified data using Blowfish
 	   * 
-	   * @param $iv The IV/salt
-	   * @param $key The secret key used to encrypt the data
-	   * @param $data The data to encrypt
-	   * @return Blowfish encrypted string
+	   * @param String $iv The IV/salt
+	   * @param String $key The secret key used to encrypt the data
+	   * @param mixed $data The data to encrypt
+	   * @return byte[] Blowfish encrypted string
 	   */
 	  public function encrypt_blowfish( $iv, $key, $data ) {
 
@@ -299,10 +299,10 @@ class Crypto {
 	  /**
 	   * Decrypts a string previously encrypted with encrypt_blowfish
 	   * 
-	   * @param $iv The IV/salt
-	   * @param $key The secret key used to encrypt the data
-	   * @param $data The data to encrypt
-	   * @return Plain text, decrypted data if a proper key was supplied
+	   * @param String $iv The IV/salt
+	   * @param String $key The secret key used to encrypt the data
+	   * @param mixed $data The data to encrypt
+	   * @return byte[] Plain text, decrypted data if a proper key was supplied
 	   */
 	  public function decrypt_blowfish( $iv, $key, $data ) {
 
@@ -316,9 +316,9 @@ class Crypto {
 	  /**
 	   * Encrypts the specified data using AES 256 encryption
 	   * 
-	   * @param $key The secret key used to encrypt the data
-	   * @param $data The data to encrypt
-	   * @return AES 256 encrypted data
+	   * @param String $key The secret key used to encrypt the data
+	   * @param mixed $data The data to encrypt
+	   * @return byte[] AES 256 encrypted data
 	   */
 	  public function encrypt_aes256( $iv, $key, $data ) {
 
@@ -332,9 +332,9 @@ class Crypto {
 	  /**
 	   * Decrypts the specified data which was previously encrypted using AES 256
 	   * 
-	   * @param $key The secret key used to encrypt the data
-	   * @param $data The data to encrypt
-	   * @return AES 256 decrypted data if a proper key was supplied
+	   * @param String $key The secret key used to encrypt the data
+	   * @param mixed $data The data to encrypt
+	   * @return byte[] AES 256 decrypted data if a proper key was supplied
 	   */
 	  public function decrypt_aes256( $iv, $key, $data ) {
 

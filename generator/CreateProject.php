@@ -226,7 +226,7 @@ class CreateProject extends AgilePHPGen {
 			 	  $data .= "\t<logger level=\"debug\"/>\n";
 
 			  if( $identity )
-			 	  $data .= "\t<identity resetPasswordUrl=\"http://localhost/index.php/LoginController/resetPassword\"/>\n";
+			 	  $data .= "\t<identity resetPasswordUrl=\"http://localhost/index.php/LoginController/resetPassword\" confirmationUrl=\"http://localhost/index.php/LoginController/confirm\"/>\n";
 
 			  if( $crypto )
 			 	  $data .= "\t<crypto algorithm=\"sha256\" />\n";

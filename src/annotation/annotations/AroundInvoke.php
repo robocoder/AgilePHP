@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,15 @@
  */
 
 /**
- * AgilePHP :: AroundInvoke
- * Annotation which causes #@Interceptor methods to be invoked
+ * Annotation which causes methods within an
+ * interceptor (denoted by a class level #@Interceptor annotation)
+ * to be invoked when an interceptoion occurs.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation.annotations
- * @version 0.1a
+ * @version 0.2a
+ * @example #@AroundInvoke
  */
 class AroundInvoke { }
 ?>

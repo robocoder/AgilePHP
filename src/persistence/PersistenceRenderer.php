@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: PersistenceRenderer
  * Handles rendering persisted data to HTML
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.1a
+ * @version 0.2a
  */
 class PersistenceRenderer {
 
@@ -100,9 +99,9 @@ class PersistenceRenderer {
 	  /**
 	   * Returns boolean response based on the configured 'type' attribute for the specified column.
 	   *  
-	   * @param $table The 'Table' object which contains the column
-	   * @param $columnName The name of the column to search
-	   * @return True if the column's 'type' attribute is set to 'bit', false otherwise.
+	   * @param Table $table The Table instance containing the column
+	   * @param String $columnName The name of the column to search
+	   * @return bool True if the column's 'type' attribute is set to 'bit', false otherwise.
 	   */
 	  public static function isBit( $table, $columnName ) {
 

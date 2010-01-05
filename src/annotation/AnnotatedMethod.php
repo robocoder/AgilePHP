@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,19 +20,26 @@
  */
 
 /**
- * AgilePHP :: AnnotatedMethod
- * Extends the PHP ReflectionClass to provide details about method level
- * annotations. 
+ * Extends the PHP ReflectioMethod to provide details about method level
+ * AgilePHP annotations. 
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation
- * @version 0.1a
+ * @version 0.2a
  */
 class AnnotatedMethod extends ReflectionMethod {
 
 	  private $annotations = array();
 
+	  /**
+	   * Creates a new instance of AnnotatedMethod.
+	   * 
+	   * @param mixed $class The name or instance of a class to inspect
+	   * @param String $method The name of the method to inspect.
+	   * @return void
+	   * @throws AgilePHP_AnnotationException
+	   */
 	  public function __construct( $class, $method ) {
 
 	  		 try {
@@ -51,7 +58,7 @@ class AnnotatedMethod extends ReflectionMethod {
 	  }
 
 	  /**
-	   * Returns boolean indicator based on the presence of any annotations.
+	   * Returns boolean indicator based on the presence of any method level annotations.
 	   * 
 	   * @return True if this method has any annotations, false otherwise.
 	   */
@@ -63,7 +70,7 @@ class AnnotatedMethod extends ReflectionMethod {
 	  /**
 	   * Checks the method for the presence of the specified annotation.
 	   * 
-	   * @param $annotation The name of the annotation.
+	   * @param String $annotation The name of the annotation.
 	   * @return True if the annotation is present, false otherwise.
 	   */
 	  public function hasAnnotation( $annotation ) {
@@ -86,7 +93,8 @@ class AnnotatedMethod extends ReflectionMethod {
 	   * only annotations which match the specified name will be returned,
 	   * otherwise all annotations are returned.
 	   * 
-	   * @param $name The name of the annotation to filter on. Default is null.
+	   * @param String $name Optional name of the annotation to filter on. Default is return
+	   * 					 all annotations.
 	   * @return An array of method level annotations or false of no annotations could
 	   * 		 be found.
 	   */
@@ -113,7 +121,7 @@ class AnnotatedMethod extends ReflectionMethod {
 	   * Gets an annotation instance by name. If the named annotation is found more
 	   * than once, an array of annotations are returned.
 	   * 
-	   * @param $name The name of the annotation
+	   * @param String $name The name of the annotation
 	   * @return The annotation instance or false if the annotation was not found
 	   */
 	  public function getAnnotation( $annotation ) {

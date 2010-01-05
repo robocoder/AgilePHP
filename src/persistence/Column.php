@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  */
 
 /**
- * AgilePHP :: Column
  * Represents a database table column in the AgilePHP persistence component.
  * 
  * @author Jeremy Hahn
@@ -69,7 +68,7 @@ class Column {
 	  /**
 	   * Sets the name of the column in the physical database
 	   * 
-	   * @param $name The column name in the physical database
+	   * @param String $name The column name in the physical database
 	   * @return void
 	   */
 	  public function setName( $name ) {
@@ -80,7 +79,7 @@ class Column {
 	  /**
 	   * Returns the name of the column in the physical database
 	   * 
-	   * @return void
+	   * @return The name of the column in the physical database
 	   */
 	  public function getName() {
 
@@ -91,7 +90,7 @@ class Column {
 	   * Sets the data type which describes the type of data which is
 	   * to be stored in the column/field.
 	   *  
-	   * @param $type The data type being stored (varchar|int|text|etc...)
+	   * @param String $type The data type being stored (varchar|int|text|etc...)
 	   * @return void
 	   */
 	  public function setType( $type ) {
@@ -103,7 +102,7 @@ class Column {
 	   * Returns the data type which describes the type of data which is
 	   * being stored in the column/field.
 	   * 
-	   * @return The data type name
+	   * @return String The data type
 	   */
 	  public function getType() {
 
@@ -124,7 +123,7 @@ class Column {
 	  /**
 	   * Returns the length of the data being stored in the column
 	   * 
-	   * @return The max length of the data being persisted
+	   * @return String The max length of the data being persisted
 	   */
 	  public function getLength() {
 
@@ -135,7 +134,7 @@ class Column {
 	   * Sets the friendly description of the column. This is used by visual
 	   * elements to describe the column to the end user or website owner.
 	   * 
-	   * @param $description The friendly description explaining the purpose of the column, etc.
+	   * @param String $description The friendly description explaining the purpose of the column, etc.
 	   * @return void
 	   */
 	  public function setDescription( $description ) {
@@ -146,7 +145,7 @@ class Column {
 	  /**
 	   * Returns the friendly description of the column.
 	   * 
-	   * @return void
+	   * @return The description of the column
 	   */
 	  public function getDescription() {
 
@@ -156,7 +155,7 @@ class Column {
 	  /**
 	   * Sets the name of the property in the domain model which the column maps
 	   * 
-	   * @param $property The property name in the domain model that stores the column data
+	   * @param String $property The property name in the domain model that stores the column data
 	   * @return void
 	   */
 	  public function setProperty( $property ) {
@@ -167,7 +166,7 @@ class Column {
 	  /**
 	   * Returns the name of the property in the domain model which the column maps
 	   * 
-	   * @return The property/field name
+	   * @return String The property/field name
 	   */
 	  public function getProperty() {
 
@@ -178,7 +177,7 @@ class Column {
 	   * Sets the friendly display name of the column. This is used by visual
 	   * elements (such as forms) to show a user friendly name for the column.
 	   * 
-	   * @param $text The friendly name to display
+	   * @param String $text The friendly name to display
 	   * @return void
 	   */
 	  public function setDisplay( $text ) {
@@ -189,7 +188,7 @@ class Column {
 	  /**
 	   * Returns the friendly display name for the column
 	   * 
-	   * @return The user friendly display name for use with visual elements
+	   * @return String The user friendly display name for use with visual elements
 	   */
 	  public function getDisplay() {
 
@@ -199,7 +198,7 @@ class Column {
 	  /**
 	   * Sets the default value of the column data
 	   * 
-	   * @param $value The default value if nothing has been assigned
+	   * @param mixed $value The default value if nothing has been assigned
 	   * @return void
 	   */
 	  public function setDefault( $value ) {
@@ -223,8 +222,8 @@ class Column {
 	   * is used to hide a particular field (such as a primary key) from a form
 	   * when its rendered.
 	   * 
-	   * @param $boolean The boolean flag indicating whether or not the column
-	   * 				 should be rendered. True to render, false to hide.
+	   * @param bool $boolean The boolean flag indicating whether or not the column
+	   * 				 	  should be rendered. True to render, false to hide.
 	   * @return void
 	   */
 	  public function setVisible( $boolean ) {
@@ -258,7 +257,7 @@ class Column {
 	   * Returns boolean flag indicating whether or not the column
 	   * is sortable.
 	   *  
-	   * @return True if the column is sortable, false otherwise
+	   * @return bool True if the column is sortable, false otherwise
 	   */
 	  public function isSortable() {
 
@@ -270,12 +269,12 @@ class Column {
 	   * table referencing this column, to render this columns data
 	   * instead of its foreign key values.
 	   * 
-	   * @param $boolean Allows child tables to use the values in this column
-	   * 				 in an HTML drop-down in place of their foreign key value(s)
+	   * @param bool $boolean Allows child tables to use the values in this column
+	   * 				 	  in an HTML drop-down in place of their foreign key value(s)
 	   * @return void
 	   */
 	  public function setSelectable( $boolean ) {
-	  	
+
 	  		 $this->selectable = $boolean ? true : false;
 	  }
 
@@ -284,7 +283,7 @@ class Column {
 	   * by child tables to render data in an HTML drop-down instead of
 	   * their foreign key value(s)
 	   * 
-	   * @return True if the column can be used in an HTML select list, false otherwise
+	   * @return bool True if the column can be used in an HTML select list, false otherwise
 	   */
 	  public function isSelectable() {
 
@@ -305,7 +304,7 @@ class Column {
 	  /**
 	   * Returns boolean flag indicating whether or not the column data is required
 	   * 
-	   * @return void
+	   * @return bool True if a value is required, false if a value is not required
 	   */
 	  public function isRequired() {
 
@@ -315,7 +314,7 @@ class Column {
 	  /**
 	   * Marks this column as a primary key
 	   * 
-	   * @param $boolean True to mark this column as a primary key, false otherwise
+	   * @param bool $boolean True to mark this column as a primary key, false otherwise
 	   * @return void
 	   */
 	  public function setPrimaryKey( $boolean ) {
@@ -326,7 +325,7 @@ class Column {
 	  /**
 	   * Returns boolean flag indicating whether or not the column is a primary key
 	   * 
-	   * @return True if the column is a primary key, false otherwise
+	   * @return bool True if the column is a primary key, false otherwise
 	   */
 	  public function isPrimaryKey() {
 
@@ -336,7 +335,7 @@ class Column {
 	  /**
 	   * Marks the column as an AUTO_INCREMENT column. 
 	   * 
-	   * @param $boolean True if the column contains AUTO_INCREMENT values, false otherwise
+	   * @param bool $boolean True if the column contains AUTO_INCREMENT values, false otherwise
 	   * @return void
 	   */
 	  public function setAutoIncrement( $boolean ) {
@@ -348,7 +347,7 @@ class Column {
 	   * Returns boolean flag indicating whether or not this column is an
 	   * AUTO_INCREMENT field.
 	   * 
-	   * @return True if the column is an AUTO_INCREMENT field, false otherwise
+	   * @return bool True if the column is an AUTO_INCREMENT field, false otherwise
 	   */
 	  public function isAutoIncrement() {
 
@@ -358,7 +357,7 @@ class Column {
 	  /**
 	   * Marks the column as a foreign key column.
 	   * 
-	   * @param $foreignKey True to mark the column as a foreign key column, false otherwise
+	   * @param bool $foreignKey True to mark the column as a foreign key column, false otherwise
 	   * @return void
 	   */
 	  public function setForeignKey( $foreignKey ) {
@@ -369,7 +368,7 @@ class Column {
 	  /**
 	   * Returns boolean indicator based on whether or not the column is a foreign key field.
 	   * 
-	   * @return True if the column is a foreign key field, false otherwise
+	   * @return bool True if the column is a foreign key field, false otherwise
 	   */
 	  public function isForeignKey() {
 
@@ -379,7 +378,7 @@ class Column {
 	  /**
 	   * Returns boolean indicator based on whether or not the column is a foreign key field.
 	   * 
-	   * @return True if the column is a foreign key field, false otherwise
+	   * @return bool True if the column is a foreign key field, false otherwise
 	   */
 	  public function hasForeignKey() {
 
@@ -389,7 +388,7 @@ class Column {
 	  /**
 	   * Returns boolean indicator based on whether or not the column is a foreign key field.
 	   * 
-	   * @return True if the column is a foreign key field, false otherwise
+	   * @return bool True if the column is a foreign key field, false otherwise
 	   */
 	  public function getForeignKey() {
 
@@ -407,14 +406,12 @@ class Column {
  		  	 return $this->getType() == 'bit';
 	  }
 
-	  /* Operations */
-
 	  /**
 	   * Returns the name which is used to access/mutate model properties/fields. If a property
 	   * attribute has been configured in persistence.xml for the column, the property value is
 	   * returned, otherwise the column name is returned instead.
 	   * 
-	   * @return Property attribute value in persistence.xml for the column if it exists, else
+	   * @return String Property attribute value in persistence.xml for the column if it exists, else
 	   * 		 the column name attribute value is returned instead.
 	   */
 	  public function getModelPropertyName() {
@@ -423,11 +420,10 @@ class Column {
 	  }
 
 	  /**
-	   * Returns the value which is returned to the presentation tier when displaying the name
-	   * of the column. If persistence.xml contains a valid 'display' attribute, this value is
+	   * If persistence.xml contains a valid 'display' attribute, this value is
 	   * returned, otherwise, the column name is returned.
 	   *   
-	   * @return The persistence.xml 'display' attribute value if it exists, otherwise the column name
+	   * @return String The persistence.xml 'display' attribute value if it exists, otherwise the column name
 	   */
 	  public function getViewDisplayName() {
 

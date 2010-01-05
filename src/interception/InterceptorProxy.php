@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: InterceptorProxy
- * Dynamic proxy template for intercepted classes
+ * Proxy applied to intercepted classes
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.interception
- * @version 0.1a
+ * @version 0.2a
  */
 class InterceptorProxy {
 
@@ -105,6 +104,7 @@ class InterceptorProxy {
 	   * Returns a singleton instance of the intercepted class
 	   * 
 	   * @return Singleton instance of the intercepted class
+	   * @static
 	   */
 	  public static function getInstance() {
 
@@ -118,7 +118,8 @@ class InterceptorProxy {
 	  }
 
 	  /**
-	   * Returns the instance of the intercepted class.
+	   * Returns the instance of the intercepted class. This is the original class
+	   * that was requested, renamed to '<class_name>_Intercepted'.
 	   * 
 	   * @return The intercepted class instance
 	   */
@@ -128,9 +129,9 @@ class InterceptorProxy {
 	  }
 
 	  /**
-	   * Magic PHP property accessor
+	   * Magic PHP property accessor used to intercept calls to properties.
 	   * 
-	   * @param $property The property/field name being gotten
+	   * @param String $property The property/field name being accessed
 	   * @return The property/field value
 	   * @throws AgilePHP_InterceptionException
 	   */
@@ -147,10 +148,10 @@ class InterceptorProxy {
   	  }
 
   	  /**
-  	   * Magic PHP property mutator
+  	   * Magic PHP property mutator used to intercept mutation calls.
   	   * 
-  	   * @param $property The property/field name being set
-  	   * @param $value The value to set
+  	   * @param String $property The property/field name being set
+  	   * @param mixed $value The value to set
   	   * @return void
   	   * @throws AgilePHP_InterceptionException
   	   */
@@ -179,9 +180,9 @@ class InterceptorProxy {
   	  }
 
   	  /**
-  	   * Magic PHP unset function.
+  	   * Magic PHP unset function used to intercept unset calls.
   	   * 
-  	   * @param $property The property/field being unset
+  	   * @param String $property The property/field being unset
   	   * @return void
   	   * @throws AgilePHP_InterceptionException
   	   */
@@ -191,11 +192,11 @@ class InterceptorProxy {
   	  }
 
   	  /**
-  	   * Magic PHP method executor.
+  	   * Magic PHP method executor used to intercept method calls.
   	   * 
-  	   * @param $method The method being called
-  	   * @param $args The arguments being passed
-  	   * @return The result of the method invocation
+  	   * @param String $method The method being called
+  	   * @param Array $args The arguments being passed
+  	   * @return The result of the intercepted method invocation
   	   * @throws AgilePHP_InterceptionException
   	   */
 	  public function __call( $method, $args ) {

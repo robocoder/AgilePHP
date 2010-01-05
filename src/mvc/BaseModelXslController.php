@@ -20,7 +20,6 @@
  */
 
 /**
- * AgilePHP :: MVC BaseModelXslController
  * Provides base implementation for model xsl controllers.
  * 
  * @author Jeremy Hahn
@@ -40,13 +39,15 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	      * Generates an XSL stylesheet from the domain model object's properties. Designed to be used in conjuction
 	      * with getResultListAsPagedXML() to perform an XSLT transformation.
 	      *
-	      * @param $pkeyFields The name of the model property to send as the 'id' field to the action when an action
-	      * 			       button is clicked. Defaults to the primary key(s) of the model as defined in persistence.xml.
-	      * @param $controller The name of the controller to use when an action button is clicked. Defaults
-	      * 				   to the name of the controller which invoked this method. 
-	      * @param $action The name of a custom action to invoke within the controller when an
-	      * 			   action button is clicked. Defaults to the name of the model (lowercase)
-	      * 			   followed by the string 'Action' (ie, 'User' model would be 'userAction' ).
+	      * @param String $pkeyFields Optional name of the model property to send as the 'id' field to the action when an action
+	      * 			  		      button is clicked. Defaults to the primary key(s) of the model as defined in persistence.xml.
+	      * 						  Defaults to null.
+	      * @param String $controller Optional name of the controller to use when an action button is clicked. Defaults
+	      * 				   		  to the name of the controller which invoked this method. Defaults to the extension controller. 
+	      * @param String $action The name of a custom action to invoke within the controller when an
+	      * 			   		  action button is clicked. Defaults to the name of the model (lowercase)
+	      * 			   		  followed by the string 'Action' (ie, 'User' model would be 'userAction' ).
+	      * 					  Defaults to 'modelAction'.
 	      * @return XSL stylesheet for BaseModelXmlController
 	      */
 	     protected function getModelListXSL( $pkeyFields = '', $controller = '', $action = '' ) {
@@ -225,7 +226,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 		  * primary key, $pkeyValues should be defined as an associative array containing each of
 		  * the primary key names with their corresponding values (ie. array( 'key1' => 'val1', ...))
 		  * 
-		  * @param $pkeyValues The primary key value(s) associated with this record
+		  * @param String $pkeyValues The primary key value(s) associated with this record
 		  * @return void
 	      */
 	     protected function getModelFormXSL() {
@@ -401,6 +402,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	      * Returns an 'AgilePHP serialized' string of primary key column (property names if
 	   	  * exists otherwise the column name) suitable for use in xml/xsl controllers.
 	   	  * 
+	   	  * @param Table $table Table instance used to get primary keys.
 	   	  * @return The 'AgilePHP serialized' string of primary keys.
 	   	  */
 	  	private function getSerializedPrimaryKeyColumns( Table $table ) {
@@ -446,8 +448,8 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	  	  * use in xml/xsl controllers. These values are replaced by the XML data once
 	  	  * a transformation occurrs.
 	  	  * 
-	  	  * @param $pkeyFields A serialized array of primary key values are returned by
-	  	  * 			       getSerializedPrimaryKeyColumns.
+	  	  * @param String $pkeyFields A serialized array of primary key values are returned by
+	  	  * 			  		      getSerializedPrimaryKeyColumns.
 	  	  *  
 	  	  * @return The XSL string
 	  	  */
@@ -469,7 +471,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	  	  * Returns an 'AgilePHP serialized' string of primary key values for a foreign
 	  	  * table reference.
 	  	  * 
-	  	  * @param ForeignKey $fk The foreign key pointing to the referenced table
+	  	  * @param Table $table The table instance used to extract foreign key values
 	  	  * @return An 'AgilePHP serialized' string for use in XSL rendering 		
 	  	  */
 		 private function getSerializedForeignKeyValuesAsXSL( Table $table ) {

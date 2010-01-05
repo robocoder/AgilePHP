@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  */
 
 /**
- * AgilePHP :: MVC BaseModelActionController
  * Provides a base implementation of a working model action controller. 
  * 
  * @author Jeremy Hahn
@@ -33,6 +32,14 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 		 private $xsltRenderer;
 
+		 /**
+		  * Base constructor which allows configuration options in extended classes. 
+		  * 
+		  * @param bool $requireLogon True to require the user to be logged in, false to allow calls
+		  * 			to unauthenticated calls (uses AgilePHP Identity component to validate logged in session).
+		  * @param String $requiredRole An optional role to require
+		  * @return void
+		  */
 	     protected function __construct( $requireLogon = true, $requiredRole = 'admin' ) {
 
 	     	       if( $requireLogon ) {
@@ -62,14 +69,11 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     /**
 	      * Handles the dispatching of action events from the view.
 	      * 
-	      * @param $action The action event type - add, edit, merge, delete
-	      * @param $ids The primary key values associated with the ActiveRecord.
-	      * @param $page A page number to load (keeps result list state when
+	      * @param String $action The action event type - add, edit, merge, delete
+	      * @param String $ids The primary key values associated with the ActiveRecord.
+	      * @param Integer $page A page number to load (keeps result list state when
 	      * 			  performing updates/deletes)
-	      * @param $view The 'view' to render. Default is 'admin'.
-	      * @param $model A domain model object to invoke the action on. Use of
-	      * 			  this parameter requires the extension class to implement
-	      * 			  DynamicModelController found in the framework's core package.
+	      * @param String $view The 'view' to render. Default is 'admin'.
 	      * @return void
 	      */
 	     public function modelAction( $action, $ids = '', $page = 1 , $view = 'admin' ) {
@@ -139,8 +143,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * paginated result list with edit and delete actions, as well as sortable
 	      * column headers.
 	      * 
-	      * @param $page The page number within the result set to display. Default is page 1.
-	      * @param $view The view to render. Default is 'admin'.
+	      * @param Integer $page The page number within the result set to display. Default is page 1.
+	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
 	      */
 	     public function modelList( $page = 1, $view = 'admin', $model = null ) {
@@ -162,10 +166,10 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     /**
 	      * Sorts the modelList according to the specified column name and direction.
 	      * 
-	      * @param $column The column to sort
-	      * @param $direction The direction to sort. Default is 'ASC' (ascending)
-	      * @param $page The page within the result set to display.
-	      * @param $view The view to render. Default is 'admin'.
+	      * @param String $column The column name to sort on
+	      * @param String $direction The direction to sort. Default is 'ASC' (ascending). (ASC|DESC)
+	      * @param Integer $page The page within the result set to display.
+	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
 	      */
 	     public function modelSort( $column, $direction, $page = 1, $view = 'admin' ) {
@@ -181,7 +185,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     }
 
 	     /**
-	      * Persists a new ActiveRecord defined by the model in the
+	      * Persists a the ActiveRecord state defined by the model in the
 	      * extension class.
 	      * 
 	      * @return void
@@ -195,7 +199,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     }
 
  	     /**
-	      * Merges the current ActiveRecord defined by the model in the
+	      * Merges the ActiveRecord state defined by the model in the
 	      * extension class.
 	      * 
 	      * @return void
@@ -209,8 +213,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     }
 
 	     /**
-	      * Deletes the current ActiveRecord defined by the model in the
-	      * extension class.
+	      * Deletes the ActiveRecord state defined by the model in the
+	      * extension class. 
 	      * 
 	      * @return void
 	      */
@@ -226,8 +230,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * Parses $ids sent in by the modelAction method and sets all primary keys
 	      * in the model defined in the extension class.
 	      * 
-	      * @param $ids The 'ids' as passed in from the form submit. These 'ids' are
-	      * 			   automagically generated by BaseModelXslController.
+	      * @param String $ids The 'ids' as passed in from the form submit. These 'ids' are
+	      * 			       automagically generated by BaseModelXslController.
 	      * @return void
 	      */
 	     protected function setPrimaryKeys( $ids ) {
@@ -255,7 +259,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     }
 
 		 /**
-	      * Uses the AgilePHP 'RequestScope' component to retrieve POST parameters
+	      * Uses the AgilePHP RequestScope component to retrieve POST parameters
 	      * from a form submit and set the model properties defined in the extension
 	      * class. This method expects the form element names to match the name
 	      * of the model's property.

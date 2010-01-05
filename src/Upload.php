@@ -1,7 +1,7 @@
 <?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: Upload
  * File upload component
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class Upload {
 
@@ -38,7 +37,7 @@ class Upload {
 	  /**
 	   * Sets the name used in the file form field element.
 	   * 
-	   * @param $name The name attribute of the HTML file input element
+	   * @param String $name The name attribute of the HTML file input element
 	   * @return void
 	   */
 	  public function setName( $name ) {
@@ -49,7 +48,7 @@ class Upload {
 	  /**
 	   * Returns the file form name.
 	   * 
-	   * @return The name attribute of the HTML file input element
+	   * @return String The name attribute of the HTML file input element
 	   */
 	  public function getName() {
 
@@ -59,7 +58,7 @@ class Upload {
 	  /**
 	   * Sets the destination directory for the upload.
 	   * 
-	   * @param $directory The upload destination directory
+	   * @param String $directory The upload destination directory
 	   * @return void
 	   */
 	  public function setDirectory( $directory ) {
@@ -70,7 +69,7 @@ class Upload {
 	  /**
 	   * Returns the destination directory for uploads.
 	   * 
-	   * @return void
+	   * @return String The destination directory path
 	   */
 	  public function getDirectory() {
 
@@ -81,7 +80,7 @@ class Upload {
 	   * Saves the upload contained in the $_FILES array for the specified
 	   * file input $name.
 	   * 
-	   * @return The uploaded file path.
+	   * @return String The uploaded file path.
 	   * @throws AgilePHP_Exception if any errors are encountered.
 	   */
 	  public function save() {
@@ -136,7 +135,7 @@ class Upload {
 	  }
 
 	  /**
-	   * Deletes the uploaded file.
+	   * Deletes the uploaded file and logs the event.
 	   * 
 	   * @return void
 	   */

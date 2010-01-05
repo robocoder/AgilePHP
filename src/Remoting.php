@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  */
 
 /**
- * AgilePHP :: Remoting
  * Provides client side JavaScript remoting to PHP objects. Handles 
  * marshalling/unmarshalling of JSON objects between the client and server. 
  * 
@@ -34,6 +33,12 @@ abstract class Remoting extends BaseController {
 
 	  	 private $class;
 
+	  	 /**
+	  	  * Initalizes the Remoting instance when the extension class is created.
+	  	  * 
+	  	  * @param String $class
+	  	  * @return void
+	  	  */
 	  	 protected function __construct( $class = null ) {
 
 	  		       $this->class = $class;
@@ -42,7 +47,7 @@ abstract class Remoting extends BaseController {
 	  	 /**
 	  	  * Sets the name of the class to remote
 	  	  * 
-	  	  * @param $class The class name to remote
+	  	  * @param String $class The class name to remote
 	  	  * @return void
 	  	  */
 	  	 protected function setClass( $class ) {
@@ -52,6 +57,7 @@ abstract class Remoting extends BaseController {
 
 	  	 /**
 	  	  * Returns the name of the class being remoted
+	  	  * 
 	  	  * @return The name of the class being remoted
 	  	  */
 	  	 protected function getClass() {
@@ -63,7 +69,7 @@ abstract class Remoting extends BaseController {
 	   	  * Returns the current session id. If a session is not active a new
 	   	  * session is created and the id is returned.
 	   	  * 
-	   	  * @return Session id for the current request
+	   	  * @return String Session id for the current request
 	  	  */
 	  	public function getSessionId() {
 
@@ -79,7 +85,7 @@ abstract class Remoting extends BaseController {
 	   	 * a stateful instance does not exist, a new instance is created and stored in the SessionScope
 	   	 * for future calls.
 	   	 * 
-	   	 * @return Returns the result of the invocation
+	   	 * @return mixed Returns the result of the invocation
 	   	 * @throws AgilePHP_RemotingException
 	   	 */
 	  	public function invokeStateful() {
@@ -138,7 +144,7 @@ abstract class Remoting extends BaseController {
 	  	/**
 	  	 * Destroys the session used for stateful remoting
 	 	 *  
-	   	 * @param $sessionId The id of the session to destroy
+	   	 * @param String $sessionId The id of the session to destroy
 	     * @return void
 	     */
 	    public function destroySession( $sessionId ) {
@@ -152,7 +158,7 @@ abstract class Remoting extends BaseController {
 	     * passing in arguments if any were defined. This non-stateful approach is
 	     * how most RPC web services work.
 	     * 
-	   	 * @return Returns the result of the invocation
+	   	 * @return mixed Returns the result of the invocation
 	   	 * @throws AgilePHP_RemotingException
 	     */
 	    public function invoke() {
@@ -183,7 +189,7 @@ abstract class Remoting extends BaseController {
 	    /**
 	     * Performs RMI invocation on an intercepted class (non-stateful).
 	     * 
-	   	 * @return Returns the result of the invocation
+	   	 * @return mixed Returns the result of the invocation
 	   	 * @throws AgilePHP_RemotingException
 	     */
 	    public function invokeIntercepted() {
@@ -216,7 +222,7 @@ abstract class Remoting extends BaseController {
 	   	 * a stateful instance does not exist, a new instance is created and stored in the SessionScope
 	   	 * for future calls.
 	   	 * 
-	   	 * @return Returns the result of the invocation
+	   	 * @return mixed Returns the result of the invocation
 	   	 * @throws AgilePHP_RemotingException
 	   	 */
 	  	public function invokeInterceptedStateful() {
@@ -278,8 +284,8 @@ abstract class Remoting extends BaseController {
 		 * Creates a dynamic javascript proxy stub/interface used for remoting PHP classes. This method
 		 * handles both standard and intercepted classes.
 		 * 
-		 * @param $stateful True to configure the remoting stub to invoke stateful server side calls. The
-	     * 					remoted object is kept in the SessionScope.
+		 * @param bool $stateful True to configure the remoting stub to invoke stateful server side calls. The
+	     * 					 	 remoted object is kept in the SessionScope.
 	  	 * @return void
 	  	 * @throws AgilePHP_RemotingException
 		 */
@@ -299,8 +305,8 @@ abstract class Remoting extends BaseController {
 		/**
 	     * Creates a dynamic javascript proxy stub/interface used for remoting AgilePHP intercepted classes
 	     * 
-	     * @param $stateful True to configure the remoting stub to invoke stateful server side calls. The
-	     * 					remoted object is kept in the SessionScope.
+	     * @param bool $stateful True to configure the remoting stub to invoke stateful server side calls. The
+	     * 					 	 remoted object is kept in the SessionScope.
   	     * @return void
   	     * @throws AgilePHP_RemotingException
 	     */
@@ -376,8 +382,8 @@ abstract class Remoting extends BaseController {
 	 /**
 	  * Creates a dynamic javascript proxy stub/interface used for remoting standard PHP classes
 	  * 
-	  * @param $stateful True to configure the remoting stub to invoke stateful server side calls. The
-	     * 					remoted object is kept in the SessionScope.
+	  * @param bool $stateful True to configure the remoting stub to invoke stateful server side calls. The
+	     * 				 	  remoted object is kept in the SessionScope.
   	  * @return void
   	  * @throws AgilePHP_RemotingException
 	  */
@@ -450,7 +456,7 @@ abstract class Remoting extends BaseController {
 	   * Returns the raw JavaScript contents of the AgilePHP.js file and pre-configures the library
 	   * with a default AgilePHP.debug and AgilePHP.Remoting.controller value.
 	   * 
-	   * @param $debug True to enable client side AgilePHP debugging.
+	   * @param bool $debug True to enable client side AgilePHP debugging.
 	   * @return void
 	   */
 	  public function getBaseJS( $debug = false ) {
@@ -469,8 +475,8 @@ abstract class Remoting extends BaseController {
 	  /**
 	   * Decodes POST variables
 	   * 
-	   * @param $data The client side data to decode
-	   * @return The JSON decoded object
+	   * @param String $data The client side data to decode
+	   * @return Object The JSON decoded object
 	   * @throws AgilePHP_RemotingException if the received data does not unmarshall into an object
 	   */
 	  private function decode( $data ) {

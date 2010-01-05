@@ -20,7 +20,6 @@
  */
 
 /**
- * AgilePHP :: MVC BaseRenderer
  * Provides base rendering implementation
  * 
  * @author Jeremy Hahn
@@ -37,8 +36,8 @@ abstract class BaseRenderer {
 		  * Helper method to allow controllers to set variables
 		  * which are dumped to a view during rendering.
 		  * 
-		  * @param $key The variable name
-		  * @param $value The variable value
+		  * @param String $key The variable name
+		  * @param mixed $value The variable value
 		  * @return void
 		  */
 	  	 public function set( $key, $value ) {
@@ -49,8 +48,8 @@ abstract class BaseRenderer {
       	 /**
       	  * Returns the value for the specified key.
       	  * 
-      	  * @param $key The key to retrieve the value from
-      	  * @return The value stored in the $key index
+      	  * @param String $key The key to retrieve the value from
+      	  * @return mixed The value stored in the $key index
       	  */
       	 public function get( $key ) {
 

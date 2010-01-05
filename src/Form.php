@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  */
 
 /**
- * AgilePHP :: Form
  * Generates a form by reverse engineering the specified domain model.
  * 
  * @author Jeremy Hahn
@@ -39,6 +38,17 @@ class Form {
 
 	  private $mode;
 
+	  /**
+	   * Creates a new instance of Form.
+	   * 
+	   * @param mixed $model Optional domain model instance used to create the form fields
+	   * @param String $id Optional form id
+	   * @param String $name Optional form name
+	   * @param String $action Optional form action
+	   * @param String $enctype Optional form enctype
+	   * @param String $request_token Optional AgilePHP request token
+	   * @return void
+	   */
 	  public function __construct( $model = null, $id = null, $name = null,
 	  						$action = null, $enctype = null, $request_token = null ) {
 
@@ -53,7 +63,7 @@ class Form {
 	  /**
 	   * Sets the domain model that is used to create the form 
 	   * 
-	   * @param $model The domain model object used to create the form
+	   * @param Object $model The domain model object used to create the form
 	   * @return void
 	   */
 	  public function setModel( $model ) {
@@ -64,7 +74,7 @@ class Form {
 	  /**
 	   * Returns the domain model instance being used to create the form.
 	   * 
-	   * @return The domain model instance
+	   * @return Object The domain model instance
 	   */
 	  public function getModel() {
 
@@ -74,7 +84,7 @@ class Form {
 	  /**
 	   * Sets the form presentation mode.
 	   * 
-	   * @param $mode The presentation mode (persist|merge).
+	   * @param String $mode The presentation mode (persist|merge).
 	   * @return void
 	   */
 	  public function setMode( $mode ) {
@@ -85,7 +95,7 @@ class Form {
 	  /**
 	   * Returns the form presentation mode.
 	   * 
-	   * @return The presentation mode of the form (persist|merge)
+	   * @return String The presentation mode of the form (persist|merge)
 	   */
 	  public function getMode() {
 
@@ -95,7 +105,7 @@ class Form {
 	  /**
 	   * Sets the HTML id attribute value.
 	   * 
-	   * @param $id The form's id
+	   * @param String $id The form's id
 	   * @return void
 	   */
 	  public function setId( $id ) {
@@ -106,7 +116,7 @@ class Form {
 	  /**
 	   * Returns the form's id attribute value
 	   * 
-	   * @return The id value
+	   * @return String The id value
 	   */
 	  public function getId() {
 
@@ -116,7 +126,7 @@ class Form {
 	  /**
 	   * Sets the HTML name attribute value
 	   * 
-	   * @param $name The form's name
+	   * @param String $name The form's name
 	   * @return void
 	   */
 	  public function setName( $name ) {
@@ -127,7 +137,7 @@ class Form {
 	  /**
 	   * Returns the form's HTML name attribute value
 	   * 
-	   * @return The form's name
+	   * @return String The form's name
 	   */
 	  public function getName() {
 
@@ -137,7 +147,7 @@ class Form {
 	  /**
 	   * Sets the form action attribute value
 	   * 
-	   * @param $action The form's action
+	   * @param String $action The form's action
 	   * @return void
 	   */
 	  public function setAction( $action ) {
@@ -148,7 +158,7 @@ class Form {
 	  /**
 	   * Returns the forms action attribute value
 	   * 
-	   * @return The controller action method
+	   * @return String The controller action method
 	   */
 	  public function getAction() {
 
@@ -158,7 +168,7 @@ class Form {
 	  /**
 	   * Sets the form's enctype attribute value
 	   * 
-	   * @param $enctype The form's enctype
+	   * @param String $enctype The form's enctype
 	   * @return void
 	   */
 	  public function setEnctype( $enctype ) {
@@ -169,7 +179,7 @@ class Form {
 	  /**
 	   * Returns the form's enctype attribute value
 	   * 
-	   * @return The form's enctype
+	   * @return String The form's enctype
 	   */
 	  public function getEnctype() {
 
@@ -180,8 +190,8 @@ class Form {
 	   * Sets the anti-CSFR token to render within the form. Note that the CSFR token
 	   * should be different on every form!
 	   * 
-	   * @param $token CSFR token as supplied by RequestScope->getToken().
-	   * @return unknown_type
+	   * @param String $token CSFR token as supplied by RequestScope->getToken().
+	   * @return void
 	   * @see RequestScope::createToken()
 	   */
 	  public function setRequestToken( $token ) {
@@ -192,7 +202,7 @@ class Form {
 	  /**
 	   * Returns the anti-CSFR token
 	   * 
-	   * @return anti-CSFR token specific to the form
+	   * @return String anti-CSFR token specific to the form
 	   */
 	  public function getRequestToken() {
 
@@ -202,7 +212,7 @@ class Form {
 	  /**
 	   * Returns the form in HTML format
 	   * 
-	   * @return The HTML generated form
+	   * @return String The HTML generated form
 	   */
 	  public function getHTML() {
 
@@ -333,7 +343,7 @@ class Form {
 	   * of values for foreign key columns used in one-to-many
 	   * relationships.
 	   * 
-	   * @return The populated HTML <select> element
+	   * @return String The populated HTML <select> element
 	   */
 	  public function getForeignKeySelection( ForeignKey $foreignKey ) {
 
@@ -387,10 +397,10 @@ class Form {
 	  /**
 	   * Returns the form in XSL format
 	   * 
-	   * @param $pkeyValues The primary key values for the ActiveRecord displayed in the form. Multiple
-	   * 					primary keys must be separated by an underscore _ character. Default is null
-	   * @param $page The list page number to return the user after the form is submitted. Default is 1.
-	   * @return XSL formatted form
+	   * @param String $pkeyValues The primary key values for the ActiveRecord displayed in the form. Multiple
+	   * 						   primary keys must be separated by an underscore _ character. Default is null
+	   * @param Integer $page The list page number to return the user after the form is submitted. Default is 1.
+	   * @return String XSL formatted form
 	   */
 	  public function getXSL( $pkeyValues = null, $page = 1 ) {
 

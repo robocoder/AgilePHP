@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,13 +26,12 @@ require_once 'persistence/dialect/SQLDialect.php';
 require_once 'persistence/BasePersistence.php';
 
 /**
- * AgilePHP :: PersistenceManager
  * Facade for working with persisence operations
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class PersistenceManager {
 
@@ -55,7 +54,7 @@ class PersistenceManager {
 	   * databases, tables, and columns are transformed into corresponding AgilePHP persistence objects.
 	   * If a 'databaseId' is present, PersistenceManager is initalized with the specified database.
 	   * 
-	   * @param $databaseId The id of the database to initalize PersistenceManager with. Defaults to the first database in persistence.xml.
+	   * @param String $databaseId The id of the database to initalize PersistenceManager with. Defaults to the first database in persistence.xml.
 	   * @return void
 	   */
 	  public function __construct( $databaseId = null ) {
@@ -98,7 +97,7 @@ class PersistenceManager {
 	  	 /**
 	  	  * Establishes a connection to the specified database.
 	  	  * 
-	  	  * @param $db A Database object to establish the connection with
+	  	  * @param String $db A Database object to establish the connection with
 	  	  * @return void
 	  	  */
 	  	 public function connect( Database $db ) {
@@ -150,7 +149,7 @@ class PersistenceManager {
 	    /**
 	     * Returns the domain model which the PersistenceManager is manipulating.
 	     * 
-	     * @return The domain model instance which the PersistenceManageris manipulating.
+	     * @return Object The domain model instance which the PersistenceManageris manipulating.
 	     */
 	    public function getModel() {
 
@@ -160,7 +159,7 @@ class PersistenceManager {
 	    /**
 	     * Sets the domain model the PersistenceManager is to manipulate.
 	     * 
-	     * @param $model The domain model the PersistenceManager is to manipulate
+	     * @param Object $model The domain model the PersistenceManager is to manipulate
 	     * @return void
 	     */
 	    public function setModel( $model ) {
@@ -172,8 +171,8 @@ class PersistenceManager {
 	     * Checks the two defined model parameters to see if they are equal. The class name,
 	     * property name, type and value.
 	     *  
-	     * @param $modelA The first domain model object
-	     * @param $modelB The second domain model object
+	     * @param Object $modelA The first domain model object
+	     * @param Object $modelB The second domain model object
 	     * @return True if the comparison was successful, false if they differ.
 	     */
 	    public function compareModels( $modelA, $modelB ) {

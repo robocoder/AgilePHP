@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: AnnotationParser
  * Responsible for parsing and returning annotation details about PHP classes.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.annotation
- * @version 0.1a
+ * @version 0.2a
  * @static
  */
 class AnnotationParser {
@@ -43,6 +42,12 @@ class AnnotationParser {
 	  private function __construct() { }
 	  private function __clone() { }
 
+	  /**
+	   * Returns a Singletom instance of AnnotationParser.
+	   * 
+	   * @return AnnotationParser Singleton instance of AnnotationParser
+	   * @static
+	   */
 	  public static function getInstance() {
 
 	  		 if( self::$instance == null )
@@ -55,7 +60,7 @@ class AnnotationParser {
 	   * Breaks the class file into PHP tokens and extracts all interface,
 	   * class, method, and property level annotations.
 	   * 
-	   * @param $class The name of the class to parse
+	   * @param String $class The name of the class to parse
 	   * @return void
 	   */
 	  public function parse( $class ) {
@@ -121,6 +126,7 @@ class AnnotationParser {
 							 	   break;
 
 							 	   /*
+							 	    * @todo Support annotated interfaces
 							case T_INTERFACE:
 
 								   if( count( $comments ) ) {
@@ -157,6 +163,7 @@ class AnnotationParser {
 	   * Returns an array of class level annotations or false if no class
 	   * level annotations are present.
 	   * 
+	   * @param AnnotatedClass $class An instance of the annotated class to inspect.
 	   * @return Array of class level annotations or false if no annotations
 	   * 		 are present.
 	   */
@@ -169,7 +176,7 @@ class AnnotationParser {
 	   * Returns an array of property level annotations or false if no annotations
 	   * are present for the specified property.
 	   * 
-	   * @param $property The AnnotatedProperty to get the annotations for
+	   * @param AnnotatedProperty $property The AnnotatedProperty instance to inspect.
 	   * @return Array of property level annotations
 	   */
 	  public function getPropertyAnnotations( AnnotatedProperty $property ) {
@@ -190,7 +197,7 @@ class AnnotationParser {
 	   * Returns an array of method level annotations or false if no annotations
 	   * are found for the specified method.
 	   * 
-	   * @param $method The AnnotatedMethod to search
+	   * @param AnnotatedMethod $method The AnnotatedMethod instance to inspect.
 	   * @return Array of method level annotations or false if no annotations are present.
 	   */
 	  public function getMethodAnnotations( AnnotatedMethod $method ) {
@@ -209,43 +216,45 @@ class AnnotationParser {
 	  /**
 	   * Returns an array of class level annotations
 	   * 
-	   * @param $class The name of the parsed class
-	   * @return Array of class level annotations
+	   * @param String $class The name of the class to inspect
+	   * @return Array of class level annotations, void otherwise
 	   */
 	  public function getClassAnnotationsAsArray( $class ) {
 
-	  		 return $this->classes[$class];
+	  		 if( in_array( $class, $this->classes ) )
+	  		 	 return $this->classes[$class];
 	  }
 
 	  /**
 	   * Returns an array of method level annotations for the specified class
 	   * 
-	   * @param $class The name of the parsed class
-	   * @param $method The name of the parsed method
-	   * @return Array of method level annotations
+	   * @param String $class The name of the class to inspect
+	   * @param String $method The name of the method to inspect
+	   * @return Array of method level annotations, void otherwise
 	   */
 	  public function getMethodAnnotationsAsArray( $class ) {
 
-	  		 return $this->methods[$class];
+	  		 if( in_array( $class, $this->methods ) )
+	  		 	 return $this->methods[$class];
 	  }
 
 	  /**
-	   * Returns an array of property level annotations for the specified class
+	   * Returns an array of property level annotations for the specified class.
 	   * 
-	   * @param $class The name of the parsed class
-	   * @param $property The name of the parsed property
-	   * @return Array of property level annotations
+	   * @param String $class The name of the class to inspect
+	   * @return Array of property level annotations, void otherwise
 	   */
 	  public function getPropertyAnnotationsAsArray( $class ) {
 
-	  		 return $this->properties[$class];
+	  		 if( in_array( $class, $this->properties ) )
+	  		 	 return $this->properties[$class];
 	  }
 
 	  /**
-	   * Parses the text string extracted from tokenized PHP file which contains
-	   * annotation markup.
+	   * Parses code extracted from the tokenized PHP file for the presence of
+	   * AgilePHP annotations.
 	   * 
-	   * @param $text The text string containing the annotation to parse
+	   * @param String $text The text/code string to parse
 	   * @return void
 	   */
 	  private function parseAnnotations( $text ) {
@@ -253,7 +262,7 @@ class AnnotationParser {
 	  		  $annotations = array();
 
 			  // Extract the annotation string including the name and property/value declaration
-	  		  preg_match_all( '/#?@(.*)/', $text, $annotes );
+	  		  preg_match_all( '/#@(.*)/', $text, $annotes );
 
 			  if( !count( $annotes ) )
 	  		  	  return;
@@ -274,8 +283,8 @@ class AnnotationParser {
 					   preg_match_all( '/[_a-zA-Z]+[0-9_]?\s?=\s?{+?.*?}+\s?,?/', $props[1][0], $arrays );
 
 					   // Extract other annotations
+					   // @todo Support child annotations
 					   //preg_match_all( '/@(.*)?,?/', $props[1][0], $childAnnotes );
-					   //if( isset( $childAnnotes[1] ) ) { }
 
 					   // Add arrays to annotation instance and remove it from the properties
 	  		  		   if( count( $arrays ) ) {
@@ -300,9 +309,9 @@ class AnnotationParser {
 	   * array is added to the annotation instance according to its property name and the array
 	   * is removed from the properties string.
 	   * 
-	   * @param $oAnnotation An instance of the annotation object
-	   * @param $arrays The string value containing each of the property assignments
-	   * @param $properties The annotations properties as they were parsed from the code
+	   * @param Object $oAnnotation An instance of the annotation object
+	   * @param String $arrays The string value containing each of the property assignments
+	   * @param String $properties The annotations properties as they were parsed from the code
 	   * @return stdClass instance containing the annotation instance and truncated properties string
 	   */
 	  private function parseKeyArrayValuePairs( $oAnnotation, $arrays, $properties ) {
@@ -349,7 +358,7 @@ class AnnotationParser {
 	  /**
 	   * Parses quoted strings from annotations property VALUE definitons.
 	   * 
-	   * @param $value The value to parse
+	   * @param String $value The value to parse
 	   * @return void
 	   */
 	  private function getQuotedStringValue( $value ) {
@@ -380,8 +389,8 @@ class AnnotationParser {
 	  /**
 	   * Parses strings and PHP literals from annotation property definition(s).
 	   * 
-	   * @param $oAnnotation An instance of the annotation object
-	   * @param $properties String representation of the annotations property definition(s).
+	   * @param Object $oAnnotation An instance of the annotation object
+	   * @param String $properties String representation of the annotations property definition(s).
 	   * @return The annotation instance populated according to its definition(s).
 	   */
 	  private function parseKeyValuePairs( $oAnnotation, $properties ) {
@@ -448,8 +457,8 @@ class AnnotationParser {
 	   * Recursively scan the specified directory in an effort to find $this->class to load its
 	   * source code.
 	   * 
-	   * @param $directory The directory to scan. 
-	   * @return File contents for $this->class or null if the file contents could not be located
+	   * @param String $directory The directory to inspect. 
+	   * @return File contents for $this->class or void if the file contents could not be located
 	   */
 	  private function search( $directory ) {
 

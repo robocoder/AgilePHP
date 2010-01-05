@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@
  */
 
 /**
- * AgilePHP :: Core Framework Class
+ * AgilePHP core framework Class
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.3a
+ * @version 0.4a
  * @static
  */
 class AgilePHP {
@@ -77,7 +77,8 @@ class AgilePHP {
 	   * Factory method which is used to instantiate a singleton
 	   * instance of the AgilePHP framework.
 	   * 
-	   * @return An instance of the AgilePHP Framework
+	   * @return AgilePHP A Singleton instance of the AgilePHP Framework
+	   * @static
 	   */
 	  public static function getFramework() {
 
@@ -159,7 +160,7 @@ class AgilePHP {
 	  /**
 	   * Sets the relative path to the web application from the server's document root.
 	   * 
-	   * @param $path The document root path
+	   * @param String $path The document root path
 	   * @return void
 	   */
 	  public function setDocumentRoot( $path ) {
@@ -202,7 +203,7 @@ class AgilePHP {
 	  /**
 	   * Sets the name of the AgilePHP web application.
 	   * 
-	   * @param $name The name of the AgilePHP application
+	   * @param String $name The name of the AgilePHP application
 	   * @return void
 	   */
 	  public function setAppName( $name ) {
@@ -224,7 +225,7 @@ class AgilePHP {
 	   * By default PHP hides errors on production servers. Setting this to true enables PHP
 	   * 'display_errors', sets 'error_reporting' to 'E_ALL'.
 	   * 
-	   * @param $bool True to turn on error reporting on (E_ALL)
+	   * @param bool $bool True to turn on error reporting on (E_ALL)
 	   * @return void
 	   */
 	  public function setDisplayPhpErrors( $bool ) {
@@ -253,7 +254,7 @@ class AgilePHP {
 	  /**
 	   * Enables or disables AgilePHP framework debug mode.
 	   * 
-	   * @param $boolean True for debug mode, false for production mode. Default is production.
+	   * @param bool $boolean True for debug mode, false for production mode. Default is production.
 	   */
 	  public function setDebugMode( $boolean ) {
 
@@ -273,7 +274,7 @@ class AgilePHP {
 	  /**
 	   * Returns the agilephp.xml configuration as a SimpleXMLElement.
 	   * 
-	   * @return The SimpleXMLElement containing the agilephp.xml configuration
+	   * @return SimpleXMLElement The SimpleXMLElement instance that contains agilephp.xml configuration
 	   */
 	  public function getXmlConfiguration() {
 
@@ -283,8 +284,9 @@ class AgilePHP {
 	  /**
 	   * Calls PHP date_default_timezone_set function to set the current timezone.
 	   * 
-	   * @param $timezone The timezone to use as default. (ie. America/New_York)
+	   * @param String $timezone The timezone to use as default.
 	   * @return void
+	   * @example 'America/New_York'
 	   */
 	  public function setDefaultTimezone( $timezone ) {
 
@@ -460,6 +462,13 @@ class AgilePHP {
  */
 class AgilePHP_Exception extends Exception {
 
+	  /**
+	   * Creates a new instance of AgilePHP_Exception.
+	   * 
+	   * @param String $message The exception message
+	   * @param Integer $code The exception message. Defaults to 0.
+	   * @return void
+	   */
 	  public function __construct( $message, $code = 0 ) {
 
 	  	     parent::__construct( $message, $code );
@@ -531,7 +540,7 @@ class AgilePHP_RemotingException extends AgilePHP_Exception {
 	  /**
 	   * Deliver remoting exceptions in JSON format and halt execution.
 	   * 
-	   * @param $message The exception message
+	   * @param String $message The exception message
 	   * @return void
 	   */
 	  public function __construct( $message ) {
@@ -549,7 +558,7 @@ class AgilePHP_RemotingException extends AgilePHP_Exception {
  * a valid <interceptors/> configuration, the loaded class is handed
  * off to __autoload_interceptions.
  * 
- * @param $class The class being lazy loaded
+ * @param String $class The class being lazy loaded
  * @return void
  */
 function __autoload( $class ) {
@@ -577,7 +586,7 @@ function __autoload( $class ) {
  * 	 	 class, we need to make sure that the class has not been loaded since there
  * 		 is no easy/elegant way to unload a PHP class once it has been loaded.
  * 
- * @param $class The name of the class being loaded by __autoload
+ * @param String $class The name of the class being loaded by __autoload
  * @return void
  */
 
@@ -644,7 +653,7 @@ function __autoload_interceptions( $class ) {
  * Lazy loads standard framework and web application classes that do not
  * contain interceptor annotations.
  *  
- * @param $class The name of the class being loaded by __autoload
+ * @param String $class The name of the class being loaded by __autoload
  * @return void
  */
 function __autoload_class( $class ) {

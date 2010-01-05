@@ -1,7 +1,7 @@
 <?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: Validator
- * Provides basic data validation
+ * Contains basic miscellaneous data validation algorithms.
  *  
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.3a
  */
 class Validator {
 
@@ -35,10 +34,10 @@ class Validator {
 	  public function __construct() { }
 
 	  /**
-	   * Factory method which returns a singleton instance of 'Validator'.
+	   * Returns a singleton instance of Validator
 	   * 
-	   * @return An instance of Validator
-	   * @throws ReflectionException if the specified validator does not exist.
+	   * @return Validator An instance of Validator
+	   * @static
 	   */
 	  public static function getInstance() {
 
@@ -52,8 +51,9 @@ class Validator {
 	   * Validates an email address by checking its syntax and performing
 	   * and DNS lookup on the domain.
 	   * 
-	   * @param $email The email address to validate
-	   * @return True if the email address is considered valid, false otherwise.
+	   * @param String $email The email address to validate
+	   * @return bool True if the email address is considered valid, false otherwise.
+	   * @static
 	   */
 	  public static function validateEmail( $email ) {
 
@@ -118,8 +118,9 @@ class Validator {
 	  /**
 	   * Validates a number by ensuring it is either an int or float.
 	   * 
-	   * @param $data The data to validate
-	   * @return True if validation is successful, false otherwise
+	   * @param mixed $data The data to validate
+	   * @return bool True if validation is successful, false otherwise
+	   * @static
 	   */
 	  public static function validateNumber( $data ) {
 
@@ -130,12 +131,13 @@ class Validator {
 	   * Validates the specified data by ensuring it is a string and its
 	   * length is less than or equal to that of the specified $length.
 	   * 
-	   * @param $data The data to validate
-	   * @param $length Optional length parameter. If present the length
-	   * 				is compared against the passed data to ensure
-	   * 				its length is less than or equal to the specified
-	   * 				$length.
-	   * @return True if validation is successful, false otherwise
+	   * @param String $data The data to validate
+	   * @param Integer $length Optional length parameter. If present the length
+	   * 						is compared against the passed data to ensure
+	   * 						its length is less than or equal to the specified
+	   * 						$length.
+	   * @return bool True if validation is successful, false otherwise
+	   * @static
 	   */
 	  public static function validateString( $data, $length = null ) {
 
@@ -152,10 +154,11 @@ class Validator {
 	  }
 
 	  /**
-	   * Valudates the specified data by ensuring it is a valid IP address.
+	   * Validates the specified data by ensuring it is a valid IP address.
 	   * 
-	   * @param $data The data to validate
-	   * @return True if the $data is a valid IP address
+	   * @param String $data The data to validate
+	   * @return bool True if the $data is a valid IP address
+	   * @static
 	   */
 	  public static function validateIP( $data ) {
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: Table
  * Represents a data table in the AgilePHP persistence component.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.1a
+ * @version 0.2a
  */
 class Table {
 
@@ -40,6 +39,13 @@ class Table {
 
 	  private $columns = array();
 
+	  /**
+	   * Creates a new Table instance.
+	   * 
+	   * @param SimpleXMLElement $table The SimpleXMLElement instance representing the
+	   * 								physical database table.
+	   * @return void
+	   */
 	  public function __construct( SimpleXMLElement $table ) {
 
 	  		 $this->name = (string)$table->attributes()->name;
@@ -57,7 +63,7 @@ class Table {
 	  /**
 	   * Sets the table name
 	   * 
-	   * @param $name The name of the database table
+	   * @param String $name The name of the database table
 	   * @return void
 	   */
 	  public function setName( $name ) {
@@ -68,7 +74,7 @@ class Table {
 	  /**
 	   * Returns the name of the database table
 	   * 
-	   * @return The database table name
+	   * @return String The database table name
 	   */
 	  public function getName() {
 
@@ -78,7 +84,7 @@ class Table {
 	  /**
 	   * Sets the name of the domain model responsible for the table
 	   * 
-	   * @param $model The name of the domain model
+	   * @param String $model The name of the domain model
 	   * @return void
 	   */
 	  public function setModel( $model ) {
@@ -89,7 +95,7 @@ class Table {
 	  /**
 	   * Returns the name of the domain model responsible for the table
 	   * 
-	   * @return The domain model name
+	   * @return String The domain model name
 	   */
 	  public function getModel() {
 
@@ -101,7 +107,7 @@ class Table {
 	   * this is the name that is used in visual elements such as forms and result
 	   * lists when referencing the table.
 	   * 
-	   * @param $display The friendly display name for the table
+	   * @param String $display The friendly display name for the table
 	   * @return void
 	   */
 	  public function setDisplay( $display ) {
@@ -112,7 +118,7 @@ class Table {
 	  /**
 	   * Returns the friendly display name for the table.
 	   * 
-	   * @return The friendly display name
+	   * @return String The friendly display name
 	   */
 	  public function getDisplay() {
 
@@ -122,8 +128,8 @@ class Table {
 	  /**
 	   * Boolean field used to toggle automatic data validation for the table
 	   * 
-	   * @param $boolean True to enable validation, false to disable. Default is True.
-	   * @return unknown_type
+	   * @param bool $boolean True to enable validation, false to disable. Default is True.
+	   * @return void
 	   */
 	  public function setValidate( $boolean ) {
 
@@ -133,7 +139,7 @@ class Table {
 	  /**
 	   * Returns the boolean field used to toggle automatic data validation.
 	   *  
-	   * @return True if the table gets validated automatically, false otherwise.
+	   * @return bool True if the table gets validated automatically, false otherwise.
 	   */
 	  public function getValidate() {
 
@@ -144,7 +150,7 @@ class Table {
 	   * Sets the description field for the table. This field is used by visual elements
 	   * which reference the tables description.
 	   * 
-	   * @param $description A short description of the table
+	   * @param String $description A short description of the table
 	   * @return void
 	   */
 	  public function setDescription( $description ) {
@@ -155,7 +161,7 @@ class Table {
 	  /**
 	   * Returns the table description
 	   * 
-	   * @return The short description about the table
+	   * @return String The short description about the table
 	   */
 	  public function getDescription() {
 
@@ -165,7 +171,7 @@ class Table {
 	  /**
 	   * Sets the boolean field used to identify an AgilePHP Identity table.
 	   *  
-	   * @param $boolean True if the table is responsible for AgilePHP Identity persistence.
+	   * @param bool $boolean True if the table is responsible for AgilePHP Identity persistence.
 	   * @return void
 	   */
 	  public function setIsIdentity( $boolean ) {
@@ -176,7 +182,7 @@ class Table {
 	  /**
 	   * Returns true if the table is configured as an AgilePHP Identity table, false otherwise.
 	   * 
-	   * @return True if this is an AgilePHP Identity table, false otherwise 
+	   * @return bool True if this is an AgilePHP Identity table, false otherwise 
 	   */
 	  public function isIdentity() {
 
@@ -186,8 +192,8 @@ class Table {
 	  /**
 	   * Sets the boolean field used to identity an AgilePHP Session table.
 	   * 
-	   * @param $boolean True if the table is responsible for AgilePHP Session persistence.
-	   * @return True if this is an AgilePHP Session table, false otherwise
+	   * @param bool $boolean True if the table is responsible for AgilePHP Session persistence.
+	   * @return void
 	   */
 	  public function setIsSession( $boolean ) {
 
@@ -198,7 +204,7 @@ class Table {
 	   * Returns boolean indicator based on whether or not this is a table
 	   * responsible for AgilePHP session table.
 	   * 
-	   * @return unknown_type
+	   * @return bool True if this is an AgilePHP Session table, false otherwise
 	   */
 	  public function isSession() {
 
@@ -231,7 +237,7 @@ class Table {
 	   * Returns boolean response based on the presence of one or more Column
 	   * instances.
 	   * 
-	   * @return True if the table contains columns, false otherwise
+	   * @return bool True if the table contains columns, false otherwise
 	   */
 	  public function hasColumns() {
 
@@ -241,22 +247,18 @@ class Table {
 	  /**
 	   * Returns an array of Column instances which are configured for the table.
 	   * 
-	   * @return Array of column instances
+	   * @return array Array of column instances
 	   */
 	  public function getColumns() {
 
 	  		 return $this->columns;
 	  }
-
-
-	  /* Operations */
-
 	  
 	  /**
 	   * Returns a list of primary key columns in the current table.
 	   * 
-	   * @return An array of 'Column' objects which have been configured as primary keys
-	   * 		 in the current table.
+	   * @return array An array of 'Column' objects which have been configured as primary keys
+	   * 		 	   in the current table.
 	   */
 	  public function getPrimaryKeyColumns() {
 
@@ -271,7 +273,7 @@ class Table {
 	  /**
 	   * Returns a list of foreign key columns in the current table.
 	   * 
-	   * @return An array of 'Column' objects which contain foreign keys in the current table.
+	   * @return array An array of 'Column' objects which contain foreign keys in the current table.
 	   */
 	  public function getForeignKeyColumns() {
 
@@ -283,6 +285,11 @@ class Table {
 	  		 return $columns;
 	  }
 
+	  /**
+	   * Returns columns which have 'selectable' attributes configured in persistence.xml
+	   * 
+	   * @return array Columns which are selectable
+	   */
 	  public function getSelectableColumns() {
 
 	  		 $columns = array();
@@ -296,8 +303,8 @@ class Table {
 	  /**
 	   * Returns a list of all foreign keys which share the same 'name' attribute value
 	   * 
-	   * @param $name The name of the foreign key
-	   * @return An array of columns with the specified 'name' attribute
+	   * @param String $name The name of the foreign key
+	   * @return array An array of columns with the specified 'name' attribute
 	   */
 	  public function getForeignKeyColumnsByKey( $name ) {
 
@@ -314,8 +321,8 @@ class Table {
 	  /**
 	   * Looks up a 'Column' name by its persistence.xml 'property' attribute.
 	   * 
-	   * @param $property
-	   * @return unknown_type
+	   * @param $property The name of a domain model property to return its corresponding column name
+	   * @return mixed Column name or null if the column name could not be found
 	   */
 	  public function getColumnNameByProperty( $property ) {
 
@@ -338,7 +345,7 @@ class Table {
 	   * Returns the 'display' attribute value as configured in persistence.xml for
 	   * the specified 'property' value.
 	   * 
-	   * @param $property The name of the 'property' to retrieve the display name for
+	   * @param String $property The name of the domain model property to retrieve the display name for
 	   * @return The columns 'display' name or null if a display name has not been configured.
 	   */
 	  public function getDisplayNameByProperty( $property ) {
@@ -356,8 +363,8 @@ class Table {
 	   * Returns boolean response based on the 'visible' attribute in persistence.xml for the
 	   * column which contains the specified $property.
 	   * 
-	   * @param $property The domain object model's property name
-	   * @return True if the column is visible or false if the column is NOT visible
+	   * @param String $property The domain object model's property name
+	   * @return bool True if the column is visible or false if the column is NOT visible
 	   */
 	  public function isVisible( $property ) {
 
@@ -372,8 +379,8 @@ class Table {
 	   * Returns boolean response based on the presence of a column which is
 	   * configured in persistence.xml as a blob data type.
 	   * 
-	   * @return True if the table contains any blob columns or false if no
-	   * 		 blob columns exist.
+	   * @return bool True if the table contains any blob columns or false if no
+	   * 		 	  blob columns exist.
 	   */
 	  public function hasBlobColumn() {
 
@@ -388,8 +395,8 @@ class Table {
 	   * Returns boolean response based on the presence of a column which is
 	   * configured in persistence.xml as a foreign key.
 	   * 
-	   * @return True if the table contains any foriegn key columns or false if no
-	   * 		 foreign keys exist.
+	   * @return bool True if the table contains any foriegn key columns or false if no
+	   * 		 	  foreign keys exist.
 	   */
 	  public function hasForeignKey() {
 
@@ -404,8 +411,8 @@ class Table {
 	   * Returns boolean response based on whether or not there are any other
 	   * tables which have foreign keys referencing this table.
 	   * 
-	   * @return True if there are any other tables in the database which
-	   * 		 have foreign keys which reference this table.
+	   * @return bool True if there are any other tables in the database which
+	   * 		 	  have foreign keys which reference this table.
 	   */
 	  public function hasForeignKeyReferences() {
 
@@ -422,7 +429,7 @@ class Table {
 	  /**
 	   * Returns an instance of the model as configured in persistence.xml for this 'Table'.
 	   * 
-	   * @return An instance of the model responsible for the table's persistence.
+	   * @return Object An instance of the model responsible for the table's persistence.
 	   */
 	  public function getModelInstance() {
 
@@ -435,7 +442,7 @@ class Table {
 	   * for this table (by providing a display attribute value in persistence.xml for the Column),
 	   * then this value is returned, otherwise the table name attribute value is returned instead.
 	   * 
-	   * @return The name of the table which gets displayed to end users
+	   * @return String The name of the table which gets displayed to end users
 	   */
 	  public function getViewDisplayName() {
 

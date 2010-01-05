@@ -1,7 +1,7 @@
 <?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  */
 
 /**
- * AgilePHP :: MVC BaseModelXmlController
  * Provides base implementation for model xml controllers.
  * 
  * @author Jeremy Hahn
@@ -42,14 +41,14 @@ abstract class BaseModelXmlController extends BaseModelController {
 		  * data populated from the database result set.. If there is no 'id' set, the model's property
 		  * nodes will be null. A custom controller and action can be set to modify default behavior.
 		  * 
-		  * @param $controller The controller to use for add/update/delete operations. Defaults to the controller
-		  * 				   that invoked this method.
-		  * @param $action The controllers action method to invoke. Defaults to the model name (lowercase) followed
-		  * 			   by the action mode 'Add' or 'Edit' which is determined by whether or not an 'id' parameter
-		  * 			   has been specified. For example, a user model would be either 'userAdd' or 'userEdit' 
-		  * 			   depending on whether or not an 'id' parameter is specified. If no 'id' has been specified
-		  * 			   the default action would be 'userAdd', or 'userEdit' if an 'id' parameter has been set.
-		  * @param $params An array of parameters to 
+		  * @param String $controller Optional controller to use for add/update/delete operations. Defaults to the controller
+		  *   						  that invoked this method.
+		  * @param String $action The controllers action method to invoke. Defaults to the model name (lowercase) followed
+		  * 			  		  by the action mode 'Add' or 'Edit' which is determined by whether or not an 'id' parameter
+		  * 					  has been specified. For example, a user model would be either 'userAdd' or 'userEdit' 
+		  * 			   		  depending on whether or not an 'id' parameter is specified. If no 'id' has been specified
+		  * 			   		  the default action would be 'userAdd', or 'userEdit' if an 'id' parameter has been set.
+		  * @param array $params An array of parameters to pass into the action method 
 	      */
 	     protected function getModelAsFormXML( $controller = null, $action = null, $params = null ) {
 
@@ -342,9 +341,9 @@ abstract class BaseModelXmlController extends BaseModelController {
 	      * Adds foreign model element with primary key child element(s) for each
 	      * of the columns which are referenced in the child table.
 	      *   
-	      * @param $table The 'Table' element to search
-	      * @param $doc The SimpleXML DOM document
-	      * @param $node The XML DOM to join the foreign model xml to
+	      * @param Table $table The 'Table' element to search
+	      * @param SimpleXML $doc The SimpleXML DOM document
+	      * @param SimpleXML_Node $node The XML DOM to join the foreign model xml to
 	      * @return The new XML node with the added foreign key model references. If
 	      * 		the table does not contain any foreign keys references the $node
 	      * 		is returned untouched.

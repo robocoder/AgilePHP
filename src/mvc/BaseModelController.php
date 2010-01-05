@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
+ * @version 0.2a
  * @abstract
  */
 abstract class BaseModelController extends BaseController {
@@ -82,7 +82,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 		  * Sets the maximum number of records to return in a result list
 		  * 
-		  * @param $count Maximum number of records to return
+		  * @param Integer $count Maximum number of records to return
 		  * @return void
 	      */
 	     protected function setMaxResults( $count ) {
@@ -104,7 +104,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	  	  * Sets the SQL statement to use when calling executeQuery.
 	  	  * 
-	  	  * @param $sql A valid SQL statement
+	  	  * @param String $sql A valid SQL statement
 	      */
 	     protected function createQuery( $sql ) {
 
@@ -125,7 +125,7 @@ abstract class BaseModelController extends BaseController {
 		  * Sets the pagination page number and performs an SQL query to populate the 'resultList'
 		  * and 'resultCount' properties with their appropriate values for the specified page.
 		  * 
-		  * @param $pageNumber The page number. Default is 1.
+		  * @param Integer $pageNumber The page number. Default is 1.
 		  * @return void
 	      */
 	     protected function setPage( $pageNumber = 1 ) {
@@ -139,7 +139,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Sets WHERE clause restrictions
 	      * 
-	      * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array( 'id' => 21 ) )
+	      * @param array $restrictions An associative array containing WHERE clause restrictions. (For example: array( 'id' => 21 ) )
 	      * @return void
 	      */
 	     protected function setRestrictions( array $restrictions ) {
@@ -150,7 +150,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Sets the restriction operator (and|or) used in SQL WHERE clause.
 	      * 
-	      * @param $operator The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.
+	      * @param String $operator The logical operator to be used in SQL WHERE clause. Default is 'AND'. (AND|OR)
 	      * @return void
 	      */
 	     protected function setRestrictionsLogicOperator( $operator ) {
@@ -161,7 +161,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Sets the SQL 'group by' clause.
 	      * 
-	      * @param $column The column name to group the result set by
+	      * @param String $column The column name to group the result set by
 	      * @return void
 	      */
 	     protected function setGroupBy( $column ) {
@@ -172,8 +172,8 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Sets the SQL 'order by' clause.
 	      * 
-	      * @param $column The column name to order the result set by
-	      * $param $direction The direction to sort the result set (ASC|DESC).
+	      * @param String $column The column name to order the result set by
+	      * $param String $direction The direction to sort the result set (ASC|DESC).
 	      * @return void
 	      */
 	     protected function setOrderBy( $column, $direction ) {
@@ -185,7 +185,7 @@ abstract class BaseModelController extends BaseController {
 	      * Returns an associative array containing the current 'orderBy' clause. The results
 	      * are returned with the name of the column as the index and the direction as the value.
 	      * 
-	      * @return An associative array containing the name of the column to sort as the key/index
+	      * @return Array An associative array containing the name of the column to sort as the key/index
 	      * 		and the direction of the sort order (ASC|DESC) as the value. 
 	      */
 	     protected function getOrderBy() {
@@ -196,7 +196,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Returns the total number of records in the database table
 	      * 
-	      * @return Total number of records
+	      * @return Integer Total number of records
 	      */
 	     protected function getCount() {
 
@@ -206,7 +206,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Returns the current page number
 	      * 
-	      * @return The current page number
+	      * @return Integer The current page number
 	      */
 	     protected function getPage() {
 
@@ -217,7 +217,7 @@ abstract class BaseModelController extends BaseController {
 	      * Returns the total number of pages. This is calculated by dividing the total
 	      * number of records by 'maxResults'.
 	      * 
-	      * @return The total number of pages
+	      * @return Integer The total number of pages
 	      */
 	     protected function getPageCount() {
 
@@ -228,7 +228,7 @@ abstract class BaseModelController extends BaseController {
 	      * Returns boolean result based on whether or not a 'next page' result is available during
 	      * a pagination request.
 	      * 
-	      * @return True if there is a next page, false if this is the last page
+	      * @return bool True if there is a next page, false if this is the last page
 	      */
 	     protected function nextExists() {
 
@@ -239,7 +239,7 @@ abstract class BaseModelController extends BaseController {
 	      * Returns boolean result based on whether or not a 'previous page' result is available during
 	      * a pagination request.
 	      * 
-	      * @return True if there is a previous page, false if this is the first page
+	      * @return bool True if there is a previous page, false if this is the first page
 	      */
 	     protected function previousExists() {
 
@@ -249,7 +249,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Sets the result list up with a 'next page' of a pagination request
 	      * 
-	      * @return void
+	      * @return Causes a 'next page' to load when using the AgilePHP MVC framework
 	      */
 	     protected function getNextResultList() {
 
@@ -259,7 +259,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Sets the result list up with a 'previous page' of a pagination request
 	      * 
-	      * @return void
+	      * @return Causes a 'previous page' to load when using the AgilePHP MVC framework
 	      */
 	     protected function getPreviousResultList() {
 
@@ -318,7 +318,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Search for an ActiveRecord for the model defined in the extension class.
 	      * 
-	      * @return A new instance of the model with all of its properties filled out
+	      * @return mixed A new instance of the model with all of its properties filled out
 	      * 		according to the persisted ActiveRecord.
 	      */
 	     protected function find( $model = null ) {

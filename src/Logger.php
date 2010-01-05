@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: Logger
  * Performs basic logging functionality
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class Logger {
 
@@ -42,6 +41,7 @@ class Logger {
 	   * 'FileLogger' is returned. 
 	   * 
 	   * @return An instance of the configured logger in agilephp.xml. Default is 'FileLogger'.
+	   * @static
 	   */
 	  public static function getInstance() {
 
@@ -55,7 +55,7 @@ class Logger {
 	   * Used by AgilePHP main framework class to automatically load Logger based on agilephp.xml
 	   * configuration.
 	   * 
-	   * @param $config The SimpleXMLElement containing the agilephp.xml Logger configuration 
+	   * @param SimpleXMLElement $config The SimpleXMLElement containing the agilephp.xml Logger configuration 
 	   * @return void
 	   */
 	  public function setConfig( SimpleXMLElement $config ) {
@@ -67,7 +67,7 @@ class Logger {
 	  /**
 	   * Writes a 'debug' log level entry.
 	   * 
-	   * @param $message The debug message to log
+	   * @param String $message The debug message to log
 	   * @return void
 	   */
 	  public function debug( $message ) {
@@ -79,7 +79,7 @@ class Logger {
 	  /**
 	   * Writes a 'warn' log level entry.
 	   * 
-	   * @param $message The warning message to log
+	   * @param String $message The warning message to log
 	   * @return void
 	   */
 	  public function warn( $message ) {
@@ -90,7 +90,7 @@ class Logger {
 	  /**
 	   * Writes an 'info' log level entry.
 	   * 
-	   * @param $message The informative message to log
+	   * @param String $message The informative message to log
 	   * @return void
 	   */
 	  public function info( $message ) {
@@ -101,7 +101,7 @@ class Logger {
 	  /**
 	   * Writes an 'error' log level entry.
 	   * 
-	   * @param $message The error message to log.
+	   * @param String $message The error message to log.
 	   * @return void
 	   */
 	  public function error( $message ) {
@@ -112,8 +112,8 @@ class Logger {
 	  /**
 	   * Writes a log entry.
 	   * 
-	   * @param $message The message to log
-	   * @param $level The 'log level' (warn|info|error|debug)
+	   * @param String $message The message to log
+	   * @param String $level The 'log level' (warn|info|error|debug)
 	   * @return void
 	   */
 	  private function write( $message, $level ) {

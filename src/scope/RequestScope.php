@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  */
 
 /**
- * AgilePHP :: RequestScope
  * Stores PHP $_POST variables, performs sanitizing, and has built
  * in support to guard against CSFR attacks using a double cookie
  * submit approach.
@@ -28,7 +27,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
- * @version 0.1a
+ * @version 0.2a
  */
 class RequestScope {
 
@@ -39,7 +38,7 @@ class RequestScope {
 	   * Initalize RequestScope by storing all HTTP POST variables.
 	   * 
 	   * $_GET variables are not used in AgilePHP for two reasons: 
-	   * 1) GET requests are limited to 255 characters
+	   * 1) 255 character limit
 	   * 2) GET requests make XSS attacks easier to execute
 	   * 
 	   * @return void
@@ -68,6 +67,7 @@ class RequestScope {
 	   * Returns singleton instance of RequestScope
 	   * 
 	   * @return Singleton instance of RequestScope
+	   * @static
 	   */
 	  public static function getInstance() {
 
@@ -78,10 +78,10 @@ class RequestScope {
 	  }
 
 	  /**
-	   * Sets a store variable.
+	   * Sets a request variable.
 	   * 
-	   * @param $key The key/index of for the variable
-	   * @param $value The variable value
+	   * @param String $key The key/index of for the variable
+	   * @param String $value The variable value
 	   * @return void
 	   */
 	  public function set( $key, $value ) {
@@ -90,7 +90,7 @@ class RequestScope {
 	  }
 
 	  /**
-	   * Returns a store variable.
+	   * Returns a request variable.
 	   * 
 	   * @param $key The key/index of the variable
 	   * @return The variable value
@@ -109,8 +109,8 @@ class RequestScope {
 	   * followed by addslashes and finally htmlspecialchars. Use htmlspecialchars_decode
 	   * to decode the sanitized value.
 	   * 
-	   * @param $key The key/index of the variable
-	   * @return The sanitized value
+	   * @param String $key The key/index of the variable
+	   * @return String The sanitized value
 	   * @see http://en.wikipedia.org/wiki/Cross-site_scripting
 	   */
 	  public function getSanitized( $key ) {
@@ -124,7 +124,7 @@ class RequestScope {
 	  /**
 	   * Returns the variable store.
 	   * 
-	   * @return Returns an array containing all PHP $_GET and $_POST variables
+	   * @return array Returns an array containing all PHP $_GET and $_POST variables
 	   */
 	  public function getParameters() {
 
@@ -134,7 +134,7 @@ class RequestScope {
  	  /**
 	   * Creates a 20-30 character token used to guard against CSFR attacks.
 	   * 
-	   * @return The generated request token
+	   * @return String The generated request token
 	   * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
 	   */
 	  public function createToken() {
@@ -177,7 +177,7 @@ class RequestScope {
 	   * Sanitizes the specified data by running it through htmlspecialchars,
 	   * addslashes, and strip_tags.
 	   * 
-	   * @param $data The data to sanitize
+	   * @param String $data The data to sanitize
 	   * @return The sanitized data
 	   */
 	  public function sanitize( $data ) {

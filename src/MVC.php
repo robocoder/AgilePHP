@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@
  */
 
 /**
- * AgilePHP :: Model-View-Control (MVC)
+ * Model-View-Control (MVC) component
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class MVC {
 
@@ -50,6 +50,7 @@ class MVC {
 	   * Returns a singleton instance of MVC
 	   * 
 	   * @return Singleton instance of MVC
+	   * @static
 	   */
 	  public static function getInstance() {
 
@@ -62,14 +63,10 @@ class MVC {
 	  /**
 	   * Initalizes the MVC component with agilephp.xml configuration.
 	   * 
-	   * @param $config SimpleXMLElement containing the MVC configuration.
+	   * @param SimpleXMLElement $config SimpleXMLElement containing the MVC configuration.
 	   * @return void
-	   * @throws AgilePHP_Exception If $config is not an instance of SimpleXMLElement
 	   */
-	  public function setConfig( $config ) {
-
-	  		 if( !$config instanceof SimpleXMLElement )
-	  		     throw new AgilePHP_Exception( 'MVC configuration must be an instance of SimpleXMLElement' );
+	  public function setConfig( SimpleXMLElement $config ) {
 
 	  		 if( $config->attributes()->controller ) {
 
@@ -94,7 +91,7 @@ class MVC {
 	   * Sets the name of the default controller which is used if one is not
 	   * specified in the request URI. Default is 'IndexController'.
 	   * 
-	   * @param $name The name of the controller
+	   * @param String $name The name of the controller
 	   * @return void
 	   */
 	  public function setDefaultController( $name ) {
@@ -106,7 +103,7 @@ class MVC {
 	   * Returns the name of a default controller if one is not specified
 	   * in the request URI. Default is 'IndexController'.
 	   * 
-	   * @return The name of the default controller
+	   * @return String The name of the default controller
 	   */
 	  public function getDefaultController() {
 
@@ -117,7 +114,7 @@ class MVC {
 	   * Sets the name of the default action method if one is not specified
 	   * in the request URI. Default is 'index'. 
 	   * 
-	   * @param $name The name of the default action method
+	   * @param String $name The name of the default action method
 	   * @return void
 	   */
 	  public function setDefaultAction( $name ) {
@@ -129,7 +126,7 @@ class MVC {
 	   * Returns the name of a default action method if one is not specified
 	   * in the request URI. Default is 'index'.
 	   * 
-	   * @return The name of the default action method
+	   * @return String The name of the default action method
 	   */
 	  public function getDefaultAction() {
 
@@ -139,7 +136,7 @@ class MVC {
 	  /**
 	   * Sets the name of the default view renderer. Default is 'PHTMLRenderer'.
 	   * 
-	   * @param $renderer The name of a view renderer to use as the default
+	   * @param String $renderer The name of a view renderer to use as the default
 	   * @return void
 	   */
 	  public function setDefaultRenderer( $renderer ) {
@@ -150,7 +147,7 @@ class MVC {
 	  /**
 	   * Returns the name of the default view renderer
 	   * 
-	   * @return The default view renderer
+	   * @return String The default view renderer
 	   */
 	  public function getDefaultRenderer() {
 
@@ -160,7 +157,7 @@ class MVC {
 	  /**
 	   * Returns the name of the controller currently in use.
 	   * 
-	   * @return The name of the controller in use by the MVC component.
+	   * @return String The name of the controller in use by the MVC component.
 	   */
 	  public function getController() {
 	  	
@@ -170,7 +167,7 @@ class MVC {
 	  /**
 	   * Returns the action currently being invoked.
 	   * 
-	   * @return The name of the action currently being invoked.
+	   * @return String The name of the action currently being invoked.
 	   */
 	  public function getAction() {
 
@@ -251,7 +248,7 @@ class MVC {
 	  /**
 	   * Returns a new instance of the default view renderer
 	   * 
-	   * @return An instance of the default renderer
+	   * @return Object An instance of the default renderer
 	   */
 	  public function createDefaultRenderer() {
 
@@ -271,7 +268,7 @@ class MVC {
 	  /**
 	   * Returns a new instance of the specified view renderer
 	   * 
-	   * @return An instance of the specified renderer
+	   * @return Object An instance of the specified renderer
 	   */
 	  public function createRenderer( $renderer ) {
 
@@ -292,7 +289,7 @@ class MVC {
 	   * 
 	   * @param $renderer The name of the custom view renderer
 	   * @param $classpath A relative child path under the webapp's 'classes' folder where the renderer is located.
-	   * @return A new instance of the custom renderer
+	   * @return Object A new instance of the custom renderer
 	   */
 	  public function createCustomRenderer( $renderer, $classpath='' ) {
 

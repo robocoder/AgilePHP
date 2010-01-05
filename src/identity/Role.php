@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,19 +20,24 @@
  */
 
 /**
- * AgilePHP :: Role
- * Role associated with an Identity
+ * Role associated with an AgilePHP Identity
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
- * @version 0.1a
+ * @version 0.2a
  */
 class Role {
 
 	  private $name;
 	  private $description;
 
+	  /**
+	   * Creates a new instance of Role.
+	   * 
+	   * @param String $name An optional user friendly name of the role. 
+	   * @return void
+	   */
 	  public function __construct( $role = null ) {
 
 	  		 if( $role ) $this->name = $role;
@@ -41,7 +46,7 @@ class Role {
 	  /**
 	   * Sets the name of the role
 	   * 
-	   * @param $name The role name
+	   * @param String $name The role name
 	   * @return void
 	   */
 	  public function setName( $name ) {
@@ -52,7 +57,7 @@ class Role {
 	  /**
 	   * Returns the name of the role
 	   * 
-	   * @return The role name
+	   * @return String The role name
 	   */
 	  public function getName() {
 
@@ -62,7 +67,7 @@ class Role {
 	  /**
 	   * Sets the description of the role.
 	   * 
-	   * @param $description The role description
+	   * @param String $description The role description
 	   * @return void
 	   */
 	  public function setDescription( $description ) {
@@ -73,7 +78,7 @@ class Role {
 	  /**
 	   * Returns the role description
 	   * 
-	   * @return The role description
+	   * @return String The role description
 	   */
 	  public function getDescription() {
 	  	

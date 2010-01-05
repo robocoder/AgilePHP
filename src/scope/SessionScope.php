@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,14 @@
  */
 
 /**
- * AgilePHP :: SessionScope
+ * Maintains persistent session data that lives over multiple page requests. This
+ * data is stored in the database to allow greater flexibility and easier clustering
+ * compared to the native local file system approach PHP uses.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
- * @version 0.3a
+ * @version 0.4a
  */
 class SessionScope {
 
@@ -74,7 +76,8 @@ class SessionScope {
 	  /**
 	   * Returns a singleton instance of SessionScope
 	   * 
-	   * @return Singleton instance of SessionScope
+	   * @return SessionScope Singleton instance of SessionScope
+	   * @static
 	   */
 	  public static function getInstance() {
 
@@ -86,9 +89,9 @@ class SessionScope {
 
 	  /**
 	   * Returns the session domain model object which maintains the id and data for
-	   * the current Session ActiveRecord.
+	   * the current Session's ActiveRecord.
 	   *  
-	   * @return void
+	   * @return Session The current Session instance
 	   */
 	  public function getSession() {
 
@@ -98,7 +101,7 @@ class SessionScope {
 	  /**
 	   * Returns the session id for the current Session.
 	   * 
-	   * @return The session id
+	   * @return String The session id
 	   */
 	  public function getSessionId() {
 
@@ -106,7 +109,7 @@ class SessionScope {
 	  }
 
 	  /**
-	   * Sets the session id and attempts to restore a previously persisted Session. 
+	   * Sets the session id and restores a previously persisted Session if one exists. 
 	   * 
 	   * @return void
 	   */
@@ -126,10 +129,9 @@ class SessionScope {
 	  }
 
 	  /**
-	   * Returns the value corresponding to the specified key stored in the current
-	   * Session.
+	   * Returns the value corresponding to the specified key stored in the current Session.
 	   * 
-	   * @param $key The variable's key/name
+	   * @param String $key The variable's key/name
 	   * @return The value if present, otherwise null.
 	   */
 	  public function get( $key ) {
@@ -147,8 +149,8 @@ class SessionScope {
 	  /**
 	   * Sets a new Session variable.
 	   * 
-	   * @param $key The variable name
-	   * @param $value The variable value
+	   * @param String $key The variable name
+	   * @param String $value The variable value
 	   * @return void
 	   */
 	  public function set( $key, $value ) {
@@ -213,7 +215,7 @@ class SessionScope {
 	   * Returns boolean flag indicating whether or not the current session
 	   * data is persisted.
 	   *  
-	   * @return True if the session data is persisted, false otherwise
+	   * @return bool True if the session data is persisted, false otherwise
 	   */
 	  public function isPersisted() {
 
@@ -275,7 +277,7 @@ class SessionScope {
 	  /**
 	   * Generates a 21 character session id
 	   * 
-	   * @return The generated session id
+	   * @return String The generated session id
 	   */
 	  private function createSessionId() {
 

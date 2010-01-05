@@ -1,21 +1,7 @@
-0.3a
+0.4a
 ----
 
-- Bug fix to BasePersistence::merge. Some update queries were resulting in a tailing comma on last column name resulting in broken update query.
-- Bug fixes to generator/templates/views. Several files contained broken links due to an extra double quote in the href paths.
-- Added "admin_navigation.phtml" to generator/templates/views.
-- Warning fix to SessionScope::get when $this->session->getData() was null.
-- Bug fix to MVC::BaseController. AgilePHP::getInstance() refactored to AgilePHP::getFramework() and set BaseController::renderer to created instances.
-- Added XHR().eval method to AgilePHP.js client side library
-- Bug fix to BasePersistence::execute. Refactored debug logging entry from implode to use print_r( $inputParameters, true )
-- Added User::enabled property and added 'register' and 'confirm' methods to identity component. Effected files are:
-	o Identity.php
-	o IdentityManager.php
-	o IdentityModel.php
-	o User.php
-	o agilephp.dtd
-- E_STRICT bug fix to AgilePHP.php line 665
-- Bug fixes to MVC class. Class fields 'action' and 'controller' were not being set by processRequest() method. Also fixed error caused by trailing
-  forward slash with no controller specified (ie, /index.php/).
-- Added iv and key attributes to crypto component agilephp.dtd. Added support to Crypto php component to self populate its iv and key fields based
-  on agilephp.xml if present
+- Fix warning message in AnnotationParser::get*AsArray methods when the requested class doesnt exit.
+- Bug fix to AnnotationParser::parseAnnotations regex.
+- Added confirmationUrl to createAgilePhpXML method inside generator/CreateProject.php.
+- Updated PHPdoc's on all classes

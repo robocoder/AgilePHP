@@ -1,7 +1,7 @@
 <?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@
  */
 
 /**
- * AgilePHP :: i18n (internationalization)
+ * Internationalization
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class i18n {
 
@@ -59,7 +59,8 @@ class i18n {
 	  /**
 	   * Returns a singleton instance of i18n
 	   * 
-	   * @return Singleton instance of i18n
+	   * @return i18n Singleton instance of i18n
+	   * @static
 	   */
 	  public static function getInstance() {
 
@@ -72,7 +73,7 @@ class i18n {
 	  /**
 	   * Sets the messaging domain. This is the name of your .PO/.MO files.
 	   * 
-	   * @param $domain The messaging domain. Defaults to 'messages'.
+	   * @param String $domain The messaging domain. Defaults to 'messages'.
 	   * @return void
 	   */
 	  public function setDomain( $domain ) {
@@ -86,7 +87,7 @@ class i18n {
 	  /**
 	   * Returns the messaging domain.
 	   * 
-	   * @return void
+	   * @return String The messaging domain
 	   */
 	  public function getDomain() {
 
@@ -118,8 +119,9 @@ class i18n {
 	  /**
 	   * Performs language translation based on the configured locale.
 	   * 
-	   * @param $text The text to translate
+	   * @param String $text The text to translate
 	   * @return void
+	   * @static
 	   */
 	  public static function translate( $text ) {
 

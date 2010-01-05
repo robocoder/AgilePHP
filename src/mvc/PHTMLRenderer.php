@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  */
 
 /**
- * AgilePHP :: MVC PHTMLRenderer
  * Provides base rendering implementation for PHTML (PHP) views.
  * 
  * @author Jeremy Hahn
@@ -34,7 +33,7 @@ class PHTMLRenderer extends BaseRenderer {
 	   * Renders a view by dumping all 'store' variables to locallly scoped (page) variables. The view
 	   * is expected to be in <webapp>/view.
 	   * 
-	   * @param $view The view which is rendered from the web app's 'view' directory
+	   * @param String $view The view which is rendered from the web app's 'view' directory
 	   * @return void
        */
       public function render( $view ) {
@@ -62,8 +61,9 @@ class PHTMLRenderer extends BaseRenderer {
 	   * Renders a component view by dumping all 'store' variables to locallly scoped (page) variables. The view is
 	   * expected to be in <webapp>/component/<component_name>/view.
 	   * 
-	   * @param $componentName
-	   * @return unknown_type
+	   * @param $componentName The name of the component to render
+	   * @param $view The name of the component view to render
+	   * @return void
 	   */
 	  public function renderComponent( $componentName, $view ) {
 

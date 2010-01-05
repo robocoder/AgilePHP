@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
+ * @version 0.2a
  * @static
  * @abstract
  */
@@ -59,7 +59,7 @@ abstract class BaseController {
 		  * Creates an instance of the specified renderer the controller will use to render views.
 		  * This renderer is loaded from the AgilePHP framework.
 		  * 
-		  * @param $renderer The framework renderer the controller will use to render views
+		  * @param String $renderer The name of a renderer the controller will use to render views
 		  * @return void
 	      */
 	     protected function createRenderer( $renderer ) {
@@ -71,7 +71,8 @@ abstract class BaseController {
 		  * Creates an instance of the specified custom renderer the controller will use to render views.
 		  * This renderer is loaded from the application 'classes' directory.
 		  * 
-		  * @param $renderer The custom renderer the controller will use to render views
+		  * @param String $renderer The name of a custom renderer the controller will use to render views.
+		  * 						Use this method to load renderers outside of the framework mvc package.
 		  * @return void
 	      */
 	     protected function createCustomRenderer( $renderer ) {
@@ -83,7 +84,7 @@ abstract class BaseController {
 	      * Returns the raw JavaScript contents of the AgilePHP.js file and pre-configures the library
 	      * with a default AgilePHP.debug, AgilePHP.MVC.controller, and AgilePHP.MVC.action value.
 	      * 
-	      * @param $debug True to enable client side AgilePHP debugging.
+	      * @param bool $debug True to enable client side AgilePHP debugging.
 	      * @return void
 	      */
 	     public function getBaseJS( $debug = false ) {

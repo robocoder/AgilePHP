@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: MVC AJAXRenderer
- * Renders data to JSON and XML with appropriate content-type header.
+ * Renders data in JSON or XML, optionally with appropriate content-type header.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.mvc
- * @version 0.2a
+ * @version 0.3a
  */
 class AJAXRenderer extends BaseRenderer {
 
@@ -34,7 +33,8 @@ class AJAXRenderer extends BaseRenderer {
 
 	  /**
 	   * Renders the specified PHP data according to $output. The approriate
-	   * content-type to the HTTP response header.
+	   * content-type to the HTTP response header. After rendering JSON,
+	   * exit() is called.
 	   * 
 	   * (non-PHPdoc)
 	   * @see src/mvc/BaseRenderer#render($view)
@@ -52,6 +52,7 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		 	 header( 'content-type: application/json' );
 	  		 	 print $json;
+	  		 	 exit;
 	  		 }
 
 	  		 else if( $this->output == 'xml' ) {
@@ -67,9 +68,9 @@ class AJAXRenderer extends BaseRenderer {
 
 	  /**
 	   * Renders the specified data according to $output without sending
-	   * an HTTP content-type header.
+	   * an HTTP content-type header. After rendering JSON, exit() is called.
 	   * 
-	   * @param $data The data to render
+	   * @param Object $data A stdClass object to output as either XML or JSON.
 	   * @return void
 	   */
 	  public function renderNoHeader( $data ) {
@@ -84,6 +85,7 @@ class AJAXRenderer extends BaseRenderer {
 	  		 	 Logger::getInstance()->debug( 'AJAXRenderer::render Rendering JSON ' . $json );
 
 	  		 	 print $json;
+	  		 	 exit;
 	  		 }
 
 	  		 else if( $this->output == 'xml' ) {
@@ -97,11 +99,11 @@ class AJAXRenderer extends BaseRenderer {
 	  }
 
 	  /**
-	   * Renders the specified data without sending it through any of the AJAXRender
-	   * internal formatting/converting methods. An appropriate HTTP content-type
+	   * Renders the specified raw data without sending it through any of the AJAXRender
+	   * internal formatting/conversion methods. An appropriate HTTP content-type
 	   * header is added to the response.
 	   *  
-	   * @param $data The raw data to render
+	   * @param mixed $data The raw data to render
 	   * @return void
 	   */
 	  public function renderNoFormat( $data ) {
@@ -127,10 +129,10 @@ class AJAXRenderer extends BaseRenderer {
 
 	  /**
 	   * Renders the specified data without sending it through any of the AJAXRenderer
-	   * internal formatting/converting methods. In addition, no HTTP content-type header
+	   * internal formatting/conversion methods. In addition, no HTTP content-type header
 	   * is added to the response.
 	   * 
-	   * @param $data The data to render
+	   * @param Object $data The data to render
 	   * @return void
 	   */
 	  public function renderNoFormatNoHeader( $data ) {
@@ -141,8 +143,9 @@ class AJAXRenderer extends BaseRenderer {
 	  /**
 	   * Sets the desired output type.
 	   * 
-	   * @param $type The data type output to the requestor. (XML|JSON)
+	   * @param String $type The data formatting to use during output. (XML|JSON)
 	   * @return void
+	   * @throws AgilePHP_Exception if invalid formatting type is specified
 	   */
 	  public function setOutput( $type ) {
 
@@ -167,9 +170,8 @@ class AJAXRenderer extends BaseRenderer {
 	   * private fields within objects, so here we make use PHP 5.3+
 	   * ReflectionProperty::setAccessible to access the private/protected properties.
 	   * 
-	   * @param $data The data to transform to JSON
-	   * @param $name Used internally within the method to perform
-	   * 			  recursion logic.
+	   * @param mixed $data An array or object to transform into JSON
+	   * @param String $name Used internally within the method to perform recursion logic.
 	   * @return The JSON encoded data
 	   */
 	  private function toJSON( $data, $name = null ) {
@@ -253,9 +255,8 @@ class AJAXRenderer extends BaseRenderer {
 	  /**
 	   * Recursively transforms the specified PHP data to XML.
 	   * 
-	   * @param $data The data to transform to XML
-	   * @param $name Used internally within the method to perform
-	   * 			  recursion logic
+	   * @param mixed $data An array or object to transform into XML
+	   * @param $name Used internally within the method to perform recursion logic
 	   * @return The XML string
 	   */
 	  private function toXML( $data, $name = null ) {

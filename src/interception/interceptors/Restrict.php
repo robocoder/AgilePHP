@@ -20,20 +20,43 @@
  */
 
 /**
- * AgilePHP :: Restrict
- * Interceptor for @Restrict annotations
+ * AgilePHP interceptor responsible for throwing an AgilePHP_AccessDeniedException if
+ * the current logged in user (represented by the state of the Identity component)
+ * does not contain the specified role.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
- * @version 0.1a
+ * @version 0.2a
+ * @example #@Restrict( role = "admin" )
+ * @example #@Restrict( role = "admin", message = "Your not allowed here!" )
+ * @example #@Restrict( roles = { "admin", "member" } )
+ * @example #@Restrict( roles = { "admin", "member" }, message = "Your not a member of any required roles!" ) 
  */
 
 #@Interceptor
 class Restrict {
 
+	  /**
+	   * Restrict annotation argument containing the name of the required role.
+	   *  
+	   * @var String The required role name
+	   */
 	  public $role;
+	  
+	  /**
+	   * Restrict annotation argument containing an array of required role names.
+	   * 
+	   * @var Array An array of required role names
+	   */
 	  public $roles;
+
+	  /**
+	   * Restrict annotation optional argument containing the message to display
+	   * if the current identity does not contain any of the required roles.
+	   *  
+	   * @var String Optional message used in AgilePHP_AccessDeniedException error message
+	   */
 	  public $message;
 
 	  #@AroundInvoke
@@ -57,9 +80,10 @@ class Restrict {
 	  }
 
 	  /**
-	   * Performs an audit entry in the log file
-	   * @param $message Custom error message as defined in the annotation defintion
-	   * @param $ic The InvocationContext which contains the call state
+	   * Writes an entry in the log file for security auditing.
+	   * 
+	   * @param String $message Custom error message as defined in the annotation defintion
+	   * @param InvocationContext $ic The InvocationContext which contains the current call state
 	   * @return void
 	   */
 	  private function audit( $message, $ic ) {

@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: ForeignKey
  * Represents a foreign key in the AgilePHP persistence component.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.1a
+ * @version 0.2a
  */
 class ForeignKey {
 
@@ -62,7 +61,7 @@ class ForeignKey {
 	   * Sets the name of the foreign key. This is the actual name given to
 	   * the foreign key according to the database server.
 	   * 
-	   * @param $name The foreign key name
+	   * @param String $name The foreign key name
 	   * @return void
 	   */
 	  public function setName( $name ) {
@@ -83,7 +82,7 @@ class ForeignKey {
 	  /**
 	   * Sets the foreign key value data type.
 	   *  
-	   * @param $type The data type of the value being stored in the foreign key column
+	   * @param String $type The data type of the value being stored in the foreign key column
 	   * @return void
 	   */
 	  public function setType( $type ) {
@@ -104,7 +103,7 @@ class ForeignKey {
 	  /**
 	   * Sets the name of the referenced table.
 	   * 
-	   * @param $tableName The name of the referenced (parent) table.
+	   * @param String $tableName The name of the referenced (parent) table.
 	   * @return void
 	   */
 	  public function setReferencedTable( $tableName ) {
@@ -115,7 +114,7 @@ class ForeignKey {
 	  /**
 	   * Returns the physical name of the referenced table.
 	   * 
-	   * @return The referenced (parent) table name
+	   * @return String The referenced (parent) table name
 	   */
 	  public function getReferencedTable() {
 
@@ -125,7 +124,7 @@ class ForeignKey {
 	  /**
 	   * Sets the name of the referenced (parent) column.
 	   * 
-	   * @param $columnName The referenced column name
+	   * @param String $columnName The referenced column name
 	   * @return void
 	   */
 	  public function setReferencedColumn( $columnName ) {
@@ -136,7 +135,7 @@ class ForeignKey {
 	  /**
 	   * Returns the name of the referenced (parent) column.
 	   * 
-	   * @return The name of the referenced (parent) column.
+	   * @return String The name of the referenced (parent) column.
 	   */
 	  public function getReferencedColumn( ) {
 
@@ -147,8 +146,8 @@ class ForeignKey {
 	   * Sets the name of the referenced MVC controller responsible
 	   * for the management of the referenced domain model.
 	   *  
-	   * @param $controller The controller responsible for the management of the
-	   * 					referenced domain model
+	   * @param String $controller The controller responsible for the management of the
+	   * 						   referenced domain model
 	   * @return void
 	   */
 	  public function setReferencedController( $controller ) {
@@ -160,7 +159,7 @@ class ForeignKey {
 	   * Returns the name of the referenced MVC controller responsible
 	   * for the management of the referenced domain model.
 	   * 
-	   * @return The referenced controller name
+	   * @return String The referenced controller name
 	   */
 	  public function getReferencedController() {
 
@@ -172,7 +171,7 @@ class ForeignKey {
 	   * is performed automatically by the database server anytime the
 	   * primary key in the foreign (parent) table is updated.
 	   * 
-	   * @param $action The action to perform (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
+	   * @param String $action The action to perform (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
 	   * @return void
 	   */
 	  public function setOnUpdate( $action ) {
@@ -183,7 +182,7 @@ class ForeignKey {
 	  /**
 	   * Returns the configured SQL 'OnUpdate' action for the foreign key.
 	   * 
-	   * @return The configured action (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
+	   * @return String The configured action (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
 	   */
 	  public function getOnUpdate() {
 
@@ -194,8 +193,8 @@ class ForeignKey {
 	   * Sets the SQL 'OnDelete' action which is invoked when the foreign (parent)
 	   * key is updated.
 	   * 
-	   * @param $action The action to perform when the foreign (parent) key is deleted. 
-	   * 			    (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
+	   * @param String $action The action to perform when the foreign (parent) key is deleted. 
+	   * 			   		  (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
 	   * @return void
 	   */
 	  public function setOnDelete( $action ) {
@@ -206,8 +205,8 @@ class ForeignKey {
 	  /**
 	   * Returns the configured SQL 'OnDelete' action for the foreign key.
 	   * 
-	   * @return The action to perform when the foreign (parent) key is deleted.
-	   * 		 (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
+	   * @return String The action to perform when the foreign (parent) key is deleted.
+	   * 				(NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
 	   */
 	  public function getOnDelete() {
 
@@ -217,7 +216,7 @@ class ForeignKey {
 	  /**
 	   * Sets the physical name of the foreign key table.
 	   * 
-	   * @param $tableName The phsical name of the foreign key table.
+	   * @param String $tableName The phsical name of the foreign key table.
 	   * @return void
 	   */
 	  public function setFkTable( $tableName ) {
@@ -228,7 +227,7 @@ class ForeignKey {
 	  /**
 	   * Returns the name of the table that stores this foreign key.
 	   * 
-	   * @return The foreign key (parent) table
+	   * @return String The foreign key (parent) table
 	   */
 	  public function getFkTable() {
 
@@ -238,7 +237,7 @@ class ForeignKey {
 	  /**
 	   * The name of the column which stores this foreign key
 	   *  
-	   * @param $columnName The physical column name
+	   * @param String $columnName The physical column name
 	   * @return void
 	   */
 	  public function setFkColumn( $columnName ) {
@@ -249,7 +248,7 @@ class ForeignKey {
 	  /**
 	   * Returns the physical name of the column which stores the foreign key.
 	   * 
-	   * @return The physical name of the column storing the foreign key
+	   * @return String The physical name of the column storing the foreign key
 	   */
 	  public function getFkColumn() {
 
@@ -260,7 +259,7 @@ class ForeignKey {
 	   * Sets the name of the foreign table's column which should be displayed
 	   * in a drop-down in place of the actual foreign key value.
 	   *  
-	   * @param $columnName The foreign column name
+	   * @param String $columnName The foreign column name
 	   * @return void
 	   */
 	  public function setSelect( $columnName ) {
@@ -272,19 +271,17 @@ class ForeignKey {
 	   * Gets the name of the foreign table's column which should be displayed
 	   * in a drop-down in place of the actual foreign key value.
 	   * 
-	   * @return void
+	   * @return Column name used to populate select combobox
 	   */
 	  public function getSelect() {
 
 	  		 return $this->select;
 	  }
 
-	  /* Operations */
-
 	  /**
 	   * Returns an instance of the referenced Table.
 	   * 
-	   * @return The referenced table instance
+	   * @return Table The referenced table instance
 	   */
 	  public function getReferencedTableInstance() {
 
@@ -295,7 +292,7 @@ class ForeignKey {
 	  /**
 	   * Returns an instance of the referenced column
 	   * 
-	   * @return The referenced column instance
+	   * @return Column The referenced column instance
 	   */
 	  public function getReferencedColumnInstance() {
 
@@ -312,7 +309,7 @@ class ForeignKey {
 	  /**
 	   * Returns the column instance where the foreign key resides
 	   * 
-	   * @return The foreign key column instance
+	   * @return Column The foreign key column instance
 	   */
 	  public function getColumnInstance() {
 
@@ -331,8 +328,8 @@ class ForeignKey {
 	   * select="true" configuration in persistence.xml. If a column is
 	   * not explicitly set, the referenced column instance is returned.
 	   *  
-	   * @return The column instance to use to display values in an HTML select
-	   * 		 element rather than the foreign key values.
+	   * @return Column The column instance to use to display values in an HTML select
+	   * 		 		element rather than the foreign key values.
 	   */
 	  public function getSelectedColumnInstance() {
 

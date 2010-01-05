@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,24 +20,25 @@
  */
 
 /**
- * AgilePHP :: AnnotatedClass
- * Extends the PHP ReflectionClass to provide details about class level
- * annotations. 
+ * Extends the PHP ReflectionClass to provide details about class
+ * level AgilePHP annotations. 
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.annotation
- * @version 0.1a
+ * @version 0.4a
  */
 class AnnotatedClass extends ReflectionClass {
 
 	  private $annotations = array();
 
 	  /**
-	   * Inializes the AnnotatedClass by parsing the class file for annotations.
+	   * Inializes the AnnotatedClass by parsing the passed class file for
+	   * AgilePHP annotations.
 	   * 
-	   * @param $class The name or instance of the class to inspect
+	   * @param mixed $class The name or instance of the class to inspect
 	   * @return void
+	   * @throws AgilePHP_AnnotationException
 	   */
 	  public function __construct( $class ) {
 
@@ -60,7 +61,7 @@ class AnnotatedClass extends ReflectionClass {
 	  /**
 	   * Returns boolean indicator based on whether or not there are any annotations present.
 	   * 
-	   * @return True if this method has any annotations, false otherwise.
+	   * @return True if the class has any class level annotations. False if not.
 	   */
 	  public function isAnnotated() {
 
@@ -68,10 +69,10 @@ class AnnotatedClass extends ReflectionClass {
 	  }
 
 	  /**
-	   * Checks the class for the presence of the specified annotation.
+	   * Checks the class for the presence of a class level annotation.
 	   * 
-	   * @param $annotation The name of the annotation.
-	   * @return True if the annotation is present, false otherwise
+	   * @param String $annotation The name of the annotation to confirm.
+	   * @return True if the annotation is present, false otherwise.
 	   */
 	  public function hasAnnotation( $annotation ) {
 
@@ -92,7 +93,8 @@ class AnnotatedClass extends ReflectionClass {
 	   * only annotations which match the specified name will be returned,
 	   * otherwise all annotations are returned.
 	   * 
-	   * @param $name The name of the annotation to filter on. Default is null.
+	   * @param String $name Optional annotation name to filter out. Default is return all
+	   * 			  annotations.
 	   * @return An array of class level annotations or false of no annotations could
 	   * 		 be found.
 	   */
@@ -120,7 +122,7 @@ class AnnotatedClass extends ReflectionClass {
 	   * Gets an annotation instance by name. If the named annotation is found more
 	   * than once, an array of annotations are returned.
 	   * 
-	   * @param $name The name of the annotation
+	   * @param String $name The name of the annotation
 	   * @return The annotation instance or false if the annotation was not found
 	   */
 	  public function getAnnotation( $annotation ) {
@@ -142,19 +144,19 @@ class AnnotatedClass extends ReflectionClass {
 	  /**
 	   * Returns an AnnotatedMethod instance for the specified method name.
 	   * 
-	   * @param $name The method name
+	   * @param String $name The method name
 	   * @return AnnotatedMethod
 	   */
 	  public function getMethod( $name ) {
 
 	  		 return new AnnotatedMethod( parent::getName(), $name );
-	  } 
+	  }
 
 	  /**
 	   * Returns an array of AnnotatedMethod objects, one for each method in the
 	   * class which contains an annotation.
 	   * 
-	   * @param $filter The filter
+	   * @param String $filter The filter
 	   * @return Array of AnnotatedMethod objects.
 	   * @see http://php.net/manual/en/reflectionclass.getmethods.php
 	   */
@@ -177,7 +179,7 @@ class AnnotatedClass extends ReflectionClass {
 	  /**
 	   * Returns an AnnotatedProperty instance for the specified property name.
 	   * 
-	   * @param $name The name of the property
+	   * @param String $name The name of the property
 	   * @return AnnotatedProperty
 	   */
 	  public function getProperty( $name ) {
@@ -189,7 +191,7 @@ class AnnotatedClass extends ReflectionClass {
 	   * Returns an array of AnnotatedProperty objects; one for each property
 	   * in the class which contains an annotation.
 	   * 
-	   * @param $filter The optional filter
+	   * @param String $filter The optional filter
 	   * @return Array of AnnotatedProperty objects.
 	   * @see http://www.php.net/manual/en/reflectionclass.getproperties.php
 	   */

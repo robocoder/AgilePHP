@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ require_once 'interception/InterceptorProxy.php';
 require_once 'interception/InvocationContext.php';
 
 /**
- * AgilePHP :: Interception
  * Performs interceptions by creating a dynamic proxy for intercepted
  * classes. The proxy invokes the intended calls after inspecting (and/or
  * intercepting) it according to the annotations in the intercepted object.
@@ -34,7 +33,7 @@ require_once 'interception/InvocationContext.php';
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 
 class Interception {
@@ -47,8 +46,9 @@ class Interception {
 	  /**
 	   * Initalizes the Interception
 	   * 
-	   * @param $class The target class name
-	   * @param $interceptor The instance of the interceptor which will intercept calls
+	   * @param String $class The target class name
+	   * @param String $method The method name
+	   * @param Object $interceptor The instance of the interceptor which will intercept calls
 	   * @return void
 	   */
 	  public function __construct( $class, $method, $property, $interceptor ) {
@@ -103,7 +103,7 @@ class Interception {
 	   * Creates a new intercepted target instance. The target is created by modifying
 	   * the source code of the class being intercepted to *classname*_Intercepted.
 	   * 
-	   * @return The new intercepted target instance
+	   * @return Object The new intercepted target instance
 	   */
 	  public function createInterceptedTarget() {
 
@@ -152,7 +152,7 @@ class Interception {
 	  /**
 	   * Returns the PHP file content to be parsed.
 	   * 
-	   * @return PHP code
+	   * @return String PHP code
 	   * @throws AgilePHP_InterceptionException if the source could not be loaded
 	   */
 	  public function getSourceCode( $class ) {

@@ -20,8 +20,9 @@
  */
 
 /**
- * AgilePHP :: InvocationContext
- * Provides environment and method execution details t interceptors.
+ * Provides environment and method execution state when an interception occurs. This
+ * is passed into an interceptor so it knows about the target class, method, parameters,
+ * and the #@Interceptor instance which caused the interception.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
@@ -40,10 +41,10 @@ class InvocationContext {
 	  /**
 	   * Initalizes the InvocationContext.
 	   * 
-	   * @param $target The instance which was intercepted
-	   * @param $method The name of the method which was intercepted
-	   * @param $parameters The method parameters which were intercepted
-	   * @param $interceptor The interceptor instance which caused the interception
+	   * @param String $target The instance which was intercepted
+	   * @param String $method The name of the method which was intercepted
+	   * @param array $parameters The method parameters which were intercepted
+	   * @param Object $interceptor The interceptor instance which caused the interception
 	   * @return void
 	   */
 	  public function __construct( &$target, $method, $parameters, &$interceptor ) {
@@ -55,9 +56,9 @@ class InvocationContext {
 	  }
 
 	  /**
-	   * Returns the name of the method which was intercepted.
+	   * Returns the name of the intercepted method.
 	   * 
-	   * @return The name of the intercepted method
+	   * @return String The name of the intercepted method
 	   */
 	  public function getMethod() {
 
@@ -65,10 +66,11 @@ class InvocationContext {
 	  }
 
 	  /**
-	   * Changes the name of the method. This is used by the interceptor
-	   * to cause a different method to be executed than initially requested.
+	   * Transforms the state of the method calls. This is used by interceptors
+	   * to cause a different method to be executed than the one initially
+	   * called.
 	   * 
-	   * @param $method The name of the method to invoke
+	   * @param String $method The name of the method to invoke
 	   * @return void
 	   */
 	  public function setMethod( $method ) {
@@ -77,9 +79,9 @@ class InvocationContext {
 	  }
 
 	  /**
-	   * Changes the method parameters. This is used by the interceptor to
-	   * cause a different set of parameters to be passed into the method
-	   * which gets invoked.
+	   * Transforms the state of method parameters. This is used by interceptors
+	   * to cause a different set of parameters to be passed into the method
+	   * being invoked.
 	   *  
 	   * @param array $parameters An array of parameters to pass into the invoked method
 	   * @return void
@@ -101,7 +103,7 @@ class InvocationContext {
 	  }
 
 	  /**
-	   * Returns the target instance which was intercepted.
+	   * Returns the intercepted target instance.
 	   * 
 	   * @return The intercepted target instance
 	   */
@@ -113,7 +115,7 @@ class InvocationContext {
 	  /**
 	   * Returns the instance of the interceptor annotation which caused the interception.
 	   *  
-	   * @return Interceptor annotation instance which caused the interception 
+	   * @return Interceptor The instance of the annotation which caused the interception 
 	   */
 	  public function getInterceptor() {
 
@@ -121,10 +123,13 @@ class InvocationContext {
 	  }
 
 	  /**
-	   * Causes the intercepted invocation to proceed, using the method and parameters
-	   * which are present in the current InvocationContext.
+	   * Causes the intercepted invocation to continue, using the method and parameters
+	   * contained in the state of the InvocationContext instance. If this method is not
+	   * invoked during an interception, the interceptor will not execute the intercepted
+	   * call. To disregard an intercepted call (not invoke it), simply do not call this
+	   * method during the interception.
 	   * 
-	   * @return The present state of InvocationContext
+	   * @return The present state of the InvocationContext instance
 	   */
 	  public function proceed() {
 

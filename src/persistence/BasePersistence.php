@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +29,12 @@ require_once 'Column.php';
 require_once 'ForeignKey.php';
 
 /**
- * AgilePHP :: BasePersistence
  * Base persistence class responsible for all database/ORM actions
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.1a
+ * @version 0.2a
  * @abstract
  */
 abstract class BasePersistence {

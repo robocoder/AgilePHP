@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,12 @@ require_once 'scope/Session.php';
 require_once 'scope/SessionScope.php';
 
 /**
- * AgilePHP :: Scope
  * Facade for AgilePHP scopes.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class Scope {
 
@@ -47,6 +46,7 @@ class Scope {
 	   * Returns a singleton instance of Scope.
 	   * 
 	   * @return An instance of Scope
+	   * @static
 	   */
 	  public static function getInstance() {
 
@@ -59,9 +59,10 @@ class Scope {
 	  /**
 	   * Returns a singleton instance of ApplicationScope.
 	   * 
-	   * @param $appName An optional application name. Defaults to the
-	   * 				 HTTP HOST header.
-	   * @return A singleton instance of ApplicationScope
+	   * @param String $appName An optional application name. Defaults to the
+	   * 					    HTTP HOST header.
+	   * @return ApplicationScope A singleton instance of ApplicationScope
+	   * @static
 	   */
 	  public static function getApplicationScope( $appName = null ) {
 
@@ -73,7 +74,8 @@ class Scope {
 	  /**
 	   * Returns a singleton instance of RequestScope.
 	   * 
-	   * @return void
+	   * @return SessionScope A singleton instance of SessionScope
+	   * @static
 	   */
 	  public static function getSessionScope() {
 
@@ -85,7 +87,8 @@ class Scope {
 	  /**
 	   * Returns a singleton instance of RequestScope.
 	   * 
-	   * @return A singleton instance of RequestScope
+	   * @return RequestScope A singleton instance of RequestScope
+	   * @static
 	   */
 	  public static function getRequestScope() {
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: SQLiteDialect
  * Responsible for SQLite specific database operations
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence.dialect
- * @version 0.1a
+ * @version 0.2a
  */
 class SQLiteDialect extends BasePersistence implements SQLDialect {
 
@@ -37,10 +36,9 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	  }
 
 	  /**
-	   * CREATE TABLE "phpunit2" ("id" INTEGER NOT NULL , "fld1" VARCHAR NOT NULL , "fld2" VARCHAR DEFAULT 'This is nullable', "fld3" VARCHAR NOT NULL , "fld4" TEXT NOT NULL , PRIMARY KEY ("id", "fld1"))
-	   * @return unknown_type
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#create()
 	   */
-	  
 	  public function create() {
 
 	  		 foreach( $this->database->getTables() as $table ) {
@@ -107,7 +105,11 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 				  	}
 	  		 }
 	  }
-	  
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/BasePersistence#truncate($model)
+	   */
 	  public function truncate( $model ) {
 
 	  	     $table = $this->getTableByModel( $model );

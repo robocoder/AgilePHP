@@ -1,8 +1,7 @@
 <?php
-
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +28,12 @@ require_once 'annotation/AnnotatedMethod.php';
 require_once 'annotation/AnnotatedProperty.php';
 
 /**
- * AgilePHP :: Annotation
- * Enables the use of annotations in PHP.
+ * Opens up the world of annotations to the PHP programming language :p
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
+ * @version 0.2a
  */
 class Annotation {
 
@@ -45,9 +43,10 @@ class Annotation {
 	  /**
 	   * Static factory method used to retrieve AnnotatedClass instances.
 	   * 
-	   * @param $class The class name or instance to inspect
+	   * @param mixed $class The class name or instance to inspect
 	   * @return void
 	   * @throws AgilePHP_AnnotationException
+	   * @static
 	   */
 	  public static function getClass( $class ) {
 
@@ -57,10 +56,11 @@ class Annotation {
 	  /**
 	   * Static factory method used to retrieve AnnotatedMethod instances.
 	   * 
-	   * @param $class The class name or instance to inspect.
-	   * @param $name The method name
+	   * @param mixed $class The class name or instance to inspect.
+	   * @param String $name The method name
 	   * @return AnnotatedMethod
 	   * @throws AgilePHP_AnnotationException
+	   * @static
 	   */
 	  public static function getMethod( $class, $method ) {
 
@@ -70,10 +70,11 @@ class Annotation {
 	  /**
 	   * Static factory method used to retrieve AnnotatedProperty instances.
 	   * 
-	   * @param $class The class name or instance to inspect
-	   * @param $property The property name
+	   * @param mixed $class The class name or instance to inspect
+	   * @param String $property The property name
 	   * @return AnnotatedProperty
 	   * @throws AgilePHP_AnnotationException
+	   * @static
 	   */
 	  public static function getProperty( $class, $property ) {
 
@@ -84,10 +85,11 @@ class Annotation {
 	   * Returns true if the specified class contains and class, method, or
 	   * property level annotations.
 	   * 
-	   * @param $class The class name or instance to inspect
-	   * @return True if the class contains any class, method, or property
-	   * 		 level annotations.
+	   * @param mixed $class The class name or instance to inspect
+	   * @return bool True if the class contains any class, method, or property
+	   * 		 	   level annotations.
 	   * @throws AgilePHP_AnnotationException
+	   * @static
 	   */
 	  public static function hasAnnotations( $class ) {
 
@@ -109,9 +111,10 @@ class Annotation {
 	   * Tries to return a cached set of results first. If no annotations are
 	   * found the specified class is then parsed and the new result is returned.
 	   * 
-	   * @param $class The class name or instance to inspect.
-	   * @return Array of class level annotations
+	   * @param mixed $class The class name or instance to inspect.
+	   * @return array Array of class level annotations
 	   * @throws AgilePHP_AnnotationException
+	   * @static
 	   */
 	  public static function getClassAsArray( $class ) {
 
@@ -127,9 +130,10 @@ class Annotation {
 	  /**
 	   * Returns an array of method level annotations for the specified class/method.
 	   * 
-	   * @param $class The class name or instance to inspect
-	   * @return Array of method level annotations
+	   * @param mixed $class The class name or instance to inspect
+	   * @return array Array of method level annotations
 	   * @throws AgilePHP_AnnotationException
+	   * @static
 	   */
 	  public static function getMethodsAsArray( $class ) {
 
@@ -147,10 +151,11 @@ class Annotation {
 	   * Tries to return a caches set of annotations first. If no annotations are
 	   * found then the specified class is then parsed and the new result is returned.
 	   * 
-	   * @param $class The class name or instance to inspect
-	   * @param $property The property/field name to inspect
+	   * @param mixed $class The class name or instance to inspect
+	   * @param String $property The property/field name to inspect
 	   * @return Array of class level annotations
 	   * @throws AgilePHP_AnnotationException
+	   * @static
 	   */
 	  public static function getPropertiesAsArray( $class ) {
 

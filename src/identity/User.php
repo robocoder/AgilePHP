@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@
  */
 
 /**
- * AgilePHP :: User
- * User domain model 
+ * Domain model used by the Identity component. Represents a persistable
+ * user. 
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
- * @version 0.1a
+ * @version 0.2a
  */
 class User implements IdentityModel {
 
@@ -45,119 +45,195 @@ class User implements IdentityModel {
 
 	  public function User() { }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setUsername($username)
+	   */
 	  public function setUsername( $username ) {
 
 	  	     $this->username = $username;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getUsername()
+	   */
 	  public function getUsername() { 
 
 	  	     return $this->username;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setPassword($password)
+	   */
 	  public function setPassword( $password ) {
 
 	  	     $this->password = $password;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getPassword()
+	   */
 	  public function getPassword() {
 
 	  	     return $this->password;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setEmail($email)
+	   */
 	  public function setEmail( $email ) {
 
 	  		 $this->email = $email;
 	  }
-	  
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getEmail()
+	   */
 	  public function getEmail() {
 	  	
 	  		 return $this->email;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setCreated($dateTime)
+	   */
 	  public function setCreated( $dateTime ) {
 
 	  	     $this->created = date( 'c', strtotime( $dateTime ) );
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getCreated()
+	   */
 	  public function getCreated() {
 
 	  	     return (string)$this->created;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setLastLogin($dateTime)
+	   */
 	  public function setLastLogin( $timestamp ) {
 
 	  	     $this->lastLogin = date( 'c', strtotime( $timestamp ) );
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getLastLogin()
+	   */
 	  public function getLastLogin() {
 
 	  	     return $this->lastLogin;
 	  }
-	  
-	  public function setRoleId( $roleId ) {
 
-	  		 $this->roleId = $roleId;
-	  }
-
-	  public function getRoleId() {
-
-	  		 return $this->roleId;
-	  }
-
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setRole($role)
+	   */
 	  public function setRole( Role $role ) {
 
 	  	     $this->Role = $role;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getRole()
+	   */
 	  public function getRole() {
 
 	  	     return ($this->Role instanceof Role) ? $this->Role : new Role();
 	  }
 
+	  /**
+	   * Sets an array of roles of which the user belongs.
+	   * 
+	   * @param array $roles The array of Role instances belonging to the user
+	   * @return void
+	   */
 	  public function setRoles( array $roles ) {
 
 	  		 $this->Roles = $roles;
 	  }
 
+	  /**
+	   * Gets an array of roles belonging to the user.
+	   * 
+	   * @return Array Roles belonging to the user
+	   */
 	  public function getRoles() {
 
 	  		 return $this->Roles;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setSessionId($sessionId)
+	   */
 	  public function setSessionId( $sessionId ) {
 
 	  		 $this->sessionId = $sessionId;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getSessionId()
+	   */
 	  public function getSessionId() {
 
 	  		return $this->sessionId;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setEnabled($value)
+	   */
 	  public function setEnabled( $value ) {
 
 	  		 $this->enabled = $value;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getEnabled()
+	   */
 	  public function getEnabled() {
 
 	  		 return $this->enabled;
 	  }
 
+	  /**
+	   * Sets the AgilePHP Session object belonging to the user.
+	   * 
+	   * @param Session $session AgilePHP Session instance following the user.
+	   * @return void
+	   */
 	  public function setSession( Session $session ) {
 
 	  		 $this->Session = $session;
 	  }
 
+	  /**
+	   * Returns the AgilePHP Session instance belonging to the user.
+	   * 
+	   * @return Session AgilePHP Session object following the user
+	   */
 	  public function getSession() {
 
 	  		 return ($this->Session instanceof Session) ? $this->Session : new Session();
 	  }
 
-	  /**
+	  /*
 	   * Clean up stale sessions. The user should never have multiple sessions open.
-	   * 
+	   *
 	   * @param array $sessions An array of Session objects
 	   * @return void
 	   *

@@ -1,7 +1,7 @@
 <?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,12 @@
 
 
 /**
- * AgilePHP :: Session
  * Session domain model object. 
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
- * @version 0.1a
+ * @version 0.2a
  */
 class Session {
 
@@ -40,7 +39,7 @@ class Session {
 	  /**
 	   * Sets the session id
 	   * 
-	   * @param $id The session id
+	   * @param String $id The session id
 	   * @return void
 	   */
 	  public function setId( $id ) {
@@ -51,7 +50,7 @@ class Session {
 	  /**
 	   * Returns the session id
 	   * 
-	   * @return Session id
+	   * @return String Session id
 	   */
 	  public function getId() {
 
@@ -61,7 +60,7 @@ class Session {
 	  /**
 	   * Stores the serialized session
 	   * 
-	   * @param $data Serialized session data
+	   * @param String $data Serialized session data
 	   * @return void
 	   */
 	  public function setData( $data ) {
@@ -72,7 +71,7 @@ class Session {
 	  /**
 	   * Returns the serialized session data
 	   * 
-	   * @return void
+	   * @return String Serialized session data
 	   */
 	  public function getData() {
 
@@ -82,7 +81,7 @@ class Session {
 	  /**
 	   * Timestamp indicating when the session was created
 	   * 
-	   * @param $dateTime Timestamp indicating when the session was created
+	   * @param Date $dateTime Timestamp indicating when the session was created
 	   * @return void
 	   */
 	  public function setCreated( $timestamp ) {
@@ -93,7 +92,7 @@ class Session {
 	  /**
 	   * Returns the timestamp when the session was created
 	   * 
-	   * @return Timestamp indicating when the session was created
+	   * @return Date Timestamp indicating when the session was created
 	   */
 	  public function getCreated() {
 

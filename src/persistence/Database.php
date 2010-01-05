@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,12 @@
  */
 
 /**
- * AgilePHP :: Database
  * Represents a database in the AgilePHP persistence component.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.1a
+ * @version 0.2a
  */
 class Database {
 
@@ -39,17 +38,23 @@ class Database {
 
 	  private $tables = array();
 
+	  /**
+	   * Creates a new Database instance with optional database assignment.
+	   * 
+	   * @param SimpleXMLElement $database A database instance represented in
+	   * 						 a SimpleXMLElement structure.
+	   */
 	  public function __construct( SimpleXMLElement $database = null ) {
 
 	  		 if( $database !== null ) {
-		  		 
+
 	  		 	 $this->id = (string)$database->attributes()->id;
 		  		 $this->name = (string)$database->attributes()->name;
 		  		 $this->type = (string)$database->attributes()->type;
 		  		 $this->hostname = (string)$database->attributes()->hostname;
 		  		 $this->username = (string)$database->attributes()->username;
 		  		 $this->password = (string)$database->attributes()->password;
-	
+
 		  		 foreach( $database->table as $table )
 		  		     	  array_push( $this->tables, new Table( $table ) );
 	  		 }
@@ -59,7 +64,7 @@ class Database {
 	   * Sets the database id. This is used internally by AgilePHP to distinguish
 	   * between multiple data sources configured in persistence.xml
 	   * 
-	   * @param $id The database identifier. This can be any legal XML value.
+	   * @param String $id The database identifier. This can be any legal XML value.
 	   * @return void
 	   */
 	  public function setId( $id ) {
@@ -70,7 +75,7 @@ class Database {
 	  /**
 	   * Returns the unique database identifier.
 	   * 
-	   * @return void
+	   * @return String The database id
 	   */
 	  public function getId() {
 
@@ -80,7 +85,7 @@ class Database {
 	  /**
 	   * Sets the name of the database
 	   * 
-	   * @param $name The database name
+	   * @param String $name The database name
 	   * @return void
 	   */
 	  public function setName( $name ) {
@@ -91,7 +96,7 @@ class Database {
 	  /**
 	   * Returns the name of the database
 	   * 
-	   * @return The database name
+	   * @return String The database name
 	   */
 	  public function getName() {
 
@@ -101,7 +106,7 @@ class Database {
 	  /**
 	   * Sets the type of database server
 	   * 
-	   * @param $type The database server type (sqlite|mysql|pgsql|firebird|informix|oracle|dblib|ibm)
+	   * @param String $type The database server type (sqlite|mysql|pgsql|firebird|informix|oracle|dblib|ibm)
 	   * @return void
 	   */
 	  public function setType( $type ) {
@@ -112,7 +117,7 @@ class Database {
 	  /**
 	   * Returns the database server type.
 	   * 
-	   * @return The type of database (sqlite|mysql|pgsql|firebird|informix|oracle|dblib|ibm)
+	   * @return String The type of database server type (sqlite|mysql|pgsql|firebird|informix|oracle|dblib|ibm)
 	   */
 	  public function getType() {
 
@@ -122,8 +127,8 @@ class Database {
 	  /**
 	   * Sets the hostname of the database server
 	   * 
-	   * @param $hostname The hostname of the database server (or file path
-	   * 				  for sqlite databases).
+	   * @param String $hostname The hostname of the database server (or file path
+	   * 						  for sqlite databases).
 	   * @return void
 	   */
 	  public function setHostname( $hostname ) {
@@ -134,7 +139,7 @@ class Database {
 	  /**
 	   * Returns the hostname of the database server.
 	   * 
-	   * @return The hostname of the database server (or file path for sqlite databases).
+	   * @return String The hostname of the database server (or file path for sqlite databases).
 	   */
 	  public function getHostname() {
 
@@ -144,7 +149,7 @@ class Database {
 	  /**
 	   * Sets the username required to access the database
 	   * 
-	   * @param $username The username to connect to the database with
+	   * @param String $username The username to connect to the database with
 	   * @return void
 	   */
 	  public function setUsername( $username ) {
@@ -155,7 +160,7 @@ class Database {
 	  /**
 	   * Returns the username which is used to connect to the database
 	   * 
-	   * @return The username thats used to connect to the database
+	   * @return String The username thats used to connect to the database
 	   */
 	  public function getUsername() {
 
@@ -165,7 +170,7 @@ class Database {
 	  /**
 	   * Sets the password which is used to connect to the database
 	   * 
-	   * @param $password The password used to authenticate access to the database
+	   * @param String $password The password used to authenticate access to the database
 	   * @return void
 	   */
 	  public function setPassword( $password ) {
@@ -176,7 +181,7 @@ class Database {
 	  /**
 	   * Returns the password thats used to connect to the database
 	   * 
-	   * @return The password used to authenticate access to the database
+	   * @return String The password used to authenticate access to the database
 	   */
 	  public function getPassword() {
 
@@ -222,7 +227,7 @@ class Database {
 	   * Returns an array of Table instances which represent a table in the physical
 	   * database.
 	   * 
-	   * @return Array of Table instances
+	   * @return Array of Table instances each representing a table in the physical database.
 	   */
 	  public function getTables() {
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,22 +20,21 @@
  */
 
 /**
- * AgilePHP :: MVC XSLTRenderer
  * Provides base implementation for XSLT transformations
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
+ * @version 0.2a
  */
 class XSLTRenderer extends BaseRenderer {
 
       /**
 	   * Renders a view by performing an XSLT transformation. The XSL document
-	   * is passed in as a string. The XML document is passed in as a string.
+	   * is passed in as a string.
 	   * 
-	   * @param $xsl XSL document as a string type
-	   * @param $xml XML document as a string type
+	   * @param String $xsl XSL document
+	   * @param String $xml Optional XML document
 	   * @return void
        */
       public function render( $xsl, $xml = '' ) {
@@ -60,8 +59,8 @@ class XSLTRenderer extends BaseRenderer {
 	  /**
 	   * Performs an XSLT transformation and returns the rendered HTML.
 	   * 
-	   * @param $xsl XSL document as a string type
-	   * @param $xml XML document as a string type
+	   * @param String $xsl XSL document
+	   * @param String $xml Optional XML document
 	   * 
 	   * @return The rendered HTML from the XSLT transformation
        */
@@ -96,10 +95,10 @@ class XSLTRenderer extends BaseRenderer {
 
 	  /**
 	   * Renders a view by performing an XSLT transformation. The XSL document
-	   * is read in from the specified xsl view. The XML document is passed in as a string.
+	   * is read in from the specified xsl view.
 	   * 
-	   * @param $xsl XSL document located in the web app view directory
-	   * @param $xml XML document as a string type
+	   * @param String $xsl XSL document located in the web app view directory
+	   * @param String $xml XML document
 	   * @return void
        */
       public function renderXslFile( $xsl, $xml='' ) {
@@ -123,11 +122,10 @@ class XSLTRenderer extends BaseRenderer {
 
 	  /**
 	   * Performs an XSLT tranformation using a specified XSL view document and returns the HTML result.
-	   * The XSL document is read in from the web application 'view' directory. The XML document is
-	   * passed in as a string.
+	   * The XSL document is read in from the web application 'view' directory.
 	   * 
-	   * @param $xsl XSL document located in the web app view directory
-	   * @param $xml XML document as a string type
+	   * @param String $xsl XSL document located in the web app view directory
+	   * @param String $xml Optional XML document
 	   * @return void
        */
       public function getRenderedXslFile( $xsl, $xml='' ) {
@@ -152,7 +150,14 @@ class XSLTRenderer extends BaseRenderer {
 	  /**
 	   * loadXml reports an error instead of throwing an exception when the xml is not well formed. This
 	   * is a custom PHP error handling function which throws an AgilePHP_Exception instead of reporting
-	   * a PHP error. 
+	   * a PHP error.
+	   * 
+	   * @param Integer $errno Error number
+	   * @param String $errmsg Error message
+	   * @param String $errfile The name of the file that caused the error
+	   * @param Integer $errline The line number that caused the error
+	   * @return false
+	   * @throws AgilePHP_Exception
 	   */
  	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
 
