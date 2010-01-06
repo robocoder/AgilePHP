@@ -1,0 +1,879 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Crypto</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Crypto</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Provides one way hashing and encryption</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jeremy Hahn</li>
+				<li><span class="field">version:</span> 0.2a</li>
+				<li><span class="field">copyright:</span> Make A Byte, inc.</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_src---Crypto.php.html">/src/Crypto.php</a> (line <span class="field">30</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																		
+				<div class="method-definition">
+					static 						<span class="method-result">Singleton</span>
+										<a href="#getInstance" title="details" class="method-name">getInstance</a>
+										()
+									</div>
+																																																																																																		
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#crc32" title="details" class="method-name">crc32</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#createIV" title="details" class="method-name">createIV</a>
+											([<span class="var-type">CONST</span>&nbsp;<span class="var-name">$cipher</span> = <span class="var-default">MCRYPT_TripleDES</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">byte[]</span>
+										<a href="#decrypt_3des" title="details" class="method-name">decrypt_3des</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">byte[]</span>
+										<a href="#decrypt_aes256" title="details" class="method-name">decrypt_aes256</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">byte[]</span>
+										<a href="#decrypt_blowfish" title="details" class="method-name">decrypt_blowfish</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">byte[]</span>
+										<a href="#encrypt_3des" title="details" class="method-name">encrypt_3des</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">byte[]</span>
+										<a href="#encrypt_aes256" title="details" class="method-name">encrypt_aes256</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">byte[]</span>
+										<a href="#encrypt_blowfish" title="details" class="method-name">encrypt_blowfish</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getAlgorithm" title="details" class="method-name">getAlgorithm</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getDigest" title="details" class="method-name">getDigest</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+																						
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getIV" title="details" class="method-name">getIV</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getKey" title="details" class="method-name">getKey</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#getSupportedHashAlgorithms" title="details" class="method-name">getSupportedHashAlgorithms</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#hash" title="details" class="method-name">hash</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$algorithm</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#md5" title="details" class="method-name">md5</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setAlgorithm" title="details" class="method-name">setAlgorithm</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$algorithm</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#sha1" title="details" class="method-name">sha1</a>
+											(<span class="var-type">$data</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#sha256" title="details" class="method-name">sha256</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#sha384" title="details" class="method-name">sha384</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#sha512" title="details" class="method-name">sha512</a>
+											(<span class="var-type">$data</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodgetInstance" id="getInstance"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getInstance</span> (line <span class="line-number">64</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a singleton instance of Crypto</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> instance of Crypto</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">Singleton</span>
+		<span class="method-name">
+			getInstance
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">42</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Initalizes the Crypto component with the hasing algorithm defined in agilephp.xml</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__construct
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodcrc32" id="crc32"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">crc32</span> (line <span class="line-number">197</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an CRC32 hashed string.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The hashed CRC32 string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			crc32
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to hash</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodcreateIV" id="createIV"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">createIV</span> (line <span class="line-number">244</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Creates an IV suitable for the specified cipher using the MCRYPT_MODE_CBC module.</p>
+<p class="description"><p>NOTE: You can use this method to create an IV for use in agilephp.xml for the Crypto  	   component to use. Simply base64_encode the return value and place it in the crypto  	   components iv attribute in agilephp.xml.</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The initial value (iv) as created by mcrypt_create_iv.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			createIV
+		</span>
+					([<span class="var-type">CONST</span>&nbsp;<span class="var-name">$cipher</span> = <span class="var-default">MCRYPT_TripleDES</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">CONST</span>
+				<span class="var-name">$cipher</span><span class="var-description">: The cipher to use. This depends on the encryption algorithm you are using:                        encrypt/decrypt_3des     = MCRYPT_TripleDES                        encrypt/decrypt_blowfish = MCRYPT_BLOWFISH                        encrypt/decrypt_aes256   = MCRYPT_RIJNDAEL_256                        Defaults to MCRYPT_TripleDES</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddecrypt_3des" id="decrypt_3des"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">decrypt_3des</span> (line <span class="line-number">273</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Decrypts Triple DES data</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Plain text, decrypted data if a proper key was supplied</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">byte[]</span>
+		<span class="method-name">
+			decrypt_3des
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$iv</span><span class="var-description">: The IV/salt</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$key</span><span class="var-description">: The secret key used to encrypt the data</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to encrypt</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddecrypt_aes256" id="decrypt_aes256"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">decrypt_aes256</span> (line <span class="line-number">339</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Decrypts the specified data which was previously encrypted using AES 256</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> AES 256 decrypted data if a proper key was supplied</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">byte[]</span>
+		<span class="method-name">
+			decrypt_aes256
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$key</span><span class="var-description">: The secret key used to encrypt the data</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to encrypt</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$iv</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddecrypt_blowfish" id="decrypt_blowfish"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">decrypt_blowfish</span> (line <span class="line-number">307</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Decrypts a string previously encrypted with encrypt_blowfish</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Plain text, decrypted data if a proper key was supplied</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">byte[]</span>
+		<span class="method-name">
+			decrypt_blowfish
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$iv</span><span class="var-description">: The IV/salt</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$key</span><span class="var-description">: The secret key used to encrypt the data</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to encrypt</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodencrypt_3des" id="encrypt_3des"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">encrypt_3des</span> (line <span class="line-number">257</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Encrypts the specified data using Triple DES.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Triple DES encrypted string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">byte[]</span>
+		<span class="method-name">
+			encrypt_3des
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$iv</span><span class="var-description">: The IV/salt</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$key</span><span class="var-description">: The secret key used to encrypt the data</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to encrypt</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodencrypt_aes256" id="encrypt_aes256"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">encrypt_aes256</span> (line <span class="line-number">323</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Encrypts the specified data using AES 256 encryption</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> AES 256 encrypted data</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">byte[]</span>
+		<span class="method-name">
+			encrypt_aes256
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$key</span><span class="var-description">: The secret key used to encrypt the data</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to encrypt</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$iv</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodencrypt_blowfish" id="encrypt_blowfish"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">encrypt_blowfish</span> (line <span class="line-number">290</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Encrypts the specified data using Blowfish</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Blowfish encrypted string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">byte[]</span>
+		<span class="method-name">
+			encrypt_blowfish
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$iv</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$iv</span><span class="var-description">: The IV/salt</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$key</span><span class="var-description">: The secret key used to encrypt the data</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to encrypt</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetAlgorithm" id="getAlgorithm"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getAlgorithm</span> (line <span class="line-number">97</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the algorithm the Crypto component is configured to perform  a hashing operation with using the 'getDigest()' method.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> name of the hashing algorithm</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getAlgorithm
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetDigest" id="getDigest"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getDigest</span> (line <span class="line-number">131</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the hashed $data. This operation requires either a valid configuration  in agilephp.xml for the Crypto component or you must manually set the algorithm  with a call to 'setAlgorithm()'.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The hashed string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getDigest
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to hash</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetIV" id="getIV"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getIV</span> (line <span class="line-number">108</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the iv as configured in agilephp.xml for the crypto component if one was defined.</p>
+<p class="description"><p>NOTE: The iv must be base64 encoded</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The base64 decoded iv configured in agilephp.xml</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getIV
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetKey" id="getKey"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getKey</span> (line <span class="line-number">118</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the key as configured in agilephp.xml for the crypto component if one was defined.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The iv configured in agilephp.xml for the crypto component</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getKey
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetSupportedHashAlgorithms" id="getSupportedHashAlgorithms"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSupportedHashAlgorithms</span> (line <span class="line-number">223</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an array of supported hashing algorithms on the current  PHP enabled web server.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> An array of supported hashing algorithms available to PHP.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			getSupportedHashAlgorithms
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodhash" id="hash"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">hash</span> (line <span class="line-number">212</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the hashed $data parameter according to the defined $algorithm  parameter.</p>
+<p class="description"><p>String</p></p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The hashed SHA1 string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			hash
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$algorithm</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$algorithm</span><span class="var-description">: The algorithm to hash the defined data with. NOTE: You can get                            a list of supported algorithms on the server with a call to                            getSupportedHashAlgorithms().</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to hash</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodmd5" id="md5"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">md5</span> (line <span class="line-number">142</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a hashed MD5 string.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The hashed MD5 string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			md5
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to hash</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetAlgorithm" id="setAlgorithm"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setAlgorithm</span> (line <span class="line-number">82</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the algorithm for the Crypto component for use with getDigest.</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> AgilePHP_Exception If passed a hashing name not available in                              getSupportedHashAlgorithms().</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setAlgorithm
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$algorithm</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$algorithm</span><span class="var-description">: The algorithm to perform the hashing operation with.                            NOTE: getSupportedHashAlgorithms() will return a list of                                  algorithms available on the server.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsha1" id="sha1"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">sha1</span> (line <span class="line-number">153</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an SHA1 hashed string.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The hashed SHA1 string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			sha1
+		</span>
+					(<span class="var-type">$data</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$data</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to hash</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsha256" id="sha256"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">sha256</span> (line <span class="line-number">164</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an SHA256 hashed string.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The hashed SHA256 string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			sha256
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to hash</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsha384" id="sha384"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">sha384</span> (line <span class="line-number">175</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an SHA384 hashed string.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The hashed SHA384 string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			sha384
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to hash</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsha512" id="sha512"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">sha512</span> (line <span class="line-number">186</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an SHA512 hashed string.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The hashed SHA512 string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			sha512
+		</span>
+					(<span class="var-type">$data</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$data</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to hash</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 06 Jan 2010 18:38:07 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</div></body>
+</html>

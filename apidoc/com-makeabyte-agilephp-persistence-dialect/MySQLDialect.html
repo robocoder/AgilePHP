@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class MySQLDialect</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class MySQLDialect</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-vars">Vars</a>
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+                <p class="implements">
+            Implements interfaces:
+            <ul>
+                <li><a href="../com-makeabyte-agilephp-persistence-dialect/SQLDialect.html">SQLDialect</a></li>            </ul>
+        </p>
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Handles MySQL specific queries</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jeremy Hahn</li>
+				<li><span class="field">version:</span> 0.2a</li>
+				<li><span class="field">copyright:</span> Make A Byte, inc.</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_src---persistence---dialect---MySQLDialect.php.html">/src/persistence/dialect/MySQLDialect.php</a> (line <span class="field">30</span>)
+		</p>
+		
+				
+		<pre><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html">BasePersistence</a>
+   |
+   --MySQLDialect</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-vars">Vars</a>
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																						
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$db</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#create" title="details" class="method-name">create</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#drop" title="details" class="method-name">drop</a>
+										()
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			
+							<h4>Inherited Variables</h4>
+				<A NAME='inherited_vars'><!-- --></A>
+									<p>Inherited from <span class="classname"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html">BasePersistence</a></span></p>
+					<blockquote>
+													<span class="var-title">
+								<span class="var-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#var$database">BasePersistence::$database</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#var$model">BasePersistence::$model</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#var$pdo">BasePersistence::$pdo</a></span><br>
+							</span>
+													<span class="var-title">
+								<span class="var-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#var$transactionInProgress">BasePersistence::$transactionInProgress</a></span><br>
+							</span>
+											</blockquote> 
+										
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-vars">Vars</a>
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">38</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Initalize MySQLDialect</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$db</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../com-makeabyte-agilephp-persistence/Database.html">Database</a></span>
+				<span class="var-name">$db</span><span class="var-description">: The database to use</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#method__construct">BasePersistence::__construct()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodcreate" id="create"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">create</span> (line <span class="line-number">67</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> create()</li>
+				<li><span class="field">todo:</span> Add engine and charset attributes to persistence.xml 'table' element         and assign values from xml definitions. Also need support for dynamic         setting of unique key, fulltext, key, index, etc...</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			create
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../com-makeabyte-agilephp-persistence-dialect/SQLDialect.html#methodcreate">SQLDialect::create()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methoddrop" id="drop"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">drop</span> (line <span class="line-number">171</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Drop/destroy the database.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			drop
+		</span>
+				()
+			</div>
+	
+		
+				<hr class="separator" />
+		<div class="notes">Implementation of:</div>
+			<dl>
+			<dt><a href="../com-makeabyte-agilephp-persistence-dialect/SQLDialect.html#methoddrop">SQLDialect::drop()</a></dt>
+					</dl>
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html">BasePersistence</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#method__construct">BasePersistence::__construct()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodbeginTransaction">BasePersistence::beginTransaction()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodclose">BasePersistence::close()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodcommit">BasePersistence::commit()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodcompare">BasePersistence::compare()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodcreateRestrictSQL">BasePersistence::createRestrictSQL()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methoddelete">BasePersistence::delete()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodexec">BasePersistence::exec()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodexecute">BasePersistence::execute()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodfind">BasePersistence::find()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetAvailableDrivers">BasePersistence::getAvailableDrivers()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetColumnNameForProperty">BasePersistence::getColumnNameForProperty()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetDatabase">BasePersistence::getDatabase()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetDisplayNameForColumn">BasePersistence::getDisplayNameForColumn()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetDistinct">BasePersistence::getDistinct()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetIdentityModel">BasePersistence::getIdentityModel()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetIdentityTable">BasePersistence::getIdentityTable()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetMaxResults">BasePersistence::getMaxResults()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetOrderBy">BasePersistence::getOrderBy()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetPDOInstance">BasePersistence::getPDOInstance()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetPropertyNameForColumn">BasePersistence::getPropertyNameForColumn()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetSessionModel">BasePersistence::getSessionModel()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetSessionTable">BasePersistence::getSessionTable()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetTableByModel">BasePersistence::getTableByModel()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetTableByModelName">BasePersistence::getTableByModelName()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodgetTableByName">BasePersistence::getTableByName()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodisEmpty">BasePersistence::isEmpty()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodmerge">BasePersistence::merge()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodpersist">BasePersistence::persist()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodprepare">BasePersistence::prepare()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodquery">BasePersistence::query()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodquote">BasePersistence::quote()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodrollBack">BasePersistence::rollBack()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodsetDistinct">BasePersistence::setDistinct()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodsetMaxResults">BasePersistence::setMaxResults()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodsetOrderBy">BasePersistence::setOrderBy()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodsetRestrictions">BasePersistence::setRestrictions()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodsetRestrictionsLogicOperator">BasePersistence::setRestrictionsLogicOperator()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodtoAccessor">BasePersistence::toAccessor()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodtoBigInt">BasePersistence::toBigInt()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodtoMutator">BasePersistence::toMutator()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#methodtruncate">BasePersistence::truncate()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-persistence/BasePersistence.html#method__destruct">BasePersistence::__destruct()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 06 Jan 2010 18:38:09 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</div></body>
+</html>

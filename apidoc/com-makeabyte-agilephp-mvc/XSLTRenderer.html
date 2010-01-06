@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class XSLTRenderer</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class XSLTRenderer</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Provides base implementation for XSLT transformations</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jeremy Hahn</li>
+				<li><span class="field">version:</span> 0.2a</li>
+				<li><span class="field">copyright:</span> Make A Byte, inc</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_src---mvc---XSLTRenderer.php.html">/src/mvc/XSLTRenderer.php</a> (line <span class="field">30</span>)
+		</p>
+		
+				
+		<pre><a href="../com-makeabyte-agilephp-mvc/BaseRenderer.html">BaseRenderer</a>
+   |
+   --XSLTRenderer</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+										
+				<div class="method-definition">
+					static 						<span class="method-result">false</span>
+										<a href="#ErrorHandler" title="details" class="method-name">ErrorHandler</a>
+											(<span class="var-type">Integer</span>&nbsp;<span class="var-name">$errno</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$errmsg</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$errfile</span>, <span class="var-type">Integer</span>&nbsp;<span class="var-name">$errline</span>)
+									</div>
+																																																										
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getRenderedXslFile" title="details" class="method-name">getRenderedXslFile</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$xsl</span>, [<span class="var-type">String</span>&nbsp;<span class="var-name">$xml</span> = <span class="var-default">''</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#render" title="details" class="method-name">render</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$xsl</span>, [<span class="var-type">String</span>&nbsp;<span class="var-name">$xml</span> = <span class="var-default">''</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#renderXslFile" title="details" class="method-name">renderXslFile</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$xsl</span>, [<span class="var-type">String</span>&nbsp;<span class="var-name">$xml</span> = <span class="var-default">''</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#transform" title="details" class="method-name">transform</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$xsl</span>, [<span class="var-type">String</span>&nbsp;<span class="var-name">$xml</span> = <span class="var-default">''</span>])
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodErrorHandler" id="ErrorHandler"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static ErrorHandler</span> (line <span class="line-number">162</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">loadXml reports an error instead of throwing an exception when the xml is not well formed. This  is a custom PHP error handling function which throws an AgilePHP_Exception instead of reporting  a PHP error.</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> AgilePHP_Exception</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">false</span>
+		<span class="method-name">
+			ErrorHandler
+		</span>
+					(<span class="var-type">Integer</span>&nbsp;<span class="var-name">$errno</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$errmsg</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$errfile</span>, <span class="var-type">Integer</span>&nbsp;<span class="var-name">$errline</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Integer</span>
+				<span class="var-name">$errno</span><span class="var-description">: Error number</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$errmsg</span><span class="var-description">: Error message</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$errfile</span><span class="var-description">: The name of the file that caused the error</span>			</li>
+					<li>
+				<span class="var-type">Integer</span>
+				<span class="var-name">$errline</span><span class="var-description">: The line number that caused the error</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetRenderedXslFile" id="getRenderedXslFile"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getRenderedXslFile</span> (line <span class="line-number">131</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Performs an XSLT tranformation using a specified XSL view document and returns the HTML result.</p>
+<p class="description"><p>The XSL document is read in from the web application 'view' directory.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getRenderedXslFile
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$xsl</span>, [<span class="var-type">String</span>&nbsp;<span class="var-name">$xml</span> = <span class="var-default">''</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$xsl</span><span class="var-description">: XSL document located in the web app view directory</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$xml</span><span class="var-description">: Optional XML document</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodrender" id="render"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">render</span> (line <span class="line-number">40</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Renders a view by performing an XSLT transformation. The XSL document  is passed in as a string.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			render
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$xsl</span>, [<span class="var-type">String</span>&nbsp;<span class="var-name">$xml</span> = <span class="var-default">''</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$xsl</span><span class="var-description">: XSL document</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$xml</span><span class="var-description">: Optional XML document</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../com-makeabyte-agilephp-mvc/BaseRenderer.html#methodrender">BaseRenderer::render()</a></dt>
+					</dl>
+			
+	</div>
+<a name="methodrenderXslFile" id="renderXslFile"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">renderXslFile</span> (line <span class="line-number">104</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Renders a view by performing an XSLT transformation. The XSL document  is read in from the specified xsl view.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			renderXslFile
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$xsl</span>, [<span class="var-type">String</span>&nbsp;<span class="var-name">$xml</span> = <span class="var-default">''</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$xsl</span><span class="var-description">: XSL document located in the web app view directory</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$xml</span><span class="var-description">: XML document</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtransform" id="transform"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">transform</span> (line <span class="line-number">67</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Performs an XSLT transformation and returns the rendered HTML.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> rendered HTML from the XSLT transformation</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			transform
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$xsl</span>, [<span class="var-type">String</span>&nbsp;<span class="var-name">$xml</span> = <span class="var-default">''</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$xsl</span><span class="var-description">: XSL document</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$xml</span><span class="var-description">: Optional XML document</span>			</li>
+				</ul>
+		
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../com-makeabyte-agilephp-mvc/BaseRenderer.html">BaseRenderer</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-mvc/BaseRenderer.html#methodget">BaseRenderer::get()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-mvc/BaseRenderer.html#methodgetStore">BaseRenderer::getStore()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-mvc/BaseRenderer.html#methodrender">BaseRenderer::render()</a></span><br>
+													<span class="method-name"><a href="../com-makeabyte-agilephp-mvc/BaseRenderer.html#methodset">BaseRenderer::set()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 06 Jan 2010 18:38:12 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</div></body>
+</html>

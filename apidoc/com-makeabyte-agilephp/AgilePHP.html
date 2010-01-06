@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class AgilePHP</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class AgilePHP</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">AgilePHP core framework Class</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jeremy Hahn</li>
+				<li><span class="field">version:</span> 0.4a</li>
+				<li><span class="field">copyright:</span> Make A Byte, inc</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_src---AgilePHP.php.html">/src/AgilePHP.php</a> (line <span class="field">31</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																										
+				<div class="method-definition">
+					static 						<span class="method-result"><a href="../com-makeabyte-agilephp/AgilePHP.html">AgilePHP</a></span>
+										<a href="#getFramework" title="details" class="method-name">getFramework</a>
+										()
+									</div>
+																																																																																																																																																																		
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__destruct" title="details" class="method-name">__destruct</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addInterception" title="details" class="method-name">addInterception</a>
+											(<span class="var-type"><a href="../com-makeabyte-agilephp/Interception.html">Interception</a></span>&nbsp;<span class="var-name">$interception</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#disableInterceptors" title="details" class="method-name">disableInterceptors</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#enableInterceptors" title="details" class="method-name">enableInterceptors</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../com-makeabyte-agilephp/AgilePHP.html">AgilePHP</a></span>
+										<a href="#getAppName" title="details" class="method-name">getAppName</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getDocumentRoot" title="details" class="method-name">getDocumentRoot</a>
+										()
+									</div>
+																						
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getFrameworkRoot" title="details" class="method-name">getFrameworkRoot</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">Array</span>
+										<a href="#getInterceptions" title="details" class="method-name">getInterceptions</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getMVC" title="details" class="method-name">getMVC</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getRequestBase" title="details" class="method-name">getRequestBase</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getWebRoot" title="details" class="method-name">getWebRoot</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">SimpleXMLElement</span>
+										<a href="#getXmlConfiguration" title="details" class="method-name">getXmlConfiguration</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#initMVC" title="details" class="method-name">initMVC</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#isInDebugMode" title="details" class="method-name">isInDebugMode</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setAppName" title="details" class="method-name">setAppName</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDebugMode" title="details" class="method-name">setDebugMode</a>
+											(<span class="var-type">bool</span>&nbsp;<span class="var-name">$boolean</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDefaultTimezone" title="details" class="method-name">setDefaultTimezone</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$timezone</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDisplayPhpErrors" title="details" class="method-name">setDisplayPhpErrors</a>
+											(<span class="var-type">bool</span>&nbsp;<span class="var-name">$bool</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDocumentRoot" title="details" class="method-name">setDocumentRoot</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$path</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setFrameworkRoot" title="details" class="method-name">setFrameworkRoot</a>
+											(<span class="var-type">$path</span>&nbsp;<span class="var-name">$path</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setRequestBase" title="details" class="method-name">setRequestBase</a>
+											(<span class="var-type">$url</span>&nbsp;<span class="var-name">$url</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setWebRoot" title="details" class="method-name">setWebRoot</a>
+											(<span class="var-type">$path</span>&nbsp;<span class="var-name">$path</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#startClock" title="details" class="method-name">startClock</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">Time</span>
+										<a href="#stopClock" title="details" class="method-name">stopClock</a>
+										()
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodgetFramework" id="getFramework"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getFramework</span> (line <span class="line-number">83</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Factory method which is used to instantiate a singleton  instance of the AgilePHP framework.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> A Singleton instance of the AgilePHP Framework</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result"><a href="../com-makeabyte-agilephp/AgilePHP.html">AgilePHP</a></span>
+		<span class="method-name">
+			getFramework
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="method__destruct" id="__destruct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Destructor __destruct</span> (line <span class="line-number">452</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__destruct
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodaddInterception" id="addInterception"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">addInterception</span> (line <span class="line-number">302</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Adds an Interception to the interceptions stack</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addInterception
+		</span>
+					(<span class="var-type"><a href="../com-makeabyte-agilephp/Interception.html">Interception</a></span>&nbsp;<span class="var-name">$interception</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../com-makeabyte-agilephp/Interception.html">Interception</a></span>
+				<span class="var-name">$interception</span><span class="var-description">: The interception instance to add to the stack</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddisableInterceptors" id="disableInterceptors"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">disableInterceptors</span> (line <span class="line-number">334</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Disables interceptors.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			disableInterceptors
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodenableInterceptors" id="enableInterceptors"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">enableInterceptors</span> (line <span class="line-number">324</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Enables the use of interceptors.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			enableInterceptors
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetAppName" id="getAppName"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getAppName</span> (line <span class="line-number">219</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the name of the AgilePHP web application.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> web application name</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../com-makeabyte-agilephp/AgilePHP.html">AgilePHP</a></span>
+		<span class="method-name">
+			getAppName
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetDocumentRoot" id="getDocumentRoot"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getDocumentRoot</span> (line <span class="line-number">176</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the relative path to the web application from the server's document root.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> web applications relative path from the server's document root</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getDocumentRoot
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetFrameworkRoot" id="getFrameworkRoot"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getFrameworkRoot</span> (line <span class="line-number">155</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Gets the full system path to the location where AgilePHP resides.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> full system path to the location of the AgilePHP framework.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getFrameworkRoot
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetInterceptions" id="getInterceptions"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getInterceptions</span> (line <span class="line-number">314</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an array of Interceptions which have been loaded into the framework</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of Interception instances</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Array</span>
+		<span class="method-name">
+			getInterceptions
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetMVC" id="getMVC"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getMVC</span> (line <span class="line-number">105</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Accessor method for Model-View-Control component. The MVC component this method returns is  created as follows:</p>
+<p class="description"><p>1) If an agilephp.xml file is present in the web app root and contains a valid 'mvc'  	configuration, the MVC component is created using the specified values when AgilePHP  	framework is instantiated by a call to 'getFramework'.</p><p>2) A call to 'initMVC' has already loaded the MVC component so this method will return the  	already created component.</p><p>3) No agilephp.xml file is present. This method will obtain a singleton instance, store it  	internally, and then return the stored instance.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getMVC
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetRequestBase" id="getRequestBase"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getRequestBase</span> (line <span class="line-number">188</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the base action url used to communicate with the  AgilePHP MVC component. Defaults to the name of the script  which initalizes the framework.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> base action url used to communicate with the AgilePHP MVC component.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getRequestBase
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetWebRoot" id="getWebRoot"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getWebRoot</span> (line <span class="line-number">130</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the fully qualified path to the base directory of  the web application.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> fully qualified path to the web application</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getWebRoot
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetXmlConfiguration" id="getXmlConfiguration"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getXmlConfiguration</span> (line <span class="line-number">279</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the agilephp.xml configuration as a SimpleXMLElement.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The SimpleXMLElement instance that contains agilephp.xml configuration</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">SimpleXMLElement</span>
+		<span class="method-name">
+			getXmlConfiguration
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodinitMVC" id="initMVC"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">initMVC</span> (line <span class="line-number">248</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Initalizes a default Model-View-Control component without reading  agilephp.xml configuration.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			initMVC
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodisInDebugMode" id="isInDebugMode"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">isInDebugMode</span> (line <span class="line-number">269</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Whether or not AgilePHP framework is running in debug mode.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isInDebugMode
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodsetAppName" id="setAppName"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setAppName</span> (line <span class="line-number">209</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the name of the AgilePHP web application.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setAppName
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$name</span><span class="var-description">: The name of the AgilePHP application</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDebugMode" id="setDebugMode"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDebugMode</span> (line <span class="line-number">259</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Enables or disables AgilePHP framework debug mode.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDebugMode
+		</span>
+					(<span class="var-type">bool</span>&nbsp;<span class="var-name">$boolean</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$boolean</span><span class="var-description">: True for debug mode, false for production mode. Default is production.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDefaultTimezone" id="setDefaultTimezone"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDefaultTimezone</span> (line <span class="line-number">291</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Calls PHP date_default_timezone_set function to set the current timezone.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+				<li><span class="field">example:</span> example not found</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDefaultTimezone
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$timezone</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$timezone</span><span class="var-description">: The timezone to use as default.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDisplayPhpErrors" id="setDisplayPhpErrors"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDisplayPhpErrors</span> (line <span class="line-number">231</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">By default PHP hides errors on production servers. Setting this to true enables PHP  'display_errors', sets 'error_reporting' to 'E_ALL'.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDisplayPhpErrors
+		</span>
+					(<span class="var-type">bool</span>&nbsp;<span class="var-name">$bool</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">bool</span>
+				<span class="var-name">$bool</span><span class="var-description">: True to turn on error reporting on (E_ALL)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDocumentRoot" id="setDocumentRoot"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDocumentRoot</span> (line <span class="line-number">166</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the relative path to the web application from the server's document root.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDocumentRoot
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$path</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$path</span><span class="var-description">: The document root path</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetFrameworkRoot" id="setFrameworkRoot"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setFrameworkRoot</span> (line <span class="line-number">142</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the full system path to the location of the AgilePHP framework. The given path is  appended to the current php.ini include_path configuration.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setFrameworkRoot
+		</span>
+					(<span class="var-type">$path</span>&nbsp;<span class="var-name">$path</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$path</span>
+				<span class="var-name">$path</span><span class="var-description">: The full system path to the location where AgilePHP framework resides.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetRequestBase" id="setRequestBase"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setRequestBase</span> (line <span class="line-number">198</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the base action url used to communicate with the AgilePHP MVC component.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setRequestBase
+		</span>
+					(<span class="var-type">$url</span>&nbsp;<span class="var-name">$url</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$url</span>
+				<span class="var-name">$url</span><span class="var-description">: The base url to be used to communicate with the AgilePHP MVC component.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetWebRoot" id="setWebRoot"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setWebRoot</span> (line <span class="line-number">119</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the fully qualified path to the base directory of  the web application.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setWebRoot
+		</span>
+					(<span class="var-type">$path</span>&nbsp;<span class="var-name">$path</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$path</span>
+				<span class="var-name">$path</span><span class="var-description">: The fully qualified path to the web application</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodstartClock" id="startClock"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">startClock</span> (line <span class="line-number">427</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Starts a timer. Useful for measuring how long a particular  operation takes.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			startClock
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodstopClock" id="stopClock"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">stopClock</span> (line <span class="line-number">441</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Stops the timer and returns the elapsed time between startClock()  and stopClock().</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> elapsed time between startClock() and endClock()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Time</span>
+		<span class="method-name">
+			stopClock
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 06 Jan 2010 18:38:03 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</div></body>
+</html>
