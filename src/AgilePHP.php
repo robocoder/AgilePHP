@@ -576,6 +576,12 @@ function __autoload( $class ) {
   		 __autoload_class( $class );
 }
 
+
+require_once 'Annotation.php';
+require_once 'Interception.php';
+require_once 'Interception.php';
+require_once 'annotation/annotations/AroundInvoke.php';
+
 /**
  * If the class being loaded is annotated with any interceptors, an InterceptorProxy
  * class is created for the requested class. The InterceptorProxy is a template used
@@ -589,12 +595,6 @@ function __autoload( $class ) {
  * @param String $class The name of the class being loaded by __autoload
  * @return void
  */
-
-require_once 'Annotation.php';
-require_once 'Interception.php';
-require_once 'Interception.php';
-require_once 'annotation/annotations/AroundInvoke.php';
-
 function __autoload_interceptions( $class ) {
 
   	     $classAnnotations = &Annotation::getClassAsArray( $class );

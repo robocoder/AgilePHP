@@ -35,7 +35,7 @@ class Crypto {
 	  private $key;
 
 	  /**
-	   * Initalizes the Crypto component with the hasing algorithm defined in agilephp.xml
+	   * Initalizes the Crypto component with the hashing algorithm defined in agilephp.xml
 	   * 
 	   * @return void
 	   */

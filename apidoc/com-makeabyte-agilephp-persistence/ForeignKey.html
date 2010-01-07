@@ -1,0 +1,900 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class ForeignKey</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class ForeignKey</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Represents a foreign key in the AgilePHP persistence component.</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jeremy Hahn</li>
+				<li><span class="field">version:</span> 0.2a</li>
+				<li><span class="field">copyright:</span> Make A Byte, inc</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_persistence---ForeignKey.php.html">/persistence/ForeignKey.php</a> (line <span class="field">30</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																																																																																																																																						
+				<div class="method-definition">
+											<span class="method-result">ForeignKey</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$foreign</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Column.html">Column</a></span>
+										<a href="#getColumnInstance" title="details" class="method-name">getColumnInstance</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getFkColumn" title="details" class="method-name">getFkColumn</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getFkTable" title="details" class="method-name">getFkTable</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getName" title="details" class="method-name">getName</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getOnDelete" title="details" class="method-name">getOnDelete</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getOnUpdate" title="details" class="method-name">getOnUpdate</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getReferencedColumn" title="details" class="method-name">getReferencedColumn</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Column.html">Column</a></span>
+										<a href="#getReferencedColumnInstance" title="details" class="method-name">getReferencedColumnInstance</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getReferencedController" title="details" class="method-name">getReferencedController</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getReferencedTable" title="details" class="method-name">getReferencedTable</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Table.html">Table</a></span>
+										<a href="#getReferencedTableInstance" title="details" class="method-name">getReferencedTableInstance</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Column.html">Column</a></span>
+										<a href="#getSelect" title="details" class="method-name">getSelect</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Column.html">Column</a></span>
+										<a href="#getSelectedColumnInstance" title="details" class="method-name">getSelectedColumnInstance</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getType" title="details" class="method-name">getType</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setFkColumn" title="details" class="method-name">setFkColumn</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$columnName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setFkTable" title="details" class="method-name">setFkTable</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$tableName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setName" title="details" class="method-name">setName</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$name</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setOnDelete" title="details" class="method-name">setOnDelete</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$action</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setOnUpdate" title="details" class="method-name">setOnUpdate</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$action</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setReferencedColumn" title="details" class="method-name">setReferencedColumn</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$columnName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setReferencedController" title="details" class="method-name">setReferencedController</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$controller</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setReferencedTable" title="details" class="method-name">setReferencedTable</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$tableName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setSelect" title="details" class="method-name">setSelect</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$columnName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setType" title="details" class="method-name">setType</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$type</span>)
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">45</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">ForeignKey</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$foreign</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">SimpleXMLElement</span>
+				<span class="var-name">$foreign</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$tableName</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$columnName</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetColumnInstance" id="getColumnInstance"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getColumnInstance</span> (line <span class="line-number">314</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the column instance where the foreign key resides</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The foreign key column instance</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Column.html">Column</a></span>
+		<span class="method-name">
+			getColumnInstance
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetFkColumn" id="getFkColumn"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getFkColumn</span> (line <span class="line-number">253</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the physical name of the column which stores the foreign key.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The physical name of the column storing the foreign key</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getFkColumn
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetFkTable" id="getFkTable"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getFkTable</span> (line <span class="line-number">232</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the name of the table that stores this foreign key.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The foreign key (parent) table</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getFkTable
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetName" id="getName"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getName</span> (line <span class="line-number">77</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the name of the foreign key</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> foreign key name</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getName
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetOnDelete" id="getOnDelete"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getOnDelete</span> (line <span class="line-number">211</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the configured SQL 'OnDelete' action for the foreign key.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The action to perform when the foreign (parent) key is deleted.                  (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getOnDelete
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetOnUpdate" id="getOnUpdate"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getOnUpdate</span> (line <span class="line-number">187</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the configured SQL 'OnUpdate' action for the foreign key.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The configured action (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getOnUpdate
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetReferencedColumn" id="getReferencedColumn"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getReferencedColumn</span> (line <span class="line-number">140</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the name of the referenced (parent) column.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The name of the referenced (parent) column.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getReferencedColumn
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetReferencedColumnInstance" id="getReferencedColumnInstance"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getReferencedColumnInstance</span> (line <span class="line-number">297</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an instance of the referenced column</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The referenced column instance</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Column.html">Column</a></span>
+		<span class="method-name">
+			getReferencedColumnInstance
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetReferencedController" id="getReferencedController"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getReferencedController</span> (line <span class="line-number">164</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the name of the referenced MVC controller responsible  for the management of the referenced domain model.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The referenced controller name</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getReferencedController
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetReferencedTable" id="getReferencedTable"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getReferencedTable</span> (line <span class="line-number">119</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the physical name of the referenced table.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The referenced (parent) table name</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getReferencedTable
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetReferencedTableInstance" id="getReferencedTableInstance"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getReferencedTableInstance</span> (line <span class="line-number">286</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an instance of the referenced Table.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The referenced table instance</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Table.html">Table</a></span>
+		<span class="method-name">
+			getReferencedTableInstance
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetSelect" id="getSelect"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSelect</span> (line <span class="line-number">276</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Gets the name of the foreign table's column which should be displayed  in a drop-down in place of the actual foreign key value.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> name used to populate select combobox</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Column.html">Column</a></span>
+		<span class="method-name">
+			getSelect
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetSelectedColumnInstance" id="getSelectedColumnInstance"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSelectedColumnInstance</span> (line <span class="line-number">334</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the foreign (parent) column instance which contains a  select=&quot;true&quot; configuration in persistence.xml. If a column is  not explicitly set, the referenced column instance is returned.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> The column instance to use to display values in an HTML select                   element rather than the foreign key values.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Column.html">Column</a></span>
+		<span class="method-name">
+			getSelectedColumnInstance
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetType" id="getType"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getType</span> (line <span class="line-number">98</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the data type being stored in the foreign key column.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> foreign key data type</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getType
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodsetFkColumn" id="setFkColumn"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setFkColumn</span> (line <span class="line-number">243</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The name of the column which stores this foreign key</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setFkColumn
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$columnName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$columnName</span><span class="var-description">: The physical column name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetFkTable" id="setFkTable"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setFkTable</span> (line <span class="line-number">222</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the physical name of the foreign key table.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setFkTable
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$tableName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$tableName</span><span class="var-description">: The phsical name of the foreign key table.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetName" id="setName"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setName</span> (line <span class="line-number">67</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the name of the foreign key. This is the actual name given to  the foreign key according to the database server.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setName
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$name</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$name</span><span class="var-description">: The foreign key name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetOnDelete" id="setOnDelete"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setOnDelete</span> (line <span class="line-number">200</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the SQL 'OnDelete' action which is invoked when the foreign (parent)  key is updated.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setOnDelete
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$action</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$action</span><span class="var-description">: The action to perform when the foreign (parent) key is deleted.                           (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetOnUpdate" id="setOnUpdate"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setOnUpdate</span> (line <span class="line-number">177</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the SQL 'OnUpdate' action for the foreign key. This action  is performed automatically by the database server anytime the  primary key in the foreign (parent) table is updated.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setOnUpdate
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$action</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$action</span><span class="var-description">: The action to perform (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetReferencedColumn" id="setReferencedColumn"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setReferencedColumn</span> (line <span class="line-number">130</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the name of the referenced (parent) column.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setReferencedColumn
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$columnName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$columnName</span><span class="var-description">: The referenced column name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetReferencedController" id="setReferencedController"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setReferencedController</span> (line <span class="line-number">153</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the name of the referenced MVC controller responsible  for the management of the referenced domain model.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setReferencedController
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$controller</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$controller</span><span class="var-description">: The controller responsible for the management of the                             referenced domain model</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetReferencedTable" id="setReferencedTable"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setReferencedTable</span> (line <span class="line-number">109</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the name of the referenced table.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setReferencedTable
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$tableName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$tableName</span><span class="var-description">: The name of the referenced (parent) table.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetSelect" id="setSelect"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setSelect</span> (line <span class="line-number">265</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the name of the foreign table's column which should be displayed  in a drop-down in place of the actual foreign key value.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setSelect
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$columnName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$columnName</span><span class="var-description">: The foreign column name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetType" id="setType"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setType</span> (line <span class="line-number">88</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the foreign key value data type.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setType
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$type</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$type</span><span class="var-description">: The data type of the value being stored in the foreign key column</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 06 Jan 2010 19:11:17 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</div></body>
+</html>
