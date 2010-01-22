@@ -1,7 +1,7 @@
 <?php
 
-require_once 'util/AgilePHPGen.php';
-require_once '../src/AgilePHP.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
+require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'AgilePHP.php';
 
 class DropDatabase extends AgilePHPGen {
 
@@ -16,7 +16,7 @@ class DropDatabase extends AgilePHPGen {
 	  		 $agilephp = AgilePHP::getFramework();
 	  	     $agilephp->setDisplayPhpErrors( true );
       	     $agilephp->setWebRoot( $this->getCache()->getProjectRoot() );
-      	     $agilephp->setFrameworkRoot( $this->getCache()->getProjectRoot() . '/AgilePHP' );
+      	     $agilephp->setFrameworkRoot( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'AgilePHP' );
       	     $agilephp->setDefaultTimezone( 'America/New_York' );
 
 	  		 $pm = new PersistenceManager();

@@ -137,6 +137,24 @@ class User implements IdentityModel {
 
 	  /**
 	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setRoleId($roleId)
+	   */
+	  public function setRoleId( $roleId ) {
+
+	  	     $this->roleId = $roleId;
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getRoleId()
+	   */
+	  public function getRoleId() {
+
+	  		 return $this->roleId;
+	  }
+
+	  /**
+	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setRole($role)
 	   */
 	  public function setRole( Role $role ) {

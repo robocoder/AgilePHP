@@ -1,7 +1,7 @@
 <?php
 
-require_once 'util/AgilePHPGen.php';
-require_once 'util/jsmin-1.1.1.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'jsmin-1.1.1.php';
 
 class CreateView extends AgilePHPGen {
 
@@ -18,12 +18,14 @@ class CreateView extends AgilePHPGen {
 	  		 $views = array();
 
 	  		 $i = 0;
-	  		 $it = new RecursiveDirectoryIterator( './templates/views' );
+	  		 $it = new RecursiveDirectoryIterator( '.' . DIRECTORY_SEPARATOR . 'templates' .
+	  		 			DIRECTORY_SEPARATOR . 'views' );
 		 	 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
 
 		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
 
-		   	      	  $file = str_replace( './templates/views/', '', $file );
+		   	      	  $file = str_replace( '.' . DIRECTORY_SEPARATOR . 'templates' .
+		   	      	  			DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR, '', $file );
 		   	      	  if( substr( $file, 0, 4 ) == '.svn' ) continue;
 
 		   	      	  $i++;
@@ -39,7 +41,9 @@ class CreateView extends AgilePHPGen {
 		 	 	 PHPUnit_Framework_Assert::fail( 'Invalid selection!' );
 
 		 	 $view = $views[$input];
-		 	 copy( './templates/views/' . $view, $this->getCache()->getProjectRoot() . '/view/' . $view );
+		 	 copy( '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'views' . 
+		 	 			 DIRECTORY_SEPARATOR . $view, $this->getCache()->getProjectRoot() . 
+		 	 			 DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . $view );
 	  }
 }
 ?>

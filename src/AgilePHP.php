@@ -56,8 +56,8 @@ class AgilePHP {
 
 	  	      $this->webroot = getcwd();
 	  	      $this->requestBase = $_SERVER['SCRIPT_NAME'];
-	  	      $this->frameworkRoot = $this->webroot . '/AgilePHP';
-	  	      $this->appName = $_SERVER['HTTP_HOST'];
+	  	      $this->frameworkRoot = $this->webroot . DIRECTORY_SEPARATOR . 'AgilePHP';
+	  	      $this->appName = (isset( $_SERVER['HTTP_HOST'] )) ? $_SERVER['HTTP_HOST'] : 'localhost';
 
 	  	      // Parse and set documentRoot
 	  	      $pieces = explode( '.php', $_SERVER['SCRIPT_NAME'] );
@@ -219,6 +219,23 @@ class AgilePHP {
 	  public function getAppName() {
 
 	  		 return $this->appName;
+	  }
+
+	  /**
+	   * Loads a class from the web application 'classes' directory using a
+	   * package classpath syntax.
+	   * 
+	   * @param String $classpath The dot notation classpath (my.package.ClassName)
+	   * @return void
+	   * @throws AgilePHP_Exception If an error occurred loading the specified classpath
+	   */
+	  public function import( $classpath ) {
+
+	  		 $file = preg_replace( '/\./', DIRECTORY_SEPARATOR, $classpath );
+	  		 if( $file == null )
+	  		 	 throw new AgilePHP_Exception( 'Error loading classpath: ' . $classpath );
+
+	  		 require_once( 'classes' . DIRECTORY_SEPARATOR . $file . '.php' );
 	  }
 
 	  /**
@@ -659,7 +676,7 @@ function __autoload_interceptions( $class ) {
 function __autoload_class( $class ) {
 
 		 // Load framework classes
-		 $path = AgilePHP::getFramework()->getFrameworkRoot() . '/' . $class . '.php';
+		 $path = AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR . $class . '.php';
 	     if( file_exists( $path ) ) {
 
 	     	 require_once $path;
@@ -671,7 +688,7 @@ function __autoload_class( $class ) {
 		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
 		   	      	  substr( $file, -4 ) != 'view' ) {
 
-		   	      	  $array = explode( '/', $file );
+		   	      	  $array = explode( DIRECTORY_SEPARATOR, $file );
 			 		  if( array_pop( $array ) == $class . '.php' ) {
 
 		     	 		  require_once $file;
@@ -681,25 +698,29 @@ function __autoload_class( $class ) {
 		 }
 
 		 // Load web application classes
-		 $path = AgilePHP::getFramework()->getWebRoot() . '/components/' . $class . '.php';
+		 $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'components' .
+		 		 DIRECTORY_SEPARATOR . $class . '.php';
 	     if( file_exists( $path ) ) {
 
 		     require_once $path;
 	     	 return;
 	     }
-  	     $path = AgilePHP::getFramework()->getWebRoot() . '/control/' . $class . '.php';
+  	     $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
+  	     		 DIRECTORY_SEPARATOR . $class . '.php';
   	     if( file_exists( $path ) ) {
 
 		     require_once $path;
   	         return;
   	     }
-  	     $path = AgilePHP::getFramework()->getWebRoot() . '/model/' . $class . '.php';
+  	     $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'model' .
+  	     		 DIRECTORY_SEPARATOR . $class . '.php';
 	     if( file_exists( $path ) ) {
 
 		      require_once $path;
   	          return;
 	     }
-	     $path = AgilePHP::getFramework()->getWebRoot() . '/classes/' .	$class . '.php';
+	     $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'classes' .
+	     		 DIRECTORY_SEPARATOR . $class . '.php';
   	     if( file_exists( $path ) ) {
 
 		     require_once $path;
@@ -711,7 +732,7 @@ function __autoload_class( $class ) {
 		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
 		   	      	  substr( $file, -4 ) != 'view' ) {
 
-			 		  if( array_pop( explode( '/', $file ) ) == $class . '.php' ) {
+			 		  if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == $class . '.php' ) {
 
 		     	 		  require_once $file;
 			 		      return;

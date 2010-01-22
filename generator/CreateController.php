@@ -1,7 +1,7 @@
 <?php
 
-require_once 'util/AgilePHPGen.php';
-require_once 'util/jsmin-1.1.1.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'jsmin-1.1.1.php';
 
 class CreateController extends AgilePHPGen {
 
@@ -16,12 +16,14 @@ class CreateController extends AgilePHPGen {
 	  		 echo "Please select from the following controllers:\n\n";
 
 			 $i=0;
-	  		 $it = new RecursiveDirectoryIterator( './templates/controllers' );
+	  		 $it = new RecursiveDirectoryIterator( '.' . DIRECTORY_SEPARATOR . 'templates' .
+	  		 		DIRECTORY_SEPARATOR . 'controllers' );
 		 	 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
 
 		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
 
-		   	      	  $file = str_replace( './templates/controllers/', '', $file );
+		   	      	  $file = str_replace( '.' . DIRECTORY_SEPARATOR . 'templates' .
+		   	      	  			DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR, '', $file );
 			 		  $file = str_replace( '.php', '', $file );
 
 			 		  if( substr( $file, 0, 4 ) == '.svn' ) continue;
@@ -42,7 +44,9 @@ class CreateController extends AgilePHPGen {
 		 	 	 PHPUnit_Framework_Assert::fail( 'Invalid selection!' );
 
 		 	 $controller = $controllers[$input] . '.php';
-		 	 copy( './templates/controllers/' . $controller, $this->getCache()->getProjectRoot() . '/control/' . $controller );
+		 	 copy( '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'controllers' .
+		 	 	   DIRECTORY_SEPARATOR . $controller, $this->getCache()->getProjectRoot() . 
+		 	 	   DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $controller );
 	  }
 }
 ?>

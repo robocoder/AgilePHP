@@ -1,7 +1,7 @@
 <?php
 
-require_once 'util/AgilePHPGen.php';
-require_once 'util/IDEIntegration.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'IDEIntegration.php';
 
 class CreateProject extends AgilePHPGen {
 
@@ -17,9 +17,9 @@ class CreateProject extends AgilePHPGen {
   		 	 $cache = new ProjectCache();
 
   		 	 // Provide agilephp-gen as the default directory
-  		 	 $pieces = explode( '/', dirname( __FILE__ ) );
+  		 	 $pieces = explode( DIRECTORY_SEPARATOR, dirname( __FILE__ ) );
   		 	 array_pop( $pieces );
-  		 	 $defaultDir = implode( '/', $pieces );
+  		 	 $defaultDir = implode( DIRECTORY_SEPARATOR, $pieces );
 
 			 $input = $this->prompt( 'Enter project home directory: (' . $defaultDir . ')' );
 	  		 $projectHome = $input ? $input : $defaultDir;
@@ -31,51 +31,52 @@ class CreateProject extends AgilePHPGen {
 	  		 $cache->setProjectHome( $projectHome );
 
 	  		 $projectName = $this->prompt( 'Enter project name:' );
-	  		 if( !file_exists( $projectHome . '/' . $projectName ) ) {
+	  		 if( !file_exists( $projectHome . DIRECTORY_SEPARATOR . $projectName ) ) {
 
-		  		 if( !mkdir( $projectHome . '/' . $projectName ) ) {
+		  		 if( !mkdir( $projectHome . DIRECTORY_SEPARATOR . $projectName ) ) {
 
-		  		 	 PHPUnit_Framework_Assert::fail( 'Failed to create project directory at \'' . $projectHome . '/' . $projectName . '\'.' );
+		  		 	 PHPUnit_Framework_Assert::fail( 'Failed to create project directory at \'' . 
+		  		 	 			$projectHome . DIRECTORY_SEPARATOR . $projectName . '\'.' );
 			  		 return;
 			  	 }
 		  	 }
 		  	 $cache->setProjectName( $projectName );
 
-	  		 $root = $projectHome . '/' . $projectName;
+	  		 $root = $projectHome . DIRECTORY_SEPARATOR . $projectName;
 
-	  		 $model = $root . '/model';
+	  		 $model = $root . DIRECTORY_SEPARATOR . 'model';
 	  		 if( !mkdir( $model ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project models directory at \'' . $model . '\'.' );
 	  		 	 
-	  		 $view = $root . '/view';
+	  		 $view = $root . DIRECTORY_SEPARATOR . 'view';
 	  		 if( !mkdir( $view ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project view directory at \'' . $view . '\'.' );
 
-	  		 $css = $root . '/view/css';
+	  		 $css = $root . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . 'css';
 	  		 if( !mkdir( $css ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project css directory at \'' . $css . '\'.' );
 
-	  		 $control = $root . '/control';
+	  		 $control = $root . DIRECTORY_SEPARATOR . 'control';
 	  		 if( !mkdir( $control ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project controllers directory at \'' . $control . '\'.' );
 	  		 
-	  		 $logs = $root . '/logs';
+	  		 $logs = $root . DIRECTORY_SEPARATOR . 'logs';
 	  		 if( !mkdir( $logs ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project logging directory at \'' . $logs . '\'.' );
 	  		 
 	  		 if( !chmod( $logs, 0777 ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not change permissions to 077 on project logging directory \'' . $logs . '\'.' );
 
-	  		 $components = $root . '/components';
+	  		 $components = $root . DIRECTORY_SEPARATOR . 'components';
 	  		 if( !mkdir( $components ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project components directory at \'' . $components . '\'.' );
 
-	  		 $classes = $root . '/classes';
+	  		 $classes = $root . DIRECTORY_SEPARATOR . 'classes';
 	  		 if( !mkdir( $classes ) )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Could not create project classes directory at \'' . $classes . '\'.' );
 
-	  		 $agilephp = $root . '/AgilePHP';
-	  		 $this->recursiveCopy( '../src', $agilephp );
+	  		 $agilephp = $root . DIRECTORY_SEPARATOR . 'AgilePHP';
+	  		 $this->recursiveCopy( '..' . DIRECTORY_SEPARATOR . 'src', $agilephp );
 
 	  		 /** AgilePHP Configuration */
 	  		 $answer = $this->prompt( 'Would you like to use interceptors in your project? (Y/N)' );
@@ -154,10 +155,10 @@ class CreateProject extends AgilePHPGen {
 
 			      	 if( $file != '.' && $file != '..' ) {
 
-			             if( is_dir( $src . '/' . $file ) )
-			                $this->recursiveCopy( $src . '/' . $file, $dst . '/' . $file );
+			             if( is_dir( $src . DIRECTORY_SEPARATOR . $file ) )
+			                $this->recursiveCopy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
 			            else
-			                copy( $src . '/' . $file, $dst . '/' . $file );
+			                copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
 			        }
 			 }
 			 closedir( $dir );
@@ -208,11 +209,11 @@ class CreateProject extends AgilePHPGen {
 			  $data .= "\t</database>\n";
 			  $data .= '</persistence>';
 
-	  		  $h = fopen( $this->getCache()->getProjectRoot() . '/persistence.xml', 'w' );
+	  		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml', 'w' );
 	  		  fwrite( $h, $data );
 	  		  fclose( $h );
 
-	  		  if( !file_exists( $this->getCache()->getProjectRoot() . '/persistence.xml' ) )
+	  		  if( !file_exists( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml' ) )
 	  		  	  PHPUnit_Framework_Assert::fail( 'Could not create default persistence.xml file' );
 	  }
 
@@ -236,11 +237,11 @@ class CreateProject extends AgilePHPGen {
 
 			  $data .= '</agilephp>';
 
-			  $h = fopen( $this->getCache()->getProjectRoot() . '/agilephp.xml', 'w' );
+			  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml', 'w' );
 	  		  fwrite( $h, $data );
 	  		  fclose( $h );
 
-	  		  if( !file_exists( $this->getCache()->getProjectRoot() . '/agilephp.xml' ) )
+	  		  if( !file_exists( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml' ) )
 	  		 	  PHPUnit_Framework_Assert::fail( 'Could not create default agilephp.xml file' );
 	  }
 
@@ -312,7 +313,7 @@ class CreateProject extends AgilePHPGen {
 			  	  $data .= "</Files>";
 		  	  }
 
-	  		  $htaccess = $this->getCache()->getProjectRoot() . '/.htaccess';
+	  		  $htaccess = $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . '.htaccess';
 
 	  		  $h = fopen( $htaccess, 'w' );
 	  		  fwrite( $h, $data );
@@ -340,7 +341,7 @@ class CreateProject extends AgilePHPGen {
  * @author agilephp
  * @version 0.1
  */
- require_once \'AgilePHP/AgilePHP.php\';
+ require_once \'AgilePHP\' . DIRECTORY_SEPARATOR . \'AgilePHP.php\';
 
  try {
 		$agilephp = AgilePHP::getFramework();  	
@@ -460,7 +461,8 @@ a {
 	font-family:tahoma;
 	font-size:12px;
 }';
-	  		  $h = fopen( $this->getCache()->getProjectRoot() . '/view/css/style.css', 'w' );
+	  		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'view' .
+	  		  			DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'style.css', 'w' );
 	  		  fwrite( $h, $style );
 	  		  fclose( $h );    
 	  }

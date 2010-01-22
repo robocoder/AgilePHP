@@ -186,20 +186,25 @@ class MVC {
 	   */
 	  public function processRequest() {
 
-	  	     preg_match( '/^(.+?\.php)(.*)/si', $_SERVER['REQUEST_URI'], $matches );
-
+	  		 //$requestURI = (isset( $_SERVER['REQUEST_URI' ] ) ? $_SERVER['REQUEST_URI'] : null );
+	  	     //preg_match( '/^(.+?\.php)(.*)/si', $_SERVER['PATH_INFO'], $matches );
 	  	     // $matches[1] is the request base (for example /httpdocs/index.php)
 	  	     // $matches[2] is everything else after $matches[1]
+
+	  		 $path = (isset( $_SERVER['PATH_INFO'] )) ? $_SERVER['PATH_INFO'] : '/';
+
+	  		 // Updated for windows servers
+		  	 preg_match( '/^(.*)/si', $path, $matches );
 
 	  	     if( count( $matches ) ) {
 
 		  	  	 $mvcPieces = explode( '/', $matches[count($matches)-1] );
-			  	 array_shift( $mvcPieces ); // $matches[2] starts with forward slash which makes the first element empty
+			  	 array_shift( $mvcPieces );
 
 			  	 // Assign controller and action
 		  	     $controller = (count($mvcPieces) > 0 && $mvcPieces[0] != '') ? $mvcPieces[0] : $this->getDefaultController(); 
 		  	     $action = (count( $mvcPieces ) > 1) ? $mvcPieces[1] : $this->getDefaultAction();
-	
+
 		  	     // Remove controller and action from mvcPieces
 		  	     array_shift( $mvcPieces );
 		  	     array_shift( $mvcPieces );

@@ -1,12 +1,10 @@
-0.4a
+0.5a
 ----
 
-- Fix warning message in AnnotationParser::get*AsArray methods when the requested class doesnt exit.
-- Bug fix to AnnotationParser::parseAnnotations regex.
-- Added confirmationUrl to createAgilePhpXML method inside generator/CreateProject.php.
-- Updated PHPdoc's on all classes
-- Bug fix to Identity component constructor when using custom model
-- Nasty bug fix on AnnotatedClass getMethods and getProperties which were causing an infinite loop that resulted in a segmentation fault
-- Bug fix to interceptors and annotations due to annotation parser.
-- Bug fix to identity.User class. Missing roleId accessor and mutator.
-- Refactored test/remoting-example.html call to getBaseJS so that its being gotten from RemotingController (so the remoting controller is pre-set).
+- Fix warning message in AnnotationParser::get*AsArray methods - was using in_array instead of array_key_exists.
+- Bug fix to AnnotatedClass getMethods and getProperties methods. Made $filter argument optional.
+- Refactored Remoting component (fixed pass by reference during call time deprecated warning)
+- Refactored Logger::write. Unit tests were failing on windows since phpunit CLI has no $_SERVER['REMOTE_ADDR'].
+- Added MSSQL support to persistence framework (using ODBC driver). SQL queries and sprocs seem to be working good.
+- Began refactoring framework to work in windoze environments.
+- Added array size checking code throughout AnnotationParser which was causing notices, warnings, and errors under Win32 IIS and PHP 5.2.12.

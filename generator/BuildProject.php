@@ -1,7 +1,7 @@
 <?php
 
-require_once 'util/AgilePHPGen.php';
-require_once 'util/jsmin-1.1.1.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'jsmin-1.1.1.php';
 
 class BuildProject extends AgilePHPGen {
 
@@ -14,7 +14,7 @@ class BuildProject extends AgilePHPGen {
 
 	  		 // Minify AgilePHP client side JavaScript
 	  	     $root = $this->getCache()->getProjectRoot();
-	  	     $file = $root . '/AgilePHP/AgilePHP.js';
+	  	     $file = $root . DIRECTORY_SEPARATOR . 'AgilePHP' . DIRECTORY_SEPARATOR . 'AgilePHP.js';
 	  	     $data = JSMin::minify( file_get_contents( $file ) );
 	  	     $h = fopen( $file, 'w' );
 	  	     if( !fwrite( $h, $data ) )

@@ -163,7 +163,7 @@ class Interception {
 	
 			   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
 
-				 		  if( array_pop( explode( '/', $file ) ) == $class . '.php' )
+				 		  if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == $class . '.php' )
 			     	 			  return file_get_contents( $file );
 				      }
 			 }
@@ -175,7 +175,7 @@ class Interception {
 			   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
 			   	      	  substr( $file, -4 ) != 'view' ) {
 	
-				 		  if( array_pop( explode( '/', $file ) ) == $class . '.php' )
+				 		  if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == $class . '.php' )
 			     	 			  return file_get_contents( $file );
 				      }
 			 }

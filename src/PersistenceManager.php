@@ -114,35 +114,40 @@ class PersistenceManager {
 	  	     		 	  $this->dialect = new MySQLDialect( $db );
 	  	     		 	  break;
 
-	  	     		 	/*
-	  	     		 	case 'pgsql':
-	  	     		 		 $this->pdo = new PDO( "pgsql:host=$host;dbname=$name", $username, $password );
-	  	     		 	  	 break;
+	  	     	     case 'mssql':
+	  	     	     	  require_once 'persistence/dialect/MSSQLDialect.php';
+	  	     	     	  $this->dialect = new MSSQLDialect( $db );
+	  	     	     	  break;
 
-	  	     		 	case 'firebird':
-	  	     		    	 $this->pdo = new PDO( "firebird:dbname=$host:$name", $username, $password );
-	  	     		      	 break;
+	  	     	    /*
+  	     		 	case 'pgsql':
+  	     		 		 $this->pdo = new PDO( "pgsql:host=$host;dbname=$name", $username, $password );
+  	     		 	  	 break;
 
-	  	     		 	case 'informix':
-	  	     		 		 $this->pdo = new PDO( "informix:DSN=$name", $username, $password );
-	  	     		 	  	 break;
+  	     		 	case 'firebird':
+  	     		    	 $this->pdo = new PDO( "firebird:dbname=$host:$name", $username, $password );
+  	     		      	 break;
 
-	  	     		 	case 'oracle':
-	  	     		 		 $this->pdo = new PDO( "OCI:dbname=$name;charset=UTF-8", $username, $password );
-	  	     		 	  	 break;
+  	     		 	case 'informix':
+  	     		 		 $this->pdo = new PDO( "informix:DSN=$name", $username, $password );
+  	     		 	  	 break;
 
-	  	     		 	case 'dblib':
-	  	     		 		 $this->pdo = new PDO( "dblib:host=$host;dbname=$name", $username, $password );
-	  	     		 	  	 break;
+  	     		 	case 'oracle':
+  	     		 		 $this->pdo = new PDO( "OCI:dbname=$name;charset=UTF-8", $username, $password );
+  	     		 	  	 break;
 
-	  	     		 	case 'ibm':
-	  	     		 		 $this->pdo = new PDO( "ibm:DRIVER={IBM DB2 ODBC DRIVER};DATABASE=$name;HOSTNAME=$host;PROTOCOL=TCPIP;", $username, $password );
-	  	     		 	  	 break;
-	  	     		 	*/
+  	     		 	case 'dblib':
+  	     		 		 $this->pdo = new PDO( "dblib:host=$host;dbname=$name", $username, $password );
+  	     		 	  	 break;
 
-	  	     		 	default:
-	  	     		 		 throw new AgilePHP_PersistenceException( "Invalid database type specified in persistence.xml for database with id '" . $db->getId() . "'." );
-	  	     		 	  	 break;
+  	     		 	case 'ibm':
+  	     		 		 $this->pdo = new PDO( "ibm:DRIVER={IBM DB2 ODBC DRIVER};DATABASE=$name;HOSTNAME=$host;PROTOCOL=TCPIP;", $username, $password );
+  	     		 	  	 break;
+					*/
+
+  	     		 	default:
+  	     		 		 throw new AgilePHP_PersistenceException( "Invalid database type specified in persistence.xml for database with id '" . $db->getId() . "'." );
+  	     		 	  	 break;
 	  	     	}
 	  	 }
 	  	 

@@ -36,7 +36,7 @@
 			/** AgilePHP Remoting */
 			function mycallback( o ) {
 
-					 var response = eval( '(' + o.responseText + ')' );
+					 var response = ( o.responseText.indexOf( '{' ) !== -1 ) ? eval( '(' + o.responseText + ')' ) : o.responseText;
 					 AgilePHP.debug( 'response' );
 					 AgilePHP.debug( response );
 
@@ -135,7 +135,6 @@
 			<!-- 
 			<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="this_will_make_the_request_fail___remove me and watch it work!"/>
 			-->
-			<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="1Iyk0nh13o82S10u6HffN"/>
 		</form>
 		<div id="formSubmitResponse"></div>
 	</body>

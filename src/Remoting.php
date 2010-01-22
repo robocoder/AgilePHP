@@ -178,7 +178,7 @@ abstract class Remoting extends BaseController {
 		  	         $instance = $stub ? $clazz->newInstanceArgs( (array)$stub ) : $clazz->newInstance();
 		  		     $m = $clazz->getMethod( $method );
 
-		  		     return $args ? $m->invokeArgs( &$instance, (array)$args ) : $m->invoke( &$instance );
+		  		     return $args ? $m->invokeArgs( $instance, (array)$args ) : $m->invoke( $instance );
 	  		   }
 	  		   catch( Exception $e ) {
 
@@ -209,7 +209,7 @@ abstract class Remoting extends BaseController {
 		  	         $instance = $stub ? $clazz->newInstanceArgs( (array)$stub ) : $clazz->newInstance();
 		  		     $m = $clazz->getMethod( '__call' );
 		  		     $callArgs = array( $method, (array) $args );
-		  		     return $args ? $m->invokeArgs( &$instance, $callArgs ) : $m->invokeArgs( &$instance, $method );
+		  		     return $args ? $m->invokeArgs( $instance, $callArgs ) : $m->invokeArgs( $instance, $method );
 	  		   }
 	  		   catch( Exception $e ) {
 
@@ -268,7 +268,7 @@ abstract class Remoting extends BaseController {
 
 		  		     $m = $clazz->getMethod( '__call' );
 		  		     $callArgs = array( $method, (array) $args );
-		  		     $result = $args ? $m->invokeArgs( &$instance, $callArgs ) : $m->invokeArgs( &$instance, $method );
+		  		     $result = $args ? $m->invokeArgs( $instance, $callArgs ) : $m->invokeArgs( $instance, $method );
 		  		     $classes[$class] = $instance;
 		  		     $session->set( 'REMOTING_classes', $classes );
 

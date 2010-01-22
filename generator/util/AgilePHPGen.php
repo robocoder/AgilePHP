@@ -1,6 +1,6 @@
 <?php
 
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit' . DIRECTORY_SEPARATOR . 'Framework.php';
 
 class AgilePHPGen extends PHPUnit_Framework_TestCase {
 

@@ -280,14 +280,15 @@ class AnnotationParser {
 	  		  		   preg_match_all( '/\((.*=.*\(?\)?)\)/', $annote, $props );
 
 					   // Extract arrays
-					   preg_match_all( '/[_a-zA-Z]+[0-9_]?\s?=\s?{+?.*?}+\s?,?/', $props[1][0], $arrays );
+					   if( count( $props ) && count( $props[1] ) )
+					   	   preg_match_all( '/[_a-zA-Z]+[0-9_]?\s?=\s?{+?.*?}+\s?,?/', $props[1][0], $arrays );
 
 					   // Extract other annotations
 					   // @todo Support child annotations
 					   //preg_match_all( '/@(.*)?,?/', $props[1][0], $childAnnotes );
 
 					   // Add arrays to annotation instance and remove it from the properties
-	  		  		   if( count( $arrays ) ) {
+	  		  		   if( isset( $arrays ) ) {
 
 	  		  		   	   $result = $this->parseKeyArrayValuePairs( $oAnnotation, $arrays[0], $props[1][0] );
 	  		  		   	   $oAnnotation = $result->annotation;
@@ -295,7 +296,8 @@ class AnnotationParser {
 					   }
 
 					   // Add strings and PHP literals to annotation instance
-					   $oAnnotation = $this->parseKeyValuePairs( $oAnnotation, $props[1][0] );
+					   if( count( $props ) && count( $props[1] ) )
+					   	   $oAnnotation = $this->parseKeyValuePairs( $oAnnotation, $props[1][0] );
 
 					   // Push the annotation instance onto the stack
 	  		  		   array_push( $annotations, $oAnnotation );
@@ -402,6 +404,9 @@ class AnnotationParser {
   	  		   		  $pieces = explode( '=', $kv );
 
   	  		   		  preg_match( '/(.*)=(.*)/', $kv, $pieces );
+
+  	  		   		  if( count( $pieces ) < 2 ) continue;
+
   	  		   		  $property = trim( $pieces[1] );
   	  		   		  $value = trim( $pieces[2] );
 
@@ -468,7 +473,7 @@ class AnnotationParser {
 		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
 		   	      	  substr( $file, -4 ) != 'view' ) {
 
-			 		  if( array_pop( explode( '/', $file ) ) == $this->filename )
+			 		  if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == $this->filename )
 		     	 			  return file_get_contents( $file );
 			      }
 		 }

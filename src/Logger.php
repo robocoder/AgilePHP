@@ -118,8 +118,12 @@ class Logger {
 	   */
 	  private function write( $message, $level ) {
 
-	  	      $header = '[' . $level . ']  ' . $_SERVER["REMOTE_ADDR"] . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) .
-	  	      	  			     '  ' . $_SERVER["REQUEST_URI"];
+	  		  $address = (isset( $_SERVER['REMOTE_ADDR'] )) ? $_SERVER['REMOTE_ADDR'] : 'localhost';
+
+	  		  $requestURI = (isset( $_SERVER['REQUEST_URI' ] ) ? $_SERVER['REQUEST_URI'] : '/' );
+
+	  	      $header = '[' . $level . ']  ' . $address . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) .
+	  	      	  			     '  ' . $requestURI;
 
 	  	      $logDirectory = AgilePHP::getFramework()->getWebRoot() . '/logs';
 

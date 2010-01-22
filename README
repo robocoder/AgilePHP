@@ -61,6 +61,11 @@ pear install firephp/FirePHPCore
 	oracle
 	dblib
 	ibm
-	mssql
  > Finish Form::toJSON method (this should probably use AJAXRenderer)
- > Work on windows compatibility
+ 
+ --------------------------
+ ** Windows Specific TODO's
+ --------------------------
+ > Use DIRECTORY_SEPARATOR instead of / in references to the file system
+ > Use \r\n instead of \n for new lines
+ 

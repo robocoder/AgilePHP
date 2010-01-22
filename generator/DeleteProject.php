@@ -1,6 +1,6 @@
 <?php
 
-require_once 'util/AgilePHPGen.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
 
 class DeleteProject extends AgilePHPGen {
 
@@ -46,12 +46,12 @@ class DeleteProject extends AgilePHPGen {
 
 			     	if( $file != '.' && $file != '..') {
 
-			            if ( is_dir( $src . '/' . $file) )
-			                $this->recursiveDelete( $src . '/' . $file );
+			            if ( is_dir( $src . DIRECTORY_SEPARATOR . $file) )
+			                $this->recursiveDelete( $src . DIRECTORY_SEPARATOR . $file );
 			            else {
 			                
-			            	if( !unlink( $src . '/' . $file ) )
-			                	PHPUnit_Framework_Assert::fail( 'Could not delete file ' . $src . '/' . $file );
+			            	if( !unlink( $src . DIRECTORY_SEPARATOR . $file ) )
+			                	PHPUnit_Framework_Assert::fail( 'Could not delete file ' . $src . DIRECTORY_SEPARATOR . $file );
 			            }
 			        }
 			 }

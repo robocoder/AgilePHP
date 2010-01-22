@@ -21,7 +21,7 @@
 <!ELEMENT database (table+)>
 <!ATTLIST database id ID #REQUIRED>
 <!ATTLIST database name CDATA #REQUIRED>
-<!ATTLIST database type ( mysql | pgsql | sqlite | firebird | informix | oracle | dblib | ibm ) "mysql">
+<!ATTLIST database type ( mysql | mssql | pgsql | sqlite | firebird | informix | oracle | dblib | ibm ) "mysql">
 <!ATTLIST database hostname CDATA #REQUIRED>
 <!ATTLIST database username CDATA #REQUIRED>
 <!ATTLIST database password CDATA #REQUIRED>

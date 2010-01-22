@@ -1,8 +1,8 @@
 <?php 
 
-require_once 'util/AgilePHPGen.php';
-require_once 'util/AppstoreAPI.php';
-require_once '../src/AgilePHP.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'AppstoreAPI.php';
+require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'AgilePHP.php';
 
 class InstallComponent extends AgilePHPGen {
 

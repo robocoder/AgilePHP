@@ -1,6 +1,6 @@
 <?php
 
-require_once 'util/AgilePHPGen.php';
+require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
 
 class CreateModel extends AgilePHPGen {
 
@@ -14,7 +14,7 @@ class CreateModel extends AgilePHPGen {
 
       		 parent::__construct();
       		 
-      		 $persistence_xml = $this->getCache()->getProjectRoot() . '/persistence.xml';
+      		 $persistence_xml = $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml';
 	  		 if( !file_exists( $persistence_xml ) )
 	  		  	 return;
 
@@ -141,13 +141,13 @@ class CreateModel extends AgilePHPGen {
 
       		  $xml .= "\t\t</table>\n\t</database>\n";
 
-      		  $h = fopen( $this->getCache()->getProjectRoot() . '/persistence.xml', 'r' );
+      		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml', 'r' );
       		  $data = '';
       		  while( !feof( $h ) )
       		  		 $data .= fgets( $h, 4096 );
       		  fclose( $h );
 
-      		  $h = fopen( $this->getCache()->getProjectRoot() . '/persistence.xml', 'w' );
+      		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml', 'w' );
       		  fwrite( $h, str_replace( '</database>', $xml, $data ) );
       		  fclose( $h );
       }

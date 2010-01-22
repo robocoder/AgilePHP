@@ -5,7 +5,7 @@
  try {
  		$agilephp = AgilePHP::getFramework();  	
   	    $agilephp->setDisplayPhpErrors( true );
-  	    $agilephp->setFrameworkRoot( '/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/src' );
+  	    $agilephp->setFrameworkRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\src' );
   	    $agilephp->setDefaultTimezone( 'America/New_York' );
 
   		MVC::getInstance()->processRequest();

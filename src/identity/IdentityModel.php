@@ -103,6 +103,20 @@ interface IdentityModel {
 		   * @return Date The last date and time the identity logged in
 		   */
 		  public function getLastLogin();
+		  
+		  /**
+		   * Sets the foreign key value for the role which this user belongs
+		   * @param String $roleId The foreign key value (primary key for the role) which this user belongs
+		   * @return void
+		   */
+		  public function setRoleId( $roleId );
+
+		  /**
+		   * Returns the primary key for the role which this user belongs
+		   * 
+		   * @return String The role id
+		   */
+		  public function getRoleId();
 
 		  /**
 		   * A role component instance to assign to the identity.
