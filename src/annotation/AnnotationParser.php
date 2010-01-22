@@ -221,7 +221,7 @@ class AnnotationParser {
 	   */
 	  public function getClassAnnotationsAsArray( $class ) {
 
-	  		 if( in_array( $class, $this->classes ) )
+	  		 if( array_key_exists( $class, $this->classes ) )
 	  		 	 return $this->classes[$class];
 	  }
 
@@ -234,7 +234,7 @@ class AnnotationParser {
 	   */
 	  public function getMethodAnnotationsAsArray( $class ) {
 
-	  		 if( in_array( $class, $this->methods ) )
+	  		 if( array_key_exists( $class, $this->methods ) )
 	  		 	 return $this->methods[$class];
 	  }
 
@@ -246,7 +246,7 @@ class AnnotationParser {
 	   */
 	  public function getPropertyAnnotationsAsArray( $class ) {
 
-	  		 if( in_array( $class, $this->properties ) )
+	  		 if( array_key_exists( $class, $this->properties ) )
 	  		 	 return $this->properties[$class];
 	  }
 

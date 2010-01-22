@@ -160,13 +160,13 @@ class AnnotatedClass extends ReflectionClass {
 	   * @return Array of AnnotatedMethod objects.
 	   * @see http://php.net/manual/en/reflectionclass.getmethods.php
 	   */
-	  public function getMethods( $filter ) {
+	  public function getMethods( $filter = null) {
 
 	  		 if( !$filter )
 	  		 	 $filter = ReflectionMethod::IS_PUBLIC + ReflectionMethod::IS_PROTECTED + ReflectionMethod::IS_PRIVATE;
 
 	  		 $methods = array();
-	  		 foreach( $this->getMethods( $filter ) as $method ) {
+	  		 foreach( parent::getMethods( $filter ) as $method ) {
 
 	  		 	  $m = new AnnotatedMethod( parent::getName(), $method->name );
 	  		 	  if( $m->isAnnotated() )
@@ -195,7 +195,7 @@ class AnnotatedClass extends ReflectionClass {
 	   * @return Array of AnnotatedProperty objects.
 	   * @see http://www.php.net/manual/en/reflectionclass.getproperties.php
 	   */
-	  public function getProperties( $filter ) {
+	  public function getProperties( $filter = null ) {
 
 	  		 if( !$filter )
 	  		 	 $filter = ReflectionProperty::IS_PUBLIC + ReflectionProperty::IS_PROTECTED + ReflectionProperty::IS_PRIVATE;

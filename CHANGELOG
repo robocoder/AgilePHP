@@ -5,3 +5,8 @@
 - Bug fix to AnnotationParser::parseAnnotations regex.
 - Added confirmationUrl to createAgilePhpXML method inside generator/CreateProject.php.
 - Updated PHPdoc's on all classes
+- Bug fix to Identity component constructor when using custom model
+- Nasty bug fix on AnnotatedClass getMethods and getProperties which were causing an infinite loop that resulted in a segmentation fault
+- Bug fix to interceptors and annotations due to annotation parser.
+- Bug fix to identity.User class. Missing roleId accessor and mutator.
+- Refactored test/remoting-example.html call to getBaseJS so that its being gotten from RemotingController (so the remoting controller is pre-set).

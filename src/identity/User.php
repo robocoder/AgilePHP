@@ -175,6 +175,27 @@ class User implements IdentityModel {
 	  }
 
 	  /**
+	   * Sets the role foreign key value
+	   * 
+	   * @param String $roleId The referenced role primary key value
+	   * @return void
+	   */
+	  public function setRoleId( $roleId ) {
+
+	  		 $this->roleId = $roleId;
+	  }
+
+	  /**
+	   * Returns the roleId foreign key
+	   *  
+	   * @return String The role id foreign key value
+	   */
+	  public function getRoleId() {
+	  	
+	  		 return $this->roleId;
+	  }
+
+	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setSessionId($sessionId)
 	   */

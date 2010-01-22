@@ -61,4 +61,6 @@ pear install firephp/FirePHPCore
 	oracle
 	dblib
 	ibm
+	mssql
  > Finish Form::toJSON method (this should probably use AJAXRenderer)
+ > Work on windows compatibility

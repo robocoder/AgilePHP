@@ -64,7 +64,7 @@ class Identity implements IdentityManager {
 	  		  if( !$xml->identity )
 	  		  	  throw new AgilePHP_Exception( 'Identity component requires a valid component configuration entry in agilephp.xml' );
 
-	  	      if( (string)$xml->identity->attributes()->model ) {
+	  	      if( $model = (string)$xml->identity->attributes()->model ) {
 
 	  	      	  $this->model = new $model();
 		  		  $this->modelName = $model;
