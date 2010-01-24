@@ -163,48 +163,15 @@ class InventoryController extends BaseModelActionController {
 	   */
 	  public function upload( $type ) {
 
-	  	     if( $_FILES[$type]['error'] === 4 ) // nothing to upload
-	  	     	 return;
+			 $target = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR
+			 		  . $type . DIRECTORY_SEPARATOR . $_FILES[$type]['name'];
 
-			 $target = AgilePHP::getFramework()->getWebRoot() . '/uploads/' . $type . '/' . $_FILES[$type]['name'];
+			 $upload = new Upload();
+			 $upload->setName( $type );
+			 $upload->setDirectory( AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' .
+			 						DIRECTORY_SEPARATOR . $type );
+			 $upload->save();			 
 
-			 if( !move_uploaded_file( $_FILES[$type]['tmp_name'], $target ) ) {
-			 	
-			 	 switch( $_FILES[$type]['error'] ) {
-
-			 	 	case 1:
-			 	 		$error = 'The uploaded file exceeds the upload_max_filesize directive in php.ini.';
-			 	 		break;
-			 	 		
-			 	 	case 2:
-			 	 		 $error = 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.';
-			 	 		 break;
-			 	 		 
-			 	 	case 3:
-			 	 		 $error = 'The uploaded file was only partially uploaded.';
-			 	 		 break;
-			 	 		 
-			 	 	case 4:
-			 	 		 $error = 'No file was uploaded.';
-			 	 		 break;
-			 	 		 
-			 	 	case 5:
-			 	 		 $error = 'Missing a temporary folder. Introduced in PHP 4.3.10 and PHP 5.0.3.';
-			 	 		 break;
-			 	 		 
-			 	 	case 6:
-			 	 		 $error = 'Failed to write file to disk. Introduced in PHP 5.1.0.';
-			 	 		 break;
-			 	 		 
-			 	 	case 7:
-			 	 		 $error = 'File upload stopped by extension. Introduced in PHP 5.2.0.';
-			 	 		 break;
-			 	 }
-			 }
-
-			 if( isset( $error ) )
-			 	 throw new AgilePHP_Exception( 'There was an error uploading the file! Contact your webmaster for support.' . $error );
-
-			 return str_replace( AgilePHP::getFramework()->getWebRoot(), '', $target );
+			 return str_replace( AgilePHP::getFramework()->getWebRoot(), AgilePHP::getFramework()->getDocumentRoot(), $target );
 	  }
 }

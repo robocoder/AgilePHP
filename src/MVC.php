@@ -191,10 +191,9 @@ class MVC {
 	  	     // $matches[1] is the request base (for example /httpdocs/index.php)
 	  	     // $matches[2] is everything else after $matches[1]
 
-	  		 $path = (isset( $_SERVER['PATH_INFO'] )) ? $_SERVER['PATH_INFO'] : '/';
+	  		 $path = (isset( $_SERVER['PHP_SELF'] )) ? $_SERVER['PHP_SELF'] : '/';
 
-	  		 // Updated for windows servers
-		  	 preg_match( '/^(.*)/si', $path, $matches );
+		  	 preg_match( '/^.*\.php(.*)/si', $path, $matches );
 
 	  	     if( count( $matches ) ) {
 

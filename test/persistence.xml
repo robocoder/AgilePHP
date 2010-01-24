@@ -14,12 +14,12 @@
 			<column name="image" type="blob" required="true"/>
 			<column name="video" type="blob" />
 		</table>
-		
+
 		<table name="mailing" model="Mailing" display="Mailing List" description="People on your mailing list">
 			<column name="id" type="integer" visible="false" required="true" primaryKey="true" autoIncrement="true" description="Unique ID"/>
 			<column name="name" type="varchar" length="150" required="true" description="Name of recipient"/>
 			<column name="email" type="varchar" length="150" required="true" description="Email address of recipient"/>
-			<column name="enabled" type="bit" length="1" description="Opt In/Out Flag"/>
+			<column name="enabled" type="bit" description="Opt In/Out Flag"/>
 		</table>
 
 		<!-- AgilePHP Identity -->
@@ -38,6 +38,7 @@
 	  			<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="sessions" column="id" controller="SessionController"/>
 	  		</column>
+	  		<column name="enabled" type="bit"/>
 	 	</table>
 	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
 			<column name="name" type="varchar" length="25" primaryKey="true" required="true"/>

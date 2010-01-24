@@ -1,0 +1,89 @@
+<?php 
+/**
+ * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
+ * Copyright (C) 2009-2010 Make A Byte, inc
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package com.makeabyte.agilephp.interception.interceptors
+ */
+
+/**
+ * AgilePHP interceptor responsible for performing SQL select to populate a
+ * domain model object ActiveRecord with its current record state when its
+ * 'id' mutator is called.
+ * 
+ * @author Jeremy Hahn
+ * @copyright Make A Byte, inc
+ * @package com.makeabyte.agilephp.interception.interceptors
+ * @version 0.1a
+ * @example @Id
+ */
+
+#@Interceptor
+class Id {
+
+	  #@AroundInvoke
+	  public function populate( InvocationContext $ic ) {
+
+	 	  	 // Dont encrypt passwords coming from persistence 'find' operation.
+	  		 $callee = $ic->getCallee();
+	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file'] );
+	  		 $className = str_replace( '.php', '', array_pop( $pieces ) );
+
+	  		 if( $className == 'BasePersistence' || $className == 'Id' )
+	  		 	 return $ic->proceed();
+
+	  	     $callee = $ic->getCallee();
+	  	     $class = $callee['class'];
+	  	     $mutator = $callee['function'];
+
+	  	     $params = $ic->getParameters();
+	  	     $model = new $class;
+	  	     $model->$mutator( $params[0] );
+
+	  	     $pm = new PersistenceManager();
+	 		 $activeRecord = $pm->find( $model );
+
+	 		 return ($activeRecord) ?
+	 		 	 $this->copy( $activeRecord->getInterceptedInstance(), $ic->getTarget() ) :
+	 		 	 $ic->proceed();
+
+	 		 Logger::getInstance()->debug( '#@Id::populate Created ActiveRecord state for model \'' . $class . '\'.' );
+	  }
+
+	  /**
+	   * Copies the values from the ActiveRecord to the intercepted model instance.
+	   * 
+	   * @param $a The first object
+	   * @param $b The second object
+	   * @return void
+	   */
+	  private function copy( $a, $b ) {
+
+	  		  $classA = new ReflectionClass( $a );
+		  	  $classB = new ReflectionClass( $b );
+		
+		  	  $propsA = $classA->getProperties();
+		  	  $propsB = $classB->getProperties();
+
+		  	  for( $i=0; $i<count( $propsA ); $i++ ) {
+
+		  		   $accessor = 'get' . ucfirst( $propsA[$i]->name );
+		  		   $mutator = 'set' . ucfirst( $propsB[$i]->name );
+	  		   	   $b->$mutator( $a->$accessor() );
+		  	  }
+	  }
+}
+?>

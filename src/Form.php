@@ -269,7 +269,10 @@ class Form {
   		 	      	      		</tr>
   		 	      	      		<tr>
   		 	      	      			<td>Confirm</td>
-  		 	      	      			<td><input type="password" name="password2" value="' . $value . '"/></td>';
+  		 	      	      			<td>
+  		 	      	      				<input type="password" name="password2" value="' . $value . '"/>
+  		 	      	      				<input type="hidden" name="oldPassword" value="' . $value . '"/>
+  		 	      	      			</td>';
   		 	      	  }
 
   		 	      	  // Auto-increment
@@ -289,7 +292,7 @@ class Form {
 					  	  $html .= '<td>' . $displayName . '</td>';
 					  	  $html .= ($value > 0) ?
 						                '<td><input type="checkbox" checked="true" name="' . $name . '" value="1"/></td>'
-					  	  	       		: '<td><input type="checkbox" name="' . $name . '" value="0"/></td>';
+					  	  	       		: '<td><input type="checkbox" checked="true" name="' . $name . '" value="0"/></td>';
 					  }
 
 					  // Textarea
@@ -364,7 +367,8 @@ class Form {
           	 // The actual foreign key property name in the child table
           	 $property = $foreignKey->getColumnInstance()->getModelPropertyName();
 
-          	 $html = '<select name="' . $property . '">';
+          	 $html = '<select name="' . $property . '">
+          	 			<option value="NULL" selected="yes">Choose...</option>';
 
 	  		 if( is_array( $foreignModels ) ) {
 
@@ -449,13 +453,16 @@ class Form {
 
 					  		 	      	  // Password field
 					  		 	      	  else if( $column->getType() == 'password' || $column->getName() == 'password' || $column->getProperty() == 'password' ) {
-					
+
 					  		 	      	      $xsl .= '<td>Password</td>
 					  		 	      	      		   <td><input type="password" name="password1" value="{/Form/' . $table->getModel() . '/' . $name . '}"/></td>
 					  		 	      	      		 </tr>
 					  		 	      	      		 <tr>
 					  		 	      	      		   	<td>Confirm</td>
-					  		 	      	      		    <td><input type="password" name="password2" value="{/Form/' . $table->getModel() . '/' . $name . '}"/></td>';
+					  		 	      	      		    <td>
+					  		 	      	      		    	<input type="password" name="password2" value="{/Form/' . $table->getModel() . '/' . $name . '}"/>
+					  		 	      	      		    	<input type="hidden" name="oldPassword" value="{/Form/' . $table->getModel() . '/' . $name . '}"/>
+					  		 	      	      		    </td>';
 					  		 	      	  }
 
 					  		 	      	  // Auto-increment
@@ -466,7 +473,7 @@ class Form {
 					  		 	      	  	  	  			'<td><input type="text" readonly="true" name="' . $name . '" value="{/Form/' . $table->getModel() . '/' . $name . '}"/></td>'
 					  		 	      	  	  	  			: '<td><input type="text" name="' . $name . '" value="{/Form/' . $table->getModel() . '/' . $name . '}"/></td>';
 					  		 	      	  }
-					
+
 					  		 	      	  // Checkbox
 										  else if( $column->getType() == 'bit' ) {
 

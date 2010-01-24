@@ -64,6 +64,10 @@ class Upload {
 	  public function setDirectory( $directory ) {
 	  	
 	  		 $this->directory = $directory;
+
+	  		 if( !file_exists( $directory ) )
+	  		 	 if( !mkdir( $directory, true ) )
+	  		 	 	 throw new AgilePHP_Exception( 'Upload directory does not exist and an attempt to create it failed.' );
 	  }
 
 	  /**
@@ -85,7 +89,7 @@ class Upload {
 	   */
 	  public function save() {
 
-			 $target = $this->getDirectory() . '/' . $_FILES[ $this->getName() ]['name'];
+			 $target = $this->getDirectory() . DIRECTORY_SEPARATOR . $_FILES[ $this->getName() ]['name'];
 
 			 Logger::getInstance()->debug( 'Upload::save Saving upload with name \'' . $this->getName() . '\' to target path \'' . $target . '\'.' );
 

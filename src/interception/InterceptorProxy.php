@@ -29,8 +29,8 @@
  */
 class InterceptorProxy {
 
-	  private static $instance;
-	  private $object;
+	  private $object;  		  // Stores the intercepted object
+	  private static $instance;	  // Stores a static instance of the intercepted class
 
 	  /**
 	   * Initalizes the intercepted class by creating a new instance, passing in
@@ -108,14 +108,16 @@ class InterceptorProxy {
 	   */
 	  public static function getInstance() {
 
-	  		 if( self::$instance == null ) {
+	  		 $backtrace = debug_backtrace();
+	  		 $name = $backtrace[0]['class'] . '_Intercepted';
 
-	  		 	 $intercepted = get_class( self ) . '_Intercepted';
-	  		 	 self::$instance = new $intercepted;
-	  		 }
+        	 $class = new ReflectionClass( $name );
+	  		 $m = $class->getMethod( 'getInstance' );
+	  		 $args = func_get_args();
+	  		 self::$instance = ($args) ? $m->invokeArgs( $class, $args ) : $m->invoke( $class );
 
 	  		 return self::$instance;
-	  }
+ 	  }
 
 	  /**
 	   * Returns the instance of the intercepted class. This is the original class

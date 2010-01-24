@@ -44,10 +44,7 @@ abstract class BaseModelXmlController extends BaseModelController {
 		  * @param String $controller Optional controller to use for add/update/delete operations. Defaults to the controller
 		  *   						  that invoked this method.
 		  * @param String $action The controllers action method to invoke. Defaults to the model name (lowercase) followed
-		  * 			  		  by the action mode 'Add' or 'Edit' which is determined by whether or not an 'id' parameter
-		  * 					  has been specified. For example, a user model would be either 'userAdd' or 'userEdit' 
-		  * 			   		  depending on whether or not an 'id' parameter is specified. If no 'id' has been specified
-		  * 			   		  the default action would be 'userAdd', or 'userEdit' if an 'id' parameter has been set.
+		  * 			  		  by the action mode 'Add' or 'Edit'. For example, a user model would be either 'userAdd' or 'userEdit'.
 		  * @param array $params An array of parameters to pass into the action method 
 	      */
 	     protected function getModelAsFormXML( $controller = null, $action = null, $params = null ) {
@@ -127,7 +124,7 @@ abstract class BaseModelXmlController extends BaseModelController {
 	      * 
 	      * @return An XML document representing the result list
 	      */
-	     protected function getResultListAsXML() {
+	     protected function getResultListAsXML( stdClass $result = null ) {
 
 	  	     	   $doc = new DomDocument( '1.0' );
       	     	   $root = $doc->createElement( 'ResultList' );

@@ -91,9 +91,6 @@ class Identity implements IdentityManager {
       		  if( $username = $this->session->get( 'IDENTITY_USERNAME' ) ) {
 
 	  		  	  $this->model->setUsername( $username );
-	  		  	  $pm = new PersistenceManager();
-	 		  	  $this->model = $pm->find( $this->model ); 
-
 	 		  	  if( $this->model->getRoles() ) {
 
 	      		  	  foreach( $this->model->getRoles() as $Role ) {
@@ -150,16 +147,12 @@ class Identity implements IdentityManager {
 	  }
 
 	  /**
-	   * Sets encrypted/hashed password according to the configuration of the 'Crypto'
-	   * component.
-	   * 
 	   * (non-PHPdoc)
 	   * @see  src/identity/IdentityManager#setPassword($password)
 	   */
 	  public function setPassword( $password ) {
 
-	  		 $hashedPassword = Crypto::getInstance()->getDigest( $password );
-	  		 $this->getModel()->setPassword( $hashedPassword );
+	  		 $this->getModel()->setPassword( $password );
 	  }
 
 	  /**
@@ -444,19 +437,15 @@ class Identity implements IdentityManager {
 	  		 if( !$this->getModel() ) throw new AgilePHP_Exception( 'Identity::login Valid user domain model required' );
 
 	  	     Logger::getInstance()->debug( 'Identity::login Authenticating username \'' . $username . '\' with password \'' . $password . '\'.' );
-
-	  		 $pm = new PersistenceManager();
-
+	  	     
 	  		 $this->getModel()->setUsername( $username );
-	  		 $this->getModel()->setSession( $this->session->getSession() );
-	  		 $this->setModel( $pm->find( $this->getModel() ) );
+	  		 
+	  		 if( !$this->getModel() ) return false;
 
-	  		 if( !$this->getModel() )
-	  		 	 return false;
+	  		 $crypto = new Crypto();
+	  		 $hashed = $crypto->getDigest( $password );
 
-	  		 $hash = Crypto::getInstance()->getDigest( $password );
-
-			 if( !preg_match( '/' . $hash . '/', $this->getPassword() ) )
+			 if( !preg_match( '/' . $hashed . '/', $this->getPassword() ) )
 				 return false;
 
 	  		 if( $this->getModel()->getRoles() ) {

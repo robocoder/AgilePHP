@@ -5,12 +5,16 @@
  try {
  		$agilephp = AgilePHP::getFramework();  	
   	    $agilephp->setDisplayPhpErrors( true );
-  	    $agilephp->setFrameworkRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\src' );
+
+  	    (stristr( php_os, 'WIN' )) ?
+      	     $agilephp->setFrameworkRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\src' ) :
+      	     $agilephp->setFrameworkRoot( '/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/src' );
+
   	    $agilephp->setDefaultTimezone( 'America/New_York' );
 
   		MVC::getInstance()->processRequest();
  }
- catch( Exception $e ) {
+ catch( AgilePHP_Exception $e ) {
 
   	     require_once '../src/mvc/PHTMLRenderer.php';
 
@@ -18,7 +22,7 @@
 
   	     $renderer = new PHTMLRenderer();
   	     $renderer->set( 'title', 'AgilePHP Framework :: Error Page' );
-	  	 $renderer->set( 'error', $e->getCode() . '   ' . $e->getMessage() . ($agilephp->isInDebugMode() ? '<br>' . $e->getTraceAsString() : '' ) );
+	  	 $renderer->set( 'error', $e->getCode() . '   ' . $e->getMessage() . ($agilephp->isInDebugMode() ? '<br><pre>' . $e->getTraceAsString() . '</pre>' : '' ) );
 	  	 $renderer->render( 'error' );
  }
 

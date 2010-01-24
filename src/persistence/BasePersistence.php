@@ -244,9 +244,19 @@ abstract class BasePersistence {
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
-			  	$params = (count($inputParameters)) ? $inputParameters : null;
+			  	if( count( $inputParameters ) ) {
+
+		  			for( $i=0; $i<count( $inputParameters ); $i++ ) {
+
+		  				 // Make sure intended null values get stored in SQL as null
+		  				 ($inputParameters[$i] == 'NULL') ?
+		  				 	 	$this->PDOStatement->bindValue( ($i+1), NULL ) :
+		  				 		$this->PDOStatement->bindValue( $i+1, $inputParameters[$i] );
+		  			}
+			  	}
+
 			  	try {
-					  	if( !$this->PDOStatement->execute( $params ) ) {
+					  	if( !$this->PDOStatement->execute() ) {
 		
 						    $info = $this->PDOStatement->errorInfo();
 					            
@@ -430,11 +440,11 @@ abstract class BasePersistence {
 			   	    }
 			   	    else {
 
-			   	    	if( $model->$accessor() == null ) {
+			   	    	//if( $model->$accessor() == null ) {
 
-			   	    		$naCount++;
-			   	    		continue;
-			   	    	}
+			   	    		//$naCount++;
+			   	    		//continue;
+			   	    	//}
 
 			   	    	array_push( $values, $model->$accessor() );
 			   	    }
@@ -516,7 +526,7 @@ abstract class BasePersistence {
 	     * @throws AgilePHP_PersistenceException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
 	     */
-	    public function find( $model, $findAll = false ) {
+	    public function find( $model /*, $findAll = false*/ ) {
 
 	    	   $table = $this->getTableByModel( $model );
 			   $newModel = $table->getModelInstance();
@@ -526,7 +536,7 @@ abstract class BasePersistence {
 	    	   // Perform search on the requested $model parameter
 	  		   try {
 	  		   	     $pkeyColumns = $table->getPrimaryKeyColumns();
-	  		   		 if( $this->isEmpty( $model ) && $findAll == true ) {
+	  		   		 if( $this->isEmpty( $model ) /* && $findAll == true */ ) {
 
 	    	   	         $sql = 'SELECT ' . (($this->getDistinct() == null) ? '*' : 'DISTINCT ' . $this->getDistinct()) . ' FROM ' . $table->getName();
 	    	   	         
@@ -555,10 +565,11 @@ abstract class BasePersistence {
 								      return null;
 								  }
 
-						   		  $sql .= '' . $pkeyColumns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
+						   		  $sql .= $pkeyColumns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
 								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
 						     }
-						     $sql .= ($findAll != true ? ' LIMIT ' . $this->maxResults . ';' : ';');
+						     //$sql .= ($findAll != true ? ' LIMIT ' . $this->maxResults . ';' : ';');
+						     $sql .= ' LIMIT ' . $this->maxResults . ';';
 	    	   		 }
 
 				     // Execute query
@@ -1023,6 +1034,7 @@ abstract class BasePersistence {
 	  		 foreach( $methods as $method ) {
 
 	  		 		  $mName = $method->name;
+	  		 		  if( $mName == 'getInstance' ) continue;
 	  		 		  if( substr( $mName, 0, 3 ) == 'get' )
 	  		 		  	  if( $model->$mName() )
 	  		 		  	  	  return false;

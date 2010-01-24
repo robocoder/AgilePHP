@@ -35,6 +35,7 @@ class InvocationContext {
 	  private $method;
 	  private $parameters = array();
 	  private $interceptor;
+	  private $callee;
 
 	  public $proceed = false;
 
@@ -53,6 +54,10 @@ class InvocationContext {
 	  		 $this->method = $method;
 	  		 $this->parameters = $parameters;
 	  		 $this->interceptor = $interceptor;
+
+	  		 // PHP stack state that caused the interception
+	  		 $backtrace = debug_backtrace();
+	  		 $this->callee = $backtrace[2];
 	  }
 
 	  /**
@@ -120,6 +125,17 @@ class InvocationContext {
 	  public function getInterceptor() {
 
 	  		 return $this->interceptor;
+	  }
+
+	  /**
+	   * Returns the callee PHP stack state. This provides information about the PHP file
+	   * and calls that caused the interception.
+	   * 
+	   * @return void
+	   */
+	  public function getCallee() {
+
+	  		 return $this->callee;	  		 
 	  }
 
 	  /**

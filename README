@@ -15,9 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-----------------
-** Extensions **
-----------------
+------------------
+** Requirements **
+------------------
+PHP 5.3+
+
+
+---------------------------------------
+** Required Extensions By Components **
+---------------------------------------
 --with-apxs2				(Dynamic apache support)
 --with-pdo-<database type>	(required for each database you want to use)
 --enable-mbstring			(XML/XSLT controllers use this to convert data to entities)
@@ -33,6 +39,9 @@ To use the testing packages, and TDD features, install PHP Unit 3 via PEAR.
 
 pear channel-discover pear.phpunit.de
 pear install phpunit/PHPUnit
+
+Update AgilePHP/test/BaseTest.php to use your file system structure when executing unit tests.
+Update AgilePHP/test/index.php to use your file system structure when executing browser based tests.
 
 
 ---------------------
@@ -62,10 +71,10 @@ pear install firephp/FirePHPCore
 	dblib
 	ibm
  > Finish Form::toJSON method (this should probably use AJAXRenderer)
+
  
  --------------------------
  ** Windows Specific TODO's
  --------------------------
  > Use DIRECTORY_SEPARATOR instead of / in references to the file system
- > Use \r\n instead of \n for new lines
- 
+ > Use \r\n instead of \n for new lines 

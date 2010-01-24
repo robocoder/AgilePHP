@@ -174,10 +174,14 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      */
 	     public function modelSort( $column, $direction, $page = 1, $view = 'admin' ) {
 
+	     		$pm = $this->getPersistenceManager();
+	     		$pm->setOrderBy( $column, ($direction == 'ASC') ? 'DESC' : 'ASC' );
+	     		$pm->find( $this->getModel() );
+	     		
 	     		$this->setOrderBy( $column, $direction );
 	     		$this->setPage( $page );
-				$this->setOrderBy( $column, ($direction == 'ASC') ? 'DESC' : 'ASC' );	     		
-	     		
+				$this->setOrderBy( $column, ($direction == 'ASC') ? 'DESC' : 'ASC' );
+
 	     		$content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
 
 	  	        $this->getRenderer()->set( 'content', $content );
@@ -276,8 +280,6 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	  		       foreach( $request->getParameters() as $name => $value ) {
 
-	  		     		    $mutator = $this->toMutator( $name );
-
 	  		     		    if( $name == 'AGILEPHP_REQUEST_TOKEN' ) continue;
 
 	  		     		    if( $name == 'password1' || $name == 'password2' ) {
@@ -288,90 +290,115 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	  		     		  	 	    $this->getRenderer()->set( 'error', 'Passwords dont match' );
 	  		     		  	  	    $this->getRenderer()->render( 'error' );
-	  		     		  	  	    return;
+	  		     		  	  	    exit;
 	  		     		  	    }
 
-	  		     		  	    $hashed = Crypto::getInstance()->getDigest( $value );
-	  		     		  	    $this->getModel()->setPassword( $hashed );
+	  		     		  	    if( $request->getSanitized( 'oldPassword' ) != $value )
+									$this->getModel()->setPassword( $value );
 
-	  		     		  	    if( Identity::getInstance()->isLoggedIn() )
-	  		     		  	        Identity::getInstance()->setPassword( $value ); // identity takes care of hashing
-
-	  		     		  	    continue;
+								continue;
 	  		     		    }
 
-	  		     		  	$value = $request->sanitize( $value ); // Sanitize user input by default
+	  		     		    $mutator = $this->toMutator( $name );
+	  		     		  	$value = urldecode( stripslashes( stripslashes( $request->sanitize( $value ) ) ) );
 	  		 	  	        foreach( $table->getColumns() as $column ) {
 
-		     		   			   // Bit columns/checkboxes dont get sent with the post if they are unchecked.
-		     		   			   // This is a hack to make sure the 'off' bit gets set.
-		     		   			   if( $column->getType() == 'bit' ) {
+	  		 	  	        		 // Checkboxes name wont exist if unticked. This forces an update.
+	  		 	  	        		 if( $column->getType() == 'bit' && !$request->get( $column->getModelPropertyName() ) ) {
 
-									   if( !$request->getSanitized( $name ) ) {
+	  		 	  	        		 	  $mutator = $this->toMutator( $column->getModelPropertyName() );
+  		 	  	        		 	 	  $this->getModel()->$mutator( $this->getCastedValue( $column->getType(), 0 ) );
+	  		 	  	        		 	  continue;
+	  		 	  	        		 }
 
-									   	   $this->getModel()->$mutator( 0 );
-									   	   continue;
-									   }
-		     		   			   }
+		     		   			   	 // Type cast to PHP data type from database types in persistence.xml
+			     		   			 if( $column->getModelPropertyName() == $name ) {
 
-		     		   			   // Type cast to PHP data type from database types in persistence.xml
-		     		   			   if( $column->getModelPropertyName() == $name ) {
-
-				     		   			   switch( $column->getType() ) {
-
-							 	       	  		   case 'boolean':
-							 	       	  		  		$this->getModel()->$mutator( $value == true ? true : false );
-							 	       	  		  		break;
-				
-							 	       	  		   case 'integer':
-							 	       	  		  		$this->getModel()->$mutator( (integer)$value );
-							 	       	  		  		break;
-							
-							 	       	  		   case 'int':
-							 	       	  		  		$this->getModel()->$mutator( (int)$value );
-							 	       	  		  		break;
-							 	       	  		  		 
-							 	       	  		   case 'bigint':
-														$this->getModel()->$mutator( $this->getPersistenceManager()->toBigInt( $value ) );
-														break;
-														
-							 	       	  		   case 'double':
-							 	       	  		  		$this->getModel()->$mutator( (float)$value );
-							 	       	  		  		break;
-							 	       	  		  		
-							 	       	  		   case 'decimal':
-							 	       	  		  		$this->getModel()->$mutator( (float)$value );
-							 	       	  		  		break;
-
-							 	       	  		   case 'varchar':
-							 	       	  		   		$this->getModel()->$mutator( (string)$value );
-							 	       	  		   		break;
-
-							 	       	  		   case 'float':
-							 	       	  		  		$this->getModel()->$mutator( (float)$value );
-							 	       	  		  		break;
-				
-							 	       	  		   case 'text':
-							 	       	  		  		$this->getModel()->$mutator( (string)$value );
-							 	       	  		  		break;
-
-							 	       	  		   case 'date':
-							 	       	  		  		$this->getModel()->$mutator( date( 'c', strtotime( $value ) ) );
-							 	       	  		  		break;
-
-							 	       	  		   case 'datetime':
-							 	       	  		  		$this->getModel()->$mutator( date( 'c', strtotime( $value ) ) );
-							 	       	  		  		break;
-
-							 	       	  		   default:
-							 	       	  		   		Logger::getInstance()->debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $column->getType() .
-							 	       	  		   									  '\'. Using (sanitized) value \'' . $value . '\'.' );
-							 	       	  		   		$this->getModel()->$mutator( $value );
-							 	       	  		   		break;
-				     		   			   }
-		     		   			  }
+				     		   			 if( $column->isForeignKey() ) { 
+	
+		  		 	  	        			 // Getter and setter for foreign model
+		  		 	  	        			 $instanceAccessor = $this->toAccessor( $column->getForeignKey()->getReferencedTableInstance()->getModel() );
+									         $instanceMutator = $this->toMutator( $column->getForeignKey()->getReferencedTableInstance()->getModel() );
+	
+									     	 $fModel = $this->getModel()->$instanceAccessor();
+									     	 $mutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+	 								     	 $fModel->$mutator( $this->getCastedValue( $column->getType(), $value ) );
+	
+									     	 $this->getModel()->$instanceMutator( $fModel );
+									     	 continue;
+							     		}
+					     		   		$this->getModel()->$mutator( $this->getCastedValue( $column->getType(), $value ) );
+			     		   			}
 	  		 	  	      }
 	  		     }
-	     }		
+	     }
+
+	     /**
+	      * Responsible for returning proper data type mappings between SQL and PHP.
+	      * 
+	      * @param String $type The column type specified in persistence.xml for the property being set.
+	      * @param $mutator The mutator method name to invoke on the current model.
+	      * @param $value The SQL data type being set.
+	      * @return void
+	      */
+	     private function getCastedValue( $type, $value ) {
+
+			     switch( $type ) {
+
+	 	       	  		   case 'boolean':
+	 	       	  		  		return $value == true ? true : false;
+ 	       	  		  	   break;
+
+	 	       	  		   case 'integer':
+	 	       	  		  		return (integer) $value;
+	 	       	  		   break;
+	
+	 	       	  		   case 'int':
+	 	       	  		  		return (int) $value;
+	 	       	  		   break;
+
+	 	       	  		   case 'bigint':
+								return $this->getPersistenceManager()->toBigInt( $value );
+						   break;
+
+	 	       	  		   case 'double':
+	 	       	  		  		return (float) $value;
+	 	       	  		   break;
+
+	 	       	  		   case 'decimal':
+	 	       	  		  		return (float) $value;
+	 	       	  		   break;
+
+	 	       	  		   case 'varchar':
+	 	       	  		   		return (string) $value;
+	 	       	  		   break;
+
+	 	       	  		   case 'float':
+	 	       	  		  		return (float) $value;
+	 	       	  		   break;
+
+	 	       	  		   case 'text':
+	 	       	  		  		return (string) $value;
+	 	       	  		   break;
+
+	 	       	  		   case 'date':
+	 	       	  		  		return date( 'c', strtotime( $value ) );
+	 	       	  		   break;
+
+	 	       	  		   case 'datetime':
+	 	       	  		  		return date( 'c', strtotime( $value ) );
+	 	       	  		   break;
+
+	 	       	  		   case 'bit':
+	 	       	  		  		return ($value == 1) ? 1 : 'NULL'; 
+	 	       	  		   break;
+
+	 	       	  		   default:
+	 	       	  		   		Logger::getInstance()->debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $type .
+	 	       	  		   									  '\'. Using (sanitized) value \'' . $value . '\'.' );
+	 	       	  		   		return $value;
+	 	       	  		   break;
+        			   }
+	     }
 }
 ?>

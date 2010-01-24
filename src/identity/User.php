@@ -43,12 +43,13 @@ class User implements IdentityModel {
 	  private $Role;
 	  private $Roles;
 
-	  public function User() { }
+	  public function __construct() { }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setUsername($username)
 	   */
+	  #@Id
 	  public function setUsername( $username ) {
 
 	  	     $this->username = $username;
@@ -67,6 +68,7 @@ class User implements IdentityModel {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setPassword($password)
 	   */
+	  #@Password
 	  public function setPassword( $password ) {
 
 	  	     $this->password = $password;
@@ -177,7 +179,7 @@ class User implements IdentityModel {
 	   * @param array $roles The array of Role instances belonging to the user
 	   * @return void
 	   */
-	  public function setRoles( array $roles ) {
+	  public function setRoles( $roles = array() ) {
 
 	  		 $this->Roles = $roles;
 	  }
@@ -190,27 +192,6 @@ class User implements IdentityModel {
 	  public function getRoles() {
 
 	  		 return $this->Roles;
-	  }
-
-	  /**
-	   * Sets the role foreign key value
-	   * 
-	   * @param String $roleId The referenced role primary key value
-	   * @return void
-	   */
-	  public function setRoleId( $roleId ) {
-
-	  		 $this->roleId = $roleId;
-	  }
-
-	  /**
-	   * Returns the roleId foreign key
-	   *  
-	   * @return String The role id foreign key value
-	   */
-	  public function getRoleId() {
-	  	
-	  		 return $this->roleId;
 	  }
 
 	  /**

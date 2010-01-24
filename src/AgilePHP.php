@@ -476,6 +476,7 @@ class AgilePHP {
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  * @version 0.1a
+ * @throws AgilePHP_Exception
  */
 class AgilePHP_Exception extends Exception {
 
@@ -483,12 +484,18 @@ class AgilePHP_Exception extends Exception {
 	   * Creates a new instance of AgilePHP_Exception.
 	   * 
 	   * @param String $message The exception message
-	   * @param Integer $code The exception message. Defaults to 0.
+	   * @param Integer $code Optional error code.
+	   * @param String $file Optional file path to the exception
+	   * @param Integer $line The line number the exception / error occurred
 	   * @return void
 	   */
-	  public function __construct( $message, $code = 0 ) {
+	  public function __construct( $message, $code = null, $file = null, $line = null ) {
 
-	  	     parent::__construct( $message, $code );
+			 $this->message = $message;
+	  		 if( $code ) $this->code = $code;
+	  		 $this->file = ($file == null) ? __FILE__ : $file;
+  		 	 $this->line = (line == null ) ? __LINE__ : $line;
+	  		 $this->trace = debug_backtrace();
 	  }
 }
 
@@ -499,6 +506,7 @@ class AgilePHP_Exception extends Exception {
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  * @version 0.1a
+ * @throws AgilePHP_PersistenceException
  */
 class AgilePHP_PersistenceException extends AgilePHP_Exception { }
 
@@ -509,6 +517,7 @@ class AgilePHP_PersistenceException extends AgilePHP_Exception { }
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  * @version 0.1a
+ * @throws AgilePHP_NotLoggedInException
  */
 class AgilePHP_NotLoggedInException extends AgilePHP_Exception { }
 
@@ -520,6 +529,7 @@ class AgilePHP_NotLoggedInException extends AgilePHP_Exception { }
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  * @version 0.1a
+ * @throws AgilePHP_AccessDeniedException
  */
 class AgilePHP_AccessDeniedException extends AgilePHP_Exception { }
 
@@ -530,6 +540,7 @@ class AgilePHP_AccessDeniedException extends AgilePHP_Exception { }
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  * @version 0.1a
+ * @throws AgilePHP_AnnotationException
  */
 class AgilePHP_AnnotationException extends AgilePHP_Exception { }
 
@@ -540,6 +551,7 @@ class AgilePHP_AnnotationException extends AgilePHP_Exception { }
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  * @version 0.1a
+ * @throws AgilePHP_InterceptionException
  */
 class AgilePHP_InterceptionException extends AgilePHP_Exception { }
 
@@ -551,6 +563,7 @@ class AgilePHP_InterceptionException extends AgilePHP_Exception { }
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  * @version 0.1a
+ * @throws AgilePHP_RemotingException
  */
 class AgilePHP_RemotingException extends AgilePHP_Exception { 
 

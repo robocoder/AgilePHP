@@ -778,15 +778,13 @@ class PersistenceManager {
 	   	  * Attempts to locate the specified model by primary key value.
 	      * 
 	   	  * @param $model A domain model object with its primary key field set
-	   	  * @param $findAll True/false flag indicating whether or not to perform
-	   	  * 				a SELECT * for empty model.
 	      * @return Returns the same model which was passed (populated with the
 	      * 		 database values) or null if a matching record could not be found.
 	      * @throws AgilePHP_PersistenceException
 	      */
-	  	 public function find( $model, $findAll = false ) {
+	  	 public function find( $model /*, $findAll = false */ ) {
 
-	  		    return $this->dialect->find( $model, $findAll );
+	  		    return $this->dialect->find( $model /*, $findAll */ );
 	  	 }
 
  		 /**

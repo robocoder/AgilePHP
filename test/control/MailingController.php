@@ -20,7 +20,7 @@ class MailingController extends BaseModelActionController {
 
 	  		 parent::modelList();
 	  }
-	  
+
 	  public function mailingBroadcast( $process = false) {
 
 	  	     if( $process == true ) {
@@ -30,8 +30,8 @@ class MailingController extends BaseModelActionController {
 		  		 $message = null;
 		  		 $failed = array();
 		  		 $mailer = new Mailer();
-		  		 $mailer->setFromName( 'Colomusa.net Newsletter' );
-		  		 $mailer->setFrom( 'no-reply@colomusa.net' );
+		  		 $mailer->setFromName( 'AgilePHP Framework' );
+		  		 $mailer->setFrom( 'root@localhost' );
 
 	  	     	 $this->createQuery( 'SELECT * FROM mailing' );
 	  	     	 $this->executeQuery();

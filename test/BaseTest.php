@@ -13,8 +13,18 @@ class BaseTest extends PHPUnit_Framework_TestCase {
 
 	  	      $this->agilephp = AgilePHP::getFramework();
 	  	      $this->agilephp->setDisplayPhpErrors( true );
-      	      $this->agilephp->setWebRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\test' );
-      	      $this->agilephp->setFrameworkRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\src' );
+
+	  	   	  if( stristr( php_os, 'WIN' ) ) { 
+
+	  	   	 	  $this->agilephp->setWebRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\test' );
+      	     	  $this->agilephp->setFrameworkRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\src' );
+			  }
+			  else { 
+
+			 	  $this->agilephp->setWebRoot( '/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test' );
+      	     	  $this->agilephp->setFrameworkRoot( '/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/src' );
+	 		  }
+
       	      $this->agilephp->setDefaultTimezone( 'America/New_York' );
 	  }
 

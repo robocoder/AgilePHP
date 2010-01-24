@@ -61,8 +61,6 @@ abstract class BaseModelXslController extends BaseModelXmlController {
    		   		   $pkeyFieldsXSL = $this->getSerializedPrimaryKeyColumnsAsXSL( $pkeyFields );
    		   		   $order = $this->getOrderBy();
 
-   		   		   $resultListAsModels = $this->getResultListAsModels( true );
-
 	     		   $xsl = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">';
 
 				   		$xsl .= $this->getPaginationXSL();
@@ -220,14 +218,9 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     }
 
 	     /** 
-		  * Returns an XSL stylesheet used for add and update actions. During an 'add' operation
-		  * $pkeyValues should be null. During an 'update' action, $pkeyValues should be defined
-		  * with the primary key value associated with the record. If the record contains a compound
-		  * primary key, $pkeyValues should be defined as an associative array containing each of
-		  * the primary key names with their corresponding values (ie. array( 'key1' => 'val1', ...))
+		  * Returns an XSL stylesheet used for add and update actions using the Form component.
 		  * 
-		  * @param String $pkeyValues The primary key value(s) associated with this record
-		  * @return void
+		  * @return String The XSL stylesheet.
 	      */
 	     protected function getModelFormXSL() {
 
@@ -237,13 +230,10 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     	       $action = AgilePHP::getFramework()->getRequestBase() . '/{/Form/controller}/{/Form/action}/' .
 	     	       				 $this->getModelPersistenceAction() . '/' . $pkeyValues . '/' . $this->getPage();
 
-	     	       $model = $this->getPersistenceManager()->find( $this->getModel() );
-	     	       if( !$model ) $model = $this->getModel();
-
 	     	       $token = Scope::getInstance()->getRequestScope()->createToken();
 	     	       $name = $this->getModelName();
-	     	       $form = $table->hasBlobColumn() ? new Form( $model, 'frm' . $name, $name, $action, 'multipart/form-data', $token )
-	     	       							       : new Form( $model, 'frm' . $name, $name, $action, null, $token );
+	     	       $form = $table->hasBlobColumn() ? new Form( $this->getModel(), 'frm' . $name, $name, $action, 'multipart/form-data', $token )
+	     	       							       : new Form( $this->getModel(), 'frm' . $name, $name, $action, null, $token );
 				   $form->setMode( $this->getModelPersistenceAction() );
 	     	       $xsl = $form->getXSL( $pkeyValues, $this->getPage() );
 			       Logger::getInstance()->debug( 'BaseModelXslController::getModelListXSL returning XSL ' . $xsl );
