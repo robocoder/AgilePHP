@@ -35,19 +35,17 @@ require_once 'persistence/BasePersistence.php';
  */
 class PersistenceManager {
 
-	  private $dialect;					// Stores the dialect object used to execute vendor specific SQL queries
+	  private $dialect;						// Stores the dialect object used to execute vendor specific SQL queries
 	  private $databases = array();
+	  private $database;					// Stores the current database
 
-	  private $sql;							// The SQL statement to execute
-	  private $distinct;						// Boolean flag for SELECT DISTINCT
+	  private $sql;							// Current SQL query.
 	  private $resultCount;					// Total number of items in result list
 	  private $resultList;					// The sql result list
-	  private $maxResults = 25;       		// Maximum number of items to return
 	  private $count; 	    				// Total number of records in the table
-	  private $page;							// Holds the current page number
+	  private $page;						// Holds the current page number
 	  private $pageCount;					// Total number of pages
-	  private $groupBy;						// The column to group the SQL query result set by
-	  private $model;						// Stores an ActiveRecord model
+	  protected $model;						// Stores an ActiveRecord model
 
 	  /**
 	   * Initalizes the PersistenceManager object based on persistence.xml configuration. Each of the
@@ -83,15 +81,6 @@ class PersistenceManager {
 
 			 if( !$this->dialect )
 			 	 $this->connect( $this->databases[0] );
-
-			 if( !$this->getModel() ) return;
-
-			 $this->createDefaultSQL();
-     	     $stmt = $this->query( $this->sql );
-  		 	 $stmt->setFetchMode( PDO::FETCH_OBJ );
-  		 	 $this->resultList = $stmt->fetchAll();
-  		 	 $this->resultCount = sizeof( $this->resultList );
-  		 	 $this->executeCountQuery();
 	  	 }
 
 	  	 /**
@@ -149,8 +138,30 @@ class PersistenceManager {
   	     		 		 throw new AgilePHP_PersistenceException( "Invalid database type specified in persistence.xml for database with id '" . $db->getId() . "'." );
   	     		 	  	 break;
 	  	     	}
+
+	  	     	$this->database = $db;
 	  	 }
-	  	 
+
+	  	 /**
+	  	  * Returns the databases array.
+	  	  * 
+	  	  * @return Array array of Database objects, each representing a database configured in persistence.xml
+	  	  */
+	  	 public function getDatabases() {
+
+	  	 		return $this->databases;
+	  	 }
+
+	  	 /**
+	  	  * Returns the database object currently in use by the ORM framework.
+	  	  * 
+	  	  * @return void
+	  	  */
+	  	 public function getDatabase() {
+
+		 	 	return $this->database;
+	  	 }
+
 	    /**
 	     * Returns the domain model which the PersistenceManager is manipulating.
 	     * 
@@ -266,7 +277,7 @@ class PersistenceManager {
 	      */
 	     public function setMaxResults( $count ) {
 
-	     	       $this->maxResults = $count;
+	     	       $this->dialect->setMaxResults( $count );
 	     }
 
 	     /**
@@ -277,7 +288,7 @@ class PersistenceManager {
 	      */
 	     public function getMaxResults() {
 	     	
-	     		   return $this->maxResults;
+	     		   return $this->dialect->getMaxResults();
 	     }
 	     
 	     /**
@@ -392,6 +403,29 @@ class PersistenceManager {
 	     }
 
 	     /**
+	      * Executes the current sql query as set by createQuery.
+	      * 
+	      * @return PDOStatement The query result.
+	      */
+	     public function executeQuery() {
+
+	     		Logger::getInstance()->debug( 'PersistenceManager::executeQuery ' . $this->sql );
+	     		return $this->dialect->query( $this->sql );
+	     }
+
+		 /**
+	      * Executes an SQL count query for total number of records in the database. 
+	      * Initalizes 'pageCount' and 'count' properties. 
+	      * 
+	      * @return void
+	      */
+	     public function executeCountQuery() {
+
+	     	       $this->count = $this->dialect->count( $this->getModel() );     	       
+  			 	   $this->pageCount = ceil( $this->count / $this->getMaxResults() );
+	     }
+
+	     /**
 	      * Returns the current SQL query
 	      * 
 	      * @return The current SQL query
@@ -419,8 +453,23 @@ class PersistenceManager {
 				   if( $this->page > $this->pageCount )
 				       $pageNumber = $this->pageCount;
 
-	     	       $this->createSQL();
-				   $this->executeQuery();
+				   $offset = ($this->getPage() - 1) * $this->getMaxResults();
+	     	       if( $offset < 0 ) $offset = 0;
+
+  	 	     	   $this->dialect->setOffset( $offset );
+				   $result = $this->find( $this->getModel() );
+
+				   if( !$result ) return false;
+
+				   $this->resultList = $result;
+				   $this->resultCount = count( $result );
+
+				   $this->groupBy = null;
+	  		 	   $this->dialect->setOrderBy( null, 'ASC' );
+	  		 	   $this->dialect->setRestrictions( array() );
+	  		 	   $this->dialect->setRestrictionsLogicOperator( 'AND' );
+
+				   Logger::getInstance()->debug( 'BaseModelController::setPage ' . $this->page );
 	     }
 
 	     /**
@@ -453,7 +502,17 @@ class PersistenceManager {
 	      */
 	     public function setGroupBy( $column ) {
 
-	     		   $this->groupBy = $column;
+	     		   $this->dialect->setGroupBy( $column );
+	     }
+
+	     /**
+	      * Returns SQL GROUP BY clause.
+	      * 
+	      * @return String GROUP BY value
+	      */
+	     public function getGroupBy() {
+
+	     		return $this->dialect->getGroupBy();
 	     }
 
 	     /**
@@ -777,7 +836,8 @@ class PersistenceManager {
 	  	 /**
 	   	  * Attempts to locate the specified model by primary key value.
 	      * 
-	   	  * @param $model A domain model object with its primary key field set
+	   	  * @param Object $model A domain model object with its primary key field set
+	   	  * @param bool $findAll True to find all records (SELECT *).
 	      * @return Returns the same model which was passed (populated with the
 	      * 		 database values) or null if a matching record could not be found.
 	      * @throws AgilePHP_PersistenceException
@@ -787,94 +847,12 @@ class PersistenceManager {
 	  		    return $this->dialect->find( $model /*, $findAll */ );
 	  	 }
 
- 		 /**
-	      * Executes an SQL count query for total number of records in the database. 
-	      * Initalizes 'pageCount' and 'count' properties. 
-	      * 
-	      * @return void
-	      */
-	     public function executeCountQuery() {
-
-	     	       $sql = 'SELECT count(*) as count FROM ' . $this->getTableName();
-				   $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
-				   $sql .= ';';
-
-	     	       Logger::getInstance()->debug( 'BaseModelController::executeCountQuery executing raw sql query ' . $sql );
-
-	     	       $stmt = $this->query( $sql );
-  			 	   $stmt->setFetchMode( PDO::FETCH_OBJ );
-  			 	   $result = $stmt->fetchAll();
-
-  			 	   $this->pageCount = ceil( $result[0]->count / $this->maxResults );
-  			 	   $this->count = $result[0]->count;
-	     }
-
-	     /**
-	      * Executes the current SQL statement as defined in 'sql'.
-	      * 
-	      * @return void
-	      */
-	     public function executeQuery() {
-
-	     	       if( !$this->sql )
-	     	       	   $this->createDefaultSQL();
-
-				   Logger::getInstance()->debug( 'BaseModelController::executeQuery executing raw sql query ' . $this->sql );
-
-	     	       $stmt = $this->query( $this->sql );
-  			 	   $stmt->setFetchMode( PDO::FETCH_OBJ );
-
-  			 	   $this->resultList = $stmt->fetchAll();
-  			 	   $this->resultCount = sizeof( $this->resultList );
-
-  			 	   $this->sql = null;
-  			 	   $this->groupBy = null;
-  			 	   $this->dialect->setOrderBy( null, 'ASC' );
-  			 	   $this->dialect->setRestrictions( array() );
-  			 	   $this->dialect->setRestrictionsLogicOperator( 'AND' );
-	     }
-
-		 /**
-	      * Creates an SQL query and stores it in $this->sql. This method sets
-	      * all possible criteria options which have been defined using this
-	      * objects 'set' methods (ie. setOrderBy, setGroupBy, setMaxResults, etc...)
-	      * 
-	      * @return void
-	      */
-	     private function createSQL() {
-
-	     	 	 $offset = ($this->getPage() - 1) * $this->getMaxResults();
-	     	     if( $offset < 0 ) $offset = 0;
-	     	     $order = $this->getOrderBy();
-
-	     	     $this->sql = 'SELECT * FROM ' . $this->getTableName();
-				 $this->sql .= ($this->groupBy == null) ? '' : ' GROUP BY ' . $this->groupBy;
-				 $this->sql .= ($order == null) ? '' : ' ORDER BY ' . $order['column'] . ' ' . $order['direction'];
-				 $this->sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
-				 $this->sql .= ($offset > 0) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() . ';' 
-											 : ' LIMIT ' . $this->getMaxResults() . ';';
-
-				 Logger::getInstance()->debug( 'BaseModelController::createSQL '. $this->sql );
-	     }
-
-	     /**
-	      * Creates a default SQL select query
-	      * 
-	      * @return void
-	      */
-	     private function createDefaultSQL() {
-
-	     	     $this->sql = 'SELECT * FROM ' . $this->getTableName() . ' LIMIT ' . $this->maxResults . ';';
-
-	     	     Logger::getInstance()->debug( 'BaseModelController::createDefaultSQL ' . $this->sql );
-	     }
-
 	     /**
 	      * Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.
 	      * 
 	      * @return The formatted SQL string
 	      */
-	     private function createRestrictSQL() {
+	     public function createRestrictSQL() {
 
 	     		 return $this->dialect->createRestrictSQL();
 	     }

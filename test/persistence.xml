@@ -30,11 +30,11 @@
 			<column name="email" type="varchar" display="Email" length="255" required="true"/>
 			<column name="created" type="datetime" required="true"/>
 			<column name="last_login" property="lastLogin" display="Last Login" type="datetime"/>
-			<column name="roleId" type="varchar" length="25">
+			<column name="roleId" type="varchar" length="25" display="Role">
 				<foreignKey name="FK_UserRoles" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="roles" column="name" controller="RoleController" select="name"/>
 			</column>
-	  		<column name="sessionId" type="varchar" length="21">
+	  		<column name="sessionId" type="varchar" length="21" display="Session">
 	  			<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="sessions" column="id" controller="SessionController"/>
 	  		</column>

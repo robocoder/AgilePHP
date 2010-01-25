@@ -200,6 +200,10 @@ class MVC {
 		  	  	 $mvcPieces = explode( '/', $matches[count($matches)-1] );
 			  	 array_shift( $mvcPieces );
 
+			  	 // Get rid of empy last element caused by tailing slash / with no value
+			  	 if( $mvcPieces[count( $mvcPieces ) -1] == null )
+			  	 	 array_pop( $mvcPieces );
+
 			  	 // Assign controller and action
 		  	     $controller = (count($mvcPieces) > 0 && $mvcPieces[0] != '') ? $mvcPieces[0] : $this->getDefaultController(); 
 		  	     $action = (count( $mvcPieces ) > 1) ? $mvcPieces[1] : $this->getDefaultAction();
@@ -221,7 +225,7 @@ class MVC {
 		  	 $this->action = isset( $action ) ? $action : $this->getDefaultAction();
 	  	     $oController = new $this->controller;
 
-	  	   //  try {
+	  	     try {
 			  	     $class = new ReflectionClass( $oController );
 			  	     $m = $class->getMethod( $this->action );
 
@@ -242,11 +246,11 @@ class MVC {
 		
 			  	     	 $m->invoke( $oController );
 			  	     }
-	  	//     }
-	  	//     catch( Exception $e ) {
+	  	     }
+	  	     catch( Exception $e ) {
 
-	  	//     		throw new AgilePHP_Exception( $e->getMessage(), $e->getCode() );
-	  	//     }
+	  	     		throw new AgilePHP_Exception( $e->getMessage(), $e->getCode() );
+	  	     }
 	  }
 
 	  /**

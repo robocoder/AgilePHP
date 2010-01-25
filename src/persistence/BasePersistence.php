@@ -22,7 +22,6 @@
 /**
  * Includes all persistence package dependancies
  */
-require_once 'PersistenceRenderer.php';
 require_once 'Database.php';
 require_once 'Table.php';
 require_once 'Column.php';
@@ -46,6 +45,8 @@ abstract class BasePersistence {
 	     private $restrictionsLogic = 'AND'; // Logic operator to use in WHERE clause (and|or)
 	     private $orderBy;					 // Stores the column name to sort the result set by
 	     private $orderDirection;			 // The direction to sort the result set (Default is 'ASC')
+	     private $offset;					 // Stores the offset for a LIMIT clause.
+	     private $groupBy;					 // GROUP BY clause
 
 		 protected $pdo;					 // PHP Data Objects
 	     protected $model;					 // Domain model object (ActiveRecord)
@@ -114,7 +115,7 @@ abstract class BasePersistence {
 		  * @return void
 		  */
 		 public function setMaxResults( $maxResults = 25 ) {
-		 	
+
 		 		$this->maxResults = $maxResults;
 		 }
 
@@ -128,6 +129,48 @@ abstract class BasePersistence {
 
 		 		return $this->maxResults;
 		 }
+
+		 /**
+		  * Sets the offset used in a SQL LIMIT clause.
+		  * 
+		  * @param Integer $offset The limit offset.
+		  * @return void
+		  */
+		 public function setOffset( $offset ) {
+
+		 		$this->offset = $offset;
+		 }
+
+		 /**
+		  * Returns the SQL LIMIT offset value.
+		  * 
+		  * @return Integer The LIMIT offset.
+		  */
+		 public function getOffset() {
+
+		 		return $this->offset;
+		 }
+		 
+		 /**
+	      * Sets the SQL 'group by' clause.
+	      * 
+	      * @param $column The column name to group the result set by
+	      * @return void
+	      */
+	     public function setGroupBy( $column ) {
+
+	     		   $this->groupBy = $column;
+	     }
+
+	     /**
+	      * Returns SQL GROUP BY clause.
+	      * 
+	      * @return String GROUP BY value
+	      */
+	     public function getGroupBy() {
+
+	     		return $this->groupBy;
+	     }
 
 	  	 /**
 	  	  * Begins a transaction
@@ -438,16 +481,10 @@ abstract class BasePersistence {
 			   	    	if( is_object( $model->$instanceAccessor() ) )
 			   	    		array_push( $values, $model->$instanceAccessor()->$accessor() );
 			   	    }
-			   	    else {
-
-			   	    	//if( $model->$accessor() == null ) {
-
-			   	    		//$naCount++;
-			   	    		//continue;
-			   	    	//}
-
+			   	    else
 			   	    	array_push( $values, $model->$accessor() );
-			   	    }
+
+
 			   	    array_push( $cols, $columns[$i]->getName() );
 			   }
 
@@ -523,10 +560,11 @@ abstract class BasePersistence {
 	     * filter results.
 	     * 
 	     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
+	     * @param bool $findAll True to find all records (SELECT *).
 	     * @throws AgilePHP_PersistenceException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
 	     */
-	    public function find( $model /*, $findAll = false*/ ) {
+	    public function find( $model ) {
 
 	    	   $table = $this->getTableByModel( $model );
 			   $newModel = $table->getModelInstance();
@@ -536,20 +574,26 @@ abstract class BasePersistence {
 	    	   // Perform search on the requested $model parameter
 	  		   try {
 	  		   	     $pkeyColumns = $table->getPrimaryKeyColumns();
-	  		   		 if( $this->isEmpty( $model ) /* && $findAll == true */ ) {
+	  		   		 if( $this->isEmpty( $model ) ) {
 
 	    	   	         $sql = 'SELECT ' . (($this->getDistinct() == null) ? '*' : 'DISTINCT ' . $this->getDistinct()) . ' FROM ' . $table->getName();
-	    	   	         
+
 	    	   	         $order = $this->getOrderBy();
+	    	   	         $offset = $this->getOffset();
+	    	   	         $groupBy = $this->getGroupBy();
 
     	   	         	 $sql .= ($this->restrictions != null) ? $this->createRestrictSQL() : '';
 					 	 $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
+					 	 $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
+					 	 $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
+					 	 $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
     	   	         	 $sql .= ';';
 
-    	   	         	 $this->setDistinct( null );
+	   	   	         	 $this->setDistinct( null );
     	   	         	 $this->setRestrictions( array() );
     	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
     	   	         	 $this->setOrderBy( null, 'ASC' );
+    	   	         	 $this->setGroupBy( null );
 	    	   		 }
 	    	   		 else {
 	    	   		 		 if( !count( $pkeyColumns ) ) return null;
@@ -568,7 +612,6 @@ abstract class BasePersistence {
 						   		  $sql .= $pkeyColumns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
 								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
 						     }
-						     //$sql .= ($findAll != true ? ' LIMIT ' . $this->maxResults . ';' : ';');
 						     $sql .= ' LIMIT ' . $this->maxResults . ';';
 	    	   		 }
 
@@ -583,82 +626,46 @@ abstract class BasePersistence {
 					 	 return null;
 					 }
 
-					 // Return multiple records as an array of models
-					 if( count( $result ) > 1 ) { 
+				 	 $index = 0;
+				 	 $models = array();
+					 foreach( $result as $stdClass  ) {
 
-					 	 $index = 0;
-					 	 $models = array();
-						 foreach( $result as $stdClass  ) {
+					 		  $m = $table->getModelInstance();
+					 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
 
-						 		  $m = $table->getModelInstance();
-						 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
+					 	   	  		   if( !$value ) continue;
+					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
 
-						 	   	  		   if( !$value ) continue;
-						 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
+							 	   	   // Create foreign model instances from foreign values
+						 	 		   foreach( $table->getColumns() as $column ) {
 
-								 	   	   // Create foreign model instances from foreign values
-							 	 		   foreach( $table->getColumns() as $column ) {
+						 	 		  		    if( $column->isForeignKey() && $column->getName() == $name ) {
 
-							 	 		  		    if( $column->isForeignKey() && $column->getName() == $name ) {
+						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
+						 	 		  		   	    $foreignInstance = new $foreignModel();
 
-							 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
-							 	 		  		   	    $foreignInstance = new $foreignModel();
+						 	 		  		   	    $foreignMutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+						 	 		  		   	    $foreignInstance->$foreignMutator( $value );
 
-							 	 		  		   	    $foreignMutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-							 	 		  		   	    $foreignInstance->$foreignMutator( $value );
+						 	 		  		   	    $persisted = $this->find( $foreignInstance );
 
-							 	 		  		   	    $persisted = $this->find( $foreignInstance );
+						 	 		  		   	    $instanceMutator = $this->toMutator( $foreignModel );
+						 	 		  		   	    $m->$instanceMutator( $persisted[0] );
+						 	 		  		    }
+						 	 		  		    else {
 
-							 	 		  		   	    $instanceMutator = $this->toMutator( $foreignModel );
-							 	 		  		   	    $m->$instanceMutator( $persisted );
-							 	 		  		    }
-							 	 		  		    else {
+						 	 		  		   		$mutator = $this->toMutator( $modelProperty );
+					 	   	   		  				$m->$mutator( $value );
+						 	 		  		    }
+						 	 		   }
+					 	   	  }
 
-							 	 		  		   		$mutator = $this->toMutator( $modelProperty );
-						 	   	   		  				$m->$mutator( $value );
-							 	 		  		    }
-							 	 		   }
-						 	   	  }
-
-						 	   	  array_push( $models, $m );
-						 	   	  $index++;
-						 	   	  if( $index == $this->maxResults )  break;
-					     }
-
-					     return $models;
-					 }
-
-					 // Return single model
-				 	 foreach( get_object_vars( $result[0] ) as $name => $value ) {
-
-				 	 		  if( !$value ) continue;
-				 	  		  $modelProperty = $this->getPropertyNameForColumn( $table, $name );
-
-				 	  		  // Create foreign model instances from foreign values
-				 	 		  foreach( $table->getColumns() as $column ) {
-
-				 	 		  		   if( $column->isForeignKey() && $column->getName() == $name ) {
-
-				 	 		  		   	   $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
-				 	 		  		   	   $foreignInstance = new $foreignModel();
-				 	 		  		   	   
-				 	 		  		   	   $foreignMutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-				 	 		  		   	   $foreignInstance->$foreignMutator( $value );
-
-				 	 		  		   	   $persisted = $this->find( $foreignInstance );
-
-				 	 		  		   	   $instanceMutator = $this->toMutator( $foreignModel );
-				 	 		  		   	   $newModel->$instanceMutator( $persisted );
-				 	 		  		   }
-				 	 		  		   else {
-				 	 		  		   	
-				 	 		  		   		$mutator = $this->toMutator( $modelProperty );
-			 	   	   		  				$newModel->$mutator( $value );
-				 	 		  		   }
-				 	 		  }
+					 	   	  array_push( $models, $m );
+					 	   	  $index++;
+					 	   	  if( $index == $this->maxResults )  break;
 				     }
 
-				     return $newModel;
+				     return $models;
 	  		 }
 	  		 catch( Exception $e ) {
 
@@ -666,6 +673,26 @@ abstract class BasePersistence {
 	  		 }
 
 	  		 return null;
+	  }
+
+	  /**
+	   * Returns the total number of records in the specified model.
+	   * 
+	   * @param Object $model The domain object to get the count for.
+	   * @return Integer The total number of records in the table.
+	   */
+	  public function count( $model ) {
+
+	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel( $model )->getName();
+			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
+			 $sql .= ';';
+
+	     	 $stmt = $this->prepare( $sql );
+	     	 $stmt->execute( array( $this->getTableByModel( $model )->getName() ) );
+  			 $stmt->setFetchMode( PDO::FETCH_OBJ );
+  			 $result = $stmt->fetchAll();
+
+  			 return ($result == null) ? 0 : $result[0]->count;
 	  }
 
 	  /**
@@ -1030,11 +1057,32 @@ abstract class BasePersistence {
 	  public function isEmpty( $model ) {
 
 	  		 $class = new ReflectionClass( $model );
+
+	  		 // Need to grab the real model if this is an interceptor proxy.
+	  		 try {
+	  		 		$m = $class->getMethod( 'getInterceptedInstance' );
+
+	  		 		$class = new ReflectionClass( $model->getInterceptedInstance() );
+	  		 		$methods = $class->getMethods();
+			  		foreach( $methods as $method ) {
+
+			  		 		 $mName = $method->name;
+			  		 		 if( $mName == 'getInstance' ) continue;
+			  		 		 if( $mName == 'getInterceptedInstance' ) continue;
+			  		 		 if( substr( $mName, 0, 3 ) == 'get' )
+			  		 		 	 if( !is_object( $model->$mName() ) && $model->$mName() )  // Ignore models with a child object - problem?
+			  		 		  	 	 return false;
+			  		}
+
+			  		return true;
+	  		 }
+	  		 catch( Exception $e ) {}
+
+	  		 // This is a real model.
 	  		 $methods = $class->getMethods();
 	  		 foreach( $methods as $method ) {
 
 	  		 		  $mName = $method->name;
-	  		 		  if( $mName == 'getInstance' ) continue;
 	  		 		  if( substr( $mName, 0, 3 ) == 'get' )
 	  		 		  	  if( $model->$mName() )
 	  		 		  	  	  return false;

@@ -355,9 +355,9 @@ class CreateProject extends AgilePHPGen {
 
 		 $renderer = new PHTMLRenderer();
 		 $renderer->set( \'title\', \'' . $this->getCache()->getProjectName() . ' :: Error Page\' );
-		 $renderer->set( \'error\', $e->getMessage() . ($agilephp->isInDebugMode() ? \'<br>\' . $e->getTraceAsString() : \'\' ) );
+		 $renderer->set( \'error\', $e->getMessage() . ($agilephp->isInDebugMode() ? \'<pre>\' . $e->getTraceAsString() . \'</pre>\' : \'\' ) );
 		 $renderer->render( \'error\' );
- }
+ } 
 ?>';
 	  	 	  $h = fopen( $this->getCache()->getProjectRoot() . '/index.php', 'w' );
 	  		  fwrite( $h, $code );

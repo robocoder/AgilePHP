@@ -50,17 +50,17 @@ class Id {
 	  	     $mutator = $callee['function'];
 
 	  	     $params = $ic->getParameters();
+	  	     if( !$params[0] ) return;
+
 	  	     $model = new $class;
 	  	     $model->$mutator( $params[0] );
 
 	  	     $pm = new PersistenceManager();
 	 		 $activeRecord = $pm->find( $model );
 
-	 		 return ($activeRecord) ?
-	 		 	 $this->copy( $activeRecord->getInterceptedInstance(), $ic->getTarget() ) :
+	 		 return (count( $activeRecord )) ?
+	 		 	 $this->copy( $activeRecord[0]->getInterceptedInstance(), $ic->getTarget() ) :
 	 		 	 $ic->proceed();
-
-	 		 Logger::getInstance()->debug( '#@Id::populate Created ActiveRecord state for model \'' . $class . '\'.' );
 	  }
 
 	  /**
@@ -84,6 +84,8 @@ class Id {
 		  		   $mutator = 'set' . ucfirst( $propsB[$i]->name );
 	  		   	   $b->$mutator( $a->$accessor() );
 		  	  }
+
+  	 		  Logger::getInstance()->debug( '#@Id::populate Created ActiveRecord state for model \'' . $classA->getName() . '\'.' );
 	  }
 }
 ?>

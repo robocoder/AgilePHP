@@ -78,8 +78,6 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      */
 	     public function modelAction( $action, $ids = '', $page = 1 , $view = 'admin' ) {
 
-	     		$this->setPrimaryKeys( $ids );
-
 	     		switch( $action ) {
 
 		     			case 'filteredList':
@@ -91,7 +89,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 		     						 if( $this->getModel()->$accessor() )
 		     						 	 $this->setRestrictions( array( $this->getPersistenceManager()->getColumnNameByProperty( $table, $property->name ) => $this->getModel()->$accessor() ) );
 		     				}
-		     				
+
 		     				$this->setPage( $page );
 
 				  		    $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
@@ -101,6 +99,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 				  	        break;
 
 	     				case 'read':
+	     					 $this->setPrimaryKeys( $ids );
 			  	     		 $this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelAsReadOnlyXSL(), $this->getModelAsFormXML() ) );
 			  	     	     $this->getRenderer()->render( $view );
 	     					 break;
@@ -112,23 +111,22 @@ abstract class BaseModelActionController extends BaseModelXslController {
 			  	     	     break;
 
  		  	     	    case 'edit':
+ 		  	     	    	 $this->setPrimaryKeys( $ids );
  		  	     	    	 $this->setPage( $page );
 	  	     	     		 $this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML() ) );
 	  	     	     		 $this->getRenderer()->render( $view );
 	  	     		 		 break;
 
 	  	     			case 'persist':
-	  	     				 $this->setPage( $page );
 	  	     		 		 $this->persist();
 	  	     		 		 break;
 
 	  	     			case 'merge':
-	  	     				 $this->setPage( $page );
 	  	     		 		 $this->merge();
 	  	     		 		 break;
 
 	  	     			case 'delete':
-	  	     				 $this->setPage( $page );
+	  	     				 $this->setPrimaryKeys( $ids );
 	  	     		 		 $this->delete();
 	  	     		 		 break;
 
@@ -149,12 +147,16 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      */
 	     public function modelList( $page = 1, $view = 'admin', $model = null ) {
 
-			    if( $model ) {
+	     		if( $model ) {
 
 	     			$this->setModel( new $model() );
 	     			$this->__construct();
 	     		}
 
+	     		$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	  	        $pkeyColumns = $table->getPrimaryKeyColumns();
+
+	     		$this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
 	  		    $this->setPage( $page );
 
 	  		    $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
@@ -172,12 +174,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
 	      */
-	     public function modelSort( $column, $direction, $page = 1, $view = 'admin' ) {
+	     public function modelSort( $column, $direction = 'DESC', $page = 1, $view = 'admin' ) {
 
-	     		$pm = $this->getPersistenceManager();
-	     		$pm->setOrderBy( $column, ($direction == 'ASC') ? 'DESC' : 'ASC' );
-	     		$pm->find( $this->getModel() );
-	     		
 	     		$this->setOrderBy( $column, $direction );
 	     		$this->setPage( $page );
 				$this->setOrderBy( $column, ($direction == 'ASC') ? 'DESC' : 'ASC' );
@@ -199,7 +197,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     		$this->setModelValues();
 
 	    	    parent::persist( $this->getModel() );
-	  	 	    $this->modelList( $this->getPage() );
+	    	    $this->__construct();
+	  	 	    $this->modelList( $this->getPage() );	  	 	    
 	     }
 
  	     /**
@@ -213,6 +212,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	  		    $this->setModelValues();
 
 	  	 	    parent::merge( $this->getModel() );
+	  	 	    $this->__construct();
 	  	 	    $this->modelList( $this->getPage() );
 	     }
 
@@ -227,6 +227,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	  		    $this->setModelValues();
 
 	  		    parent::delete( $this->getModel() );
+	  		    $this->__construct();
 	  		    $this->modelList( $this->getPage() );
 	     }
 
@@ -248,7 +249,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
   			       // Single primary key
 	  	           if( strpos( $ids, '_' ) === false ) {
 
-		  	           $mutator = 'set' . ucfirst( $pkeyColumns[0]->getModelPropertyName() );
+		  	           $mutator = $this->toMutator( $pkeyColumns[0]->getModelPropertyName() );
 	  		 	       $this->getModel()->$mutator( $ids );
 	  		 	       return;
 	  		       }
@@ -257,9 +258,28 @@ abstract class BaseModelActionController extends BaseModelXslController {
 			       $idz = explode( '_', $ids );
 	  	           for( $i=0; $i<count( $idz ); $i++ ) {
 
-	  	     	 	    $mutator = 'set' . ucfirst( $pkeyColumns[$i]->getModelPropertyName() );
+	  	     	 	    $mutator = $this->toMutator( $pkeyColumns[$i]->getModelPropertyName() );
 	  	     	 	    $this->getModel()->$mutator( $idz[$i] );
 	  	           }
+	     }
+
+		 /**
+	      * Clears the current model state.
+	      * 
+	      * @return void
+	      */
+	     protected function clearModel() {
+
+	  	           $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	  	           $columns = $table->getColumns();
+
+  			      for( $i=0; $i<count( $columns ); $i++ ) {
+
+	  	     	 	    $mutator = $this->toMutator( $columns[$i]->getModelPropertyName() );
+	  	     	 	    $this->getModel()->$mutator( null );
+	  	           }
+	  	           
+	  	           Logger::getInstance()->debug( 'BaseModelActionController::clearModel ' );
 	     }
 
 		 /**
@@ -314,8 +334,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 		     		   			   	 // Type cast to PHP data type from database types in persistence.xml
 			     		   			 if( $column->getModelPropertyName() == $name ) {
 
-				     		   			 if( $column->isForeignKey() ) { 
-	
+				     		   			 if( $column->isForeignKey() ) {
+
 		  		 	  	        			 // Getter and setter for foreign model
 		  		 	  	        			 $instanceAccessor = $this->toAccessor( $column->getForeignKey()->getReferencedTableInstance()->getModel() );
 									         $instanceMutator = $this->toMutator( $column->getForeignKey()->getReferencedTableInstance()->getModel() );

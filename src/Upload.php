@@ -85,7 +85,7 @@ class Upload {
 	   * file input $name.
 	   * 
 	   * @return String The uploaded file path.
-	   * @throws AgilePHP_Exception if any errors are encountered.
+	   * @throws AgilePHP_PersistenceException if any errors occur
 	   */
 	  public function save() {
 
@@ -114,21 +114,23 @@ class Upload {
 			 	 		 break;
 			 	 		 
 			 	 	case 5:
-			 	 		 $error = 'Missing a temporary folder. Introduced in PHP 4.3.10 and PHP 5.0.3.';
+			 	 		 $error = 'Missing a temporary folder.'; // Introduced in PHP 4.3.10 and PHP 5.0.3
 			 	 		 break;
 			 	 		 
 			 	 	case 6:
-			 	 		 $error = 'Failed to write file to disk. Introduced in PHP 5.1.0.';
+			 	 		 $error = 'Failed to write file to disk.'; // Introduced in PHP 5.1.0
 			 	 		 break;
 			 	 		 
 			 	 	case 7:
-			 	 		 $error = 'File upload stopped by extension. Introduced in PHP 5.2.0.';
+			 	 		 $error = 'File upload stopped by extension.'; // Introduced in PHP 5.2.0
 			 	 		 break;
 			 	 }
 
+			 	 if( !$error ) return;
+
 			 	 Logger::getInstance()->debug( 'Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.' );
 
-			 	 throw new AgilePHP_Exception( $error, $_FILES[ $this->getName() ]['error'] );
+			 	 throw new AgilePHP_PersistenceException( $error, $_FILES[ $this->getName() ]['error'] );
 			 }
 
 			 chmod( $target, 0755 );

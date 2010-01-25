@@ -1,31 +1,27 @@
-0.6a
+0.7a
 ----
 
-- Refactored test/BaseTest.php and test/index.php for easier testing between *nix and windoze.
-- Bug fix to src/identity/User.php. roleId accessor/mutator got added twice resulting in 'Cannot redeclare User:: ...'
-- Created #@Cache interceptor.
-- Bug fix to MVC::processRequest regex. This one works on linux and windows.
-- Refactored test/view/admin.phtml to have dynamic url to load agilephp js file.
-- Removed special handling of 'bit' data type from BaseModelActionController::setModelValues. Password hashing logic replaced by model interceptor #@Password. 
-- Commented out BasePersistence::merge code that was ignoring values without a value. Now they are included in the UPDATE statement and set to NULL.
-- Created BaseModelActionController::setForeignModels to handle applying foreign key values by creating an instance of the foreign model, settings its values
-  and then applying the foreign model to its parent using its mutator method.
-- Created #@Id interceptor responsible for populating a domain model ActiveRecord when its mutator is invoked.
-- Refactored BaseModelActionController::setModelValues
-- Refactored contructor in src/identity/User to __construct rather than 'User' so it can be used with interceptions.
-- Commented InterceptorProxy::getInstance() method. get_class( self ) is causing an issue in some situations.
-- Added callee property and mutator to InvocationContext which provides PHP stack state information about the code that caused the interception.
-- Added #@Password interceptor responsible for hashing a method's parameter value using the AgilePHP Crypto component.
-- Removed logic from Identity::setPassword to encrypt the passwords. Use #@Password interceptor instead moving forward.
-- Refactored AgilePHP_Exception to support file and line parameters.
-- Removed type casting from User::setRoles since it was causing an issue with the #@Id interceptor when setting a null value. Now srgument detauls to empty array.
-- Commented $findAll parameter and associated logic in PersistenceManager::find.
-- Refactored BasePersistence::isEmpty to exclude methods named 'getInstance'. This was causing issues with intercepted models since the proxy contains a singleton
-  accessor.
-- Refactored try/catch into BaseModelController::getResultListAsModels so if plural instance of foreign key mutator isnt present its logged instead of blowing up.
-- Bug fix to BasePersistence::execute and BasePersistence::persist so PHP null's and string literal 'NULL' values get stored as SQL null's.
-- Bug fix to BaseModelXslController::getModelFormXSL. Using model defined in controller to create form instead of SQL query.
-- Added logic to attempt creating directory heirarchy in Upload::setDirectory if the specified directory doesnt exist.
-- Refactored Upload::save to use DIRECTORY_SEPARATOR instead of hard coded forward slash.
-- Refactored test/control/InventoryController to use framework Upload component and dynamic paths.
-- Got rid of BaseModelController::getResultListAsModels.
+- Removed BaseModelXmlController:joinForeignKeyXML.
+- Removed Logger debugging code from BaseModelXslController.
+- Removed Logger debugging code from XSLTRenderer.
+- Refactored #@Id to support new BasePersistence::find return value
+- Refactored SessionScope to support new BasePersistence::find return value
+- Removed User::setSessions commented code
+- Refactored PersistenceManager::get/setMaxResult to use BasePersistence maxResult
+- Refactored SQL groupBy clause so its managed by BasePersistence.
+- Added executeQuery method to PersistenceManager.
+- Refactored MVC component to strip trailing empty parameter
+- Bug fix to #@Id interceptor. Setting id's to null caused an attempt to populate the object.
+- Edits on test project to reflect new changes.
+- Added generator/ReverseEngineerDatabase to create models, controllers, and admin navigation elements.
+
+-- ***************** --
+-- Major Refactoring --
+-- ***************** --
+
+- BasePersistence::find No longer returns single results as an object. Now they are returned as a single element array.
+- PersistenceManager::createSQL removed, PersistenceManager::executeCountQuery now uses BasePersistence::find instead of raw SQL queries.
+- PersistenceManager::setPage no longer passes array of stdClass, but rather an array of domain objects.
+- BaseModelXmlController::getResultListAsPagedXML now parses through array of domain models instead of array of stdClass. Now supports intercepted domain models.
+- BaseModelXmlController::getResultListAsXML now returns the same data as getResultListAsPagedXml without the pagination node. Now supports intercepted domain models.
+- Deleted PersistenceRenderer.

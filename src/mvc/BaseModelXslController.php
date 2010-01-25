@@ -210,10 +210,6 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 									</xsl:template>
 								</xsl:stylesheet>';
 
-				   Logger::getInstance()->debug( 'BaseModelXslController::getModelListXSL called with parameters pkeyFields = ' . $pkeyFields . 
-	  			   			  ', controller = ' . $controller . ', action = ' . $action );
-				   Logger::getInstance()->debug( 'BaseModelXslController::getModelListXSL returning XSL ' . $xsl );
-
 	     		   return $xsl;
 	     }
 
@@ -236,7 +232,6 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     	       							       : new Form( $this->getModel(), 'frm' . $name, $name, $action, null, $token );
 				   $form->setMode( $this->getModelPersistenceAction() );
 	     	       $xsl = $form->getXSL( $pkeyValues, $this->getPage() );
-			       Logger::getInstance()->debug( 'BaseModelXslController::getModelListXSL returning XSL ' . $xsl );
 
 	     	       return $xsl;
 	     }
@@ -292,8 +287,6 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 				$xsl .= '			</table>
 				  	  		</xsl:template>
 						</xsl:stylesheet>';
-
-			    Logger::getInstance()->debug( 'BaseModelXslController::getModelAsReadOnlyXSL Returning XSL ' . $xsl );
 
 	     	    return $xsl;
 	     }
@@ -382,8 +375,6 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 								    	</xsl:if>
 								
 								   </xsl:template>';
-
-				   Logger::getInstance()->debug( 'BaseModelXslController::getPaginationXSL returning XSL ' . $xsl );
 
 	     	       return $xsl;
 	     }

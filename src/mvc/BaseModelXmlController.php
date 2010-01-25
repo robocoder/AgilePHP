@@ -70,18 +70,18 @@ abstract class BaseModelXmlController extends BaseModelController {
 
   			 	   if( $isMerge ) {
 
-  			 	   	   $model = $this->getPersistenceManager()->find( $this->getModel() );
+  			 	   	   $models = $this->getPersistenceManager()->find( $this->getModel() );
 
   			 	   	   foreach( $table->getColumns() as $column ) {
 
   			 	   	   			$accessor = $this->toAccessor( $column->getModelPropertyName() );
 
   			 	   	   			$fieldCount++;
-  			 	   	   	     	if( is_object( $model->$accessor() ) ) continue;
+  			 	   	   	     	if( is_object( $models[0]->$accessor() ) ) continue;
 
   			 	   	   	     	$xml .= ($column->getType() == 'bit') ? 
-  			 	   	   	     				'<' . $column->getModelPropertyName() . '>' . ( (ord($model->$accessor()) == 1) ? '1' : '0') . '</' . $column->getModelPropertyName() . '>'
-  			 	   	   	     				: '<' . $column->getModelPropertyName() . '>' . $model->$accessor() . '</' . $column->getModelPropertyName() . '>';
+  			 	   	   	     				'<' . $column->getModelPropertyName() . '>' . ( (ord($models[0]->$accessor()) == 1) ? '1' : '0') . '</' . $column->getModelPropertyName() . '>'
+  			 	   	   	     				: '<' . $column->getModelPropertyName() . '>' . $models[0]->$accessor() . '</' . $column->getModelPropertyName() . '>';
   			 	   	   			
   			 	   	   }
   			 	   }
@@ -124,35 +124,136 @@ abstract class BaseModelXmlController extends BaseModelController {
 	      * 
 	      * @return An XML document representing the result list
 	      */
-	     protected function getResultListAsXML( stdClass $result = null ) {
+	     protected function getResultListAsXML() {
+
+	     		   $table = $this->getPersistenceManager()->getTableByModelName( $this->getModelName() );
 
 	  	     	   $doc = new DomDocument( '1.0' );
-      	     	   $root = $doc->createElement( 'ResultList' );
-             	   $root = $doc->appendChild( $root );
+      	     	   $xml = $doc->createElement( 'ResultList' );
+             	   $xml = $doc->appendChild( $xml );
 
              	   if( !$this->getResultList() )
              	   	   throw new AgilePHP_Exception( 'BaseModelXmlController::getResultListAsXml() requires a valid result set to transform to XML.' );
 
-			 	   foreach( $this->getResultList() as $stdClass  ) {
+	     		 	foreach( $this->getResultList() as $model ) {
 
-			 	   	        $modelName = $doc->createElement( $this->getModelName() );
-				  		    $modelName = $root->appendChild( $modelName );
+             	   	   		    $class = new ReflectionClass( $model );
 
-			 	   	   		foreach( get_object_vars( $stdClass ) as $prop => $val ) {
+             	   	   			$modelName = $doc->createElement( $this->getModelName() );
+				 	   	        $xml->appendChild( $modelName );
 
-			 	   	   			 $child = $doc->createElement( $prop );
-				  				 $child = $modelName->appendChild( $child );
-		                  		 $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
-						  		 $value = $doc->createTextNode( $fieldvalue );
-						  		 $value = $child->appendChild( $value );
-			 	   	   		}
-			 	   }
+				 	   	        // Process foreign keys
+             	   	   			if( $table->hasForeignKey() ) {
+
+					      		    $bProcessedKeys = array();
+					   		  	    $fKeyColumns = $table->getForeignKeyColumns();
+					   		  	    for( $i=0; $i<count( $fKeyColumns ); $i++ ) {
+
+					   	  	  		  	 $fk = $fKeyColumns[$i]->getForeignKey();
+
+					   		  	  		 if( in_array( $fk->getName(), $bProcessedKeys ) )
+					   		  	  		     continue;
+
+					     	  	       	 // Get foreign keys which are part of the same relationship
+					     	  	       	 $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
+
+				         		   	 	 $foreignModelName = $doc->createElement( $relatedKeys[0]->getReferencedTableInstance()->getModel() );
+				    	        		 $foreignModel = $modelName->appendChild( $foreignModelName );
+
+					         		   	 for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+
+									  		   try {
+									  		   		  // The model has been intercepted
+									  		 		  $class = new ReflectionClass( $model->getInterceptedInstance() );
+									  		 		  $props = $class->getProperties();
+								       	       		  foreach( $props as $prop ) {
+					
+								       	       		  		   $accessor = $this->toAccessor( $prop->getName() );
+								       	       		  		   $val = $model->$accessor();
+								       	       		 	  	   if( $prop->getName() == $relatedKeys[$j]->getColumnInstance()->getName() ) {
+								
+								     	  	       		   	 	   $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
+													  			   $child = $foreignModel->appendChild( $child );
+											                  	   $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
+															  	   $value = $doc->createTextNode( $fieldvalue );
+															  	   $value = $child->appendChild( $value );
+								       	       		   	 	   }
+								       	       		   }
+								   	  	  		   	   array_push( $bProcessedKeys, $fk->getName() );
+									  		 	}
+									  		 	catch( ReflectionException $e ) {
+
+									  		 		   // The model is not intercepted
+									  		 		   $props = $class->getProperties();
+								       	       		   foreach( $props as $prop ) {
+
+								       	       		  		    $accessor = $this->toAccessor( $prop->getName() );
+								       	       		  		    $val = $model->$accessor();
+								       	       		 	  	    if( $prop->getName() == $relatedKeys[$j]->getColumnInstance()->getName() ) {
+								
+								     	  	       		   	 	    $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
+													  			    $child = $foreignModel->appendChild( $child );
+											                  	    $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
+															  	    $value = $doc->createTextNode( $fieldvalue );
+															  	    $value = $child->appendChild( $value );
+								       	       		   	 	    }
+								       	       		    }
+								   	  	  		   	    array_push( $bProcessedKeys, $fk->getName() );
+									  		 	 }	
+					         		   	 }
+					   		  	     }
+					             }
+
+                   				 // Process the parent model
+					  		     try {
+					  		     	  // The model has been intercepted
+					  		   		  $m = $class->getMethod( 'getInterceptedInstance' );
+					  		   		  $class = new ReflectionClass( $model->getInterceptedInstance() );
+					  		   		  $props = $class->getProperties();
+
+				       	       		     foreach( $props as $prop ) {
+
+				       	       		  		      $accessor = $this->toAccessor( $prop->getName() );
+				       	       		  		      $val = $model->$accessor();
+
+				       	       		  		      if( is_object( $val ) ) continue; // Foreign model
+
+				       	       		  		      if( $this->isBit( $table, $prop->getName() ) )
+				 	   	   			         		  $val = (ord($val) == 1) ? 'Yes' : 'No';
+
+						 	   	   			 	  $child = $doc->createElement( $prop->getName() );
+							  				 	  $child = $modelName->appendChild( $child );
+					                  		 	  $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
+									  		 	  $value = $doc->createTextNode( $fieldvalue );
+									  		 	  $value = $child->appendChild( $value );
+				       	       		     }
+					  		 	  }
+					  		 	  catch( ReflectionException $e ) {
+
+					  		 	  		 // This model is not intercepted
+					  		 	  		 $props = $class->getProperties();
+				       	       		     foreach( $props as $prop ) {
+
+				       	       		  		      $accessor = $this->toAccessor( $prop->getName() );
+				       	       		  		      $val = $model->$accessor();
+
+				       	       		  		      if( is_object( $val ) ) continue; // Foreign model
+
+				       	       		  		      if( $this->isBit( $table, $prop->getName() ) )
+				 	   	   			         		  $val = (ord($val) == 1) ? 'Yes' : 'No';
+
+						 	   	   			 	  $child = $doc->createElement( $prop->getName() );
+							  				 	  $child = $modelName->appendChild( $child );
+					                  		 	  $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
+									  		 	  $value = $doc->createTextNode( $fieldvalue );
+									  		 	  $value = $child->appendChild( $value );
+				       	       		     }
+					  		 	  }
+             	   	   }
 
 			 	   $xml = $doc->saveXML();
 
-			 	   Logger::getInstance()->debug( 'BaseModelXmlController::getResultListAsXML returning xml ' . $xml );
-
-	  			   return $xml; 
+	  			   return $xml;
 	     }
 
 		 /**
@@ -195,17 +296,19 @@ abstract class BaseModelXmlController extends BaseModelController {
       	     	   $root = $doc->createElement( 'ResultList' );
              	   $root = $doc->appendChild( $root );
 
-             	   $model = $doc->createElement( 'Model' );
-             	   $model = $root->appendChild( $model );
+             	   $xml = $doc->createElement( 'Model' );
+             	   $xml = $root->appendChild( $xml );
 
              	   if( $this->getResultList() ) {
 
-             	   	   foreach( $this->getResultList() as $stdClass  ) {
+             	   	   foreach( $this->getResultList() as $model ) {
 
-				 	   	        $modelName = $doc->createElement( $this->getModelName() );
-				 	   	        $model->appendChild( $modelName );
+             	   	   		    $class = new ReflectionClass( $model );
 
-				 	   	        // Handle foreign keys
+             	   	   			$modelName = $doc->createElement( $this->getModelName() );
+				 	   	        $xml->appendChild( $modelName );
+
+				 	   	        // Process foreign keys
              	   	   			if( $table->hasForeignKey() ) {
 
 					      		    $bProcessedKeys = array();
@@ -225,37 +328,95 @@ abstract class BaseModelXmlController extends BaseModelController {
 
 					         		   	 for( $j=0; $j<count( $relatedKeys ); $j++ ) {
 
-					     	  	       		  // Loop through result set looking for a matching property name to extract the foreign key values
-					     	  	       		  foreach( get_object_vars( $stdClass ) as $prop => $val ) {
+									  		   try {
+									  		   		  // The model has been intercepted
+									  		 		  $class = new ReflectionClass( $model->getInterceptedInstance() );
+									  		 		  $props = $class->getProperties();
+								       	       		  foreach( $props as $prop ) {
+					
+								       	       		  		   $accessor = $this->toAccessor( $prop->getName() );
+								       	       		  		   $val = $model->$accessor();
+								       	       		 	  	   if( $prop->getName() == $relatedKeys[$j]->getColumnInstance()->getName() ) {
+								
+								     	  	       		   	 	   $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
+													  			   $child = $foreignModel->appendChild( $child );
+											                  	   $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
+															  	   $value = $doc->createTextNode( $fieldvalue );
+															  	   $value = $child->appendChild( $value );
+								       	       		   	 	   }
+								       	       		   }
+								   	  	  		   	   array_push( $bProcessedKeys, $fk->getName() );
+									  		 	}
+									  		 	catch( ReflectionException $e ) {
 
-					     	  	       		 	  	   if( $prop == $relatedKeys[$j]->getColumnInstance()->getName() ) {
+									  		 		   // The model is not intercepted
+									  		 		   $props = $class->getProperties();
+								       	       		   foreach( $props as $prop ) {
 
-					   	  	  	       		   	 		   $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
-											  			   $child = $foreignModel->appendChild( $child );
-									                  	   $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
-													  	   $value = $doc->createTextNode( $fieldvalue );
-													  	   $value = $child->appendChild( $value );
-					     	  	       		   	 	   }
-					     	  	       		   }
-					   		  	  		   	   array_push( $bProcessedKeys, $fk->getName() );
-					         		   	  }
+								       	       		  		    $accessor = $this->toAccessor( $prop->getName() );
+								       	       		  		    $val = $model->$accessor();
+								       	       		 	  	    if( $prop->getName() == $relatedKeys[$j]->getColumnInstance()->getName() ) {
+								
+								     	  	       		   	 	    $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
+													  			    $child = $foreignModel->appendChild( $child );
+											                  	    $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
+															  	    $value = $doc->createTextNode( $fieldvalue );
+															  	    $value = $child->appendChild( $value );
+								       	       		   	 	    }
+								       	       		    }
+								   	  	  		   	    array_push( $bProcessedKeys, $fk->getName() );
+									  		 	 }	
+					         		   	 }
 					   		  	     }
-					            }
+					             }
 
-					            // Handle the model
-				 	   	   		foreach( get_object_vars( $stdClass ) as $prop => $val ) {
+                   				 // Process the parent model
+					  		     try {
+					  		     	  // The model has been intercepted
+					  		   		  $m = $class->getMethod( 'getInterceptedInstance' );
+					  		   		  $class = new ReflectionClass( $model->getInterceptedInstance() );
+					  		   		  $props = $class->getProperties();
 
-				 	   	   			     if( PersistenceRenderer::isBit( $table, $prop ) )
-				 	   	   			         $val = (ord($val) == 1) ? 'Yes' : 'No';
+				       	       		     foreach( $props as $prop ) {
 
-				 	   	   			 	 $child = $doc->createElement( $this->getPersistenceManager()->getPropertyNameByColumn( $table, $prop  ) );
-					  				 	 $child = $modelName->appendChild( $child );
-			                  		 	 $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
-							  		 	 $value = $doc->createTextNode( $fieldvalue );
-							  		 	 $value = $child->appendChild( $value );
-				 	   	   		}
-				 	    }
-	     		   }
+				       	       		  		      $accessor = $this->toAccessor( $prop->getName() );
+				       	       		  		      $val = $model->$accessor();
+
+				       	       		  		      if( is_object( $val ) ) continue; // Foreign model
+
+				       	       		  		      if( $this->isBit( $table, $prop->getName() ) )
+				 	   	   			         		  $val = (ord($val) == 1) ? 'Yes' : 'No';
+
+						 	   	   			 	  $child = $doc->createElement( $prop->getName() );
+							  				 	  $child = $modelName->appendChild( $child );
+					                  		 	  $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
+									  		 	  $value = $doc->createTextNode( $fieldvalue );
+									  		 	  $value = $child->appendChild( $value );
+				       	       		     }
+					  		 	  }
+					  		 	  catch( ReflectionException $e ) {
+
+					  		 	  		 // This model is not intercepted
+					  		 	  		 $props = $class->getProperties();
+				       	       		     foreach( $props as $prop ) {
+
+				       	       		  		      $accessor = $this->toAccessor( $prop->getName() );
+				       	       		  		      $val = $model->$accessor();
+
+				       	       		  		      if( is_object( $val ) ) continue; // Foreign model
+
+				       	       		  		      if( $this->isBit( $table, $prop->getName() ) )
+				 	   	   			         		  $val = (ord($val) == 1) ? 'Yes' : 'No';
+
+						 	   	   			 	  $child = $doc->createElement( $prop->getName() );
+							  				 	  $child = $modelName->appendChild( $child );
+					                  		 	  $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
+									  		 	  $value = $doc->createTextNode( $fieldvalue );
+									  		 	  $value = $child->appendChild( $value );
+				       	       		     }
+					  		 	  }
+             	   	   }
+             	   }
 
 			 	   $pagination = $doc->createElement( 'Pagination' );
 			 	   $pagination = $root->appendChild( $pagination );
@@ -303,10 +464,6 @@ abstract class BaseModelXmlController extends BaseModelController {
 			 	   }
 
 	  			   $xml = $doc->saveXML();
-	  			   
-	  			   Logger::getInstance()->debug( 'BaseModelXmlController::getResultListAsPagedXML executed with parameters $controller = ' .
-	  			   				 $c->getName() . ', $action = ' . $a );
-	  			   Logger::getInstance()->debug( 'BaseModelXmlController::getResultListAsPagedXML returning XML data: ' . $xml );
 
 	  			   return $xml;
 	     }
@@ -334,61 +491,20 @@ abstract class BaseModelXmlController extends BaseModelController {
   			 	   return 'merge';
 	     }
 
-	     /**
-	      * Adds foreign model element with primary key child element(s) for each
-	      * of the columns which are referenced in the child table.
-	      *   
-	      * @param Table $table The 'Table' element to search
-	      * @param SimpleXML $doc The SimpleXML DOM document
-	      * @param SimpleXML_Node $node The XML DOM to join the foreign model xml to
-	      * @return The new XML node with the added foreign key model references. If
-	      * 		the table does not contain any foreign keys references the $node
-	      * 		is returned untouched.
-	      */
-	     private function joinForeignKeyXML( $table, $doc, $node ) {
-
-	             if( $table->hasForeignKey() ) {
-
-	      		     $bProcessedKeys = array();
-	   		  	     $fKeyColumns = $table->getForeignKeyColumns();
-	   		  	     for( $i=0; $i<count( $fKeyColumns ); $i++ ) {
-
-	   	  	  		  	  $fk = $fKeyColumns[$i]->getForeignKey();
-
-	   		  	  		  if( in_array( $fk->getName(), $bProcessedKeys ) )
-	   		  	  		      continue;
-
-	     	  	       	  // Get foreign keys which are part of the same relationship
-	     	  	       	  $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
-	         		   	  for( $j=0; $j<count( $relatedKeys ); $j++ ) {
-
-	   		  	  			   $foreignModelName = $doc->createElement( $relatedKeys[$j]->getReferencedTableInstance()->getModel() );
-	    	        	       $foreignModel = $node->appendChild( $foreignModelName );
-
-	     	  	       		   array_push( $bProcessedKeys, $relatedKeys[$j]->getName() );
-
-	     	  	       		   // Loop through result set looking for a matching property name to extract the foreign key values
-	     	  	       		   foreach( get_object_vars( $stdClass ) as $prop => $val ) {
+		 /**
+		  * Returns boolean response based on the configured 'type' attribute for the specified column.
+		  *  
+		  * @param Table $table The Table instance containing the column
+		  * @param String $columnName The name of the column to search
+		  * @return bool True if the column's 'type' attribute is set to 'bit', false otherwise.
+		  */
+		 private function isBit( $table, $columnName ) {
 	
-	     	  	       		    	    if( $prop == $relatedKeys[$j]->getColumnInstance()->getName() ) {
+		  		 foreach( $table->getColumns() as $column )
+		  		 		  if( $column->getName() == $columnName )
+		  		 		  	  return $column->getType() == 'bit';
 
-	   	  	  	       		   	 		    $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
-							  			    $child = $foreignModel->appendChild( $child );
-					                  	    $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
-									  	    $value = $doc->createTextNode( $fieldvalue );
-									  	    $value = $child->appendChild( $value );
-	     	  	       		   	 	    }
-
-	     	  	       		   	 		if( ($j+1) < count( $relatedKeys ) )
-	     	  	       		   	 	  	    $sql .= ', ';
-	     	  	       		   }
-
-	   		  	  		   	   array_push( $bProcessedKeys, $fk->getName() );
-	         		   	  }
-	   		  	     }
-	             }
-
-	     		 return $node;
-	     }
+		  		 return false;
+		  }
 }
 ?>

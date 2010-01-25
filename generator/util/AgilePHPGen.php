@@ -137,7 +137,7 @@ class ProjectCache {
 
 	  public function getProjectRoot() {
 
-	  		 return $this->projectHome . '/' . $this->projectName;
+	  		 return $this->projectHome . DIRECTORY_SEPARATOR . $this->projectName;
 	  }
 
 	  public function setInterceptors( $bool ) {

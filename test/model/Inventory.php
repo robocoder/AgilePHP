@@ -15,7 +15,7 @@ class Inventory {
 	   * 
 	   * @return void
 	   */
-	  public function Inventory() { }
+	  public function __construct() { }
 
 	  /**
 	   * Sets the inventory id
@@ -23,6 +23,7 @@ class Inventory {
 	   * @param $id The inventory id
 	   * @return void
 	   */
+	  #@Id
 	  public function setId( $id ) {
 
 	  	     $this->id = $id;

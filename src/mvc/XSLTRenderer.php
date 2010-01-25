@@ -50,9 +50,6 @@ class XSLTRenderer extends BaseRenderer {
 
 			 $xslt = $xp->transformToXml( $doc );
 
-			 Logger::getInstance()->debug( 'XSLTRenderer::render executed with parameters xsl = ' . $xsl . ', xml = ' . $xml );
-			 Logger::getInstance()->debug( 'XSLTRenderer::render performed transformation with result ' . $xslt );
-
 			 print $xslt;
 	  }
 
@@ -87,9 +84,6 @@ class XSLTRenderer extends BaseRenderer {
 
 			 restore_error_handler();
 
-			 Logger::getInstance()->debug( 'XSLTRenderer::transform executed with parameters xsl = ' . $xsl . ', xml = ' . $xml );
-			 Logger::getInstance()->debug( 'XSLTRenderer::transform performed transformation with result ' . $xslt );
-
 			 return $xslt;
 	  }
 
@@ -113,9 +107,6 @@ class XSLTRenderer extends BaseRenderer {
 			 $doc->loadXML( $xml );
 
 			 $xslt = $xp->transformToXml( $doc );
-			 
-			 Logger::getInstance()->debug( 'XSLTRenderer::renderXslFile executed with parameters xsl = ' . $xsl . ', xml = ' . $xml );
-			 Logger::getInstance()->debug( 'XSLTRenderer::renderXslFile performed transformation with result ' . $xslt );
 
 			 print $xslt;
 	  }
@@ -140,9 +131,6 @@ class XSLTRenderer extends BaseRenderer {
 			 $doc->loadXML( $xml );
 
 			 $xslt = $xp->transformToXml( $doc );
-
-			 Logger::getInstance()->debug( 'XSLTRenderer::renderXslFile executed with parameters xsl = ' . $xsl . ', xml = ' . $xml );
-			 Logger::getInstance()->debug( 'XSLTRenderer::renderXslFile performed transformation with result ' . $xslt );
 
 			 return $xslt;
 	  }

@@ -250,28 +250,5 @@ class User implements IdentityModel {
 
 	  		 return ($this->Session instanceof Session) ? $this->Session : new Session();
 	  }
-
-	  /*
-	   * Clean up stale sessions. The user should never have multiple sessions open.
-	   *
-	   * @param array $sessions An array of Session objects
-	   * @return void
-	   *
-	  public function setSessions( array $sessions ) {
-
-	  		 $pm = AgilePHP::getFramework()->getComponent( 'PersistenceManager' );
-
-	  		 for( $i=0; $i<count( $sessions ); $i++ ) {
-
-	  		 	  if( ($i+1) < count( $sessions ) ) {
-
-	  		 	  	  $pm->delete( $sessions[$i] );
-	  		 	  	  continue;
-	  		 	  }
-	  		 }
-
-	  		 $this->setSession( $sessions[ count( $sessions ) ] );
-	  }
-	  */
 }
 ?>

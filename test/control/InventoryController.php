@@ -34,8 +34,14 @@ class InventoryController extends BaseModelActionController {
 
 	  	     $request = Scope::getInstance()->getRequestScope();
 
-	  	     $image = $this->upload( 'image' );
-	  		 $video = $this->upload( 'video' );
+	  	     $image = null;
+	  	     $video = null;
+
+	  	     if( $request->get( 'image' ) )
+	  	     	 $image = $this->upload( 'image' );
+
+	  		 if( $request->get( 'video' ) )
+	  		 	 $video = $this->upload( 'video' );
 
 	  		 $i = new Inventory();
 	  		 $i->setName( $request->get( 'name' ) );
@@ -59,6 +65,7 @@ class InventoryController extends BaseModelActionController {
 	  	     	    throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
 
+	  		 $this->clearModel();
 	  	 	 parent::modelList( $this->getPage() );
 	  }
 
@@ -87,26 +94,24 @@ class InventoryController extends BaseModelActionController {
 			 if($_FILES['video']['tmp_name'] )
 			 	$video = $this->upload( 'video' );
 
-	  		 $i = new Inventory();
-	  		 $i->setId( $request->get( 'id' ) );
+			 $i = new Inventory();
+			 $i->setId( $request->getSanitized( 'id' ) );
 
-	  		 $persisted = $this->getPersistenceManager()->find( $i );
+	  		 if( isset( $image ) && $image != $this->getModel()->getImage() ) {
 
-	  		 if( isset( $image ) && $image != $persisted->getImage() ) {
-
-	  		 	 if( file_exists( AgilePHP::getFramework()->getWebRoot() . $persisted->getImage() ) )
-	  		 	 	 @unlink( AgilePHP::getFramework()->getWebRoot() . $persisted->getImage() );
+	  		 	 if( file_exists( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getImage() ) )
+	  		 	 	 @unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getImage() );
 
   		 	 	 $i->setImage( $image );
 	  		 }
 
-	  		 if( isset( $image ) && $image == $persisted->getImage() || !isset( $image ) && $persisted->getImage() )
-	  		 	 $i->setImage( $persisted->getImage() );
+	  		 if( isset( $image ) && $image == $this->getModel()->getImage() || !isset( $image ) && $this->getModel()->getImage() )
+	  		 	 $i->setImage( $this->getModel()->getImage() );
 
-	  		 if( isset( $video ) && $video != $persisted->getVideo() ) {
+	  		 if( isset( $video ) && $video != $this->getModel()->getVideo() ) {
 
-	  		 	 if( file_exists( AgilePHP::getFramework()->getWebRoot() . $persisted->getVideo() ) )
-	  		 	 	 @unlink( AgilePHP::getFramework()->getWebRoot() . $persisted->getVideo() );
+	  		 	 if( file_exists( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getVideo() ) )
+	  		 	 	 @unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getVideo() );
 
 	  		 	 $i->setVideo( $video );
 	  		 }
@@ -121,16 +126,17 @@ class InventoryController extends BaseModelActionController {
 	  		 }
 	  		 catch( AgilePHP_PersistenceException $e ) {
 
-	  		 		if( $persisted->getVideo() && file_exists( $persisted->getImage() ) )
-	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $persisted->getImage() );
+	  		 		if( $this->getModel()->getVideo() && file_exists( $this->getModel()->getImage() ) )
+	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getImage() );
 
-	  		 		if( $persisted->getVideo() && file_exists( $persisted->getVideo() ) )
-	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $persisted->getVideo() );
+	  		 		if( $this->getModel()->getVideo() && file_exists( $this->getModel()->getVideo() ) )
+	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getVideo() );
 
 	  	     	    throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
 
-	  	 	  parent::modelList( $this->getPage() );
+	  		 $this->clearModel();
+	  	 	 parent::modelList( $this->getPage() );
 	  }
 
 	  /**
@@ -141,17 +147,19 @@ class InventoryController extends BaseModelActionController {
 	   */
 	  public function delete() {
 
-	  	     $persisted = $this->getPersistenceManager()->find( $this->getModel() );
+	 		 $i = $this->getModel();
 
-	  	     if( $persisted->getImage() && file_exists( AgilePHP::getFramework()->getWebRoot() . $persisted->getImage() ) )
-	  	     	 unlink( AgilePHP::getFramework()->getWebRoot() . $persisted->getImage() );
+	  	     if( $i->getImage() && file_exists( AgilePHP::getFramework()->getWebRoot() . $i->getImage() ) )
+	  	     	 unlink( AgilePHP::getFramework()->getWebRoot() . $i->getImage() );
 
-	  	     if( $persisted->getVideo() && file_exists( AgilePHP::getFramework()->getWebRoot() . $persisted->getVideo() ) )
-	  	     	 unlink( AgilePHP::getFramework()->getWebRoot() . $persisted->getVideo() );
+	  	     if( $i->getVideo() && file_exists( AgilePHP::getFramework()->getWebRoot() . $i->getVideo() ) )
+	  	     	 unlink( AgilePHP::getFramework()->getWebRoot() . $i->getVideo() );
 
-	  		 $this->getPersistenceManager()->delete( $persisted );
+	  		 $this->getPersistenceManager()->delete( $i );
 
-	  		  parent::modelList( $this->getPage() );
+	  		 $this->clearModel();
+
+  		     parent::modelList( $this->getPage() );
 	  }
 
 	  /**
