@@ -20,12 +20,11 @@
  */
 
 /**
- * Allows caching dynamic data that doesn't require real-time rendering. NOTE: Use
- * either the minutes or integrity properties, but NOT both at the same time!
+ * Allows caching dynamic data that doesn't require real-time rendering.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp
+ * @package com.makeabyte.agilephp.interception.interceptors
  * @version 0.2a
  * @example #@Cache
  * @example #@Cache( minutes = 60 )
