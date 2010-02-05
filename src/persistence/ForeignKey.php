@@ -42,19 +42,22 @@ class ForeignKey {
 	  private $fkTable ;    // Passed in from 'Column'; retains the name of the foreign key table
 	  private $fkColumn;    // Passed in from 'Column'; retains the name of the foreign key column
 
-	  public function __construct( SimpleXMLElement $foreign, $tableName, $columnName ) {
+	  public function __construct( SimpleXMLElement $foreign = null, $tableName, $columnName ) {
 
-	  	     $this->name = (string)$foreign->attributes()->name;
-	  		 $this->type = (string)$foreign->attributes()->type;
-	  		 $this->table = (string)$foreign->attributes()->table;
-	  		 $this->column = (string)$foreign->attributes()->column;
-	  		 $this->controller = (string)$foreign->attributes()->controller;
-	  		 $this->setOnUpdate( (string)$foreign->attributes()->onUpdate );
-	  		 $this->setOnDelete( (string)$foreign->attributes()->onDelete );
-	  		 $this->setSelect( (string)$foreign->attributes()->select );
+	  		 if( $foreign ) {
 
-	  		 $this->fkTable = $tableName;
-	  		 $this->fkColumn = $columnName;
+		  	     $this->name = (string)$foreign->attributes()->name;
+		  		 $this->type = (string)$foreign->attributes()->type;
+		  		 $this->table = (string)$foreign->attributes()->table;
+		  		 $this->column = (string)$foreign->attributes()->column;
+		  		 $this->controller = (string)$foreign->attributes()->controller;
+		  		 $this->setOnUpdate( (string)$foreign->attributes()->onUpdate );
+		  		 $this->setOnDelete( (string)$foreign->attributes()->onDelete );
+		  		 $this->setSelect( (string)$foreign->attributes()->select );
+
+		  		 $this->fkTable = $tableName;
+		  		 $this->fkColumn = $columnName;
+	  		 }
 	  }
 
 	  /**
@@ -108,7 +111,7 @@ class ForeignKey {
 	   */
 	  public function setReferencedTable( $tableName ) {
 	  	
-	  		 $this->table = $table;
+	  		 $this->table = $tableName;
 	  }
 
 	  /**
@@ -129,7 +132,7 @@ class ForeignKey {
 	   */
 	  public function setReferencedColumn( $columnName ) {
 
-	  		 $this->column = $column;
+	  		 $this->column = $columnName;
 	  }
 
 	  /**

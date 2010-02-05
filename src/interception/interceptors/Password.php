@@ -50,7 +50,7 @@ class Password {
 	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file'] );
 	  		 $className = str_replace( '.php', '', array_pop( $pieces ) );
 
-	  		 if( $className == 'BasePersistence' || $className == 'PersistenceManager' )
+	  		 if( $className == 'BasePersistence' || $className == 'PersistenceManager' || preg_match( '/dialect$/i', $className ) )
 	  		 	 return $ic->proceed();
 
 	  		 // Hash the parameter

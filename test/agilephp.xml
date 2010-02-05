@@ -9,7 +9,7 @@
 	<!-- <scope type="request" key="test" value="RequestScope works!"/> -->
 	<logger level="debug"/>
 	<identity resetPasswordUrl="http://localhost/index.php/LoginController/resetPassword" confirmationUrl="http://localhost/index.php/LoginController/confirm"/>
-	<crypto algorithm="sha256" />
+	<crypto algorithm="sha256" iv="1234567890" key="This is a secret key" />
 	<interceptors/>
 
 </agilephp>

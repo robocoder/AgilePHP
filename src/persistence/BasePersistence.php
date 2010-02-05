@@ -560,7 +560,6 @@ abstract class BasePersistence {
 	     * filter results.
 	     * 
 	     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
-	     * @param bool $findAll True to find all records (SELECT *).
 	     * @throws AgilePHP_PersistenceException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
 	     */
@@ -742,6 +741,16 @@ abstract class BasePersistence {
 	  public function setRestrictions( array $restrictions ) {
 
 	   		 $this->restrictions = $restrictions;
+	  }
+	  
+	  /**
+	   * Returns the WHERE clause restrictions
+	   * 
+	   * @return Array SQL WHERE clause restrictions
+	   */
+	  public function getRestrictions() {
+
+	  		 return $this->restrictions;
 	  }
 
 	  /**

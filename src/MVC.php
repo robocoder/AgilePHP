@@ -186,11 +186,6 @@ class MVC {
 	   */
 	  public function processRequest() {
 
-	  		 //$requestURI = (isset( $_SERVER['REQUEST_URI' ] ) ? $_SERVER['REQUEST_URI'] : null );
-	  	     //preg_match( '/^(.+?\.php)(.*)/si', $_SERVER['PATH_INFO'], $matches );
-	  	     // $matches[1] is the request base (for example /httpdocs/index.php)
-	  	     // $matches[2] is everything else after $matches[1]
-
 	  		 $path = (isset( $_SERVER['PHP_SELF'] )) ? $_SERVER['PHP_SELF'] : '/';
 
 		  	 preg_match( '/^.*\.php(.*)/si', $path, $matches );
@@ -199,10 +194,6 @@ class MVC {
 
 		  	  	 $mvcPieces = explode( '/', $matches[count($matches)-1] );
 			  	 array_shift( $mvcPieces );
-
-			  	 // Get rid of empy last element caused by tailing slash / with no value
-			  	 if( $mvcPieces[count( $mvcPieces ) -1] == null )
-			  	 	 array_pop( $mvcPieces );
 
 			  	 // Assign controller and action
 		  	     $controller = (count($mvcPieces) > 0 && $mvcPieces[0] != '') ? $mvcPieces[0] : $this->getDefaultController(); 

@@ -494,7 +494,7 @@ class AgilePHP_Exception extends Exception {
 			 $this->message = $message;
 	  		 if( $code ) $this->code = $code;
 	  		 $this->file = ($file == null) ? __FILE__ : $file;
-  		 	 $this->line = (line == null ) ? __LINE__ : $line;
+  		 	 $this->line = ($line == null ) ? __LINE__ : $line;
 	  		 $this->trace = debug_backtrace();
 	  }
 }

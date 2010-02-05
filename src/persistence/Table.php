@@ -46,18 +46,21 @@ class Table {
 	   * 								physical database table.
 	   * @return void
 	   */
-	  public function __construct( SimpleXMLElement $table ) {
+	  public function __construct( SimpleXMLElement $table = null ) {
 
-	  		 $this->name = (string)$table->attributes()->name;
-	  		 $this->model = (string)$table->attributes()->model;
-	  		 $this->display = (string)$table->attributes()->display;
-	  		 $this->validate = ($table->attributes()->validate == 'false') ? false : true;
-	  		 $this->description = (string)$table->attributes()->description;
-	  		 $this->isIdentity = ($table->attributes()->isIdentity == 'true') ? true : false;
-	  		 $this->isSession = ($table->attributes()->isSession == 'true') ? true : false;
+	  		 if( $table ) {
 
-	  		 foreach( $table->column as $column )
-	  		 		  array_push( $this->columns, new Column( $column, $this->name ) );
+		  		 $this->name = (string)$table->attributes()->name;
+		  		 $this->model = (string)$table->attributes()->model;
+		  		 $this->display = (string)$table->attributes()->display;
+		  		 $this->validate = ($table->attributes()->validate == 'false') ? false : true;
+		  		 $this->description = (string)$table->attributes()->description;
+		  		 $this->isIdentity = ($table->attributes()->isIdentity == 'true') ? true : false;
+		  		 $this->isSession = ($table->attributes()->isSession == 'true') ? true : false;
+
+		  		 foreach( $table->column as $column )
+		  		 		  array_push( $this->columns, new Column( $column, $this->name ) );
+	  		 }
 	  }
 
 	  /**

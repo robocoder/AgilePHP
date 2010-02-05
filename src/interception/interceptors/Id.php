@@ -42,7 +42,7 @@ class Id {
 	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file'] );
 	  		 $className = str_replace( '.php', '', array_pop( $pieces ) );
 
-	  		 if( $className == 'BasePersistence' || $className == 'Id' )
+	  		 if( $className == 'BasePersistence' || $className == 'Id' || preg_match( '/dialect$/i', $className ) )
 	  		 	 return $ic->proceed();
 
 	  	     $callee = $ic->getCallee();

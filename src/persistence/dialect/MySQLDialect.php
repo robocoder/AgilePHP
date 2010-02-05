@@ -162,7 +162,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	  		 }
 	  		 $this->query( 'SET foreign_key_checks = 1;' );
 	  }
-
+	  
 	  /**
 	   * Drop/destroy the database.
 	   * 

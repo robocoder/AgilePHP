@@ -25,6 +25,7 @@
 <!ATTLIST database hostname CDATA #REQUIRED>
 <!ATTLIST database username CDATA #REQUIRED>
 <!ATTLIST database password CDATA #REQUIRED>
+<!ATTLIST database driver CDATA #IMPLIED>
 
 <!ELEMENT table (column+)>
 <!ATTLIST table name CDATA #REQUIRED>
@@ -37,7 +38,8 @@
 
 <!ELEMENT column (foreignKey*)>
 <!ATTLIST column name CDATA #REQUIRED>
-<!ATTLIST column type ( boolean | integer | int | bigint | double | decimal | varchar | float | bit | date | datetime | timestamp | blob | text | password ) "varchar">
+<!ATTLIST column type ( boolean | integer | int | bigint | double | decimal | varchar | float | bit | date | datetime | timestamp | blob | text | password |
+						smallint | tinyint | money | char | varbinary | nvarchar | image | uniqueidentifier | smalldatetime | ntext ) "varchar">
 <!ATTLIST column length CDATA #IMPLIED>
 <!ATTLIST column description CDATA #IMPLIED>
 <!ATTLIST column property CDATA #IMPLIED>

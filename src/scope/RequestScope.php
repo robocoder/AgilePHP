@@ -98,7 +98,7 @@ class RequestScope {
 	  public function get( $key ) {
 
 	  	     if( isset( $this->store[$key] ) && !empty( $this->store[$key] ) )
-	  	     	 return urldecode( $this->store[$key] );
+	  	     	 return (is_array( $this->store[$key] )) ? $this->store[$key] : urldecode( $this->store[$key] );
 
 	  	     return null;
 	  }
@@ -115,8 +115,19 @@ class RequestScope {
 	   */
 	  public function getSanitized( $key ) {
 
-	  		 if( isset( $this->store[$key] ) && !empty( $this->store[$key] ) )
+	  		 if( isset( $this->store[$key] ) && !empty( $this->store[$key] ) ) {
+
+	  		 	 if( is_array( $this->store[$key] ) ) {
+
+	  		 	 	 for( $i=0; $i<count($this->store[$key]); $i++ ) {
+
+	  		 	 	 	$this->store[$key][$i] = htmlspecialchars( addslashes( strip_tags( urldecode( $this->store[$key][$i] ) ) ) );
+	  		 	 	 }
+	  		 	 	 return $this->store[$key];
+	  		 	 }
+
 	  		 	 return htmlspecialchars( addslashes( strip_tags( urldecode( $this->store[$key] ) ) ) );
+	  		 }
 
 	  		 return null;
 	  }
@@ -175,14 +186,14 @@ class RequestScope {
 
 	  /**
 	   * Sanitizes the specified data by running it through htmlspecialchars,
-	   * addslashes, and strip_tags.
+	   * addslashes, and strip_tags. The data is also urldecoded. 
 	   * 
 	   * @param String $data The data to sanitize
 	   * @return The sanitized data
 	   */
 	  public function sanitize( $data ) {
 
-	  		 return htmlspecialchars( addslashes( strip_tags( $data ) ) );
+	  		 return htmlspecialchars( addslashes( strip_tags( urldecode( $data ) ) ) );
 	  }
 }
 ?>

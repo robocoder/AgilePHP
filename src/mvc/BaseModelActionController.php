@@ -156,7 +156,9 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     		$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
 	  	        $pkeyColumns = $table->getPrimaryKeyColumns();
 
-	     		$this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
+	  	        if( $pkeyColumns )
+	     			$this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
+
 	  		    $this->setPage( $page );
 
 	  		    $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
@@ -245,6 +247,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	  	           $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
 	  	           $pkeyColumns = $table->getPrimaryKeyColumns();
+	  	           
+	  	           if( !$pkeyColumns ) return;  // This is bad SQL programming but causes an error here when no primary key is set!
 
   			       // Single primary key
 	  	           if( strpos( $ids, '_' ) === false ) {

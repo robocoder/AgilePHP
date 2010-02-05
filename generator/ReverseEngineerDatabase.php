@@ -1,5 +1,8 @@
 <?php
 
+ini_set( 'display_errors', '1' );
+error_reporting( E_ALL );
+
 require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
 require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'AgilePHP.php';
 require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'PersistenceManager.php';
@@ -9,7 +12,11 @@ class ReverseEngineerDatabase extends AgilePHPGen {
       public function __construct() {
 
       		 parent::__construct();
-      		 
+
+      		 $agilephp = AgilePHP::getFramework();
+      	     $agilephp->setWebRoot( $this->getCache()->getProjectRoot() );
+      	     $agilephp->setFrameworkRoot( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'AgilePHP' );
+
       		 $persistence_xml = $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml';
 	  		 if( !file_exists( $persistence_xml ) )
 	  		  	 return;
@@ -24,95 +31,79 @@ class ReverseEngineerDatabase extends AgilePHPGen {
        */
       public function testPrompt() {
 
-      		 $message = "This process will reverse engineer the database in persistence.xml to and generate domain models and controllers.\n\n" .
+      		 $message = "This process will reverse engineer the database in persistence.xml to generate domain models and controllers.\n\n" .
       		 			"Press enter to continue...\n";
+
       	     $this->prompt( $message );
-     	     $this->create();
+
+      	     $pm = new PersistenceManager();
+
+      	     $result = $this->format( $pm->reverseEngineer() );
+
+      	     $this->create( $result );
       }
 
       /**
+       * Formats the Database structure for use by this script.
        * 
+       * @param $db
        * @return unknown_type
        */
-      private function create() {
+      private function format( Database $db ) {
 
-      	      $agilephp = AgilePHP::getFramework();
-      	      $agilephp->setWebRoot( $this->getCache()->getProjectRoot() );
-      	      $agilephp->setFrameworkRoot( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'AgilePHP' );
+      		  $models = array();
+      		  //$lb = (stristr( php_os, 'WIN' )) ? "\r\n" : "\n";
+      		  $lb = "\r\n";
+      		  $tableXml = '';
 
-      	      $pm = new PersistenceManager();
-      	      $stmt = $pm->query( 'SHOW TABLES' );
-      	      $stmt->setFetchMode( PDO::FETCH_OBJ );
-      	      $tables = $stmt->fetchAll();
+      		  foreach( $db->getTables() as $table ) {
 
-      	      $tblIndex = 'Tables_in_' . $pm->getDatabase()->getName();
+      		  	  $properties = array();
 
-      	      $sqlTables = array();
-      	      $tableXml = null;
+	      		  $tableXml .= "\t\t" . '<table name="' . $table->getName() . '" model="' . $table->getModel() . '" display="' . $table->getModel() . '" description="">';
+	      	      $tableXml .= $lb;
 
-      	      $models = array();
+	      	      foreach( $table->getColumns() as $column ) {
 
-      	      foreach( $tables as $sqlTable ) {
-
-      	      		   $properties = array();
-
-      	      		   $tableName = str_replace( ' ', '_', $sqlTable->$tblIndex );
-      	      		   $modelName = ucfirst( $tableName );
-
-      	      		   $tableXml .= "\t\t" . '<table name="' . $tableName . '" model="' . $modelName . '" display="' . $modelName . '" description="">';
-      	      		   $tableXml .= "\n";
-
-      	      		   // Get table description
-      	      		   $stmt = $pm->query( 'DESC ' . $sqlTable->$tblIndex );
-      	      		   $stmt->setFetchMode( PDO::FETCH_OBJ );
-      	      		   $descriptions = $stmt->fetchAll();
-      	      		   
-      	      		   foreach( $descriptions as $desc ) {
-
-      	      		   	   $type = $desc->Type;
-	      	      		   $length = null;
-	      	      		   $pos = strpos( $desc->Type, '(' );
-	
-	      	      		   if( $pos !== false ) {
-	      	      		   	 
-	      	      		   	   $type = preg_match_all( '/^(.*)\((.*)\)$/i', $desc->Type, $matches );
-	      	      		   	   
-	      	      		   	   $type = $matches[1][0];
-	      	      		   	   $length = $matches[2][0];
-	      	      		   }
-      	      		   
 	      	      		   $columnXml = "\t\t\t";
-      	      		   	   $columnXml .= '<column name="' . $desc->Field . '" type="' . $type . '" ';
-      	      		   	   $columnXml .= ($length) ? 'length="' . $length . '"' : '';
-      	      		   	   $columnXml .= ($desc->Key == 'PRI') ? ' primaryKey="true"' : '';
-      	      		   	   $columnXml .= ($desc->Extra == 'auto_increment') ? ' autoIncrement="true"' : '';
-      	      		   	   $columnXml .= ($desc->Default) ? ' default="' . $desc->Default . '"' : '';
-      	      		   	   $columnXml .= ($desc->Null == 'NO') ? ' required="true"' : '';
-      	      		   	   $columnXml .= '/>';
-      	      		   	   $columnXml .= "\n";
+	      	      		   $columnXml .= '<column name="' . $column->getName() . '" type="' . $column->getType() . '" ';
+	      	      		   $columnXml .= ($column->getLength()) ? 'length="' . $column->getLength() . '"' : '';
+	      	      		   $columnXml .= ($column->hasForeignKey()) ? ' primaryKey="true"' : '';
+	      	      		   $columnXml .= ($column->isAutoIncrement()) ? ' autoIncrement="true"' : '';
+	      	      		   $columnXml .= ($column->getDefault()) ? ' default="' . $column->getDefault() . '"' : '';
+	      	      		   $columnXml .= ($column->isRequired()) ? ' required="true"' : '';
+	      	      		   $columnXml .= '/>' . $lb;
 
-      	      		   	   $tableXml .= $columnXml;
+	      	      		   $tableXml .= $columnXml;
 
-      	      		   	   if( $desc->Key == 'PRI' )
-      	      		   	   	   array_push( $properties, array( 'name' => $desc->Field, 'interceptor' => '#@Id' ) );
+	      	      		   if( $column->isPrimaryKey() )
+								array_push( $properties, array( 'name' => $column->getName(), 'interceptor' => '#@Id' ) );
 
-      	      		   	   else if( $desc->Field == 'password' )
-      	      		   	   	   array_push( $properties, array( 'name' => $desc->Field, 'interceptor' => '#@Password' ) );
+							else if( strtolower( $column->getName() ) == 'password' )
+      	      		   	   	   array_push( $properties, array( 'name' => $column->getName(), 'interceptor' => '#@Password' ) );
 
-      	      		   	   else
-      	      		   	   	   array_push( $properties, array( 'name' => $desc->Field, 'interceptor' => null ) );
-      	      		   }
+      	      		   	    else
+      	      		   	   	   array_push( $properties, array( 'name' => $column->getName(), 'interceptor' => null ) );
+	      	      }
 
-      	      		   $tableXml .= "\t\t</table>";
-		      	       $tableXml .= "\n";
-		      	       
-		      	       array_push( $models, array( $modelName => $properties ) );
-      	      }
+	      	      $tableXml .= "\t\t</table>" . $lb;
+	      	      array_push( $models, array( $table->getName() => $properties ) );
+      		  }
 
-      	      $this->createModels( $models );
-      	      $this->writePersistenceXml( $tableXml );
-      	      $this->createControllers( $models );
-      	      $this->updateNavigation( $models );
+      		  return array( 'models' => $models, 'xml' => $tableXml );
+      }
+
+      /**
+       * Kicks off each of the generation routines.
+       * 
+       * @return void
+       */
+      private function create( $result ) {
+
+      	      $this->createModels( $result['models'] );
+      	      $this->writePersistenceXml( $result['xml'] );
+      	      $this->createControllers( $result['models'] );
+      	      $this->updateNavigation( $result['models'] );
       }
 
       /**
@@ -241,7 +232,7 @@ class ReverseEngineerDatabase extends AgilePHPGen {
       		   fclose( $h );
 
       		   $h = fopen( $file, 'w' );
-      		   
+
       		   $nav = '';
        		   foreach( $models as $model ) {
 
@@ -252,13 +243,12 @@ class ReverseEngineerDatabase extends AgilePHPGen {
 	      				  $nav .= '</td>' . "\n\n\t\t";
 			      	}
 	      	  }
+
 	      	  fwrite( $h, str_replace( '<!-- #@AgilePHPGen -->', $nav . '<!-- #@AgilePHPGen -->', $data ) );
 			  fclose( $h );
 
 			  if( !file_exists( $file ) )
-			      PHPUnit_Framework_Assert::fail( 'Failed to create new controller' );     
-	      	  
-	      	  
+			      PHPUnit_Framework_Assert::fail( 'Failed to create new controller' );
        }
 }
 ?>

@@ -162,6 +162,16 @@ class PersistenceManager {
 		 	 	return $this->database;
 	  	 }
 
+	  	 /**
+	  	  * Returns the SQL dialect instance responsible for invoking SQL commands.
+	  	  * 
+	  	  * @return void
+	  	  */
+	  	 public function getDialect() {
+
+	  	 		return $this->dialect;
+	  	 }
+
 	    /**
 	     * Returns the domain model which the PersistenceManager is manipulating.
 	     * 

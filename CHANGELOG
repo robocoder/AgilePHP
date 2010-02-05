@@ -1,27 +1,12 @@
-0.7a
+0.8a
 ----
 
-- Removed BaseModelXmlController:joinForeignKeyXML.
-- Removed Logger debugging code from BaseModelXslController.
-- Removed Logger debugging code from XSLTRenderer.
-- Refactored #@Id to support new BasePersistence::find return value
-- Refactored SessionScope to support new BasePersistence::find return value
-- Removed User::setSessions commented code
-- Refactored PersistenceManager::get/setMaxResult to use BasePersistence maxResult
-- Refactored SQL groupBy clause so its managed by BasePersistence.
-- Added executeQuery method to PersistenceManager.
-- Refactored MVC component to strip trailing empty parameter
-- Bug fix to #@Id interceptor. Setting id's to null caused an attempt to populate the object.
-- Edits on test project to reflect new changes.
-- Added generator/ReverseEngineerDatabase to create models, controllers, and admin navigation elements.
-
--- ***************** --
--- Major Refactoring --
--- ***************** --
-
-- BasePersistence::find No longer returns single results as an object. Now they are returned as a single element array.
-- PersistenceManager::createSQL removed, PersistenceManager::executeCountQuery now uses BasePersistence::find instead of raw SQL queries.
-- PersistenceManager::setPage no longer passes array of stdClass, but rather an array of domain objects.
-- BaseModelXmlController::getResultListAsPagedXML now parses through array of domain models instead of array of stdClass. Now supports intercepted domain models.
-- BaseModelXmlController::getResultListAsXML now returns the same data as getResultListAsPagedXml without the pagination node. Now supports intercepted domain models.
-- Deleted PersistenceRenderer.
+- Added MSSQL dialect. Added support to persistence.dtd for MSSQL specific fields. Might be time for an XSD...
+- Added override method to MSSQLDialect to support TOP with setMaxResults.
+- Added "driver" configuration attribute to persistence.dtd for database element and Database class.
+- Fixed bug in AgilePHP_Exception introduced in last checkin.
+- Added regex to #@Id interceptor to abort for dialect classes.
+- Added regex to #@Password interceptor to abort for dialect classes.
+- Fixed PHP notice about missing offset in MVC::processRequest.
+- Bug fix to BaseModelActionController::modelList introduced in last checkin.
+- Added support for arrays to RequestScope store variables.

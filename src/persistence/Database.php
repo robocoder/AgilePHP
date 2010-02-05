@@ -35,6 +35,7 @@ class Database {
 	  private $hostname;
 	  private $username;
 	  private $password;
+	  private $driver;
 
 	  private $tables = array();
 
@@ -54,6 +55,7 @@ class Database {
 		  		 $this->hostname = (string)$database->attributes()->hostname;
 		  		 $this->username = (string)$database->attributes()->username;
 		  		 $this->password = (string)$database->attributes()->password;
+		  		 $this->driver = (string)$database->attributes()->driver;
 
 		  		 foreach( $database->table as $table )
 		  		     	  array_push( $this->tables, new Table( $table ) );
@@ -186,6 +188,27 @@ class Database {
 	  public function getPassword() {
 
 	  		 return $this->password;
+	  }
+
+	  /**
+	   * Sets the driver string used in ODBC connections.
+	   * 
+	   * @param String $driver The driver name.
+	   * @return void
+	   */
+	  public function setDriver( $driver ) {
+
+	  		 $this->driver = $driver;
+	  }
+
+	  /**
+	   * Returns the driver used in ODBC connections.
+	   * 
+	   * @return String The driver name.
+	   */
+	  public function getDriver() {
+
+	  		 return $this->driver;
 	  }
 
 	  /**

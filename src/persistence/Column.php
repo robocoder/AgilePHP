@@ -45,24 +45,27 @@ class Column {
 
 	  private $foreignKey;
 
-	  public function __construct( SimpleXMLElement $column, $tableName ) {
+	  public function __construct( SimpleXMLElement $column = null, $tableName ) {
 
-	  		 $this->name = (string)$column->attributes()->name;
-	  		 $this->type = (string)$column->attributes()->type;
-	  		 $this->length = (integer)$column->attributes()->length;
-	  		 $this->description = (string)$column->attributes()->description;
-	  		 $this->property = (string)$column->attributes()->property;
-	  		 $this->default = (string)$column->attributes()->default;
-	  		 $this->display = (string)$column->attributes()->display;
-	  		 $this->visible = ($column->attributes()->visible == 'false') ? false : true;
-	  		 $this->sortable = ($column->attributes()->sortable == 'false') ? false : true;
-	  		 $this->selectable = ($column->attributes()->selectable == 'true') ? true : false;
-	  		 $this->required = ($column->attributes()->required == 'true') ? true : false;
-	  		 $this->primaryKey = ($column->attributes()->primaryKey == 'true') ? true : false;
-	  		 $this->autoIncrement = ($column->attributes()->autoIncrement == 'true') ? true : false;
+	  		 if( $column ) {
 
-	  		 if( $column->foreignKey )
-	  		 	 $this->foreignKey = new ForeignKey( $column->foreignKey, $tableName, $this->name );
+		  		 $this->name = (string)$column->attributes()->name;
+		  		 $this->type = (string)$column->attributes()->type;
+		  		 $this->length = (integer)$column->attributes()->length;
+		  		 $this->description = (string)$column->attributes()->description;
+		  		 $this->property = (string)$column->attributes()->property;
+		  		 $this->default = (string)$column->attributes()->default;
+		  		 $this->display = (string)$column->attributes()->display;
+		  		 $this->visible = ($column->attributes()->visible == 'false') ? false : true;
+		  		 $this->sortable = ($column->attributes()->sortable == 'false') ? false : true;
+		  		 $this->selectable = ($column->attributes()->selectable == 'true') ? true : false;
+		  		 $this->required = ($column->attributes()->required == 'true') ? true : false;
+		  		 $this->primaryKey = ($column->attributes()->primaryKey == 'true') ? true : false;
+		  		 $this->autoIncrement = ($column->attributes()->autoIncrement == 'true') ? true : false;
+	
+		  		 if( $column->foreignKey )
+		  		 	 $this->foreignKey = new ForeignKey( $column->foreignKey, $tableName, $this->name );
+	  		 }
 	  }
 
 	  /**
