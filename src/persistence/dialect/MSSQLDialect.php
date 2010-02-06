@@ -32,8 +32,9 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 	  public function __construct( Database $db ) {
 
-	  	     $this->pdo = new PDO( 'odbc:DRIVER={SQL Server};SERVER=' . $db->getHostname() . ';DATABASE=' . $db->getName(), 
-	  	     				$db->getUsername(), $db->getPassword() );
+	  	     $this->pdo = new PDO( 'odbc:DRIVER={' . $db->getDriver() . '};SERVER=' . $db->getHostname() . ';DATABASE=' . $db->getName(), 
+	  	     			$db->getUsername(), $db->getPassword() );
+
 	 	     $this->database = $db;
 	  }
 
@@ -41,72 +42,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	   * (non-PHPdoc)
 	   * @see src/persistence/dialect/SQLDialect#create()
 	   */
-	  public function create() {
-
-	  		 foreach( $this->database->getTables() as $table ) {
-
-	  		 		$sql = 'CREATE TABLE "' . $table->getName() . '" ( ';
-
-	  			  	$bCandidate = false;
-
-	  		  	    // Compound keys are formatted differently in sqlite
-	  	            $pkeyColumns = $table->getPrimaryKeyColumns();
-	  		 		if( count( $pkeyColumns ) > 1 ) {
-
-		  		 		foreach( $table->getColumns() as $column ) {
-
-		  		 			     if( $column->isAutoIncrement() )
-		  		 			     	 Logger::getInstance()->debug( 'Ignoring autoIncrement="true" for column ' . $column->getName() . '. Sqlite does not support the use of auto-increment with compound primary keys' );
-
-		  		 				 $sql .= '"' . $column->getName() . '" ' . $column->getType() .
-		  		 						 (($column->isRequired() == true) ? ' NOT NULL' : '') .
-		  		 						 (($column->getDefault()) ? ' DEFAULT \'' . $column->getDefault() . '\'' : '') . ', ';
-		  		 		}
-		  		 		
-		  		 		$sql .= 'PRIMARY KEY ( ';
-		  		 		for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
-
-		  		 				 $sql .= '"' . $pkeyColumns[$i]->getName() . '"';
-
-		  		 				 if( ($i+1) < count( $pkeyColumns ) )
-		  		 				 	 $sql .= ', ';
-		  		 		}
-		  		 		$sql .= ' ) );';
-
-	  		 		}
-	  		 		else {
-
-		  		 		foreach( $table->getColumns() as $column ) {
-	
-		  		 			     if( $column->isAutoIncrement() && $column->isPrimaryKey() )
-		  		 			     	 $bCandidate = true;
-	
-		  		 				 $sql .= '"' . $column->getName() . '" ' . $column->getType() . (($column->isPrimaryKey() === true) ? ' PRIMARY KEY' : '') .
-		  		 						 (($column->isAutoIncrement() === true) ? ' AUTOINCREMENT' : '') .
-		  		 						 (($column->isRequired() == true) ? ' NOT NULL' : '') .
-		  		 						 (($column->getDefault()) ? ' DEFAULT \'' . $column->getDefault() . '\'' : '') . ', ';
-		  		 		}
-	
-		  		 		// remove last comma and space
-				   		$sql = substr( $sql, 0, -2 );
-				   		$sql .= ' );';	
-	  		 		}
-
-			   		//if( $bCandidate && (count( $table->getPrimaryKeyColumns() ) > 1) )
-			   			//throw new AgilePHP_PersistenceException( 'Sqlite does not allow the use of auto-increment with compound primary keys (' . $table->getName() . ')' );
-
-			   		$this->query( $sql );
-
-	  		 		if( $this->pdo->errorInfo() !== null ) {
-
-	  		 			$info = $this->pdo->errorInfo();
-	  		 			if( $info[0] == '0000' )
-	  		 				continue;
-	  		 			
-				  	    throw new AgilePHP_PersistenceException( $info[2], $info[1] );
-				  	}
-	  		 }
-	  }
+	  public function create() { }
 
 	  /**
 	   * (non-PHPdoc)
@@ -117,7 +53,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  	     $table = $this->getTableByModel( $model );
 	  		 $this->query( 'TRUNCATE ' . $table->getName() . ';' );
 	  }
-
+	  
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/persistence/dialect/SQLDialect#drop()
@@ -125,6 +61,188 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  public function drop() {
 
   	 	 	 $this->query( 'DROP DATABASE ' . $this->getDatabase()->getName() );
+	  }
+
+	  /**
+	   * Overrides parent find method to provide MSSQL specific TOP command to limit returned result sets.
+	   * 
+	   * @param $model A domain model object. Any fields which are set in the object are used to filter results.
+	   * @throws AgilePHP_PersistenceException If any primary keys contain null values or any
+	   * 		   errors are encountered executing queries
+	   */
+	  public function find( $model ) {
+
+	    	 $table = $this->getTableByModel( $model );
+			 $newModel = $table->getModelInstance();
+
+			 Logger::getInstance()->debug( 'BasePersistence::find Performing find on model \'' . $table->getModel() . '\'.' );
+
+	    	 // Perform search on the requested $model parameter
+	  		 try {
+	  		  	    $pkeyColumns = $table->getPrimaryKeyColumns();
+	  		   		if( $this->isEmpty( $model ) ) {
+
+	    	   	        $sql = 'SELECT' . ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() : '') . 
+	    	   	        				   (($this->getDistinct() == null) ? ' *' : 'DISTINCT ' . $this->getDistinct()) . 
+	    	   	        		' FROM ' . $table->getName();
+
+	    	   	        $order = $this->getOrderBy();
+	    	   	        $offset = $this->getOffset();
+	    	   	        $groupBy = $this->getGroupBy();
+
+    	   	         	$sql .= ($this->getRestrictions() != null) ? $this->createRestrictSQL() : '';
+					 	$sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
+					 	$sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
+    	   	         	$sql .= ';';
+
+	   	   	         	 $this->setDistinct( null );
+    	   	         	 $this->setRestrictions( array() );
+    	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
+    	   	         	 $this->setOrderBy( null, 'ASC' );
+    	   	         	 $this->setGroupBy( null );
+	    	   		 }
+	    	   		 else {
+	    	   		 		 if( !count( $pkeyColumns ) ) return null;
+
+			  		   		 $sql = 'SELECT' . ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() : '') .
+			  		   		 		' * FROM ' . $table->getName() . ' WHERE ';
+							 for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+
+							 	  $accessor = $this->toAccessor( $pkeyColumns[$i]->getModelPropertyName() );
+						     	  if( $model->$accessor() == null ) {
+
+								      Logger::getInstance()->debug( 'BasePersistence::find Warning about null primary key for table \'' . $table->getName() . '\' column \'' .
+								      					 $pkeyColumns[$i]->getName() . '\'. Primary keys are used in search criteria. Returning null...' );
+								      return null;
+								  }
+
+						   		  $sql .= $pkeyColumns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
+								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
+						     }
+	    	   		 }
+
+				     // Execute query
+					 $stmt = $this->query( $sql );
+					 $stmt->setFetchMode( PDO::FETCH_OBJ );
+					 $result = $stmt->fetchall();
+
+					 if( !count( $result ) ) {
+
+					 	 Logger::getInstance()->debug( 'BasePersistence::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	 return null;
+					 }
+
+				 	 $index = 0;
+				 	 $models = array();
+					 foreach( $result as $stdClass  ) {
+
+					 		  $m = $table->getModelInstance();
+					 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
+
+					 	   	  		   if( !$value ) continue;
+					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
+
+							 	   	   // Create foreign model instances from foreign values
+						 	 		   foreach( $table->getColumns() as $column ) {
+
+						 	 		  		    if( $column->isForeignKey() && $column->getName() == $name ) {
+
+						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
+						 	 		  		   	    $foreignInstance = new $foreignModel();
+
+						 	 		  		   	    $foreignMutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+						 	 		  		   	    $foreignInstance->$foreignMutator( $value );
+
+						 	 		  		   	    $persisted = $this->find( $foreignInstance );
+
+						 	 		  		   	    $instanceMutator = $this->toMutator( $foreignModel );
+						 	 		  		   	    $m->$instanceMutator( $persisted[0] );
+						 	 		  		    }
+						 	 		  		    else {
+
+						 	 		  		   		$mutator = $this->toMutator( $modelProperty );
+					 	   	   		  				$m->$mutator( $value );
+						 	 		  		    }
+						 	 		   }
+					 	   	  }
+
+					 	   	  array_push( $models, $m );
+					 	   	  $index++;
+					 	   	  if( $index == $this->getMaxResults() )  break;
+				     }
+
+				     return $models;
+	  		 }
+	  		 catch( Exception $e ) {
+
+	  		 		throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+	  		 }
+
+	  		 return null;
+	  }
+	  
+	  public function reverseEngineer() {
+	  	
+	  		 $Database = new Database();
+	  		 $Database->setId( $this->database->getId() );
+	  		 $Database->setName( $this->database->getName() );
+	  		 $Database->setType( $this->database->getType() );
+	  		 $Database->setHostname( $this->database->getHostname() );
+	  		 $Database->setUsername( $this->database->getUsername() );
+	  		 $Database->setPassword( $this->database->getPassword() );
+
+	  		 // Get table names
+	  		 $stmt = $this->prepare( 'select * from information_schema.tables;' );
+	  		 $stmt->execute();
+			 $stmt->setFetchMode( PDO::FETCH_OBJ );
+	  		 $stmt->execute();
+			 $tables = $stmt->fetchAll();
+
+			 foreach( $tables as $table ) {
+			 	
+			 		$Table = new Table();
+			 		$Table->setName( $table->TABLE_NAME );
+			 		$Table->setModel( ucfirst( $table->TABLE_NAME ) );
+			 		
+			 		$stmt = $this->prepare( 'exec sp_columns ' . $table->TABLE_NAME );
+			 		$stmt->execute();
+					$stmt->setFetchMode( PDO::FETCH_OBJ );
+			  		$stmt->execute();
+					$columns = $stmt->fetchAll();
+			 		
+					foreach( $columns as $column ) {
+
+							$type = preg_match_all( '/^(.*)\\s+(identity).*$/i', $column->TYPE_NAME, $matches );
+							$identity = null;
+
+							if( count( $matches ) == 3 && !empty( $matches[1] ) ) {
+
+								$type = $matches[1][0];
+	      	      		   		$identity = $matches[2][0];
+							}
+							else {
+
+								$type = $column->TYPE_NAME;
+							}
+
+							$Column = new Column( null, $table->TABLE_NAME );
+							$Column->setName( $column->COLUMN_NAME );
+							$Column->setType( $type );
+							$Column->setLength( $column->LENGTH );
+							$Column->setRequired( ($column->IS_NULLABLE == 'YES') ? true : false );
+							
+							if( $identity )
+								$Column->setPrimaryKey( true );
+							
+							/** @todo Need to work out logic for auto increment */
+
+							$Table->addColumn( $Column );
+					}
+
+					$Database->addTable( $Table );
+			 }
+
+			 return $Database;
 	  }
 }
 ?>
