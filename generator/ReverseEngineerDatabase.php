@@ -1,8 +1,5 @@
 <?php
 
-ini_set( 'display_errors', '1' );
-error_reporting( E_ALL );
-
 require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
 require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'AgilePHP.php';
 require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'PersistenceManager.php';
@@ -52,8 +49,6 @@ class ReverseEngineerDatabase extends AgilePHPGen {
       private function format( Database $db ) {
 
       		  $models = array();
-      		  //$lb = (stristr( php_os, 'WIN' )) ? "\r\n" : "\n";
-      		  $lb = "\r\n";
       		  $tableXml = '';
 
       		  foreach( $db->getTables() as $table ) {
@@ -61,7 +56,7 @@ class ReverseEngineerDatabase extends AgilePHPGen {
       		  	  $properties = array();
 
 	      		  $tableXml .= "\t\t" . '<table name="' . $table->getName() . '" model="' . $table->getModel() . '" display="' . $table->getModel() . '" description="">';
-	      	      $tableXml .= $lb;
+	      	      $tableXml .= PHP_EOL;
 
 	      	      foreach( $table->getColumns() as $column ) {
 
@@ -72,10 +67,11 @@ class ReverseEngineerDatabase extends AgilePHPGen {
 	      	      		   $columnXml .= ($column->isAutoIncrement()) ? ' autoIncrement="true"' : '';
 	      	      		   $columnXml .= ($column->getDefault()) ? ' default="' . $column->getDefault() . '"' : '';
 	      	      		   $columnXml .= ($column->isRequired()) ? ' required="true"' : '';
-	      	      		   $columnXml .= '/>' . $lb;
+	      	      		   $columnXml .= '/>' . PHP_EOL;
 
 	      	      		   $tableXml .= $columnXml;
 
+	      	      		   // Add interceptor persistence annotations to applicable data types
 	      	      		   if( $column->isPrimaryKey() )
 								array_push( $properties, array( 'name' => $column->getName(), 'interceptor' => '#@Id' ) );
 
@@ -86,7 +82,7 @@ class ReverseEngineerDatabase extends AgilePHPGen {
       	      		   	   	   array_push( $properties, array( 'name' => $column->getName(), 'interceptor' => null ) );
 	      	      }
 
-	      	      $tableXml .= "\t\t</table>" . $lb;
+	      	      $tableXml .= "\t\t</table>" . PHP_EOL;
 	      	      array_push( $models, array( $table->getName() => $properties ) );
       		  }
 
@@ -117,30 +113,30 @@ class ReverseEngineerDatabase extends AgilePHPGen {
       		
       			foreach( $model as $name => $properties ) {
 
-      				  $class = "class " . $name . " {\n\n";
+      				  $class = "class $name {" . PHP_EOL . PHP_EOL;
 		              foreach( $properties as $values ) {
 
-	                           $class .= "\tprivate \$" . $values['name'] . ";\n";
+	                           $class .= "\tprivate \$" . $values['name'] . ';' . PHP_EOL;
 		              }
-		              $class .= "\n\tpublic function __construct() { }\n\n";
+		              $class .= PHP_EOL . "\tpublic function __construct() { }" . PHP_EOL . PHP_EOL;
 		              foreach( $properties as $values ) {
 		
 		              		   if( $values['interceptor'] !== null )
-		              			   $class .= "\t" . $values['interceptor'] . "\n";
+		              			   $class .= "\t" . $values['interceptor'] . PHP_EOL;
 
-		              		   $class .= "\tpublic function set" . ucfirst( $values['name'] ) . "( \$value ) {\n\n\t\t \$this->" . $values['name'] . " = \$value;\n\t}\n\n";
+		              		   $class .= "\tpublic function set" . ucfirst( $values['name'] ) . "( \$value ) {" . PHP_EOL . PHP_EOL . "\t\t \$this->" . $values['name'] . " = \$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
 		              }
 		              foreach( $properties as $key => $values ) {
 
-		              		   $class .= "\tpublic function get" . ucfirst( $values['name'] ) . "() {\n\n\t\t return \$this->" . $values['name'] . ";\n\t}\n\n";
+		              		   $class .= "\tpublic function get" . ucfirst( $values['name'] ) . "() {" . PHP_EOL . PHP_EOL . "\t\t return \$this->" . $values['name'] . ";" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
 					  }
 		      	      $class .= "}";
 
 		      	      $file = $this->getCache()->getProjectRoot() . '/model/' . ucfirst( $name ) . '.php';
 		      	      $h = fopen( $file, 'w' );
-		      	      fwrite( $h, "<?php\n\n/** AgilePHP generated domain model */\n\n" . $class  . "\n?>" );
+		      	      fwrite( $h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL . $class . PHP_EOL . '?>' );
 		      	      fclose( $h );
-		
+
 		      	      if( !file_exists( $file ) )
 		      	     	  PHPUnit_Framework_Assert::fail( 'Failed to create new domain model' );
       			}
@@ -167,7 +163,7 @@ class ReverseEngineerDatabase extends AgilePHPGen {
       		  	  $data .= fgets( $h, 4096 );
       		  fclose( $h );
 
-      		  $tableXml .= "\n\t</database>\n\n</persistence>";
+      		  $tableXml .= PHP_EOL . "\t</database>" . PHP_EOL . PHP_EOL . '</persistence>';
 
       		  $data = str_replace( '</database>', '', $data );
 
@@ -192,24 +188,24 @@ class ReverseEngineerDatabase extends AgilePHPGen {
 
 	      			foreach( $model as $name => $properties ) {
 
-	      				  $class = "class " . $name . "Controller extends BaseModelActionController {\n\n";
-			              $class .= "\tprivate \$model;\n";
-			              $class .= "\n\tpublic function __construct() { \n\n\t\t" . '$this->model = new ' . $name . "();\n\t\tparent::__construct();\n\t}\n"; 
-			              $class .= "\n\t/**\n";
-			              $class .= "\t * (non-PHPdoc)\n";
-			              $class .= "\t * @see AgilePHP/mvc/BaseModelController#getModel()\n";
-			              $class .= "\t */\n";
-			              $class .= "\tpublic function getModel() { \n\n\t\treturn " . '$this->model;' . "\n\t}\n";
-			              $class .= "\n\t/**\n";
-			              $class .= "\t * (non-PHPdoc)\n";
-			              $class .= "\t * @see AgilePHP/mvc/BaseController#index()\n";
-			              $class .= "\t */\n";
-			              $class .= "\tpublic function index() { \n\n\t\tparent::modelList();\n\t}\n";
+	      				  $class = 'class ' . $name . 'Controller extends BaseModelActionController {' . PHP_EOL . PHP_EOL;
+			              $class .= "\tprivate \$model;" . PHP_EOL;
+			              $class .= PHP_EOL . "\tpublic function __construct() { " . PHP_EOL . PHP_EOL . "\t\t" . '$this->model = new ' . $name . '();' . PHP_EOL . "\t\tparent::__construct();" . PHP_EOL . "\t}" . PHP_EOL; 
+			              $class .= PHP_EOL . "\t/**" . PHP_EOL;
+			              $class .= "\t * (non-PHPdoc)" . PHP_EOL;
+			              $class .= "\t * @see AgilePHP/mvc/BaseModelController#getModel()" . PHP_EOL;
+			              $class .= "\t */" . PHP_EOL;
+			              $class .= "\tpublic function getModel() { " . PHP_EOL . PHP_EOL . "\t\treturn " . '$this->model;' . PHP_EOL . "\t}" . PHP_EOL;
+			              $class .= PHP_EOL . "\t/**" . PHP_EOL;
+			              $class .= "\t * (non-PHPdoc)" . PHP_EOL;
+			              $class .= "\t * @see AgilePHP/mvc/BaseController#index()" . PHP_EOL;
+			              $class .= "\t */" . PHP_EOL;
+			              $class .= "\tpublic function index() { " . PHP_EOL . PHP_EOL . "\t\tparent::modelList();" . PHP_EOL . "\t}" . PHP_EOL;
 			      	      $class .= "}";
 
 			      	 	  $file = $this->getCache()->getProjectRoot() . '/control/' . $name . 'Controller.php';
 			      	      $h = fopen( $file, 'w' );
-			      	      fwrite( $h, "<?php\n\n/** AgilePHP generated controller */\n\n" . $class  . "\n?>" );
+			      	      fwrite( $h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated controller */' . PHP_EOL . PHP_EOL . $class  . PHP_EOL . '?>' );
 			      	      fclose( $h );
 
 			      	      if( !file_exists( $file ) )
@@ -238,9 +234,9 @@ class ReverseEngineerDatabase extends AgilePHPGen {
 
 	      			foreach( $model as $name => $properties ) {
 
-	      				  $nav .= '<td style="padding-left: 10px;">' . "\n\t\t\t";
-	      				  $nav .= '<a href="<?php echo AgilePHP::getFramework()->getRequestBase() ?>/' . $name . 'Controller/">' . $name . '</a>' . "\n\t\t";
-	      				  $nav .= '</td>' . "\n\n\t\t";
+	      				  $nav .= '<td style="padding-left: 10px;">' . PHP_EOL . "\t\t\t";
+	      				  $nav .= '<a href="<?php echo AgilePHP::getFramework()->getRequestBase() ?>/' . $name . 'Controller">' . $name . '</a>' . PHP_EOL . "\t\t";
+	      				  $nav .= '</td>' . PHP_EOL . PHP_EOL . "\t\t";
 			      	}
 	      	  }
 

@@ -275,9 +275,9 @@ abstract class BasePersistence {
 	  	 }
 
 	  	 /**
-	  	  * Executes a prepared statement (with parameters)
+	  	  * Executes a prepared statement with optional parameters
 	  	  * 
-	  	  * @param $inputParameters An array of input parameters
+	  	  * @param Array $inputParameters Optional array of input parameters
 	  	  * @return True if successful, false on fail
 	  	  * @see http://usphp.com/manual/en/function.PDOStatement-execute.php
 	  	  */
@@ -567,6 +567,7 @@ abstract class BasePersistence {
 
 	    	   $table = $this->getTableByModel( $model );
 			   $newModel = $table->getModelInstance();
+			   $values = array();
 
 			   Logger::getInstance()->debug( 'BasePersistence::find Performing find on model \'' . $table->getModel() . '\'.' );
 
@@ -608,15 +609,19 @@ abstract class BasePersistence {
 								      return null;
 								  }
 
-						   		  $sql .= $pkeyColumns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
+						   		  //$sql .= $pkeyColumns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
+						   		  $sql .= $pkeyColumns[$i]->getName() . '=?';
 								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
+
+								  array_push( $values, $model->$accessor() );
 						     }
 						     $sql .= ' LIMIT ' . $this->maxResults . ';';
 	    	   		 }
 
 				     // Execute query
-					 $stmt = $this->query( $sql );
+					 $stmt = $this->prepare( $sql );
 					 $stmt->setFetchMode( PDO::FETCH_OBJ );
+					 $stmt->execute( $values );
 					 $result = $stmt->fetchall();
 
 					 if( !count( $result ) ) {

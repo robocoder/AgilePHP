@@ -202,41 +202,43 @@ class MVC {
 		  	     // Remove controller and action from mvcPieces
 		  	     array_shift( $mvcPieces );
 		  	     array_shift( $mvcPieces );
-	
+
 		  	     // Security, Security, Security.... 
 		  	     $controller = addslashes( strip_tags( $controller ) );
 		  	     $action = addslashes( strip_tags( $action ) );
-	
+
 		  	     $this->controller = $controller;
 		  	     $this->action = $action;
 	  	     }
 
-	  	     // Use reflection to invoke the requested controller/method/args
 		  	 $this->controller = isset( $controller ) ? $controller : $this->getDefaultController();
 		  	 $this->action = isset( $action ) ? $action : $this->getDefaultAction();
+
+		     // Make sure controllers are loaded from the web application control directory ONLY.
+	  	     if( !in_array( $this->controller, get_declared_classes() ) )
+	  	     	 $this->loadController( $controller );
+
 	  	     $oController = new $this->controller;
 
 	  	     try {
-			  	     $class = new ReflectionClass( $oController );
-			  	     $m = $class->getMethod( $this->action );
-
-			  	     if( isset( $mvcPieces ) ) {
-
-			  	     	 foreach( $mvcPieces as $key => $val )
-				  	     	 $mvcPieces[$key] = addslashes( strip_tags( $val ) );
-
-				  	     Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
-				  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $mvcPieces  ) . '\'.' );
-
-				  	     $m->invokeArgs( $oController, $mvcPieces );
-			  	     }
-			  	     else {
-
-			  	     	 Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
-				  	     			'\', action \'' . $this->action . '\'.' );
-		
-			  	     	 $m->invoke( $oController );
-			  	     }
+		  	     	if( isset( $mvcPieces ) ) {
+	
+		  	     		$request = Scope::getRequestScope();
+	
+		  	     		foreach( $mvcPieces as $key => $val )
+					  	     	 $mvcPieces[$key] = $request->sanitize( $val );
+	
+					  	Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+					  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $mvcPieces  ) . '\'.' );
+		  	     		call_user_func_array( array( $oController, $action ), $mvcPieces ); 
+		  	     	}
+		  	     	else {
+	
+		  	     		Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+					  	     			'\', action \'' . $this->action . '\'.' );
+	
+		  	     		$oController->$action();
+		  	     	}
 	  	     }
 	  	     catch( Exception $e ) {
 
@@ -301,6 +303,42 @@ class MVC {
 
 	  	     require_once $path;
 	  	     return new $renderer;
+	  }
+
+	  /**
+	   * Loads a controller class only if it exists in the application controller directory.
+	   * 
+	   * @param String $controller The name of the controller to load.
+	   * @return void
+	   * @throws AgilePHP_Exception if the requested controller could not be found.
+	   */
+	  private function loadController( $controller ) {
+
+	  		  $f = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
+	  		  		DIRECTORY_SEPARATOR . $controller . '.php';
+
+	  		  if( file_exists( $f ) ) {
+
+	  		  	  __autoload( $controller );
+	  		  	  return;
+	  		  }
+
+	  		  // Perform deeper scan of control directory
+	  		  $f = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'control';
+		  	  $it = new RecursiveDirectoryIterator( $f );
+			  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
+	
+			   	       if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
+	
+				 		   if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == $controller . '.php' ) {
+
+				 		   	   __autoload( $controller );
+				 		       return;
+				 		   }
+				       }
+			  }
+
+	  		  throw new AgilePHP_Exception( 'The requested controller could not be found.' );
 	  }
 }
 ?>

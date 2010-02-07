@@ -1,12 +1,15 @@
 <?php
 
+ ini_set( 'display_errors', '1' );
+ error_reporting( E_ALL );
+
  require_once '../src/AgilePHP.php';
 
  try {
  		$agilephp = AgilePHP::getFramework();  	
   	    $agilephp->setDisplayPhpErrors( true );
 
-  	    (stristr( php_os, 'WIN' )) ?
+  	    (preg_match( '/microsoft/i', $_SERVER['SERVER_SOFTWARE'] )) ?
       	     $agilephp->setFrameworkRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\src' ) :
       	     $agilephp->setFrameworkRoot( '/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/src' );
 

@@ -117,9 +117,8 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	  }
 
 	  /**
-	   * Delete the database.
-	   * 
-	   * @return void
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#drop()
 	   */
 	  public function drop() {
 
@@ -132,6 +131,13 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 
   	  	 	 if( !unlink( $dbfile ) )
   		 	 	throw new AgilePHP_PersistenceException( 'Could not drop/delete the sqlite database: ' . $dbfile );
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#reverseEngineer()
+	   */
+	  public function reverseEngineer() {
 	  }
 }
 ?>

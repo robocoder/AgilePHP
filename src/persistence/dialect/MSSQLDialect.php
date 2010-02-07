@@ -30,6 +30,12 @@
  */
 class MSSQLDialect extends BasePersistence implements SQLDialect {
 
+	 /**
+	  *  Initalize MSSQL Dialect.
+	  *  
+	  * @param Database $db The Database object representing persistence.xml
+	  * @return void
+	  */
 	  public function __construct( Database $db ) {
 
 	  	     $this->pdo = new PDO( 'odbc:DRIVER={' . $db->getDriver() . '};SERVER=' . $db->getHostname() . ';DATABASE=' . $db->getName(), 
@@ -74,6 +80,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 	    	 $table = $this->getTableByModel( $model );
 			 $newModel = $table->getModelInstance();
+			 $values = array();
 
 			 Logger::getInstance()->debug( 'BasePersistence::find Performing find on model \'' . $table->getModel() . '\'.' );
 
@@ -95,11 +102,11 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 					 	$sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
     	   	         	$sql .= ';';
 
-	   	   	         	 $this->setDistinct( null );
-    	   	         	 $this->setRestrictions( array() );
-    	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
-    	   	         	 $this->setOrderBy( null, 'ASC' );
-    	   	         	 $this->setGroupBy( null );
+	   	   	         	$this->setDistinct( null );
+    	   	         	$this->setRestrictions( array() );
+    	   	         	$this->setRestrictionsLogicOperator( 'AND' );
+    	   	         	$this->setOrderBy( null, 'ASC' );
+    	   	         	$this->setGroupBy( null );
 	    	   		 }
 	    	   		 else {
 	    	   		 		 if( !count( $pkeyColumns ) ) return null;
@@ -116,14 +123,17 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 								      return null;
 								  }
 
-						   		  $sql .= $pkeyColumns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
+						   		  $sql .= $pkeyColumns[$i]->getName() . '=?';
 								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
+
+								  array_push( $values, $model->$accessor() );
 						     }
 	    	   		 }
 
 				     // Execute query
-					 $stmt = $this->query( $sql );
+					 $stmt = $this->prepare( $sql );
 					 $stmt->setFetchMode( PDO::FETCH_OBJ );
+					 $stmt->execute( $values );
 					 $result = $stmt->fetchall();
 
 					 if( !count( $result ) ) {
@@ -180,7 +190,11 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 	  		 return null;
 	  }
-	  
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#reverseEngineer()
+	   */
 	  public function reverseEngineer() {
 	  	
 	  		 $Database = new Database();
@@ -191,7 +205,6 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  		 $Database->setUsername( $this->database->getUsername() );
 	  		 $Database->setPassword( $this->database->getPassword() );
 
-	  		 // Get table names
 	  		 $stmt = $this->prepare( 'select * from information_schema.tables;' );
 	  		 $stmt->execute();
 			 $stmt->setFetchMode( PDO::FETCH_OBJ );
@@ -209,7 +222,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 					$stmt->setFetchMode( PDO::FETCH_OBJ );
 			  		$stmt->execute();
 					$columns = $stmt->fetchAll();
-			 		
+					
 					foreach( $columns as $column ) {
 
 							$type = preg_match_all( '/^(.*)\\s+(identity).*$/i', $column->TYPE_NAME, $matches );
@@ -242,6 +255,8 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 					$Database->addTable( $Table );
 			 }
 
+			 // sp_stored_procedures
+			 
 			 return $Database;
 	  }
 }

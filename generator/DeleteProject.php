@@ -25,8 +25,8 @@ class DeleteProject extends AgilePHPGen {
 	  		 if( !$this->getCache()->getProjectHome() )
 	  		 	 PHPUnit_Framework_Assert::fail( 'Project home not found in cache' );
 
-	  		 echo 'Deleting project: ' . $this->getCache()->getProjectName() . "\n";
-	  		 echo 'Project home: ' . $this->getCache()->getProjectHome() . "\n";
+	  		 echo 'Deleting project: ' . $this->getCache()->getProjectName() . PHP_EOL;
+	  		 echo 'Project home: ' . $this->getCache()->getProjectHome() . PHP_EOL;
 
 	  		 $this->recursiveDelete( $this->getCache()->getProjectRoot() );
 	  		 unlink( '.agilephp-gen_cache' );

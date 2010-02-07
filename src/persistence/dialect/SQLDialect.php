@@ -31,5 +31,6 @@ interface SQLDialect {
 
 		  public function create();
 		  public function drop();
+		  public function reverseEngineer();
 }
 ?>

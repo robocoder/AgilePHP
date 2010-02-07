@@ -13,7 +13,7 @@ class CreateView extends AgilePHPGen {
 	   */
 	  public function testCreateController() {
 
-	  		 echo "Please select from the following views:\n\n";
+	  		 echo 'Please select from the following views:' . PHP_EOL . PHP_EOL;
 
 	  		 $views = array();
 
@@ -33,8 +33,8 @@ class CreateView extends AgilePHPGen {
 			      }
 		 	 }
 		 	 foreach( $views as $index => $name )
-		 	 		echo "[$index] $name\n";
-		 	 
+		 	 		echo "[$index] $name" . PHP_EOL;
+
 		 	 $input = $this->prompt( '' );
 
 		 	 if( !array_key_exists( $input, $views ) )
@@ -43,6 +43,9 @@ class CreateView extends AgilePHPGen {
 		 	 $view = $views[$input];
 		 	 copy( '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'views' . 
 		 	 			 DIRECTORY_SEPARATOR . $view, $this->getCache()->getProjectRoot() . 
+		 	 			 DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . $view );
+		 	 			 
+		 	 $this->fixLineBreaks( $this->getCache()->getProjectRoot() . 
 		 	 			 DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . $view );
 	  }
 }

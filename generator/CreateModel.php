@@ -62,34 +62,34 @@ class CreateModel extends AgilePHPGen {
        */
       private function createModel() {
 
-      	      $class = "class " . $this->modelName . " {\n\n";
+      	      $class = "class " . $this->modelName . ' {' . PHP_EOL . PHP_EOL;
               foreach( $this->properties as $key => $value ) {
 
                        if( is_numeric( $key ) )
-                           $class .= "\tprivate \$$value;\n";
+                           $class .= "\tprivate \$$value;" . PHP_EOL;
                        else
-                           $class .= "\tprivate \$$key = $value;\n";
+                           $class .= "\tprivate \$$key = $value;" . PHP_EOL;
               }
-              $class .= "\n\tpublic function __construct() { }\n\n";
+              $class .= PHP_EOL . "\tpublic function __construct() { }" . PHP_EOL . PHP_EOL;
               foreach( $this->properties as $key => $value ) {
 
                        if( is_numeric( $key ) )
-                           $class .= "\tpublic function set" . ucfirst( $value ) . "( \$value ) {\n\n\t\t \$this->$value = \$value;\n\t}\n\n";
+                           $class .= "\tpublic function set" . ucfirst( $value ) . "( \$value ) {" . PHP_EOL . PHP_EOL . "\t\t \$this->$value = \$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
                        else
-                           $class .= "\tpublic function set" . ucfirst( $key ) . "( \$value ) {\n\n\t\t \$this->$key = \$value;\n\t}\n\n";
+                           $class .= "\tpublic function set" . ucfirst( $key ) . "( \$value ) {" . PHP_EOL . PHP_EOL . "\t\t \$this->$key = \$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
               }
               foreach( $this->properties as $key => $value ) {
 
                        if( is_numeric( $key ) )
-                           $class .= "\tpublic function get" . ucfirst( $value ) . "() {\n\n\t\t return \$this->$value;\n\t}\n\n";
+                           $class .= "\tpublic function get" . ucfirst( $value ) . "() {" . PHP_EOL . PHP_EOL . "\t\t return \$this->$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
                        else
-                           $class .= "\tpublic function get" . ucfirst( $key ) . "() {\n\n\t\t return \$this->$key;\n\t}\n\n";
+                           $class .= "\tpublic function get" . ucfirst( $key ) . "() {" . PHP_EOL . PHP_EOL . "\t\t return \$this->$key;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
 			  }
       	      $class .= "}";
 
       	      $file = $this->getCache()->getProjectRoot() . '/model/' . ucfirst( $this->modelName ) . '.php';
       	      $h = fopen( $file, 'w' );
-      	      fwrite( $h, "<?php\n\n/** AgilePHP generated domain model */\n\n" . $class  . "?>" );
+      	      fwrite( $h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL . $class . PHP_EOL . '?>' );
       	      fclose( $h );
 
       	      if( !file_exists( $file ) )
@@ -134,12 +134,12 @@ class CreateModel extends AgilePHPGen {
       	      //$this->xml->asXML( $this->getCache()->getProjectRoot() . '/persistence.xml' );
       		   */
 
-      		  $xml = "\t<table name=\"" . strtolower( $this->modelName ) . "\" model=\"" . $this->modelName . "\" display=\"\" description=\"\">\n";
+      		  $xml = "\t<table name=\"" . strtolower( $this->modelName ) . "\" model=\"" . $this->modelName . "\" display=\"\" description=\"\">" . PHP_EOL;
       		  $clazz = new ReflectionClass( $this->instance );
       		  foreach( $clazz->getProperties() as $property )
-      		  		   $xml .= "\t\t\t<column name=\"" . $property->name . "\" type=\"\" length=\"\"/>\n";
+      		  		   $xml .= "\t\t\t<column name=\"" . $property->name . "\" type=\"\" length=\"\"/>" . PHP_EOL;
 
-      		  $xml .= "\t\t</table>\n\t</database>\n";
+      		  $xml .= "\t\t</table>" . PHP_EOL . "\t</database>" . PHP_EOL;
 
       		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml', 'r' );
       		  $data = '';

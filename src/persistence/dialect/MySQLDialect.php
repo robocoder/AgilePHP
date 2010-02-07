@@ -32,7 +32,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	  /**
 	   * Initalize MySQLDialect
 	   * 
-	   * @param Database $db The database to use
+	   * @param Database $db The Database object representing persistence.xml
 	   * @return void
 	   */
 	  public function __construct( Database $db ) {
@@ -53,7 +53,6 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	  	     }
 
 	 	     $this->database = $db;
-	 	     
 	  }
 
 	  /**
@@ -164,13 +163,83 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	  }
 	  
 	  /**
-	   * Drop/destroy the database.
-	   * 
-	   * @return void
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#drop()
 	   */
 	  public function drop() {
 
   	 	 	 $this->query( 'DROP DATABASE ' . $this->database->getName() . ';' );
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#reverseEngineer()
+	   */
+	  public function reverseEngineer() {
+
+	  		 $Database = new Database();
+	  		 $Database->setId( $this->database->getId() );
+	  		 $Database->setName( $this->database->getName() );
+	  		 $Database->setType( $this->database->getType() );
+	  		 $Database->setHostname( $this->database->getHostname() );
+	  		 $Database->setUsername( $this->database->getUsername() );
+	  		 $Database->setPassword( $this->database->getPassword() );
+
+	  		 $stmt = $pm->prepare( 'SHOW TABLES' );
+      	     $stmt->execute();
+      	     $stmt->setFetchMode( PDO::FETCH_OBJ );
+      	     $tables = $stmt->fetchAll();
+
+      	     $tblIndex = 'Tables_in_' . $pm->getDatabase()->getName();
+
+      	     foreach( $tables as $sqlTable ) {
+
+      	     		  $Table = new Table();
+      	     		  $Table->setName( str_replace( ' ', '_', $sqlTable->$tblIndex ) );
+      	     		  $Table->setModel( ucfirst( $Table->getName() ) );
+
+      	      		  $stmt = $pm->query( 'DESC ' . $sqlTable->$tblIndex );
+      	      		  $stmt->setFetchMode( PDO::FETCH_OBJ );
+      	      		  $descriptions = $stmt->fetchAll();
+      	      		   
+      	      		  foreach( $descriptions as $desc ) {
+
+      	      		   	   $type = $desc->Type;
+	      	      		   $length = null;
+	      	      		   $pos = strpos( $desc->Type, '(' );
+	
+	      	      		   if( $pos !== false ) {
+	      	      		   	 
+	      	      		   	   $type = preg_match_all( '/^(.*)\((.*)\)$/i', $desc->Type, $matches );
+	      	      		   	   
+	      	      		   	   $type = $matches[1][0];
+	      	      		   	   $length = $matches[2][0];
+	      	      		   }
+
+	      	      		   $Column = new Column( null, $Table->getName() );
+						   $Column->setName( $desc->Field );
+						   $Column->setType( $type );
+						   $Column->setLength( $length );
+
+						   if( $desc->Default )
+						   	    $Column->setDefault( $desc->Default );
+
+						   if( $desc->NULL == 'NO' )
+						   	   $Column->setRequired( true );
+
+						   if( $desc->KEY == 'PRI' )
+						   	   $Column->setPrimaryKey( true );
+
+						   if( $desc->Extra == 'auto_increment' )
+						   	   $Column->setAutoIncrement( true );
+      	      		   
+      	      		  	   $Table->addColumn( $Column );
+      	      		   }
+
+      	      		   $Database->addTable( $Table );	   
+      	      }
+
+      	      return $Database;
 	  }
 }
 ?>

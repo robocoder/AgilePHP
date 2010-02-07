@@ -1,5 +1,8 @@
 <?php
 
+ini_set( 'display_errors', '1' );
+error_reporting( E_ALL );
+
 require_once 'PHPUnit' . DIRECTORY_SEPARATOR . 'Framework.php';
 
 class AgilePHPGen extends PHPUnit_Framework_TestCase {
@@ -86,8 +89,32 @@ class AgilePHPGen extends PHPUnit_Framework_TestCase {
 	   */
 	  public function prompt( $question ) {
 
-	  	     echo "$question\nAgilePHP> ";
+	  	     echo $question . PHP_EOL . 'AgilePHP> ';
 	  		 return trim( fgets( STDIN ) );
+	  }
+
+	  /**
+	   * Replace *nix line breaks with windows line breaks if building on windows.
+	   * 
+	   * @param String $file The fully qualified file path
+	   * @return void
+	   */
+	  protected function fixLineBreaks( $file ) {
+	  	
+	  			if( substr( getcwd(), 0, 1 ) != '/' ) {
+
+	       		    $h = fopen( $file, 'r' );
+	      		    $data = '';
+	      		    while( !feof( $h ) )
+	      		  		  $data .= fgets( $h, 4096 );
+	      		    fclose( $h );
+
+	      		    $data = str_replace( "\n", PHP_EOL, $data );
+
+             		$h = fopen( $file, 'w' );
+			  		fwrite( $h, $data );
+			  		fclose( $h );
+             	}
 	  }
 }
 

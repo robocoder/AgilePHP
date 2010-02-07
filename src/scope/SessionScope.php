@@ -248,7 +248,7 @@ class SessionScope {
 	   * @return void
 	   */
 	  public function persist() {
-	  	
+
 	  		 Logger::getInstance()->debug( 'SessionScope::persist Persisting session' );
 
 	  	     if( !$this->getSession()->getData() ) return;
@@ -257,7 +257,7 @@ class SessionScope {
 
 	 	     if( !$this->isPersisted() ) {
 
-	 	     	 $this->getSession()->setCreated( date( 'c', strtotime( 'now' ) ) );
+	 	     	 $this->getSession()->setCreated( 'now' );
 			 	 $pm->persist( $this->getSession() );
 			 	 $this->oldSession->setData( $this->session->getData() );
 			 	 return;

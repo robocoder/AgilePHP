@@ -31,13 +31,13 @@
 class AnnotationParser {
 
 	  private static $instance;
-	  private $classes = array();
-	  private $properties = array();
-	  private $methods = array();
-	  private $sources = array();
+	  private static $classes = array();
+	  private static $properties = array();
+	  private static $methods = array();
+	  private static $sources = array();
 
-	  private $class;
-	  private $filename;
+	  private static $class;
+	  private static $filename;
 
 	  private function __construct() { }
 	  private function __clone() { }
@@ -63,18 +63,18 @@ class AnnotationParser {
 	   * @param String $class The name of the class to parse
 	   * @return void
 	   */
-	  public function parse( $class ) {
+	  public static function parse( $class ) {
 
-	  		 $this->class = $class;
-	  		 $this->filename = $class . '.php';
+	  		 self::$class = $class;
+	  		 self::$filename = $class . '.php';
 
-		     if( in_array( $this->filename, $this->sources ) )
+		     if( in_array( self::$filename, self::$sources ) )
 		         return;
 
-	  		 array_push( $this->sources, $this->filename );
+	  		 array_push( self::$sources, self::$filename );
 
 	  		 $comments = array();
-	  		 $tokens = token_get_all( $this->getSourceCode() );
+	  		 $tokens = token_get_all( self::getSourceCode() );
 
 	  		 for( $i=0; $i<count( $tokens ); $i++ ) {
 
@@ -94,7 +94,7 @@ class AnnotationParser {
 
 								   if( count( $comments ) ) {
 
-									   $this->classes[$class] = $this->parseAnnotations( implode( "\n", $comments ) );
+									   self::$classes[$class] = self::parseAnnotations( implode( PHP_EOL, $comments ) );
 									   $comments = array();
 								   }
 								   break;
@@ -104,7 +104,7 @@ class AnnotationParser {
 								   if( count( $comments ) ) {
 
 								   	   $key = str_replace( '$', '', $token[1] );
-									   $this->properties[$class][ $key ] = $this->parseAnnotations( implode( "\n", $comments ) );
+									   self::$properties[$class][ $key ] = self::parseAnnotations( implode( PHP_EOL, $comments ) );
 									   $comments = array();
 								   }
 								   break;
@@ -116,7 +116,7 @@ class AnnotationParser {
 									   for( $j=$i; $j<count( $tokens ); $j++ ) {
 										    if( is_array( $tokens[$j] ) ) {
 										 	    if( $tokens[$j][0] == T_STRING ) {
-										 	 	    $this->methods[$class][$tokens[$j][1]] = $this->parseAnnotations( implode( "\n", $comments ) );
+										 	 	    self::$methods[$class][$tokens[$j][1]] = self::parseAnnotations( implode( PHP_EOL, $comments ) );
 										 	 	    $comments = array();
 										 	 	    break;
 										 	    }
@@ -167,9 +167,9 @@ class AnnotationParser {
 	   * @return Array of class level annotations or false if no annotations
 	   * 		 are present.
 	   */
-	  public function getClassAnnotations( AnnotatedClass $class ) {
+	  public static function getClassAnnotations( AnnotatedClass $class ) {
 
-	  		 return isset( $this->classes[$class->getName()] ) ? $this->classes[$class->getName()] : false; 
+	  		 return isset( self::$classes[$class->getName()] ) ? self::$classes[$class->getName()] : false; 
 	  }
 
 	  /**
@@ -179,13 +179,13 @@ class AnnotationParser {
 	   * @param AnnotatedProperty $property The AnnotatedProperty instance to inspect.
 	   * @return Array of property level annotations
 	   */
-	  public function getPropertyAnnotations( AnnotatedProperty $property ) {
+	  public static function getPropertyAnnotations( AnnotatedProperty $property ) {
 
   		 	 $class = $property->getDeclaringClass()->getName();
   		 	 
-  		 	 if( isset( $this->properties[$class] ) ) {
+  		 	 if( isset( self::$properties[$class] ) ) {
 
-		  		 foreach( $this->properties[$class] as $name => $value )
+		  		 foreach( self::$properties[$class] as $name => $value )
 		  		  		if( $name == $property->getName() )
 		  		 			return $value;
   		 	 }
@@ -200,12 +200,12 @@ class AnnotationParser {
 	   * @param AnnotatedMethod $method The AnnotatedMethod instance to inspect.
 	   * @return Array of method level annotations or false if no annotations are present.
 	   */
-	  public function getMethodAnnotations( AnnotatedMethod $method ) {
+	  public static function getMethodAnnotations( AnnotatedMethod $method ) {
 
 	  	     $class = $method->getDeclaringClass()->getName();
-	  	     if( isset( $this->methods[$class] ) ) {
+	  	     if( isset( self::$methods[$class] ) ) {
 			     
-	  	     	 foreach( $this->methods[$class] as $name => $value )
+	  	     	 foreach( self::$methods[$class] as $name => $value )
 			  		 	if( $name == $method->getName() )
 			  		 		return $value;
 	  	     }
@@ -219,10 +219,10 @@ class AnnotationParser {
 	   * @param String $class The name of the class to inspect
 	   * @return Array of class level annotations, void otherwise
 	   */
-	  public function getClassAnnotationsAsArray( $class ) {
+	  public static function getClassAnnotationsAsArray( $class ) {
 
-	  		 if( array_key_exists( $class, $this->classes ) )
-	  		 	 return $this->classes[$class];
+	  		 if( array_key_exists( $class, self::$classes ) )
+	  		 	 return self::$classes[$class];
 	  }
 
 	  /**
@@ -232,10 +232,10 @@ class AnnotationParser {
 	   * @param String $method The name of the method to inspect
 	   * @return Array of method level annotations, void otherwise
 	   */
-	  public function getMethodAnnotationsAsArray( $class ) {
+	  public static function getMethodAnnotationsAsArray( $class ) {
 
-	  		 if( array_key_exists( $class, $this->methods ) )
-	  		 	 return $this->methods[$class];
+	  		 if( array_key_exists( $class, self::$methods ) )
+	  		 	 return self::$methods[$class];
 	  }
 
 	  /**
@@ -244,10 +244,10 @@ class AnnotationParser {
 	   * @param String $class The name of the class to inspect
 	   * @return Array of property level annotations, void otherwise
 	   */
-	  public function getPropertyAnnotationsAsArray( $class ) {
+	  public static function getPropertyAnnotationsAsArray( $class ) {
 
-	  		 if( array_key_exists( $class, $this->properties ) )
-	  		 	 return $this->properties[$class];
+	  		 if( array_key_exists( $class, self::$properties ) )
+	  		 	 return self::$properties[$class];
 	  }
 
 	  /**
@@ -257,12 +257,12 @@ class AnnotationParser {
 	   * @param String $text The text/code string to parse
 	   * @return void
 	   */
-	  private function parseAnnotations( $text ) {
+	  private static function parseAnnotations( $text ) {
 
 	  		  $annotations = array();
 
 			  // Extract the annotation string including the name and property/value declaration
-	  		  preg_match_all( '/#@(.*)/', $text, $annotes );
+	  		  preg_match_all( '/^\\s*#@(.*)/', $text, $annotes );
 
 			  if( !count( $annotes ) )
 	  		  	  return;
@@ -290,14 +290,14 @@ class AnnotationParser {
 					   // Add arrays to annotation instance and remove it from the properties
 	  		  		   if( isset( $arrays ) ) {
 
-	  		  		   	   $result = $this->parseKeyArrayValuePairs( $oAnnotation, $arrays[0], $props[1][0] );
+	  		  		   	   $result = self::parseKeyArrayValuePairs( $oAnnotation, $arrays[0], $props[1][0] );
 	  		  		   	   $oAnnotation = $result->annotation;
 	  		  		   	   $props[1][0] = $result->properties;
 					   }
 
 					   // Add strings and PHP literals to annotation instance
 					   if( count( $props ) && count( $props[1] ) )
-					   	   $oAnnotation = $this->parseKeyValuePairs( $oAnnotation, $props[1][0] );
+					   	   $oAnnotation = self::parseKeyValuePairs( $oAnnotation, $props[1][0] );
 
 					   // Push the annotation instance onto the stack
 	  		  		   array_push( $annotations, $oAnnotation );
@@ -316,12 +316,12 @@ class AnnotationParser {
 	   * @param String $properties The annotations properties as they were parsed from the code
 	   * @return stdClass instance containing the annotation instance and truncated properties string
 	   */
-	  private function parseKeyArrayValuePairs( $oAnnotation, $arrays, $properties ) {
+	  private static function parseKeyArrayValuePairs( $oAnnotation, $arrays, $properties ) {
 
 	  		 foreach( $arrays as $array ) {
 
 		  		 	// Remove arrays from the parsed annotation property/value assignments
-					$properties = preg_replace( '/' . $array . '/', '', $properties ) . "\n";
+					$properties = preg_replace( '/' . $array . '/', '', $properties ) . PHP_EOL;
 
 			   		// Split the array into key/value
 			   		preg_match( '/(.*)={1}\s?\{(.*)\},?/', $array, $matches );
@@ -338,12 +338,12 @@ class AnnotationParser {
 			   					// Associative array element
 			   					$pieces = explode( '=', $element );
 			   					//$value[ trim( $pieces[0] ) ] = trim( $pieces[1] );
-			   					$value[ trim( $pieces[0] ) ] = $this->getQuotedStringValue( $pieces[1] );
+			   					$value[ trim( $pieces[0] ) ] = self::getQuotedStringValue( $pieces[1] );
 			   				}
 			   				else
 
 			   					// Indexed array element
-			   					array_push( $value, $this->getQuotedStringValue( $element ) );
+			   					array_push( $value, self::getQuotedStringValue( $element ) );
 			   		}
 
 			   		// Set the annotation instance property with the PHP array
@@ -363,7 +363,7 @@ class AnnotationParser {
 	   * @param String $value The value to parse
 	   * @return void
 	   */
-	  private function getQuotedStringValue( $value ) {
+	  private static function getQuotedStringValue( $value ) {
 
 	  		  // Single quoted value
   	  		  $pos = strpos( $value, '\'' );
@@ -395,7 +395,7 @@ class AnnotationParser {
 	   * @param String $properties String representation of the annotations property definition(s).
 	   * @return The annotation instance populated according to its definition(s).
 	   */
-	  private function parseKeyValuePairs( $oAnnotation, $properties ) {
+	  private static function parseKeyValuePairs( $oAnnotation, $properties ) {
 
   		  	 $keyValuePairItems = explode( ',', $properties );
 
@@ -447,12 +447,12 @@ class AnnotationParser {
 	   * 
 	   * @return PHP code
 	   */
-	  public function getSourceCode() {
+	  public static function getSourceCode() {
 
-	  		 if( $code = $this->search( AgilePHP::getFramework()->getFrameworkRoot() ) )
+	  		 if( $code = self::search( AgilePHP::getFramework()->getFrameworkRoot() ) )
 	  		     return $code;
 
-	  		 if( $code = $this->search( AgilePHP::getFramework()->getWebRoot() ) )
+	  		 if( $code = self::search( AgilePHP::getFramework()->getWebRoot() ) )
 	  		     return $code;
 
 	  		 throw new AgilePHP_AnnotationException( 'Failed to load source code for class \'' . $this->class . '\'.' );
@@ -465,7 +465,7 @@ class AnnotationParser {
 	   * @param String $directory The directory to inspect. 
 	   * @return File contents for $this->class or void if the file contents could not be located
 	   */
-	  private function search( $directory ) {
+	  private static function search( $directory ) {
 
 	  	 $it = new RecursiveDirectoryIterator( $directory );
 		 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
@@ -473,7 +473,7 @@ class AnnotationParser {
 		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
 		   	      	  substr( $file, -4 ) != 'view' ) {
 
-			 		  if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == $this->filename )
+			 		  if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == self::$filename )
 		     	 			  return file_get_contents( $file );
 			      }
 		 }

@@ -36,7 +36,7 @@ class Cache {
 	   * Cache annotation argument containing the number of minutes to cache the intercepted content.
 	   * Defaults to 0 (never expires).
 	   *  
-	   * @var String The required role name
+	   * @var String The number of minutes to store the cached content
 	   */
 	  public $minutes = 0;
 

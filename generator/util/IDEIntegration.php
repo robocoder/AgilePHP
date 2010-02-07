@@ -49,7 +49,7 @@ class IDEIntegration extends AgilePHPGen {
 </projectDescription>';
 
 	  		  $h = fopen( $this->getCache()->getProjectRoot() . '/.project', 'w' );
-	  		  fwrite( $h, $dotProject );
+	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $dotProject ) );
 	  		  fclose( $h );
 
 	  		  $dotBuildpath = '<?xml version="1.0" encoding="UTF-8"?>
@@ -59,7 +59,7 @@ class IDEIntegration extends AgilePHPGen {
 </buildpath>';
 	  		  
 	  		  $h = fopen( $this->getCache()->getProjectRoot() . '/.buildpath', 'w' );
-	  		  fwrite( $h, $dotBuildpath );
+	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $dotBuildpath ) );
 	  		  fclose( $h );
 	  }
 
@@ -89,7 +89,7 @@ class IDEIntegration extends AgilePHPGen {
 </project>';
 
 	  		 $h = fopen( $nbproject . '/project.xml', 'w' );
-	  		 fwrite( $h, $projectDotXml );
+	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $projectDotXml ) );
 	  		 fclose( $h );
 	  		  
 	  		 $projectDotProperties = 'include.path=${php.global.include.path}
@@ -100,7 +100,7 @@ tags.short=true
 web.root=.';
 
 	  		 $h = fopen( $nbproject . '/project.properties', 'w' );
-	  		 fwrite( $h, $projectDotProperties );
+	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $projectDotProperties ) );
 	  		 fclose( $h );
 
 	  		 $privateDotProperties = 'copy.src.files=false
@@ -113,7 +113,7 @@ url=' . $url;
 	  		 	 PHPUnit_Framework_Assert( 'Could not create netbeans project private directory \'' . $nbproject . '/private\'.' );
 
 	  		 $h = fopen( $nbproject . '/private/private.properties', 'w' );
-	  		 fwrite( $h, $privateDotProperties );
+	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $privateDotProperties ) );
 	  		 fclose( $h );
 	  }
 

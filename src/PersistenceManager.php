@@ -857,6 +857,16 @@ class PersistenceManager {
 	  		    return $this->dialect->find( $model /*, $findAll */ );
 	  	 }
 
+	  	 /**
+	  	  * Returns AgilePHP ORM database structure for the current database.
+	  	  * 
+	  	  * @return Array Multi-dimensional array representing the current database structure.
+	  	  */
+	  	 public function reverseEngineer() {
+
+	  	 		return $this->dialect->reverseEngineer();
+	  	 }
+
 	     /**
 	      * Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.
 	      * 

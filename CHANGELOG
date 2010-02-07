@@ -1,12 +1,22 @@
-0.8a
+0.9a
 ----
 
-- Added MSSQL dialect. Added support to persistence.dtd for MSSQL specific fields. Might be time for an XSD...
-- Added override method to MSSQLDialect to support TOP with setMaxResults.
-- Added "driver" configuration attribute to persistence.dtd for database element and Database class.
-- Fixed bug in AgilePHP_Exception introduced in last checkin.
-- Added regex to #@Id interceptor to abort for dialect classes.
-- Added regex to #@Password interceptor to abort for dialect classes.
-- Fixed PHP notice about missing offset in MVC::processRequest.
-- Bug fix to BaseModelActionController::modelList introduced in last checkin.
-- Added support for arrays to RequestScope store variables.
+- Changed all SQL datetime data types from date( 'c' ) to date( 'Y-m-d H:i:s' ). Effected classes are:
+	o Identity
+	o User
+	o SessionScope
+	o Session
+    ? Should persistence dialect classes be responsible for formatting? Should an interceptor be responsible?
+      Check out test/classes/interceptors/SQLDateTime.php for an example interceptor.
+- Refactored legacy persistence find method to use prepared statements instead of a raw SQL query.
+- Slight mods to test package. Logic that parsed platform (windows/*nix) and admin.phtml notice on $content variable.
+- Added MVC::loadController method to ensure requested controller is loaded from the web application control directory ONLY.
+- Refactored MVC::processRequest. No longer uses reflection to invoke controllers as it caused a ReflectionException
+  on controllers which were intercepted since the InterceptorProxy does not actually contain the method being invoked.
+- Refactored AnnotationParser so that all methods and properties are static.
+- Removed test/classes/AJAXController as it was causing autoload issues with AJAXController in test/control.
+- Refactored Logger component to use DIRECTORY_SEPARATOR instead of hard coded forward slashes
+- Refactored all generator classes to use PHP_EOL instead of hard coded \n new lines.
+- Refactored generator/CreateProject to convert AgilePHP framework classes from \n to PHP_EOL when copying
+  core framework classes to new project.
+- Refactored src/annotation/AnnotationParser::parse to implode on PHP_EOL instead of hard coded \n line seperator. 

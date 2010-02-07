@@ -58,7 +58,7 @@ pear install firephp/FirePHPCore
 ----------
  > Add constructor argument support to InterceptorProxy
  > Iron out RequestScope CSFR issues in regards to destroying session
-  > Persistence framework needs to support many-to-many relationships
+ > Persistence framework needs to support many-to-many relationships
  > Need to revisit PersistenceRenderer and make an easy way to
    allow different client side rendering libraries like jquery, dojo, extjs, etc (adapter?)
  > Add calendar, spinner, date picker, and other widgets to persistence rendering
@@ -71,10 +71,26 @@ pear install firephp/FirePHPCore
 	dblib
 	ibm
  > Finish Form::toJSON method (this should probably use AJAXRenderer)
-
+ > Need to update MSSQLDialect::find to use LIKE clause for text, ntext, and image data types.
+ > Need to add support to persistence/Column for multiple foreign keys per column
+ > Complete reverse engineering logic in dialect classes and generator/ReverseEngineerDatabase.
+ > Add support for database diff's.
  
  --------------------------
  ** Windows Specific TODO's
  --------------------------
  > Use DIRECTORY_SEPARATOR instead of / in references to the file system
  > Use \r\n instead of \n for new lines 
+
+
+ --------------------------
+ **      Known Bugs      **
+ --------------------------
+Issue: [Microsoft][ODBC Driver Manager] Function sequence error
+Reason: This happens when using ODBC driver on SQL Server 2000 to insert/update datetime fields.
+Resolution: Upgrade SQL Server to newer version
+See: http://bugs.php.net/bug.php?id=40452
+
+Issue: Clicking on sortable column headers rendered by mvc/XSLTRenderer breaks in some cases when using MSSQL server.
+Reason: The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator.
+Resolution: Need to update MSSQLDialect class to use LIKE clause for column types listed above.

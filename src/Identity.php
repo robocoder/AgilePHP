@@ -467,7 +467,7 @@ class Identity implements IdentityManager {
 	  		 if( !$this->session->isPersisted() )
 	  		 	 $this->session->persist();
 
-	  		 $this->getModel()->setLastLogin( date( 'c', strtotime( 'now' ) ) );
+	  		 $this->getModel()->setLastLogin( strtotime( 'now' ) );
 	  		 $this->getModel()->setSession( $this->session->getSession() );
 	  		 $this->merge();
 			 return true;

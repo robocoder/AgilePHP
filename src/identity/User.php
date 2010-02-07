@@ -107,7 +107,7 @@ class User implements IdentityModel {
 	   */
 	  public function setCreated( $dateTime ) {
 
-	  	     $this->created = date( 'c', strtotime( $dateTime ) );
+	  	     $this->created = date( 'Y-m-d H:i:s', strtotime( $dateTime ) );
 	  }
 
 	  /**
@@ -125,7 +125,7 @@ class User implements IdentityModel {
 	   */
 	  public function setLastLogin( $timestamp ) {
 
-	  	     $this->lastLogin = date( 'c', strtotime( $timestamp ) );
+	  	     $this->lastLogin = date( 'Y-m-d H:i:s', strtotime( $timestamp ) );
 	  }
 
 	  /**

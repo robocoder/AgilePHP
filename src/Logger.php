@@ -125,7 +125,7 @@ class Logger {
 	  	      $header = '[' . $level . ']  ' . $address . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) .
 	  	      	  			     '  ' . $requestURI;
 
-	  	      $logDirectory = AgilePHP::getFramework()->getWebRoot() . '/logs';
+	  	      $logDirectory = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
 
 	  	      if( !file_exists( $logDirectory ) )  	      	
 	  	      	  if( !mkdir( $logDirectory ) )
@@ -134,7 +134,7 @@ class Logger {
 	  	      if( !is_writable( $logDirectory ) )
 	  	      	  throw new AgilePHP_Exception( 'Logging directory is not writable. The PHP process requires write access to this directory.' );
 
-	  	      $filename = $logDirectory . '/agilephp_' . date( "m-d-y" ) . '.log';
+	  	      $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date( "m-d-y" ) . '.log';
 
 	  	      if( is_object( $message ) || is_array( $message ) )
 	  	      	  $message = print_r( $message, true );

@@ -86,7 +86,7 @@ class Session {
 	   */
 	  public function setCreated( $timestamp ) {
 
-	  		 $this->created = $timestamp;
+	  		 $this->created = date( 'Y-m-d H:i:s', strtotime( $timestamp ) );
 	  }
 
 	  /**

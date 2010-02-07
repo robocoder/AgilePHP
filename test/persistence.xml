@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE persistence SYSTEM "../src/persistence/persistence.dtd">
 <persistence>
+
 	<database id="db1" name="agilephp_test" type="mysql" hostname="localhost" username="php" password="php007">
+	
 		<table name="inventory" model="Inventory" display="Inventory" description="Product inventory">
 			<column name="id" visible="false" type="integer" primaryKey="true" autoIncrement="true"/>
 			<column name="name" type="varchar" length="255" required="true"/>

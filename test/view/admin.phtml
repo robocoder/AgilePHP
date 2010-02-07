@@ -14,7 +14,7 @@
 		<?php require_once 'admin_navigation.phtml'; ?>
 
 		<?php
-			  if( !$content )
+			  if( !isset( $content ) )
 			  	  echo 'Welcome to the admin area!';
 			  else
 			  	  echo $content

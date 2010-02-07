@@ -153,12 +153,20 @@ class CreateProject extends AgilePHPGen {
 			  mkdir( $dst );
 			  while( false !== ( $file = readdir( $dir ) ) ) {
 
-			      	 if( $file != '.' && $file != '..' ) {
+			      	 if( $file != '.' && $file != '..' && substr( $file, 0, 4 ) != '.svn' ) {
 
 			             if( is_dir( $src . DIRECTORY_SEPARATOR . $file ) )
 			                $this->recursiveCopy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
-			            else
-			                copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
+			             else {
+
+			             	if( substr( getcwd(), 0, 1 ) == '/' )
+			             	exit;
+
+			             	copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
+
+			             	// Replace *nix line breaks with windows line breaks if building on windows.
+			             	$this->fixLineBreaks( $dst . DIRECTORY_SEPARATOR . $file );
+			             }
 			        }
 			 }
 			 closedir( $dir );
@@ -166,47 +174,48 @@ class CreateProject extends AgilePHPGen {
 
 	  private function createPersistenceXML( $identity, $session, $name, $type, $hostname, $username, $password ) {
 
-	  		  $data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-			  $data .= "<!DOCTYPE persistence SYSTEM \"AgilePHP/persistence/persistence.dtd\">\n";
-			  $data .= "<persistence>\n";
-			  $data .= "\t<database id=\"db1\" name=\"" . ($type == 'sqlite' ? $this->getCache()->getProjectRoot() . '/' . $name : $name) . "\" type=\"" . $type . "\" hostname=\"" . $hostname .
-	  		  							 "\" username=\"" . $username . "\" password=\"" . $password . "\">\n\n";
+	  		  $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+			  $data .= '<!DOCTYPE persistence SYSTEM "AgilePHP/persistence/persistence.dtd">' . PHP_EOL;
+			  $data .= '<persistence>' . PHP_EOL;
+			  $data .= "\t<database id=\"db1\" name=\"" . ($type == 'sqlite' ? $this->getCache()->getProjectRoot() . '/' . $name : $name) . "\"" .
+			  				($type == 'mssql' ? ' driver="SQL Server Native Client 10.0"' : '') . PHP_EOL . "\t\t\ttype=\"" . $type . "\" hostname=\"" . $hostname .
+	  		  				"\" username=\"" . $username . "\" password=\"" . $password . "\">" . PHP_EOL . PHP_EOL;
 
 			  if( $identity ) {
 
-			  	  $data .= "\t\t<!-- AgilePHP Identity -->\n";
-			  	  $data .= "\t\t<table name=\"users\" isIdentity=\"true\" display=\"Users\" model=\"User\" description=\"Actors in the application\">\n";
-				  $data .= "\t\t\t<column name=\"username\" type=\"varchar\" length=\"150\" primaryKey=\"true\" required=\"true\"/>\n";
-				  $data .= "\t\t\t<column name=\"password\" type=\"varchar\" length=\"255\" required=\"true\"/>\n";
-				  $data .= "\t\t\t<column name=\"email\" type=\"varchar\" length=\"255\" required=\"true\"/>\n";
-				  $data .= "\t\t\t<column name=\"created\" type=\"datetime\" required=\"true\"/>\n";
-				  $data .= "\t\t\t<column name=\"last_login\" property=\"lastLogin\" display=\"Last Login\" type=\"datetime\"/>\n";
-				  $data .= "\t\t\t<column name=\"roleId\" type=\"varchar\" length=\"25\">\n";
-				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserRoles\" type=\"one-to-many\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"
-							  		 table=\"roles\" column=\"name\" controller=\"RoleController\" select=\"name\"/>\n";
+			  	  $data .= "\t\t<!-- AgilePHP Identity -->" . PHP_EOL;
+			  	  $data .= "\t\t<table name=\"users\" isIdentity=\"true\" display=\"Users\" model=\"User\" description=\"Actors in the application\">" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"username\" type=\"varchar\" length=\"150\" primaryKey=\"true\" required=\"true\"/>" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"password\" type=\"varchar\" length=\"255\" required=\"true\"/>" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"email\" type=\"varchar\" length=\"255\" required=\"true\"/>" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"created\" type=\"datetime\" required=\"true\"/>" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"last_login\" property=\"lastLogin\" display=\"Last Login\" type=\"datetime\"/>" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"roleId\" type=\"varchar\" length=\"25\">" . PHP_EOL;
+				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserRoles\" type=\"one-to-many\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
+							  		 "\t\t\t\t\ttable=\"roles\" column=\"name\" controller=\"RoleController\" select=\"name\"/>" . PHP_EOL;
 				  $data .= "\t\t\t</column>\n";
-				  $data .= "\t\t\t<column name=\"sessionId\" type=\"varchar\" length=\"21\">\n";
-				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserSessions\" type=\"one-to-one\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"
-							  		 table=\"sessions\" column=\"id\" controller=\"SessionController\"/>\n";
-				  $data .= "\t\t\t</column>\n";
-				  $data .= "\t\t</table>\n";
-				  $data .= "\t\t<table name=\"roles\" display=\"Roles\" model=\"Role\" description=\"Roles used in the application\">\n";
-				  $data .= "\t\t\t<column name=\"name\" type=\"varchar\" length=\"25\" primaryKey=\"true\" required=\"true\"/>\n";
-				  $data .= "\t\t\t<column name=\"description\" type=\"text\"/>\n";
-				  $data .= "\t\t</table>\n";
+				  $data .= "\t\t\t<column name=\"sessionId\" type=\"varchar\" length=\"21\">" . PHP_EOL;
+				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserSessions\" type=\"one-to-one\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
+							  		 "\t\t\t\t\ttable=\"sessions\" column=\"id\" controller=\"SessionController\"/>" . PHP_EOL;
+				  $data .= "\t\t\t</column>" . PHP_EOL;
+				  $data .= "\t\t</table>" . PHP_EOL;
+				  $data .= "\t\t<table name=\"roles\" display=\"Roles\" model=\"Role\" description=\"Roles used in the application\">" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"name\" type=\"varchar\" length=\"25\" primaryKey=\"true\" required=\"true\"/>" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"description\" type=\"text\"/>" . PHP_EOL;
+				  $data .= "\t\t</table>" . PHP_EOL;
 			  }
 
 			  if( $session ) {
 
-			  	  $data .= "\t\t<!-- AgilePHP Session -->\n";
-			  	  $data .= "\t\t<table name=\"sessions\" display=\"Session\" isSession=\"true\" model=\"Session\" description=\"User sessions\">\n";
-				  $data .= "\t\t\t<column name=\"id\" type=\"varchar\" length=\"21\" primaryKey=\"true\" description=\"Unique ID\"/>\n";
-				  $data .= "\t\t\t<column name=\"data\" type=\"text\" description=\"Name of recipient\"/>\n";
-				  $data .= "\t\t\t<column name=\"created\" type=\"timestamp\" default=\"CURRENT_TIMESTAMP\"/>\n";
-				  $data .= "\t\t</table>\n";
+			  	  $data .= "\t\t<!-- AgilePHP Session -->" . PHP_EOL;
+			  	  $data .= "\t\t<table name=\"sessions\" display=\"Session\" isSession=\"true\" model=\"Session\" description=\"User sessions\">" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"id\" type=\"varchar\" length=\"21\" primaryKey=\"true\" description=\"Unique ID\"/>" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"data\" type=\"text\" description=\"Name of recipient\"/>" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"created\" type=\"timestamp\" default=\"CURRENT_TIMESTAMP\"/>" . PHP_EOL;
+				  $data .= "\t\t</table>" . PHP_EOL;
 			  }
 
-			  $data .= "\t</database>\n";
+			  $data .= "\t</database>" . PHP_EOL;
 			  $data .= '</persistence>';
 
 	  		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml', 'w' );
@@ -219,21 +228,21 @@ class CreateProject extends AgilePHPGen {
 
 	  private function createAgilePhpXML( $debug, $interceptors, $identity, $crypto ) {
 
-	  		  $data = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-	  		  $data .= "<!DOCTYPE agilephp SYSTEM \"AgilePHP/agilephp.dtd\">\n";
-	  		  $data .= "<agilephp>\n";
+	  		  $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+	  		  $data .= '<!DOCTYPE agilephp SYSTEM "AgilePHP/agilephp.dtd">' . PHP_EOL;
+	  		  $data .= '<agilephp>' . PHP_EOL;
 
 			  if( $debug )
-			 	  $data .= "\t<logger level=\"debug\"/>\n";
+			 	  $data .= "\t<logger level=\"debug\"/>" . PHP_EOL;
 
 			  if( $identity )
-			 	  $data .= "\t<identity resetPasswordUrl=\"http://localhost/index.php/LoginController/resetPassword\" confirmationUrl=\"http://localhost/index.php/LoginController/confirm\"/>\n";
+			 	  $data .= "\t<identity resetPasswordUrl=\"http://localhost/index.php/LoginController/resetPassword\" confirmationUrl=\"http://localhost/index.php/LoginController/confirm\"/>" . PHP_EOL;
 
 			  if( $crypto )
-			 	  $data .= "\t<crypto algorithm=\"sha256\" />\n";
+			 	  $data .= "\t<crypto algorithm=\"sha256\" />" . PHP_EOL;
 
 		 	  if( $interceptors )	  		 
-				  $data .= "\t<interceptors/>\n";
+				  $data .= "\t<interceptors/>" . PHP_EOL;
 
 			  $data .= '</agilephp>';
 
@@ -247,14 +256,15 @@ class CreateProject extends AgilePHPGen {
 
 	  private function showDBTypes() {
 	  	
-	  		  echo "\n[1] SQLite\n";
-	  		  echo "[2] MySQL\n";
-	  		  echo "[3] PostgreSQL\n";
-	  		  echo "[4] Firebird\n";
-	  		  echo "[5] Informix\n";
-	  		  echo "[6] Oracle\n";
-	  		  echo "[7] dblib\n";
-	  		  echo "[8] IBM\n";
+	  		  echo PHP_EOL . "[1] SQLite" . PHP_EOL;
+	  		  echo '[2] MySQL' . PHP_EOL;
+	  		  echo '[3] MSSQL' . PHP_EOL;
+	  		  echo '[4] PostgreSQL' .PHP_EOL;
+	  		  echo '[5] Firebird' . PHP_EOL;
+	  		  echo '[6] Informix' . PHP_EOL;
+	  		  echo '[7] Oracle' . PHP_EOL;
+	  		  echo '[8] dblib' . PHP_EOL;
+	  		  echo '[9] IBM' . PHP_EOL;
 	  }
 
 	  private function getDBType( $choice ) {
@@ -268,21 +278,24 @@ class CreateProject extends AgilePHPGen {
 		  	      		return 'mysql';
 		  	      		
 		  	      	case 3:
+		  	      		return 'mssql';
+
+		  	      	case 4:
 				  	    return 'pgsql';
 				  	    
-		  	      	case 4:
+		  	      	case 5:
 		  	      		return 'firebird';
 		  	      		
-		  	      	case 5:
+		  	      	case 6:
 		  	      		return 'informix';
 	
-		  	      	case 6:
+		  	      	case 7:
 				  		 return 'oracle';
 				  		 
-		  	      	case 7:
+		  	      	case 8:
 				  		 return 'dblib';
 	
-		  	      	case 8:
+		  	      	case 9:
 		  	      		 return 'ibm';
 	
 		  	      	default:
@@ -292,24 +305,24 @@ class CreateProject extends AgilePHPGen {
 
 	  private function createAccessFile( $sqlite = false ) {
 
-	  		  $data = "<Files .htaccess>\n";
-	  		  $data .= "\torder deny,allow\n";
-			  $data .= "\tdeny from all\n";
-			  $data .= "</Files>\n";
-			  $data .= "<Files persistence.xml>\n";
-			  $data .= "\torder deny,allow\n";
-			  $data .= "\tdeny from all\n";
-			  $data .= "</Files>\n";
-			  $data .= "<Files agilephp.xml>\n";
-			  $data .= "\torder deny,allow\n";
-			  $data .= "\tdeny from all\n";
+	  		  $data = '<Files .htaccess>' . PHP_EOL;
+	  		  $data .= "\torder deny,allow" . PHP_EOL;
+			  $data .= "\tdeny from all" . PHP_EOL;
+			  $data .= "</Files>" . PHP_EOL;
+			  $data .= "<Files persistence.xml>" . PHP_EOL;
+			  $data .= "\torder deny,allow" . PHP_EOL;
+			  $data .= "\tdeny from all" . PHP_EOL;
+			  $data .= "</Files>" . PHP_EOL;
+			  $data .= "<Files agilephp.xml>" . PHP_EOL;
+			  $data .= "\torder deny,allow" . PHP_EOL;
+			  $data .= "\tdeny from all" . PHP_EOL;
 			  $data .= "</Files>";
 
 			  if( $sqlite ) {
 
-			  	  $data .= "\n<Files " . $this->getCache()->getDBName() . ".sqlite>\n";
-			  	  $data .= "\torder deny,allow\n";
-			  	  $data .= "\tdeny from all\n";
+			  	  $data .= "\n<Files " . $this->getCache()->getDBName() . ".sqlite>" . PHP_EOL;
+			  	  $data .= "\torder deny,allow" . PHP_EOL;
+			  	  $data .= "\tdeny from all" . PHP_EOL;
 			  	  $data .= "</Files>";
 		  	  }
 
@@ -338,7 +351,7 @@ class CreateProject extends AgilePHPGen {
  * component to parse and handle the current request. All calls are wrapped in a
  * try/catch which redirects the website visitor to the view/error.phtml page on error.
  * 
- * @author agilephp
+ * @author AgilePHP Generator
  * @version 0.1
  */
  require_once \'AgilePHP\' . DIRECTORY_SEPARATOR . \'AgilePHP.php\';
@@ -360,7 +373,7 @@ class CreateProject extends AgilePHPGen {
  } 
 ?>';
 	  	 	  $h = fopen( $this->getCache()->getProjectRoot() . '/index.php', 'w' );
-	  		  fwrite( $h, $code );
+	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $code ) );
 	  		  fclose( $h );    
 	  }
 	  
@@ -463,7 +476,7 @@ a {
 }';
 	  		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'view' .
 	  		  			DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'style.css', 'w' );
-	  		  fwrite( $h, $style );
+	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $style ) );
 	  		  fclose( $h );    
 	  }
 }

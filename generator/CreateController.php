@@ -13,7 +13,7 @@ class CreateController extends AgilePHPGen {
 	   */
 	  public function testCreateController() {
 
-	  		 echo "Please select from the following controllers:\n\n";
+	  		 echo 'Please select from the following controllers:' . PHP_EOL . PHP_EOL;
 
 			 $i=0;
 	  		 $it = new RecursiveDirectoryIterator( '.' . DIRECTORY_SEPARATOR . 'templates' .
@@ -34,9 +34,9 @@ class CreateController extends AgilePHPGen {
 		 	 }
 
 		 	 foreach( $controllers as $index => $name )
-		 	 		echo "[$index] $name\n";
+		 	 		echo "[$index] $name" . PHP_EOL;
 
-		 	 echo "\nAgilePHP> ";
+		 	 echo PHP_EOL . 'AgilePHP> ';
 
 		 	 $input = trim( fgets( STDIN ) );
 
@@ -46,6 +46,9 @@ class CreateController extends AgilePHPGen {
 		 	 $controller = $controllers[$input] . '.php';
 		 	 copy( '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'controllers' .
 		 	 	   DIRECTORY_SEPARATOR . $controller, $this->getCache()->getProjectRoot() . 
+		 	 	   DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $controller );
+
+		 	 $this->fixLineBreaks( $this->getCache()->getProjectRoot() . 
 		 	 	   DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $controller );
 	  }
 }
