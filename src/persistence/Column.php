@@ -360,10 +360,10 @@ class Column {
 	  /**
 	   * Marks the column as a foreign key column.
 	   * 
-	   * @param bool $foreignKey True to mark the column as a foreign key column, false otherwise
+	   * @param ForeignKey $foreignKey A ForeignKey instance representing the relationship for this column
 	   * @return void
 	   */
-	  public function setForeignKey( $foreignKey ) {
+	  public function setForeignKey( ForeignKey $foreignKey ) {
 
 	  		 $this->foreignKey = $foreignKey;
 	  }
@@ -381,7 +381,7 @@ class Column {
 	  /**
 	   * Returns boolean indicator based on whether or not the column is a foreign key field.
 	   * 
-	   * @return bool True if the column is a foreign key field, false otherwise
+	   * @return bool True if the column has a foreign key field, false otherwise
 	   */
 	  public function hasForeignKey() {
 
@@ -391,7 +391,7 @@ class Column {
 	  /**
 	   * Returns boolean indicator based on whether or not the column is a foreign key field.
 	   * 
-	   * @return bool True if the column is a foreign key field, false otherwise
+	   * @return ForeignKey The ForeignKey instance representing the relationship for this column
 	   */
 	  public function getForeignKey() {
 

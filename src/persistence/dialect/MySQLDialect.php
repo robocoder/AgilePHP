@@ -147,8 +147,8 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	   		  	  	       		   		     $sql .= ', ';
 	   		  	  		    	   }
 	   		  	  	       		   $sql .= ' ) ';
-   		  	  		   			   $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' );
    		  	  		   			   $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '' );
+   		  	  		   			   $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' );
 
 			   		  	  		   array_push( $bProcessedKeys, $fk->getName() );
 			   		  	  }

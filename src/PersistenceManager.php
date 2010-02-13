@@ -104,8 +104,16 @@ class PersistenceManager {
 	  	     		 	  break;
 
 	  	     	     case 'mssql':
-	  	     	     	  require_once 'persistence/dialect/MSSQLDialect.php';
-	  	     	     	  $this->dialect = new MSSQLDialect( $db );
+
+	  	     	     	  if( strtolower( $db->getDriver() ) == 'sqlsrv' ) {
+
+	  	     	     	  	  require_once 'persistence/dialect/SQLSRVDialect.php';
+	  	     	     	  	  $this->dialect = new SQLSRVDialect( $db );
+	  	     	     	  }
+	  	     	     	  else {
+	  	     	     	  	  require_once 'persistence/dialect/MSSQLDialect.php';
+	  	     	     	  	  $this->dialect = new MSSQLDialect( $db );
+	  	     	     	  }
 	  	     	     	  break;
 
 	  	     	    /*

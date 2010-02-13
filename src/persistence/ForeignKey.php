@@ -25,7 +25,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.2a
+ * @version 0.3a
  */
 class ForeignKey {
 
@@ -54,10 +54,10 @@ class ForeignKey {
 		  		 $this->setOnUpdate( (string)$foreign->attributes()->onUpdate );
 		  		 $this->setOnDelete( (string)$foreign->attributes()->onDelete );
 		  		 $this->setSelect( (string)$foreign->attributes()->select );
-
-		  		 $this->fkTable = $tableName;
-		  		 $this->fkColumn = $columnName;
 	  		 }
+
+	  		 $this->fkTable = $tableName;
+		  	 $this->fkColumn = $columnName;
 	  }
 
 	  /**
@@ -179,7 +179,7 @@ class ForeignKey {
 	   */
 	  public function setOnUpdate( $action ) {
 
-	  		 $this->onUpdate = str_replace( '_', ' ', $action );
+	  		 $this->onUpdate = $action;
 	  }
 
 	  /**
@@ -202,7 +202,7 @@ class ForeignKey {
 	   */
 	  public function setOnDelete( $action ) {
 
-	  		 $this->onDelete = str_replace( '_', ' ', $action ); 
+	  		 $this->onDelete = $action; 
 	  }
 
 	  /**

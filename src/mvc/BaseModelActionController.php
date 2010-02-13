@@ -369,59 +369,69 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 			     switch( $type ) {
 
-	 	       	  		   case 'boolean':
-	 	       	  		  		return $value == true ? true : false;
- 	       	  		  	   break;
+	 	       	  		 case 'boolean':
+	 	       	  		  	  return $value == true ? true : false;
+ 	       	  		  	 break;
 
-	 	       	  		   case 'integer':
-	 	       	  		  		return (integer) $value;
-	 	       	  		   break;
+	 	       	  		 case 'integer':
+	 	       	  		 case 'tinyiny':
+	 	       	  		 case 'smallint':
+	 	       	  		 	  return (integer) $value;
+	 	       	  		 break;
 	
-	 	       	  		   case 'int':
-	 	       	  		  		return (int) $value;
-	 	       	  		   break;
+	 	       	  		 case 'int':
+	 	       	  		  	  return (int) $value;
+	 	       	  		 break;
 
-	 	       	  		   case 'bigint':
-								return $this->getPersistenceManager()->toBigInt( $value );
-						   break;
+	 	       	  		 case 'bigint':
+							  return $this->getPersistenceManager()->toBigInt( $value );
+						 break;
 
-	 	       	  		   case 'double':
-	 	       	  		  		return (float) $value;
-	 	       	  		   break;
+	 	       	  		 case 'double':
+	 	       	  		  	  return (float) $value;
+	 	       	  		 break;
 
-	 	       	  		   case 'decimal':
-	 	       	  		  		return (float) $value;
-	 	       	  		   break;
+	 	       	  		 case 'decimal':
+	 	       	  		  	  return (float) $value;
+	 	       	  		 break;
 
-	 	       	  		   case 'varchar':
-	 	       	  		   		return (string) $value;
-	 	       	  		   break;
+	 	       	  		 case 'float':
+	 	       	  		 case 'money':
+	 	       	  		  	  return (float) $value;
+	 	       	  		 break;
 
-	 	       	  		   case 'float':
-	 	       	  		  		return (float) $value;
-	 	       	  		   break;
+	 	       	  		 case 'text':
+	 	       	  		 case 'char':
+	 	       	  		 case 'varchar':
+	 	       	  		 case 'nvarchar':
+	 	       	  		 case 'ntext':
+	 	       	  		  	  return (string) $value;
+	 	       	  		 break;
 
-	 	       	  		   case 'text':
-	 	       	  		  		return (string) $value;
-	 	       	  		   break;
+	 	       	  		 case 'date':
+	 	       	  		  	  return date( 'c', strtotime( $value ) );
+	 	       	  		 break;
 
-	 	       	  		   case 'date':
-	 	       	  		  		return date( 'c', strtotime( $value ) );
-	 	       	  		   break;
+	 	       	  		 case 'datetime':
+	 	       	  		 case 'smalldatetime':
+	 	       	  		  	  return date( 'c', strtotime( $value ) );
+	 	       	  		 break;
 
-	 	       	  		   case 'datetime':
-	 	       	  		  		return date( 'c', strtotime( $value ) );
-	 	       	  		   break;
+	 	       	  		 case 'bit':
+	 	       	  		  	  return ($value == 1) ? 1 : 'NULL'; 
+	 	       	  		 break;
 
-	 	       	  		   case 'bit':
-	 	       	  		  		return ($value == 1) ? 1 : 'NULL'; 
-	 	       	  		   break;
+	 	       	  		 case 'varbinary':
+	 	       	  		 case 'image':
+	 	       	  		 case 'uniqueidentifier':
+	 	       	  		 	  return $value;	
+	 	       	  		 break;
 
-	 	       	  		   default:
-	 	       	  		   		Logger::getInstance()->debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $type .
+	 	       	  		 default:
+	 	       	  		   	Logger::getInstance()->debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $type .
 	 	       	  		   									  '\'. Using (sanitized) value \'' . $value . '\'.' );
-	 	       	  		   		return $value;
-	 	       	  		   break;
+	 	       	  		   	return $value;
+	 	       	  		 break;
         			   }
 	     }
 }

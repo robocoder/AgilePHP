@@ -89,8 +89,11 @@ pear install firephp/FirePHPCore
 Issue: [Microsoft][ODBC Driver Manager] Function sequence error
 Reason: This happens when using ODBC driver on SQL Server 2000 to insert/update datetime fields.
 Resolution: Upgrade SQL Server to newer version
+Resolution: If running on a windows server, specify 'SQLSRV' as the MSSQL driver and the persistence framework will
+			use the SQLSRVDialect class to perform persistence operations. This requires the "Microsoft SQL Server Driver for PHP 1.1"
+See: http://www.microsoft.com/sqlserver/2005/en/us/PHP-Driver.aspx.
 See: http://bugs.php.net/bug.php?id=40452
 
-Issue: Clicking on sortable column headers rendered by mvc/XSLTRenderer breaks in some cases when using MSSQL server.
+Issue: Clicking on sortable column headers rendered by mvc/XSLTRenderer breaks in some cases when using MSSQLDialect class.
 Reason: The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator.
 Resolution: Need to update MSSQLDialect class to use LIKE clause for column types listed above.

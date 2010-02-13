@@ -61,13 +61,26 @@ class ReverseEngineerDatabase extends AgilePHPGen {
 	      	      foreach( $table->getColumns() as $column ) {
 
 	      	      		   $columnXml = "\t\t\t";
-	      	      		   $columnXml .= '<column name="' . $column->getName() . '" type="' . $column->getType() . '" ';
-	      	      		   $columnXml .= ($column->getLength()) ? 'length="' . $column->getLength() . '"' : '';
-	      	      		   $columnXml .= ($column->hasForeignKey()) ? ' primaryKey="true"' : '';
+	      	      		   $columnXml .= '<column name="' . $column->getName() . '" type="' . $column->getType() . '"';
+	      	      		   $columnXml .= ($column->getLength()) ? ' length="' . $column->getLength() . '"' : '';
+	      	      		   $columnXml .= ($column->isPrimaryKey()) ? ' primaryKey="true"' : '';
 	      	      		   $columnXml .= ($column->isAutoIncrement()) ? ' autoIncrement="true"' : '';
 	      	      		   $columnXml .= ($column->getDefault()) ? ' default="' . $column->getDefault() . '"' : '';
 	      	      		   $columnXml .= ($column->isRequired()) ? ' required="true"' : '';
-	      	      		   $columnXml .= '/>' . PHP_EOL;
+	      	      		   
+	      	      		   if( $column->isForeignKey() ) {
+
+	      	      		   	   $foreignKey = $column->getForeignKey();
+      	      		   	   	   $foreignKeyXml = "\t\t\t\t";
+      	      		   	   	   $foreignKeyXml .= '<foreignKey name="' . $foreignKey->getName() . '" type="' . $foreignKey->getType() . '" ';
+      	      		   	   	   $foreignKeyXml .= 'onDelete="' . $foreignKey->getOnDelete() . '" onUpdate="' . $foreignKey->getOnUpdate() . '" ' . PHP_EOL;
+      	      		   	   	   $foreignKeyXml .= "\t\t\t\t\t" . 'table="' . $foreignKey->getReferencedTable() . '" column="' . $foreignKey->getReferencedColumn() . '" ';
+      	      		   	   	   $foreignKeyXml .= 'controller="' . $foreignKey->getReferencedController() . '"/>';
+
+      	      		   	   	   $columnXml .= '>' . PHP_EOL . $foreignKeyXml . PHP_EOL . "\t\t\t</column>" . PHP_EOL;
+	      	      		   }
+	      	      		   else
+	      	      		   		$columnXml .= '/>' . PHP_EOL;
 
 	      	      		   $tableXml .= $columnXml;
 
@@ -83,7 +96,7 @@ class ReverseEngineerDatabase extends AgilePHPGen {
 	      	      }
 
 	      	      $tableXml .= "\t\t</table>" . PHP_EOL;
-	      	      array_push( $models, array( $table->getName() => $properties ) );
+	      	      array_push( $models, array( ucfirst( $table->getName() ) => $properties ) );
       		  }
 
       		  return array( 'models' => $models, 'xml' => $tableXml );

@@ -28,33 +28,28 @@
  * @package com.makeabyte.agilephp.persistence.dialect
  * @version 0.3a
  */
-class MSSQLDialect extends BasePersistence implements SQLDialect {
+class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
-	 /**
-	  *  Initalize MSSQL Dialect.
-	  *  
-	  * @param Database $db The Database object representing persistence.xml
-	  * @return void
-	  */
-	  public function __construct( Database $db ) {
+	  private $conn;
+	  private $stmt;
+	  private $statement;
 
-	  		 try {
-	  	  			$this->pdo = new PDO( 'odbc:DRIVER={' . $db->getDriver() . '};SERVER=' . $db->getHostname() . ';DATABASE=' . $db->getName(), 
-	  	     			$db->getUsername(), $db->getPassword() );   		
-	  	     }
-	  	     catch( PDOException $pdoe ){
+	  /**
+	   *  Initalize SQLSRVDialect.
+	   *  
+	   * @param Database $db The Database object representing persistence.xml
+	   * @return void
+	   */
+	   public function __construct( Database $db ) {
 
-	  	     	    Logger::getInstance()->debug( 'MSSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
+	   		  $params = array( 'Database' => $db->getName(), 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
+	   		  $noDbParams = array( 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
 
-	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
-	  	     		// be invoked to create the database schema.
-	  	     	    if( strpos( $pdoe->getMessage(), 'Login failed' ) )
-	  	     	    	$this->pdo = new PDO( 'odbc:DRIVER={' . $db->getDriver() . '};SERVER=' . $db->getHostname(), $db->getUsername(), $db->getPassword() );
-	  	     	    else
-	  	     	    	throw new AgilePHP_Exception( 'Failed to create MSSQLDialect instance. ' . $pdoe->getMessage() );
-	  	     }
+	  	      if( !$this->conn = sqlsrv_connect( $db->getHostname(), $params ) )
+			 	  if( !$this->conn = sqlsrv_connect( $db->getHostname(), $noDbParams ) ) // Create statement needs to bind to server
+			 	  	  throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
 
-	 	     $this->database = $db;
+	 	      $this->database = $db;
 	  }
 
 	  /**
@@ -64,11 +59,13 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  public function create() {
 
 	  		 $this->query( 'CREATE DATABASE ' . $this->database->getName() . ';' );
-
-	  		 // Bind to the new database.
-	  		 $this->pdo = new PDO( 'odbc:DRIVER={' . $this->database->getDriver() . '};SERVER=' . $this->database->getHostname() . ';DATABASE=' . $this->database->getName(), 
-	  	     			$this->database->getUsername(), $this->database->getPassword() );
-
+	  		 
+	  		 // Close the connection to the server and bind to the new database.
+	  		 $this->close();
+	  		 $params = array( 'Database' => $this->database->getName(), 'UID' => $this->database->getUsername(), 'PWD' => $this->database->getPassword() );
+	  		 if( !$this->conn = sqlsrv_connect( $this->database->getHostname(), $params ) )
+	  		 	 throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+	  		 	 
 			 $constraintFails = array();
 
 	  		 foreach( $this->database->getTables() as $table ) {
@@ -144,27 +141,104 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 			   		  }
 
 					  $sql .= ');';
-					  try {
-			   		  		$this->query( $sql );
-					  }
-					  catch( AgilePHP_PersistenceException $e ) {
+			   		  if( !$this->query( $sql ) ) {
 
-							 if( strpos( $e->getMessage(), 'references invalid table' ) ) {
+			   		  	  $error = sqlsrv_errors();
 
-			   		  	  	 	 array_push( $constraintFails, $sql );
-			   		  	  	  	 continue;
-			   		  	  	 }
+			   		  	  // This saves the create operation from blowing up if persistence.xml defines a table
+			   		  	  // that references a table further down the persistence.xml file that has not been
+			   		  	  // created yet. Is there a cleaner way - like disabling constraint checks?
+			   		  	  if( stristr( $error[0]['message'], 'references invalid table' ) ) {
+			   		  	  
+			   		  	  	  array_push( $constraintFails, $sql );
+			   		  	  	  continue;
+			   		  	  }
 
-			   		  	  	 throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+			   		  	  throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
 			   		  }
 	  		 }
 
 	  		 // Constraint hack continued
 	  		 if( count( $constraintFails ) )
 	  		 	 foreach( $constraintFails as $sql )
-	  		 	 	  $this->query( $sql );
+	  		 	 		if( !$this->query( $sql ) )
+		  		 	 		throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );	  		 
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/AgilePHP/persistence/BasePersistence#beginTransaction()
+	   */
+	  public function beginTransaction() {
+	  	
+	  		 Logger::getInstance()->debug( 'SQLSRVDialect::beginTransaction Beginning transaction' );
+	  }
+	  
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/AgilePHP/persistence/BasePersistence#commit()
+	   */
+	  public function commit() {
+
+	  		 sqlsrv_commit( $this->conn );
+
+	  		 Logger::getInstance()->debug( 'SQLSRVDialect::commit Transaction successfully committed.' );
+	  }
+	  
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/AgilePHP/persistence/BasePersistence#rollBack($message, $code)
+	   */
+	  public function rollBack( $message = null, $code = 0 ) {
+
+	  		 Logger::getInstance()->debug( 'SQLSRVDialect::rollBack ' . (($message == null) ? '' : ' ' . $message ) );
+
+	  		 $this->transactionInProgress = false;
+	  		 sqlsrv_rollback( $this->conn );
+
+	  		 if( $message ) throw new AgilePHP_PersistenceException( $message, $code );
+	  }
+
+	  /**
+	   * A statement resource. If the statement cannot be created and/or executed, false is returned.
+	   * 
+	   * @param String $sql The SQL statement to execute
+	   * @param array $params Optional array of values that correspond to parameters in a parameterized query.
+	   * @return A statement resource. If the statement cannot be created and/or executed, false is returned.
+	   * @see src/AgilePHP/persistence/BasePersistence#query($sql)
+	   */
+	  public function query( $sql, $params = array() ) {
+
+	  		 return sqlsrv_query( $this->conn, $sql, (count( $params )) ? $params : null );
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/BasePersistence#prepare($statement)
+	   */
+	  public function prepare( $statement ) {
+
+	  		 $this->statement = $statement;
+	  }
+	  
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/BasePersistence#execute($inputParameters)
+	   */
+	  public function execute( array $inputParameters = array() ) {
+
+	  		 // SQLSRV driver requires parameters passed to prepare be passed by reference
+	  		 $params = array();
+	  		 for( $i=0; $i<count( $inputParameters ); $i++ )
+	  		 	 $params[$i] = &$inputParameters[$i];
+
+	  		 if( !$this->stmt = sqlsrv_prepare( $this->conn, $this->statement, $params ) )
+	  		 	 throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+
+	  		 if( !sqlsrv_execute( $this->stmt ) )
+	  		 	 throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+	  }
+	  
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/persistence/BasePersistence#truncate($model)
@@ -172,7 +246,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  public function truncate( $model ) {
 
 	  	     $table = $this->getTableByModel( $model );
-	  		 $this->query( 'TRUNCATE ' . $table->getName() . ';' );
+	  		 $this->query( 'TRUNCATE table ' . $table->getName() . ';' );
 	  }
 	  
 	  /**
@@ -185,7 +259,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  }
 
 	  /**
-	   * Overrides parent find method to provide MSSQL specific TOP command to limit returned result sets.
+	   * Overrides parent find method to provide MSSQL specific syntax.
 	   * 
 	   * @param $model A domain model object. Any fields which are set in the object are used to filter results.
 	   * @throws AgilePHP_PersistenceException If any primary keys contain null values or any
@@ -197,15 +271,20 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 			 $newModel = $table->getModelInstance();
 			 $values = array();
 
-			 Logger::getInstance()->debug( 'MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
+			 Logger::getInstance()->debug( 'SQLSRVDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		 try {
 	  		  	    $pkeyColumns = $table->getPrimaryKeyColumns();
 	  		   		if( $this->isEmpty( $model ) ) {
 
-	    	   	        $sql = 'SELECT' . ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() : '') . 
-	    	   	        				   (($this->getDistinct() == null) ? ' *' : 'DISTINCT ' . $this->getDistinct()) . 
-	    	   	        		' FROM ' . $table->getName();
+	    	   	        $sql = 'SELECT';
+
+	    	   	        if( $this->getDistinct() != null )	    	   	        	
+	    	   	        	$sql .= ' DISTINCT ' . $this->getDistinct();
+	    	   	        else 
+	    	   	        		$sql .= ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() . ' *' : '');
+
+	    	   	        $sql .= ' FROM ' . $table->getName();
 
 	    	   	        $order = $this->getOrderBy();
 	    	   	        $offset = $this->getOffset();
@@ -232,7 +311,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 							 	  $accessor = $this->toAccessor( $pkeyColumns[$i]->getModelPropertyName() );
 						     	  if( $model->$accessor() == null ) {
 
-								      Logger::getInstance()->debug( 'MSSQLDialect::find Warning about null primary key for table \'' . $table->getName() . '\' column \'' .
+								      Logger::getInstance()->debug( 'SQLSRVDialect::find Warning about null primary key for table \'' . $table->getName() . '\' column \'' .
 								      					 $pkeyColumns[$i]->getName() . '\'. Primary keys are used in search criteria. Returning null...' );
 								      return null;
 								  }
@@ -240,30 +319,32 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 						   		  $sql .= $pkeyColumns[$i]->getName() . '=?';
 								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
 
-								  array_push( $values, $model->$accessor() );
+								  $values[$i] = $model->$accessor();
 						     }
 	    	   		 }
 
-					 $stmt = $this->prepare( $sql );
-					 $stmt->setFetchMode( PDO::FETCH_OBJ );
-					 $stmt->execute( $values );
-					 $result = $stmt->fetchall();
+					 $this->prepare( $sql );
+					 $this->execute( $values );
 
-					 if( !count( $result ) ) {
+					 if( !sqlsrv_has_rows( $this->stmt ) ) { 
 
-					 	 Logger::getInstance()->debug( 'MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
-					 	 return null;
+					 	Logger::getInstance()->debug( 'SQLSRVDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	return null;
 					 }
 
 				 	 $index = 0;
 				 	 $models = array();
-					 foreach( $result as $stdClass  ) {
+					 while( $stdClass = sqlsrv_fetch_object( $this->stmt ) ) {
 
 					 		  $m = $table->getModelInstance();
 					 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
 
-					 	   	  		   if( !$value ) continue;
+					 	   	  		   if( $value == null ) continue;
+
 					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
+
+					 	   	  		   if( is_object( $value ) )
+					 	   	  		   	   $value = $this->cast( $value );
 
 							 	   	   // Create foreign model instances from foreign values
 						 	 		   foreach( $table->getColumns() as $column ) {
@@ -304,9 +385,22 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  		 return null;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/AgilePHP/persistence/BasePersistence#close()
+	   */
+	  public function close() {
+
+	  		 if( $this->conn )
+	  		 	sqlsrv_close( $this->conn );
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#reverseEngineer()
+	   */
 	  public function reverseEngineer() {
 
-	  		 $pm = new PersistenceManager(); // execute sproc in different context
 	  		 $lengthables = array( 'binary', 'char', 'decimal', 'nchar', 'numeric', 'nvarchar', 'varbinary', 'varchar' );
 
 	  		 $Database = new Database();
@@ -317,9 +411,11 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  		 $Database->setUsername( $this->database->getUsername() );
 	  		 $Database->setPassword( $this->database->getPassword() );
 
-	  		 $stmt = $this->query( 'select * from information_schema.tables;' );
-	  		 $stmt->setFetchMode( PDO::FETCH_OBJ );
-			 $tables = $stmt->fetchAll();
+	  		 $stmt = $this->prepare( 'select * from information_schema.tables;' );
+	  		 $this->execute();
+			 $tables = array();
+			 while( $stdClass = sqlsrv_fetch_object( $this->stmt ) )
+			 	array_push( $tables, $stdClass );
 
 			 $stmt2 = $this->query( 'SELECT 
 							    FK_Table  = FK.TABLE_NAME, 
@@ -351,15 +447,16 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 							    ) PT 
 							    ON PT.TABLE_NAME = PK.TABLE_NAME' );
 
-			 $stmt2->setFetchMode( PDO::FETCH_OBJ );
-			 $foreignKeys = $stmt2->fetchAll();
+			 $foreignKeys = array();
+			 while( $stdClass = sqlsrv_fetch_object( $stmt2 ) )
+			 	array_push( $foreignKeys, $stdClass );
 
 			 foreach( $tables as $table ) {
 
 			 		// ignore system tables
 				 	if( substr( $table->TABLE_NAME, 0, 3 ) == 'sys' || $table->TABLE_NAME == 'dtproperties' )
 				 	 	continue;
-
+				 	 
 			 		$stmt3 = $this->query( 'SELECT [name]
 									 FROM syscolumns 
 									 WHERE [id] IN (SELECT [id] 
@@ -369,19 +466,26 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 									                   FROM sysindexkeys SIK 
 									                   JOIN sysobjects SO ON SIK.[id] = SO.[id]  
 									                  WHERE SIK.indid = 1
-									                    AND SO.[name] = \'' . $table->TABLE_NAME . '\' )' );
+									                    AND SO.[name] = \'' . $table->TABLE_NAME . '\')' );
 
-			 		$stmt3->setFetchMode( PDO::FETCH_OBJ );
-					$primaryKeys = $stmt3->fetchAll();
+			 		
+					$primaryKeys = array();
+
+					if( $stmt3 ) {
+
+						while( $stdClass = sqlsrv_fetch_object( $stmt3 ) )
+							array_push( $primaryKeys, $stdClass );
+					}
 
 			 		$Table = new Table();
 			 		$Table->setName( $table->TABLE_NAME );
 			 		$Table->setModel( ucfirst( $table->TABLE_NAME ) );
 
-			 		$stmt4 = $pm->prepare( 'exec sp_columns ' . $table->TABLE_NAME );
-			 		$stmt4->setFetchMode( PDO::FETCH_OBJ );
-			 		$stmt4->execute();
-					$columns = $stmt4->fetchAll();
+			 		$this->prepare( 'exec sp_columns ' . $table->TABLE_NAME );
+			  		$this->execute();
+					$columns = array();
+					while( $stdClass = sqlsrv_fetch_object( $this->stmt ) )
+						array_push( $columns, $stdClass );
 
 					foreach( $columns as $column ) {
 
@@ -426,7 +530,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 										$ForeignKey->setType( 'one-to-many' );
 										$ForeignKey->setReferencedTable( $fkey->PK_Table );
 										$ForeignKey->setReferencedColumn( $fkey->PK_Column );
-										$ForeignKey->setReferencedController( ucfirst( $fkey->PK_Table ) . 'Controller' );
+										$ForeignKey->setReferencedController( ucfirst( $fkey->FK_Table ) . 'Controller' );
 										$ForeignKey->setOnDelete( ($Column->isRequired()) ? 'CASCADE' : 'SET_NULL' );
 										$ForeignKey->setOnUpdate( 'CASCADE' );
 
@@ -443,6 +547,38 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 			 // sp_stored_procedures
 
 			 return $Database;
+	  }
+	  
+	  /**
+	   * Returns the total number of records in the specified model.
+	   * 
+	   * @param Object $model The domain object to get the count for.
+	   * @return Integer The total number of records in the table.
+	   */
+	  public function count( $model ) {
+
+	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel( $model )->getName();
+			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
+			 $sql .= ';';
+
+	     	 $this->prepare( $sql );
+	     	 $this->execute();
+  			 $result = sqlsrv_fetch_object( $this->stmt );
+
+  			 return ($result == null) ? 0 : $result->count;
+	  }
+
+	  /**
+	   * Provides unitlity method for casting SQL SERVER objects to PHP values.
+	   * 
+	   * @param Object $value The SQL SERVER object to extract the PHP value from.
+	   * @return mixed The extracted PHP value.
+	   */
+	  private function cast( $value ) {
+
+	  		  if( $value instanceof DateTime )
+	  		  	  if( isset( $value->date ) )
+	  		  	  	  return $value->date;
 	  }
 }
 ?>

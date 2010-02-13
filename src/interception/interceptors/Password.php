@@ -39,6 +39,13 @@ class Password {
 	   */
 	  public $parameter;
 
+	  /**
+	   * Hashes the intercepted parameter using the algorithm configured for the Crypto component.
+	   * 
+	   * @param InvocationContext $ic The intercepted invocation context
+	   * @return mixed The InvocationContext if the call has been altered, void otherwise
+	   * @throws AgilePHP_InterceptionException if a specified parameter index is out of bounds
+	   */
 	  #@AroundInvoke
 	  public function hash( InvocationContext $ic ) {
 
@@ -57,12 +64,12 @@ class Password {
 	  		 $crypto = new Crypto();
 	  		 $params = $ic->getParameters();
 
-	  		 if( $parameter ) {
+	  		 if( $this->parameter ) {
 
-	  		 	 if( !array_key_exists( $parameter, $params ) )
+	  		 	 if( !array_key_exists( $this->parameter, $params ) )
 	  		 	 	 throw new AgilePHP_InterceptionException( '#@Password::parameter index out of bounds' );
 
-	  		 	 $params[$parameter] = $crypto->getDigest( $params[$parameter] );
+	  		 	 $params[$this->parameter] = $crypto->getDigest( $params[$this->parameter] );
 
 	  		 	 $ic->setParameters( $params );
 

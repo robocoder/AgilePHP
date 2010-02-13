@@ -108,7 +108,7 @@ class CreateProject extends AgilePHPGen {
 
 	  		 if( $cache->getDatabase() == 'y' ) {
 
-	  		 	 echo "What type of database server are you using?\nAgilePHP> ";
+	  		 	 echo 'What type of database server are you using?' . PHP_EOL . 'AgilePHP> ';
 	  		 	 $this->showDBTypes();
 	  		 	 $cache->setDBType( $this->getDBType( trim( fgets( STDIN ) ) ) );
 	  		 	 
@@ -156,11 +156,9 @@ class CreateProject extends AgilePHPGen {
 			      	 if( $file != '.' && $file != '..' && substr( $file, 0, 4 ) != '.svn' ) {
 
 			             if( is_dir( $src . DIRECTORY_SEPARATOR . $file ) )
-			                $this->recursiveCopy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
-			             else {
 
-			             	if( substr( getcwd(), 0, 1 ) == '/' )
-			             	exit;
+			             	 $this->recursiveCopy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
+			             else {
 
 			             	copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
 
@@ -193,7 +191,7 @@ class CreateProject extends AgilePHPGen {
 				  $data .= "\t\t\t<column name=\"roleId\" type=\"varchar\" length=\"25\">" . PHP_EOL;
 				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserRoles\" type=\"one-to-many\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
 							  		 "\t\t\t\t\ttable=\"roles\" column=\"name\" controller=\"RoleController\" select=\"name\"/>" . PHP_EOL;
-				  $data .= "\t\t\t</column>\n";
+				  $data .= "\t\t\t</column>" . PHP_EOL;
 				  $data .= "\t\t\t<column name=\"sessionId\" type=\"varchar\" length=\"21\">" . PHP_EOL;
 				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserSessions\" type=\"one-to-one\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
 							  		 "\t\t\t\t\ttable=\"sessions\" column=\"id\" controller=\"SessionController\"/>" . PHP_EOL;
@@ -320,7 +318,7 @@ class CreateProject extends AgilePHPGen {
 
 			  if( $sqlite ) {
 
-			  	  $data .= "\n<Files " . $this->getCache()->getDBName() . ".sqlite>" . PHP_EOL;
+			  	  $data .= PHP_EOL . "<Files " . $this->getCache()->getDBName() . ".sqlite>" . PHP_EOL;
 			  	  $data .= "\torder deny,allow" . PHP_EOL;
 			  	  $data .= "\tdeny from all" . PHP_EOL;
 			  	  $data .= "</Files>";
@@ -357,7 +355,9 @@ class CreateProject extends AgilePHPGen {
  require_once \'AgilePHP\' . DIRECTORY_SEPARATOR . \'AgilePHP.php\';
 
  try {
-		$agilephp = AgilePHP::getFramework();  	
+		$agilephp = AgilePHP::getFramework();
+		$agilephp->setFrameworkRoot( \'' . $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'AgilePHP\' );
+		$agilephp->setDisplayPhpErrors( true );
 		$agilephp->setDefaultTimezone( \'America/New_York\' );
 
 		MVC::getInstance()->processRequest();

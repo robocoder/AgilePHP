@@ -249,7 +249,7 @@ class AgilePHP {
 
 	  	     $this->displayPhpErrors = ($bool == true);
 
-	  	     if( $bool === false ) {
+	  	     if( $this->displayPhpErrors ) {
 
 	  	      	 ini_set( 'display_errors', '1' );
 	  	      	 error_reporting( E_ALL );

@@ -34,14 +34,20 @@
 #@Interceptor
 class Id {
 
+	  /**
+	   * Populates model ActiveRecord state
+	   * 
+	   * @param InvocationContext $ic The interceptor invocation context
+	   * @return mixed InvocationContext if the context of the call has changed, null otherwise.
+	   */
 	  #@AroundInvoke
 	  public function populate( InvocationContext $ic ) {
 
-	 	  	 // Dont encrypt passwords coming from persistence 'find' operation.
 	  		 $callee = $ic->getCallee();
 	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file'] );
 	  		 $className = str_replace( '.php', '', array_pop( $pieces ) );
 
+ 		 	 // Dont populate calls made from persistence package.
 	  		 if( $className == 'BasePersistence' || $className == 'Id' || preg_match( '/dialect$/i', $className ) )
 	  		 	 return $ic->proceed();
 

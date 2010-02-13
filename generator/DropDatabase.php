@@ -11,7 +11,7 @@ class DropDatabase extends AgilePHPGen {
 	   * 
 	   * @return void
 	   */
-	  public function testCreateDatabase() {
+	  public function testDropDatabase() {
 
 	  		 $agilephp = AgilePHP::getFramework();
 	  	     $agilephp->setDisplayPhpErrors( true );

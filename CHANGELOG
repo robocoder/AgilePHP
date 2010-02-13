@@ -1,22 +1,18 @@
-0.9a
+0.10a
 ----
 
-- Changed all SQL datetime data types from date( 'c' ) to date( 'Y-m-d H:i:s' ). Effected classes are:
-	o Identity
-	o User
-	o SessionScope
-	o Session
-    ? Should persistence dialect classes be responsible for formatting? Should an interceptor be responsible?
-      Check out test/classes/interceptors/SQLDateTime.php for an example interceptor.
-- Refactored legacy persistence find method to use prepared statements instead of a raw SQL query.
-- Slight mods to test package. Logic that parsed platform (windows/*nix) and admin.phtml notice on $content variable.
-- Added MVC::loadController method to ensure requested controller is loaded from the web application control directory ONLY.
-- Refactored MVC::processRequest. No longer uses reflection to invoke controllers as it caused a ReflectionException
-  on controllers which were intercepted since the InterceptorProxy does not actually contain the method being invoked.
-- Refactored AnnotationParser so that all methods and properties are static.
-- Removed test/classes/AJAXController as it was causing autoload issues with AJAXController in test/control.
-- Refactored Logger component to use DIRECTORY_SEPARATOR instead of hard coded forward slashes
-- Refactored all generator classes to use PHP_EOL instead of hard coded \n new lines.
-- Refactored generator/CreateProject to convert AgilePHP framework classes from \n to PHP_EOL when copying
-  core framework classes to new project.
-- Refactored src/annotation/AnnotationParser::parse to implode on PHP_EOL instead of hard coded \n line seperator. 
+- Bug fix to generator/CreateProject::recursiveCopy. Removed debug exit statement.
+- Bug fix to AgilePHP::setDisplayPhpErrors. Now setting to true causes PHP errors to be output.
+- Added $agilephp->setDisplayPhpErrors( true ) to generator/CreateProject::createIndexDotPHP.
+- Bug fix to #@Password interceptor. Referencing local $parameter variable instead of class property.
+- Refactored comments in #@Id and #@Password interceptors.
+- Added SQLSRVDialect to persistence package and refactored PersistenceManager to support the new dialect via the driver attribute in persistence.xml
+- Added automatic generation of triggers to enforce referential integrity based on persistence.xml in SQLiteDialect.
+- Removed replace _ code in ForeignKey in regards to SET_NULL and SET_DEFAULT.
+- Added SQLiteDialect::reverseEngineer. Also foreign key SQL syntax to create method.
+- Added automatic trigger generation in SQLiteDialect::create to enforce constraints / referential integrity.
+- Refactored persistence.dtd so that Table and Column elements are optional. reverseEngineer simply requires a database element.
+- Flip flopped ON UPDATE and ON DELETE positions in MySQLDialect::create.
+- Added create and refacted reverseEngineer methods in MSSQLDialect.
+- Added MSSQL data types to BaseModelActionController::getCastedValue. I think this needs to be removed and the SQL dialect class should be repsonsible
+  for type casting. Perhaps the dialect class would pass it off to a DialectTypeCast? class for conversion.
