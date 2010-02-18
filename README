@@ -75,6 +75,7 @@ pear install firephp/FirePHPCore
  > Need to add support to persistence/Column for multiple foreign keys per column
  > Complete reverse engineering logic in dialect classes and generator/ReverseEngineerDatabase.
  > Add support for database diff's.
+ > Add SOAP support for DOCUMENT/LITERAL wrapped
  
  --------------------------
  ** Windows Specific TODO's

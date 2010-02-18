@@ -1,18 +1,20 @@
-0.10a
-----
+0.11a
+-----
 
-- Bug fix to generator/CreateProject::recursiveCopy. Removed debug exit statement.
-- Bug fix to AgilePHP::setDisplayPhpErrors. Now setting to true causes PHP errors to be output.
-- Added $agilephp->setDisplayPhpErrors( true ) to generator/CreateProject::createIndexDotPHP.
-- Bug fix to #@Password interceptor. Referencing local $parameter variable instead of class property.
-- Refactored comments in #@Id and #@Password interceptors.
-- Added SQLSRVDialect to persistence package and refactored PersistenceManager to support the new dialect via the driver attribute in persistence.xml
-- Added automatic generation of triggers to enforce referential integrity based on persistence.xml in SQLiteDialect.
-- Removed replace _ code in ForeignKey in regards to SET_NULL and SET_DEFAULT.
-- Added SQLiteDialect::reverseEngineer. Also foreign key SQL syntax to create method.
-- Added automatic trigger generation in SQLiteDialect::create to enforce constraints / referential integrity.
-- Refactored persistence.dtd so that Table and Column elements are optional. reverseEngineer simply requires a database element.
-- Flip flopped ON UPDATE and ON DELETE positions in MySQLDialect::create.
-- Added create and refacted reverseEngineer methods in MSSQLDialect.
-- Added MSSQL data types to BaseModelActionController::getCastedValue. I think this needs to be removed and the SQL dialect class should be repsonsible
-  for type casting. Perhaps the dialect class would pass it off to a DialectTypeCast? class for conversion.
+- Created #@RequestParam interceptor and associated test artifacts.
+- Refactored InterceptorProxy::__construct to support all property level interceptors. Removed #@Id specific interceptor code.
+- Created WebService component that generates a WSDL from a PHP class and allows remote execution of its methods via SOAP.
+- Created #@WebMethod annotation responsible for authorizing a class methods for use with the WebService component.
+- Bug fix to AnnotationParser::getSourceCode. Exception was referencing old non-static $class variable.
+- Added code to MVC::processRequest to make sure the requested action/method exists.
+- Refactored AnnotationParser::parse to send annotations to parseAnnotations method as an array. Refactored parseAnnotations accordingly.
+- Refactored AnnotationParser::getSourceCode so that intercepted classes are searched for by their initial class name, not ClassName_Intercepted.
+- Refactored MVC::processRequest check that requested action/method exists so it looks within InterceptorProxy to the inner/intercepted class.
+- Started working on web service support. Created new SoapService abstract class and the following new annotations:
+	o #@WebService
+	o #@WebMethod
+	o #@WebParam
+	o #@SOAPBinding
+	o #@WSDL - (This is an interceptor. Decorate an empty method in the web service class with #@WSDL to have the method automatically
+				generate a WSDL file for the web service when invoked)
+- Created TestAPI, MathTest, and WebServiceTest in test package to make sure the web services functionality works.

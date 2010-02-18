@@ -220,16 +220,32 @@ class MVC {
 
 	  	     $oController = new $this->controller;
 
-	  	     try {
+	  	     // This try/catch statement hides the exception stack of the inner call. This makes debugging difficult.
+	  	     //try {
 		  	     	if( isset( $mvcPieces ) ) {
-	
+
 		  	     		$request = Scope::getRequestScope();
-	
+
 		  	     		foreach( $mvcPieces as $key => $val )
 					  	     	 $mvcPieces[$key] = $request->sanitize( $val );
-	
+
+					  	// If this is a class thats been intercepted, check both the inner class and the interceptor for
+					  	// the presence of the requested method/action.
+					  	if( method_exists( $this->controller, 'getInterceptedInstance' ) ) {
+
+					  		if( !method_exists( $oController->getInterceptedInstance(), $action ) )
+					  			throw new AgilePHP_Exception( 'The specified action \'' . $action . '\' does not exist.' );
+					  	}
+					  	else {
+
+					  		// This is a standard PHP class that hasnt been intercepted
+						  	if( !method_exists( $this->controller, $action ) )
+						  		throw new AgilePHP_Exception( 'The specified action \'' . $action . '\' does not exist.' );
+					  	} 
+
 					  	Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
 					  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $mvcPieces  ) . '\'.' );
+
 		  	     		call_user_func_array( array( $oController, $action ), $mvcPieces ); 
 		  	     	}
 		  	     	else {
@@ -239,11 +255,11 @@ class MVC {
 	
 		  	     		$oController->$action();
 		  	     	}
-	  	     }
-	  	     catch( Exception $e ) {
+	  	     //}
+	  	     //catch( Exception $e ) {
 
-	  	     		throw new AgilePHP_Exception( $e->getMessage(), $e->getCode() );
-	  	     }
+	  	     		//throw new AgilePHP_Exception( $e->getMessage(), $e->getCode() );
+	  	     //}
 	  }
 
 	  /**

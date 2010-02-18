@@ -87,14 +87,16 @@ class AnnotationParser {
 
 							  case T_COMMENT:
 
-							 	   array_push( $comments, $value );
+							  	   if( preg_match( '/^\\s*#@/', $value ) )
+							 	   	   array_push( $comments, $value );
+
 								   break;
 
 							  case T_CLASS:
 
 								   if( count( $comments ) ) {
 
-									   self::$classes[$class] = self::parseAnnotations( implode( PHP_EOL, $comments ) );
+									   self::$classes[$class] = self::parseAnnotations( $comments );
 									   $comments = array();
 								   }
 								   break;
@@ -104,7 +106,7 @@ class AnnotationParser {
 								   if( count( $comments ) ) {
 
 								   	   $key = str_replace( '$', '', $token[1] );
-									   self::$properties[$class][ $key ] = self::parseAnnotations( implode( PHP_EOL, $comments ) );
+									   self::$properties[$class][ $key ] = self::parseAnnotations( $comments );
 									   $comments = array();
 								   }
 								   break;
@@ -116,7 +118,7 @@ class AnnotationParser {
 									   for( $j=$i; $j<count( $tokens ); $j++ ) {
 										    if( is_array( $tokens[$j] ) ) {
 										 	    if( $tokens[$j][0] == T_STRING ) {
-										 	 	    self::$methods[$class][$tokens[$j][1]] = self::parseAnnotations( implode( PHP_EOL, $comments ) );
+										 	 	    self::$methods[$class][$tokens[$j][1]] = self::parseAnnotations( $comments );
 										 	 	    $comments = array();
 										 	 	    break;
 										 	    }
@@ -257,50 +259,53 @@ class AnnotationParser {
 	   * @param String $text The text/code string to parse
 	   * @return void
 	   */
-	  private static function parseAnnotations( $text ) {
+	  private static function parseAnnotations( array $items ) {
 
 	  		  $annotations = array();
 
-			  // Extract the annotation string including the name and property/value declaration
-	  		  preg_match_all( '/^\\s*#@(.*)/', $text, $annotes );
+	  		  foreach( $items as $text ) {
 
-			  if( !count( $annotes ) )
-	  		  	  return;
+					  // Extract the annotation string including the name and property/value declaration
+			  		  preg_match_all( '/^\\s*#@(.*)/', $text, $annotes );
 
-	  		  foreach( $annotes[1] as $annote ) {
+					  if( !count( $annotes ) )
+			  		  	  return;
 
-	  		  		   // Extract the annotation name
-	  		  		   preg_match( '/\w+/', $annote, $className );
+			  		  foreach( $annotes[1] as $annote ) {
+		
+			  		  		   // Extract the annotation name
+			  		  		   preg_match( '/\w+/', $annote, $className );
+		
+			  		  		   // Create instance of the annotation class or create a new instance of stdClass
+			  		  		   // if the annotation class could not be parsed
+			  		  		   $oAnnotation = new $className[0]();
+		
+			  		  		   // Extract name/value pair portion of the annotation
+			  		  		   preg_match_all( '/\((.*=.*\(?\)?)\)/', $annote, $props );
+		
+							   // Extract arrays
+							   if( count( $props ) && count( $props[1] ) )
+							   	   preg_match_all( '/[_a-zA-Z]+[0-9_]?\\s?=\s?{+?.*?}+\\s?,?/', $props[1][0], $arrays );
 
-	  		  		   // Create instance of the annotation class or create a new instance of stdClass
-	  		  		   // if the annotation class could not be parsed
-	  		  		   $oAnnotation = new $className[0]();
-
-	  		  		   // Extract name/value pair portion of the annotation
-	  		  		   preg_match_all( '/\((.*=.*\(?\)?)\)/', $annote, $props );
-
-					   // Extract arrays
-					   if( count( $props ) && count( $props[1] ) )
-					   	   preg_match_all( '/[_a-zA-Z]+[0-9_]?\s?=\s?{+?.*?}+\s?,?/', $props[1][0], $arrays );
-
-					   // Extract other annotations
-					   // @todo Support child annotations
-					   //preg_match_all( '/@(.*)?,?/', $props[1][0], $childAnnotes );
-
-					   // Add arrays to annotation instance and remove it from the properties
-	  		  		   if( isset( $arrays ) ) {
-
-	  		  		   	   $result = self::parseKeyArrayValuePairs( $oAnnotation, $arrays[0], $props[1][0] );
-	  		  		   	   $oAnnotation = $result->annotation;
-	  		  		   	   $props[1][0] = $result->properties;
-					   }
-
-					   // Add strings and PHP literals to annotation instance
-					   if( count( $props ) && count( $props[1] ) )
-					   	   $oAnnotation = self::parseKeyValuePairs( $oAnnotation, $props[1][0] );
-
-					   // Push the annotation instance onto the stack
-	  		  		   array_push( $annotations, $oAnnotation );
+							   // Extract other annotations
+							   // @todo Support child annotations
+							   //preg_match_all( '/@(.*)?,?/', $props[1][0], $childAnnotes );
+		
+							   // Add arrays to annotation instance and remove it from the properties
+			  		  		   if( isset( $arrays[0] ) ) {
+		
+			  		  		   	   $result = self::parseKeyArrayValuePairs( $oAnnotation, $arrays[0], $props[1][0] );
+			  		  		   	   $oAnnotation = $result->annotation;
+			  		  		   	   $props[1][0] = $result->properties;
+							   }
+		
+							   // Add strings and PHP literals to annotation instance
+							   if( count( $props ) && count( $props[1] ) )
+							   	   $oAnnotation = self::parseKeyValuePairs( $oAnnotation, $props[1][0] );
+		
+							   // Push the annotation instance onto the stack
+			  		  		   array_push( $annotations, $oAnnotation );
+			  		  }
 	  		  }
 
 	  		  return $annotations;
@@ -324,7 +329,8 @@ class AnnotationParser {
 					$properties = preg_replace( '/' . $array . '/', '', $properties ) . PHP_EOL;
 
 			   		// Split the array into key/value
-			   		preg_match( '/(.*)={1}\s?\{(.*)\},?/', $array, $matches );
+			   		//preg_match( '/(.*)={1}\s?\{(.*)\},?/', $array, $matches );
+			   		preg_match( '/(.*)=\s*?\{(.*)\},?/', $array, $matches );
 			   		$property = trim( $matches[1] );
 			   		$elements = explode( ',', trim( $matches[2] ) );
 
@@ -384,8 +390,11 @@ class AnnotationParser {
   	  		   }
 
   	  		   // Treat unquoted values as objects
-			   $o = str_replace( ' ', '', $value );
-  	  		   return new $o;
+			   //$o = str_replace( ' ', '', $value );
+			   $o = preg_replace( '/new/i', '', $value );
+			   $o = preg_replace( '/\(\)/i', '', trim( $o ) );
+			   
+			   if( $o ) return new $o;
 	  }
 
 	  /**
@@ -455,28 +464,31 @@ class AnnotationParser {
 	  		 if( $code = self::search( AgilePHP::getFramework()->getWebRoot() ) )
 	  		     return $code;
 
-	  		 throw new AgilePHP_AnnotationException( 'Failed to load source code for class \'' . $this->class . '\'.' );
+	  		 throw new AgilePHP_AnnotationException( 'Failed to load source code for class \'' . self::$class . '\'.' );
 	  }
 
 	  /**
-	   * Recursively scan the specified directory in an effort to find $this->class to load its
+	   * Recursively scan the specified directory in an effort to find self::$class to load its
 	   * source code.
 	   * 
 	   * @param String $directory The directory to inspect. 
-	   * @return File contents for $this->class or void if the file contents could not be located
+	   * @return File contents for self::$filename or void if the file contents could not be located
 	   */
 	  private static function search( $directory ) {
 
-	  	 $it = new RecursiveDirectoryIterator( $directory );
-		 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
+	  		  $filename = (preg_match( '/_Intercepted/', self::$filename )) ? 
+	  		  					str_replace( '_Intercepted', '' , self::$filename ) : self::$filename;
 
-		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
-		   	      	  substr( $file, -4 ) != 'view' ) {
+		  	  $it = new RecursiveDirectoryIterator( $directory );
+			  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
 
-			 		  if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == self::$filename )
-		     	 			  return file_get_contents( $file );
-			      }
-		 }
+			   	       if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
+			   	      	   substr( $file, -4 ) != 'view' ) {
+
+				 		   if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == $filename )
+			     	 		   return file_get_contents( $file );
+				       }
+			  }
 	  }
 }
 ?>

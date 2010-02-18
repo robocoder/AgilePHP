@@ -16,28 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.interception.interceptors
+ * @package com.makeabyte.agilephp.annotation.annotations
  */
 
 /**
- * AgilePHP interceptor responsible for performing Dependency Injection (DI).
+ * Annotation which authorizes a method for inclusion during #@WSDL generation.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.interception.interceptors
+ * @package com.makeabyte.agilephp.annotation.annotations
  * @version 0.1a
- * @example @In
+ * @example #@WebMethod
  */
-
-#@Interceptor
-class In {
-
-	  public $class;
-
-	  #@AroundInvoke
-	  public function setValue( InvocationContext $ic ) {
-
-	  		 return $ic->getInterceptor()->class;
-	  }
-}
+class WebMethod {}
 ?>

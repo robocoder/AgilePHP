@@ -14,7 +14,7 @@ class BaseTest extends PHPUnit_Framework_TestCase {
 	  	      $this->agilephp = AgilePHP::getFramework();
 	  	      $this->agilephp->setDisplayPhpErrors( true );
 
-	  	   	  if( preg_match( '/microsoft/i', $_SERVER['SERVER_SOFTWARE'] ) ) { 
+	  	   	  if( preg_match( '/microsoft/i', isset( $_SERVER['SERVER_SOFTWARE'] ) ? $_SERVER['SERVER_SOFTWARE'] : '' ) ) { 
 
 	  	   	 	  $this->agilephp->setWebRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\test' );
       	     	  $this->agilephp->setFrameworkRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\src' );

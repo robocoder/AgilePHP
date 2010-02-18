@@ -53,7 +53,7 @@ class InterceptorProxy {
 	  		 else
 		  	 	$this->object = new $intercepted();
 
-		  	 // Invoke class level interceptors upon construction
+		  	 // Invoke class and property level interceptors upon construction
 	  		 foreach( AgilePHP::getFramework()->getInterceptions() as $interception ) {
 
 		     		 if( $interception->getClass() == $proxiedClass &&
@@ -78,24 +78,25 @@ class InterceptorProxy {
 		     		 	 }
 		     		 }
 
-		     		 // Perform property/field injections which are annotated with @In interceptor.
-		     		 //
-		     		 // NOTE: Interceptor classes do not work with dependancy injection (@In).
-		     		 // Workaround is to set public property/fields on interceptor when defining the annotation.
-		     		 // For example: #@MyInterceptor( newObject = new obj(), singleton = obj::getInstance() )
+		     		 // Perform property/field injections
 		     		 if( $interception->getClass() == $proxiedClass && $interception->getProperty() ) {
 
-		     		 	 $property = $interception->getProperty();
-		     		 	 if( $interception->getInterceptor() instanceof In ) {
-
+		     		 	 	 // Execute property level interceptors
 		     		 	 	 $p = new ReflectionProperty( $this->object, $interception->getProperty() );
-
 		     		 	 	 if( !$p->isPublic() )
-		     		 	 	 	 throw new AgilePHP_InterceptionException( '@In interceptor requires public context at \'' . $proxiedClass .
+		     		 	 	 	 throw new AgilePHP_InterceptionException( 'Property level interceptor requires public context at \'' . $proxiedClass .
 		     		 	 	 	 		 '::' . $interception->getProperty() . '\'.' );
 
-		     		 	 	 $p->setValue( $this->object, $interception->getInterceptor()->class );
-		     		 	 }
+     		 	 	 		$interceptorClass = new AnnotatedClass( $interception->getInterceptor() );
+     		 	 	 		foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
+
+	     		 	 	 	 	     if( $interceptorMethod->hasAnnotation( 'AroundInvoke' ) ) {
+
+			     		 	 	 	   	 $invocationCtx = new InvocationContext( $this->object, null, null, $interception->getInterceptor() );
+								         $value = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
+								         $p->setValue( $this->object, $value );								               
+			     		 	 	 	 }
+		     		 	 	 }
 		     		 }
 		     }
 	  }

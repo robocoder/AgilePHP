@@ -16,28 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.interception.interceptors
+ * @package com.makeabyte.agilephp.annotation.annotations
  */
 
 /**
- * AgilePHP interceptor responsible for performing Dependency Injection (DI).
- * 
+ * Annotation responsible for exposing standard PHP classes via SOAP.
+ *  
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.interception.interceptors
+ * @package com.makeabyte.agilephp.annotation.annotations
  * @version 0.1a
- * @example @In
+ * @example #@WebService( serviceName = 'TestAPI', targetNamespace = 'http://mydomain.com/test/index.php/TestAPI' )
  */
+class WebService {
 
-#@Interceptor
-class In {
+	  /**
+	   * @var String The SOAP web service name
+	   */
+	  public $serviceName;
 
-	  public $class;
-
-	  #@AroundInvoke
-	  public function setValue( InvocationContext $ic ) {
-
-	  		 return $ic->getInterceptor()->class;
-	  }
+	  /**
+	   * @var String The target namespace of the web service. This is be the location to your web service. (http://api.example.org/index.php/TestAPI)
+	   */
+	  public $targetNamespace;
 }
 ?>
