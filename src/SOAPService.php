@@ -75,12 +75,6 @@ abstract class SOAPService extends BaseController {
 
 	  		 		foreach( $method->getAnnotations() as $annotes ) {
 
-	  		 			if( is_object( $annotes ) && $annotes instanceof WSDL ) {
-	  		 				
-	  		 				$wsdlMethod = $method->getName();
-	  		 				break;
-	  		 			}
-
 	  		 			foreach( $annotes as $annote ) {
 
 	  		 				if( $annote instanceof WSDL ) {
