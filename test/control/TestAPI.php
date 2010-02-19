@@ -105,7 +105,7 @@ class TestAPI extends SOAPService {
 	  }
 
 	  /**
-	   * Tests complex data type 'object' parameter.
+	   * Tests complex data type array parameter.
 	   * 
 	   * @param MathTest[] $MathTest An array of MathTest instances
 	   * @return MathTest[] Returns the same array that was passed in.
@@ -141,7 +141,7 @@ class TestAPI extends SOAPService {
 	  }
 
 	  /**
-	   * Tests complex data type 'array' parameter.
+	   * Tests complex data type array of objects parameter.
 	   * 
 	   * @param MathTest[] $MathTests An array of MathTest instances
 	   * @return int Adds A and B for each array and returns the sum of all MathTest objects
