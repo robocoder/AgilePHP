@@ -4,14 +4,14 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title><?= $title ?></title>
-		<?= '<link href="' . AgilePHP::getFramework()->getDocumentRoot() . '/view/css/style.css" type="text/css" rel="stylesheet"/>' ?>
+		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
 	</head>
 
 	<body>
 		<?php require_once 'header.html'; ?>
 
 		<div style="padding-bottom: 20px;">
-			<?= '<a href="' . AgilePHP::getFramework()->getRequestBase() . '/LoginController">Login</a>' ?>
+			<a href="<?= AgilePHP::getFramework()->getRequestBase() ?>/LoginController">Login</a>
 		</div>
 
 		<?= $content ?>

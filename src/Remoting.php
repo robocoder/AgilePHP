@@ -42,6 +42,7 @@ abstract class Remoting extends BaseController {
 	  	 protected function __construct( $class = null ) {
 
 	  		       $this->class = $class;
+	  		       $this->createRenderer( 'AJAXRenderer' );
 	  	 }
 
 	  	 /**
@@ -133,7 +134,7 @@ abstract class Remoting extends BaseController {
 		  		     $classes[$class] = $instance;
 		  		     $session->set( 'REMOTING_classes', $classes );
 
-		  		     return $result;
+		  		     $this->getRenderer()->render( $result );
 	  		   }
 	  		   catch( Exception $e ) {
 
@@ -178,7 +179,7 @@ abstract class Remoting extends BaseController {
 		  	         $instance = $stub ? $clazz->newInstanceArgs( (array)$stub ) : $clazz->newInstance();
 		  		     $m = $clazz->getMethod( $method );
 
-		  		     return $args ? $m->invokeArgs( $instance, (array)$args ) : $m->invoke( $instance );
+		  		     $this->getRenderer()->render( $args ? $m->invokeArgs( $instance, (array)$args ) : $m->invoke( $instance ) );
 	  		   }
 	  		   catch( Exception $e ) {
 
@@ -209,7 +210,7 @@ abstract class Remoting extends BaseController {
 		  	         $instance = $stub ? $clazz->newInstanceArgs( (array)$stub ) : $clazz->newInstance();
 		  		     $m = $clazz->getMethod( '__call' );
 		  		     $callArgs = array( $method, (array) $args );
-		  		     return $args ? $m->invokeArgs( $instance, $callArgs ) : $m->invokeArgs( $instance, $method );
+		  		     $this->getRenderer()->render( $args ? $m->invokeArgs( $instance, $callArgs ) : $m->invokeArgs( $instance, $method ) );
 	  		   }
 	  		   catch( Exception $e ) {
 
@@ -272,7 +273,7 @@ abstract class Remoting extends BaseController {
 		  		     $classes[$class] = $instance;
 		  		     $session->set( 'REMOTING_classes', $classes );
 
-		  		     return $result;
+		  		     $this->getRenderer()->render( $result );
 	  		   }
 	  		   catch( Exception $e ) {
 
@@ -480,6 +481,8 @@ abstract class Remoting extends BaseController {
 	   * @throws AgilePHP_RemotingException if the received data does not unmarshall into an object
 	   */
 	  private function decode( $data ) {
+
+	  		  if( !$data ) return;
 
 	  		  $o = json_decode( stripslashes( htmlspecialchars_decode( stripslashes( urldecode( $data ) ) ) ) );
 	  		  if( !is_object( $o ) )

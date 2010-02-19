@@ -357,7 +357,6 @@ class CreateProject extends AgilePHPGen {
  try {
 		$agilephp = AgilePHP::getFramework();
 		$agilephp->setFrameworkRoot( \'' . $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'AgilePHP\' );
-		$agilephp->setDisplayPhpErrors( true );
 		$agilephp->setDefaultTimezone( \'America/New_York\' );
 
 		MVC::getInstance()->processRequest();

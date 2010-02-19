@@ -1,20 +1,10 @@
-0.11a
+0.12a
 -----
 
-- Created #@RequestParam interceptor and associated test artifacts.
-- Refactored InterceptorProxy::__construct to support all property level interceptors. Removed #@Id specific interceptor code.
-- Created WebService component that generates a WSDL from a PHP class and allows remote execution of its methods via SOAP.
-- Created #@WebMethod annotation responsible for authorizing a class methods for use with the WebService component.
-- Bug fix to AnnotationParser::getSourceCode. Exception was referencing old non-static $class variable.
-- Added code to MVC::processRequest to make sure the requested action/method exists.
-- Refactored AnnotationParser::parse to send annotations to parseAnnotations method as an array. Refactored parseAnnotations accordingly.
-- Refactored AnnotationParser::getSourceCode so that intercepted classes are searched for by their initial class name, not ClassName_Intercepted.
-- Refactored MVC::processRequest check that requested action/method exists so it looks within InterceptorProxy to the inner/intercepted class.
-- Started working on web service support. Created new SoapService abstract class and the following new annotations:
-	o #@WebService
-	o #@WebMethod
-	o #@WebParam
-	o #@SOAPBinding
-	o #@WSDL - (This is an interceptor. Decorate an empty method in the web service class with #@WSDL to have the method automatically
-				generate a WSDL file for the web service when invoked)
-- Created TestAPI, MathTest, and WebServiceTest in test package to make sure the web services functionality works.
+- Refactored AgilePHP::setDebugMode so that when set to true a call is made to setDisplayPhpErrors.
+- Removed all '<?= code from views. Replaced with inline php syntax.
+- Removed setDisplayPhpErrors from generator/CreateProject. If logger component is set to level debug
+  then setDisplayPhpErrors is called automatically.
+- Bug fix to SQLiteDialect::createDeleteRestrictTrigger.
+- Refactored Remoting controller so that by invoke* methods no longer return, but rather renders the
+  result using AJAXRenderer.

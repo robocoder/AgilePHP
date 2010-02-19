@@ -276,6 +276,7 @@ class AgilePHP {
 	  public function setDebugMode( $boolean ) {
 
 	  		 $this->debugMode = ($boolean === true) ? true : false;
+	  		 if( $this->debugMode ) $this->setDisplayPhpErrors( true );
 	  }
 
 	  /**

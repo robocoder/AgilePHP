@@ -258,7 +258,7 @@ abstract class BasePersistence {
 				try {
 						if( !$this->PDOStatement = $this->pdo->prepare( $statement ) ) {
 
-					  	  	$info = $this->PDOStatement->errorInfo();
+					  	  	$info = $this->pdo->errorInfo();
 
 					  	  	if( $this->transactionInProgress )
 			  	 		    	$this->rollBack( $info[2], $info[1] );

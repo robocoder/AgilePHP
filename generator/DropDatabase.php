@@ -2,6 +2,7 @@
 
 require_once 'util' . DIRECTORY_SEPARATOR . 'AgilePHPGen.php';
 require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'AgilePHP.php';
+require_once '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'PersistenceManager.php';
 
 class DropDatabase extends AgilePHPGen {
 

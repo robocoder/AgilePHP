@@ -376,7 +376,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 						BEFORE DELETE ON [' . $rTable . ']
 						FOR EACH ROW BEGIN
 						  SELECT RAISE( ROLLBACK, \'Delete on table "' . $rTable . '" violates foreign key constraint "' . str_replace( '_refDelete', '', $fkName ) . '"\' )
-						  WHERE (SELECT ' . $column . ' FROM ' . $table . ' WHERE ' . $column . ' = OLD.name) IS NOT NULL;
+						  WHERE (SELECT ' . $column . ' FROM ' . $table . ' WHERE ' . $column . ' = OLD.' . $rColumn . ') IS NOT NULL;
 						END;';
 
 	  		  $this->query( $sql );
