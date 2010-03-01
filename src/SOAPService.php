@@ -90,7 +90,6 @@ abstract class SOAPService extends BaseController {
 					ini_set( 'soap.wsdl_cache_enabled', '0' );
 
 				$server = new SoapServer( $targetNamespace . '/' . $wsdlMethod );
-
 				$server->setClass( $class->getName() );
 				$server->handle();
 		 }

@@ -645,7 +645,7 @@ var AgilePHP = {
 						 
 						 var xhr = new AgilePHP.XHR();
 						 xhr.setSynchronous( true );
-						 return new xhr.post( url, data );
+						 return xhr.post( url, data );
 					 }
 					 else
 						 new AgilePHP.XHR().post( url, data, this.callback );
@@ -684,7 +684,7 @@ var AgilePHP = {
 					 if( this.callback == undefined ) {
 
 						 var xhr = new AgilePHP.XHR();
-						 xhr.setSynchronous( true );
+						 	 xhr.setSynchronous( true );
 						 return xhr.post( url, data );
 					 }
 					 else
@@ -726,8 +726,8 @@ var AgilePHP = {
 					 if( this.callback == undefined ) {
 						 
 						 var xhr = new AgilePHP.XHR();
-						 xhr.setSynchronous( true );
-						 return new xhr.post( url, data );
+						 	 xhr.setSynchronous( true );
+						 return xhr.post( url, data );
 					 }
 					 else
 						 new AgilePHP.XHR().post( url, data, this.callback );
@@ -769,7 +769,7 @@ var AgilePHP = {
 						 
 						 var xhr = new AgilePHP.XHR();
 						 xhr.setSynchronous( true );
-						 return new xhr.post( url, data );
+						 return xhr.post( url, data );
 					 }
 					 else
 						 new AgilePHP.XHR().post( url, data, this.callback );

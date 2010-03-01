@@ -1,25 +1,29 @@
-<?php 
+<?php
 
 /**
- * Test class used to mimic an API exposing some application logic via SOAP.
+ * Test class used to mimic an API exposing some application logic via SOAP RPC/ENCODED.
  * 
  * NOTE: The AgilePHP #@WebMethod annotation authorizes a method for inclusion during WSDL generation.
  * 	     
  * 		 The AgilePHP #@WSDL interceptor uses the data types specified in 
  *	     the PHP-doc comment blocks (specifically the @param and @return annotations) during
- *	     WSDL generation. Do not remove! 
+ *	     WSDL generation.
  */
 
-#@WebService( serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/TestAPI' )
+#@WebService( serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/SoapRpcEncodedTestAPI' )
 #@SOAPBinding( style = SOAPStyle::RPC, use = SOAPStyle::ENCODED )
-class TestAPI extends SOAPService {
+class SoapRpcEncodedTestAPI extends SOAPService {
 
 	  /**
 	   * The #@In interceptor performs Dependancy Injection. Will be a new
 	   * instance of MathTest at runtime.
 	   */
-	  #@In( class = new MathTest() )
 	  public $MathTest;
+
+	  public function __construct() {
+
+	  		 $this->MathTest = new MathTest();
+	  }
 
 	  /**
 	   * The #@WSDL interceptor will handle generating WSDL document for this web service class
@@ -107,7 +111,7 @@ class TestAPI extends SOAPService {
 	  /**
 	   * Tests complex data type array parameter.
 	   * 
-	   * @param MathTest[] $MathTest An array of MathTest instances
+	   * @param MathTest[] $MathTests An array of MathTest instances
 	   * @return MathTest[] Returns the same array that was passed in.
 	   */
 	  #@WebMethod
@@ -131,7 +135,7 @@ class TestAPI extends SOAPService {
 	  /**
 	   * Tests the ability to receive and return a simple string array.
 	   * 
-	   * @param string[][] $strings An multi-dimensional array of strings
+	   * @param string[][] $strings A multi-dimensional array of strings
 	   * @return string[][] The same multi-dimensional array that was passed in
 	   */
 	  #@WebMethod
@@ -151,7 +155,7 @@ class TestAPI extends SOAPService {
 
 	  		 $sum = 0;
 	  		 foreach( $MathTests as $MathTest )
-	  		 	$sum = ($MathTest->a + $MathTest->b) + $sum;
+	  		 	$sum += ($MathTest->a + $MathTest->b);
 
 	  		 return $sum;
 	  }

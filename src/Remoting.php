@@ -359,7 +359,7 @@ abstract class Remoting extends BaseController {
 				  		 				    $js .= " ) {\n";
 	
 				  		 				    // function body
-				  		 				    $js .= "AgilePHP.Remoting.getStub( '" . $this->class . "' )." . 
+				  		 				    $js .= "return AgilePHP.Remoting.getStub( '" . $this->class . "' )." . 
 				  		 				   			($stateful ? 'invokeInterceptedStateful' : 'invokeIntercepted') . 
 				  		 				   			"( '" . $name . 
 				  		 				   			"', arguments" . ($constructor ? ', this' : '' ) . " );\n";
@@ -433,7 +433,7 @@ abstract class Remoting extends BaseController {
 	  		 				   $js .= " ) {\n";
 
 	  		 				   // function body
-	  		 				   $js .= "AgilePHP.Remoting.getStub( '" . $this->class . "' )." . 
+	  		 				   $js .= "return AgilePHP.Remoting.getStub( '" . $this->class . "' )." . 
 	  		 				   			($stateful ? 'invokeStateful' : 'invoke') . 
 	  		 				   			"( '" . $methods[$i]->getName() . 
 	  		 				   			"', arguments" . ($constructor ? ', this' : '' ) . " );\n";

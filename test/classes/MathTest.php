@@ -2,34 +2,49 @@
 
 class MathTest {
 
+	  /** @var int */
+	  public $a;
+
+	  /** @var int */
+	  public $b;
+
 	  /**
-	   * The data type specified in this doc block is used by the
-	   * #@WSDL interceptor to set the XSD data type for this property.
+	   * Mutator for $a property.
 	   * 
-	   * @var int This is an xsd:int
+	   * @param int $a
+	   * @return void
 	   */
-	  private $a;
-
-	  /**
-	   * @var int
-	   */
-	  private $b;
-
 	  public function setA( $a ) {
 	  	
 	  		 $this->a = $a;
 	  }
 	  
+	  /**
+	   * Accessor for $a property
+	   * 
+	   * @return int
+	   */
 	  public function getA() {
 	  		
 	  		 return $this->a;
 	  }
 	  
+	  /**
+	   * Mutator for $b property
+	   * 
+	   * @param int $b
+	   * @return void
+	   */
 	  public function setB( $b ) {
 	  		 
 	  		 $this->b = $b;
 	  }
 	  
+	  /**
+	   * Accessor for $b property
+	   * 
+	   * @return int
+	   */
 	  public function getB() {
 	  	
 	  		 return $this->b;

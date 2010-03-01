@@ -45,8 +45,6 @@ class AnnotatedClass extends ReflectionClass {
 	  		 try {
 			  	   parent::__construct( $class );
 
-			  	   $o = is_object( $class ) ? parent::getName() : $class;
-
 			  	   $parser = AnnotationParser::getInstance();
 			  	   $parser->parse( parent::getName() );
 

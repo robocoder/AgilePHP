@@ -50,9 +50,11 @@ class WSDL {
 
 	  private $processedComplexArrays = array();
 	  private $processedComplexObjects = array();
+	  private $wrappedTypes = array();
 
 	  /**
-	   * Generates and outputs a WSDL file.
+	   * Generates and outputs a WSDL file according to the #@SOAPBinding in the 
+	   * implementing #@WebService.
 	   * 
 	   * @param InvocationContext $ic The intercepted call context
 	   * @return void
@@ -121,24 +123,37 @@ class WSDL {
 
 		 	    	  if( $isWSDLMethod ) continue;
 
-		 	    	  foreach( $m->getParameters() as $param ) {
+		 	    	  // Document/Literal Wrapped
+	  		 		  if( $this->SOAPBinding->style == SOAPStyle::DOCUMENT &&
+		 	    	  				$this->SOAPBinding->use == SOAPStyle::LITERAL ) {
 
+		 	    	  			$this->createWrappedMethod( $m );
+			 	    		 	$this->createWrappedMessage( $method );
+			 	    		 	$this->createPortTypeOperation( $method );
+				      			$this->createBindingOperation( $method );
+			 	    		 	continue;
+		 	    	  }
+		 	    	  
+		 	    	  // RPC/ENCODED/LITERAL
+		 	    	  foreach( $m->getParameters() as $param ) {
+		 	    	  	
 		 	    	  		$dataType = $this->getParameterTypeFromDocBlock( $m, $param );
-		 	    	  		$ns = $this->getTypeNamespace( $param->name );
+		 	    	  		$ns = $this->getTypeNamespace( $param->name, $param->name );
 		 	    	  		if( preg_match( '/\[\]/', $dataType ) ) {
 
 		 	    	  			$ns = 'tns';
 		 	    	  			$dataType = preg_replace( '/\[\]/', 'Array', $dataType );
+		 	    	  			$this->arrayToComplexType( $dataType, $ns, $param->name );
 		 	    	  		}
 		 	    	  		$parts .= "\t\t<part name=\"" . $param->name . "\" type=\"$ns:" . $dataType . '"/>' . PHP_EOL;
  	    		 	  }
 
-				      $this->createMessage( $method, $parts, $this->getReturnType( $m ) );
+ 	    		 	  $returnType = $this->getReturnTypeFromDocBlock( $m );
+ 	    		 	  $ns = $this->getTypeNamespace( $returnType, 'return' );
+
+				      $this->createMessage( $method, $parts, $returnType, $ns );
 				      $this->createPortTypeOperation( $method );
 				      $this->createBindingOperation( $method );
-
-				      $isWebMethod = false;
-				      $WebParams = array();
       		  }
 
     		  $xml = $this->assemble();
@@ -160,7 +175,7 @@ class WSDL {
 	  		  $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" . PHP_EOL;
 	  		  $xml .= "<definitions name=\"" . $this->class . "\" targetNamespace=\"" . $this->targetNamespace . "\"" . PHP_EOL;
 	  		  $xml .= "\txmlns:tns=\"" . $this->targetNamespace . "\" xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\"" . PHP_EOL;
-	  		  $xml .= "\txmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"" . PHP_EOL;
+	  		  $xml .= "\txmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap-enc=\"http://schemas.xmlsoap.org/soap/encoding/\"" . PHP_EOL;
 	  		  $xml .= "\txmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\" xmlns=\"http://schemas.xmlsoap.org/wsdl/\">" . PHP_EOL . PHP_EOL;
 
 	  		  if( $types ) $xml .= $types;
@@ -192,10 +207,8 @@ class WSDL {
 	   * @param string $returnType The PHP data type being returned from this message part (extracted from PHP-doc Comment)
 	   * @return void
 	   */
-	  private function createMessage( $method, $part, $returnType ) {
-
-	  		  $ns = $this->getTypeNamespace( $returnType );
-
+	  private function createMessage( $method, $part, $returnType, $ns ) {
+	  	
 	  		  if( stristr( $returnType, '[]' ) )
 	  		  	  $returnType = preg_replace( '/\[\]/', 'Array', $returnType );
 
@@ -211,6 +224,27 @@ class WSDL {
 	  }
 
 	  /**
+	   * Creates a single message and its part for use with Document/Literal (wrapeed) and appends it to the messages property.
+	   * 
+	   * @param string $method The name of the message part
+	   * @param string $part The request part
+	   * @param string $returnType The PHP data type being returned from this message part (extracted from PHP-doc Comment)
+	   * @return void
+	   */
+	  private function createWrappedMessage( $method ) {
+
+	  		  $messages = "\t<message name=\"" . $method . "\">" . PHP_EOL;
+	  		  $messages .= "\t\t<part name=\"parameters\" element=\"tns:" . $method . "\"/>" . PHP_EOL;
+	  		  $messages .= "\t</message>" . PHP_EOL;
+
+	  		  $messages .= "\t<message name=\"" . $method . "Response\">" . PHP_EOL;
+	  		  $messages .= "\t\t<part name=\"parameters\" element=\"tns:" . $method . "Response\"/>" . PHP_EOL;
+	  		  $messages .= "\t</message>" . PHP_EOL;
+
+	  		  $this->messages .= $messages;		  
+	  }
+
+	  /**
 	   * Creates a new wsdl binding operation and appends it to the operations class property.
 	   * 
 	   * @param string $method The name of the operation to bind
@@ -219,12 +253,12 @@ class WSDL {
 	  private function createBindingOperation( $method ) {
 
 	  		  $operation = "\t\t<wsdl:operation name=\"$method\">" . PHP_EOL;
-	  		  $operation .= "\t\t\t<soap:operation soapAction=\"" . $this->targetNamespace . "\"/>" . PHP_EOL;
+	  		  $operation .= "\t\t\t<soap:operation/>" . PHP_EOL;
 	  		  $operation .= "\t\t\t\t<input>" . PHP_EOL;
-	  		  $operation .= "\t\t\t\t\t<soap:body use=\"" . $this->SOAPBinding->use . "\" namespace=\"" . $this->targetNamespace . "\" encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"/>" . PHP_EOL;
+	  		  $operation .= "\t\t\t\t\t<soap:body use=\"" . $this->SOAPBinding->use . "\"" . (($this->SOAPBinding->use == SOAPStyle::ENCODED) ? ' encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"' : '') . "/>" . PHP_EOL;
 			  $operation .= "\t\t\t\t</input>" . PHP_EOL;
 			  $operation .= "\t\t\t\t<output>" . PHP_EOL;
-			  $operation .= "\t\t\t\t\t<soap:body use=\"" . $this->SOAPBinding->use . "\" namespace=\"" . $this->targetNamespace . "\" encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"/>" . PHP_EOL;
+			  $operation .= "\t\t\t\t\t<soap:body use=\"" . $this->SOAPBinding->use . "\"" . (($this->SOAPBinding->use == SOAPStyle::ENCODED) ? ' encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"' : '') . "/>" . PHP_EOL;
       		  $operation .= "\t\t\t\t</output>" . PHP_EOL;
       		  $operation .= "\t\t</wsdl:operation>" . PHP_EOL;
 
@@ -240,8 +274,12 @@ class WSDL {
 	  private function createPortTypeOperation( $method ) {
 
 			  $operation = "\t\t<wsdl:operation name=\"$method\">" . PHP_EOL;
-			  $operation .= "\t\t\t<input message=\"tns:" . $method . "Request\"/>" . PHP_EOL;
-			  $operation .= "\t\t\t<output message=\"tns:" . $method . "Response\"/>" . PHP_EOL;
+			  $operation .= "\t\t\t<input message=\"tns:" . $method . "" .
+			  		 (($this->SOAPBinding->style == SOAPStyle::DOCUMENT &&
+			  		 	 $this->SOAPBinding->use == SOAPStyle::LITERAL) ? '" name="' . $method . '' : 'Request') . "\"/>" . PHP_EOL;
+			  $operation .= "\t\t\t<output message=\"tns:" . $method . "" .
+			  		 (($this->SOAPBinding->style == SOAPStyle::DOCUMENT &&
+			  		 	 $this->SOAPBinding->use == SOAPStyle::LITERAL) ? 'Response" name="' . $method . 'Response' : 'Response') . "\"/>" . PHP_EOL;
 			  $operation .= "\t\t</wsdl:operation>" . PHP_EOL;
 
 			  $this->ptOperations .= $operation;
@@ -272,7 +310,7 @@ class WSDL {
 	   * @param string $ns The namespace used for this data type
 	   * @return void
 	   */
-	  private function objectToComplexType( $class, $ns ) {
+	  private function objectToComplexType( $class, $ns, $isWrapped = false ) {
 
 	  		  if( in_array( $class, $this->processedComplexObjects ) ) return;
 
@@ -280,21 +318,50 @@ class WSDL {
 
 	  		  $reflClass = new ReflectionClass( $class );
 			  $xml = "\t\t\t<xsd:complexType name=\"" . $reflClass->getName() . "\">" . $eol;
-			  $xml .= "\t\t\t\t<xsd:all>" . $eol;
-
+			  $xml .= "\t\t\t\t<xsd:sequence>" . $eol;
+			  
 			  foreach( $reflClass->getProperties() as $property ) {
-			  	
+
 			  		   $type = $this->getPropertyTypeFromDocBlock( $property );
-			  		   $ns = $this->getTypeNamespace( $type );
-					   $xml .= "\t\t\t\t\t<xsd:element name=\"" . $property->name . "\" type=\"" . $ns . ":" . $type . "\"/>" . $eol;
+
+			  		   if( $this->SOAPBinding->use == SOAPStyle::LITERAL &&	preg_match( '/\[\]/', $type ) ) {
+
+			  		   	   $type = preg_replace( '/\[\]/', '', $type );
+			  		   	   $ns = $this->getTypeNamespace( $type, $property->name );
+			  		   	   $xml .= "\t\t\t\t\t<xsd:element name=\"" . $property->name . "\" minOccurs=\"0\" maxOccurs=\"unbounded\" type=\"" . $ns . ":" . $type . "\"/>" . $eol;
+			  		   }
+			  		   else {
+
+			  		   	   $ns = $this->getTypeNamespace( $type, $property->name );
+					   	   $xml .= "\t\t\t\t\t<xsd:element name=\"" . $property->name . "\" type=\"" . $ns . ":" . $type . "\"/>" . $eol;
+			  		   }
 			  }
 
-			  $xml .= "\t\t\t\t</xsd:all>" . $eol;
+			  $xml .= "\t\t\t\t</xsd:sequence>" . $eol;
 			  $xml .= "\t\t\t</xsd:complexType>" . $eol;
 
 			  $this->types .= $xml;
 
 			  array_push( $this->processedComplexObjects, $class );
+	  }
+
+	  /**
+	   * Creates a Document/Literal wrapped complex type
+	   * 
+	   * @return void
+	   */
+	  private function createWrappedMethod( ReflectionMethod $method ) {
+
+	  		  $this->getTypeNamespace( $method->getName(), $method->getName() );
+	  		  $this->getTypeNamespace( $method->getName() . 'Response', $method->getName() );
+
+	  		  $eol = PHP_EOL;
+
+	  		  $xml = "\t\t\t<xsd:element name=\"" . $method->getName() . "\" type=\"tns:" . $method->getName() . "\"/>" . $eol;
+	  		  $xml .= "\t\t\t<xsd:element name=\"" . $method->getName() . "Response\" type=\"tns:" . $method->getName() . "Response\"/>" . $eol;
+	  		  $this->types .= $xml;
+
+	  		  return;
 	  }
 
 	  /**
@@ -304,21 +371,58 @@ class WSDL {
 	   * @param string $ns The namespace to use as a reference for the data type
 	   * @return void
 	   */
-	  private function arrayToComplexType( $name, $ns ) {
+	  private function arrayToComplexType( $name, $ns, $paramName ) {
 
 	  		  if( in_array( $name, $this->processedComplexArrays ) ) return;
 
 	  		  $eol = PHP_EOL;
-	  		  $type = preg_replace( '/Array/', '[]', $name );
-	  		  $name = preg_replace( '/\[\]/', '', $name );
 
-			  $xml = "\t\t\t<xsd:complexType name=\"" . $name . "\">" . $eol;
-			  $xml .= "\t\t\t\t<xsd:complexContent>" . $eol;
-			  $xml .= "\t\t\t\t\t<xsd:restriction base=\"SOAP-ENC:Array\">" . $eol;
-			  $xml .= "\t\t\t\t\t\t<xsd:attribute ref=\"SOAP-ENC:arrayType\" wsdl:arrayType=\"" . $ns . ":" . $type . "\"/>" . $eol;
-			  $xml .= "\t\t\t\t\t</xsd:restriction>" . $eol;
-			  $xml .= "\t\t\t\t</xsd:complexContent>" . $eol;
-			  $xml .= "\t\t\t</xsd:complexType>" . $eol;
+	  		  if( $this->SOAPBinding->use == SOAPStyle::ENCODED ) {
+
+	  		  	  $type = preg_replace( '/Array/', '[]', $name );
+	  		      $name = preg_replace( '/\[\]/', '', $name );
+
+				  $xml = "\t\t\t<xsd:complexType name=\"" . $name . "\">" . $eol;
+				  $xml .= "\t\t\t\t<xsd:complexContent>" . $eol;
+				  $xml .= "\t\t\t\t\t<xsd:restriction base=\"soap-enc:Array\">" . $eol;
+				  $xml .= "\t\t\t\t\t\t<xsd:attribute ref=\"soap-enc:arrayType\" wsdl:arrayType=\"" . $ns . ":" . $type . "\"/>" . $eol;
+				  $xml .= "\t\t\t\t\t</xsd:restriction>" . $eol;
+				  $xml .= "\t\t\t\t</xsd:complexContent>" . $eol;
+				  $xml .= "\t\t\t</xsd:complexType>" . $eol;
+	  		  }
+
+	  		  else if( $this->SOAPBinding->use == SOAPStyle::LITERAL ) {
+
+	  		  	  $type = $name;
+
+	  		  	  $xsdTypes = array( 'string', 'int', 'float', 'double', 'boolean' );
+
+	  		  	  preg_match_all( '/Array/', $name, $matches );
+	  		  	  if( count( $matches[0] ) == 1 ) {
+
+		  		  	  $rawType = preg_replace( '/Array/', '', $name );
+		  		  	  if( in_array( $rawType, $xsdTypes ) ) {
+
+		  		  	  	  $type = $rawType;
+		  		  	  	  $ns = 'xsd';
+		  		  	  }
+		  		  	  else {
+		  		  	  	
+		  		  	  	  $type = $rawType;
+		  		  	  	  $ns = 'tns';
+		  		  	  }
+	  		  	  }
+	  		  	  else {
+	  		  	  	
+	  		  	  	  $type = preg_replace( '/Array/', '', $name, 1 );
+	  		  	  }
+	  		  	  
+	  		  	  $xml = "\t\t\t<xsd:complexType name=\"" . $name . "\">" . $eol;
+				  $xml .= "\t\t\t\t<xsd:sequence>" . $eol;
+				  $xml .= "\t\t\t\t\t\t<xsd:element minOccurs=\"0\" maxOccurs=\"unbounded\" name=\"$paramName\" type=\"" . $ns . ":" . $type . "\"/>" . $eol;
+				  $xml .= "\t\t\t\t</xsd:sequence>" . $eol;
+				  $xml .= "\t\t\t</xsd:complexType>" . $eol;
+	  		  }
 
 			  $this->types .= $xml;
 
@@ -338,7 +442,7 @@ class WSDL {
 	  }
 
 	  /**
-       * Gets a parameter level data type from the web service PHP-doc comments block for the specified method
+       * Gets a param data type from the web service PHP-doc comments block for the method being inspected.
        * 
        * @param ReflectionMethod $method A PHP ReflectionMethod instance representing the method to extract the parameter data type for.
        * @return string The extracted PHP data type 
@@ -350,12 +454,12 @@ class WSDL {
 	  }
 
 	  /**
-       * Gets a web servie methods return data type from the PHP-doc comments block on the specified method to inspect.
+       * Gets a web servie method return type from the PHP-doc comments block on the method being inspected.
        * 
        * @param ReflectionMethod $method A PHP ReflectionMethod instance representing the method to extract the parameter data type for.
        * @return string The extracted PHP data type 
 	   */
-	  private function getReturnType( ReflectionMethod $method ) {
+	  private function getReturnTypeFromDocBlock( ReflectionMethod $method ) {
 
 	  		  preg_match( '/@return\\s*(.*?)\\s/i', $method->getDocComment(), $matches );
 	  		  return (isset( $matches[1] )) ? trim( $matches[1] ) : null;
@@ -367,14 +471,14 @@ class WSDL {
 	   * @param string $type The data type to inspect
 	   * @return string The namespace value to assign
 	   */
-	  private function getTypeNamespace( $type ) {
+	  private function getTypeNamespace( $type, $paramName ) {
 
 	  		  // This is an array
 	  		  if( preg_match( '/\[\]/', $type ) ) {
 
 		  		  $type = preg_replace( '/\[\]/', 'Array', $type );
 		  		  $ns = 'tns';
-		  		  $this->arrayToComplexType( $type, $ns );
+		  		  $this->arrayToComplexType( $type, $ns, $paramName );
 		  		  return $ns;
 	  		  }
 

@@ -28,6 +28,7 @@
  * @package com.makeabyte.agilephp.annotation.annotations
  * @version 0.1a
  * @example #@SOAPBinding
+ * @see http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl
  */
 class SOAPBinding {
 

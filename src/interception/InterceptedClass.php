@@ -16,27 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.annotation.annotations
+ * @package com.makeabyte.agilephp.interception
  */
 
 /**
- * Annotation which authorizes a method for use with the
- * AgilePHP WebService component.
+ * Responsible for performing reflection on intercepted classes. Standard
+ * PHP reflection used on an intercepted class will really be reflecting
+ * InterceptorProxy and not the intercepted class. This reflector will perform
+ * requested operations on the intercepted class, not the proxy.
  * 
  * @author Jeremy Hahn
- * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.annotation.annotations
+ * @copyright Make A Byte, inc.
+ * @package com.makeabyte.agilephp.interception
  * @version 0.1a
- * @example #@WebParam( name = 'test', type = 'string' )
- * @example #@WebParam( name = 'test', type = { 'string' } )
- * @example #@WebParam( name = 'test', type = new CustomObject() )
  */
-class WebParam {
+class InterceptedClass extends ReflectionClass {
 
-	  public $name;
+	  public function __construct( $class ) {
 
-	  public $type = 'anyType';
-	  
-	  public $nillable = true;
+	  		 $c = is_object( $class ) ? $class->getInterceptedInstance() : preg_replace( '/_Intercepted/', '', $class );
+	  		 parent::__construct( $c );
+	  }
+
+	  public function getName() {
+
+	  		 return preg_replace( '/_Intercepted/', '', parent::getName() );
+	  }
 }
 ?>

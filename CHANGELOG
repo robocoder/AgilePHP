@@ -1,10 +1,7 @@
-0.12a
+0.13a
 -----
 
-- Refactored AgilePHP::setDebugMode so that when set to true a call is made to setDisplayPhpErrors.
-- Removed all '<?= code from views. Replaced with inline php syntax.
-- Removed setDisplayPhpErrors from generator/CreateProject. If logger component is set to level debug
-  then setDisplayPhpErrors is called automatically.
-- Bug fix to SQLiteDialect::createDeleteRestrictTrigger.
-- Refactored Remoting controller so that by invoke* methods no longer return, but rather renders the
-  result using AJAXRenderer.
+- Bug fix to AgilePHP.js AgilePHP.Remoting.Stub.prototype.invoke*. Synchronous mode failed due to returning new* instead of the already existing instance.
+- Added return statement to Remoting::create*Stub methods to support synchronous calls.
+- Fixed PHP notice in RequestScope::__construct when no request token is present.
+- Added support for RPC/LITERAL and DOCUMENT/LITERAL soap services. #@WSDL interceptor is getting complicated - perhaps split into formatting classes?

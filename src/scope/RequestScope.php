@@ -53,8 +53,10 @@ class RequestScope {
 	  	      	  if( !isset( $this->store['AGILEPHP_REQUEST_TOKEN'] ) || 
 	  	      	  			$this->store['AGILEPHP_REQUEST_TOKEN'] != $_COOKIE['AGILEPHP_REQUEST_TOKEN'] ) {
 
-	  	      	  	  Logger::getInstance()->debug( 'RequestScope::__construct Found invalid request token \'' . $this->store['AGILEPHP_REQUEST_TOKEN'] . '\', expected \'' . $_COOKIE['AGILEPHP_REQUEST_TOKEN'] . '\'.' );
-	  	      	  	  throw new AgilePHP_Exception( 'Invalid request token \'' . $this->store['AGILEPHP_REQUEST_TOKEN'] . '\'. Possible Cross-Site Forgery Request (CSFR) attempt.' );
+	  	      	  	  $rt = (!isset( $this->store['AGILEPHP_REQUEST_TOKEN'] ) ) ? null : $this->store['AGILEPHP_REQUEST_TOKEN'];
+
+	  	      	  	  Logger::getInstance()->debug( 'RequestScope::__construct Found invalid request token \'' . $rt . '\', expected \'' . $_COOKIE['AGILEPHP_REQUEST_TOKEN'] . '\'.' );
+	  	      	  	  throw new AgilePHP_Exception( 'Invalid request token \'' . $rt . '\'. Possible Cross-Site Forgery Request (CSFR) attempt.' );
 	  	      	  }
 	  	      	  else {
 
