@@ -33,7 +33,7 @@ require_once 'interception/InvocationContext.php';
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp
- * @version 0.2a
+ * @version 0.3a
  */
 
 class Interception {
@@ -130,8 +130,48 @@ class Interception {
 	  	     $className = $this->class;
 	  		 $code = $this->getSourceCode( 'InterceptorProxy' );
 	  		 $code = preg_replace( '/InterceptorProxy/', $className, $code );
+
+	  		 $stubs = $this->getMethodStubs();
+	  		 $proxyMethods = array( '__construct', 'getInstance', 'getInterceptedInstance',
+	  		 						   '__get', '__set', '__isset', '__unset', '__call' );
+
+	  		 for( $i=0; $i<count( $stubs['signatures'] ); $i++ ) {
+
+	  		 		if( in_array( $stubs['methods'][$i], $proxyMethods ) ) continue;
+
+	  		 		$call = $stubs['signatures'][$i] . ' { return $this->__call( "' . $stubs['methods'][$i] . '", array' . $stubs['params'][$i] . ' ); } ';
+	  		 		$code = preg_replace( '/\}\s*\?>/m', "\t" . $call . PHP_EOL . '}' . PHP_EOL . '?>', $code );
+	  		 }
+
 	  		 $code = $this->clean( $code );
 	  		 eval( $code );
+	  }
+
+	  /**
+	   * Creates public method stubs in the proxy class that match public methods
+	   * in the intercepted target class. Without this in place, when using reflection
+	   * on the intercepted target class name, the reflection results will actually be
+	   * taking place on the InterceptorProxy class and not return expected results. 
+	   * 
+	   * @return void
+	   */
+	  private function getMethodStubs() {
+
+	  		  $code = $this->getSourceCode( $this->class );
+	  		  preg_match_all( '/(public\s+function\s+(.*?)(\(.*\)))\s/', $code, $matches );
+
+	  		  if( !isset( $matches[1] ) )
+	  		 	   return array();
+
+	  		  // Parameter names are gotten from the method signature - remove type hinting from parameter names
+	  		  foreach( $matches[3] as &$param )
+	  		 	  $param = preg_replace( '/[^\$a-zA-Z0-9][a-zA-Z0-9]+?\s/', ' ', $param );
+
+	  		  $a['signatures'] = $matches[1]; 
+	  		  $a['methods'] = $matches[2];
+	  		  $a['params'] = $matches[3];
+
+	  		  return $a;
 	  }
 
 	  /**

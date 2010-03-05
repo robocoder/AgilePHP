@@ -568,6 +568,12 @@ class AgilePHP_InterceptionException extends AgilePHP_Exception { }
  */
 class AgilePHP_RemotingException extends AgilePHP_Exception { 
 
+	  public $code;
+	  public $message;
+	  public $file;
+	  public $trace;
+	  public $line;
+
 	  /**
 	   * Deliver remoting exceptions in JSON format and halt execution.
 	   * 

@@ -39,14 +39,14 @@ class AJAXRenderer extends BaseRenderer {
 	   * (non-PHPdoc)
 	   * @see src/mvc/BaseRenderer#render($view)
 	   */
-	  public function render( $data ) {
+	  public function render( $data, $name = null ) {
 
 	  		 if( !$this->output )
 	  		 	 throw new AgilePHP_Exception( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
 
 	  		 if( $this->output == 'json' ) {
 
-	  		 	 $json = $this->toJSON( $data );
+	  		 	 $json = $this->toJSON( $data, $name );
 
 	  		 	 Logger::getInstance()->debug( 'AJAXRenderer::render Rendering JSON ' . $json );
 
@@ -57,7 +57,7 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		 else if( $this->output == 'xml' ) {
 
-	  		 	 $xml = $this->toXML( $data );
+	  		 	 $xml = $this->toXML( $data, $name );
 
 	  		 	 Logger::getInstance()->debug( 'AJAXRenderer::render Rendering XML ' . $xml );
 
@@ -259,15 +259,17 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param $name Used internally within the method to perform recursion logic
 	   * @return The XML string
 	   */
-	  private function toXML( $data, $name = null ) {
+	  private function toXML( $data, $name = 'Result', $isChild = false ) {
+
+	  		  $xml = ($isChild) ? '' : "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
 
 	  	      if( is_array( $data ) ) {
 
-  	 		  	  if( $name ) $xml .= '<' . $name . '>';
+  	 		  	  $xml .= '<' . $name . ((!$isChild) ? 's' : '') . '>';
   	 		  	  foreach( $data as $key => $val ) {
-  	 		  	  	
+
   	 		  	  		if( is_object( $val ) || is_array( $val ) )
-  	 		  	  			$xml .= '<' . $key . '>' . $this->toXML( $val ) . '</' . $key . '>';
+  	 		  	  			$xml .= $this->toXML( $val, $name, true );
 
   	 		  	  		else {
 
@@ -275,14 +277,38 @@ class AJAXRenderer extends BaseRenderer {
   	 		  	  			$xml .= '<' . $key . '>' . $val . '</' . $key . '>';
   	 		  	  		}
   	 		  	  }
-  	 		  	  if( $name ) $xml .= '</' . $name . '>';
+  	 		  	  $xml .= '</' . $name . ((!$isChild) ? 's' : '') . '>';
+
+  	 		  	  return $xml;
 	  	      }
 
 	  	      else if( is_object( $data ) ) {
 	  	     	
-		  		 $class = new ReflectionClass( $data );
-		  		 
-		  		 $xml = '<' . $class->getName() . '>';
+	  	      	  $class = new ReflectionClass( $data );
+
+	  	      	  // stdClass has public properties
+		  		  if( $class->getName() == 'stdClass' ) {
+
+		  		  	  if( $name == null ) $name = 'Results';
+
+		  		  	  $xml .= '<' . $name . '>';
+		  		  	  foreach( get_object_vars( $data ) as $property => $value ) {
+	
+		  		 		  if( is_object( $value ) || is_array( $value ) )
+		  		 		  	  $xml .= $this->toXML( $value, $property, true );
+
+		  		 		  else {
+	
+			  		 		  $value = mb_convert_encoding( html_entity_decode( $value ), 'UTF-8', 'ISO-8859-1' );
+			  		 		  $xml .= '<' . $property . '>' . $value . '</' . $property . '>';
+		  		 		  }
+		  		 	  }
+		  		 	  $xml .= '</' . $name . '>';
+
+		  		 	  return $xml;
+	  		     }
+
+		  		 $xml = '<' . $class->getName() . '>';print_r( $class->getProperties() );
 		  		 foreach( $class->getProperties() as $property ) {
 	
 		  		 		  $context = null;

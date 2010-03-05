@@ -4,13 +4,13 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title><?php echo $title; ?></title>
-		<?php echo '<link href="' . AgilePHP::getFramework()->getDocumentRoot() . '/view/css/style.css" type="text/css" rel="stylesheet"/>'; ?>
+		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
 	</head>
 
 	<body>
 		<?php require_once 'header.html'; ?>
 
-		<form method="post" action="<?php echo AgilePHP::getFramework()->getRequestBase(); ?>/LoginController/login">
+		<form method="post" action="<?= AgilePHP::getFramework()->getRequestBase() ?>/LoginController/login">
 
 			<table border="0">
 				<tr>
@@ -38,6 +38,8 @@
 					</td>					
 				</tr>
 			</table>
+
+			<div style="padding-top: 25px;" >Not a member? <a href="<?= AgilePHP::getFramework()->getRequestBase() ?>/LoginController/showRegister">Register</a> now!</div>
 		</form>
 
 		<?php require_once 'footer.html'; ?>

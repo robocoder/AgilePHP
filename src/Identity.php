@@ -30,7 +30,6 @@
  */
 require_once 'identity/IdentityManager.php';
 require_once 'identity/IdentityModel.php';
-require_once 'identity/Role.php';
 
 /**
  * Provides a means for tracking a users identity throughout the
@@ -412,16 +411,12 @@ class Identity implements IdentityManager {
 	  		 	 throw new AgilePHP_Exception( 'Invalid token: ' . $token );
 
 	  		 $user = new User();
-	  		 $user->setUsername( $this->session->get( 'username' ) );
+	  		 $user->setUsername( $this->session->get( 'username' ) ); // #@Id interceptor performs lookup
 
-	  		 $pm = new PersistenceManager();
+	  		 if( !$user->getPassword() )
+	  		 	 throw new AgilePHP_Exception( 'User not found' );
 
-	  		 $persistedUser = $pm->find( $user );
-	  		 
-	  		 if( !$persistedUser )
-	  		 	  throw new AgilePHP_Exception( 'User not found' );
-
-	  		 $this->setModel( $persistedUser );
+	  		 $this->setModel( $user );
 	  		 $this->setEnabled( 1 );
 	  		 $this->merge();
 

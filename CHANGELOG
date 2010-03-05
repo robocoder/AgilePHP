@@ -1,7 +1,18 @@
-0.13a
+0.14a
 -----
 
-- Bug fix to AgilePHP.js AgilePHP.Remoting.Stub.prototype.invoke*. Synchronous mode failed due to returning new* instead of the already existing instance.
-- Added return statement to Remoting::create*Stub methods to support synchronous calls.
-- Fixed PHP notice in RequestScope::__construct when no request token is present.
-- Added support for RPC/LITERAL and DOCUMENT/LITERAL soap services. #@WSDL interceptor is getting complicated - perhaps split into formatting classes?
+- Removed return statement from #@WSDL::createWrappedMethod.
+- Refactored AgilePHP_RemotingException to use public properties. This keeps the ->setAccessible reflection call in AJAXRenderer
+  from invoking when exceptions are thrown (and eliminates the ->setAccessible error on versions of PHP < 5.3).
+- Refactored AgilePHP.js client side library so that XHR.request and XHR.post methods now return eval'd results instead of the raw XMLHTTPRequest object.
+- Added Interception::getMethodStubs to overcome the issue of reflection on InterceptorProxy (intercepted classes) masking the real/intended object. Now
+  a set of method stubs are created that match the intercepted class, which simply forward the invocation to __call.
+- Bug fix to SessionScope::setSessionId. Refactoring needed to support change to persistence find() method returning single record as an array.
+- Refactored Identity component so that it does not manually include Role class, since it now contains an #@Id interceptor and needs to be
+  created by the Interception component.
+- Added test package views to register and added controller methods to LoginController to support the registration / confirmation process.
+- Refactored AJAXRenderer::toXML to support multi-dimensional arrays and array of objects.
+- Added RestfulTestAPI test package.
+- Added generator SetProject to allow setting an already existent project. (Eventually the entire generator package will be replaced by web based IDE)
+- Deleted InterceptionReflection class. No longer needed since intercepted class methods are copied into InterceptorProxy.
+- Created RestfulTestAPI in test package to demonstrate a simple rest style web service using the MVC and AJAXRenderer.

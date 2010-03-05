@@ -49,6 +49,7 @@ class Role {
 	   * @param String $name The role name
 	   * @return void
 	   */
+	  #@Id
 	  public function setName( $name ) {
 
 	  		 $this->name = $name;

@@ -265,15 +265,17 @@ var AgilePHP = {
 	
 						 if( xhr.readyState == 4 ) {
 	
-							 AgilePHP.debug( xhr );
-							 callback( xhr );
+							 var data = eval( '(' + xhr.responseText + ')' );
+							 AgilePHP.debug( data );
+							 callback( data );
 						 }
 					}
 				 }
 				 else {
 
-					 AgilePHP.debug( xhr );
-					 return xhr;
+					 var data = eval( '(' + xhr.responseText + ')' );
+					 AgilePHP.debug( data );
+					 return data;
 				 }
 			},
 
@@ -307,15 +309,17 @@ var AgilePHP = {
 		
 							 if( xhr.readyState == 4 ) {
 
-								 AgilePHP.debug( xhr );
-								 callback( xhr );
+								 var data = eval( '(' + xhr.responseText + ')' );
+								 AgilePHP.debug( data );
+								 callback( data );
 							 }
 						}
 				  }
 				  else {
 
-						 AgilePHP.debug( xhr );
-						 return xhr;
+					  	 var data = eval( '(' + xhr.responseText + ')' );
+						 AgilePHP.debug( data );
+						 return data;
 				  }
 			},
 

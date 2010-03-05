@@ -8,7 +8,8 @@
 	<!-- <scope type="session" key="test" value="SessionScope works!"/> -->
 	<!-- <scope type="request" key="test" value="RequestScope works!"/> -->
 	<logger level="debug"/>
-	<identity resetPasswordUrl="http://localhost/index.php/LoginController/resetPassword" confirmationUrl="http://localhost/index.php/LoginController/confirm"/>
+	<identity resetPasswordUrl="http://localhost/test/index.php/LoginController/resetPassword"
+		 confirmationUrl="http://localhost/test/index.php/LoginController/confirm"/>
 	<crypto algorithm="sha256" iv="1234567890" key="This is a secret key" />
 	<interceptors/>
 

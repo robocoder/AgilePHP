@@ -122,8 +122,8 @@ class SessionScope {
 	  		 $pm = new PersistenceManager();
 	  		 if( $persistedSession = $pm->find( $this->getSession() ) ) {
 
-  		 	 	 $this->session->setData( $persistedSession->getData() );
-  		 	 	 $this->oldSession->setData( $persistedSession->getData() );
+  		 	 	 $this->session->setData( $persistedSession[0]->getData() );
+  		 	 	 $this->oldSession->setData( $persistedSession[0]->getData() );
 	  		 }
 	  }
 
