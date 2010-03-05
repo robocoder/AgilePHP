@@ -67,7 +67,7 @@ class InterceptorProxy {
 	     		 	 	 	 	   	  $invocationCtx = new InvocationContext( $this->object, null, null, $interception->getInterceptor() );
 						              $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
 
-						              // Only execute the interceptor if the InvocationContext has had its proceed() method invoked.
+						              // Only execute the intercepted call if the InvocationContext has had its proceed() method invoked.
 						              if( $ctx instanceof InvocationContext && $ctx->proceed ) {
 
 										  $m = $class->getMethod( $ctx->getMethod() );
@@ -210,7 +210,7 @@ class InterceptorProxy {
 	  		 $interceptions = AgilePHP::getFramework()->getInterceptions();
 	  		 if( isset( $interceptions ) ) {
 
-			     foreach( AgilePHP::getFramework()->getInterceptions() as $interception ) {
+			     foreach( $interceptions as $interception ) {
 
 			     		  if( $interception->getClass() == get_class( $this ) ) {
 
