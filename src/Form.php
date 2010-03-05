@@ -362,7 +362,7 @@ class Form {
    			 $foreignInstance = $foreignKey->getReferencedTableInstance()->getModelInstance();
 
    			 // Find all foreign models by distinct parent column name
-          	 $foreignModels = $pm->find( $foreignInstance, $findAll = true );
+          	 $foreignModels = $pm->find( $foreignInstance );
 
           	 // The actual foreign key property name in the child table
           	 $property = $foreignKey->getColumnInstance()->getModelPropertyName();

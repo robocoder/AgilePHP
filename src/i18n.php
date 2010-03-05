@@ -20,7 +20,7 @@
  */
 
 /**
- * Internationalization
+ * Internationalization using the GNU gettext library.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
@@ -109,7 +109,7 @@ class i18n {
 	  /**
 	   * Returns the language locale being used to translate
 	   * 
-	   * @return void
+	   * @return string The language locale
 	   */
 	  public function getLocale() {
 
@@ -120,7 +120,7 @@ class i18n {
 	   * Performs language translation based on the configured locale.
 	   * 
 	   * @param String $text The text to translate
-	   * @return void
+	   * @return string The translated text
 	   * @static
 	   */
 	  public static function translate( $text ) {
