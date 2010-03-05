@@ -21,7 +21,7 @@
 
 /**
  * Responsible for MSSQL specific database operations.
- * NOTE: This class uses the underlying PDO ODBC driver.
+ * NOTE: This class uses the "Microsft SQL Server Driver for PHP".
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
