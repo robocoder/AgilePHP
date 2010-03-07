@@ -130,11 +130,14 @@ class PersistenceManager implements SQLDialect {
 	  	     	     	  	  $this->dialect = new MSSQLDialect( $db );
 	  	     	     	  }
 	  	     	     	  break;
-	  	     	    /*
+
   	     		 	case 'pgsql':
-  	     		 		 $this->pdo = new PDO( "pgsql:host=$host;dbname=$name", $username, $password );
+  	     		 		
+  	     		 		 require_once 'persistence/dialect/PostgreSQLDialect.php';
+  	     		 		 $this->dialect = new PostgreSQLDialect( $db );
   	     		 	  	 break;
 
+  	     		 	 /*
   	     		 	case 'firebird':
   	     		    	 $this->pdo = new PDO( "firebird:dbname=$host:$name", $username, $password );
   	     		      	 break;
