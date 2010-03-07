@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title></title>
+			<link rel="stylesheet" href="media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+						<h1 align="center">CHANGELOG</h1>
+<pre>
+0.15a
+-----
+
+- Bug fixes to test package Mailer component. Added test views and a cheesy navigation for demo purposes.
+- Created #@BasicAuthentication interceptor which uses HTTP basic authentication to authenticate a visitor.
+- Bug fix to Interception::getMethodStubs. Added cleansing of default parameter values.
+- Bug fix to Interception logic where interceptors were being executed twice when an interceptor instantiated a class which contains interceptor annotations.
+- Removed #@WSDL inProgress check since it only gets executed once now.
+- Refactored AgilePHP __autoload and Interception classes to check for loaded classes using class_exists( $class, false ) now. (dont load if doesnt exist)
+- Updated test package error.phtml css include. Was point to very old (like v0.1a) file path.
+- Refactored test/InterceptorTest to include a test for each interception happening in classes/MockInterceptionTarget.
+- Refactoring of comments throughout various classes.
+- Refactored #@Password interceptor to include class::method name in log message.
+- Refactored test/PersistenceManagerTest to work with find method since find no longer returns single result sets as an object.
+- Lots of refactoring on persistence package, specifically PersistenceManager, dialect classes and SQLDialect interface. Also made necessary updates
+  to MVC classes, etc, which needed to reflect the new interface. find method now also uses properties set in the model in WHERE clause.
+- Removed bit data type explicit checkin from BaseModelXmlController everywhere (ord($value) == 1) logic was being used. Also updated Form class
+  so that it also removes all explicit bit checking logic.
+- Moved mysql bit type checking into User setEnabled method.
+- Removed dynamic model argument from BaseModelActionController::modelList. Also placed additional checking of null view argument and default to admin view.
+- Created Column::getColumn( $name )
+- Created test/PersistenceManagerTest::testRestrictedFind to test lookups using restrictions logic.
+- Bug fix to BaseModelActionController::modelAction 'filteredList' when filtering on an intercepted class. Only methods are copied into InterceptorProxy
+  not properties, so this causes a bug when using reflection to enumerate properties on a class which has been intercepted. It seems as though interceptors
+  are still being somewhat intrusive to &quot;normal&quot; PHP application logic. Should properties be coped into InterceptorProxy also?
+- Updated apidoc to v0.15a.
+- Added user enable/disable check to Identity::login.
+- Bug fix to Identity::refresh. Still old code using persistence manager find and expecting single result object.
+</pre>
+	<p class="notes" id="credit">
+		Documentation generated on Sat, 06 Mar 2010 20:17:54 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</body>
+</html>

@@ -31,7 +31,7 @@
 				<li><span class="field">abstract:</span> </li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_persistence---BasePersistence.php.html">/persistence/BasePersistence.php</a> (line <span class="field">39</span>)
+			Located in <a class="field" href="_src---persistence---BasePersistence.php.html">/src/persistence/BasePersistence.php</a> (line <span class="field">39</span>)
 		</p>
 		
 				
@@ -63,9 +63,21 @@
 										</td>
 				</tr>
 								<tr>
+					<td style="padding-right: 2em"><a href="../com-makeabyte-agilephp-persistence-dialect/MSSQLDialect.html">MSSQLDialect</a></td>
+					<td>
+											Responsible for MSSQL specific database operations.
+										</td>
+				</tr>
+								<tr>
 					<td style="padding-right: 2em"><a href="../com-makeabyte-agilephp-persistence-dialect/MySQLDialect.html">MySQLDialect</a></td>
 					<td>
 											Handles MySQL specific queries
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html">SQLSRVDialect</a></td>
+					<td>
+											Responsible for MSSQL specific database operations.
 										</td>
 				</tr>
 							</table>
@@ -119,7 +131,7 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																																																																																																																																																																																																																																																																																																																																																																														
+																																																																																																																																																																																																																																																																																																																																																																																																																														
 				<div class="method-definition">
 											<span class="method-result">BasePersistence</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
@@ -169,6 +181,12 @@
 									</div>
 														
 				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#createWhereClauseFromModel" title="details" class="method-name">createWhereClauseFromModel</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">&$model</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$primaryKeys</span>)
+									</div>
+														
+				<div class="method-definition">
 											<span class="method-result">PDOStatement</span>
 										<a href="#delete" title="details" class="method-name">delete</a>
 											(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
@@ -189,7 +207,7 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#find" title="details" class="method-name">find</a>
-											(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>, <span class="var-type">bool</span>&nbsp;<span class="var-name">$findAll</span>)
+											(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -268,6 +286,12 @@
 											<span class="method-result">The</span>
 										<a href="#getPropertyNameForColumn" title="details" class="method-name">getPropertyNameForColumn</a>
 											(<span class="var-type">$table</span>&nbsp;<span class="var-name">$table</span>, <span class="var-type">$columnName</span>&nbsp;<span class="var-name">$columnName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">Array</span>
+										<a href="#getRestrictions" title="details" class="method-name">getRestrictions</a>
+										()
 									</div>
 														
 				<div class="method-definition">
@@ -555,8 +579,16 @@
 				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLiteDialect.html#method__construct">SQLiteDialect::__construct()</a>
 							</li>
 					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/MSSQLDialect.html#method__construct">MSSQLDialect::__construct()</a>
+								: Initalize MSSQL Dialect.
+							</li>
+					<li>
 				<a href="../com-makeabyte-agilephp-persistence-dialect/MySQLDialect.html#method__construct">MySQLDialect::__construct()</a>
 								: Initalize MySQLDialect
+							</li>
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#method__construct">SQLSRVDialect::__construct()</a>
+								: Initalize SQLSRVDialect.
 							</li>
 				</ul>
 	</div>
@@ -564,7 +596,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">Destructor __destruct</span> (line <span class="line-number">1045</span>)
+		<span class="method-title">Destructor __destruct</span> (line <span class="line-number">1063</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -610,12 +642,20 @@
 	
 		
 			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodbeginTransaction">SQLSRVDialect::beginTransaction()</a>
+								: (non-PHPdoc)
+							</li>
+				</ul>
 	</div>
 <a name="methodclose" id="close"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">close</span> (line <span class="line-number">703</span>)
+		<span class="method-title">close</span> (line <span class="line-number">711</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -634,6 +674,14 @@
 	
 		
 			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodclose">SQLSRVDialect::close()</a>
+								: (non-PHPdoc)
+							</li>
+				</ul>
 	</div>
 <a name="methodcommit" id="commit"><!-- --></a>
 <div class="oddrow">
@@ -661,12 +709,20 @@
 	
 		
 			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodcommit">SQLSRVDialect::commit()</a>
+								: (non-PHPdoc)
+							</li>
+				</ul>
 	</div>
 <a name="methodcompare" id="compare"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">compare</span> (line <span class="line-number">1104</span>)
+		<span class="method-title">compare</span> (line <span class="line-number">1122</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -700,7 +756,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">count</span> (line <span class="line-number">684</span>)
+		<span class="method-title">count</span> (line <span class="line-number">692</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -725,12 +781,20 @@
 				</ul>
 		
 			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodcount">SQLSRVDialect::count()</a>
+								: Returns the total number of records in the specified model.
+							</li>
+				</ul>
 	</div>
 <a name="methodcreateRestrictSQL" id="createRestrictSQL"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">createRestrictSQL</span> (line <span class="line-number">766</span>)
+		<span class="method-title">createRestrictSQL</span> (line <span class="line-number">784</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -751,8 +815,39 @@
 		
 			
 	</div>
-<a name="methoddelete" id="delete"><!-- --></a>
+<a name="methodcreateWhereClauseFromModel" id="createWhereClauseFromModel"><!-- --></a>
 <div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">createWhereClauseFromModel</span> (line <span class="line-number">557</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			createWhereClauseFromModel
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">&$model</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$primaryKeys</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">&$model</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$primaryKeys</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddelete" id="delete"><!-- --></a>
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">delete</span> (line <span class="line-number">516</span>)
@@ -782,7 +877,7 @@
 			
 	</div>
 <a name="methodexec" id="exec"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">exec</span> (line <span class="line-number">330</span>)
@@ -813,14 +908,14 @@
 			
 	</div>
 <a name="methodexecute" id="execute"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">execute</span> (line <span class="line-number">284</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Executes a prepared statement (with parameters)</p>
+<p class="short-description">Executes a prepared statement with optional parameters</p>
 	<ul class="tags">
 				<li><span class="field">return:</span> if successful, false on fail</li>
 				<li><span class="field">see:</span> <a href="http://usphp.com/manual/en/function.PDOStatement-execute.php">http://usphp.com/manual/en/function.PDOStatement-execute.php</a></li>
@@ -837,17 +932,25 @@
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type">$inputParameters</span>
-				<span class="var-name">$inputParameters</span><span class="var-description">: An array of input parameters</span>			</li>
+				<span class="var-type">Array</span>
+				<span class="var-name">$inputParameters</span><span class="var-description">: Optional array of input parameters</span>			</li>
 				</ul>
 		
 			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodexecute">SQLSRVDialect::execute()</a>
+								: (non-PHPdoc)
+							</li>
+				</ul>
 	</div>
 <a name="methodfind" id="find"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">find</span> (line <span class="line-number">567</span>)
+		<span class="method-title">find</span> (line <span class="line-number">580</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -862,22 +965,31 @@
 		<span class="method-name">
 			find
 		</span>
-					(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>, <span class="var-type">bool</span>&nbsp;<span class="var-name">$findAll</span>)
+					(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
 			</div>
 	
 			<ul class="parameters">
-					<li>
-				<span class="var-type">bool</span>
-				<span class="var-name">$findAll</span><span class="var-description">: True to find all records (SELECT *).</span>			</li>
 					<li>
 				<span class="var-type">$model</span>
 				<span class="var-name">$model</span><span class="var-description">: A domain model object. Any fields which are set in the object are used to filter results.</span>			</li>
 				</ul>
 		
 			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/MSSQLDialect.html#methodfind">MSSQLDialect::find()</a>
+								: Overrides parent find method to provide MSSQL specific TOP command to limit returned result sets.
+							</li>
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodfind">SQLSRVDialect::find()</a>
+								: Overrides parent find method to provide MSSQL specific syntax.
+							</li>
+				</ul>
 	</div>
 <a name="methodgetAvailableDrivers" id="getAvailableDrivers"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">getAvailableDrivers</span> (line <span class="line-number">73</span>)
@@ -901,10 +1013,10 @@
 			
 	</div>
 <a name="methodgetColumnNameForProperty" id="getColumnNameForProperty"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getColumnNameForProperty</span> (line <span class="line-number">1007</span>)
+		<span class="method-title">getColumnNameForProperty</span> (line <span class="line-number">1025</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -935,7 +1047,7 @@
 			
 	</div>
 <a name="methodgetDatabase" id="getDatabase"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">getDatabase</span> (line <span class="line-number">83</span>)
@@ -960,10 +1072,10 @@
 			
 	</div>
 <a name="methodgetDisplayNameForColumn" id="getDisplayNameForColumn"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDisplayNameForColumn</span> (line <span class="line-number">956</span>)
+		<span class="method-title">getDisplayNameForColumn</span> (line <span class="line-number">974</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -993,7 +1105,7 @@
 			
 	</div>
 <a name="methodgetDistinct" id="getDistinct"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">getDistinct</span> (line <span class="line-number">105</span>)
@@ -1018,7 +1130,7 @@
 			
 	</div>
 <a name="methodgetGroupBy" id="getGroupBy"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">getGroupBy</span> (line <span class="line-number">170</span>)
@@ -1043,10 +1155,10 @@
 			
 	</div>
 <a name="methodgetIdentityModel" id="getIdentityModel"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getIdentityModel</span> (line <span class="line-number">869</span>)
+		<span class="method-title">getIdentityModel</span> (line <span class="line-number">887</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1068,10 +1180,10 @@
 			
 	</div>
 <a name="methodgetIdentityTable" id="getIdentityTable"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getIdentityTable</span> (line <span class="line-number">851</span>)
+		<span class="method-title">getIdentityTable</span> (line <span class="line-number">869</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1093,7 +1205,7 @@
 			
 	</div>
 <a name="methodgetMaxResults" id="getMaxResults"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
 		<span class="method-title">getMaxResults</span> (line <span class="line-number">128</span>)
@@ -1118,7 +1230,7 @@
 			
 	</div>
 <a name="methodgetOffset" id="getOffset"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">getOffset</span> (line <span class="line-number">149</span>)
@@ -1143,10 +1255,10 @@
 			
 	</div>
 <a name="methodgetOrderBy" id="getOrderBy"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getOrderBy</span> (line <span class="line-number">728</span>)
+		<span class="method-title">getOrderBy</span> (line <span class="line-number">736</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1168,7 +1280,7 @@
 			
 	</div>
 <a name="methodgetPDOInstance" id="getPDOInstance"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">getPDOInstance</span> (line <span class="line-number">63</span>)
@@ -1193,10 +1305,10 @@
 			
 	</div>
 <a name="methodgetPropertyNameForColumn" id="getPropertyNameForColumn"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getPropertyNameForColumn</span> (line <span class="line-number">984</span>)
+		<span class="method-title">getPropertyNameForColumn</span> (line <span class="line-number">1002</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1226,11 +1338,36 @@
 		
 			
 	</div>
+<a name="methodgetRestrictions" id="getRestrictions"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getRestrictions</span> (line <span class="line-number">760</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the WHERE clause restrictions</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> SQL WHERE clause restrictions</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Array</span>
+		<span class="method-name">
+			getRestrictions
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
 <a name="methodgetSessionModel" id="getSessionModel"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getSessionModel</span> (line <span class="line-number">931</span>)
+		<span class="method-title">getSessionModel</span> (line <span class="line-number">949</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1255,7 +1392,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getSessionTable</span> (line <span class="line-number">913</span>)
+		<span class="method-title">getSessionTable</span> (line <span class="line-number">931</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1280,7 +1417,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getTableByModel</span> (line <span class="line-number">794</span>)
+		<span class="method-title">getTableByModel</span> (line <span class="line-number">812</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1310,7 +1447,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getTableByModelName</span> (line <span class="line-number">820</span>)
+		<span class="method-title">getTableByModelName</span> (line <span class="line-number">838</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1340,7 +1477,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getTableByName</span> (line <span class="line-number">835</span>)
+		<span class="method-title">getTableByName</span> (line <span class="line-number">853</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1370,7 +1507,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">isEmpty</span> (line <span class="line-number">1057</span>)
+		<span class="method-title">isEmpty</span> (line <span class="line-number">1075</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1486,6 +1623,14 @@
 				</ul>
 		
 			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodprepare">SQLSRVDialect::prepare()</a>
+								: (non-PHPdoc)
+							</li>
+				</ul>
 	</div>
 <a name="methodquery" id="query"><!-- --></a>
 <div class="oddrow">
@@ -1518,6 +1663,14 @@
 				</ul>
 		
 			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodquery">SQLSRVDialect::query()</a>
+								: A statement resource. If the statement cannot be created and/or executed, false is returned.
+							</li>
+				</ul>
 	</div>
 <a name="methodquote" id="quote"><!-- --></a>
 <div class="evenrow">
@@ -1584,6 +1737,14 @@
 				</ul>
 		
 			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodrollBack">SQLSRVDialect::rollBack()</a>
+								: (non-PHPdoc)
+							</li>
+				</ul>
 	</div>
 <a name="methodsetDistinct" id="setDistinct"><!-- --></a>
 <div class="evenrow">
@@ -1705,7 +1866,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setOrderBy</span> (line <span class="line-number">715</span>)
+		<span class="method-title">setOrderBy</span> (line <span class="line-number">723</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1737,7 +1898,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setRestrictions</span> (line <span class="line-number">742</span>)
+		<span class="method-title">setRestrictions</span> (line <span class="line-number">750</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1766,7 +1927,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setRestrictionsLogicOperator</span> (line <span class="line-number">753</span>)
+		<span class="method-title">setRestrictionsLogicOperator</span> (line <span class="line-number">771</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1795,7 +1956,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">toAccessor</span> (line <span class="line-number">1146</span>)
+		<span class="method-title">toAccessor</span> (line <span class="line-number">1164</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1825,7 +1986,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">toBigInt</span> (line <span class="line-number">1030</span>)
+		<span class="method-title">toBigInt</span> (line <span class="line-number">1048</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1854,7 +2015,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">toMutator</span> (line <span class="line-number">1159</span>)
+		<span class="method-title">toMutator</span> (line <span class="line-number">1177</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1916,6 +2077,14 @@
 				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLiteDialect.html#methodtruncate">SQLiteDialect::truncate()</a>
 								: (non-PHPdoc)
 							</li>
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/MSSQLDialect.html#methodtruncate">MSSQLDialect::truncate()</a>
+								: (non-PHPdoc)
+							</li>
+					<li>
+				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodtruncate">SQLSRVDialect::truncate()</a>
+								: (non-PHPdoc)
+							</li>
 				</ul>
 	</div>
 						
@@ -1924,7 +2093,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Sun, 24 Jan 2010 23:40:53 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Sat, 06 Mar 2010 20:17:58 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>

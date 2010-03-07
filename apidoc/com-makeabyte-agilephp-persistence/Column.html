@@ -28,7 +28,7 @@
 				<li><span class="field">copyright:</span> Make A Byte, inc</li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_persistence---Column.php.html">/persistence/Column.php</a> (line <span class="field">30</span>)
+			Located in <a class="field" href="_src---persistence---Column.php.html">/src/persistence/Column.php</a> (line <span class="field">30</span>)
 		</p>
 		
 				
@@ -53,7 +53,7 @@
 				<div class="method-definition">
 											<span class="method-result">Column</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$column</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>)
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$column</span> = <span class="var-default">null</span>], <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -75,7 +75,7 @@
 									</div>
 														
 				<div class="method-definition">
-											<span class="method-result">bool</span>
+											<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/ForeignKey.html">ForeignKey</a></span>
 										<a href="#getForeignKey" title="details" class="method-name">getForeignKey</a>
 										()
 									</div>
@@ -197,7 +197,7 @@
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#setForeignKey" title="details" class="method-name">setForeignKey</a>
-											(<span class="var-type">bool</span>&nbsp;<span class="var-name">$foreignKey</span>)
+											(<span class="var-type"><a href="../com-makeabyte-agilephp-persistence/ForeignKey.html">ForeignKey</a></span>&nbsp;<span class="var-name">$foreignKey</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -285,7 +285,7 @@
 		<span class="method-name">
 			__construct
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$column</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>)
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$column</span> = <span class="var-default">null</span>], <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>)
 			</div>
 	
 			<ul class="parameters">
@@ -303,7 +303,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDefault</span> (line <span class="line-number">215</span>)
+		<span class="method-title">getDefault</span> (line <span class="line-number">218</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -327,7 +327,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDescription</span> (line <span class="line-number">150</span>)
+		<span class="method-title">getDescription</span> (line <span class="line-number">153</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -352,7 +352,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDisplay</span> (line <span class="line-number">193</span>)
+		<span class="method-title">getDisplay</span> (line <span class="line-number">196</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -377,18 +377,18 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getForeignKey</span> (line <span class="line-number">393</span>)
+		<span class="method-title">getForeignKey</span> (line <span class="line-number">396</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Returns boolean indicator based on whether or not the column is a foreign key field.</p>
 	<ul class="tags">
-				<li><span class="field">return:</span> True if the column is a foreign key field, false otherwise</li>
+				<li><span class="field">return:</span> The ForeignKey instance representing the relationship for this column</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">bool</span>
+		<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/ForeignKey.html">ForeignKey</a></span>
 		<span class="method-name">
 			getForeignKey
 		</span>
@@ -402,7 +402,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getLength</span> (line <span class="line-number">128</span>)
+		<span class="method-title">getLength</span> (line <span class="line-number">131</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -427,7 +427,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getModelPropertyName</span> (line <span class="line-number">417</span>)
+		<span class="method-title">getModelPropertyName</span> (line <span class="line-number">420</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -452,7 +452,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getName</span> (line <span class="line-number">84</span>)
+		<span class="method-title">getName</span> (line <span class="line-number">87</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -477,7 +477,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getProperty</span> (line <span class="line-number">171</span>)
+		<span class="method-title">getProperty</span> (line <span class="line-number">174</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -502,7 +502,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getType</span> (line <span class="line-number">107</span>)
+		<span class="method-title">getType</span> (line <span class="line-number">110</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -527,7 +527,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getViewDisplayName</span> (line <span class="line-number">428</span>)
+		<span class="method-title">getViewDisplayName</span> (line <span class="line-number">431</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -552,13 +552,13 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">hasForeignKey</span> (line <span class="line-number">383</span>)
+		<span class="method-title">hasForeignKey</span> (line <span class="line-number">386</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Returns boolean indicator based on whether or not the column is a foreign key field.</p>
 	<ul class="tags">
-				<li><span class="field">return:</span> True if the column is a foreign key field, false otherwise</li>
+				<li><span class="field">return:</span> True if the column has a foreign key field, false otherwise</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -577,7 +577,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">isAutoIncrement</span> (line <span class="line-number">352</span>)
+		<span class="method-title">isAutoIncrement</span> (line <span class="line-number">355</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -602,7 +602,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">isBit</span> (line <span class="line-number">404</span>)
+		<span class="method-title">isBit</span> (line <span class="line-number">407</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -626,7 +626,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">isForeignKey</span> (line <span class="line-number">373</span>)
+		<span class="method-title">isForeignKey</span> (line <span class="line-number">376</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -651,7 +651,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">isPrimaryKey</span> (line <span class="line-number">330</span>)
+		<span class="method-title">isPrimaryKey</span> (line <span class="line-number">333</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -676,7 +676,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">isRequired</span> (line <span class="line-number">309</span>)
+		<span class="method-title">isRequired</span> (line <span class="line-number">312</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -701,7 +701,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">isSelectable</span> (line <span class="line-number">288</span>)
+		<span class="method-title">isSelectable</span> (line <span class="line-number">291</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -726,7 +726,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">isSortable</span> (line <span class="line-number">262</span>)
+		<span class="method-title">isSortable</span> (line <span class="line-number">265</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -751,7 +751,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">isVisible</span> (line <span class="line-number">239</span>)
+		<span class="method-title">isVisible</span> (line <span class="line-number">242</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -776,7 +776,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setAutoIncrement</span> (line <span class="line-number">341</span>)
+		<span class="method-title">setAutoIncrement</span> (line <span class="line-number">344</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -805,7 +805,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setDefault</span> (line <span class="line-number">204</span>)
+		<span class="method-title">setDefault</span> (line <span class="line-number">207</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -834,7 +834,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setDescription</span> (line <span class="line-number">140</span>)
+		<span class="method-title">setDescription</span> (line <span class="line-number">143</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -863,7 +863,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setDisplay</span> (line <span class="line-number">183</span>)
+		<span class="method-title">setDisplay</span> (line <span class="line-number">186</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -892,7 +892,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setForeignKey</span> (line <span class="line-number">363</span>)
+		<span class="method-title">setForeignKey</span> (line <span class="line-number">366</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -906,13 +906,13 @@
 		<span class="method-name">
 			setForeignKey
 		</span>
-					(<span class="var-type">bool</span>&nbsp;<span class="var-name">$foreignKey</span>)
+					(<span class="var-type"><a href="../com-makeabyte-agilephp-persistence/ForeignKey.html">ForeignKey</a></span>&nbsp;<span class="var-name">$foreignKey</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type">bool</span>
-				<span class="var-name">$foreignKey</span><span class="var-description">: True to mark the column as a foreign key column, false otherwise</span>			</li>
+				<span class="var-type"><a href="../com-makeabyte-agilephp-persistence/ForeignKey.html">ForeignKey</a></span>
+				<span class="var-name">$foreignKey</span><span class="var-description">: A ForeignKey instance representing the relationship for this column</span>			</li>
 				</ul>
 		
 			
@@ -921,7 +921,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setLength</span> (line <span class="line-number">118</span>)
+		<span class="method-title">setLength</span> (line <span class="line-number">121</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -950,7 +950,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setName</span> (line <span class="line-number">74</span>)
+		<span class="method-title">setName</span> (line <span class="line-number">77</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -979,7 +979,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setPrimaryKey</span> (line <span class="line-number">320</span>)
+		<span class="method-title">setPrimaryKey</span> (line <span class="line-number">323</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1008,7 +1008,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setProperty</span> (line <span class="line-number">161</span>)
+		<span class="method-title">setProperty</span> (line <span class="line-number">164</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1037,7 +1037,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setRequired</span> (line <span class="line-number">299</span>)
+		<span class="method-title">setRequired</span> (line <span class="line-number">302</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1066,7 +1066,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setSelectable</span> (line <span class="line-number">276</span>)
+		<span class="method-title">setSelectable</span> (line <span class="line-number">279</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1095,7 +1095,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setSortable</span> (line <span class="line-number">251</span>)
+		<span class="method-title">setSortable</span> (line <span class="line-number">254</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1124,7 +1124,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setType</span> (line <span class="line-number">96</span>)
+		<span class="method-title">setType</span> (line <span class="line-number">99</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1153,7 +1153,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setVisible</span> (line <span class="line-number">229</span>)
+		<span class="method-title">setVisible</span> (line <span class="line-number">232</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1184,7 +1184,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Sun, 24 Jan 2010 23:40:53 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Sat, 06 Mar 2010 20:17:59 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>

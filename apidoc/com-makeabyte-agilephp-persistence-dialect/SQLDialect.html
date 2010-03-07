@@ -21,14 +21,14 @@
 					</div>
 	<div class="info-box-body">
         		<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Defines contract for dealing with vendor specific SQL queries</p>
+<p class="short-description">Defines contract used by AgilePHP ORM framework to implement vendor  specific SQL dialect/syntax.</p>
 	<ul class="tags">
 				<li><span class="field">author:</span> Jeremy Hahn</li>
 				<li><span class="field">version:</span> 0.2a</li>
 				<li><span class="field">copyright:</span> Make A Byte, inc</li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_persistence---dialect---SQLDialect.php.html">/persistence/dialect/SQLDialect.php</a> (line <span class="field">30</span>)
+			Located in <a class="field" href="_src---persistence---dialect---SQLDialect.php.html">/src/persistence/dialect/SQLDialect.php</a> (line <span class="field">31</span>)
 		</p>
 		
 				
@@ -49,7 +49,25 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																														
+																																																																																																																																																																																																																																																																																																																																														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#beginTransaction" title="details" class="method-name">beginTransaction</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#commit" title="details" class="method-name">commit</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">True</span>
+										<a href="#compare" title="details" class="method-name">compare</a>
+											(<span class="var-type">Object</span>&nbsp;<span class="var-name">$modelA</span>, <span class="var-type">Object</span>&nbsp;<span class="var-name">$modelB</span>)
+									</div>
+														
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#create" title="details" class="method-name">create</a>
@@ -57,9 +75,219 @@
 									</div>
 														
 				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#createRestrictSQL" title="details" class="method-name">createRestrictSQL</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">PDOStatement</span>
+										<a href="#delete" title="details" class="method-name">delete</a>
+											(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
+									</div>
+														
+				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#drop" title="details" class="method-name">drop</a>
 										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#exec" title="details" class="method-name">exec</a>
+											(<span class="var-type">$statement</span>&nbsp;<span class="var-name">$statement</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">True</span>
+										<a href="#execute" title="details" class="method-name">execute</a>
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$inputParameters</span> = <span class="var-default">array()</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">Returns</span>
+										<a href="#find" title="details" class="method-name">find</a>
+											(<span class="var-type">Object</span>&nbsp;<span class="var-name">$model</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getColumnNameForProperty" title="details" class="method-name">getColumnNameForProperty</a>
+											(<span class="var-type">$table</span>&nbsp;<span class="var-name">$table</span>, <span class="var-type">$property</span>&nbsp;<span class="var-name">$property</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getDistinct" title="details" class="method-name">getDistinct</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">String</span>
+										<a href="#getGroupBy" title="details" class="method-name">getGroupBy</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getIdentityModel" title="details" class="method-name">getIdentityModel</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getIdentityTable" title="details" class="method-name">getIdentityTable</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getMaxResults" title="details" class="method-name">getMaxResults</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">An</span>
+										<a href="#getOrderBy" title="details" class="method-name">getOrderBy</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getPropertyNameForColumn" title="details" class="method-name">getPropertyNameForColumn</a>
+											(<span class="var-type">$table</span>&nbsp;<span class="var-name">$table</span>, <span class="var-type">$columnName</span>&nbsp;<span class="var-name">$columnName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getSessionModel" title="details" class="method-name">getSessionModel</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getSessionTable" title="details" class="method-name">getSessionTable</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getTableByModel" title="details" class="method-name">getTableByModel</a>
+											([<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span> = <span class="var-default">null</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getTableByModelName" title="details" class="method-name">getTableByModelName</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$modelName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#getTableByName" title="details" class="method-name">getTableByName</a>
+											(<span class="var-type">$tableName</span>&nbsp;<span class="var-name">$tableName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">PDOStatement</span>
+										<a href="#merge" title="details" class="method-name">merge</a>
+											(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">PDOStatement</span>
+										<a href="#persist" title="details" class="method-name">persist</a>
+											(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">False</span>
+										<a href="#prepare" title="details" class="method-name">prepare</a>
+											(<span class="var-type">$statement</span>&nbsp;<span class="var-name">$statement</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">PDO::PDOStatement</span>
+										<a href="#query" title="details" class="method-name">query</a>
+											(<span class="var-type">$sql</span>&nbsp;<span class="var-name">$sql</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#quote" title="details" class="method-name">quote</a>
+											(<span class="var-type">$data</span>&nbsp;<span class="var-name">$data</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Database.html">Database</a></span>
+										<a href="#reverseEngineer" title="details" class="method-name">reverseEngineer</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#rollBack" title="details" class="method-name">rollBack</a>
+											([<span class="var-type">$message</span>&nbsp;<span class="var-name">$message</span> = <span class="var-default">null</span>], [<span class="var-type">$code</span>&nbsp;<span class="var-name">$code</span> = <span class="var-default">0</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDistinct" title="details" class="method-name">setDistinct</a>
+											(<span class="var-type">$columnName</span>&nbsp;<span class="var-name">$columnName</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setGroupBy" title="details" class="method-name">setGroupBy</a>
+											(<span class="var-type">$column</span>&nbsp;<span class="var-name">$column</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setMaxResults" title="details" class="method-name">setMaxResults</a>
+											([<span class="var-type">$count</span>&nbsp;<span class="var-name">$maxResults</span> = <span class="var-default">25</span>])
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setOrderBy" title="details" class="method-name">setOrderBy</a>
+											(<span class="var-type">$column</span>&nbsp;<span class="var-name">$column</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$direction</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setRestrictions" title="details" class="method-name">setRestrictions</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$restrictions</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setRestrictionsLogicOperator" title="details" class="method-name">setRestrictionsLogicOperator</a>
+											(<span class="var-type">$operator</span>&nbsp;<span class="var-name">$operator</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#toAccessor" title="details" class="method-name">toAccessor</a>
+											(<span class="var-type">$property</span>&nbsp;<span class="var-name">$property</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#toBigInt" title="details" class="method-name">toBigInt</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$number</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">The</span>
+										<a href="#toMutator" title="details" class="method-name">toMutator</a>
+											(<span class="var-type">$property</span>&nbsp;<span class="var-name">$property</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">PDOStatement</span>
+										<a href="#truncate" title="details" class="method-name">truncate</a>
+											(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
 									</div>
 											</div>
 		</div>
@@ -76,14 +304,102 @@
 		</div>
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
+<a name="methodbeginTransaction" id="beginTransaction"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">beginTransaction</span> (line <span class="line-number">83</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Begins a transaction</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> <a href="http://usphp.com/manual/en/function.PDO-beginTransaction.php">http://usphp.com/manual/en/function.PDO-beginTransaction.php</a></li>
+				<li><span class="field">see:</span> <a href="http://us2.php.net/manual/en/pdo.transactions.php">http://us2.php.net/manual/en/pdo.transactions.php</a></li>
+				<li><span class="field">throws:</span> AgilePHP_PersistenceException</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			beginTransaction
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodcommit" id="commit"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">commit</span> (line <span class="line-number">93</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Commits an already started transaction.</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> <a href="http://usphp.com/manual/en/function.PDO-commit.php">http://usphp.com/manual/en/function.PDO-commit.php</a></li>
+				<li><span class="field">see:</span> <a href="http://us2.php.net/manual/en/pdo.transactions.php">http://us2.php.net/manual/en/pdo.transactions.php</a></li>
+				<li><span class="field">throws:</span> AgilePHP_PersistenceException</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			commit
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodcompare" id="compare"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">compare</span> (line <span class="line-number">41</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Checks the two defined model parameters to see if they are equal. The class name,  property name, type and value.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> if the comparison was successful, false if they differ.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">True</span>
+		<span class="method-name">
+			compare
+		</span>
+					(<span class="var-type">Object</span>&nbsp;<span class="var-name">$modelA</span>, <span class="var-type">Object</span>&nbsp;<span class="var-name">$modelB</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Object</span>
+				<span class="var-name">$modelA</span><span class="var-description">: The first domain model object</span>			</li>
+					<li>
+				<span class="var-type">Object</span>
+				<span class="var-name">$modelB</span><span class="var-description">: The second domain model object</span>			</li>
+				</ul>
+		
+			
+	</div>
 <a name="methodcreate" id="create"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">create</span> (line <span class="line-number">32</span>)
+		<span class="method-title">create</span> (line <span class="line-number">313</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Creates the active database in use by the ORM framework  (defined in persistence.xml).</p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -99,15 +415,72 @@
 		
 			
 	</div>
+<a name="methodcreateRestrictSQL" id="createRestrictSQL"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">createRestrictSQL</span> (line <span class="line-number">383</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> formatted SQL string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			createRestrictSQL
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methoddelete" id="delete"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">delete</span> (line <span class="line-number">349</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Deletes a persisted domain model object</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> AgilePHP_PersistenceException</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">PDOStatement</span>
+		<span class="method-name">
+			delete
+		</span>
+					(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$model</span>
+				<span class="var-name">$model</span><span class="var-description">: The domain model object to delete</span>			</li>
+				</ul>
+		
+			
+	</div>
 <a name="methoddrop" id="drop"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">drop</span> (line <span class="line-number">33</span>)
+		<span class="method-title">drop</span> (line <span class="line-number">322</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Drops the active database in use by the ORM framework  (defined in persistence.xml).</p>
 	<ul class="tags">
+				<li><span class="field">throws:</span> AgilePHP_PersistenceException</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -122,13 +495,969 @@
 		
 			
 	</div>
+<a name="methodexec" id="exec"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">exec</span> (line <span class="line-number">132</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Executes an SQL statement and returns the number of rows affected by the query.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> number of rows affected by the query.</li>
+				<li><span class="field">see:</span> <a href="http://usphp.com/manual/en/function.PDO-exec.php">http://usphp.com/manual/en/function.PDO-exec.php</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			exec
+		</span>
+					(<span class="var-type">$statement</span>&nbsp;<span class="var-name">$statement</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$statement</span>
+				<span class="var-name">$statement</span><span class="var-description">: The SQL statement to execute.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodexecute" id="execute"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">execute</span> (line <span class="line-number">123</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Executes a prepared statement (with parameters)</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> if successful, false on fail</li>
+				<li><span class="field">see:</span> <a href="http://usphp.com/manual/en/function.PDOStatement-execute.php">http://usphp.com/manual/en/function.PDOStatement-execute.php</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">True</span>
+		<span class="method-name">
+			execute
+		</span>
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$inputParameters</span> = <span class="var-default">array()</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$inputParameters</span>
+				<span class="var-name">$inputParameters</span><span class="var-description">: An array of input parameters</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodfind" id="find"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">find</span> (line <span class="line-number">368</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Attempts to locate the specified model by primary key value.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the same model which was passed (populated with the           database values) or null if a matching record could not be found.</li>
+				<li><span class="field">throws:</span> AgilePHP_PersistenceException</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">Returns</span>
+		<span class="method-name">
+			find
+		</span>
+					(<span class="var-type">Object</span>&nbsp;<span class="var-name">$model</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Object</span>
+				<span class="var-name">$model</span><span class="var-description">: A domain model object with its primary key field set</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetColumnNameForProperty" id="getColumnNameForProperty"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getColumnNameForProperty</span> (line <span class="line-number">268</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the column 'name' attribute value configured in persistence.xml for the specified  column 'property' attribute.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> column name or null if the $property could not be found in the table</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getColumnNameForProperty
+		</span>
+					(<span class="var-type">$table</span>&nbsp;<span class="var-name">$table</span>, <span class="var-type">$property</span>&nbsp;<span class="var-name">$property</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$table</span>
+				<span class="var-name">$table</span><span class="var-description">: The 'Table' object to search</span>			</li>
+					<li>
+				<span class="var-type">$property</span>
+				<span class="var-name">$property</span><span class="var-description">: The property attributes value</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetDistinct" id="getDistinct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getDistinct</span> (line <span class="line-number">57</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the 'distinct' column to use in an SQL SELECT statement  if one has been defined.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> DISTINCT column name or null if a column name has not been defined.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getDistinct
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetGroupBy" id="getGroupBy"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getGroupBy</span> (line <span class="line-number">181</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns SQL GROUP BY clause.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> GROUP BY value</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">String</span>
+		<span class="method-name">
+			getGroupBy
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetIdentityModel" id="getIdentityModel"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getIdentityModel</span> (line <span class="line-number">242</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the domain object model responsible for 'Identity' persistence.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> domain object model responsible for 'Identity' persistence.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getIdentityModel
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetIdentityTable" id="getIdentityTable"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getIdentityTable</span> (line <span class="line-number">235</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a SimpleXMLElement representing the table configured in persistence.xml as  an AgilePHP 'Identity' table.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> SimpleXMLElement instance containing the 'Identity' table, or null             if an 'Identity' table has not been configured.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getIdentityTable
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetMaxResults" id="getMaxResults"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getMaxResults</span> (line <span class="line-number">73</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the maximum number of results to retrieve. This translates  to an SQL LIMIT clause during SELECT operations.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> maximum number of results to retrieve during SELECT operations.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getMaxResults
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetOrderBy" id="getOrderBy"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getOrderBy</span> (line <span class="line-number">199</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an associative array containing the current 'orderBy' clause. The results  are returned with the name of the column as the index and the direction as the value.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> associative array containing the name of the column to sort as the key/index          and the direction of the sort order (ASC|DESC) as the value.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">An</span>
+		<span class="method-name">
+			getOrderBy
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetPropertyNameForColumn" id="getPropertyNameForColumn"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getPropertyNameForColumn</span> (line <span class="line-number">278</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the 'property' name configured in persistence.xml for the specified  column 'name' attribute.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> column name or null if the $property could not be found in the table</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getPropertyNameForColumn
+		</span>
+					(<span class="var-type">$table</span>&nbsp;<span class="var-name">$table</span>, <span class="var-type">$columnName</span>&nbsp;<span class="var-name">$columnName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$table</span>
+				<span class="var-name">$table</span><span class="var-description">: The 'Table' object to search</span>			</li>
+					<li>
+				<span class="var-type">$columnName</span>
+				<span class="var-name">$columnName</span><span class="var-description">: The column name to search</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetSessionModel" id="getSessionModel"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSessionModel</span> (line <span class="line-number">258</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the domain model object responsible for 'SessionScope' sessions.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getSessionModel
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetSessionTable" id="getSessionTable"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSessionTable</span> (line <span class="line-number">251</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a SimpleXMLElement representing the table configured in persistence.xml as  an AgilePHP 'SessionScope' session table.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> SimpleXMLElement instance containing the 'SessionScope' session table           or null if a session table has not been configured.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getSessionTable
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetTableByModel" id="getTableByModel"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getTableByModel</span> (line <span class="line-number">209</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the 'Table' object which is mapped to the specified $model.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> 'Table' object responsible for the model's persistence or null if a table           could not be located for the specified $model.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getTableByModel
+		</span>
+					([<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$model</span>
+				<span class="var-name">$model</span><span class="var-description">: The domain model object to retrieve the table element for. Defaults to the model                 currently being managed by the 'PersistenceManager'.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetTableByModelName" id="getTableByModelName"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getTableByModelName</span> (line <span class="line-number">218</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a 'Table' object representing the table configured in persistence.xml as  the AgilePHP 'Identity' table.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> 'Table' object which represents the AgilePHP 'Identity' table, or null           if an 'Identity' table has not been configured.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getTableByModelName
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$modelName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$modelName</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetTableByName" id="getTableByName"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getTableByName</span> (line <span class="line-number">226</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a 'Table' object by its name as configured in persistence.xml</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> 'Table' object or null if the table was not found</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			getTableByName
+		</span>
+					(<span class="var-type">$tableName</span>&nbsp;<span class="var-name">$tableName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$tableName</span>
+				<span class="var-name">$tableName</span><span class="var-description">: The value of the table's 'name' attribute</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodmerge" id="merge"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">merge</span> (line <span class="line-number">340</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Merges/updates a persisted domain model object</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> AgilePHP_PersistenceException</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">PDOStatement</span>
+		<span class="method-name">
+			merge
+		</span>
+					(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$model</span>
+				<span class="var-name">$model</span><span class="var-description">: The model object to merge/update</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodpersist" id="persist"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">persist</span> (line <span class="line-number">331</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Persists a domain model object</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> AgilePHP_PersistenceException</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">PDOStatement</span>
+		<span class="method-name">
+			persist
+		</span>
+					(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$model</span>
+				<span class="var-name">$model</span><span class="var-description">: The model object to persist</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodprepare" id="prepare"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">prepare</span> (line <span class="line-number">114</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Prepares an SQL prepared statement</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> if the statement could not execute successfully</li>
+				<li><span class="field">see:</span> <a href="http://usphp.com/manual/en/function.PDO-prepare.php">http://usphp.com/manual/en/function.PDO-prepare.php</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">False</span>
+		<span class="method-name">
+			prepare
+		</span>
+					(<span class="var-type">$statement</span>&nbsp;<span class="var-name">$statement</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$statement</span>
+				<span class="var-name">$statement</span><span class="var-description">: The SQL statement to prepare</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodquery" id="query"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">query</span> (line <span class="line-number">150</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Executes a raw SQL query using PDO::query</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> as returned by PDO::query</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">PDO::PDOStatement</span>
+		<span class="method-name">
+			query
+		</span>
+					(<span class="var-type">$sql</span>&nbsp;<span class="var-name">$sql</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$sql</span>
+				<span class="var-name">$sql</span><span class="var-description">: The SQL statement to execute</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodquote" id="quote"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">quote</span> (line <span class="line-number">142</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Quotes a string so its theoretically safe to pass into a statement  without the worry of SQL injection.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> quoted data</li>
+				<li><span class="field">see:</span> <a href="http://www.php.net/manual/en/pdo.quote.php">http://www.php.net/manual/en/pdo.quote.php</a></li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			quote
+		</span>
+					(<span class="var-type">$data</span>&nbsp;<span class="var-name">$data</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$data</span>
+				<span class="var-name">$data</span><span class="var-description">: The data to quote</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodreverseEngineer" id="reverseEngineer"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">reverseEngineer</span> (line <span class="line-number">376</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Reverse engineers the active database and returns a Database object that represents  the physical database.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> A database object that represents the physical database</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../com-makeabyte-agilephp-persistence/Database.html">Database</a></span>
+		<span class="method-name">
+			reverseEngineer
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodrollBack" id="rollBack"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">rollBack</span> (line <span class="line-number">105</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Rolls back a transaction.</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> <a href="http://usphp.com/manual/en/function.PDO-rollBack.php">http://usphp.com/manual/en/function.PDO-rollBack.php</a></li>
+				<li><span class="field">see:</span> <a href="http://us2.php.net/manual/en/pdo.transactions.php">http://us2.php.net/manual/en/pdo.transactions.php</a></li>
+				<li><span class="field">throws:</span> AgilePHP_PersistenceException</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			rollBack
+		</span>
+					([<span class="var-type">$message</span>&nbsp;<span class="var-name">$message</span> = <span class="var-default">null</span>], [<span class="var-type">$code</span>&nbsp;<span class="var-name">$code</span> = <span class="var-default">0</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$message</span>
+				<span class="var-name">$message</span><span class="var-description">: Error/reason why the transaction was rolled back</span>			</li>
+					<li>
+				<span class="var-type">$code</span>
+				<span class="var-name">$code</span><span class="var-description">: An error/reason code</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDistinct" id="setDistinct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDistinct</span> (line <span class="line-number">49</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Adds an SQL distinct clause to 'find' operation.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDistinct
+		</span>
+					(<span class="var-type">$columnName</span>&nbsp;<span class="var-name">$columnName</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$columnName</span>
+				<span class="var-name">$columnName</span><span class="var-description">: The column name to get the distinct values for</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetGroupBy" id="setGroupBy"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setGroupBy</span> (line <span class="line-number">174</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the SQL 'group by' clause.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setGroupBy
+		</span>
+					(<span class="var-type">$column</span>&nbsp;<span class="var-name">$column</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$column</span>
+				<span class="var-name">$column</span><span class="var-description">: The column name to group the result set by</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetMaxResults" id="setMaxResults"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setMaxResults</span> (line <span class="line-number">65</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the maximum number of records to return in a result list. Defaults to 25.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setMaxResults
+		</span>
+					([<span class="var-type">$count</span>&nbsp;<span class="var-name">$maxResults</span> = <span class="var-default">25</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$count</span>
+				<span class="var-name">$maxResults</span><span class="var-description">: Maximum number of records to return</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetOrderBy" id="setOrderBy"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setOrderBy</span> (line <span class="line-number">190</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the SQL 'order by' clause.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setOrderBy
+		</span>
+					(<span class="var-type">$column</span>&nbsp;<span class="var-name">$column</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$direction</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$column</span>
+				<span class="var-name">$column</span><span class="var-description">: The column name to order the result set by  $param $direction The direction to sort the result set (ASC|DESC).</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$direction</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetRestrictions" id="setRestrictions"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setRestrictions</span> (line <span class="line-number">158</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets WHERE clause restrictions</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setRestrictions
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$restrictions</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$restrictions</span>
+				<span class="var-name">$restrictions</span><span class="var-description">: An associative array containing WHERE clause restrictions. (For example: array( 'id' =&gt; 21 ) )</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetRestrictionsLogicOperator" id="setRestrictionsLogicOperator"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setRestrictionsLogicOperator</span> (line <span class="line-number">166</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the restriction operator (and|or) used in SQL WHERE clause.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setRestrictionsLogicOperator
+		</span>
+					(<span class="var-type">$operator</span>&nbsp;<span class="var-name">$operator</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$operator</span>
+				<span class="var-name">$operator</span><span class="var-description">: The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtoAccessor" id="toAccessor"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">toAccessor</span> (line <span class="line-number">288</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Creates an accessor method from the $property parameter. The $property  will be returned with the prefix 'get' and the first letter of the property  uppercased.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> accessor string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			toAccessor
+		</span>
+					(<span class="var-type">$property</span>&nbsp;<span class="var-name">$property</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$property</span>
+				<span class="var-name">$property</span><span class="var-description">: The name of the property to convert to an accessor method name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtoBigInt" id="toBigInt"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">toBigInt</span> (line <span class="line-number">305</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns the specified number as a 'bigint' 64-bit number.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			toBigInt
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$number</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$number</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtoMutator" id="toMutator"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">toMutator</span> (line <span class="line-number">298</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Creates a mutator method from the $property parameter. The $property  will be returned with the prefix 'set' and the first letter of the property  uppercased.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> mutator string</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">The</span>
+		<span class="method-name">
+			toMutator
+		</span>
+					(<span class="var-type">$property</span>&nbsp;<span class="var-name">$property</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$property</span>
+				<span class="var-name">$property</span><span class="var-description">: The name of the property to convert to a mutator method name</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodtruncate" id="truncate"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">truncate</span> (line <span class="line-number">358</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Truncates the table for the specified domain model object</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> AgilePHP_PersistenceException</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">PDOStatement</span>
+		<span class="method-name">
+			truncate
+		</span>
+					(<span class="var-type">$model</span>&nbsp;<span class="var-name">$model</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$model</span>
+				<span class="var-name">$model</span><span class="var-description">: A domain model object</span>			</li>
+				</ul>
+		
+			
+	</div>
 						
 		</div>
 	</div>
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Sun, 24 Jan 2010 23:40:56 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Sat, 06 Mar 2010 20:18:07 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>

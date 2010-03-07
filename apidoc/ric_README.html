@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title></title>
+			<link rel="stylesheet" href="media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+						<h1 align="center">README</h1>
+<pre>
+# AgilePHP Framework :: The Rapid &quot;for developers&quot; PHP5 framework
+# Copyright (C) 2009-2010 Make A Byte, inc
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+
+
+------------------
+** Requirements **
+------------------
+PHP 5.3+
+
+
+---------------------------------------
+** Required Extensions By Components **
+---------------------------------------
+--with-apxs2				(Dynamic apache support)
+--with-pdo-&lt;database type&gt;	(required for each database you want to use)
+--enable-mbstring			(XML/XSLT controllers use this to convert data to entities)
+--with-gettext				(i18n Internationalization)
+--with-xsl					(Controllers involved with XSLT)
+--with-mcrypt				(Crypto encrypt/decrypt methods)
+
+
+---------------------
+** PHPUnit Testing **
+---------------------
+To use the testing packages, and TDD features, install PHP Unit 3 via PEAR.
+
+pear channel-discover pear.phpunit.de
+pear install phpunit/PHPUnit
+
+Update AgilePHP/test/BaseTest.php to use your file system structure when executing unit tests.
+Update AgilePHP/test/index.php to use your file system structure when executing browser based tests.
+
+
+---------------------
+**    Debugging    **
+---------------------
+Debug using FirePHP:
+
+pear channel-discover pear.firephp.org
+pear install firephp/FirePHPCore 
+
+
+----------
+** TODO **
+----------
+ &gt; Add constructor argument support to InterceptorProxy
+ &gt; Iron out RequestScope CSFR issues in regards to destroying session
+ &gt; Persistence framework needs to support many-to-many relationships
+ &gt; Need to revisit PersistenceRenderer and make an easy way to
+   allow different client side rendering libraries like jquery, dojo, extjs, etc (adapter?)
+ &gt; Add calendar, spinner, date picker, and other widgets to persistence rendering
+ &gt; AJAX Push / Comet (PHP socket daemon?)
+ &gt; Create dialect classes for the following database servers:
+ 	pgsql
+	firebird
+	informix
+	oracle
+	dblib
+	ibm
+ &gt; Finish Form::toJSON method (this should probably use AJAXRenderer)
+ &gt; Need to update MSSQLDialect::find to use LIKE clause for text, ntext, and image data types.
+ &gt; Need to add support to persistence/Column for multiple foreign keys per column
+ &gt; Complete reverse engineering logic in dialect classes and generator/ReverseEngineerDatabase.
+ &gt; Add support for database diff's.
+ &gt; Add SOAP support for DOCUMENT/LITERAL wrapped
+ 
+ --------------------------
+ ** Windows Specific TODO's
+ --------------------------
+ &gt; Use DIRECTORY_SEPARATOR instead of / in references to the file system
+ &gt; Use \r\n instead of \n for new lines 
+
+
+ --------------------------
+ **      Known Bugs      **
+ --------------------------
+Issue: [Microsoft][ODBC Driver Manager] Function sequence error
+Reason: This happens when using ODBC driver on SQL Server 2000 to insert/update datetime fields.
+Resolution: Upgrade SQL Server to newer version
+Resolution: If running on a windows server, specify 'SQLSRV' as the MSSQL driver and the persistence framework will
+			use the SQLSRVDialect class to perform persistence operations. This requires the &quot;Microsoft SQL Server Driver for PHP 1.1&quot;
+See: http://www.microsoft.com/sqlserver/2005/en/us/PHP-Driver.aspx.
+See: http://bugs.php.net/bug.php?id=40452
+
+Issue: Clicking on sortable column headers rendered by mvc/XSLTRenderer breaks in some cases when using MSSQLDialect class.
+Reason: The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator.
+Resolution: Need to update MSSQLDialect class to use LIKE clause for column types listed above.
+</pre>
+	<p class="notes" id="credit">
+		Documentation generated on Sat, 06 Mar 2010 20:17:54 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+	</p>
+	</body>
+</html>

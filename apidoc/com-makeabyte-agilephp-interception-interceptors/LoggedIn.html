@@ -25,13 +25,30 @@
 <p class="short-description">AgilePHP interceptor responsible for throwing an AgilePHP_NotLoggedInException if  the current request does not have an authenticated Identity session.</p>
 	<ul class="tags">
 				<li><span class="field">author:</span> Jeremy Hahn</li>
-				<li><span class="field">version:</span> 0.1a</li>
+				<li><span class="field">version:</span> 0.1a  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">MyClass&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#@LoggedIn</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">requiresLoginToInvoke</span><span class="src-sym">(&nbsp;</span><span class="src-var">$arg&nbsp;</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Do&nbsp;something&nbsp;here&nbsp;that&nbsp;requires&nbsp;the&nbsp;user&nbsp;to&nbsp;be&nbsp;logged&nbsp;in</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-comm">#@LoggedIn(&nbsp;message&nbsp;=&nbsp;'My&nbsp;custom&nbsp;exception&nbsp;message'&nbsp;)</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">requiresLoginToInvoke</span><span class="src-sym">(&nbsp;</span><span class="src-var">$arg&nbsp;</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Do&nbsp;something&nbsp;here&nbsp;that&nbsp;requires&nbsp;the&nbsp;user&nbsp;to&nbsp;be&nbsp;logged&nbsp;in</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">someMethod</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;This&nbsp;can&nbsp;be&nbsp;invoked&nbsp;without&nbsp;being&nbsp;logged&nbsp;in</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></li>
 				<li><span class="field">copyright:</span> Make A Byte, inc</li>
-				<li><span class="field">example:</span> example not found</li>
-				<li><span class="field">example:</span> example not found</li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_interception---interceptors---LoggedIn.php.html">/interception/interceptors/LoggedIn.php</a> (line <span class="field">35</span>)
+			Located in <a class="field" href="_src---interception---interceptors---LoggedIn.php.html">/src/interception/interceptors/LoggedIn.php</a> (line <span class="field">54</span>)
 		</p>
 		
 				
@@ -105,7 +122,7 @@
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$message</span>
-						(line <span class="line-number">37</span>)
+						(line <span class="line-number">56</span>)
 		</span>
 	</div>
 
@@ -138,7 +155,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">process</span> (line <span class="line-number">40</span>)
+		<span class="method-title">process</span> (line <span class="line-number">59</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -168,7 +185,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Sun, 24 Jan 2010 23:40:55 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Sat, 06 Mar 2010 20:18:02 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>

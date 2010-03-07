@@ -25,15 +25,37 @@
 <p class="short-description">AgilePHP interceptor responsible for throwing an AgilePHP_AccessDeniedException if  the current logged in user (represented by the state of the Identity component)  does not contain the specified role.</p>
 	<ul class="tags">
 				<li><span class="field">author:</span> Jeremy Hahn</li>
-				<li><span class="field">version:</span> 0.2a</li>
+				<li><span class="field">version:</span> <p>0.2a  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-comm">#@Restrict(&nbsp;role&nbsp;=&nbsp;'admin'&nbsp;)</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">methodThatRequiresCertainRole</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Some&nbsp;logic&nbsp;that&nbsp;requires&nbsp;the&nbsp;current&nbsp;logged&nbsp;in&nbsp;user</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;to&nbsp;be&nbsp;a&nbsp;member&nbsp;of&nbsp;the&nbsp;'admin'&nbsp;role.</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-comm">#@Restrict(&nbsp;role&nbsp;=&nbsp;'admin',&nbsp;message&nbsp;=&nbsp;'Your&nbsp;not&nbsp;allowed&nbsp;here!'&nbsp;)</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">methodThatRequiresCertainRole</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Some&nbsp;logic&nbsp;that&nbsp;requires&nbsp;the&nbsp;current&nbsp;logged&nbsp;in&nbsp;user</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;to&nbsp;be&nbsp;a&nbsp;member&nbsp;of&nbsp;the&nbsp;'admin'&nbsp;role&nbsp;and&nbsp;will&nbsp;use&nbsp;the</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;message&nbsp;'Your&nbsp;not&nbsp;allowed&nbsp;here!'&nbsp;in&nbsp;the&nbsp;AccessDeniedException</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-comm">#@Restrict(&nbsp;roles&nbsp;=&nbsp;{&nbsp;'admin',&nbsp;'member'&nbsp;},&nbsp;message&nbsp;=&nbsp;'Your&nbsp;not&nbsp;allowed&nbsp;here!'&nbsp;)</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">methodThatRequiresCertainRole</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Some&nbsp;logic&nbsp;that&nbsp;requires&nbsp;the&nbsp;current&nbsp;logged&nbsp;in&nbsp;user</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;to&nbsp;be&nbsp;a&nbsp;member&nbsp;of&nbsp;one&nbsp;of&nbsp;the&nbsp;specified&nbsp;roles&nbsp;in&nbsp;the&nbsp;roles&nbsp;array</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-comm">#@Restrict(&nbsp;roles&nbsp;=&nbsp;{&nbsp;'admin',&nbsp;'member'&nbsp;},&nbsp;message&nbsp;=&nbsp;'Your&nbsp;not&nbsp;allowed&nbsp;here!'&nbsp;)</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">methodThatRequiresCertainRole</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line">&nbsp;</div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Some&nbsp;logic&nbsp;that&nbsp;requires&nbsp;the&nbsp;current&nbsp;logged&nbsp;in&nbsp;user</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;to&nbsp;be&nbsp;a&nbsp;member&nbsp;of&nbsp;one&nbsp;of&nbsp;the&nbsp;specified&nbsp;roles&nbsp;in&nbsp;the&nbsp;array&nbsp;argument.</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;If&nbsp;not&nbsp;a&nbsp;member,&nbsp;use&nbsp;the&nbsp;message&nbsp;parameter&nbsp;in&nbsp;the&nbsp;exception&nbsp;message.</span></div></li>
+<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
+</ol></div></p></li>
 				<li><span class="field">copyright:</span> Make A Byte, inc</li>
-				<li><span class="field">example:</span> example not found</li>
-				<li><span class="field">example:</span> example not found</li>
-				<li><span class="field">example:</span> example not found</li>
-				<li><span class="field">example:</span> example not found</li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_interception---interceptors---Restrict.php.html">/interception/interceptors/Restrict.php</a> (line <span class="field">38</span>)
+			Located in <a class="field" href="_src---interception---interceptors---Restrict.php.html">/src/interception/interceptors/Restrict.php</a> (line <span class="field">71</span>)
 		</p>
 		
 				
@@ -115,7 +137,7 @@
 		<span class="var-title">
 			<span class="var-type">String</span>
 			<span class="var-name">$message</span>
-						(line <span class="line-number">60</span>)
+						(line <span class="line-number">93</span>)
 		</span>
 	</div>
 
@@ -138,7 +160,7 @@
 		<span class="var-title">
 			<span class="var-type">String</span>
 			<span class="var-name">$role</span>
-						(line <span class="line-number">45</span>)
+						(line <span class="line-number">78</span>)
 		</span>
 	</div>
 
@@ -161,7 +183,7 @@
 		<span class="var-title">
 			<span class="var-type">Array</span>
 			<span class="var-name">$roles</span>
-						(line <span class="line-number">52</span>)
+						(line <span class="line-number">85</span>)
 		</span>
 	</div>
 
@@ -196,7 +218,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">requireRole</span> (line <span class="line-number">63</span>)
+		<span class="method-title">requireRole</span> (line <span class="line-number">96</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -226,7 +248,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Sun, 24 Jan 2010 23:40:56 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Sat, 06 Mar 2010 20:18:05 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>

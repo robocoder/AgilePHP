@@ -24,11 +24,11 @@
 <p class="short-description">Represents a foreign key in the AgilePHP persistence component.</p>
 	<ul class="tags">
 				<li><span class="field">author:</span> Jeremy Hahn</li>
-				<li><span class="field">version:</span> 0.2a</li>
+				<li><span class="field">version:</span> 0.3a</li>
 				<li><span class="field">copyright:</span> Make A Byte, inc</li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_persistence---ForeignKey.php.html">/persistence/ForeignKey.php</a> (line <span class="field">30</span>)
+			Located in <a class="field" href="_src---persistence---ForeignKey.php.html">/src/persistence/ForeignKey.php</a> (line <span class="field">30</span>)
 		</p>
 		
 				
@@ -53,7 +53,7 @@
 				<div class="method-definition">
 											<span class="method-result">ForeignKey</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$foreign</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+											([<span class="var-type"></span>&nbsp;<span class="var-name">$foreign</span> = <span class="var-default">null</span>], <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -231,7 +231,7 @@
 		<span class="method-name">
 			__construct
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$foreign</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
+					([<span class="var-type"></span>&nbsp;<span class="var-name">$foreign</span> = <span class="var-default">null</span>], <span class="var-type"></span>&nbsp;<span class="var-name">$tableName</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$columnName</span>)
 			</div>
 	
 			<ul class="parameters">
@@ -252,7 +252,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getColumnInstance</span> (line <span class="line-number">314</span>)
+		<span class="method-title">getColumnInstance</span> (line <span class="line-number">317</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -277,7 +277,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getFkColumn</span> (line <span class="line-number">253</span>)
+		<span class="method-title">getFkColumn</span> (line <span class="line-number">256</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -302,7 +302,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getFkTable</span> (line <span class="line-number">232</span>)
+		<span class="method-title">getFkTable</span> (line <span class="line-number">235</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -327,7 +327,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getName</span> (line <span class="line-number">77</span>)
+		<span class="method-title">getName</span> (line <span class="line-number">80</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -352,7 +352,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getOnDelete</span> (line <span class="line-number">211</span>)
+		<span class="method-title">getOnDelete</span> (line <span class="line-number">214</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -377,7 +377,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getOnUpdate</span> (line <span class="line-number">187</span>)
+		<span class="method-title">getOnUpdate</span> (line <span class="line-number">190</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -402,7 +402,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getReferencedColumn</span> (line <span class="line-number">140</span>)
+		<span class="method-title">getReferencedColumn</span> (line <span class="line-number">143</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -427,7 +427,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getReferencedColumnInstance</span> (line <span class="line-number">297</span>)
+		<span class="method-title">getReferencedColumnInstance</span> (line <span class="line-number">300</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -452,7 +452,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getReferencedController</span> (line <span class="line-number">164</span>)
+		<span class="method-title">getReferencedController</span> (line <span class="line-number">167</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -477,7 +477,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getReferencedTable</span> (line <span class="line-number">119</span>)
+		<span class="method-title">getReferencedTable</span> (line <span class="line-number">122</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -502,7 +502,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getReferencedTableInstance</span> (line <span class="line-number">286</span>)
+		<span class="method-title">getReferencedTableInstance</span> (line <span class="line-number">289</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -527,7 +527,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getSelect</span> (line <span class="line-number">276</span>)
+		<span class="method-title">getSelect</span> (line <span class="line-number">279</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -552,7 +552,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getSelectedColumnInstance</span> (line <span class="line-number">334</span>)
+		<span class="method-title">getSelectedColumnInstance</span> (line <span class="line-number">337</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -577,7 +577,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getType</span> (line <span class="line-number">98</span>)
+		<span class="method-title">getType</span> (line <span class="line-number">101</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -602,7 +602,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setFkColumn</span> (line <span class="line-number">243</span>)
+		<span class="method-title">setFkColumn</span> (line <span class="line-number">246</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -631,7 +631,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setFkTable</span> (line <span class="line-number">222</span>)
+		<span class="method-title">setFkTable</span> (line <span class="line-number">225</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -660,7 +660,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setName</span> (line <span class="line-number">67</span>)
+		<span class="method-title">setName</span> (line <span class="line-number">70</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -689,7 +689,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setOnDelete</span> (line <span class="line-number">200</span>)
+		<span class="method-title">setOnDelete</span> (line <span class="line-number">203</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -718,7 +718,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setOnUpdate</span> (line <span class="line-number">177</span>)
+		<span class="method-title">setOnUpdate</span> (line <span class="line-number">180</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -747,7 +747,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setReferencedColumn</span> (line <span class="line-number">130</span>)
+		<span class="method-title">setReferencedColumn</span> (line <span class="line-number">133</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -776,7 +776,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setReferencedController</span> (line <span class="line-number">153</span>)
+		<span class="method-title">setReferencedController</span> (line <span class="line-number">156</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -805,7 +805,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setReferencedTable</span> (line <span class="line-number">109</span>)
+		<span class="method-title">setReferencedTable</span> (line <span class="line-number">112</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -834,7 +834,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setSelect</span> (line <span class="line-number">265</span>)
+		<span class="method-title">setSelect</span> (line <span class="line-number">268</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -863,7 +863,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setType</span> (line <span class="line-number">88</span>)
+		<span class="method-title">setType</span> (line <span class="line-number">91</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -894,7 +894,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Sun, 24 Jan 2010 23:40:54 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Sat, 06 Mar 2010 20:18:00 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
 	</p>
 	</div></body>
 </html>
