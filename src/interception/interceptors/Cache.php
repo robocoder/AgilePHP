@@ -26,8 +26,26 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
  * @version 0.2a
- * @example #@Cache
- * @example #@Cache( minutes = 60 )
+ * <code>
+ * class MyClass {
+ * 
+ * #@Cache
+ * public function index() {
+ * 
+ * 		  // A call that might perform some process intensive operation
+ * 		  // or a database call thats only needed once (like building
+ * 		  // a CMS that looks up form input types to build a contact page, etc,
+ * 		  // and once the site is live they dont change)
+ * }
+ * 
+ * #@Cache( minutes = 5 )
+ * public function index() {
+ * 
+ * 		  // A call that might perform some processing intensive action
+ * 		  // or a database call thats not really needed for every page request
+ * }
+ * }
+ * </code>
  */
 #@Interceptor
 class Cache {

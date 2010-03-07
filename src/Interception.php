@@ -107,14 +107,15 @@ class Interception {
 	   */
 	  public function createInterceptedTarget() {
 
-	  		 if( class_exists( $this->class ) ) return;
+	  		 if( class_exists( $this->class, false ) ) return;
 
 	  		 $className = $this->class;
 	  		 $code = $this->getSourceCode( $this->class );
 	  		 $code = preg_replace( '/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code );
 
 			 $code = $this->clean( $code );
-	  		 eval( $code );
+	  		 if( eval( $code ) === false )
+	  		 	 throw new AgilePHP_InterceptionException( 'Failed to create intercepted target' );
 	  }
 
 	  /**
@@ -125,7 +126,7 @@ class Interception {
 	   */
 	  public function createInterceptorProxy() {
 
-	  		 if( class_exists( $this->class ) ) return;
+	  		 if( class_exists( $this->class, false ) ) return;
 
 	  	     $className = $this->class;
 	  		 $code = $this->getSourceCode( 'InterceptorProxy' );
@@ -144,7 +145,8 @@ class Interception {
 	  		 }
 
 	  		 $code = $this->clean( $code );
-	  		 eval( $code );
+	  		 if( eval( $code ) === false )
+	  		 	 throw new AgilePHP_InterceptionException( 'Failed to create interceptor proxy for \'' . $this->class . '\'.' );
 	  }
 
 	  /**
@@ -163,9 +165,14 @@ class Interception {
 	  		  if( !isset( $matches[1] ) )
 	  		 	   return array();
 
-	  		  // Parameter names are gotten from the method signature - remove type hinting from parameter names
+	  		  // Parameter names are gotten from the method signature
 	  		  foreach( $matches[3] as &$param )
+
+	  		  	  // Remove type hinting
 	  		 	  $param = preg_replace( '/[^\$a-zA-Z0-9][a-zA-Z0-9]+?\s/', ' ', $param );
+
+	  		  	  // Remove type hinting and default values from parameter (this causes a bug since they are required in some cases)
+	  		  	  // $param = preg_replace( '/[^\$a-zA-Z0-9][=]?\s?[a-zA-Z0-9]+\s*/', ' ', $param );
 
 	  		  $a['signatures'] = $matches[1]; 
 	  		  $a['methods'] = $matches[2];

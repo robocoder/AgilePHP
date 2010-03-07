@@ -81,22 +81,32 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     		switch( $action ) {
 
 		     			case 'filteredList':
-		     				$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
-		     				$class = new ReflectionClass( $this->getModel() );
-		     				foreach( $class->getProperties() as $property ) {
+		     				 $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+		     				 $class = new ReflectionClass( $this->getModel() );
 
-		     						 $accessor = $this->toAccessor( $property->name );
-		     						 if( $this->getModel()->$accessor() )
-		     						 	 $this->setRestrictions( array( $this->getPersistenceManager()->getColumnNameByProperty( $table, $property->name ) => $this->getModel()->$accessor() ) );
-		     				}
+		     				 // Hack to get properties in an intercepted class. Properties are not copied into the InterceptorProxy.
+		     				 // Should they be? Obviously interceptors are still being somewhat intrusive being that this type of code is needed.
+		     				 if( method_exists( $this->getModel(), 'getInterceptedInstance' ) )
+		     				 	 $class = new ReflectionClass( $this->getModel()->getInterceptedInstance() );
 
-		     				$this->setPage( $page );
+		     				 $keys = $table->getPrimaryKeyColumns();
+		     				 $idz = explode( '_', $ids );
 
-				  		    $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
+		     				 $i=0;
+		     				 foreach( $keys as $column ) {
 
-				  	        $this->getRenderer()->set( 'content', $content );
-				  	        $this->getRenderer()->render( $view );
-				  	        break;
+		     				 		$accessor = $this->toAccessor( $column->getName() );
+		     				 		$this->setRestrictions( array( $column->getName() => $idz[$i] ) );
+		     				 		$i++;
+		     				 }
+
+		     				 $this->setPage( $page );
+
+				  		     $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
+
+				  	         $this->getRenderer()->set( 'content', $content );
+				  	         $this->getRenderer()->render( $view );
+				  	         break;
 
 	     				case 'read':
 	     					 $this->setPrimaryKeys( $ids );
@@ -147,11 +157,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      */
 	     public function modelList( $page = 1, $view = 'admin', $model = null ) {
 
-	     		if( $model ) {
-
-	     			$this->setModel( new $model() );
-	     			$this->__construct();
-	     		}
+	     		if( !$view ) $view = 'admin';
 
 	     		$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
 	  	        $pkeyColumns = $table->getPrimaryKeyColumns();

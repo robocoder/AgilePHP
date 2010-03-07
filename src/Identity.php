@@ -241,7 +241,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function getEnabled() {
 
-	  		 return ord( $this->getModel()->getEnabled() ) == 1;
+	  		 return $this->getModel()->getEnabled();
 	  }
 
 	  /**
@@ -363,7 +363,6 @@ class Identity implements IdentityManager {
 	  		 $body = 'Your new password is: ' . $newPassword;
 
 	  		 $this->setUsername( $this->session->get( 'username' ) );
-	  		 $this->refresh();
 	  		 $this->setPassword( $newPassword );
 	  		 $this->merge();
 
@@ -426,6 +425,7 @@ class Identity implements IdentityManager {
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#login($username, $password)
+	   * @throws AgilePHP_AccessDeniedException
 	   */
 	  public function login( $username, $password ) {
 
@@ -436,6 +436,10 @@ class Identity implements IdentityManager {
 	  		 $this->getModel()->setUsername( $username );
 	  		 
 	  		 if( !$this->getModel() ) return false;
+	  		 $this->refresh();
+
+	  		 if( !$this->getModel()->getEnabled() )
+	  		 	 throw new AgilePHP_AccessDeniedException( 'Your account is disabled.' );
 
 	  		 $crypto = new Crypto();
 	  		 $hashed = $crypto->getDigest( $password );
@@ -524,7 +528,8 @@ class Identity implements IdentityManager {
 	  public function refresh() {
 
 	  		 $pm = new PersistenceManager();
-	  		 $this->setModel( $pm->find( $this->getModel() ) );
+	  		 $results = $pm->find( $this->getModel() );
+	  		 $this->setModel( $results[0] );
 	  }
 
 	  /**

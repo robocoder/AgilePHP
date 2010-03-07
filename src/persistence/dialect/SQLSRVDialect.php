@@ -302,25 +302,19 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
     	   	         	$this->setGroupBy( null );
 	    	   		 }
 	    	   		 else {
-	    	   		 		 if( !count( $pkeyColumns ) ) return null;
+	    	   		 		$where = '';
 
-			  		   		 $sql = 'SELECT' . ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() : '') .
-			  		   		 		' * FROM ' . $table->getName() . ' WHERE ';
-							 for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+	    	   		 		$columns = $table->getColumns();
+							for( $i=0; $i<count( $columns ); $i++ ) {
 
-							 	  $accessor = $this->toAccessor( $pkeyColumns[$i]->getModelPropertyName() );
-						     	  if( $model->$accessor() == null ) {
+							 	 $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
+						     	 if( $model->$accessor() == null ) continue;
 
-								      Logger::getInstance()->debug( 'SQLSRVDialect::find Warning about null primary key for table \'' . $table->getName() . '\' column \'' .
-								      					 $pkeyColumns[$i]->getName() . '\'. Primary keys are used in search criteria. Returning null...' );
-								      return null;
-								  }
-
-						   		  $sql .= $pkeyColumns[$i]->getName() . '=?';
-								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
-
-								  $values[$i] = $model->$accessor();
-						     }
+						     	 $where .= (count($values) ? ' AND ' : ' ') . $columns[$i]->getName() . '=?';
+								 array_push( $values, $model->$accessor() );
+						    }
+						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
+						    $sql .= ' LIMIT ' . $this->maxResults . ';';
 	    	   		 }
 
 					 $this->prepare( $sql );

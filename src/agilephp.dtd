@@ -42,5 +42,3 @@
 <!ATTLIST crypto algorithm ( md5 | sha1 | sha256 | sha384 | sha512 | crc32 ) #REQUIRED>
 <!ATTLIST crypto iv CDATA #IMPLIED>
 <!ATTLIST crypto key CDATA #IMPLIED>
-
-<!ELEMENT interceptors (#PCDATA)>

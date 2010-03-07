@@ -10,6 +10,7 @@
 	<body>
 		<?php require_once 'header.html'; ?>
 
+		<div class="info"><?php if( isset( $info ) ) echo $info; ?></div>
 		<form method="post" action="<?= AgilePHP::getFramework()->getRequestBase() ?>/LoginController/login">
 
 			<table border="0">

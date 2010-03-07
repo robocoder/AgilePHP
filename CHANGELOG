@@ -1,18 +1,28 @@
-0.14a
+0.15a
 -----
 
-- Removed return statement from #@WSDL::createWrappedMethod.
-- Refactored AgilePHP_RemotingException to use public properties. This keeps the ->setAccessible reflection call in AJAXRenderer
-  from invoking when exceptions are thrown (and eliminates the ->setAccessible error on versions of PHP < 5.3).
-- Refactored AgilePHP.js client side library so that XHR.request and XHR.post methods now return eval'd results instead of the raw XMLHTTPRequest object.
-- Added Interception::getMethodStubs to overcome the issue of reflection on InterceptorProxy (intercepted classes) masking the real/intended object. Now
-  a set of method stubs are created that match the intercepted class, which simply forward the invocation to __call.
-- Bug fix to SessionScope::setSessionId. Refactoring needed to support change to persistence find() method returning single record as an array.
-- Refactored Identity component so that it does not manually include Role class, since it now contains an #@Id interceptor and needs to be
-  created by the Interception component.
-- Added test package views to register and added controller methods to LoginController to support the registration / confirmation process.
-- Refactored AJAXRenderer::toXML to support multi-dimensional arrays and array of objects.
-- Added RestfulTestAPI test package.
-- Added generator SetProject to allow setting an already existent project. (Eventually the entire generator package will be replaced by web based IDE)
-- Deleted InterceptionReflection class. No longer needed since intercepted class methods are copied into InterceptorProxy.
-- Created RestfulTestAPI in test package to demonstrate a simple rest style web service using the MVC and AJAXRenderer.
+- Bug fixes to test package Mailer component. Added test views and a cheesy navigation for demo purposes.
+- Created #@BasicAuthentication interceptor which uses HTTP basic authentication to authenticate a visitor.
+- Bug fix to Interception::getMethodStubs. Added cleansing of default parameter values.
+- Bug fix to Interception logic where interceptors were being executed twice when an interceptor instantiated a class which contains interceptor annotations.
+- Removed #@WSDL inProgress check since it only gets executed once now.
+- Refactored AgilePHP __autoload and Interception classes to check for loaded classes using class_exists( $class, false ) now. (dont load if doesnt exist)
+- Updated test package error.phtml css include. Was point to very old (like v0.1a) file path.
+- Refactored test/InterceptorTest to include a test for each interception happening in classes/MockInterceptionTarget.
+- Refactoring of comments throughout various classes.
+- Refactored #@Password interceptor to include class::method name in log message.
+- Refactored test/PersistenceManagerTest to work with find method since find no longer returns single result sets as an object.
+- Lots of refactoring on persistence package, specifically PersistenceManager, dialect classes and SQLDialect interface. Also made necessary updates
+  to MVC classes, etc, which needed to reflect the new interface. find method now also uses properties set in the model in WHERE clause.
+- Removed bit data type explicit checkin from BaseModelXmlController everywhere (ord($value) == 1) logic was being used. Also updated Form class
+  so that it also removes all explicit bit checking logic.
+- Moved mysql bit type checking into User setEnabled method.
+- Removed dynamic model argument from BaseModelActionController::modelList. Also placed additional checking of null view argument and default to admin view.
+- Created Column::getColumn( $name )
+- Created test/PersistenceManagerTest::testRestrictedFind to test lookups using restrictions logic.
+- Bug fix to BaseModelActionController::modelAction 'filteredList' when filtering on an intercepted class. Only methods are copied into InterceptorProxy
+  not properties, so this causes a bug when using reflection to enumerate properties on a class which has been intercepted. It seems as though interceptors
+  are still being somewhat intrusive to "normal" PHP application logic. Should properties be coped into InterceptorProxy also?
+- Updated apidoc to v0.15a.
+- Added user enable/disable check to Identity::login.
+- Bug fix to Identity::refresh. Still old code using persistence manager find and expecting single result object.

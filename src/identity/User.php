@@ -218,7 +218,10 @@ class User implements IdentityModel {
 	   */
 	  public function setEnabled( $value ) {
 
-	  		 $this->enabled = $value;
+	  		 if( is_int( $value ) )
+	  		 	 return $this->enabled = $value;
+
+	  		 $this->enabled = (ord($value) == 1) ? '1' : null;
 	  }
 
 	  /**

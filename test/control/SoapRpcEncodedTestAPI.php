@@ -1,13 +1,37 @@
 <?php
+/**
+ * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
+ * Copyright (C) 2009-2010 Make A Byte, inc
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package com.makeabyte.agilephp.test.control
+ */
 
 /**
- * Test class used to mimic an API exposing some application logic via SOAP RPC/ENCODED.
+ * Test class used to mimic an API exposing some application logic via SOAP using RPC/Encoded WSDL.
  * 
  * NOTE: The AgilePHP #@WebMethod annotation authorizes a method for inclusion during WSDL generation.
- * 	     
+ *
  * 		 The AgilePHP #@WSDL interceptor uses the data types specified in 
  *	     the PHP-doc comment blocks (specifically the @param and @return annotations) during
- *	     WSDL generation.
+ *	     WSDL generation. If these types are not present, the #@WSDL generator will use xsd:anyType.
+ * 
+ * @author Jeremy Hahn
+ * @copyright Make A Byte, inc
+ * @package com.makeabyte.agilephp.test.control
+ * @version 0.1a
  */
 
 #@WebService( serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/SoapRpcEncodedTestAPI' )

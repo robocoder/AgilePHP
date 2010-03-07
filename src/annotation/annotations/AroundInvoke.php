@@ -28,7 +28,31 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation.annotations
  * @version 0.2a
- * @example #@AroundInvoke
+ * <code>
+ * #@Interceptor
+ * class MyInterceptor {
+ * 
+ * #@AroundInvoke
+ * public function aMethodICanNameAnything( InvocationTarget $ic ) {
+ * 
+ * 		  // Inspect the invocation context for the call stack and state
+ * 		  // of the application and perform some kind of aspect logic.
+ * 		  //
+ * 		  // If you call $ic->proceed(), the interceptor will return execution
+ * 		  // back to "regular scheduled programming". If $ic->proceed() is not
+ * 		  // called, the application will come to a close with the logic defined
+ * 		  // in this interceptor.
+ * }
+ * 
+ * #@AroundInvoke
+ * public function anotationCausesMeToBeInvoked( InvocationContext $ic ) {
+ * 
+ * 		  // The #@AroundInvoke annotation causes methods within the interceptor
+ * 		  // to be invoked. You can decorate as many methods with #@AroundInvoke
+ * 		  // inside the class as you want.
+ * }
+ * }
+ * </code>
  */
 class AroundInvoke { }
 ?>

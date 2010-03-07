@@ -239,11 +239,8 @@ class InterceptorProxy {
 	  		 }
 
 	  		 // No interceptors, invoke the intercepted method as it was called.
-	  		 if( !isset( $invocationCtx ) ) {
-
-			     $m = $class->getMethod( $method );
-			     return $args ? $m->invokeArgs( $this->object, $args ) : $m->invoke( $this->object, $args );
-	  		 }
+		     $m = $class->getMethod( $method );
+		     return $args ? $m->invokeArgs( $this->object, $args ) : $m->invoke( $this->object, $args );
 	  }
 }
 ?>

@@ -27,8 +27,27 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
  * @version 0.1a
- * @example #@LoggedIn
- * @example #@LoggedIn( message = "My custom exception message" )
+ * <code>
+ * class MyClass {
+ *  
+ * #@LoggedIn
+ * public function requiresLoginToInvoke( $arg ) {
+ * 
+ * 		  // Do something here that requires the user to be logged in
+ * }
+ * 
+ * #@LoggedIn( message = 'My custom exception message' )
+ * public function requiresLoginToInvoke( $arg ) {
+ * 
+ * 		  // Do something here that requires the user to be logged in
+ * }
+ * 
+ * public function someMethod() {
+ * 
+ * 		  // This can be invoked without being logged in
+ * }
+ * }
+ * </code>
  */
 
 #@Interceptor

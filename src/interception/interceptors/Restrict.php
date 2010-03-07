@@ -28,10 +28,43 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
  * @version 0.2a
- * @example #@Restrict( role = "admin" )
- * @example #@Restrict( role = "admin", message = "Your not allowed here!" )
- * @example #@Restrict( roles = { "admin", "member" } )
- * @example #@Restrict( roles = { "admin", "member" }, message = "Your not a member of any required roles!" ) 
+ * <code>
+ * #@Restrict( role = 'admin' )
+ * public function methodThatRequiresCertainRole() {
+ * 
+ * 		  // Some logic that requires the current logged in user
+ * 		  // to be a member of the 'admin' role.
+ * }
+ * </code>
+ * 
+ * <code>
+ * #@Restrict( role = 'admin', message = 'Your not allowed here!' )
+ * public function methodThatRequiresCertainRole() {
+ * 
+ * 		  // Some logic that requires the current logged in user
+ * 		  // to be a member of the 'admin' role and will use the 
+ * 		  // message 'Your not allowed here!' in the AccessDeniedException
+ * }
+ * </code>
+ * 
+ * <code>
+ * #@Restrict( roles = { 'admin', 'member' }, message = 'Your not allowed here!' )
+ * public function methodThatRequiresCertainRole() {
+ * 
+ * 		  // Some logic that requires the current logged in user
+ * 		  // to be a member of one of the specified roles in the roles array
+ * }
+ * </code>
+ * 
+ * <code>
+ * #@Restrict( roles = { 'admin', 'member' }, message = 'Your not allowed here!' )
+ * public function methodThatRequiresCertainRole() {
+ * 
+ * 		  // Some logic that requires the current logged in user
+ * 		  // to be a member of one of the specified roles in the array argument.
+ * 		  // If not a member, use the message parameter in the exception message.
+ * }
+ * </code> 
  */
 
 #@Interceptor

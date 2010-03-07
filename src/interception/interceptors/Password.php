@@ -27,7 +27,21 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
  * @version 0.1a
- * @example @Id
+ * <code>
+ * #@Password
+ * public function setPassword( $myPassword ) {
+ * 
+ * 		  $this->password = $myPassword;
+ * }
+ * </code>
+ * 
+ * <code>
+ * #@Password( parameter = 1 ) // Hashes the second method parameter
+ * public function updateUser( $username, $password ) {
+ * 
+ * 		  // Update the user account
+ * }
+ * </code>
  */
 
 #@Interceptor
@@ -64,23 +78,24 @@ class Password {
 	  		 $crypto = new Crypto();
 	  		 $params = $ic->getParameters();
 
+	  		 $logMessage = '#@Password::hash ' . $callee['class'] . '::' . $ic->getMethod() . ' password hased using ' . $crypto->getAlgorithm();
+
 	  		 if( $this->parameter ) {
 
 	  		 	 if( !array_key_exists( $this->parameter, $params ) )
 	  		 	 	 throw new AgilePHP_InterceptionException( '#@Password::parameter index out of bounds' );
 
 	  		 	 $params[$this->parameter] = $crypto->getDigest( $params[$this->parameter] );
-
 	  		 	 $ic->setParameters( $params );
 
-	  		 	 Logger::getInstance()->debug( '#@Password::hash Password secured using ' . $crypto->getAlgorithm() );
+	  		 	 Logger::getInstance()->debug( $logMessage );
 
 	  		 	 return $ic->proceed();
 	  		 }
 
 			 $ic->setParameters( array( $crypto->getDigest( $params[0] ) ) );
-			 
-			 Logger::getInstance()->debug( '#@Password::hash Password secured using ' . $crypto->getAlgorithm() );
+
+			 Logger::getInstance()->debug( $logMessage );
 
 			 return $ic->proceed();
 	  }

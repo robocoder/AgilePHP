@@ -33,8 +33,9 @@ require_once 'persistence/BasePersistence.php';
  * @package com.makeabyte.agilephp
  * @version 0.2a
  */
-class PersistenceManager {
+class PersistenceManager implements SQLDialect {
 
+	  private static $instance;				// Stores singleton instance
 	  private $dialect;						// Stores the dialect object used to execute vendor specific SQL queries
 	  private $databases = array();
 	  private $database;					// Stores the current database
@@ -52,7 +53,7 @@ class PersistenceManager {
 	   * databases, tables, and columns are transformed into corresponding AgilePHP persistence objects.
 	   * If a 'databaseId' is present, PersistenceManager is initalized with the specified database.
 	   * 
-	   * @param String $databaseId The id of the database to initalize PersistenceManager with. Defaults to the first database in persistence.xml.
+	   * @param String $databaseId Optional database id as defined in persistence.xml Defaults to the first database in persistence.xml.
 	   * @return void
 	   */
 	  public function __construct( $databaseId = null ) {
@@ -81,6 +82,20 @@ class PersistenceManager {
 
 			 if( !$this->dialect )
 			 	 $this->connect( $this->databases[0] );
+	  	 }
+
+	  	 /**
+	  	  * Returns singleton instance of PersistenceManager
+	  	  * 
+	  	  * @param String $databaseId Optional database id as defined in persistence.xml Defaults to the first database in persistence.xml.
+	  	  * @return PersistenceManager Singeton instance of PersistenceManager
+	  	  */
+	  	 public static function getInstance( $databaseId = null ) {
+
+	  	 		if( self::$instance == null )
+	  	 			self::$instance = new self;
+
+	  	 		return self::$instance;
 	  	 }
 
 	  	 /**
@@ -115,7 +130,6 @@ class PersistenceManager {
 	  	     	     	  	  $this->dialect = new MSSQLDialect( $db );
 	  	     	     	  }
 	  	     	     	  break;
-
 	  	     	    /*
   	     		 	case 'pgsql':
   	     		 		 $this->pdo = new PDO( "pgsql:host=$host;dbname=$name", $username, $password );
@@ -209,7 +223,7 @@ class PersistenceManager {
 	     * @param Object $modelB The second domain model object
 	     * @return True if the comparison was successful, false if they differ.
 	     */
-	    public function compareModels( $modelA, $modelB ) {
+	    public function compare( $modelA, $modelB ) {
 	    	
 	    	   return $this->dialect->compare( $modelA, $modelB );
 	    }
@@ -293,9 +307,9 @@ class PersistenceManager {
 		  * @param $count Maximum number of records to return
 		  * @return void
 	      */
-	     public function setMaxResults( $count ) {
+	     public function setMaxResults( $maxResults = 25 ) {
 
-	     	       $this->dialect->setMaxResults( $count );
+	     	       $this->dialect->setMaxResults( $maxResults );
 	     }
 
 	     /**
@@ -648,7 +662,7 @@ class PersistenceManager {
 	     * @return The 'Table' object responsible for the model's persistence or null if a table
 	     * 		 could not be located for the specified $model.
 	     */
-	    public function getTableByModel( $model ) {
+	    public function getTableByModel( $model = null ) {
 
 			   return $this->dialect->getTableByModel( $model );
 	    }
@@ -728,7 +742,7 @@ class PersistenceManager {
 		 * @param $property The property attributes value
 		 * @return The column name or null if the $property could not be found in the table
 		 */
-		public function getColumnNameByProperty( $table, $property ) {
+		public function getColumnNameForProperty( $table, $property ) {
 
 			   return $this->dialect->getColumnNameForProperty( $table, $property );
 		}
@@ -741,7 +755,7 @@ class PersistenceManager {
 		 * @param $columnName The column name to search
 		 * @return The column name or null if the $property could not be found in the table
 		 */
-		public function getPropertyNameByColumn( $table, $columnName ) {
+		public function getPropertyNameForColumn( $table, $columnName ) {
 
 			   return $this->dialect->getPropertyNameForColumn( $table, $columnName );
 		}
@@ -855,14 +869,13 @@ class PersistenceManager {
 	   	  * Attempts to locate the specified model by primary key value.
 	      * 
 	   	  * @param Object $model A domain model object with its primary key field set
-	   	  * @param bool $findAll True to find all records (SELECT *).
 	      * @return Returns the same model which was passed (populated with the
 	      * 		 database values) or null if a matching record could not be found.
 	      * @throws AgilePHP_PersistenceException
 	      */
-	  	 public function find( $model /*, $findAll = false */ ) {
+	  	 public function find( $model ) {
 
-	  		    return $this->dialect->find( $model /*, $findAll */ );
+	  		    return $this->dialect->find( $model );
 	  	 }
 
 	  	 /**

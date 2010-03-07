@@ -40,7 +40,7 @@ class AgilePHP {
 	  private $debugMode = false;			// Whether or not this component is running in debug mode
 	  private $xml;							// AgilePHP configuration - agilephp.xml
 	  private $appName;						// Name of the AgilePHP application
-	  private $interceptions;				// An array of interceptions which have occurred during __autoload
+	  private $interceptions = array();		// An array of interceptions which have occurred during __autoload
 	  private $startTime;					// Used with startClock and stopClock methods
 
 	  /**
@@ -304,7 +304,9 @@ class AgilePHP {
 	   * 
 	   * @param String $timezone The timezone to use as default.
 	   * @return void
-	   * @example 'America/New_York'
+	   * <code>
+	   * $agilephp->setDefaultTimezone( 'America/New_York' );
+	   * </code>
 	   */
 	  public function setDefaultTimezone( $timezone ) {
 
@@ -332,26 +334,6 @@ class AgilePHP {
 	  public function getInterceptions() {
 
 	  		 return $this->interceptions;
-	  }
-
-	  /**
-	   * Enables the use of interceptors.
-	   *  
-	   * @return void
-	   */
-	  public function enableInterceptors() {
-
-	  		 $this->interceptions = array();
-	  }
-
-	  /**
-	   * Disables interceptors.
-	   * 
-	   * @return void
-	   */
-	  public function disableInterceptors() {
-
-	  		 $this->interceptions = null;
 	  }
 
 	  /**
@@ -393,47 +375,6 @@ class AgilePHP {
 	  	      	  if( $this->xml->logger->attributes()->level == 'debug' )
 	  	      	  	  $this->setDebugMode( true );
 	  	      }
-
-	  	      /*
-	  	       *  Speed things up a bit, i think this is just a nice to have
-	  	       *  
-	  		  if( $this->xml->scope ) {
-
-	  	      	  require_once 'Scope.php';
-
-	  	      	  $scopeType = (string)$this->xml->scope->attributes()->type;
-
-	  	      	  switch( $scopeType ) {
-
-	  	      	  		  case 'application':
-	  	      	  		  	   $appName = (string)$this->xml->scope->attributes()->application;
-	  	      	  		  	   if( !$appName ) throw new AgilePHP_Exception( 'Attribute \'application\' required for ApplicationScope. This value should contain the name of your application.' );
-	  	      	  		  	   $key = (string)$this->xml->scope->attributes()->key;
-	  	      	  		  	   $value = (string)$this->xml->scope->attributes()->value;
-	  	      	  		  	   Scope::getInstance()->getApplicationScope()->set( $key, $value );
-	  	      	  		  	   break;
-
-	  	      	  		  case 'session':
-	  	      	  		  		$key = (string)$this->xml->scope->attributes()->key;
-	  	      	  		  	    $value = (string)$this->xml->scope->attributes()->value;
-	  	      	  		  		Scope::getInstance()->getSessionScope()->set( $key, $value );
-	  	      	  		  		break;
-
-	  	      	  		  case 'request':
-	  	      	  		  		$request = Scope::getInstance()->getRequestScope();
-	  	      	  		  		$request->set( (string)$this->xml->scope->attributes()->key, (string)$this->xml->scope->attributes()->value );
-	  	      	  		  		break;
-
-	  	      	  		  default:
-	  	      	  		  	throw new AgilePHP_Exception( 'Unsupported ScopeType configured in agilephp.xml at key="' . 
-	  	      	  		  					$this->xml->scope->attributes()->key . '" value="' .
-	  	      	  		  					$this->xml->scope->attributes()->value . '"' );
-	  	      	  }
-	  	      }
-	  	      */
-
-	  	      if( $this->xml->interceptors )
-	  	      	  $this->interceptions = array();
 	  }
 
 	  /**
@@ -591,28 +532,18 @@ class AgilePHP_RemotingException extends AgilePHP_Exception {
 }
 
 /**
- * Responsible for 'lazy loading' classes. If agilephp.xml contains
- * a valid <interceptors/> configuration, the loaded class is handed
- * off to __autoload_interceptions.
+ * Responsible for 'lazy loading' classes.
  * 
  * @param String $class The class being lazy loaded
  * @return void
  */
 function __autoload( $class ) {
 
-		 if( is_array( AgilePHP::getFramework()->getInterceptions() ) ) {
+		 __autoload_interceptions( $class );
 
-		 	 __autoload_interceptions( $class );
-
-		 	 if( !class_exists( $class ) )
-  		     	 __autoload_class( $class );
-
-  		     return;
-		 }
-
-  		 __autoload_class( $class );
+		 if( !class_exists( $class, false ) )
+  		   	 __autoload_class( $class );
 }
-
 
 require_once 'Annotation.php';
 require_once 'Interception.php';
@@ -649,7 +580,7 @@ function __autoload_interceptions( $class ) {
 			 }
   	     }
 
-		 $annotatedMethods = &Annotation::getMethodsAsArray( $class );	  	     
+		 $annotatedMethods = &Annotation::getMethodsAsArray( $class );
 	 	 if( count( $annotatedMethods ) ) {
 
 			 foreach( $annotatedMethods as $methodName => $methodAnnotation ) {
@@ -705,8 +636,7 @@ function __autoload_class( $class ) {
 		 $it = new RecursiveDirectoryIterator( AgilePHP::getFramework()->getFrameworkRoot() );
 		 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
 
-		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
-		   	      	  substr( $file, -4 ) != 'view' ) {
+		   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
 
 		   	      	  $array = explode( DIRECTORY_SEPARATOR, $file );
 			 		  if( array_pop( $array ) == $class . '.php' ) {
@@ -718,13 +648,6 @@ function __autoload_class( $class ) {
 		 }
 
 		 // Load web application classes
-		 $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'components' .
-		 		 DIRECTORY_SEPARATOR . $class . '.php';
-	     if( file_exists( $path ) ) {
-
-		     require_once $path;
-	     	 return;
-	     }
   	     $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
   	     		 DIRECTORY_SEPARATOR . $class . '.php';
   	     if( file_exists( $path ) ) {
@@ -732,6 +655,13 @@ function __autoload_class( $class ) {
 		     require_once $path;
   	         return;
   	     }
+		 $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'components' .
+		 		 DIRECTORY_SEPARATOR . $class . '.php';
+	     if( file_exists( $path ) ) {
+
+		     require_once $path;
+	     	 return;
+	     }
   	     $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'model' .
   	     		 DIRECTORY_SEPARATOR . $class . '.php';
 	     if( file_exists( $path ) ) {
@@ -746,6 +676,7 @@ function __autoload_class( $class ) {
 		     require_once $path;
   	         return;
   	     }
+  	     // Not found in the usual places - perform deep scan
 	  	 $it = new RecursiveDirectoryIterator( AgilePHP::getFramework()->getWebRoot() );
 		 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
 
@@ -759,5 +690,7 @@ function __autoload_class( $class ) {
 			 		  }
 			      }
 		 }
+
+		 throw new AgilePHP_Exception( 'The requested class \'' . $class . '\' could not be loaded.' );
 }
 ?>

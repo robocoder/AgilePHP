@@ -19,8 +19,8 @@ class PersistenceManagerTest extends BaseTest {
 	  private function getMockData() {
 	  	
 	 	     $user = new User();
-	  		 $user->setUsername( 'test' );
-	  		 $user->setPassword( 'test2' );
+	  		 $user->setUsername( 'phpunit' );
+	  		 $user->setPassword( 'phpunit' );
 	  		 $user->setEmail( 'root@localhost' );
 	  		 $user->setCreated( date( 'c', strtotime( 'now' ) ) );
 	  		 $user->setLastLogin( date( 'c', strtotime( 'now' ) ) );
@@ -48,7 +48,16 @@ class PersistenceManagerTest extends BaseTest {
 			 $persisted = $this->persistence->find( $user );
 			 PHPUnit_Framework_Assert::assertNotNull( $persisted, 'Error finding persisted record' );
 	  }
-	  
+
+	  public function testRestrictedFind() {
+
+	  		 $this->persistence->setRestrictions( array( 'username' => 'test' ) );
+	  		 $persisted = $this->persistence->find( new User() );
+
+	  		 PHPUnit_Framework_Assert::assertNotNull( $persisted, 'Error finding persisted record using restrictions logic' );
+	  		 PHPUnit_Framework_Assert::assertEquals( $persisted[0]->getUsername(), 'test', 'Error finding persisted record using restrictions logic' );
+	  }
+
 	  public function testMerge() {
 	  	
 	  		 $user = $this->getMockData();
@@ -57,13 +66,14 @@ class PersistenceManagerTest extends BaseTest {
 	  		 
 	  		 $this->persistence->merge( $user );
 	  }
-	  
+
 	  public function testDelete() {
-	  	
+
 	  		 $this->persistence->delete( $this->getMockData() );
 	  		 $persisted = $this->persistence->find( $this->getMockData() );
 
-			 PHPUnit_Framework_Assert::assertNull( $persisted, 'Error deleting persisted record' );
+			 PHPUnit_Framework_Assert::assertType( 'array', $persisted, 'Error deleting persisted record' );
+			 PHPUnit_Framework_Assert::assertEquals( false, isset( $persisted[0] ), 'Error deleting persisted record' );
 	  }
 	  
 	  public function testGetTableByModel() {

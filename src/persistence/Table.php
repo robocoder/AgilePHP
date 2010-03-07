@@ -237,6 +237,19 @@ class Table {
 	  }
 
 	  /**
+	   * Returns a Column instance corresponding to the specified name.
+	   * 
+	   * @param string $name The column name
+	   * @return void
+	   */
+	  public function getColumn( $name ) {
+
+	  		 foreach( $this->columns as $c )
+	  		 	if( $c->getName() == $name )
+	  		 		return $c;
+	  }
+
+	  /**
 	   * Returns boolean response based on the presence of one or more Column
 	   * instances.
 	   * 

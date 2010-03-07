@@ -287,10 +287,10 @@ class Form {
   		 	      	  // Checkbox
 					  else if( $column->getType() == 'bit' ) {
 
-					  	  $value = (ord($value) == 1);
+					  	  //$value = (ord($value) == 1);
 
 					  	  $html .= '<td>' . $displayName . '</td>';
-					  	  $html .= ($value > 0) ?
+					  	  $html .= ($value == 1) ?
 						                '<td><input type="checkbox" checked="true" name="' . $name . '" value="1"/></td>'
 					  	  	       		: '<td><input type="checkbox" checked="true" name="' . $name . '" value="0"/></td>';
 					  }
@@ -476,13 +476,24 @@ class Form {
 
 					  		 	      	  // Checkbox
 										  else if( $column->getType() == 'bit' ) {
-
-										  	  $value = (ord($value) == 1);
-
+	  	  
 										  	  $xsl .= '<td>' . $displayName . '</td>';
-										  	  $xsl .= ($value > 0) ?
-											                '<td><input type="checkbox" checked="true" name="' . $name . '" value="1"/></td>'
-										  	  	       		: '<td><input type="checkbox" name="' . $name . '" value="1"/></td>';
+										  	  
+										  	  // enabled
+										  	  $xsl .= '<xsl:if test="/Form/' . $table->getModel() . '/' . $name . ' = 1">';
+										  	  		$xsl .= '<td><input type="checkbox" checked="true" name="' . $name . '" value="1"/></td>';
+										  	  $xsl .= '</xsl:if>';
+
+										  	  // disabled
+										  	  $xsl .= '<xsl:if test="/Form/' . $table->getModel() . '/' . $name . ' != 1">';
+										  	  		$xsl .= '<td><input type="checkbox" name="' . $name . '" value="1"/></td>';
+										  	  $xsl .= '</xsl:if>';
+
+										  	  // add operation that doesnt contain a model - default to disabled 
+										  	  $xsl .= '<xsl:if test="/Form/' . $table->getModel() . ' = \'\'">';
+										  	  		$xsl .= '<td><input type="checkbox" name="' . $name . '" value="1"/></td>';
+										  	  $xsl .= '</xsl:if>';
+
 										  }
 
 						  		 		  // Textarea
@@ -539,7 +550,7 @@ class Form {
 	  		   			 </form>
 		  		        </xsl:template>
 					  </xsl:stylesheet>';
-
+Logger::getInstance()->debug( $xsl );
 	  		   return $xsl;
 	  }
 

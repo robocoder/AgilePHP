@@ -554,6 +554,20 @@ abstract class BasePersistence {
 			   return $this->execute();
 	    }
 
+	    protected function createWhereClauseFromModel( &$model, $primaryKeys ) {
+
+	    		  $sql = '';
+	    		  $class = new ReflectionClass( $model );
+	    		  $properties = $class->getProperties();
+
+	    		  foreach( $properties as $prop ) {
+	    		  	
+						$sql .= $prop->name . '=?';
+	    		  }
+
+	    		  
+	    }
+
 	    /**
 	     * Attempts to locate the specified model by values. Any fields set in the object are used
 	     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
@@ -571,9 +585,7 @@ abstract class BasePersistence {
 
 			   Logger::getInstance()->debug( 'BasePersistence::find Performing find on model \'' . $table->getModel() . '\'.' );
 
-	    	   // Perform search on the requested $model parameter
 	  		   try {
-	  		   	     $pkeyColumns = $table->getPrimaryKeyColumns();
 	  		   		 if( $this->isEmpty( $model ) ) {
 
 	    	   	         $sql = 'SELECT ' . (($this->getDistinct() == null) ? '*' : 'DISTINCT ' . $this->getDistinct()) . ' FROM ' . $table->getName();
@@ -596,33 +608,25 @@ abstract class BasePersistence {
     	   	         	 $this->setGroupBy( null );
 	    	   		 }
 	    	   		 else {
-	    	   		 		 if( !count( $pkeyColumns ) ) return null;
+	    	   		 		$where = '';
 
-			  		   		 $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE ';
-							 for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+	    	   		 		$columns = $table->getColumns();
+							for( $i=0; $i<count( $columns ); $i++ ) {
 
-							 	  $accessor = $this->toAccessor( $pkeyColumns[$i]->getModelPropertyName() );
-						     	  if( $model->$accessor() == null ) {
+							 	 $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
+						     	 if( $model->$accessor() == null ) continue;
 
-								      Logger::getInstance()->debug( 'BasePersistence::find Warning about null primary key for table \'' . $table->getName() . '\' column \'' .
-								      					 $pkeyColumns[$i]->getName() . '\'. Primary keys are used in search criteria. Returning null...' );
-								      return null;
-								  }
-
-						   		  //$sql .= $pkeyColumns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
-						   		  $sql .= $pkeyColumns[$i]->getName() . '=?';
-								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
-
-								  array_push( $values, $model->$accessor() );
-						     }
-						     $sql .= ' LIMIT ' . $this->maxResults . ';';
+						     	 $where .= (count($values) ? ' AND ' : ' ') . $columns[$i]->getName() . '=?';
+								 array_push( $values, $model->$accessor() );
+						    }
+						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
+						    $sql .= ' LIMIT ' . $this->maxResults . ';';
 	    	   		 }
 
 				     // Execute query
-					 $stmt = $this->prepare( $sql );
-					 $stmt->setFetchMode( PDO::FETCH_OBJ );
-					 $stmt->execute( $values );
-					 $result = $stmt->fetchall();
+					 $this->prepare( $sql );
+					 $this->PDOStatement->setFetchMode( PDO::FETCH_OBJ );
+					 $result = $this->execute( $values );
 
 					 if( !count( $result ) ) {
 

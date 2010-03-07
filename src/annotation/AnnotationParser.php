@@ -26,7 +26,6 @@
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.annotation
  * @version 0.2a
- * @static
  */
 class AnnotationParser {
 
@@ -62,6 +61,7 @@ class AnnotationParser {
 	   * 
 	   * @param String $class The name of the class to parse
 	   * @return void
+	   * @static
 	   */
 	  public static function parse( $class ) {
 
@@ -168,6 +168,7 @@ class AnnotationParser {
 	   * @param AnnotatedClass $class An instance of the annotated class to inspect.
 	   * @return Array of class level annotations or false if no annotations
 	   * 		 are present.
+	   * @static
 	   */
 	  public static function getClassAnnotations( AnnotatedClass $class ) {
 
@@ -180,6 +181,7 @@ class AnnotationParser {
 	   * 
 	   * @param AnnotatedProperty $property The AnnotatedProperty instance to inspect.
 	   * @return Array of property level annotations
+	   * @static
 	   */
 	  public static function getPropertyAnnotations( AnnotatedProperty $property ) {
 
@@ -201,6 +203,7 @@ class AnnotationParser {
 	   * 
 	   * @param AnnotatedMethod $method The AnnotatedMethod instance to inspect.
 	   * @return Array of method level annotations or false if no annotations are present.
+	   * @static
 	   */
 	  public static function getMethodAnnotations( AnnotatedMethod $method ) {
 
@@ -220,6 +223,7 @@ class AnnotationParser {
 	   * 
 	   * @param String $class The name of the class to inspect
 	   * @return Array of class level annotations, void otherwise
+	   * @static
 	   */
 	  public static function getClassAnnotationsAsArray( $class ) {
 
@@ -233,6 +237,7 @@ class AnnotationParser {
 	   * @param String $class The name of the class to inspect
 	   * @param String $method The name of the method to inspect
 	   * @return Array of method level annotations, void otherwise
+	   * @static
 	   */
 	  public static function getMethodAnnotationsAsArray( $class ) {
 
@@ -245,6 +250,7 @@ class AnnotationParser {
 	   * 
 	   * @param String $class The name of the class to inspect
 	   * @return Array of property level annotations, void otherwise
+	   * @static
 	   */
 	  public static function getPropertyAnnotationsAsArray( $class ) {
 
@@ -258,6 +264,7 @@ class AnnotationParser {
 	   * 
 	   * @param String $text The text/code string to parse
 	   * @return void
+	   * @static
 	   */
 	  private static function parseAnnotations( array $items ) {
 
@@ -320,6 +327,7 @@ class AnnotationParser {
 	   * @param String $arrays The string value containing each of the property assignments
 	   * @param String $properties The annotations properties as they were parsed from the code
 	   * @return stdClass instance containing the annotation instance and truncated properties string
+	   * @static
 	   */
 	  private static function parseKeyArrayValuePairs( $oAnnotation, $arrays, $properties ) {
 
@@ -368,6 +376,7 @@ class AnnotationParser {
 	   * 
 	   * @param String $value The value to parse
 	   * @return void
+	   * @static
 	   */
 	  private static function getQuotedStringValue( $value ) {
 
@@ -403,6 +412,7 @@ class AnnotationParser {
 	   * @param Object $oAnnotation An instance of the annotation object
 	   * @param String $properties String representation of the annotations property definition(s).
 	   * @return The annotation instance populated according to its definition(s).
+	   * @static
 	   */
 	  private static function parseKeyValuePairs( $oAnnotation, $properties ) {
 
@@ -455,6 +465,7 @@ class AnnotationParser {
 	   * Returns the PHP file content to be parsed.
 	   * 
 	   * @return PHP code
+	   * @static
 	   */
 	  public static function getSourceCode() {
 
@@ -473,6 +484,7 @@ class AnnotationParser {
 	   * 
 	   * @param String $directory The directory to inspect. 
 	   * @return File contents for self::$filename or void if the file contents could not be located
+	   * @static
 	   */
 	  private static function search( $directory ) {
 

@@ -79,10 +79,12 @@ abstract class BaseModelXmlController extends BaseModelController {
   			 	   	   			$fieldCount++;
   			 	   	   	     	if( is_object( $models[0]->$accessor() ) ) continue;
 
+  			 	   	   	     	/*
   			 	   	   	     	$xml .= ($column->getType() == 'bit') ? 
   			 	   	   	     				'<' . $column->getModelPropertyName() . '>' . ( (ord($models[0]->$accessor()) == 1) ? '1' : '0') . '</' . $column->getModelPropertyName() . '>'
   			 	   	   	     				: '<' . $column->getModelPropertyName() . '>' . $models[0]->$accessor() . '</' . $column->getModelPropertyName() . '>';
-  			 	   	   			
+  			 	   	   	     	*/
+  			 	   	   	     	$xml .= '<' . $column->getModelPropertyName() . '>' . $models[0]->$accessor() . '</' . $column->getModelPropertyName() . '>';  			 	   	   			
   			 	   	   }
   			 	   }
   			 	   else {
@@ -219,7 +221,8 @@ abstract class BaseModelXmlController extends BaseModelController {
 				       	       		  		      if( is_object( $val ) ) continue; // Foreign model
 
 				       	       		  		      if( $this->isBit( $table, $prop->getName() ) )
-				 	   	   			         		  $val = (ord($val) == 1) ? 'Yes' : 'No';
+					       	       		  		      $val = ($val == 1) ? 'Yes' : 'No';
+				 	   	   			         		  // $val = (ord($val) == 1) ? 'Yes' : 'No';
 
 						 	   	   			 	  $child = $doc->createElement( $prop->getName() );
 							  				 	  $child = $modelName->appendChild( $child );
@@ -240,7 +243,8 @@ abstract class BaseModelXmlController extends BaseModelController {
 				       	       		  		      if( is_object( $val ) ) continue; // Foreign model
 
 				       	       		  		      if( $this->isBit( $table, $prop->getName() ) )
-				 	   	   			         		  $val = (ord($val) == 1) ? 'Yes' : 'No';
+				       	       		  		      	  $val = ($val == 1) ? 'Yes' : 'No';
+				 	   	   			         		  //$val = (ord($val) == 1) ? 'Yes' : 'No';
 
 						 	   	   			 	  $child = $doc->createElement( $prop->getName() );
 							  				 	  $child = $modelName->appendChild( $child );
@@ -385,7 +389,8 @@ abstract class BaseModelXmlController extends BaseModelController {
 				       	       		  		      if( is_object( $val ) ) continue; // Foreign model
 
 				       	       		  		      if( $this->isBit( $table, $prop->getName() ) )
-				 	   	   			         		  $val = (ord($val) == 1) ? 'Yes' : 'No';
+				       	       		  		      	  $val = ($val == 1) ? 'Yes' : 'No';
+				 	   	   			         		  //$val = (ord($val) == 1) ? 'Yes' : 'No';
 
 						 	   	   			 	  $child = $doc->createElement( $prop->getName() );
 							  				 	  $child = $modelName->appendChild( $child );
@@ -406,7 +411,8 @@ abstract class BaseModelXmlController extends BaseModelController {
 				       	       		  		      if( is_object( $val ) ) continue; // Foreign model
 
 				       	       		  		      if( $this->isBit( $table, $prop->getName() ) )
-				 	   	   			         		  $val = (ord($val) == 1) ? 'Yes' : 'No';
+				       	       		  		      	  $val = ($val == 1) ? 'Yes' : 'No';
+				 	   	   			         		  //$val = (ord($val) == 1) ? 'Yes' : 'No';
 
 						 	   	   			 	  $child = $doc->createElement( $prop->getName() );
 							  				 	  $child = $modelName->appendChild( $child );

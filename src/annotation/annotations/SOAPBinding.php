@@ -27,8 +27,17 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation.annotations
  * @version 0.1a
- * @example #@SOAPBinding
  * @see http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl
+ * <code>
+ * #@WebService( serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI' )
+ * #@SOAPBinding( style = SOAPStyle::RPC, use = SOAPStyle::ENCODED )
+ * class MyAPI {
+ * 
+ * 		 // I am an RPC/Encoded SOAP web service and can be easily changed into
+ * 		 // RPC/Literal or Document Literal Wrapped by simply changing the #@SOAPBinding
+ * 		 // values.
+ * }
+ * </code>
  */
 class SOAPBinding {
 
@@ -50,8 +59,6 @@ class SOAPBinding {
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation.annotations
  * @version 0.1a
- * @example #@SOAPBinding( style = SOAPStyle::RPC )
- * @example #@SOAPBinding( style = SOAPStyle::RPC, use = SOAPStyle::ENCODED )
  */
 class SOAPStyle {
 

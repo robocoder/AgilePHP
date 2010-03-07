@@ -27,7 +27,17 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation.annotations
  * @version 0.3a
- * @example #@RemoteMethod
+ * <code>
+ * class MyClassRemote {
+ * 
+ * #@RemoteMethod
+ * public function remoteMethod() {
+ * 
+ * 		 // This code is being called from javascript with ease.
+ * 		 // It may also be used as any standard PHP class within PHP.
+ * }
+ * }
+ * </code>
  */
 class RemoteMethod { }
 ?>

@@ -26,7 +26,47 @@
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.annotation.annotations
  * @version 0.2a
- * @example #@Interceptor
+ * <code>
+ * #@Interceptor
+ * class MyInterceptor { }
+ * 
+ * // This is a class level interceptor that gets invoked just before MyInterceptorImpl is created.
+ * #@MyInterceptor
+ * class MyInterceptorImpl {
+ * 
+ * 		 // This is a property level interceptor that gets invoked upon construction
+ * 		 #@MyInterceptor
+ * 		 private $foo;
+ * 
+ * 		 // This is a method level interceptor that gets invoked before the method is called.
+ * 		 #@MyInterceptor
+ * 		 public function doSomething() { }
+ * }
+ * </code>
+ * 
+ * <code>
+ * #@Interceptor
+ * class MyInterceptor {
+ * 
+ * 		 // This interceptor accepts one parameter named 'param'
+ * 		 public $param;
+ * }
+ * 
+ * class MyInterceptorImpl {
+ * 
+ * 		 #@MyInterceptor( param = 'this is a parameter string value' )
+ * 		 public function doSomething() { }
+ * 
+ * 		 #@MyInterceptor( param = { 'this', 'key2' => 'is', 3 => 'an', 'key4' => 'array parameter value' } )
+ * 		 public function doSomething2() { }
+ * 
+ * 		 #@MyInterceptor( param = new MyClass() )
+ * 		 public function doSomething3() { }
+ * 
+ * 		 #@MyInterceptor( param = MySingleton::getInstance() )
+ * 		 public function doSomething4() { }
+ * }
+ * </code>
  */
 class Interceptor { }
 ?>

@@ -20,23 +20,23 @@
  */
 
 /**
- * Annotation which triggers the WebService component to generate and output a WSDL
- * document for the implementing class when the annotated method is requested.
+ * Interceptor responsible for generating a WSDL file for the implementing web service.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
  * @version 0.1a
- * @example #@WSDL
+ * <code>
+ * #@WSDL
+ * public function wsdl() {
+ * 
+ * 		  // I will generate a WSDL file with xml content header when invoked
+ * }
+ * </code>
  */
 
 #@Interceptor
 class WSDL {
-
-	  // The new ReflectionClass instance used to get a list of method parameters
-	  // causes a second interception to occur. This flag is used to ignore the
-	  // second interception.
-	  private $inProgress = false;
 
 	  private $class;
 	  private $serviceName;
@@ -62,9 +62,6 @@ class WSDL {
 	  #@AroundInvoke
 	  public function generateWSDL( InvocationContext $ic ) {
 
-	  		 if( $this->inProgress ) return;
-
-	  		 $this->inProgress = true;
 	  		 $callee = $ic->getCallee();
 	  		 $this->class = $callee['class']; // The PHP standard class to expose via SOAP
 

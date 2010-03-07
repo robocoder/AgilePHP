@@ -219,6 +219,7 @@ class MVC {
 	  	     	 $this->loadController( $controller );
 
 	  	     $oController = new $this->controller;
+	  	     $action = $this->action;
 
 	  	     // This try/catch statement hides the exception stack of the inner call. This makes debugging difficult.
 	  	     //try {

@@ -1,5 +1,32 @@
 <?php
+/**
+ * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
+ * Copyright (C) 2009-2010 Make A Byte, inc
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package com.makeabyte.agilephp.test.control
+ */
 
+/**
+ * Responsible for all login/logout operations
+ * 
+ * @author Jeremy Hahn
+ * @copyright Make A Byte, inc
+ * @package com.makeabyte.agilephp.test.control
+ * @version 0.1a
+ */
 class LoginController extends BaseController {
 
 	  public function __construct() {
@@ -109,6 +136,57 @@ class LoginController extends BaseController {
 	  }
 
 	  /**
+	   * Authenticates the visitor using HTTP basic authentication. By default
+	   * the #@BasicAuthentication interceptor uses the AgilePHP Identity component.
+	   *
+	   * @return void
+	   * @throws AgilePHP_AccessDeniedException
+	   */
+	  #@BasicAuthentication
+	  public function basicAuthentication() {
+
+	  		 echo 'LoginController::basicAuthentication invoked';
+	  }
+
+	  /**
+	   * Authenticates the visitor using HTTP basic authentication and a custom realm.
+	   *
+	   * @return void
+	   * @throws AgilePHP_AccessDeniedException
+	   */
+	  #@BasicAuthentication( realm = 'test' )
+	  public function basicAuthWithCustomRealm() {
+
+	  		 echo 'LoginController::basicAuthWithCustomRealm invoked';
+	  }
+
+	  /**
+	   * Authenticates the visitor using HTTP basic authentication and a custom
+	   * authenticator method. LoginController::basicLogin is responsible for
+	   * performing the authentication logic in this case.
+	   * 
+	   * @return void
+	   * @throws AgilePHP_AccessDeniedException
+	   */
+	  #@BasicAuthentication( authenticator = 'basicAuthenticator' )
+	  public function basicAuthWithCustomAuthenticator() {
+
+	  		 echo 'LoginController::basicAuthWithCustomAuthenticator invoked';
+	  }
+
+	  /**
+	   * Custom authentication method used by #@BasicAuthentication interceptor
+	   * 
+	   * @param string $username The username entered into the HTTP basic authentication box
+	   * @param string $password The password entered into the HTTP basic authentication box
+	   * @return boolean True if the username and password are set to 'test', false otherwise.
+	   */
+	  public function basicAuthenticator( $username, $password ) {
+
+	  		 return $username == 'test' && $password == 'test';
+	  }
+
+	  /**
 	   * Destorys the session which was created by login() and renders the login page.
 	   * 
 	   * @return void
@@ -179,15 +257,7 @@ class LoginController extends BaseController {
 	   */
 	  public function resetPassword( $token, $sessionId ) {
 
-	  		 try {
-	  		 	   Identity::getInstance()->resetPassword( $token, $sessionId );
-	  		 }
-	  		 catch( AgilePHP_Exception $e ) {
-
-	  		 		$this->getRenderer()->set( 'error', $e->getMessage() );
-	  		 		$this->getRenderer()->render( 'error' );
-	  		 }
-
+	  		 Identity::getInstance()->resetPassword( $token, $sessionId );
 	  		 $this->getRenderer()->set( 'info', 'Your new password has been sent to your email address.' );
 	  		 $this->showLogin();
 	  }
@@ -199,7 +269,7 @@ class LoginController extends BaseController {
 	   */
 	  public function showRegister() {
 
-	  		 $this->getRenderer()->set( 'title', 'Life Story Suitcase :: Home' );
+	  		 $this->getRenderer()->set( 'title', 'Administration :: Home' );
 	  		 $this->getRenderer()->set( 'request_token', Scope::getRequestScope()->createToken() );
 	  	     $this->getRenderer()->render( 'register' );
 	  }

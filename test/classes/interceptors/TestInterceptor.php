@@ -1,4 +1,33 @@
 <?php
+/**
+ * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
+ * Copyright (C) 2009-2010 Make A Byte, inc
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package com.makeabyte.agilephp.test.classes.interceptors
+ */
+
+/**
+ * Simple interceptor demostrating how to create and use a simple
+ * interceptor in AgilePHP.
+ * 
+ * @author Jeremy Hahn
+ * @copyright Make A Byte, inc
+ * @package com.makeabyte.agilephp.test.classes.interceptors
+ * @version 0.1a
+ */
 
 #@Interceptor
 class TestInterceptor {
@@ -18,23 +47,20 @@ class TestInterceptor {
 
 	  		 $method = $ic->getMethod();
 
-	  		 if( !$method )
-	  		 	 throw new AgilePHP_Exception( 'TestInterceptor::specialValue requires a valid method name. You specified \'' . $ic->getMethod() . '\'.' );
+	  		 if( $method == 'setProperty1' ) {
 
-	  		 if( $method == 'setProperty1' )
-	  		 	 $ic->getTarget()->$method( 'intercepted value' );
+	  		 	 // these are the original parameters passed into setProperty1
+	  		 	 $params = $ic->getParameters();
 
-	  		 // We can also change the parameter list and then call proceed like the example below.
-	  		 // This does not break the execution chain like the example above is doing.
-	  		 // The example above must break the chain of execution because if $ic->proceed()
-	  		 // is called, the dynamic proxy class will resume as normal with the __call
-	  		 // which will result in the original value of 'test' being set.
-	  		 //
-	  		 // if( $method == 'setProperty1' )
-	  		 //     $ic->setParameters( 'another way to change the value which allows the chain/stack to proceed' );
-	  		 //
-	  		 // $ic->proceed(); # Now the dynamic proxy will continue with the __call as normal using
-	  		 //					# the InvocationContext values, which contains the altered parameter.
+	  		 	 // here we alter the parameter value and update InvocationContext
+	  		 	 $params[0] = 'intercepted value';
+	  		 	 $ic->setParameters( $params );
+
+	  		 	 // return the InvocationContext to the proxied class for invocation
+	  		 	 return $ic->proceed();
+	  		 }
+
+	  		 // Note: This interceptor stops the interception chain since there is no $ic->proceed being invoked!
 	  }
 }
 ?>

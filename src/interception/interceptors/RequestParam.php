@@ -27,7 +27,20 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
  * @version 0.1a
- * @example #@RequestParam( name = "email" ) 
+ * <code>
+ * class MyFormProcessor {
+ * 
+ * #@RequestParam( name = 'email' )
+ * public $email;
+ * 
+ * public function showEmail() {
+ * 
+ * 		  // Displays the email address entered in <input name="email"/>
+ * 		  echo $this->email;
+ * }
+ * 
+ * }
+ * </code>
  */
 
 #@Interceptor

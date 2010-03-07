@@ -195,7 +195,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 	    	 $table = $this->getTableByModel( $model );
 			 $newModel = $table->getModelInstance();
-			 $values = array();
+			 $values = array();			
 
 			 Logger::getInstance()->debug( 'MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
 
@@ -223,31 +223,25 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
     	   	         	$this->setGroupBy( null );
 	    	   		 }
 	    	   		 else {
-	    	   		 		 if( !count( $pkeyColumns ) ) return null;
+	    	   		 		$where = '';
 
-			  		   		 $sql = 'SELECT' . ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() : '') .
-			  		   		 		' * FROM ' . $table->getName() . ' WHERE ';
-							 for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+	    	   		 		$columns = $table->getColumns();
+							for( $i=0; $i<count( $columns ); $i++ ) {
 
-							 	  $accessor = $this->toAccessor( $pkeyColumns[$i]->getModelPropertyName() );
-						     	  if( $model->$accessor() == null ) {
+							 	 $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
+						     	 if( $model->$accessor() == null ) continue;
 
-								      Logger::getInstance()->debug( 'MSSQLDialect::find Warning about null primary key for table \'' . $table->getName() . '\' column \'' .
-								      					 $pkeyColumns[$i]->getName() . '\'. Primary keys are used in search criteria. Returning null...' );
-								      return null;
-								  }
-
-						   		  $sql .= $pkeyColumns[$i]->getName() . '=?';
-								  $sql .= ( (($i+1) < count( $pkeyColumns ) ) ? ' AND ' : '' );
-
-								  array_push( $values, $model->$accessor() );
-						     }
+						     	 $where .= (count($values) ? ' AND ' : ' ') . $columns[$i]->getName() . '=?';
+								 array_push( $values, $model->$accessor() );
+						    }
+						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
+						    $sql .= ' LIMIT ' . $this->maxResults . ';';
 	    	   		 }
 
-					 $stmt = $this->prepare( $sql );
-					 $stmt->setFetchMode( PDO::FETCH_OBJ );
-					 $stmt->execute( $values );
-					 $result = $stmt->fetchall();
+	    	   		 // Execute query
+					 $this->prepare( $sql );
+					 $this->PDOStatement->setFetchMode( PDO::FETCH_OBJ );
+					 $result = $this->execute( $values );
 
 					 if( !count( $result ) ) {
 

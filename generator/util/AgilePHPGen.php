@@ -1,4 +1,36 @@
 <?php
+/**
+ * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
+ * Copyright (C) 2009-2010 Make A Byte, inc
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package com.makeabyte.agilephp.generator.util
+ */
+
+/**
+ * Base AgilePHP generator class responsible for maintaining configuration state
+ * for a project. Note, the generator package will only work on one project at
+ * a time. If you want to use the generator package on multiple files, simply copy
+ * the entire generator folder into your project. The generator will be replaced
+ * with the AgilePHP IDE once it has been completed. This is just here to hold us over.
+ * 
+ * @author Jeremy Hahn
+ * @copyright Make A Byte, inc
+ * @package com.makeabyte.agilephp.generator.util
+ * @version 0.1a
+ */
 
 ini_set( 'display_errors', '1' );
 error_reporting( E_ALL );
