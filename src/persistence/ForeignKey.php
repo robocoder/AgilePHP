@@ -51,8 +51,8 @@ class ForeignKey {
 		  		 $this->table = (string)$foreign->attributes()->table;
 		  		 $this->column = (string)$foreign->attributes()->column;
 		  		 $this->controller = (string)$foreign->attributes()->controller;
-		  		 $this->setOnUpdate( (string)$foreign->attributes()->onUpdate );
-		  		 $this->setOnDelete( (string)$foreign->attributes()->onDelete );
+		  		 $this->setOnUpdate( preg_replace( '/_/', ' ', (string)$foreign->attributes()->onUpdate ) );
+		  		 $this->setOnDelete( preg_replace( '/_/', ' ', (string)$foreign->attributes()->onDelete ) );
 		  		 $this->setSelect( (string)$foreign->attributes()->select );
 	  		 }
 
