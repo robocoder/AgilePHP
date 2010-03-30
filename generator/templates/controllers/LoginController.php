@@ -20,6 +20,60 @@ class LoginController extends BaseController {
 	  	     else
 	  	     	$this->showLogin();
 	  }
+	  
+	  /**
+	   * Registers a new user account.
+	   * 
+	   * @param $username The username to register
+	   * @param $email The email address of the user
+	   * @param $password The password to authenticate the user
+	   * @param $role The role for the user
+	   * @return unknown_type
+	   */
+	  public function register() {
+
+	  		 $request = Scope::getInstance()->getRequestScope();
+
+	  		 if( !$username = $request->get( 'username' ) )
+	  		 	 throw new AgilePHP_Exception( 'Username required' );
+
+	  		 if( !$password = $request->get( 'password' ) )
+	  		 	 throw new AgilePHP_Exception( 'Password required' );
+	  		 	 
+	  		 if( !$email = $request->get( 'email' ) )
+	  		 	 throw new AgilePHP_Exception( 'Email required' );
+
+	  	     /** @todo remove hard coded role */
+	  		 $role = new Role( 'test' );
+
+	  		 $identity = Identity::getInstance();
+	  		 $identity->setUsername( $username );
+	  		 $identity->setPassword( $password );
+	  		 $identity->setEmail( $email );
+	  		 $identity->setRole( $role );
+	  		 $identity->register();
+
+	  		 $this->getRenderer()->set( 'info', 'Registration successful. Check your email for a confirmation link.' );
+	  		 $this->showRegister();
+	  }
+
+	  /**
+	   * Confirms a registration
+	   * 
+	   * @param $token Random registration token
+	   * @param $sessionId The session id corresponding to the user that registered
+	   * @return void
+	   */
+	  public function confirm( $token, $sessionId ) {
+
+	  		 $request = Scope::getInstance()->getRequestScope();
+
+	  		 $identity = Identity::getInstance();
+	  		 $identity->confirm( $request->sanitize( $token ), $request->sanitize( $sessionId ) );
+
+	  		 $this->getRenderer()->set( 'info', 'Activation Successful' );
+	  		 $this->showLogin();
+	  }
 
 	  /**
 	   * Authenticates a user account using AgilePHP Identity and Scope components.
@@ -150,6 +204,18 @@ class LoginController extends BaseController {
 
 	  	      $this->getRenderer()->set( 'title', 'Administration :: Home' );
 	  	      $this->getRenderer()->render( 'admin' ); 
+	  }
+
+	  /**
+	   * Renders the register view.
+	   * 
+	   * @return void
+	   */
+	  public function showRegister() {
+
+	  		 $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Register' );
+	  		 $this->getRenderer()->set( 'request_token', Scope::getRequestScope()->createToken() );
+	  	     $this->getRenderer()->render( 'register' );
 	  }
 
 	  /**
