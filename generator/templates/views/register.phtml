@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title><?= $title; ?></title>
+		<link href="/view/css/style.css" type="text/css" rel="stylesheet"/>
+	</head>
+
+	<body>
+		<?php require_once 'header.html'; ?>
+
+		<div style="padding-top: 25px; padding-bottom: 100px;">
+		<form id="frmRegister" method="post" action="/index.php/LoginController/register">
+
+			<table border="0">
+				<tr>
+					<th colspan="2" class="tableHeader">Registration</th>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div style="text-align: center;">
+							<?php
+								  if( isset( $info ) ) echo '<span class="info">' . $info . '</span>';
+								  if( isset( $error ) ) echo '<span class="error">' . $error . '</span>';
+							 ?>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>Username</td>
+					<td><input type="text" name="username"/></td>
+				</tr>
+				<tr>
+					<td>Email</td>
+					<td><input type="text" name="email"/></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input type="password" name="password"/></td>
+				</tr>
+				<tr>
+					<td>Confirm</td>
+					<td><input type="password" name="password2"/></td>
+				</tr>
+				<tr>
+					<td><input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="<?= $request_token ?>"/></td>					
+					<td><input type="submit" value="Send"/></td>					
+				</tr>
+			</table> 
+		</form>
+		</div>
+
+		<?php require_once 'footer.html'; ?>
+	</body>
+</html>
