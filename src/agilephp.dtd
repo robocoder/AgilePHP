@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!ELEMENT agilephp ( mvc?, logger?, identity?, scope*, crypto?, interceptors? )>
+<!ELEMENT agilephp ( mvc?, logger?, identity?, scope*, crypto? )>
 
 <!ELEMENT mvc (#PCDATA)>
 <!ATTLIST mvc controller CDATA #IMPLIED>

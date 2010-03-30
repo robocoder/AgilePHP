@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title><?= $title ?></title>
+		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
+		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/tree-icons.css" type="text/css" rel="stylesheet"/>
+		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/resources/css/ext-all.css" type="text/css" rel="stylesheet"/>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/IndexController/getBaseJS/<?= AgilePHP::getFramework()->isInDebugMode() ?>"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/RemotingController/load/PluginsRemote"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/adapter/ext/ext-base.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/ext-all.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/Ext.Fx.shake.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Toolbar.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.TabPanel.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Properties.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Taskbar.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Debugger.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Workspace.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Login.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Plugins.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Window.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Notification.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.FileExplorer.js"></script>
+		<script type="text/javascript">
+
+		AgilePHP.IDE.setDebug( true );
+		AgilePHP.Remoting.setController( 'RemotingController' );
+
+		Ext.onReady( function() {
+
+			bypassLogin = true;  // speed up login during development
+
+			(bypassLogin) ?
+				AgilePHP.IDE.Workspace.load() :
+				AgilePHP.IDE.Login.show();
+		});
+		</script>
+	</head>
+
+	<body>
+		
+	</body>
+</html>

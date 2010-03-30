@@ -47,6 +47,7 @@ class CreateProject extends AgilePHPGen {
   		 	 // Provide agilephp-gen as the default directory
   		 	 $pieces = explode( DIRECTORY_SEPARATOR, dirname( __FILE__ ) );
   		 	 array_pop( $pieces );
+  		 	 array_pop( $pieces );
   		 	 $defaultDir = implode( DIRECTORY_SEPARATOR, $pieces );
 
 			 $input = $this->prompt( 'Enter project home directory: (' . $defaultDir . ')' );
@@ -107,8 +108,8 @@ class CreateProject extends AgilePHPGen {
 	  		 $this->recursiveCopy( '..' . DIRECTORY_SEPARATOR . 'src', $agilephp );
 
 	  		 /** AgilePHP Configuration */
-	  		 $answer = $this->prompt( 'Would you like to use interceptors in your project? (Y/N)' );
-	  		 $cache->setInterceptors( strtolower( $answer ) == 'y' ? true : false );
+	  		 //$answer = $this->prompt( 'Would you like to use interceptors in your project? (Y/N)' );
+	  		 //$cache->setInterceptors( strtolower( $answer ) == 'y' ? true : false );
 
 	  		 $answer = $this->prompt( 'Would you like to start your default logging level at debug? (Y/N)' );
 	  		 $cache->setLogging( strtolower( $answer ) == 'y' ? true : false );

@@ -1,7 +1,7 @@
 <?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
- * Copyright (C) 2009 Make A Byte, inc
+ * Copyright (C) 2009-2010 Make A Byte, inc
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

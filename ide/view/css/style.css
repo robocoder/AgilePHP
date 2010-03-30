@@ -1,0 +1,196 @@
+html, body {
+    font: normal 12px verdana;
+    margin: 0;
+    padding: 0;
+    border: 0 none;
+    overflow: hidden;
+    height: 100%;
+	background-color: #deecfd;
+}
+
+.appIcon {
+
+	background: url( ../images/app-icon.png) no-repeat 0 0;	
+}
+
+.extBlue {
+	
+	background-color: #deecfd;
+}
+
+/** Tab Styles */
+.tabLog {
+
+	background: url( ../images/tabs/log.png) no-repeat 0 0;	
+}
+.tabDebugger {
+
+	background: url( ../images/tabs/debugger.png) no-repeat 0 0;	
+}
+
+/** Toolbar Styles */
+.fileImport {
+
+	background: url( ../images/toolbar/file-import.png) no-repeat 0 0;	
+}
+.fileExport {
+
+	background: url( ../images/toolbar/file-export.png) no-repeat 0 0;	
+}
+.fileLogout {
+
+	background: url( ../images/toolbar/file-logout.png) no-repeat 0 0;	
+}
+
+/** Window styles */
+.databaseCreate {
+
+	background: url( ../images/toolbar/database-create.png) no-repeat 0 0;	
+}
+.databaseCompare {
+
+	background: url( ../images/toolbar/database-compare.png) no-repeat 0 0;	
+}
+.databaseSynchronize {
+
+	background: url( ../images/toolbar/database-synchronize.png) no-repeat 0 0;	
+}
+.databaseDelete {
+
+	background: url( ../images/toolbar/database-delete.png) no-repeat 0 0;	
+}
+
+.helpDocumentation {
+
+	background: url( ../images/toolbar/help-documentation.png) no-repeat 0 0;	
+}
+.helpAbout {
+
+	background: url( ../images/toolbar/help-about.png) no-repeat 0 0;	
+}
+
+/** Taskbar Window Button Styles **/
+button.fileImport {
+
+	background: url( ../images/toolbar/file-import.png) no-repeat 0 0 !important;
+}
+button.fileExport {
+
+	background: url( ../images/toolbar/file-export.png) no-repeat 0 0 !important;
+}
+button.databaseCreate {
+
+	background: url( ../images/toolbar/database-create.png) no-repeat 0 0 !important;
+}
+button.databaseCompare {
+
+	background: url( ../images/toolbar/database-compare.png) no-repeat 0 0 !important;
+}
+button.databaseSynchronize {
+
+	background: url( ../images/toolbar/database-synchronize.png) no-repeat 0 0 !important;
+}
+button.databaseDelete {
+
+	background: url( ../images/toolbar/database-delete.png) no-repeat 0 0 !important;
+}
+button.helpDocumentation {
+
+	background: url( ../images/toolbar/help-documentation.png) no-repeat 0 0 !important;
+}
+
+/** AgilePHP Styles */
+a {
+
+	text-decoration: none;	
+}
+.info {
+
+	font-family:tahoma;
+	font-size: 12px;	
+}
+
+.error {
+
+	font-family:tahoma;
+	font-size: 12px;
+	color: #FF0000;
+}
+
+.tableHeader {
+
+	color: #636363;
+	font-family: tahoma;
+	font-size: 11px;
+}
+
+.agilephpGeneratedTableDescription {
+
+	color: #000000;
+	font-family:tahoma;
+	font-size: 16px;
+	font-weight: bolder;
+	text-align: center;
+	padding-bottom: 20px;
+}
+
+.agilephpGeneratedTable {
+	
+	color:#636363;
+	font-family:tahoma;
+	font-size: 16px;
+	border-collapse : collapse;
+}
+
+.agilephpGeneratedHeader {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:11px;
+	text-decoration: none;
+}
+
+.agilephpGeneratedHighlight {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+	background-color: #C9C9C9;
+}
+
+.agilephpGeneratedRow1 {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+	background-color: #FFFFFF;
+}
+
+.agilephpGeneratedRow2 {
+
+	color: #636363;
+	font-family:tahoma;
+	font-size:10px;
+	background-color: #F9F9F9;
+}
+
+.agilephpGeneratedPaginationTable {
+
+	color:#636363;
+	font-family:tahoma;
+	font-size:10px;
+}
+
+.agilephpGeneratedPaginationHeader {
+	
+	color:#636363;
+	font-family:tahoma;
+	font-size:12px;
+}
+
+.agilephpGeneratedPaginationRecordCount {
+	
+	color:#636363;
+	font-family:tahoma;
+	font-size:12px;
+}

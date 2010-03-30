@@ -24,7 +24,7 @@ var AgilePHP = {
 		author : 'Jeremy Hahn',
 		copyright: 'Make A Byte, inc.',
 		version : '0.1a',
-		licence : 'GNU General Public License',
+		licence : 'GNU General Public License v3',
 		package : 'com.makeabyte.agilephp',
 
 		requestBase : '/index.php',
@@ -265,15 +265,15 @@ var AgilePHP = {
 	
 						 if( xhr.readyState == 4 ) {
 	
-							 var data = eval( '(' + xhr.responseText + ')' );
+							 var data = (xhr.responseText.length) ? eval( '(' + xhr.responseText + ')' ) : null;
 							 AgilePHP.debug( data );
-							 callback( data );
+							 if( callback ) callback( data );
 						 }
 					}
 				 }
 				 else {
 
-					 var data = eval( '(' + xhr.responseText + ')' );
+					 var data = (xhr.responseText.length) ? eval( '(' + xhr.responseText + ')' ) : null;
 					 AgilePHP.debug( data );
 					 return data;
 				 }
@@ -309,15 +309,15 @@ var AgilePHP = {
 		
 							 if( xhr.readyState == 4 ) {
 
-								 var data = eval( '(' + xhr.responseText + ')' );
+								 var data = (xhr.responseText.length) ? eval( '(' + xhr.responseText + ')' ) : null;
 								 AgilePHP.debug( data );
-								 callback( data );
+								 if( callback ) callback( data );
 							 }
 						}
 				  }
 				  else {
 
-					  	 var data = eval( '(' + xhr.responseText + ')' );
+					  	 var data = (xhr.responseText.length) ? eval( '(' + xhr.responseText + ')' ) : null;
 						 AgilePHP.debug( data );
 						 return data;
 				  }

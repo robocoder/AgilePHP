@@ -1,0 +1,170 @@
+h2 {
+    color: #083772 !important;
+    margin: 20px 0 0 !important;
+    padding: 5px;
+    background: #eee;
+    width: 400px;
+}
+h3 {
+    font-weight: normal !important;
+}
+#fi-button-msg {
+    border: 2px solid #ccc;
+    padding: 5px 10px;
+    background: #eee;
+    margin: 5px;
+    float: left;
+}
+.btn-document-new {
+
+	background: url( ../images/tree/16x16/document-new.png) no-repeat 0 0 !important;
+}
+.btn-document-save {
+
+	background: url( ../images/tree/16x16/document-save.png) no-repeat 0 0 !important;
+}
+.btn-edit-copy {
+
+	background: url( ../images/tree/16x16/edit-copy.png) no-repeat 0 0 !important;
+}
+.btn-edit-cut {
+
+	background: url( ../images/tree/16x16/edit-cut.png) no-repeat 0 0 !important;
+}
+.btn-edit-delete {
+
+	background: url( ../images/tree/16x16/edit-delete.png) no-repeat 0 0 !important;
+}
+.btn-edit-paste {
+
+	background: url( ../images/tree/16x16/edit-paste.png) no-repeat 0 0 !important;
+}
+.btn-folder-new {
+
+	background: url( ../images/tree/16x16/folder-new.png) no-repeat 0 0 !important;
+}
+.btn-go-up {
+
+	background: url( ../images/tree/16x16/go-up.png) no-repeat 0 0 !important;
+}
+.btn-upload {
+
+	background: url( ../images/tree/16x16/upload.png) no-repeat 0 0 !important;
+}
+.btn-greyed {
+
+	color: #C9C9C9;
+	opacity:0.4;
+	filter:alpha(opacity=40);
+}
+.btn-panel td {
+    padding-left:5px;
+}
+.mime-ascii {
+
+	background: url( ../images/tree/mime/ascii.png) no-repeat 0 0 !important;
+}
+.mime-csv {
+
+	background: url( ../images/tree/mime/csv.png) no-repeat 0 0 !important;
+}
+.mime-deb {
+
+	background: url( ../images/tree/mime/deb.png.png) no-repeat 0 0 !important;
+}
+.mime-doc {
+
+	background: url( ../images/tree/mime/doc.png) no-repeat 0 0 !important;
+}
+.mime-folder {
+
+	background: url( ../images/tree/mime/folder.png) no-repeat 0 0 !important;
+}
+.mime-html, .mime-htm {
+
+	background: url( ../images/tree/mime/html.png) no-repeat 0 0 !important; 
+}
+.mime-jpg, .mime-png, .mime-gif, .mime-jpeg, mime-image {
+
+	background: url( ../images/tree/mime/image.png) no-repeat 0 0 !important; 
+}
+.mime-log {
+
+	background: url( ../images/tree/mime/log.png) no-repeat 0 0 !important; 
+}
+.mime-make {
+
+	background: url( ../images/tree/mime/make.png) no-repeat 0 0 !important; 
+}
+.mime-midi {
+
+	background: url( ../images/tree/mime/midi.png) no-repeat 0 0 !important; 
+}
+.mime-pdf {
+
+	background: url( ../images/tree/mime/pdf.png) no-repeat 0 0 !important; 
+}
+.mime-php, .mime-phtml, .php-code {
+
+	background: url( ../images/tree/mime/php.png) no-repeat 0 0 !important;
+}
+.mime-quicktime {
+
+	background: url( ../images/tree/mime/quicktime.png) no-repeat 0 0 !important; 
+}
+.mime-readme {
+
+	background: url( ../images/tree/mime/readme.png) no-repeat 0 0 !important; 
+}
+.mime-rpm {
+
+	background: url( ../images/tree/mime/rpm.png) no-repeat 0 0 !important; 
+}
+.mime-sh, mime-bin, mime-exe {
+
+	background: url( ../images/tree/mime/shellscript.png) no-repeat 0 0 !important; 
+}
+.mime-sound {
+
+	background: url( ../images/tree/mime/sound.png) no-repeat 0 0 !important; 
+}
+.mime-spreadsheet {
+
+	background: url( ../images/tree/mime/spreadsheet.png) no-repeat 0 0 !important; 
+}
+.mime-sql {
+
+	background: url( ../images/tree/mime/sql.png) no-repeat 0 0 !important; 
+}
+.mime-tar {
+
+	background: url( ../images/tree/mime/tar.png) no-repeat 0 0 !important; 
+}
+.mime-txt, .mime-inc {
+
+	background: url( ../images/tree/mime/txt.png) no-repeat 0 0 !important; 
+}
+.mime-video {
+
+	background: url( ../images/tree/mime/video.png) no-repeat 0 0 !important; 
+}
+.mime-xls {
+
+	background: url( ../images/tree/mime/xls.gif) no-repeat 0 0 !important; 
+}
+.mime-xml, .mime-xsl {
+
+	background: url( ../images/tree/mime/xml.png) no-repeat 0 0 !important; 
+}
+.mime-css {
+
+	background: url( ../images/tree/mime/css.png) no-repeat 0 0 !important; 
+}
+.mime-js {
+
+	background: url( ../images/tree/mime/js.png) no-repeat 0 0 !important; 
+}
+.mime-zip {
+
+	background: url( ../images/tree/mime/zip.gif) no-repeat 0 0 !important; 
+}

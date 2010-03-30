@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE agilephp SYSTEM "../src/agilephp.dtd">
+<agilephp>
+	<logger level="debug"/>
+	<identity resetPasswordUrl="http://localhost/index.php/LoginController/resetPassword" confirmationUrl="http://localhost/index.php/LoginController/confirm"/>
+	<crypto algorithm="sha256" />
+</agilephp>

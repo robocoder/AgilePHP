@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE persistence SYSTEM "../src/persistence/persistence.dtd">
+<persistence>
+
+	<database id="db1" name="agilephp_ide" type="mysql" hostname="localhost" username="php" password="php007">
+
+		<!-- AgilePHP Identity -->
+		<table name="users" isIdentity="true" display="Users" model="User" description="Actors in the application">
+			<column name="username" type="varchar" length="150" primaryKey="true" required="true"/>
+			<column name="password" type="varchar" length="255" required="true"/>
+			<column name="email" type="varchar" length="255" required="true"/>
+			<column name="created" type="datetime" required="true"/>
+			<column name="last_login" property="lastLogin" display="Last Login" type="datetime"/>
+			<column name="roleId" type="varchar" length="25">
+				<foreignKey name="FK_UserRoles" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE"
+					table="roles" column="name" controller="RoleController" select="name"/>
+			</column>
+			<column name="sessionId" type="varchar" length="21">
+				<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
+					table="sessions" column="id" controller="SessionController"/>
+			</column>
+		</table>
+
+		<table name="roles" display="Roles" model="Role" description="Roles used in the application">
+			<column name="name" type="varchar" length="25" primaryKey="true" required="true"/>
+			<column name="description" type="text"/>
+		</table>
+
+		<!-- AgilePHP Session -->
+		<table name="sessions" display="Session" isSession="true" model="Session" description="User sessions">
+			<column name="id" type="varchar" length="21" primaryKey="true" description="Unique ID"/>
+			<column name="data" type="text" description="Name of recipient"/>
+			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP"/>
+		</table>
+
+		<table name="server" model="Server" description="Stores all servers used by the application">
+			<column name="id" type="int" length="255" primaryKey="true" autoIncrement="true"/>
+			<column name="type" type="int" length="255">
+				<foreignKey name="FK_server" column="id" type="one-to-one" table="server_type"
+						onDelete="SET_NULL" onUpdate="CASCADE" controller="ServerController" select="name"/>
+			</column>
+			<column name="ip" type="varchar" length="255"/>
+			<column name="hostname" type="varchar" length="255"/>
+			<column name="profile" type="varchar" length="100"/>
+		</table>
+
+		<table name="server_type" model="ServerType" display="Server Types" description="Different types of servers used by the application">
+			<column name="id" type="int" length="255" primaryKey="true" autoIncrement="true"/>
+			<column name="type" type="varchar" length="100"/>
+			<column name="name" type="varchar" length="255"/>
+		</table>
+	</database>
+
+</persistence>
