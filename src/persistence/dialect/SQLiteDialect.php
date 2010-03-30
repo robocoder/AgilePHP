@@ -121,7 +121,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 			   			// Set appropriate ON UPDATE clause based on persistence.xml configuration
 			   			switch( $column->getForeignKey()->getOnUpdate() ) {
 
-			   				case 'NO_ACTION':
+			   				case 'NO ACTION':
 			   					break;
 
 			   				case 'RESTRICT':
@@ -132,11 +132,11 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 			   					$this->createUpdateCascadeTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
 			   					break;
 
-			   				case 'SET_NULL':
+			   				case 'SET NULL':
 								$this->createUpdateSetNullTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
 			   					break;
 
-			   				case 'SET_DEFAULT':
+			   				case 'SET DEFAULT':
 			   					$this->createUpdateSetDefaultTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired(), $column->getDefault() );
 			   					break;
 			   			}
@@ -144,7 +144,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 			   			// Set appropriate ON DELETE clause based on persistence.xml configuration
 			   			switch( $column->getForeignKey()->getOnDelete() ) {
 
-			   				case 'NO_ACTION':
+			   				case 'NO ACTION':
 			   					break;
 
 			   				case 'RESTRICT':
@@ -155,7 +155,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 			   					$this->createDeleteCascadeTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
 			   					break;
 
-			   				case 'SET_NULL':
+			   				case 'SET NULL':
 			   					$this->createDeleteSetNullTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
 			   					break;
 
