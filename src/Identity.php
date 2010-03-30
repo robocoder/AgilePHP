@@ -434,7 +434,7 @@ class Identity implements IdentityManager {
 	  	     Logger::getInstance()->debug( 'Identity::login Authenticating username \'' . $username . '\' with password \'' . $password . '\'.' );
 	  	     
 	  		 $this->getModel()->setUsername( $username );
-	  		 
+
 	  		 if( !$this->getModel() ) return false;
 	  		 $this->refresh();
 
@@ -529,7 +529,8 @@ class Identity implements IdentityManager {
 
 	  		 $pm = new PersistenceManager();
 	  		 $results = $pm->find( $this->getModel() );
-	  		 $this->setModel( $results[0] );
+	  		 if( isset( $results[0] ) )
+	  		 	 $this->setModel( $results[0] );
 	  }
 
 	  /**
