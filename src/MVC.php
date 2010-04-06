@@ -70,19 +70,19 @@ class MVC {
 
 	  		 if( $config->attributes()->controller ) {
 
-	  		 	 Logger::getInstance( 'MVC::setConfig loading default controller \'' . $config->attributes()->controller . '\' defined in agilephp.xml' );
+	  		 	 Logger::getInstance()->debug( 'MVC::setConfig loading default controller \'' . $config->attributes()->controller . '\' defined in agilephp.xml' );
 	  		     $this->defaultController = (string)$config->attributes()->controller;
 	  		 }
 
 	  		 if( $config->attributes()->action ) {
 
-	  		 	 Logger::getInstance( 'MVC::setConfig loading default action \'' . $config->attributes()->action . '\' defined in agilephp.xml' );
+	  		 	 Logger::getInstance()->debug( 'MVC::setConfig loading default action \'' . $config->attributes()->action . '\' defined in agilephp.xml' );
 	  		 	 $this->defaultAction = (string)$config->attributes()->action;
 	  		 }
 
 	  		 if( $config->attributes()->renderer ) {
 
-	  		 	 Logger::getInstance( 'MVC::setConfig loading default renderer \'' . $config->attributes()->renderer . '\' defined in agilephp.xml' );
+	  		 	 Logger::getInstance()->debug( 'MVC::setConfig loading default renderer \'' . $config->attributes()->renderer . '\' defined in agilephp.xml' );
 	  		 	 $this->defaultRenderer = (string)$config->attributes()->renderer;
 	  		 }
 	  }
