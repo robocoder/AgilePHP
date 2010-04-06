@@ -8,7 +8,7 @@
  * @param {string} title The title of the window
  * @param {integer} width The window width
  * @param {integer} height The window height
- * @return CDS.EventManager.Window
+ * @return AgilePHP.IDE.Window
  */
 AgilePHP.IDE.Window = function( id, iconCls, title, width, height ) {
 
@@ -133,15 +133,14 @@ AgilePHP.IDE.Window = function( id, iconCls, title, width, height ) {
 };
 
 AgilePHP.IDE.Window.File = {};
-AgilePHP.IDE.Window.Database = {};
+AgilePHP.IDE.Window.Tools = {};
 AgilePHP.IDE.Window.Help = {};
 
 AgilePHP.loadScript( 'view/js/windows/File.Import.js' );
 AgilePHP.loadScript( 'view/js/windows/File.Export.js' );
 
-AgilePHP.loadScript( 'view/js/windows/Database.Create.js' );
-AgilePHP.loadScript( 'view/js/windows/Database.Compare.js' );
-AgilePHP.loadScript( 'view/js/windows/Database.Synchronize.js' );
-AgilePHP.loadScript( 'view/js/windows/Database.Delete.js' );
+AgilePHP.loadScript( 'view/js/windows/Tools.DatabaseManager.js' );
+AgilePHP.loadScript( 'view/js/windows/Tools.DatabaseManager.Compare.js' );
+AgilePHP.loadScript( 'view/js/windows/Tools.Settings.js' );
 
 AgilePHP.loadScript( 'view/js/windows/Help.About.js' );

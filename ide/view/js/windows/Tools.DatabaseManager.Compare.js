@@ -1,18 +1,18 @@
-AgilePHP.IDE.Remoting.load( 'DatabaseCompareRemote' );
+AgilePHP.IDE.Remoting.load( 'DatabaseManagerRemote' );
 
-AgilePHP.IDE.Window.Database.Compare = function() {
+AgilePHP.IDE.Window.Tools.DatabaseManager.Compare = function() {
 
 	// Get list of database servers if this is the first time the window is being created.
-	//if( !CDS.EventManager.Window.Database.Compare.databases.length ) {
+	//if( !AgilePHP.IDE.Window.Tools.DatabaseManager.databases.length ) {
 
-		var stub = AgilePHP.Remoting.getStub( 'DatabaseCompareRemote' );
-			stub.setCallback( AgilePHP.IDE.Window.Database.Compare.remoteDatabasesHandler );
+		var stub = AgilePHP.Remoting.getStub( 'DatabaseManagerRemote' );
+			stub.setCallback( AgilePHP.IDE.Window.Tools.DatabaseManager.Compare.remoteDatabasesHandler );
 
-		var dbcr = new DatabaseCompareRemote();
-			dbcr.getDatabases();
+		var dbmr = new DatabaseManagerRemote();
+			dbmr.getServers();
 	//}
 
-	this.window = new AgilePHP.IDE.Window( 'databaseCompare', 'databaseCompare', 'Compare Databases', 600 ); 
+	this.window = new AgilePHP.IDE.Window( 'databaseManagerCompare', 'databaseCompare', 'Database Compare', 600 ); 
 
 	this.panel = new Ext.FormPanel({
 
@@ -41,12 +41,12 @@ AgilePHP.IDE.Window.Database.Compare = function() {
 	        },
 	        defaultType: 'textfield',
 	        items :[new Ext.form.ComboBox({
-				id: 'database-compare-window-source-combo',
+				id: 'db-manager-compare-window-source-combo',
 			    mode: 'local',
 			    emptyText: '(Choose Server)',
 			    editable: true,
 			    store: new Ext.data.ArrayStore({
-			        id: 'database-compare-window-source-combo-store',
+			        id: 'db-manager-compare-window-source-combo-store',
 			        fields: [
 			            {name: 'id'},
 			            {name: 'name'}
@@ -59,7 +59,7 @@ AgilePHP.IDE.Window.Database.Compare = function() {
 
 					valid: function( combo, record, index ) {
 
-						Ext.getCmp( 'database-compare-window-source-combo' ).store.clearFilter();
+						Ext.getCmp( 'db-manager-compare-window-source-combo' ).store.clearFilter();
 					}
 				}
 	        }), {
@@ -74,7 +74,7 @@ AgilePHP.IDE.Window.Database.Compare = function() {
 	            }
 	        ]
 	    }, {
-	    	id: 'database-compare-window-target-fieldset',
+	    	id: 'db-manager-compare-window-target-fieldset',
 	        xtype:'fieldset',
 	        columnWidth: 0.5,
 	        title: 'Target Database',
@@ -87,12 +87,12 @@ AgilePHP.IDE.Window.Database.Compare = function() {
 	        },
 	        defaultType: 'textfield',
 	        items :[new Ext.form.ComboBox({
-				id: 'database-compare-window-target-combo',
+				id: 'db-manager-compare-window-target-combo',
 			    mode: 'local',
 			    emptyText: '(Choose Server)',
 			    editable: true,
 			    store: new Ext.data.ArrayStore({
-			        id: 'database-compare-window-target-combo-store',
+			        id: 'db-manager-compare-window-target-combo-store',
 			        fields: [
 			            {name: 'id'},
 			            {name: 'name'}
@@ -105,7 +105,7 @@ AgilePHP.IDE.Window.Database.Compare = function() {
 
 					valid: function( combo, record, index ) {
 
-						Ext.getCmp( 'database-compare-window-target-combo' ).store.clearFilter();
+						Ext.getCmp( 'db-manager-compare-window-target-combo' ).store.clearFilter();
 					}
 				}
 	        }), {
@@ -128,16 +128,16 @@ AgilePHP.IDE.Window.Database.Compare = function() {
 	this.window.add( this.panel );
 	this.window.window.on( 'maximize', function() {
 
-		this.window.window.relayEvents( Ext.getCmp( 'database-compare-window-target-fieldset' ), ['resize'] );
+		this.window.window.relayEvents( Ext.getCmp( 'db-manager-compare-window-target-fieldset' ), ['resize'] );
 
 	}, this );
 
 	return this.window;
 };
 
-AgilePHP.IDE.Window.Database.Compare.databases = [];
+AgilePHP.IDE.Window.Tools.DatabaseManager.Compare.databases = [];
 
-AgilePHP.IDE.Window.Database.Compare.remoteDatabasesHandler = function( data ) {
+AgilePHP.IDE.Window.Tools.DatabaseManager.Compare.remoteDatabasesHandler = function( data ) {
 
 	 if( typeof data == 'AgilePHP_RemotingException' ) {
 
@@ -145,11 +145,11 @@ AgilePHP.IDE.Window.Database.Compare.remoteDatabasesHandler = function( data ) {
 		 return false;
 	 }
 
-	 AgilePHP.IDE.Window.Database.Compare.databases = data.servers;
+	 AgilePHP.IDE.Window.Tools.DatabaseManager.Compare.databases = data.servers;
 
-	 var srcCombo = Ext.getCmp( 'database-compare-window-source-combo' );
+	 var srcCombo = Ext.getCmp( 'db-manager-compare-window-source-combo' );
 	 	 srcCombo.getStore().loadData( data.servers );
 
-	 var tgtCombo = Ext.getCmp( 'database-compare-window-target-combo' );
+	 var tgtCombo = Ext.getCmp( 'db-manager-compare-window-target-combo' );
 	 	 tgtCombo.getStore().loadData( data.servers );
 };

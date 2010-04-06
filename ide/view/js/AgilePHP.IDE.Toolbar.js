@@ -62,67 +62,41 @@ AgilePHP.IDE.Toolbar = function() {
 					}]
 		    }, {
 				xtype: 'tbbutton',
-		    	id: 'databaseMenu',
-				text: 'Database',
+		    	id: 'toolsMenu',
+				text: 'Tools',
 				menu: [{
-				   text: 'Create',
-				   iconCls: 'databaseCreate',
+				   text: 'Database Manager',
+				   iconCls: 'databaseManager',
 				   handler: function() {
 
-						if( !Ext.WindowMgr.get( 'databaseCreateWindow' ) ) {
+						if( !Ext.WindowMgr.get( 'databaseManagerWindow' ) ) {
 
-							var win = new AgilePHP.IDE.Window.Database.Create();
+							var win = new AgilePHP.IDE.Window.Tools.DatabaseManager();
 								win.show();
 						}
 						else {
 
-							Ext.WindowMgr.get( 'databaseCreateWindow' ).show();
+							Ext.WindowMgr.get( 'databaseManagerWindow' ).show();
 						}
 				   }
-				},{
-				   text: 'Compare',
-				   iconCls: 'databaseCompare',
-				   handler: function() {
+				}, '-', {
+					   id: 'btnToolsSettings',
+					   text: 'Settings',
+					   iconCls: 'toolsSettings',
+					   handler: function() {
 
-						if( !Ext.WindowMgr.get( 'databaseCompareWindow' ) ) {
-							var win = new AgilePHP.IDE.Window.Database.Compare();
-								win.show();
-						}
-						else {
-						
-							Ext.WindowMgr.get( 'databaseCompareWindow' ).show();
-						}
-				   }
-				},{
-				   text: 'Synchronize',
-				   iconCls: 'databaseSynchronize',
-				   handler: function() {
+							if( !Ext.WindowMgr.get( 'toolsSettingsWindow' ) ) {
 
-						if( !Ext.WindowMgr.get( 'databaseCompareWindow' ) ) {
-							var win = AgilePHP.IDE.Window.Database.Synchronize();
-								win.show();
-						}
-						else {
+								var win = new AgilePHP.IDE.Window.Tools.Settings();
+									win.show();
+							}
+							else {
 
-							Ext.WindowMgr.get( 'databaseCompareWindow' ).show();
-						}
-				   }
-				},{
-				   text: 'Delete',
-				   iconCls: 'databaseDelete',
-				   handler: function() {
-
-						if( !Ext.WindowMgr.get( 'databaseDeleteWindow' ) ) {
-							var win = AgilePHP.IDE.Window.Database.Delete();
-								win.show();
-						}
-						else {
-
-							Ext.WindowMgr.get( 'databaseDeleteWindow' ).show();
-						}
-				   }
-			    }]
-			}, {
+								Ext.WindowMgr.get( 'toolsSettingsWindow' ).show();
+							}
+					   }
+				}]
+		    }, {
 				xtype: 'tbbutton',
 		    	id: 'helpMenu',
 				text: 'Help',

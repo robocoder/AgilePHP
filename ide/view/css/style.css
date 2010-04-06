@@ -42,22 +42,20 @@ html, body {
 	background: url( ../images/toolbar/file-logout.png) no-repeat 0 0;	
 }
 
-/** Window styles */
-.databaseCreate {
-
-	background: url( ../images/toolbar/database-create.png) no-repeat 0 0;	
+.toolsSettings {
+	
+	background: url( ../images/toolbar/tools-settings.png) no-repeat 0 0;
 }
+
 .databaseCompare {
-
-	background: url( ../images/toolbar/database-compare.png) no-repeat 0 0;	
+	
+	background: url( ../images/toolbar/database-compare.png) no-repeat 0 0;
 }
-.databaseSynchronize {
 
-	background: url( ../images/toolbar/database-synchronize.png) no-repeat 0 0;	
-}
-.databaseDelete {
+/** Window styles */
+.databaseManager {
 
-	background: url( ../images/toolbar/database-delete.png) no-repeat 0 0;	
+	background: url( ../images/toolbar/database-manager.png) no-repeat 0 0;	
 }
 
 .helpDocumentation {
