@@ -23,20 +23,18 @@
 				     new AgilePHP.XHR().formSubmit( url, form, formSubmitCallback );
 				     document.getElementById( 'submit' ).disabled = true;
 			}
-			function formSubmitCallback( o ) {
+			function formSubmitCallback( response ) {
 	
 					 AgilePHP.debug( 'formSubmitCallback' );
-					 AgilePHP.debug( o );
+					 AgilePHP.debug( response );
 	
-					 var response = eval( '(' + o.responseText + ')' );
 					 document.getElementById( 'submit' ).disabled = false;
 					 document.getElementById( 'formSubmitResponse' ).innerHTML = response.result;
 			}
 	
 			/** AgilePHP Remoting */
-			function mycallback( o ) {
+			function mycallback( response ) {
 
-					 var response = ( o.responseText.indexOf( '{' ) !== -1 ) ? eval( '(' + o.responseText + ')' ) : o.responseText;
 					 AgilePHP.debug( 'response' );
 					 AgilePHP.debug( response );
 
@@ -44,40 +42,42 @@
 						 alert( 'An error occurred: ' + response.message );
 
 					 AgilePHP.debug( 'mycallback' );
-					 AgilePHP.debug( o );
+					 AgilePHP.debug( response );
 			}
-			function mySecondCallback( o ) {
+			function mySecondCallback( response ) {
 
 					 AgilePHP.debug( 'mySecondCallback' );
-					 AgilePHP.debug( o );
+					 AgilePHP.debug( response );
 			}
 
-			/**
-			 * Stubs are created by the SCRIPT tags in the HEAD of this document.
-			 * The RemotingController/load uses the AgilePHP Remoting component
-			 * to build a javascript stub which works with the AgilePHP client
-			 * side javascript to perform communication and marshalling/unmarshalling
-			 * of data between the client and the server.
-			 */
-	
-			// Obtain the remoting stub instance and set the callback handler
-			var stub = AgilePHP.Remoting.getStub( 'RMITest' );
-			stub.setCallback( mycallback );
-	
-			// Instantiate the remote PHP object and invoke a few #@RemoteMethod's
-			var rmi = new RMITest( 'test1', 'test2', 'test3' );
-			AgilePHP.debug( rmi.testme( 'arg1', 'arg2' ) );
-			AgilePHP.debug( rmi.setTest2( '1111' ) );
-			rmi.testme2();  // Access denied by #@Restrict( name = 'foo' )
-			AgilePHP.debug( rmi.show() );
-	
-			// RMITest2 is kept stateful within AgilePHP SessionScope
-			var stub2 = AgilePHP.Remoting.getStub( 'RMITest2' );
-			stub2.setCallback( mySecondCallback );
-	
-			var rmi2 = new RMITest2();
-			rmi2.testme( 'arg3', 'arg4' );
-			rmi2.testme2( 'arg3', 'arg4' );
+			function doVariousRMITests() {
+
+					/**
+					 * Stubs are created by the SCRIPT tags in the HEAD of this document.
+					 * The RemotingController/load uses the AgilePHP Remoting component
+					 * to build a javascript stub which works with the AgilePHP client
+					 * side javascript to perform communication and marshalling/unmarshalling
+					 * of data between the client and the server.
+					 */
+					// Obtain the remoting stub instance and set the callback handler
+					var stub = AgilePHP.Remoting.getStub('RMITest');
+					stub.setCallback(mycallback);
+					
+					// Instantiate the remote PHP object and invoke a few #@RemoteMethod's
+					var rmi = new RMITest('test1', 'test2', 'test3');
+					AgilePHP.debug(rmi.testme('arg1', 'arg2'));
+					AgilePHP.debug(rmi.setTest2('1111'));
+					rmi.testme2(); // Access denied by #@Restrict( name = 'foo' )
+					AgilePHP.debug(rmi.show());
+					
+					// RMITest2 is kept stateful within AgilePHP SessionScope
+					var stub2 = AgilePHP.Remoting.getStub('RMITest2');
+					stub2.setCallback(mySecondCallback);
+					
+					var rmi2 = new RMITest2();
+					rmi2.testme('arg3', 'arg4');
+					rmi2.testme2('arg3', 'arg4');
+			}
 		</script>
 	</head>
 	<body>
@@ -137,5 +137,8 @@
 			-->
 		</form>
 		<div id="formSubmitResponse"></div>
+		<div id="variousTests" style="padding-top: 25px;">
+			<input type="button" onclick="javascript:doVariousRMITests()" value="Various Other RMI Tests"/> (watch firebug)
+		</div>
 	</body>
 </html>
