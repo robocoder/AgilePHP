@@ -42,7 +42,7 @@ class RestfulTestAPI extends BaseController {
 	  		 $user = new User();
 	  		 $user->setUsername( 'admin' );
 
-	  		 // return $user; #PHP 5.3+ supports ReflectionProperty::setAccessible and can use AJAXRenderer to render private properties.
+	  		 // $this->getRenderer()->render( $user ); #PHP 5.3+ supports ReflectionProperty::setAccessible and can use AJAXRenderer to render private properties.
 
 	  		 // Before PHP 5.3, ReflectionProperty::setAccessible doesnt exist
 	  		 // and therefore AJAXRenderer can not render the above object
@@ -83,7 +83,7 @@ class RestfulTestAPI extends BaseController {
 		  		 $o->description = $role->getDescription();
 
 	  		 	 /*
-	  		 	  * This could also be a multi-dimensional array and it would the same way
+	  		 	  * This could also be a multi-dimensional array and it would render the same way
 	  		 	 $o = array();
 	  		 	 $o['name'] = $role->getName();
 	  		 	 $o['description'] = $role->getDescription();
