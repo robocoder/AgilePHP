@@ -30,7 +30,7 @@
  */
 class RequestParamController extends BaseController {
 
-	  #@RequestParam( name = 'name' )
+	  #@RequestParam
 	  public $name;
 
 	  #@RequestParam( name = 'comments', sanitize = false )

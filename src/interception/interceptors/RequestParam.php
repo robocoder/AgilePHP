@@ -30,13 +30,28 @@
  * <code>
  * class MyFormProcessor {
  * 
+ * // Defaults to the name of the property/field
+ * #@RequestParam
+ * public $fname;
+ * 
+ * // Optionally, we can specify the name of the input element
  * #@RequestParam( name = 'email' )
- * public $email;
+ * public $emailaddress;
+ * 
+ * // Optionally, we can also specify no sanitation
+ * #@RequestParam( name = 'password', sanitize = false )
+ * public $plainTextPassword;
  * 
  * public function showEmail() {
  * 
+ * 		  // Displays the first name entered in <input name="fname"/>
+ * 		  echo $this->fname;
+ * 
  * 		  // Displays the email address entered in <input name="email"/>
- * 		  echo $this->email;
+ * 		  echo $this->emailaddress;
+ * 
+ * 		  // Displays a plain text password as entered in <input type="password" name="password"/>
+ * 		  echo $this->plainTextPassword;
  * }
  * 
  * }
@@ -49,7 +64,7 @@ class RequestParam {
 	  /**
 	   * The HTML input name to grab the value from 
 	   *  
-	   * @var String The HTML input name to grab the value from
+	   * @var String Optional HTML input name to grab the value from. Defaults to the name of the annotated property.
 	   */
 	  public $name;
 
@@ -69,9 +84,11 @@ class RequestParam {
 	  #@AroundInvoke
 	  public function setFormValue( InvocationContext $ic ) {
 
-	  		 if( $_SERVER['REQUEST_METHOD'] == 'POST' )
-			 	return ($ic->getInterceptor()->sanitize) ? Scope::getRequestScope()->getSanitized( $ic->getInterceptor()->name ) :
-			 				Scope::getRequestScope()->get( $ic->getInterceptor()->name );
+	  		 if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+
+	  		 		return ($ic->getInterceptor()->sanitize) ? Scope::getRequestScope()->getSanitized( ($this->name) ? $ic->getInterceptor()->name : $ic->getField() ) :
+			 			Scope::getRequestScope()->get( ($this->name) ? $ic->getInterceptor()->name : $ic->getField() );
+	  		 }
 	  }
 }
 ?>

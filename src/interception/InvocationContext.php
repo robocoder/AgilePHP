@@ -36,6 +36,7 @@ class InvocationContext {
 	  private $parameters = array();
 	  private $interceptor;
 	  private $callee;
+	  private $field;
 
 	  public $proceed = false;
 
@@ -46,14 +47,16 @@ class InvocationContext {
 	   * @param String $method The name of the method which was intercepted
 	   * @param array $parameters The method parameters which were intercepted
 	   * @param Object $interceptor The interceptor instance which caused the interception
+	   * @param String $field The name of the field/property which was intercepted
 	   * @return void
 	   */
-	  public function __construct( &$target, $method, $parameters, &$interceptor ) {
+	  public function __construct( &$target, $method, $parameters, &$interceptor, $field = null ) {
 
 	  		 $this->target = $target;
 	  		 $this->method = $method;
 	  		 $this->parameters = $parameters;
 	  		 $this->interceptor = $interceptor;
+	  		 $this->field = $field;
 
 	  		 // PHP stack state that caused the interception
 	  		 $backtrace = debug_backtrace();
@@ -136,6 +139,16 @@ class InvocationContext {
 	  public function getCallee() {
 
 	  		 return $this->callee;	  		 
+	  }
+
+	  /**
+	   * Returns the name of the field if a property/field level annotation caused the interception.
+	   * 
+	   * @return String The name of the class field.
+	   */
+	  public function getField() {
+
+	  		 return $this->field;
 	  }
 
 	  /**

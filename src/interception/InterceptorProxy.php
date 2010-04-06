@@ -92,7 +92,7 @@ class InterceptorProxy {
 
 	     		 	 	 	 	     if( $interceptorMethod->hasAnnotation( 'AroundInvoke' ) ) {
 
-			     		 	 	 	   	 $invocationCtx = new InvocationContext( $this->object, null, null, $interception->getInterceptor() );
+			     		 	 	 	   	 $invocationCtx = new InvocationContext( $this->object, null, null, $interception->getInterceptor(), $interception->getProperty() );
 								         $value = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
 								         $p->setValue( $this->object, $value );								               
 			     		 	 	 	 }
