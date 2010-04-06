@@ -43,31 +43,33 @@ class RMITest {
 	  #@RemoteMethod
 	  public function testme( $param1 = null, $param2 ) {
 
-	  		 echo '$this->test1 = ' . $this->test1 . "\n";
-	  		 echo '$this->test2 = ' . $this->test2 . "\n";
-	  		 echo '$this->test3 = ' . $this->test3 . "\n";
+	  		 $o = new stdClass;
+	  		 $o->test1 = $this->test1;
+	  		 $o->test2 = $this->test2;
+	  		 $o->test3 = $this->test3;
+	  		 $o->param1 = ($param1 ? $param1 : 'null');
+	  		 $o->param2 = $param2;
 
-	  		 echo '$param1 = ' . ($param1 ? $param1 : 'null') . "\n";
-	  		 echo '$param2 = ' . $param2 . "\n";
-	  		 
-	  		 return 'testme done';
+	  		 return $o;
 	  }
 
 	  #@RemoteMethod
 	  #@Restrict( role = 'foo' )
 	  public function testme2( $param1 = null, $param2 ) {
-	  	
-	  		 echo 'this does something 2';
-	  		 
-	  		 return 'testme2 done';
+
+	  		 $o = new stdClass;
+	  		 $o->testme2 = 'this does something 2 as long as the user is logged in and belongs to role "foo"';
+
+	  		 return $o;
 	  }
 
 	  #@RemoteMethod
 	  public function testme3() {
 
-	  		 echo 'this does something else';
-	  		 
-	  		 return 'testme3 done';
+	  		 $o = new stdClass;
+	  		 $o->testme2 = 'this does something else';
+
+	  		 return $o;
 	  }
 
 	  public function testme4() { }
@@ -76,20 +78,29 @@ class RMITest {
 	  public function setTest2( $val ) {
 
 	  		 $this->test2 = $val;
-	  		 echo 'set test2 to: ' . $val;
+
+	  		 $o = new stdClass;
+	  		 $o->setTest2 = 'set test2 to: ' . $val;
+
+	  		 return $o;
 	  }
 	  
 	  #@RemoteMethod
 	  public function getTest2() {
 
-	  		 return $this->test2;
+	  		 $o = new stdClass;
+	  		 $o->getTest2 = $this->test2;
+
+	  		 return $o;
 	  }
 
 	  #@RemoteMethod
 	  public function show() {
 
-	  		 print_r( $this );
-	  		 return 'RMITest::show';
+	  		 $o = new stdClass;
+	  		 $o->show = print_r( $this, true );
+
+	  		 return $o;
 	  }
 }
 ?>

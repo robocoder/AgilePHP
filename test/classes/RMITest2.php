@@ -34,20 +34,29 @@ class RMITest2 {
 	  #@RemoteMethod
 	  public function testme( $param1 = null, $param2 ) {
 
-	  		 echo '$param1 = ' . ($param1 ? $param1 : 'null') . "\n";
-	  		 echo '$param2 = ' . $param2 . "\n";
+	  		 $o = new stdClass;
+	  		 $o->param1 = $param1;
+	  		 $o->param2 = $param2;
+
+	  		 return $o;
 	  }
 
 	  #@RemoteMethod
 	  public function testme2( $param1 = null, $param2 ) {
 	  	
-	  		 echo 'this does something 2';
+	  		 $o = new stdClass;
+	  		 $o->testme2 = 'this does something 2';
+
+	  		 return $o;
 	  }
 	  
 	  #@RemoteMethod
 	  public function testme3() {
 
-	  		 echo 'this does something else';
+	  		 $o = new stdClass;
+	  		 $o->testme3 = 'this does something else';
+
+	  		 return $o;
 	  }
 	  
 	  public function testme4() { }

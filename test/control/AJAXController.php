@@ -34,8 +34,9 @@ class AJAXController extends BaseController {
 	  public function __construct() {
 
 	  		 $this->renderer = MVC::getInstance()->createRenderer( 'AJAXRenderer' );
-	  		 
-	  		 Scope::getInstance()->getRequestScope()->createToken();
+
+	  		 // CSFR token seems to cause some interference with the javascript code - needs to be ironed out!
+	  		 //Scope::getInstance()->getRequestScope()->createToken();
 	  }
 
 	  /**
