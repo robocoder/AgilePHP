@@ -47,14 +47,5 @@ class RoleController extends BaseModelActionController {
 
 	  	     return $this->model;
 	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/mvc/BaseController#index()
-	   */
-	  public function index() {
-
-	  	     parent::modelList();
-	  }
 }
 ?>

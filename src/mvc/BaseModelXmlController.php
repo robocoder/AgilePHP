@@ -25,7 +25,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
+ * @version 0.2a
  * @abstract
  */
 abstract class BaseModelXmlController extends BaseModelController {
@@ -51,26 +51,19 @@ abstract class BaseModelXmlController extends BaseModelController {
 
   			 	   $thisController = new ReflectionClass( $this );
   			 	   $c = ($controller) ? $controller : $thisController->getName();
-  			 	   $a = ($action) ? $action : 'modelAction';
+  			 	   $a = ($action) ? $action : $this->getModelPersistenceAction();
 
   			 	   $xml = '<Form>
   			 	   			<' . $this->getModelName() . '>';
 
   			 	   $fieldCount = 0;
-
-  			 	   $isMerge = false;
   			 	   $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
-  			 	   $pkeyColumns = $table->getPrimaryKeyColumns();
-  			 	   foreach( $pkeyColumns as $column ) {
-
-  			 	   	        $accessor = $this->toAccessor( $column->getName() );
-  			 	   	        if( $this->getModel()->$accessor() )
-  			 	   	        	$isMerge = true;
-  			 	   }
-
-  			 	   if( $isMerge ) {
+  			 	   
+  			 	   if( $this->getModelPersistenceAction() == 'merge' ) {
 
   			 	   	   $models = $this->getPersistenceManager()->find( $this->getModel() );
+  			 	   	   if( !isset( $models[0] ) )
+  			 	   	   	   throw new AgilePHP_Exception( 'The specified ' . $this->getModelName() . ' model could not be found.' );
 
   			 	   	   foreach( $table->getColumns() as $column ) {
 
@@ -78,17 +71,11 @@ abstract class BaseModelXmlController extends BaseModelController {
 
   			 	   	   			$fieldCount++;
   			 	   	   	     	if( is_object( $models[0]->$accessor() ) ) continue;
-
-  			 	   	   	     	/*
-  			 	   	   	     	$xml .= ($column->getType() == 'bit') ? 
-  			 	   	   	     				'<' . $column->getModelPropertyName() . '>' . ( (ord($models[0]->$accessor()) == 1) ? '1' : '0') . '</' . $column->getModelPropertyName() . '>'
-  			 	   	   	     				: '<' . $column->getModelPropertyName() . '>' . $models[0]->$accessor() . '</' . $column->getModelPropertyName() . '>';
-  			 	   	   	     	*/
-  			 	   	   	     	$xml .= '<' . $column->getModelPropertyName() . '>' . $models[0]->$accessor() . '</' . $column->getModelPropertyName() . '>';  			 	   	   			
+  			 	   	   	     	$xml .= '<' . $column->getModelPropertyName() . '>' . htmlentities( htmlspecialchars_decode( $models[0]->$accessor() ) ) . '</' . $column->getModelPropertyName() . '>';  			 	   	   			
   			 	   	   }
   			 	   }
   			 	   else {
-
+  			 	   	
   			 	   	   $modelRefl = new ReflectionClass( $this->getModelName() );
   			 	   	   $properties = $modelRefl->getProperties();
 
@@ -290,7 +277,7 @@ abstract class BaseModelXmlController extends BaseModelController {
 	     protected function getResultListAsPagedXML( $controller = null, $action = null, $params = null ) {
 
 	     		   $c = (!$controller) ? new ReflectionClass( $this ) : new ReflectionClass( $controller );
-   		   		   $a = (!$action) ? 'modelList' : $action;
+   		   		   $a = (!$action) ? '' : $action;
    		   		   $table = $this->getPersistenceManager()->getTableByModelName( $this->getModelName() );
 
    		   		   $fkeyColumns = $table->getForeignKeyColumns();

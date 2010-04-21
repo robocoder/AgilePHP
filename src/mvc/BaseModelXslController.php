@@ -50,12 +50,11 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	      * 					  Defaults to 'modelAction'.
 	      * @return XSL stylesheet for BaseModelXmlController
 	      */
-	     protected function getModelListXSL( $pkeyFields = '', $controller = '', $action = '' ) {
+	     protected function getModelListXSL( $pkeyFields = null, $controller = null ) {
 
 	     		   $table = $this->getPersistenceManager()->getTableByModelName( $this->getModelName() );
 
 	     	       $c = (!$controller) ? new ReflectionClass( $this ) : new ReflectionClass( $controller );
-   		   		   $a = (!$action) ? 'modelAction' : $action;
 
    		   		   if( !$pkeyFields )  $pkeyFields = $this->getSerializedPrimaryKeyColumns( $table );
    		   		   $pkeyFieldsXSL = $this->getSerializedPrimaryKeyColumnsAsXSL( $pkeyFields );
@@ -107,7 +106,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 				 	   	   			      			         $xsl .= '<td style="font-weight: bold; padding-left: 5px; padding-right: 5px;">
 				 	   	   			      			         			<a href="' . AgilePHP::getFramework()->getRequestBase() . '/' .
-				 	   	   			      			         			 	MVC::getInstance()->getController() . '/modelSort/' . $column->getName() . '/' . $order['direction'] . '">' .
+				 	   	   			      			         			 	MVC::getInstance()->getController() . '/sort/' . $column->getName() . ($order['direction'] ? '/' . $order['direction'] : '') . '">' .
 				 	   	   			      			         			 	$display . '</a></td>';
 			 	   	   			      			         }
 			 	   	   			      			         else
@@ -119,16 +118,13 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 													<xsl:apply-templates select="/ResultList/Model/' . $this->getModelName() . '"/>
 										</table>
 
-										<xsl:apply-templates select="/ResultList/Pagination"/>';
+										<xsl:apply-templates select="/ResultList/Pagination"/>
 
-									    if( $a ) {
-
-											$xsl .= '<table border="0">
-														<tr>
-															<td><input type="button" onclick="location.href= \'' . AgilePHP::getFramework()->getRequestBase() . '/' . $c->getName() . '/' . $a . '/add//' . $this->getPage() . '\';" value="Create ' . $table->getViewDisplayName() . '"/></td>
-														</tr>
-													</table>';
-									    }
+										<table border="0">
+											<tr>
+												<td><input type="button" onclick="location.href= \'' . AgilePHP::getFramework()->getRequestBase() . '/' . $c->getName() . '/add/' . $this->getPage() . '\';" value="Create ' . $table->getViewDisplayName() . '"/></td>
+											</tr>
+										</table>';
 
 						   $xsl .= '</xsl:template>
 
@@ -171,7 +167,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 				 	   	   			      			     	 	 	  $xsl .= '<td>
 						 	   	   			      			     	  			<xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
 							 	   	   			      			      				<a href="' . AgilePHP::getFramework()->getRequestBase() . '/' . $fkey->getReferencedController() . 
-							 	   	   			      			     	 					'/modelAction/read/' . $fkeyXslValues . '">' .
+							 	   	   			      			     	 					'/read/' . $fkeyXslValues . '">' .
 							 	   	   			      			     	  					$fkey->getReferencedTableInstance()->getViewDisplayName() .  '</a>
 							 	   	   			      			      			</xsl:if>
 							 	   	   			      			      		   </td>';
@@ -183,7 +179,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 						 	   	   			      			     	  $xsl .= '<td>
 						 	   	   			      			     	   			<xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
 						 	   	   			      			     	 				<a href="' . AgilePHP::getFramework()->getRequestBase() . '/' . $fkey->getReferencedController() . 
-						 	   	   			      			     	 						'/modelAction/filteredList/{' . $fModelName . '/' . $fkey->getReferencedColumn() . '}">' .
+						 	   	   			      			     	 						'/search/{' . $fModelName . '/' . $fkey->getReferencedColumn() . '}">' .
 						 	   	   			      			     	 						$fkey->getReferencedTableInstance()->getViewDisplayName() . '</a>
 						 	   	   			      			     	 			</xsl:if>
 						 	   	   			      			     	 		  </td>';
@@ -201,10 +197,10 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 								     	    }
 
 							       $xsl .= '<td>
-												<a href="' . AgilePHP::getFramework()->getRequestBase() . '/' . $c->getName() . '/' . $a . '/edit/' . $pkeyFieldsXSL . '/' . $this->getPage() . '">Edit</a>
+												<a href="' . AgilePHP::getFramework()->getRequestBase() . '/' . $c->getName() . '/edit/' . $pkeyFieldsXSL . '/' . $this->getPage() . '">Edit</a>
 											</td>
 											<td>
-												<a href="JavaScript:AgilePHP.Persistence.confirmDelete(  \'' . AgilePHP::getFramework()->getRequestBase() . '\', \'' . $pkeyFieldsXSL . '\', \'' . $this->getPage() . '\', \'' . $c->getName() . '\', \'' . $a . '/delete\' );">Delete</a>
+												<a href="JavaScript:AgilePHP.Persistence.confirmDelete(  \'' . AgilePHP::getFramework()->getRequestBase() . '\', \'' . $pkeyFieldsXSL . '\', \'' . $this->getPage() . '\', \'' . $c->getName() . '\', \'delete\' );">Delete</a>
 											</td>
 										</tr>
 									</xsl:template>
@@ -223,8 +219,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     	       $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
 	     	       $pkeyValues = $this->getSerializedPrimaryKeyValues( $table );
 
-	     	       $action = AgilePHP::getFramework()->getRequestBase() . '/{/Form/controller}/{/Form/action}/' .
-	     	       				 $this->getModelPersistenceAction() . '/' . $pkeyValues . '/' . $this->getPage();
+	     	       $action = AgilePHP::getFramework()->getRequestBase() . '/{/Form/controller}/{/Form/action}/' . $pkeyValues . '/' . $this->getPage();
 
 	     	       $token = Scope::getInstance()->getRequestScope()->createToken();
 	     	       $name = $this->getModelName();
@@ -277,10 +272,10 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 															<td>';
 	  			 	   	  						$xsl .= ( ($action == 'persist') ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
   			 	   	  													 : '<input type="button" value="Edit" onclick="javascript:location.href=\'' . AgilePHP::getFramework()->getRequestBase() .
-  			 	   	  													   '/' . MVC::getInstance()->getController() . '/modelAction/edit/' . $pkeyValues . '\';"/>
+  			 	   	  													   '/' . MVC::getInstance()->getController() . '/edit/' . $pkeyValues . '\';"/>
 																			<input type="button" value="Delete" onclick="javascript:AgilePHP.Persistence.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
   			 	   	  													   '\', \'' . $this->getModelName() . '\', \'' . $pkeyValues . '\', \'' . $this->getPage() . 
-  			 	   	  													   '\', \'{/Form/controller}\', \'{/Form/action}/delete\' )"/>
+  			 	   	  													   '\', \'{/Form/controller}\', \'{/Form/action}\' )"/>
   			 	   	  													   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' );
 												$xsl .= '</td>
 														</tr>';

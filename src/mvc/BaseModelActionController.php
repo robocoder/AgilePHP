@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
  * @abstract
  */
 abstract class BaseModelActionController extends BaseModelXslController {
@@ -66,87 +65,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     		   return $this->xsltRenderer;
 	     }
 
-	     /**
-	      * Handles the dispatching of action events from the view.
-	      * 
-	      * @param String $action The action event type - add, edit, merge, delete
-	      * @param String $ids The primary key values associated with the ActiveRecord.
-	      * @param Integer $page A page number to load (keeps result list state when
-	      * 			  performing updates/deletes)
-	      * @param String $view The 'view' to render. Default is 'admin'.
-	      * @return void
-	      */
-	     public function modelAction( $action, $ids = '', $page = 1 , $view = 'admin' ) {
-
-	     		switch( $action ) {
-
-		     			case 'filteredList':
-		     				 $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
-		     				 $class = new ReflectionClass( $this->getModel() );
-
-		     				 // Hack to get properties in an intercepted class. Properties are not copied into the InterceptorProxy.
-		     				 // Should they be? Obviously interceptors are still being somewhat intrusive being that this type of code is needed.
-		     				 if( method_exists( $this->getModel(), 'getInterceptedInstance' ) )
-		     				 	 $class = new ReflectionClass( $this->getModel()->getInterceptedInstance() );
-
-		     				 $keys = $table->getPrimaryKeyColumns();
-		     				 $idz = explode( '_', $ids );
-
-		     				 $i=0;
-		     				 foreach( $keys as $column ) {
-
-		     				 		$accessor = $this->toAccessor( $column->getName() );
-		     				 		$this->setRestrictions( array( $column->getName() => $idz[$i] ) );
-		     				 		$i++;
-		     				 }
-
-		     				 $this->setPage( $page );
-
-				  		     $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
-
-				  	         $this->getRenderer()->set( 'content', $content );
-				  	         $this->getRenderer()->render( $view );
-				  	         break;
-
-	     				case 'read':
-	     					 $this->setPrimaryKeys( $ids );
-			  	     		 $this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelAsReadOnlyXSL(), $this->getModelAsFormXML() ) );
-			  	     	     $this->getRenderer()->render( $view );
-	     					 break;
-
-		  	    	    case 'add':
-		  	    	    	 $this->setPage( $page );
-			  	     		 $this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML() ) );
-			  	     	     $this->getRenderer()->render( $view );
-			  	     	     break;
-
- 		  	     	    case 'edit':
- 		  	     	    	 $this->setPrimaryKeys( $ids );
- 		  	     	    	 $this->setPage( $page );
-	  	     	     		 $this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML() ) );
-	  	     	     		 $this->getRenderer()->render( $view );
-	  	     		 		 break;
-
-	  	     			case 'persist':
-	  	     		 		 $this->persist();
-	  	     		 		 break;
-
-	  	     			case 'merge':
-	  	     		 		 $this->merge();
-	  	     		 		 break;
-
-	  	     			case 'delete':
-	  	     				 $this->setPrimaryKeys( $ids );
-	  	     		 		 $this->delete();
-	  	     		 		 break;
-
-	  	     			default:
-	  	     				throw new AgilePHP_Exception( 'Invalid model action \''. $action . '\'.' );
-	  	     				break;
-     		   }
-	     }
-
-	     /**
+		 /**
 	      * Performs a search for the model defined in the extension class and displays a
 	      * paginated result list with edit and delete actions, as well as sortable
 	      * column headers.
@@ -155,21 +74,97 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
 	      */
-	     public function modelList( $page = 1, $view = 'admin', $model = null ) {
+	     public function index( $page = 1, $view = 'admin', $model = null ) {
 
 	     		if( !$view ) $view = 'admin';
 
-	     		$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
-	  	        $pkeyColumns = $table->getPrimaryKeyColumns();
-
-	  	        if( $pkeyColumns )
-	     			$this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
+	     		// Defaults sorting by the first primary key column
+	     		// 
+	     		//$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	  	        //$pkeyColumns = $table->getPrimaryKeyColumns();
+	  	        //if( $pkeyColumns ) $this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
 
 	  		    $this->setPage( $page );
 
 	  		    $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
 
 	  	        $this->getRenderer()->set( 'content', $content );
+	  	        $this->getRenderer()->render( $view );
+	     }
+
+	     /**
+	      * Displays an 'add' form for the model defined in the extension class.
+	      * 
+	      * @param int $page The page number to display.
+	      * @param string $view The view to render. Defaults to 'admin'.
+	      * @return void
+	      */
+	     public function add( $page, $view = 'admin' ) {
+
+	     		$this->setPage( $page );
+  	     		$this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML() ) );
+  	     	    $this->getRenderer()->render( $view );
+	     }
+
+	     /**
+	      * Displays an 'edit' form for the model defined in the extension class.
+	      * 
+	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in persistence.xml
+	      * @param int $page The page number to display.
+	      * @param string $view The view to render. Defaults to 'admin'.
+	      * @return void
+	      */
+	     public function edit( $ids, $page = 1, $view = 'admin' ) {
+
+	     		$this->setPrimaryKeys( $ids );
+            	$this->setPage( $page );
+            	$this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML() ) );
+            	$this->getRenderer()->render( $view );
+	     }
+
+	     /**
+	      * Displays a read only text table for the model defined in the extension class.
+	      * 
+	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in persistence.xml
+	      * @param string $view The view to render. Defaults to 'admin'.
+	      * @return void
+	      */
+	     public function read( $ids, $view = 'admin' ) {
+
+	     		$this->setPrimaryKeys( $ids );
+
+  	     		$this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelAsReadOnlyXSL(), $this->getModelAsFormXML() ) );
+  	     	    $this->getRenderer()->render( $view );
+	     }
+
+	     /**
+	      * Performs a search on the model defined in the extension class.
+	      * 
+	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in persistence.xml
+	      * @param int $page The page number to display.
+	      * @param string $view The view to render. Defaults to 'admin'.
+	      * @return void
+	      */
+	     public function search( $ids, $page = 1, $view = 'admin' ) {
+
+	     		$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+ 
+     			$keys = $table->getPrimaryKeyColumns();
+     			$idz = explode( '_', $ids );
+
+     			$i=0;
+     			foreach( $keys as $column ) {
+
+     			 		 $accessor = $this->toAccessor( $column->getName() );
+     			 		 $this->setRestrictions( array( $column->getName() => $idz[$i] ) );
+     			 		 $i++;
+     			}
+
+     			$this->setPage( $page );
+
+	  		    $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
+
+  	         	$this->getRenderer()->set( 'content', $content );
 	  	        $this->getRenderer()->render( $view );
 	     }
 
@@ -182,7 +177,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
 	      */
-	     public function modelSort( $column, $direction = 'DESC', $page = 1, $view = 'admin' ) {
+	     public function sort( $column, $direction = 'DESC', $page = 1, $view = 'admin' ) {
 
 	     		$this->setOrderBy( $column, $direction );
 	     		$this->setPage( $page );
@@ -206,7 +201,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	    	    parent::persist( $this->getModel() );
 	    	    $this->__construct();
-	  	 	    $this->modelList( $this->getPage() );	  	 	    
+	  	 	    $this->index( $this->getPage() );	  	 	    
 	     }
 
  	     /**
@@ -221,26 +216,28 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	  	 	    parent::merge( $this->getModel() );
 	  	 	    $this->__construct();
-	  	 	    $this->modelList( $this->getPage() );
+	  	 	    $this->index( $this->getPage() );
 	     }
 
 	     /**
 	      * Deletes the ActiveRecord state defined by the model in the
-	      * extension class. 
+	      * extension class and takes the user back to the 'list' view,
+	      * including the page they left off on.
 	      * 
 	      * @return void
 	      */
-	     public function delete() {
+	     public function delete( $ids, $page = 1 ) {
 
+	     		$this->setPrimaryKeys( $ids );
 	  		    $this->setModelValues();
 
 	  		    parent::delete( $this->getModel() );
 	  		    $this->__construct();
-	  		    $this->modelList( $this->getPage() );
+	  		    $this->index( $page );
 	     }
 
 	     /**
-	      * Parses $ids sent in by the modelAction method and sets all primary keys
+	      * Parses $ids sent in by the action method and sets all primary keys
 	      * in the model defined in the extension class.
 	      * 
 	      * @param String $ids The 'ids' as passed in from the form submit. These 'ids' are
@@ -274,25 +271,6 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     }
 
 		 /**
-	      * Clears the current model state.
-	      * 
-	      * @return void
-	      */
-	     protected function clearModel() {
-
-	  	           $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
-	  	           $columns = $table->getColumns();
-
-  			      for( $i=0; $i<count( $columns ); $i++ ) {
-
-	  	     	 	    $mutator = $this->toMutator( $columns[$i]->getModelPropertyName() );
-	  	     	 	    $this->getModel()->$mutator( null );
-	  	           }
-	  	           
-	  	           Logger::getInstance()->debug( 'BaseModelActionController::clearModel ' );
-	     }
-
-		 /**
 	      * Uses the AgilePHP RequestScope component to retrieve POST parameters
 	      * from a form submit and set the model properties defined in the extension
 	      * class. This method expects the form element names to match the name
@@ -300,7 +278,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * 
 	      * @return void
 	      */
-	     protected function setModelValues() {
+		 protected function setModelValues() {
 
 	  		       $request = Scope::getInstance()->getRequestScope();
 	     	       $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
@@ -308,59 +286,61 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	  		       if( !$request->getParameters() )
 	  		  	       return;
 
-	  		       foreach( $request->getParameters() as $name => $value ) {
+  	 	  	       foreach( $table->getColumns() as $column ) {
 
-	  		     		    if( $name == 'AGILEPHP_REQUEST_TOKEN' ) continue;
+		  	 	  	       	if( !$request->get( $column->getModelPropertyName() ) ) {
 
-	  		     		    if( $name == 'password1' || $name == 'password2' ) {
+		  	 	  	       		$mutator = $this->toMutator( $column->getModelPropertyName() );
+	  		 	  	            $this->getModel()->$mutator( null );
+	  		 	  	        	continue;
+		  	 	  	       	}
 
-	  		     		  	    if( $name == 'password2' ) continue;
+		  	 	  	        foreach( $request->getParameters() as $name => $value ) {
+		
+			  		     		    if( $name == 'AGILEPHP_REQUEST_TOKEN' ) continue;
+		
+			  		     		    if( $name == 'password1' || $name == 'password2' ) {
+		
+			  		     		  	    if( $name == 'password2' ) continue;
+		
+			  		     		  	    if( $request->getSanitized( 'password1' ) !== $request->getSanitized( 'password2' ) ) {
+		
+			  		     		  	 	    $this->getRenderer()->set( 'error', 'Passwords don\'t match' );
+			  		     		  	  	    $this->getRenderer()->render( 'error' );
+			  		     		  	  	    exit;
+			  		     		  	    }
+		
+			  		     		  	    if( $request->getSanitized( 'oldPassword' ) != $value )
+											$this->getModel()->setPassword( $value );
+		
+										continue;
+			  		     		    }
 
-	  		     		  	    if( $request->getSanitized( 'password1' ) !== $request->getSanitized( 'password2' ) ) {
+			  		     		    $mutator = $this->toMutator( $name );
+				  	 	  	        if( $column->getModelPropertyName() == $name ) {
+		
+			     		   			 	$value = ($column->getSanitize() === true) ? 
+		   	  	        		 				urldecode( stripslashes( stripslashes( $request->sanitize( $value ) ) ) ) :
+		   	  	        		 				urldecode( stripslashes( stripslashes( $value ) ) );
 
-	  		     		  	 	    $this->getRenderer()->set( 'error', 'Passwords dont match' );
-	  		     		  	  	    $this->getRenderer()->render( 'error' );
-	  		     		  	  	    exit;
-	  		     		  	    }
+				     		   			if( $column->isForeignKey() ) {
 
-	  		     		  	    if( $request->getSanitized( 'oldPassword' ) != $value )
-									$this->getModel()->setPassword( $value );
-
-								continue;
-	  		     		    }
-
-	  		     		    $mutator = $this->toMutator( $name );
-	  		     		  	$value = urldecode( stripslashes( stripslashes( $request->sanitize( $value ) ) ) );
-	  		 	  	        foreach( $table->getColumns() as $column ) {
-
-	  		 	  	        		 // Checkboxes name wont exist if unticked. This forces an update.
-	  		 	  	        		 if( $column->getType() == 'bit' && !$request->get( $column->getModelPropertyName() ) ) {
-
-	  		 	  	        		 	  $mutator = $this->toMutator( $column->getModelPropertyName() );
-  		 	  	        		 	 	  $this->getModel()->$mutator( $this->getCastedValue( $column->getType(), 0 ) );
-	  		 	  	        		 	  continue;
-	  		 	  	        		 }
-
-		     		   			   	 // Type cast to PHP data type from database types in persistence.xml
-			     		   			 if( $column->getModelPropertyName() == $name ) {
-
-				     		   			 if( $column->isForeignKey() ) {
-
-		  		 	  	        			 // Getter and setter for foreign model
-		  		 	  	        			 $instanceAccessor = $this->toAccessor( $column->getForeignKey()->getReferencedTableInstance()->getModel() );
-									         $instanceMutator = $this->toMutator( $column->getForeignKey()->getReferencedTableInstance()->getModel() );
-	
-									     	 $fModel = $this->getModel()->$instanceAccessor();
-									     	 $mutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-	 								     	 $fModel->$mutator( $this->getCastedValue( $column->getType(), $value ) );
-	
-									     	 $this->getModel()->$instanceMutator( $fModel );
-									     	 continue;
+		  		 	  	        			// Getter and setter for foreign model
+		  		 	  	        			$instanceAccessor = $this->toAccessor( $column->getForeignKey()->getReferencedTableInstance()->getModel() );
+									        $instanceMutator = $this->toMutator( $column->getForeignKey()->getReferencedTableInstance()->getModel() );
+		
+									     	$fModel = $this->getModel()->$instanceAccessor();
+									     	$mutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+		 							     	$fModel->$mutator( $this->getCastedValue( $column->getType(), $value, $column->getSanitize() ) );
+		
+									     	$this->getModel()->$instanceMutator( $fModel );
+									     	continue;
 							     		}
-					     		   		$this->getModel()->$mutator( $this->getCastedValue( $column->getType(), $value ) );
+		
+					     		   		$this->getModel()->$mutator( $this->getCastedValue( $column->getType(), $value, $column->getSanitize() ) );
 			     		   			}
-	  		 	  	      }
-	  		     }
+		  	 	  	        }
+  	 	  	     }
 	     }
 
 	     /**
@@ -371,7 +351,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param $value The SQL data type being set.
 	      * @return void
 	      */
-	     private function getCastedValue( $type, $value ) {
+	     private function getCastedValue( $type, $value, $isSanitized ) {
 
 			     switch( $type ) {
 
@@ -435,7 +415,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	 	       	  		 default:
 	 	       	  		   	Logger::getInstance()->debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $type .
-	 	       	  		   									  '\'. Using (sanitized) value \'' . $value . '\'.' );
+	 	       	  		   									  '\'. Using (' . ($isSanitized) ? 'sanitized' : 'raw' . ') value \'' . $value . '\'.' );
 	 	       	  		   	return $value;
 	 	       	  		 break;
         			   }

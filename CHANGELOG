@@ -1,9 +1,17 @@
-0.16a
+0.17a
 -----
 
-- Add check to client side library AgilePHP.request and AgilePHP.post to check for valid callback handler and responseText length.
-- Added ExtFormRenderer mvc renderer.
-- Removed interceptors from agilephp.dtd.
-- Removed interceptor configuration from generator/CreateProject.php
-- Initial IDE package checkin.
-- Created CREDITS file to acknowledge contributors.
+- Removed singleton instance accessor from validator component. Added private function __clone(). completely static now.
+- Bug fix to generator/CreateProject.php when creating persistence.xml file. Invalid XML markup on newly added 'enabled'
+  column for Identity table.
+- Bug fix to User::setEnabled.
+- Refactored Identity::login. Moved exception for account disabled under password check so error is raised in the right order.
+- Refactored Form::getHTML and Form::getXSL to create textarea elements with 10 rows.
+- Refactored persistence Column class to contain "sanitize" property. Updated persistence.dtd to reflect new attribute.
+- Refactored BaseModelXMLController::getModelAsFormXML to fix html entity encode/decode bug.
+- Bug fix to Mailer::send (duplicate messages due to header configuration)
+- Renamed BaseModelActionController::clearModel to "clear".
+- Bug fix to BaseModelXSLController::getModelListXSL to remove trailing forward slash when sort direction is not present
+- Moved clear method from BaseModelActionController to BaseModelController.
+- Eliminated BaseModelActionController::modelAction. Now invokes actions/methods directly on the object rather than being proxied.
+- Refactored all MVC, Form, generator, and test package logic associated with above edit.

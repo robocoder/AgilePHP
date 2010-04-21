@@ -25,27 +25,12 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.3a
+ * @version 0.4a
  */
 class Validator {
 
-	  private static $instance;
-
-	  public function __construct() { }
-
-	  /**
-	   * Returns a singleton instance of Validator
-	   * 
-	   * @return Validator An instance of Validator
-	   * @static
-	   */
-	  public static function getInstance() {
-
-	  	     if( self::$instance == null )
-	  	     	 self::$instance = new self;
-
-	  	     return self::$instance;
-	  }
+	  private function __construct() { }
+	  private function __clone() { }
 
 	  /**
 	   * Validates an email address by checking its syntax and performing
@@ -106,7 +91,7 @@ class Validator {
          		  }
       		}
 
-      		if( !( checkdnsrr( $domain, "MX" ) || checkdnsrr($domain,"A" ) ) ) {
+      		if( !( checkdnsrr( $domain, "MX" ) || checkdnsrr( $domain, "A" ) ) ) {
 
       			// domain not found in DNS
 		        return false;

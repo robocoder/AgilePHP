@@ -299,7 +299,7 @@ class Form {
 					  else if( $column->getType() == 'text' ) {
 
 						  $html .= '<td>' . $displayName . '</td>
-						  			<td><textarea name="' . stripslashes( $name ) . '"></textarea></td>';
+						  			<td><textarea rows="10" name="' . stripslashes( $name ) . '"></textarea></td>';
 					  }
 
 					  // File upload
@@ -326,8 +326,7 @@ class Form {
 	  		 $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
         							 : '<input type="submit" value="Update"/>
 									   <input type="button" value="Delete" onclick="javascript:AgilePHP.Persistence.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
-        							   '\', \'' . $pkeyValues . '\', \'' . $this->getPage() . 
-        							   '\', \'' . MVC::getInstance()->getController() . '\', \'' . MVC::getInstance()->getAction() . '/delete\' )"/>
+        							   '\', \'' . $pkeyValues . '\', \'' . $this->getPage() . '\', \'delete\' )"/>
         							   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';
 
         	 $html .= '</td>
@@ -502,7 +501,7 @@ class Form {
 										  	  $xslValue = mb_convert_encoding( html_entity_decode( $value ), 'UTF-8', 'ISO-8859-1' );
 
 											  $xsl .= '<td>' . $displayName . '</td>
-											  		   <td><textarea name="' . $name . '">';
+											  		   <td><textarea rows="10" name="' . $name . '">';
 											  				if( !$xslValue ) $xsl .= '<xsl:comment/>';
 											  				$xsl .= '<xsl:value-of select="/Form/' . $table->getModel() . '/' . $name . '"/></textarea>
 							  		 				   </td>';
@@ -538,7 +537,7 @@ class Form {
         				        						 : '<input type="submit" value="Update"/>
 															<input type="button" value="Delete" onclick="javascript:AgilePHP.Persistence.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
         													   '\', \'' . $pkeyValues . '\', \'' . $page . 
-        													   '\', \'{/Form/controller}\', \'{/Form/action}/delete\' )"/>
+        													   '\', \'{/Form/controller}\', \'delete\' )"/>
         													   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';
 			   $xsl .= '  </td>
 				        </tr>';
@@ -550,7 +549,9 @@ class Form {
 	  		   			 </form>
 		  		        </xsl:template>
 					  </xsl:stylesheet>';
-Logger::getInstance()->debug( $xsl );
+
+	  		   Logger::getInstance()->debug( $xsl );
+
 	  		   return $xsl;
 	  }
 

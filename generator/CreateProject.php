@@ -225,7 +225,7 @@ class CreateProject extends AgilePHPGen {
 				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserSessions\" type=\"one-to-one\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
 							  		 "\t\t\t\t\ttable=\"sessions\" column=\"id\" controller=\"SessionController\"/>" . PHP_EOL;
 				  $data .= "\t\t\t</column>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"enabled\" type=\"bit\" length=\"1\">" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"enabled\" type=\"bit\" length=\"1\"/>" . PHP_EOL;
 				  $data .= "\t\t</table>" . PHP_EOL;
 				  $data .= "\t\t<table name=\"roles\" display=\"Roles\" model=\"Role\" description=\"Roles used in the application\">" . PHP_EOL;
 				  $data .= "\t\t\t<column name=\"name\" type=\"varchar\" length=\"25\" primaryKey=\"true\" required=\"true\"/>" . PHP_EOL;

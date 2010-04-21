@@ -52,6 +52,7 @@
 <!ATTLIST column index CDATA #FIXED "true">
 <!ATTLIST column sortable CDATA #FIXED "false">
 <!ATTLIST column selectable CDATA #FIXED "true">
+<!ATTLIST column sanitize CDATA #FIXED "false">
 
 <!ELEMENT foreignKey (#PCDATA)>
 <!ATTLIST foreignKey type ( one-to-one | one-to-many | many-to-one | many-to-many ) #REQUIRED>

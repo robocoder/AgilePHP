@@ -47,11 +47,6 @@ class InventoryController extends BaseModelActionController {
 
 	  	     return $this->model;
 	  }
-	  
-	  public function index() {
-
-	  		 parent::modelList();
-	  }
 
 	  /**
 	   * Adds a new inventory item.

@@ -42,6 +42,7 @@ class Column {
 	  private $required = false;
 	  private $primaryKey = false;
 	  private $autoIncrement = false;
+	  private $sanitize = true;
 
 	  private $foreignKey;
 
@@ -62,6 +63,7 @@ class Column {
 		  		 $this->required = ($column->attributes()->required == 'true') ? true : false;
 		  		 $this->primaryKey = ($column->attributes()->primaryKey == 'true') ? true : false;
 		  		 $this->autoIncrement = ($column->attributes()->autoIncrement == 'true') ? true : false;
+		  		 $this->sanitize = ($column->attributes()->sanitize == 'false') ? false : true;
 	
 		  		 if( $column->foreignKey )
 		  		 	 $this->foreignKey = new ForeignKey( $column->foreignKey, $tableName, $this->name );
@@ -407,6 +409,27 @@ class Column {
 	  public function isBit() {
 
  		  	 return $this->getType() == 'bit';
+	  }
+
+	  /**
+	   * Boolean flag indicating whether or not to sanitize input using the RequestScope component.
+	   * 
+	   * @param boolean $bool
+	   * @return voi
+	   */
+	  public function setSanitize( $bool ) {
+
+	  		 $this->sanitize = $bool;
+	  }
+
+	  /**
+	   * Returns boolean flag indicating whether or not this column should have its data sanitized by default.
+	   * 
+	   * @return boolean False if persistence.xml contains a sanitize="false" for this column, true otherwise.
+	   */
+	  public function getSanitize() {
+
+	  		 return $this->sanitize;
 	  }
 
 	  /**

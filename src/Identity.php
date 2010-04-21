@@ -436,10 +436,6 @@ class Identity implements IdentityManager {
 	  		 $this->getModel()->setUsername( $username );
 
 	  		 if( !$this->getModel() ) return false;
-	  		 $this->refresh();
-
-	  		 if( !$this->getModel()->getEnabled() )
-	  		 	 throw new AgilePHP_AccessDeniedException( 'Your account is disabled.' );
 
 	  		 $crypto = new Crypto();
 	  		 $hashed = $crypto->getDigest( $password );
@@ -458,6 +454,9 @@ class Identity implements IdentityManager {
 		  		 		  }
 		  		 }
 	  		 }
+
+	  		 if( !$this->getModel()->getEnabled() )
+	  		 	 throw new AgilePHP_AccessDeniedException( 'Your account has been disabled.' );
 
 	  		 // The session needs to be persisted first to avoid primary key constraint violation
   	  		 $this->session->set( 'IDENTITY_LOGGEDIN', true );

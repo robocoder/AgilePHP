@@ -71,7 +71,6 @@ class Mailer {
 	  public function send() {
 
 	  		 $headers = 'From: ' . $this->fromName . ' <' . $this->from . '>' . "\n";
-	  		 $headers .= 'To: ' . $this->toName . ' <' . $this->to . '>' . "\n";
         	 $headers .= 'Reply-To: ' . $this->from . "\n";
           	 $headers .= 'Return-Path: ' . $this->from . "\n";
         	 $headers .= 'X-mailer: AgilePHP Framework on PHP (' . phpversion() . ')' . "\n";

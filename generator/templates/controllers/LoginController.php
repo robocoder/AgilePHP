@@ -239,7 +239,7 @@ class LoginController extends BaseController {
 
 	  		  $this->getRenderer()->set( 'title', 'Administration :: Login :: Forgot Password' );
 	  		  $this->getRenderer()->set( 'request_token', Scope::getRequestScope()->createToken() );
-	  	      $this->getRenderer()->render( 'forgotPassword' );
+	  	      $this->getRenderer()->render( 'forgot_password' );
 	  }
 }
 ?>
