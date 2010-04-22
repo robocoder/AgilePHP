@@ -44,11 +44,6 @@ class MailingController extends BaseModelActionController {
 	  	     return $this->model;
 	  }
 
-	  public function index() {
-
-	  		 parent::modelList();
-	  }
-
 	  public function mailingBroadcast( $process = false) {
 
 	  	     if( $process == true ) {

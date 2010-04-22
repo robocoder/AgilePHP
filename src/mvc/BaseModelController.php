@@ -65,7 +65,8 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getResultCount() {
 
-	     	       return $this->getPersistenceManager()->getResultCount();
+	     	       $count = $this->getPersistenceManager()->getResultCount();
+	     	       return ($count > 0) ? $count : 0;
 	     }
 
 	     /**
@@ -157,6 +158,17 @@ abstract class BaseModelController extends BaseController {
 
 				   $this->getPersistenceManager()->setRestrictionsLogicOperator( $operator );
 	     }
+	     
+		 /**
+		  * Sets the comparison operator (<|>|=|LIKE) used in SQL WHERE clause.
+		  * 
+		  * @param $operator The logical comparison operator used is SQL where clauses. Default is '='.
+		  * @return void
+		  */
+	     protected function setComparisonLogicOperator( $operator ) {
+
+	     	       $this->getPersistenceManager()->setComparisonLogicOperator( $operator );
+	     }
 
 	     /**
 	      * Sets the SQL 'group by' clause.
@@ -200,7 +212,8 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getCount() {
 
-	     	       return $this->getPersistenceManager()->getCount();
+	     		   $count = $this->getPersistenceManager()->getCount();
+	     		   return ($count > 0) ? $count : 0;
 	     }
 	     
 	     /**
@@ -210,7 +223,8 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getPage() {
 
-	     		   return $this->getPersistenceManager()->getPage();
+	     		   $page = $this->getPersistenceManager()->getPage();
+	     		   return ($page > 0) ? $page : 0;
 	     }
 
 	     /**
@@ -221,7 +235,8 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getPageCount() {
 
-	     	       return $this->getPersistenceManager()->getPageCount();
+	     		   $count = $this->getPersistenceManager()->getPageCount();
+	     		   return ($count > 0) ? $count : 0;
 	     }
 
 	     /**
@@ -324,7 +339,10 @@ abstract class BaseModelController extends BaseController {
 	     protected function find( $model = null ) {
 
 	     		   $m = ($model == null) ? $this->getModel() : $model;
-	     		   return $this->getPersistenceManager()->find( $m );
+	     		   $this->resultList = $this->getPersistenceManager()->find( $m );
+				   $this->resultCount = count( $this->resultList );
+
+	     		   return $this->resultList;
 	     }
 
 	     /**
@@ -357,6 +375,25 @@ abstract class BaseModelController extends BaseController {
 	     protected function delete() {
 
 	     		   $this->getPersistenceManager()->delete( $this->getModel() );
+	     }
+
+		 /**
+	      * Clears the current model state.
+	      * 
+	      * @return void
+	      */
+	     protected function clear() {
+
+	  	           $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	  	           $columns = $table->getColumns();
+
+  			       for( $i=0; $i<count( $columns ); $i++ ) {
+
+	  	     	 	    $mutator = $this->toMutator( $columns[$i]->getModelPropertyName() );
+	  	     	 	    $this->getModel()->$mutator( null );
+	  	           }
+
+	  	           Logger::getInstance()->debug( 'BaseModelController::clear ' );
 	     }
 
 	     /**

@@ -408,100 +408,122 @@ class CreateProject extends AgilePHPGen {
 	  
 	  private function createStyleSheet() {
 	  	
-	  		  $style = '/** AgilePHP Styles */
+	  		  $style = '@CHARSET "UTF-8";
+	  		  
+/** AgilePHP Styles */
+
 a {
 
 	text-decoration: none;	
 }
+
 .info {
 
+	color: #43b605;
 	font-family:tahoma;
-	font-size: 12px;	
+	font-size: 12px;
+	padding-bottom: 5px;
 }
 
 .error {
 
 	font-family:tahoma;
-	font-size: 12px;
+	line-height:14px;
+	font-size: 18px;
 	color: #FF0000;
 }
 
-.tableHeader {
-
-	color: #636363;
-	font-family: tahoma;
-	font-size: 11px;
+.agilephpSearchBar {
+	
+	text-align: center;
+	font-size: 12px;
+	padding-bottom: 25px;
 }
 
-.agilephpGeneratedTableDescription {
+.agilephpSearchBar input, .agilephpSearchBar select {
+	
+	font-size: 12px;
+}
+
+.agilephpTableDescription {
 
 	color: #000000;
 	font-family:tahoma;
 	font-size: 16px;
 	font-weight: bolder;
+	line-height: 14px;
 	text-align: center;
 	padding-bottom: 20px;
+	padding-top: 25px;
 }
 
-.agilephpGeneratedTable {
+.agilephpTable {
 	
 	color:#636363;
 	font-family:tahoma;
 	font-size: 16px;
+	line-height:14px;
 	border-collapse : collapse;
 }
 
-.agilephpGeneratedHeader {
+.agilephpHeader {
 
 	color:#636363;
 	font-family:tahoma;
 	font-size:11px;
+	line-height:14px;
 	text-decoration: none;
 }
 
-.agilephpGeneratedHighlight {
+.agilephpHighlight {
 
 	color:#636363;
 	font-family:tahoma;
 	font-size:10px;
+	line-height:14px;
 	background-color: #C9C9C9;
 }
 
-.agilephpGeneratedRow1 {
+.agilephpRow1 {
 
 	color:#636363;
 	font-family:tahoma;
 	font-size:10px;
+	line-height:14px;
 	background-color: #FFFFFF;
 }
 
-.agilephpGeneratedRow2 {
+.agilephpRow2 {
 
-	color: #636363;
+	color:#636363;
 	font-family:tahoma;
 	font-size:10px;
+	line-height:14px;
 	background-color: #F9F9F9;
 }
 
-.agilephpGeneratedPaginationTable {
+.agilephpPaginationTable {
 
 	color:#636363;
 	font-family:tahoma;
 	font-size:10px;
+	line-height:14px;
 }
 
-.agilephpGeneratedPaginationHeader {
+.agilephpPaginationHeader {
 	
 	color:#636363;
 	font-family:tahoma;
 	font-size:12px;
+	line-height:14px;
 }
 
-.agilephpGeneratedPaginationRecordCount {
+.agilephpPaginationRecordCount {
 	
 	color:#636363;
 	font-family:tahoma;
 	font-size:12px;
+	line-height:14px;
 }';
 	  		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'view' .
 	  		  			DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'style.css', 'w' );

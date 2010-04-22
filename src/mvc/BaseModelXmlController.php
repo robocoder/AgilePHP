@@ -277,7 +277,7 @@ abstract class BaseModelXmlController extends BaseModelController {
 	     protected function getResultListAsPagedXML( $controller = null, $action = null, $params = null ) {
 
 	     		   $c = (!$controller) ? new ReflectionClass( $this ) : new ReflectionClass( $controller );
-   		   		   $a = (!$action) ? '' : $action;
+   		   		   $a = (!$action) ? 'search' : $action;
    		   		   $table = $this->getPersistenceManager()->getTableByModelName( $this->getModelName() );
 
    		   		   $fkeyColumns = $table->getForeignKeyColumns();

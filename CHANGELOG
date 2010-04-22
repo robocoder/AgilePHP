@@ -1,17 +1,7 @@
-0.17a
+0.18a
 -----
 
-- Removed singleton instance accessor from validator component. Added private function __clone(). completely static now.
-- Bug fix to generator/CreateProject.php when creating persistence.xml file. Invalid XML markup on newly added 'enabled'
-  column for Identity table.
-- Bug fix to User::setEnabled.
-- Refactored Identity::login. Moved exception for account disabled under password check so error is raised in the right order.
-- Refactored Form::getHTML and Form::getXSL to create textarea elements with 10 rows.
-- Refactored persistence Column class to contain "sanitize" property. Updated persistence.dtd to reflect new attribute.
-- Refactored BaseModelXMLController::getModelAsFormXML to fix html entity encode/decode bug.
-- Bug fix to Mailer::send (duplicate messages due to header configuration)
-- Renamed BaseModelActionController::clearModel to "clear".
-- Bug fix to BaseModelXSLController::getModelListXSL to remove trailing forward slash when sort direction is not present
-- Moved clear method from BaseModelActionController to BaseModelController.
-- Eliminated BaseModelActionController::modelAction. Now invokes actions/methods directly on the object rather than being proxied.
-- Refactored all MVC, Form, generator, and test package logic associated with above edit.
+- Added "setComparisonLogicOperator" to PersistenceManager (and slough of classes - this needs some cleaning) to allow <,>,=, and LIKE operators.
+- Add search to Base MVC XSLT related classes.
+- Changed BaseModelActionController::getCastedValue to protected context so it can be overridden.
+- Bug fix to search and list views in regards to maintaining page state

@@ -66,7 +66,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 						$xsl .=	'<xsl:template match="/">
 
-										<div class="agilephpGeneratedTableDescription">';
+										<div class="agilephpTableDescription">';
 
 											if( $table->getDisplay() )
 												$xsl .= $table->getDisplay();
@@ -78,8 +78,19 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 											    $xsl .= $table->getDescription();
 										    
 										$xsl .= '</div>
+										
+										<div class="agilephpSearchBar">
+											 Search
+											 <input type="text" id="agilephpSearchText" name="agilephpSearchText"/>
+											 <select id="agilephpSearchField" name="agilephpSearchField">';
+												foreach( $table->getColumns() as $column )
+													if( $column->isVisible() )
+														$xsl .= '<option value="' . $column->getName() . '">' . $column->getViewDisplayName() . '</option>';
+										$xsl .= '</select>
+											 <input type="button" value="Search" onclick="javascript:AgilePHP.Persistence.search()"/>										 
+										</div>
 
-										<table class="agilephpGeneratedTable" border="0" width="100%">';
+										<table class="agilephpTable" border="0" width="100%">';
 
 												$flag = false;
 									     	    foreach( $table->getColumns() as $column ) {
@@ -87,7 +98,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 									     	    		 if( !$table->isVisible( $column->getModelPropertyName() ) )
 									     	    		 	 continue;
 
-			 	   	   			      			    	 if( !$flag ) $xsl .= '<tr class="agilephpGeneratedHeader">';
+			 	   	   			      			    	 if( !$flag ) $xsl .= '<tr class="agilephpHeader">';
 			 	   	   			      			         $flag = true;
 
 			 	   	   			      			         if( $column->isSortable() ) {
@@ -135,15 +146,15 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 										<xsl:choose>
 										
 											<xsl:when test="(position() mod 2 = 1)">
-												<xsl:attribute name="class">agilephpGeneratedRow1</xsl:attribute>
-												<xsl:attribute name="onmouseover">AgilePHP.Persistence.setStyle( this, \'agilephpGeneratedHighlight\' );</xsl:attribute>
-												<xsl:attribute name="onmouseout">AgilePHP.Persistence.setStyle( this, \'agilephpGeneratedRow1\' );</xsl:attribute>
+												<xsl:attribute name="class">agilephpRow1</xsl:attribute>
+												<xsl:attribute name="onmouseover">AgilePHP.Persistence.setStyle( this, \'agilephpHighlight\' );</xsl:attribute>
+												<xsl:attribute name="onmouseout">AgilePHP.Persistence.setStyle( this, \'agilephpRow1\' );</xsl:attribute>
 											</xsl:when>
 											
 											<xsl:otherwise>
-												<xsl:attribute name="class">agilephpGeneratedRow2</xsl:attribute>
-												<xsl:attribute name="onmouseover">AgilePHP.Persistence.setStyle( this, \'agilephpGeneratedHighlight\' );</xsl:attribute>
-												<xsl:attribute name="onmouseout">AgilePHP.Persistence.setStyle( this, \'agilephpGeneratedRow2\' );</xsl:attribute>
+												<xsl:attribute name="class">agilephpRow2</xsl:attribute>
+												<xsl:attribute name="onmouseover">AgilePHP.Persistence.setStyle( this, \'agilephpHighlight\' );</xsl:attribute>
+												<xsl:attribute name="onmouseout">AgilePHP.Persistence.setStyle( this, \'agilephpRow2\' );</xsl:attribute>
 											</xsl:otherwise>
 
 										</xsl:choose>';
@@ -250,7 +261,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 							    <xsl:template match="Form">';
 
-				    				$xsl .= '<table class="agilephpGeneratedTable" border="0" cellpadding="3">';
+				    				$xsl .= '<table class="agilephpTable" border="0" cellpadding="3">';
 
   			 	   	  						foreach( $table->getColumns() as $column ) {
 
@@ -295,12 +306,12 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 	     	       $xsl = '<xsl:template match="Pagination">
 
-								<table class="agilephpGeneratedPaginationTable" border="0" style="padding-top: 10px;">
+								<table class="agilephpPaginationTable" border="0" style="padding-top: 10px;">
 
-									<tr class="agilephpGeneratedPaginationHeader">
+									<tr class="agilephpPaginationHeader">
 									
 								    			    <xsl:if test="previousExists = 1">
-								 						<td><a href="' . AgilePHP::getFramework()->getRequestBase() . '/{controller}/{action}/{page - 1}/{params}">Previous</a></td>
+								 						<td><a href="' . AgilePHP::getFramework()->getRequestBase() . '/{controller}/{action}/{params}/{page - 1}">Previous</a></td>
 													</xsl:if>
 								
 													<xsl:call-template name="pageNumberGenerator">
@@ -312,15 +323,15 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 											  		</xsl:call-template>
 								
 											       	<xsl:if test="nextExists = 1">
-											    		<td><a href="' . AgilePHP::getFramework()->getRequestBase() . '/{controller}/{action}/{page + 1}/{params}">Next</a></td>
+											    		<td><a href="' . AgilePHP::getFramework()->getRequestBase() . '/{controller}/{action}/{params}/{page + 1}">Next</a></td>
 											  		</xsl:if>
 								
 											  	</tr>
 								
 											  </table>
 								
-											  <table border="0" class="agilephpGeneratedTable">
-												  	<tr class="agilephpGeneratedPaginationRecordCount">
+											  <table border="0" class="agilephpTable">
+												  	<tr class="agilephpPaginationRecordCount">
 												    	<xsl:choose>
 												    
 												    		<xsl:when test="recordEnd &gt; recordCount">

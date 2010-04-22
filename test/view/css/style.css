@@ -5,6 +5,14 @@ a {
 	text-decoration: none;	
 }
 
+.info {
+
+	color: #43b605;
+	font-family:tahoma;
+	font-size: 12px;
+	padding-bottom: 5px;
+}
+
 .error {
 
 	font-family:tahoma;
@@ -13,7 +21,19 @@ a {
 	color: #FF0000;
 }
 
-.agilephpGeneratedTableDescription {
+.agilephpSearchBar {
+	
+	text-align: center;
+	font-size: 12px;
+	padding-bottom: 25px;
+}
+
+.agilephpSearchBar input, .agilephpSearchBar select {
+	
+	font-size: 12px;
+}
+
+.agilephpTableDescription {
 
 	color: #000000;
 	font-family:tahoma;
@@ -22,9 +42,10 @@ a {
 	line-height: 14px;
 	text-align: center;
 	padding-bottom: 20px;
+	padding-top: 25px;
 }
 
-.agilephpGeneratedTable {
+.agilephpTable {
 	
 	color:#636363;
 	font-family:tahoma;
@@ -33,7 +54,7 @@ a {
 	border-collapse : collapse;
 }
 
-.agilephpGeneratedHeader {
+.agilephpHeader {
 
 	color:#636363;
 	font-family:tahoma;
@@ -42,7 +63,7 @@ a {
 	text-decoration: none;
 }
 
-.agilephpGeneratedHighlight {
+.agilephpHighlight {
 
 	color:#636363;
 	font-family:tahoma;
@@ -51,7 +72,7 @@ a {
 	background-color: #C9C9C9;
 }
 
-.agilephpGeneratedRow1 {
+.agilephpRow1 {
 
 	color:#636363;
 	font-family:tahoma;
@@ -60,7 +81,7 @@ a {
 	background-color: #FFFFFF;
 }
 
-.agilephpGeneratedRow2 {
+.agilephpRow2 {
 
 	color:#636363;
 	font-family:tahoma;
@@ -69,7 +90,7 @@ a {
 	background-color: #F9F9F9;
 }
 
-.agilephpGeneratedPaginationTable {
+.agilephpPaginationTable {
 
 	color:#636363;
 	font-family:tahoma;
@@ -77,7 +98,7 @@ a {
 	line-height:14px;
 }
 
-.agilephpGeneratedPaginationHeader {
+.agilephpPaginationHeader {
 	
 	color:#636363;
 	font-family:tahoma;
@@ -85,7 +106,7 @@ a {
 	line-height:14px;
 }
 
-.agilephpGeneratedPaginationRecordCount {
+.agilephpPaginationRecordCount {
 	
 	color:#636363;
 	font-family:tahoma;

@@ -27,7 +27,7 @@ var AgilePHP = {
 		licence : 'GNU General Public License v3',
 		package : 'com.makeabyte.agilephp',
 
-		requestBase : '/index.php',
+		requestBase : null,
 		debugMode : false,
 		
 		/**
@@ -48,8 +48,14 @@ var AgilePHP = {
 		 * @return The AgilePHP request base (the page that handles application requests)
 		 */
 		getRequestBase : function() {
-			
-			return this.requestBase;
+
+			if( !AgilePHP.requestBase ) {
+
+				var pos = location.pathname.indexOf( '.php' ) + 4;
+				AgilePHP.requestBase = location.pathname.substring( 0, pos );
+			}
+
+			return AgilePHP.requestBase;
 		},
 
 		/**
@@ -138,6 +144,18 @@ var AgilePHP = {
 				setStyle : function( el, style ) {
 
 						 el.setAttribute( 'class', style );
+				},
+
+				search: function() {
+
+					 var pos = location.pathname.indexOf( '.php' ) + 5;
+					 var mvcQuery = location.pathname.substring( pos );
+					 var mvcArgs = mvcQuery.split( '/' );
+					 var controller = mvcArgs[0];
+					 var keyword = document.getElementById( 'agilephpSearchText' ).value;
+					 var field = document.getElementById( 'agilephpSearchField' ).value;
+					 var url = location.protocol + '//' + location.host + AgilePHP.getRequestBase() + '/' + controller + '/search/' + field + '/' + keyword;
+					 location.href = url;
 				}
 		},
 

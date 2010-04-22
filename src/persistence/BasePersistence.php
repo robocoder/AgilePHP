@@ -43,6 +43,7 @@ abstract class BasePersistence {
 		 private $distinct;					 // Sets SQL DISTINCT clause
 		 private $restrictions;				 // WHERE clause restrictions
 	     private $restrictionsLogic = 'AND'; // Logic operator to use in WHERE clause (and|or)
+	     private $comparisonLogic = '=';	 // Logic operator to use in WHERE clause (=|<|>|LIKE)
 	     private $orderBy;					 // Stores the column name to sort the result set by
 	     private $orderDirection;			 // The direction to sort the result set (Default is 'ASC')
 	     private $offset;					 // Stores the offset for a LIMIT clause.
@@ -554,20 +555,6 @@ abstract class BasePersistence {
 			   return $this->execute();
 	    }
 
-	    protected function createWhereClauseFromModel( &$model, $primaryKeys ) {
-
-	    		  $sql = '';
-	    		  $class = new ReflectionClass( $model );
-	    		  $properties = $class->getProperties();
-
-	    		  foreach( $properties as $prop ) {
-	    		  	
-						$sql .= $prop->name . '=?';
-	    		  }
-
-	    		  
-	    }
-
 	    /**
 	     * Attempts to locate the specified model by values. Any fields set in the object are used
 	     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
@@ -616,14 +603,13 @@ abstract class BasePersistence {
 							 	 $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
 						     	 if( $model->$accessor() == null ) continue;
 
-						     	 $where .= (count($values) ? ' AND ' : ' ') . $columns[$i]->getName() . '=?';
+						     	 $where .= (count($values) ? ' ' . $this->restrictionsLogic . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->comparisonLogic . ' ?';
 								 array_push( $values, $model->$accessor() );
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 						    $sql .= ' LIMIT ' . $this->maxResults . ';';
 	    	   		 }
 
-				     // Execute query
 					 $this->prepare( $sql );
 					 $this->PDOStatement->setFetchMode( PDO::FETCH_OBJ );
 					 $result = $this->execute( $values );
@@ -776,6 +762,20 @@ abstract class BasePersistence {
 	     	 $this->restrictionsLogic = $operator;
 	  }
 
+	  /**
+	   * Sets the comparison operator (<|>|=|LIKE) used in SQL WHERE clause.
+	   * 
+	   * @param $operator The logical comparison operator used is SQL where clauses. Default is '='.
+	   * @return void
+	   */
+	  public function setComparisonLogicOperator( $operator ) {
+
+	  		 if( strtolower( $operator ) != 'like' && $operator !== '<' && $operator !== '>' && $operator !== '=' )
+	     	     throw new AgilePHP_PersistenceException( 'Comparison logic operator must be \'>\', \'<\', \'=\', or \'LIKE\'. Found \'' . $operator . '\'.' );
+
+	     	 $this->comparisonLogic = $operator;
+	  }
+
  	  /**
 	   * Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.
 	   * 
@@ -791,7 +791,7 @@ abstract class BasePersistence {
 				 foreach( $this->restrictions as $key => $val ) {
 
 				   		  $index++;
-				   		  $restricts .= $key . '=\'' . $val . '\'';
+				   		  $restricts .= $key . ' ' . $this->comparisonLogic . ' \'' . $val . '\'';
 
 				   		  if( $index < count( $this->restrictions ) )
 				   			  $restricts .= ' ' . $this->restrictionsLogic . ' ';

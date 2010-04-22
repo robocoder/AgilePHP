@@ -503,6 +503,7 @@ class PersistenceManager implements SQLDialect {
 	  		 	   $this->dialect->setOrderBy( null, 'ASC' );
 	  		 	   $this->dialect->setRestrictions( array() );
 	  		 	   $this->dialect->setRestrictionsLogicOperator( 'AND' );
+	  		 	   $this->dialect->setComparisonLogicOperator( '=' );
 
 				   Logger::getInstance()->debug( 'BaseModelController::setPage ' . $this->page );
 	     }
@@ -527,6 +528,17 @@ class PersistenceManager implements SQLDialect {
 	     public function setRestrictionsLogicOperator( $operator ) {
 
 	     	    $this->dialect->setRestrictionsLogicOperator( $operator );
+	     }
+
+		 /**
+		  * Sets the comparison operator (<|>|=|LIKE) used in SQL WHERE clause.
+		  * 
+		  * @param $operator The logical comparison operator used is SQL where clauses (<|>|=|LIKE). Default is '='.
+		  * @return void
+		  */
+	     public function setComparisonLogicOperator( $operator ) {
+
+	     	    $this->dialect->setComparisonLogicOperator( $operator );
 	     }
 
 	     /**

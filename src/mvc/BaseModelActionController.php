@@ -74,7 +74,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
 	      */
-	     public function index( $page = 1, $view = 'admin', $model = null ) {
+	     public function index( $page = 1, $view = 'admin') {
 
 	     		if( !$view ) $view = 'admin';
 
@@ -140,29 +140,28 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     /**
 	      * Performs a search on the model defined in the extension class.
 	      * 
-	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in persistence.xml
-	      * @param int $page The page number to display.
+	      * @param string $field The database column name to filter on
+	      * @param string $keyword The keyword used as the search criteria. Defaults to null (show everything)
 	      * @param string $view The view to render. Defaults to 'admin'.
+	      * @param int $page The page number to display.
 	      * @return void
 	      */
-	     public function search( $ids, $page = 1, $view = 'admin' ) {
+	     public function search( $field, $keyword = null, $view = 'admin', $page = 1 ) {
 
 	     		$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
- 
-     			$keys = $table->getPrimaryKeyColumns();
-     			$idz = explode( '_', $ids );
+	     		$columns = $table->getColumns();
 
-     			$i=0;
-     			foreach( $keys as $column ) {
+				foreach( $columns as $column ) {
 
-     			 		 $accessor = $this->toAccessor( $column->getName() );
-     			 		 $this->setRestrictions( array( $column->getName() => $idz[$i] ) );
-     			 		 $i++;
+     					 if( $field == $column->getName() )
+     			 		 	 $this->setRestrictions( array( $field => '%' . $keyword . '%' ) );
      			}
 
+     			$this->setComparisonLogicOperator( 'LIKE' );
      			$this->setPage( $page );
 
-	  		    $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
+     			$params = $field . '/' . $keyword . '/' . $view;
+     			$content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML( false, false, $params ) );
 
   	         	$this->getRenderer()->set( 'content', $content );
 	  	        $this->getRenderer()->render( $view );
@@ -210,13 +209,13 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * 
 	      * @return void
 	      */
-	     public function merge() {
+	     public function merge( $id, $page = 1 ) {
 
 	  		    $this->setModelValues();
 
 	  	 	    parent::merge( $this->getModel() );
 	  	 	    $this->__construct();
-	  	 	    $this->index( $this->getPage() );
+	  	 	    $this->index( $page );
 	     }
 
 	     /**
@@ -351,7 +350,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param $value The SQL data type being set.
 	      * @return void
 	      */
-	     private function getCastedValue( $type, $value, $isSanitized ) {
+	     protected function getCastedValue( $type, $value, $isSanitized ) {
 
 			     switch( $type ) {
 
