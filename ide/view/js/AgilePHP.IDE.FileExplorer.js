@@ -6,55 +6,56 @@ AgilePHP.IDE.FileExplorer = {
 		tree: null,
 		window: null,
 
+		getTree: function() {
+
+			return AgilePHP.IDE.FileExplorer.tree;
+		},
+		
 		/**
 		 * Creates a new tab/page in the content editing area.
 		 * 
-		 * @param title The title displayed on the tab
-		 * @param id The id of the new tab element
-		 * @param name The name of the new tab element
+		 * @param id The id of the tree node which was double clicked
+		 * @param text The text of the tree node which was double clicked
 		 * @return void
 		 */
-		newPage: function( title, id, name ) {
+		newPage: function( id, text ) {
 
-				/*
-				var iframe = {
-						id: id,
-						name: name,
-						title: title,
-						closable: true,
-						width: "100%",
-						height: "100%",
-						xtype: "iframepanel",
-						animCollapse: true,
-						defaultSrc: AgilePHP.getRequestBase() + '/' + AgilePHP.MVC.getController() + '/edit/' + id
-				};
-				*/
+				var editors = [];
+				var designViews = [ 'html', 'xhtml' ];
+				var codeViews = [ 'xml', 'xsl', 'css', 'html', 'xhtml', 'php', 'phtml', 'js', 'sql' ];
+				var pieces = text.split( '.' );
+				var extension = pieces[pieces.length-1];
 
-				var editor = new Ext.form.HtmlEditor({
-						id: id,
-						name: name,
-						title: title,
-						closable: true,
-						//width: 500, // AgilePHP.IDE.Workspace.getTabPanel().getInnerWidth() - 200
-						listeners: {
-					
-							render: function( component ) {
-					
-								component.add({
+				if( codeViews.indexOf( extension ) === -1 && designViews.indexOf( extension ) === -1 ) {
 
-								  id: 'btnTestButton',
-								  text: 'test'
-								});
-								component.doLayout();
-							}
-						}
+					AgilePHP.IDE.error( 'Unsupported file type "' + extension + '".' );
+					return;
+				}
+
+				if( codeViews.indexOf( extension ) !== -1 )
+					editors.push( new AgilePHP.IDE.Editor( id, 'code' ) );
+
+				if( designViews.indexOf( extension ) !== -1 ) {
+					editors.push( new AgilePHP.IDE.Editor( id, 'design' ) );
+					editors.push({
+							    	id: 'previewer-' + id,
+							        title: 'Preview'
+					});
+				}
+
+				var tabs = new Ext.TabPanel({
+
+					id: id,
+					title: text,
+					closable: true,
+				    activeTab: 0,
+				    tabPosition: 'bottom',
+				    items: editors
 				});
 
 				var tp = AgilePHP.IDE.Workspace.getTabPanel();
-					tp.add( editor );
+					tp.add( tabs );
 					tp.setActiveTab( id );
-
-			
 		},
 
 		Panel: function() {
@@ -73,9 +74,9 @@ AgilePHP.IDE.FileExplorer = {
 				    cmargins: '3 0 3 3',
 				    autoScroll: true				
 			});
-	
+
 			AgilePHP.IDE.FileExplorer.tree = new Ext.tree.TreePanel({
-	
+
 			    	useArrows: true,
 			        autoScroll: true,
 			        animate: true,
@@ -86,24 +87,25 @@ AgilePHP.IDE.FileExplorer = {
 			        disableCaching: false,
 			        root: {
 			            nodeType: 'async',
-			            text: '/',
+			            text: 'Workspace',
 			            draggable: false,
 			            id: '.:',
 			            iconCls: 'mime-folder'
 			        },
 			        contextMenu: new Ext.menu.Menu({
-			            items: [{ id: 'new',
+			        	id: 'file-explorer-contextmenu',
+			            items: [{ id: 'file-explorer-contextmenu-new',
 			            		  text: 'New',
 			            		  menu: {
 			            				items: [{
-			                    			id: 'new-folder',
-			                    			text: 'New Folder',
-			                    			iconCls: 'btn-folder-new'
+			                    			id: 'file-explorer-contextmenu-new-folder',
+			                    			text: 'Folder',
+			                    			iconCls: 'btn-new-folder'
 			                    		 },
 			                    		 {
-			                    			id: 'new-file',
-			                    			text: 'New File',
-			                    			iconCls: 'btn-document-new'
+			                    			id: 'file-explorer-contextmenu-new-file',
+			                    			text: 'File',
+			                    			iconCls: 'btn-new-file'
 			                    		 }],
 			                    		 
 			                    		 listeners: {
@@ -112,28 +114,28 @@ AgilePHP.IDE.FileExplorer = {
 		
 							                    switch( item.id ) {
 		
-							                        case 'new-folder':
+							                        case 'file-explorer-contextmenu-new-folder':
 							                        	Ext.Msg.prompt( 'New Folder Name', 'Enter the folder name:', function( btn, text ) {
 		
 							                        		if( btn == 'ok' ) {
 		
 							                        			AgilePHP.IDE.FileExplorer.selectedNode = item.parentMenu.parentMenu.contextNode;
-							                        			var url = AgilePHP.getRequestBase() + '/' + AgilePHP.MVC.getController() + 
-							                        						'/createDirectory/' + item.parentMenu.parentMenu.contextNode.id + '/' + text;
+							                        			var url = AgilePHP.getRequestBase() + '/PageController/createDirectory/' +
+							                        						item.parentMenu.parentMenu.contextNode.id + '/' + text;
 		
 							                        			new AgilePHP.XHR().request( url, AgilePHP.IDE.FileExplorer.createDirectoryHandler );
 							                        	    }
 							                        	});
 							                            break;
 		
-							                        case 'new-file':
+							                        case 'file-explorer-contextmenu-new-file':
 							                        	Ext.Msg.prompt( 'New File Name', 'Enter the file name:', function( btn, text ) {
 		
 							                        		if( btn == 'ok' ) {
 		
 							                        			AgilePHP.IDE.FileExplorer.selectedNode = item.parentMenu.parentMenu.contextNode;
-							                        			var url = AgilePHP.getRequestBase() + '/' + AgilePHP.MVC.getController() + 
-							                        						'/createfile/' + item.parentMenu.parentMenu.contextNode.id + '/' + text;
+							                        			var url = AgilePHP.getRequestBase() + '/PageController/createfile/' + 
+							                        						item.parentMenu.parentMenu.contextNode.id + '/' + text;
 		
 							                        			new AgilePHP.XHR().request( url, AgilePHP.IDE.FileExplorer.createFileHandler );
 							                        	    }
@@ -144,54 +146,56 @@ AgilePHP.IDE.FileExplorer = {
 						          		 },
 						          		showSeparator: true
 			            		  }
-			            		   
+
 					            }, '-', {
-					                id: 'edit-copy',
+					                id: 'file-explorer-contextmenu-edit-copy',
 					                text: 'Copy',
 					                iconCls: 'btn-edit-copy'
 					            }, {
-					                id: 'edit-cut',
+					                id: 'file-explorer-contextmenu-edit-cut',
 					                text: 'Cut',
 					                iconCls: 'btn-edit-cut'
 					            }, {
-					                id: 'edit-delete',
+					                id: 'file-explorer-contextmenu-edit-delete',
 					                text: 'Delete',
 					                iconCls: 'btn-edit-delete'
 					            }, {
-					                id: 'edit-paste',
+					                id: 'file-explorer-contextmenu-edit-paste',
 					                text: 'Paste',
 					                iconCls: 'btn-edit-paste',
 					                disabled: true
 					            }, '-', {
-					            	id: 'upload',
+					            	id: 'file-explorer-contextmenu-upload',
 					                text: 'Upload',
 					                iconCls: 'btn-upload'
 					            }
 					    ],
 			            listeners: {
-			                itemclick: function(item) {
+
+			        		// Handles context menu item clicks
+			                itemclick: function( item ) {
+
+			                    switch( item.id ) {
+
+			                        case 'file-explorer-contextmenu-edit-copy':
 		
-			                    switch (item.id) {
-		
-			                        case 'edit-copy':
-		
-			                            item.parentMenu.items.get( 'edit-paste' ).removeClass( 'btn-greyed' );
-			                            item.parentMenu.items.get( 'edit-paste' ).enable();
+			                            item.parentMenu.items.get( 'file-explorer-contextmenu-edit-paste' ).removeClass( 'btn-greyed' );
+			                            item.parentMenu.items.get( 'file-explorer-contextmenu-edit-paste' ).enable();
 		
 			                            AgilePHP.IDE.FileExplorer.selectedNode = item.parentMenu.contextNode;
 			                            AgilePHP.IDE.FileExplorer.pasteMode = 'copy';
 			                            break;
 		
-			                        case 'edit-cut':
+			                        case 'file-explorer-contextmenu-edit-cut':
 		
-			                            item.parentMenu.items.get( 'edit-paste' ).removeClass( 'btn-greyed' );
-			                            item.parentMenu.items.get( 'edit-paste' ).enable();
+			                            item.parentMenu.items.get( 'file-explorer-contextmenu-edit-paste' ).removeClass( 'btn-greyed' );
+			                            item.parentMenu.items.get( 'file-explorer-contextmenu-edit-paste' ).enable();
 		
 			                            AgilePHP.IDE.FileExplorer.selectedNode = item.parentMenu.contextNode;
 			                            AgilePHP.IDE.FileExplorer.pasteMode = 'move';
 			                            break;
 		
-			                        case 'edit-delete':
+			                        case 'file-explorer-contextmenu-edit-delete':
 		
 			                        	Ext.Msg.confirm( 'Confirmation', 'Are you sure you want to delete "' + item.parentMenu.contextNode.text + '"?', function( btn ) {
 		
@@ -203,20 +207,20 @@ AgilePHP.IDE.FileExplorer = {
 			                        	});
 			                            break;
 		
-			                        case 'edit-paste':
-		
-			                        	item.parentMenu.items.get( 'edit-paste' ).addClass( 'btn-greyed' );
-			                            item.parentMenu.items.get( 'edit-paste' ).disable();
-		
+			                        case 'file-explorer-contextmenu-edit-paste':
+
+			                        	item.parentMenu.items.get( 'file-explorer-contextmenu-edit-paste' ).addClass( 'btn-greyed' );
+			                            item.parentMenu.items.get( 'file-explorer-contextmenu-edit-paste' ).disable();
+
 			                            if( AgilePHP.IDE.FileExplorer.pasteMode == 'copy' )
 			                            	AgilePHP.IDE.FileExplorer.copy( AgilePHP.IDE.FileExplorer.selectedNode, item.parentMenu.contextNode );
 		
-			                            else if( this.pasteMode == 'move' )
+			                            else if( AgilePHP.IDE.FileExplorer.pasteMode == 'move' )
 			                            	AgilePHP.IDE.FileExplorer.move( AgilePHP.IDE.FileExplorer.selectedNode, item.parentMenu.contextNode );
 		
 			                        	break;
 		
-			                        case 'upload':
+			                        case 'file-explorer-contextmenu-upload':
 		
 			                        	AgilePHP.IDE.FileExplorer.selectedNode = item.parentMenu.contextNode;
 			                        	AgilePHP.IDE.FileExplorer.showUploadForm();
@@ -229,38 +233,141 @@ AgilePHP.IDE.FileExplorer = {
 			            }
 			        }),
 			        listeners: {
+
 			            contextmenu: function( node, e ) {
-		
+
+				        	// Remove conditional menus/items before contextmenu is shown
+			                var el = Ext.getCmp( 'file-explorer-contextmenu-database' );
+			                if( el ) el.destroy();
+			                
+			                el = Ext.getCmp( 'file-explorer-contextmenu-database-separator' );
+			                if( el ) el.destroy();
+
+			                
+			                
 			        		// Register the context node with the menu so that a Menu Item's handler function can access
 			        		// it via its parentMenu property.
 			                node.select();
 			                var c = node.getOwnerTree().contextMenu;
 			                c.contextNode = node;
 			                c.showAt( e.getXY() );
-		
-			                var paste = c.items.get( 'edit-paste' );
-		
+
+			                var paste = c.items.get( 'file-explorer-contextmenu-edit-paste' );
+
 			                if( node.isLeaf() ) {
+
+			                	c.items.get( 'file-explorer-contextmenu-new' ).disabled = true;
+			                	c.items.get( 'file-explorer-contextmenu-new' ).addClass( 'btn-greyed' );
 		
-			                	c.items.get( 'new' ).disabled = true;
-			                	c.items.get( 'new' ).addClass( 'btn-greyed' );
-		
-			                	c.items.get( 'upload' ).disabled = true;
-			                	c.items.get( 'upload' ).addClass( 'btn-greyed' );
+			                	c.items.get( 'file-explorer-contextmenu-upload' ).disabled = true;
+			                	c.items.get( 'file-explorer-contextmenu-upload' ).addClass( 'btn-greyed' );
 		
 			                	if( AgilePHP.IDE.FileExplorer.selectedNode != null && paste.disabled == false ) {
 		
 			                		paste.addClass( 'btn-greyed' );
 			                		paste.disabled = true;
 			                	}
+
+			                	// Conditionally show database menu for persistence.xml
+			                	if( node.id.match( /:persistence.xml$/i ) ) {
+
+			                		if( !Ext.get( 'file-explorer-contextmenu-database' ) ) {
+
+			                			Ext.getCmp( 'file-explorer-contextmenu' ).add({
+	
+			                				id: 'file-explorer-contextmenu-database-separator',
+			                				xtype: 'menuseparator'
+			                			}, {
+				                			id: 'file-explorer-contextmenu-database',
+				                			text: 'Database',
+				                			//iconCls: 'databaseManager',
+					                			menu: {
+						                			items: [{
+						                			
+						                				id: 'file-explorer-contextmenu-database-create',
+						                				text: 'Create'
+						                			}, {
+						                			
+						                				id: 'file-explorer-contextmenu-database-drop',
+						                				text: 'Drop'
+						                			}, {
+						                			
+						                				id: 'file-explorer-contextmenu-database-reverseengineer',
+						                				text: 'Reverse Engineer'
+						                			}]
+				                				}
+				                			
+				                		});
+			                		}
+			                	}
 			                }
 			                else {
+
+			                	// Conditionally display "New -> New Model" if "model" directory was chosen
+			                	if( node.text.toLowerCase() == 'model' ) {
+
+			                		c.items.get( 'file-explorer-contextmenu-new' ).menu.add({
+		                    			id: 'file-explorer-contextmenu-new-model',
+		                    			text: 'Model',
+		                    			iconCls: 'btn-new-model'
+		                    		 });
+			                	}
+			                	else {
+
+			                		if( Ext.getCmp( 'file-explorer-contextmenu-new-model' ) )
+			                			Ext.getCmp( 'file-explorer-contextmenu-new-model' ).destroy();
+			                	}
+
+			                	// Conditionally display "New -> New View" if "view" directory was chosen
+			                	if( node.text.toLowerCase() == 'view' ) {
+
+			                		c.items.get( 'file-explorer-contextmenu-new' ).menu.add({
+		                    			id: 'file-explorer-contextmenu-new-view',
+		                    			text: 'View',
+		                    			iconCls: 'btn-new-view'
+		                    		 });
+			                	}
+			                	else {
+
+			                		if( Ext.getCmp( 'file-explorer-contextmenu-new-view' ) )
+			                			Ext.getCmp( 'file-explorer-contextmenu-new-view' ).destroy();
+			                	}
+
+			                	// Conditionally display "New -> New Controller" if "control" directory was chosen
+			                	if( node.text.toLowerCase() == 'control' ) {
+
+			                		c.items.get( 'file-explorer-contextmenu-new' ).menu.add({
+		                    			id: 'file-explorer-contextmenu-new-controller',
+		                    			text: 'Controller',
+		                    			iconCls: 'btn-new-controller'
+		                    		 });
+			                	}
+			                	else {
+			                		
+			                		if( Ext.getCmp( 'file-explorer-contextmenu-new-controller' ) )
+			                			Ext.getCmp( 'file-explorer-contextmenu-new-controller' ).destroy();
+			                	}
+
+			                	// Conditionally display "New -> New Component" if "components" directory was chosen
+			                	if( node.text == 'components' ) {
+
+			                		c.items.get( 'file-explorer-contextmenu-new' ).menu.add({
+		                    			id: 'file-explorer-contextmenu-new-component',
+		                    			text: 'Component',
+		                    			iconCls: 'btn-new-component'
+		                    		 });
+			                	}
+			                	else {
+			                		
+			                		if( Ext.getCmp( 'file-explorer-contextmenu-new-component' ) )
+			                			Ext.getCmp( 'file-explorer-contextmenu-new-component' ).destroy();
+			                	}
+
+			                	c.items.get( 'file-explorer-contextmenu-new' ).disabled = false;
+			                	c.items.get( 'file-explorer-contextmenu-new' ).removeClass( 'btn-greyed' );
 		
-			                	c.items.get( 'new' ).disabled = false;
-			                	c.items.get( 'new' ).removeClass( 'btn-greyed' );
-		
-			                	c.items.get( 'upload' ).disabled = false;
-			                	c.items.get( 'upload' ).removeClass( 'btn-greyed' );
+			                	c.items.get( 'file-explorer-contextmenu-upload' ).disabled = false;
+			                	c.items.get( 'file-explorer-contextmenu-upload' ).removeClass( 'btn-greyed' );
 		
 			                	if( AgilePHP.IDE.FileExplorer.selectedNode != null && paste.disabled == true ) {
 		
@@ -279,7 +386,7 @@ AgilePHP.IDE.FileExplorer = {
 						var pieces = node.id.split( ':' );
 				    	var id = pieces.join( '/' );
 				    	var title = pieces[ pieces.length -1 ];
-				    	AgilePHP.IDE.FileExplorer.newPage( node.text, node.id, node.text );
+				    	AgilePHP.IDE.FileExplorer.newPage( node.id, node.text );
 					}
 				});
 	
@@ -317,20 +424,16 @@ AgilePHP.IDE.FileExplorer = {
 		 * @param o The XHR object
 		 * @return void
 		 */
-		copyHandler : function( o ) {
+		copyHandler : function( response ) {
 
-			if( o !== undefined || o !== null ) {
+				if( response.success == true ) {
 
-				try {
-						if( o.result == true )
-							AgilePHP.IDE.FileExplorer.tree.getNodeById( response.parent ).reload();
+					AgilePHP.IDE.FileExplorer.tree.getNodeById( response.parent ).reload();
+					return;
 				}
-				catch( e ) {
 
-					AgilePHP.debug( e );
-					AgilePHP.IDE.error( 'Error performing copy: ' + o.responseText );
-				}
-			}
+				AgilePHP.debug( response );
+				AgilePHP.IDE.error( "Error performing copy.\n" + response.errors.reason );
 		},
 
 		/**
@@ -349,22 +452,17 @@ AgilePHP.IDE.FileExplorer = {
 		/**
 		 * Callback handler for move.
 		 */
-		moveHandler : function( o ) {
+		moveHandler : function( response ) {
 
-			if( o !== undefined || o !== null ) {
+			 if( response.success == true ) {
 
-				try {
-					  if( o.result == true )
-							AgilePHP.IDE.FileExplorer.tree.getNodeById( response.parent ).reload();
-						else
-							AgilePHP.IDE.FileExplorer.error( 'Unexpected error: ' + o );
-				}
-				catch( e ) {
+				 AgilePHP.IDE.FileExplorer.tree.getNodeById( response.srcId ).destroy();
+				 AgilePHP.IDE.FileExplorer.tree.getNodeById( response.newParentId ).reload();
+				 return;
+			 }
 
-					AgilePHP.debug( e );
-					this.showError( 'Error moving folder: ' + o );
-				}
-			}
+			 AgilePHP.debug( response );
+			 AgilePHP.IDE.error( "Error moving folder.\n" + response.errors.reason );
 		},
 
 		/**
@@ -382,22 +480,16 @@ AgilePHP.IDE.FileExplorer = {
 		/**
 		 * Callback handler for delete
 		 */
-		deleteHandler : function( o ) {
+		deleteHandler : function( response ) {
 
-			if( o !== undefined || o !== null ) {
+				if( response.success == true ) {
 
-				try {
-					  if( o.result == true )
-						  AgilePHP.IDE.FileExplorer.selectedNode.remove();
-					  else
-						  this.showError( 'Unexpected error: ' + o );
+					AgilePHP.IDE.FileExplorer.selectedNode.remove();
+					return;
 				}
-				catch( e ) {
 
-					AgilePHP.debug( e );
-					AgilePHP.IDE.FileExplorer.showError( 'Error deleting folder.', o );
-				}
-			}
+				AgilePHP.debug( response );
+				AgilePHP.IDE.error( "Error deleting folder.\n" + response.errors.reason );
 		},
 
 		/**
@@ -406,23 +498,16 @@ AgilePHP.IDE.FileExplorer = {
 		 * @param o XHR object
 		 * @return void
 		 */
-		createDirectoryHandler : function( o ) {
+		createDirectoryHandler : function( response ) {
 
-			if( o != undefined || o != null ) {
+			  	if( response.success == true ) {
 
-				try {
-					  var response = eval( '(' + o.responseText + ')' );
-					  if( response.result == true )
-						  AgilePHP.IDE.FileExplorer.selectedNode.reload();
-					  else
-						  AgilePHP.IDE.FileExplorer.showError( 'Unexpected error', o );
-				}
-				catch( e ) {
+				    AgilePHP.IDE.FileExplorer.selectedNode.reload();
+				    return;
+			  	}
 
-					AgilePHP.debug( e );
-					AgilePHP.IDE.FileExplorer.showError( 'Error creating new folder.', o );
-				}
-			}
+				AgilePHP.debug( response );
+				AgilePHP.IDE.error( "Error creating new folder.\n" + response.errors.reason );
 		},
 
 		/**
@@ -431,23 +516,16 @@ AgilePHP.IDE.FileExplorer = {
 		 * @param o XHR object
 		 * @return void
 		 */
-		createFileHandler : function( o ) {
+		createFileHandler : function( response ) {
 			
-			if( o != undefined || o != null ) {
+				if( response.success == true ) {
 
-				try {
-					  var response = eval( '(' + o.responseText + ')' );
-					  if( response.result == true )
-						  AgilePHP.IDE.FileExplorer.selectedNode.reload();
-					  else
-						  this.showError( 'Unexpected error', o );
+					 AgilePHP.IDE.FileExplorer.selectedNode.reload();
+					 return;
 				}
-				catch( e ) {
 
-					AgilePHP.debug( e );
-					AgilePHP.IDE.FileExplorer.showError( 'Error creating new file.', o );
-				}
-			}
+				AgilePHP.debug( response );
+				AgilePHP.IDE.error( "Error creating new file.\n" + response.errors.reason );
 		},
 
 		/**
@@ -462,6 +540,7 @@ AgilePHP.IDE.FileExplorer = {
 			var win;
 
 		    var fp = new Ext.FormPanel({
+		    	id: 'file-explorer-uploadform',
 		        fileUpload: true,
 		        width: 500,
 		        frame: true,
@@ -478,13 +557,12 @@ AgilePHP.IDE.FileExplorer = {
 		            fieldLabel: 'Name'
 		        },{
 		            xtype: 'fileuploadfield',
-		            id: 'form-file',
 		            emptyText: 'Select a file',
 		            fieldLabel: 'File',
 		            name: 'upload',
 		            buttonText: '',
 		            buttonCfg: {
-		                iconCls: 'btn-upload'
+		                iconCls: 'btn-new-file'
 		            }
 		        }],
 		        buttons: [{
@@ -515,21 +593,19 @@ AgilePHP.IDE.FileExplorer = {
 		        }]
 		    });
 
-		    /*
 		    win = new Ext.Window({
 
-		        title: 'Agile<em>PHP</em> :: Upload Form',
+		        title: 'Upload Form',
 		        closable: true,
 		        width: 500,
 		        height: 145,
 		        plain: true,
 		        modal: true,
 		        layout: 'fit',
-
+		        iconCls: 'btn-upload',
 		        items: [ fp ]
 		    });
 
 			win.show( this );
-			*/
 		}
 };

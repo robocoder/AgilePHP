@@ -43,6 +43,11 @@ abstract class Remoting extends BaseController {
 
 	  		       $this->class = $class;
 	  		       $this->createRenderer( 'AJAXRenderer' );
+
+	  	 		   ini_set('error_prepend_string', '<phperror>');
+				   ini_set('error_append_string', '</phperror>');
+				   set_error_handler( 'Remoting::ErrorHandler' );
+				   ob_start( array( $this, 'captureErrors' ) );
 	  	 }
 
 	  	 /**
@@ -489,6 +494,65 @@ abstract class Remoting extends BaseController {
 	  		  	  throw new AgilePHP_RemotingException( 'Malformed request' );
 
 	  		  return $o;
+	  }
+
+	  /**
+	   * Parses each PHP output buffer for php errors and converts them into an AgilePHP_RemotingException
+	   * 
+	   * @param string $buffer PHP output buffer
+	   * @return void
+	   * throws AgilePHP_RemotingException
+	   */
+	  public function captureErrors( $buffer ) {
+
+			 $output = $buffer;
+			 $matches = array();
+			 $errors = '';
+
+			 /*
+			 if( preg_match( '|<phperror>.*</phperror>|s', $output, &$matches ) ) {
+
+				 foreach( $matches as $error )
+					$errors .= strip_tags( $error );
+			 }
+			 */
+
+			 if( ereg('(error</b>:)(.+)(<br)', $buffer, $regs ) ) {
+
+			 	 $err = preg_replace("/<.*?>/","",$regs[2]);
+		         $buffer = json_encode( array( '_class' => 'AgilePHP_RemotingException', 'message' => $err, 'trace' => debug_backtrace() ) );
+		     }
+		     return $buffer;
+
+		     //if( $errors ) throw new AgilePHP_RemotingException( $errors );
+			 //return $output;
+	  }
+
+	  /**
+	   * Custom PHP error handling function which throws an AgilePHP_RemotingException instead of echoing.
+	   * 
+	   * @param Integer $errno Error number
+	   * @param String $errmsg Error message
+	   * @param String $errfile The name of the file that caused the error
+	   * @param Integer $errline The line number that caused the error
+	   * @return false
+	   * @throws AgilePHP_Exception
+	   */
+ 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
+
+ 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg . 
+ 	  		 		  PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
+
+ 	  		 throw new AgilePHP_RemotingException( $errmsg, $errno, $errfile, $errline );
+	  }
+
+	  /**
+	   * Flush PHP output buffer and restore error handler
+	   */
+	  public function __destruct() {
+
+	  		 ob_end_flush();
+	  		 restore_error_handler();
 	  }
 }
 ?>

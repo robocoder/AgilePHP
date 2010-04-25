@@ -15,9 +15,33 @@ h3 {
     margin: 5px;
     float: left;
 }
-.btn-document-new {
+.project {
+	
+	background: url( ../images/tree/16x16/project.png) no-repeat 0 0 !important;
+}
+.btn-new-folder {
 
-	background: url( ../images/tree/16x16/document-new.png) no-repeat 0 0 !important;
+	background: url( ../images/tree/16x16/new-folder.png) no-repeat 0 0 !important;
+}
+.btn-new-file {
+
+	background: url( ../images/tree/16x16/new-file.png) no-repeat 0 0 !important;
+}
+.btn-new-model {
+
+	background: url( ../images/tree/16x16/new-model.png) no-repeat 0 0 !important;
+}
+.btn-new-view {
+
+	background: url( ../images/tree/16x16/new-view.png) no-repeat 0 0 !important;
+}
+.btn-new-controller {
+
+	background: url( ../images/tree/16x16/new-controller.png) no-repeat 0 0 !important;
+}
+.btn-new-component {
+
+	background: url( ../images/tree/16x16/new-component.png) no-repeat 0 0 !important;
 }
 .btn-document-save {
 
@@ -39,17 +63,13 @@ h3 {
 
 	background: url( ../images/tree/16x16/edit-paste.png) no-repeat 0 0 !important;
 }
-.btn-folder-new {
-
-	background: url( ../images/tree/16x16/folder-new.png) no-repeat 0 0 !important;
-}
 .btn-go-up {
 
 	background: url( ../images/tree/16x16/go-up.png) no-repeat 0 0 !important;
 }
 .btn-upload {
 
-	background: url( ../images/tree/16x16/upload.png) no-repeat 0 0 !important;
+	background: url( ../images/tree/16x16/upload.png) no-repeat 0 0;
 }
 .btn-greyed {
 

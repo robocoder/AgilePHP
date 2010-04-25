@@ -497,8 +497,9 @@ class AnnotationParser {
 			   	       if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
 			   	      	   substr( $file, -4 ) != 'view' ) {
 
-				 		   if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == $filename )
-			     	 		   return file_get_contents( $file );
+			   	      	   $pieces = explode( DIRECTORY_SEPARATOR, $file );
+			   	      	   $item = array_pop( $pieces ); 
+				 		   if( $item == $filename ) return file_get_contents( $file );
 				       }
 			  }
 	  }

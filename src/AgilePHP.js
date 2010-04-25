@@ -28,8 +28,9 @@ var AgilePHP = {
 		package : 'com.makeabyte.agilephp',
 
 		requestBase : null,
+		documentRoot: null,
 		debugMode : false,
-		
+
 		/**
 		 * Sets the path relative to DocumentRoot which handles application
 		 * requests. Defaults to /index.php.
@@ -56,6 +57,22 @@ var AgilePHP = {
 			}
 
 			return AgilePHP.requestBase;
+		},
+
+		/**
+		 * Returns the document root path where the application lives on the server.
+		 * 
+		 * @return string The document root where the application lives.
+		 */
+		getDocumentRoot: function() {
+
+			 if( !AgilePHP.documentRoot ) {
+
+				 var pieces = AgilePHP.getRequestBase().split( '/' );
+				 AgilePHP.documentRoot = pieces.slice( 0, (pieces.length-1) ).join( '/' ) + '/';
+			 }
+
+			 return AgilePHP.documentRoot;
 		},
 
 		/**

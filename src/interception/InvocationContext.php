@@ -50,7 +50,7 @@ class InvocationContext {
 	   * @param String $field The name of the field/property which was intercepted
 	   * @return void
 	   */
-	  public function __construct( &$target, $method, $parameters, &$interceptor, $field = null ) {
+	  public function __construct( $target, $method, $parameters, $interceptor, $field = null ) {
 
 	  		 $this->target = $target;
 	  		 $this->method = $method;

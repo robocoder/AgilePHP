@@ -1,7 +1,14 @@
-0.18a
+0.19a
 -----
 
-- Added "setComparisonLogicOperator" to PersistenceManager (and slough of classes - this needs some cleaning) to allow <,>,=, and LIKE operators.
-- Add search to Base MVC XSLT related classes.
-- Changed BaseModelActionController::getCastedValue to protected context so it can be overridden.
-- Bug fix to search and list views in regards to maintaining page state
+- Added AgilePHP.getDocumentRoot() to AgilePHP.js to return the HTTP relative path to the root of the application.
+- Bug fix to MVC::processRequest. Anything '.php' in the MVC string broke parsing.
+- Bug fix to AgilePHP_RemotingException where trace was not being included in exception.
+- Added AgilePHP handleErrors, ErrorHandler and setErrorHandler. Integrated with Logger component to provide appropriate levels.  
+- Pass by reference deprecation notices fixed.
+- Added _class field to AgilePHP_RemotingException to allow client side javascript to detect remoting exceptions.
+- Playing with AJAXRenderer::toJSON setAccessible call to execute user_func_arg on older versions of php using "bean-style" accessor.
+- Added isConnected to SQLDialect.
+- Added exception to SQLSRVDialect constructor that gets thrown if the driver is not installed on the server.
+- Refactored Remoting component to buffer output into captureErrors method to filter out all errors and convert them into JSON formatted AgilePHP_RemotingException.
+- More initial development on ide package - almost ready to be somewhat useful.

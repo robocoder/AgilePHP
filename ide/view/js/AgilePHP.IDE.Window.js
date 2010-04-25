@@ -12,9 +12,9 @@
  */
 AgilePHP.IDE.Window = function( id, iconCls, title, width, height ) {
 
-		if( Ext.WindowMgr.get( id + 'Window' ) ) {
+		if( Ext.WindowMgr.get( id ) ) {
 
-			var win = Ext.getCmp( id + 'Window' );
+			var win = Ext.getCmp( id );
 		   	    win.setActive( true );
 		   	    win.setVisible( true );
 		   	    return win.instance;
@@ -33,7 +33,8 @@ AgilePHP.IDE.Window = function( id, iconCls, title, width, height ) {
 
 			this.window = new Ext.Window({
 
-				id: this.id + 'Window',
+				id: this.id,
+				layout: 'fit',
 				renderTo: Ext.getBody(),
 				title: this.title,
 		        width: this.width,
@@ -46,14 +47,14 @@ AgilePHP.IDE.Window = function( id, iconCls, title, width, height ) {
 		        listeners: {
 						minimize: function( window ) {
 
-							var trayBtnId = window.getId().replace( 'Window', '' ) + 'TrayButton';
+							var trayBtnId = window.getId() + 'TrayButton';
 							var btn = Ext.getCmp( trayBtnId );
 								btn.toggle();
 							window.hide();
 						},
 						close: function( panel ) {
 
-							var trayBtnId = panel.getId().replace( 'Window', '' ) + 'TrayButton';
+							var trayBtnId = panel.getId() + 'TrayButton';
 							var btn = Ext.getCmp( trayBtnId );
 								btn.destroy();
 
@@ -62,13 +63,13 @@ AgilePHP.IDE.Window = function( id, iconCls, title, width, height ) {
 						},
 						activate: function( window ) {
 
-							var trayBtnId = window.getId().replace( 'Window', '' ) + 'TrayButton';
+							var trayBtnId = window.getId() + 'TrayButton';
 							var btn = Ext.getCmp( trayBtnId );
-								btn.toggle( true, true );
+							if( btn ) btn.toggle( true, true );
 						},
 						deactivate: function( window ) {
 
-							var trayBtnId = window.getId().replace( 'Window', '' ) + 'TrayButton';
+							var trayBtnId = window.getId() + 'TrayButton';
 							var btn = Ext.getCmp( trayBtnId );
 								btn.toggle( false, true );
 						}
@@ -90,7 +91,7 @@ AgilePHP.IDE.Window = function( id, iconCls, title, width, height ) {
 					text: this.title,
 					listeners: {
 							toggle: function( btn, pressed ) {
-									var winId = btn.getId().replace( 'TrayButton', 'Window' );
+									var winId = btn.getId().replace( 'TrayButton', '' );
 									var win = Ext.getCmp( winId );
 									pressed ? win.show() : win.hide();
 							}
@@ -132,15 +133,174 @@ AgilePHP.IDE.Window = function( id, iconCls, title, width, height ) {
 		this.createWindow();
 };
 
+/**
+ * Creates a "wizard" style window using passed in "step" objects.
+ * 
+ * @param {Array} An array of "step" objects.
+ * @return AgilePHP.IDE.Window
+ * @see AgilePHP.IDE.Window.File.NewProject
+ */
+AgilePHP.IDE.Window.prototype.wizard = function( steps ) {
+
+	this.steps = steps;
+	var labels = [];
+	var id = this.id;
+
+	// Create the left hand pane which shows a list of labels defined in the steps.
+	for( var j=0; j<this.steps.length; j++ ) {
+
+		 var label = (this.steps[j].label) ? this.steps[j].label : 'Step ' + (j+1);
+		 labels.push({
+
+			 id: this.id + '-label-' + j,
+			 xtype: 'label',
+			 html: '<div class="wizard-label"> ' + label + '</div>'
+		 });
+	}
+
+	/**
+	 * Sets the status indicator on a step label to the left of the wizard card.
+	 * 
+	 * @param {Integer} step The step number to set the indicator for
+	 * @param {Integer} status The status used to set the indicator:
+	 * 						   1 = Current step
+	 * 						   2 = Mark applied
+	 * 						   3 = Mark failed
+	 * @return void
+	 */
+	this.setLabelStatus = function( step, status ) {
+
+		if( status === 1 ) // current step (no icon just bolded)
+			Ext.getCmp( this.id + '-progress' ).items.get( step ).el.dom.innerHTML = '<div class="wizard-label-selected"><img id="' + this.id + '-label-image-' + step + '" src="' + AgilePHP.getDocumentRoot() + 'view/images/go-next.png"/> ' + this.steps[step].label + '</div>';
+
+		else if( status === 2 ) // mark applied
+			Ext.getCmp( this.id + '-progress' ).items.get( step ).el.dom.innerHTML = '<div class="wizard-label-complete"><img id="' + this.id + '-label-image-' + step + '" src="' + AgilePHP.getDocumentRoot() + 'view/images/dialog-apply.png"/> ' + this.steps[step].label + '</div>';
+
+		else if( status === 3 )// mark failed
+			Ext.getCmp( this.id + '-progress' ).items.get( step ).el.dom.innerHTML = '<div class="wizard-label-complete"><img id="' + this.id + '-label-image-' + step + '" src="' + AgilePHP.getDocumentRoot() + 'view/images/dialog-cancel.png"/> ' + this.steps[step].label + '</div>';
+	}
+
+	/**
+	 * Resets a step label to the left of the wizard card to default style
+	 * 
+	 * @param {Integer} step The step as it relates to the label
+	 * @return void
+	 */
+	this.resetLabel = function( step ) {
+
+		Ext.getCmp( this.id + '-progress' ).items.get( step ).el.dom.innerHTML = '<div class="wizard-label"> ' + this.steps[step].label + '</div>';
+	}
+
+	/**
+	 * Provides navigation handling for the wizard.
+	 * 
+	 * @param {Integer} direction -1 to move backwards, 1 to move forward.
+	 * @return void
+	 */
+	this.navigate = function( direction ) {
+
+	    var finish = this.steps[this.steps.length-1].handler;
+
+		var el = Ext.getCmp( this.id + '-deck' );
+		if( !el ) return false; // el may not exist once "finish" handler completes
+
+		var l = el.getLayout();
+	    var i = l.activeItem.id.split( 'step-' )[1];
+	    var step = parseInt( i, 10 );
+	    var next = step + direction;
+
+	    if( direction === 1 ) { // Advance to next step/card
+
+	    	// Execute each step's handler if one is defined
+	    	var handler = this.steps[step].handler;
+	    	if( handler && !handler() )
+	    		return false;
+
+	    	// Advance to the previous step/card
+	    	l.setActiveItem( next );   	
+
+	    	this.setLabelStatus( step, 2 );
+	    	this.setLabelStatus( next, 1 );	
+
+	    	// Toggle finish button text and handler if last step/card.
+	    	if( next == (this.steps.length-1) ) {
+
+		    	Ext.getCmp( this.id + '-card-next' ).setText( 'Finish' );
+		    	Ext.getCmp( this.id + '-card-next' ).on( 'click', finish );
+		    }
+	    }
+	    else {
+
+	    	// Back track to the previous step/card
+	    	l.setActiveItem( next );
+
+	    	// Step/card went back, remove finish text and handler.
+	    	Ext.getCmp( this.id + '-card-next' ).setText( 'Next' );
+	    	Ext.getCmp( this.id + '-card-next' ).un( 'click', finish );
+
+	    	this.setLabelStatus( next, 1 );
+	    	this.resetLabel( step );
+	    }
+
+	    // Toggle back button state
+		Ext.getCmp( this.id + '-card-prev' ).setDisabled( next == 0 );
+	};
+
+	// Add the new cardlayout/wizard steps to the window
+	this.add({
+			layout: 'hbox',
+			frame: true,
+			layoutConfig: {
+			    align: 'stretch',
+			    pack: 'start'
+			},
+			defaultType: 'container',
+			items: [{
+				id: this.id + '-progress',
+				cls: 'wizard-gradient-x',
+				items: labels,
+				width: 100
+			}, {
+				id: this.id + '-deck',
+				xtype: 'panel',
+				layout: 'card',
+				flex: 1,
+				activeItem: 0,
+			    items: steps,
+			    padding: '10',
+			    listeners: {
+					render: function( component ) {
+						Ext.getCmp( id + '-progress' ).items.get( 0 ).el.dom.innerHTML = '<div class="wizard-label-selected"><img id="' + id + '-label-image-0" src="' + AgilePHP.getDocumentRoot() + 'view/images/go-next.png"/> ' + steps[0].label + '</div>';
+					}
+				}
+			}],
+			buttons: [{
+		    	id: this.id + '-card-prev',
+	            text: 'Back',
+	            handler: this.navigate.createDelegate( this, [-1] ),
+	            disabled: true
+		    }, {
+		    	id: this.id + '-card-next',
+	            text: 'Next',
+	            handler: this.navigate.createDelegate( this, [1] )
+	        }]
+	});
+
+	return this;
+};
+
+// Initalize main window objects for the application
 AgilePHP.IDE.Window.File = {};
 AgilePHP.IDE.Window.Tools = {};
 AgilePHP.IDE.Window.Help = {};
 
-AgilePHP.loadScript( 'view/js/windows/File.Import.js' );
-AgilePHP.loadScript( 'view/js/windows/File.Export.js' );
+// Load application windows source files
+AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/File.NewProject.js' );
+AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/File.Import.js' );
+AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/File.Export.js' );
 
-AgilePHP.loadScript( 'view/js/windows/Tools.DatabaseManager.js' );
-AgilePHP.loadScript( 'view/js/windows/Tools.DatabaseManager.Compare.js' );
-AgilePHP.loadScript( 'view/js/windows/Tools.Settings.js' );
+AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/Tools.DatabaseManager.js' );
+AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/Tools.DatabaseManager.Compare.js' );
+AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/Tools.Settings.js' );
 
-AgilePHP.loadScript( 'view/js/windows/Help.About.js' );
+AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/Help.About.js' );

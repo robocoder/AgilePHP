@@ -3,6 +3,7 @@
 <persistence>
 
 	<database id="db1" name="agilephp_ide" type="mysql" hostname="localhost" username="php" password="php007">
+	<!--<database id="db1" name="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/ide/agilephp_ide" type="sqlite" hostname="" username="" password="">-->
 
 		<!-- AgilePHP Identity -->
 		<table name="users" isIdentity="true" display="Users" model="User" description="Actors in the application">
@@ -48,7 +49,14 @@
 			<column name="id" type="int" length="255" primaryKey="true" autoIncrement="true"/>
 			<column name="type" type="varchar" length="100"/>
 			<column name="name" type="varchar" length="255"/>
+			<column name="vendor" type="varchar" length="100"/>
 		</table>
+
+		<table name="configs" model="Config" display="Configuration" description="Stores AgilePHP IDE specific configuration variables/values">
+			<column name="name" type="varchar" length="255" primaryKey="true"/>
+			<column name="value" type="text"/>
+		</table>
+
 	</database>
 
 </persistence>

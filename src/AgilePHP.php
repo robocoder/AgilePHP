@@ -392,6 +392,67 @@ class AgilePHP {
 	  }
 
 	  /**
+	   * Defines the error handler responsible for handling framework and application wide errors.
+	   * 
+	   * @param mixed $function A standard PHP function or static method responsible for error handling
+	   * @return void
+	   */
+	  public static function setErrorHandler( $function ) {
+
+	  		 set_error_handler( $function );
+	  }
+
+	  /**
+	   * Handles PHP E_NOTICE, E_WARNING, E
+	   */
+	  public static function handleErrors() {
+
+	  		 set_error_handler( 'AgilePHP::ErrorHandler' );
+	  }
+
+	  /**
+	   * Custom PHP error handling function which writes error to log instead of echoing it out.
+	   * 
+	   * @param Integer $errno Error number
+	   * @param String $errmsg Error message
+	   * @param String $errfile The name of the file that caused the error
+	   * @param Integer $errline The line number that caused the error
+	   * @return false
+	   * @throws AgilePHP_Exception
+	   */
+ 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
+
+ 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg . 
+ 	  		 		  PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
+
+ 	  		 switch( $errno ) {
+
+ 	  		 	case E_NOTICE:
+ 	  		 	case E_USER_NOTICE:
+
+ 	  		 		Logger::getInstance()->info( $entry );
+ 	  		 		break;
+
+ 	  		 	case E_WARNING:
+ 	  		 	case E_USER_WARNING:
+ 	  		 		
+ 	  		 		Logger::getInstance()->warn( $entry );
+ 	  		 		break;
+
+ 	  		 	case E_ERROR:
+ 	  		 	case E_USER_ERROR:
+ 	  		 	case E_RECOVERABLE_ERROR:
+
+ 	  		 		Logger::getInstance()->error( $entry );
+ 	  		 		break;
+
+ 	  		 	default:
+ 	  		 		Logger::getInstance()->debug( $entry );
+ 	  		 }
+    	      
+	  }
+
+	  /**
 	   * Stops the timer and returns the elapsed time between startClock()
 	   * and stopClock().
 	   * 
@@ -509,11 +570,16 @@ class AgilePHP_InterceptionException extends AgilePHP_Exception { }
  */
 class AgilePHP_RemotingException extends AgilePHP_Exception { 
 
+	  /*
+	   * Public context fields reduce the chance that AJAXRenderer will
+	   * use reflection method setAccessible which requires PHP 5.3+
+	   */ 
 	  public $code;
 	  public $message;
 	  public $file;
 	  public $trace;
 	  public $line;
+	  public $_class = 'AgilePHP_RemotingException';
 
 	  /**
 	   * Deliver remoting exceptions in JSON format and halt execution.
@@ -524,7 +590,7 @@ class AgilePHP_RemotingException extends AgilePHP_Exception {
 	  public function __construct( $message ) {
 
 			 $this->message = $message;
-
+			 $this->trace = parent::getTraceAsString();
 	  		 $renderer = MVC::getInstance()->createRenderer( 'AJAXRenderer' );
 	  		 $renderer->render( $this );
 	  		 exit;
@@ -565,7 +631,7 @@ require_once 'annotation/annotations/AroundInvoke.php';
  */
 function __autoload_interceptions( $class ) {
 
-  	     $classAnnotations = &Annotation::getClassAsArray( $class );
+  	     $classAnnotations = Annotation::getClassAsArray( $class );
   	     if( count( $classAnnotations ) ) {
 
 		     foreach( $classAnnotations as $annotation ) {
@@ -580,7 +646,7 @@ function __autoload_interceptions( $class ) {
 			 }
   	     }
 
-		 $annotatedMethods = &Annotation::getMethodsAsArray( $class );
+		 $annotatedMethods = Annotation::getMethodsAsArray( $class );
 	 	 if( count( $annotatedMethods ) ) {
 
 			 foreach( $annotatedMethods as $methodName => $methodAnnotation ) {
@@ -598,7 +664,7 @@ function __autoload_interceptions( $class ) {
 			 }
   	     }
 
-  	     $annotatedProperties = &Annotation::getPropertiesAsArray( $class );	  	     
+  	     $annotatedProperties = Annotation::getPropertiesAsArray( $class );	  	     
 	 	 if( count( $annotatedProperties ) ) {
 
 			 foreach( $annotatedProperties as $fieldName => $fieldAnnotation ) {

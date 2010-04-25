@@ -33,6 +33,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  private $conn;
 	  private $stmt;
 	  private $statement;
+	  private $connectFlag = -1;
 
 	  /**
 	   *  Initalize SQLSRVDialect.
@@ -42,16 +43,35 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	   public function __construct( Database $db ) {
 
+	   		  if( !function_exists( 'sqlsrv_connect' ) )
+	   		  	  throw new AgilePHP_PersistenceException( 'Microsoft SQL Server Driver for PHP is not installed on the server.' );
+
 	   		  $params = array( 'Database' => $db->getName(), 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
 	   		  $noDbParams = array( 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
 
-	  	      if( !$this->conn = sqlsrv_connect( $db->getHostname(), $params ) )
-			 	  if( !$this->conn = sqlsrv_connect( $db->getHostname(), $noDbParams ) ) // Create statement needs to bind to server
-			 	  	  throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+	  	      if( !$this->conn = sqlsrv_connect( $db->getHostname(), $params ) ) {
+	  	      	
+	  	      	  $this->connectFlag = 0;
+			 	  if( !$this->conn = sqlsrv_connect( $db->getHostname(), $noDbParams ) ) { // Create statement needs to bind to server
 
+			 	  	  $this->connectFlag = -1;
+			 	  	  throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+			 	  }
+	  	      }
+
+	  	      $this->connectFlag = 1;
 	 	      $this->database = $db;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#isConnected()
+	   */
+	  public function isConnected() {
+
+	  		 return $this->connectFlag;
+	  }
+	  
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/persistence/dialect/SQLDialect#create()

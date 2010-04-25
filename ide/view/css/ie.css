@@ -1,0 +1,5 @@
+.wizard-gradient-x {
+	
+	filter: progid:DXImageTransform.Microsoft.Gradient(
+                StartColorStr='#F9F9F9', EndColorStr='#DEECFD', GradientType=1);
+}

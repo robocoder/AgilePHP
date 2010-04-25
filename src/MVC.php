@@ -188,8 +188,8 @@ class MVC {
 
 	  		 $path = (isset( $_SERVER['PHP_SELF'] )) ? $_SERVER['PHP_SELF'] : '/';
 
-		  	 preg_match( '/^.*\.php(.*)/si', $path, $matches );
-
+		  	 preg_match( '/^.*?\.php(.*)/si', $path, $matches );
+	  	 
 	  	     if( count( $matches ) ) {
 
 		  	  	 $mvcPieces = explode( '/', $matches[count($matches)-1] );
@@ -347,7 +347,10 @@ class MVC {
 	
 			   	       if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
 	
-				 		   if( array_pop( explode( DIRECTORY_SEPARATOR, $file ) ) == $controller . '.php' ) {
+			   	       	   $pieces = explode( DIRECTORY_SEPARATOR, $file );
+			   	      	   $item = array_pop( $pieces ); 
+
+			   	      	   if( $item == $controller . '.php' ) {
 
 				 		   	   __autoload( $controller );
 				 		       return;

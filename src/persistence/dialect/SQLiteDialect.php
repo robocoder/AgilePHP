@@ -29,10 +29,29 @@
  */
 class SQLiteDialect extends BasePersistence implements SQLDialect {
 
+	  private $connectFlag = -1;
+
 	  public function __construct( Database $db ) {
 
-	  	     $this->pdo = new PDO( 'sqlite:' . $db->getName() . '.sqlite' );
-	 	     $this->database = $db;
+	  		 try {
+			  	     $this->pdo = new PDO( 'sqlite:' . $db->getName() . '.sqlite' );
+			 	     $this->database = $db;
+			 	     $this->connectFlag = 1;
+	  		 }
+	  		 catch( PDOException $e ) {
+
+	  		 		$this->connectFlag = -1;
+	  		 	    throw new AgilePHP_PersistenceException( $e->getMessage() );
+	  		 }
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#isConnected()
+	   */
+	  public function isConnected() {
+
+	  		 return $this->connectFlag;
 	  }
 
 	  /**

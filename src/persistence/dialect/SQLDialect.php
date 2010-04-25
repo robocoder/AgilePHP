@@ -381,5 +381,14 @@ interface SQLDialect {
 	      * @return The formatted SQL string
 	      */
 	     public function createRestrictSQL();
+	     
+	     /**
+		  * Returns boolean response based on whether or not a connection to the database exists.
+		  *  
+		  * @return int -1 = No connection to the database server
+		  * 			  0 = Connected to the database server but not bound to a database
+		  * 			  1 = Connected to the database server and bound to a database
+		  */
+	     public function isConnected();
 }
 ?>

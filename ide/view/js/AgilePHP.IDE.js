@@ -41,6 +41,17 @@ AgilePHP.IDE = {
 		   icon: Ext.MessageBox.ERROR
 		});
 	},
+	
+	warn: function( message ) {
+
+		Ext.Msg.show({
+		   minWidth: 200,
+		   title: 'Warning',
+		   msg: message,
+		   buttons: Ext.Msg.OK,
+		   icon: Ext.MessageBox.WARNING
+		});
+	},
 
 	info: function( message ) {
 
@@ -51,13 +62,48 @@ AgilePHP.IDE = {
 		   buttons: Ext.Msg.OK,
 		   icon: Ext.MessageBox.INFO
 		});
+	},
+
+	getConfig: function( name, callback ) {
+
+		var stub = AgilePHP.Remoting.getStub( 'ConfigsRemote' );
+			stub.setCallback( callback );
+
+		new ConfigsRemote().get( name );		    
+	},
+
+	getConfigs: function( callback ) {
+
+		var stub = AgilePHP.Remoting.getStub( 'ConfigsRemote' );
+			stub.setCallback( callback );
+
+		new ConfigsRemote().getConfigs();
 	}
+};
+
+AgilePHP.IDE.Configs = {
+
+	workspace: null
 };
 
 AgilePHP.IDE.Remoting = {
 
+		classes: [],
+
+		isLoaded: function( clazz ) {
+
+			return AgilePHP.IDE.Remoting.classes[clazz] == true;
+		},
+
 		load: function( clazz ) {
 
-			AgilePHP.loadScript( AgilePHP.getRequestBase() + '/RemotingController/load/' + clazz );
+			if( !AgilePHP.IDE.Remoting.classes[clazz] ) {
+
+				AgilePHP.IDE.Remoting.classes[clazz] = true;
+				AgilePHP.loadScript( AgilePHP.getRequestBase() + '/RemotingController/load/' + clazz );
+			}
 		}
 };
+
+// Dynamically load required javascript libraries
+AgilePHP.IDE.Remoting.load( 'ConfigsRemote' );

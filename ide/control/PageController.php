@@ -6,7 +6,11 @@ class PageController extends BaseController {
 
 		 public function __construct() {
 
+		 		set_error_handler( 'PageController::ErrorHandler' );
+
 		 		parent::__construct();
+
+		 		$this->createRenderer( 'AJAXRenderer' );
 		 }
 
 		 public function index() { 
@@ -14,143 +18,68 @@ class PageController extends BaseController {
 		 		throw new AgilePHP_Exception( 'Malformed request' );
 		 }
 
-		 /**
-	      * Provides the TinyMCE WYSIWYG editor 'template_external_list_url' configuration.
-	      * 
-	      * @return void
-	      */
-	  	 public function templateList() {
-
-	  	 	    $templates = $this->getFiles( 'templates' );
-			  	$js =  'var tinyMCETemplateList = [ ';
-
-	  		    		for( $i=0; $i<count( $templates ); $i++ ) {
-
-	  		    				 $js .= '["Template ' . ($i+1) . '", "' . $templates[$i] . '"]';
-	  		    				 $js .= ( ($i+1) < count( $templates ) ? ', ' : '];' ); 
-	  		    		}
-				print $js;
-	  	 }
-
-	  	 /**
-	      * Provides the TinyMCE WYSIWYG editor 'external_link_list_url' configuration.
-	      * 
-	      * @return void
-	      */
-	  	 public function linkList() {
-
-	  	 		$js =  'var tinyMCELinkList = new Array( ';
-
-	  	 		$links = $this->getFiles( 'links' );
-	  		    for( $i=0; $i<count( $links ); $i++ ) {
-
-	  		    	 $js .= '["' . $links[$i] . '", "' . $links[$i] . '"]';
-	  		    	 $js .= ( ($i+1) < count( $links ) ? ', ' : ');' ); 
-	  		    }
-				print $js;
-	     }
-
-	     /**
-	      * Provides the TinyMCE WYSIWYG editor 'external_image_list_url' configuration.
-	      * 
-	      * @return void
-	      */
-	     public function imageList() {
-
-	     		$js =  'var tinyMCEImageList = new Array( ';
-	    		$images = $this->getFiles( 'images' );
-	    		for( $i=0; $i<count( $images ); $i++ ) {
-
-	   				 $js .= '["' . $images[$i] . '", "' . $images[$i] . '"]';
-	   				 $js .= ( ($i+1) < count( $images ) ? ', ' : ');' ); 
-	    		}
-				print $js;
-	     }
-
-	     /**
-	      * Provides the TinyMCE WYSIWYG editor 'media_external_list_url' configuration.
-	      * 
-	      * @return void
-	      */
-	     public function mediaList() {
-
-	  		    $js =  'var tinyMCEMediaList = [';
-	    		$videos = $this->getFiles( 'videos' );
-	    		for( $i=0; $i<count( $videos ); $i++ ) {
-	  		    		
-	   				 $js .= '["' . $videos[$i] . '", "' . $videos[$i] . '"]';
-	   				 $js .= ( ($i+1) < count( $videos ) ? ', ' : '];' ); 
-	    		}
-				print $js;
-	     }
-
-		 /**
-	      * Provides the TinyMCE WYSIWYG editor 'content_css' configuration.
-	      * 
-	      * @return void
-	      */
-	     public function cssList() {
-
-	  		    $js =  '';
-	    		$css = $this->getFiles( 'css' );
-	    		for( $i=0; $i<count( $css ); $i++ ) {
-
-	   				 $js .= $css[$i];
-	   				 $js .= ( ($i+1) < count( $css ) ? ',' : '' ); 
-	    		}
-				return $js;
-	     }
-
 	     /**
 	      * Returns the file contents for the specified file.
 	      * 
 	      * @param $file The file path to load.
 	      * @return The contents of the specified file.
 	      */
-	     public function getContents() {
+	     private function getContents( $file ) {
 
-	     		if( !file_exists( $this->file ) )
-		 		    throw new AgilePHP_Exception( 'Error loading file \'' . $this->file . '\'. File does not exist.' );
+	     		 if( !file_exists( $file ) )
+		 		     throw new AgilePHP_Exception( 'Error loading file \'' . $file . '\'. File does not exist.' );
+	 		    
+		 		 $content = '';
+		 		 $h = fopen( $file, 'r' );
+		 		 while( !feof( $h ) )
+		 		 	   $content .= fgets( $h, 2048 );
+		 		 fclose( $h );
 
-		 		$content = '';
-		 		$h = fopen( $this->file, 'r' );
-		 		while( !feof( $h ) )
-		 		 	  $content .= fgets( $h, 2048 );
-		 		$h->close;
-
-		 		return $content;
+		 		 return trim( $content );
 	     }
 
-	     /**
-	      * Sets the specified file and calls 'loadPage' to load the
-	      * specified file into an editor instance.
-	      * 
-	      * @param $file The file path to edit.
-	      * @return void
-	      */
-		 public function edit( $file ) {
-
-		 	 	$this->file = str_replace( ':', '/', $file );
-		  	    $this->loadPage();
-		 }
-
 		 /**
-		  * Loads a TinyMCE editor instance.
+		  * Loads an editor instance.
 		  * 
 		  * @return void
 		  */
-		 public function loadPage() {
+		 public function load( $type, $id ) {
 
-		 		$content = $this->getContents();
+		 		//$pieces = explode( '.', $id );
+		 		//$extension = strtolower( $pieces[count($pieces)-1] );
 
-	 		    $this->getRenderer()->set( 'tinymce_content', $content );
-		 		$this->getRenderer()->set( 'tinymce_file', str_replace( '/', ':', $this->file ) );
-		 		$this->getRenderer()->set( 'css_content', $this->cssList() );
-		 		$this->getRenderer()->set( 'fullpagetoggle_bit', ($this->getRenderer()->get( 'fullpagetoggle_bit' ) ? 1 : 0 ) );
-		 		$this->getRenderer()->set( 'fullpagetoggle_requestbase', AgilePHP::getFramework()->getRequestBase() .
-		 					 '/' . MVC::getInstance()->getController() . '/fullpageToggle/' . str_replace( '/', ':', $this->file ) );
+		 		$code = $this->getContents( str_replace( ':', '/', $id ) );
 
-		 		$this->getRenderer()->renderComponent( 'TinyMCE', 'tinymce' );
+		 		Logger::getInstance()->info( $code );
+		 		Logger::getInstance()->info( $type );
+		 		Logger::getInstance()->info( $id );
+	 		
+		 		switch( $type ) {
+
+		 			case 'code':
+
+		 				 //if( $extension == 'phtml' ) {
+
+			 				 $renderer = new PHTMLRenderer();
+			 				 $renderer->set( 'code', htmlentities( $code ) );
+			 				 $renderer->render( 'editor-code' );
+
+			 				 Logger::getInstance()->error( $renderer );
+		 				 //}
+		 				 break;
+
+		 			case 'design':
+
+		 				 $o = new stdClass;
+		 				 $o->id = $id; 
+		 				 $o->code = $code;
+
+		 				 $this->getRenderer()->render( $o );
+		 				 break;
+
+		 			default:
+		 				throw new Exception( 'Invalid editor type' );
+		 		}
 		 }
 
 		 /**
@@ -164,24 +93,11 @@ class PageController extends BaseController {
 
 		 		$this->file = str_replace( ':', '/', $file );
 
-		 		Logger::getInstance()->debug( 'BaseTinyMCEController::save Content = \'' . $_POST['content'] . '\'.' );
-				Logger::getInstance()->debug( 'BaseTinyMCEController::save Saving file \'' . $this->file . '\'.' );
+		 		Logger::getInstance()->debug( 'PageController::save Saving content: \'' . $_POST['content'] . '\'.' );
+				Logger::getInstance()->debug( 'PageController::save Saving file \'' . $this->file . '\'.' );
 
 				$content = stripslashes( $_POST['content'] );
-				//$content = html_entity_decode( stripslashes( $_POST['content'] ) );
-				//Logger::getInstance()->debug( 'decoded content = ' . $content );
 				
-				$content = str_replace( '<div class="php-code">&lt?php', '<?php', $content );
-				$content = str_replace( '<div class="php-code">&lt?=', '<?=', $content );
-				//$content = str_replace( '<div class=">', '', $content );
-				$content = str_replace( '?&gt</div>', '?>', $content );
-				if( strpos( $content, '<script' ) === false ) {
-
-					$content = str_replace( '</head>', '<script type="text/javascript" src="/AgilePHP/AgilePHP.js"></script>
-<script type="text/javascript" src="/components/BannerRotator/view/js/BannerRotator.js"></script>
-<script type="text/javascript" src="/view/js/parkcitiesnews.js"></script></head>', $content );
-				}
-
 		 		$h = fopen( $this->file, 'w' );
 		 		$result = fwrite( $h, $content );
 		 		fclose( $h );
@@ -200,10 +116,24 @@ class PageController extends BaseController {
 		  */
 		 public function getTree() {
 
+		 		function isProject( $path ) {
+
+		 				 return file_exists( $path . DIRECTORY_SEPARATOR . 'agilephp.xml' );
+		 		};
+
 		 		$request = Scope::getInstance()->getRequestScope();
 
-		 		$node = $request->get( 'node' );
-		 		$path = preg_replace( '/:/', '/', $node );
+		 		$node = $request->getSanitized( 'node' );
+		 		$path = preg_replace( '/:/', DIRECTORY_SEPARATOR, $node );
+
+		 		// root tree node / workspace directory
+		 		if( $path == '.' . DIRECTORY_SEPARATOR ) {
+
+		 			$config = new Config();
+		 			$config->setName( 'workspace' );
+		 			$path = $config->getValue();
+		 			$isWorkspace = true;
+		 		}
 
 		 		$o = new stdClass();
 		 		$o->directories = array();
@@ -227,6 +157,17 @@ class PageController extends BaseController {
 				    	$stdClass->text = $fileInfo->getFilename();
 				    	$stdClass->iconCls = 'mime-' . (($fileInfo->isDir()) ? 'folder' : $extension);
 
+				    	if( isset( $isWorkspace ) ) {
+
+				    		// Load only folders containing agilephp.xml file
+				    		//
+				    		// if( !isProject( $path . DIRECTORY_SEPARATOR . $stdClass->text ) ) continue;
+				    		// $stdClass->iconCls = 'app-icon';
+
+				    		if( isProject( $path . DIRECTORY_SEPARATOR . $stdClass->text ) )
+				    			$stdClass->iconCls = 'project';
+				    	}
+
 				    	if( $fileInfo->isDir() )
 				     		array_push( $o->directories, $stdClass );
 				     	else {
@@ -245,8 +186,7 @@ class PageController extends BaseController {
 				foreach( $o->files as $stdClass )
 						 array_push( $o->filesystem, $stdClass );
 
-				$renderer = MVC::getInstance()->createRenderer( 'AJAXRenderer' );
-				$renderer->render( $o->filesystem );
+				$this->getRenderer()->render( $o->filesystem );
 		 }
 
 		/**
@@ -259,17 +199,17 @@ class PageController extends BaseController {
 	  	public function delete( $treePath ) {
 
 	  		   $treePath = str_replace( ':', '/', $treePath );
-	  		   Logger::getInstance()->debug( 'BaseTinyMCEController::delete Deleting treePath \'' . $treePath . '\'.' );
+	  		   Logger::getInstance()->debug( 'PageController::delete Deleting treePath \'' . $treePath . '\'.' );
 
 	  		   header( 'content-type: application/json' );
 
 	  		   if( is_dir( $treePath ) ) {
 
-	  		   	   print $this->recursiveDelete( $treePath ) ? '{result:true}' : '{result:false}';
+	  		   	   print $this->recursiveDelete( $treePath ) ? '{success:true}' : '{success:false}';
 	  		   	   return;
 	  		   }
 
-	  		   print (unlink( str_replace( ':', '/', $treePath ) ) ? '{result:true}' : '{result:false}');
+	  		   print (unlink( str_replace( ':', '/', $treePath ) ) ? '{success:true}' : '{success:false}');
 	  	}
 
 	  	/**
@@ -280,7 +220,7 @@ class PageController extends BaseController {
 	  	 */
 	  	public function recursiveDelete( $src ) {
 
-	  		   Logger::getInstance()->debug( 'BaseTinyMCEController::recursiveDelete Deleting source \'' . $src . '\'.' );
+	  		   Logger::getInstance()->debug( 'PageController::recursiveDelete Deleting source \'' . $src . '\'.' );
 
 	  		   $dir = opendir( $src );
 			   while( false !== ( $file = readdir( $dir ) ) ) {
@@ -311,25 +251,25 @@ class PageController extends BaseController {
 	  	 */
 	  	public function copy( $treeSrc, $treeDst ) {
 
-	  		   Logger::getInstance()->debug( 'BaseTinyMCEController::copy $treeSrc = \'' . $treeSrc . '\', $treeDst = \'' . $treeDst . '\'.' );
+	  		   Logger::getInstance()->debug( 'PageController::copy $treeSrc = \'' . $treeSrc . '\', $treeDst = \'' . $treeDst . '\'.' );
 
 	  		   $treeSrc = str_replace( ':', '/', $treeSrc );
 	  		   $treeDst = str_replace( ':', '/', $treeDst );
 
 	  		   $dstPath = $treeDst . '/' . array_pop( explode( '/', $treeSrc ) );
 
-	  		   Logger::getInstance()->debug( 'BaseTinyMCEController::copy Copying src \'' . $treeSrc . '\' to destination \'' . $dstPath . '\'.' );
+	  		   Logger::getInstance()->debug( 'PageController::copy Copying src \'' . $treeSrc . '\' to destination \'' . $dstPath . '\'.' );
 
 	  		   header( 'content-type: application/json' );
 	  		   if( is_dir( $treeSrc ) ) {
 
 	  		   	   $this->recursiveCopy( $treeSrc, $dstPath );
-	  		   	   print '{result:true, parent: "' . str_replace( '/', ':', $treeDst ) . '"}';
+	  		   	   print '{success:true, parent: "' . str_replace( '/', ':', $treeDst ) . '"}';
 	  		   	   return;
 	  		   }
 
 	  		   copy( $treeSrc, $dstPath );
-	  		   print '{result:true, parent: "' . str_replace( '/', ':', $treeDst ) . '"}';
+	  		   print '{success:true, parent: "' . str_replace( '/', ':', $treeDst ) . '"}';
 	  	}
 
 	  	/**
@@ -341,7 +281,7 @@ class PageController extends BaseController {
 	  	 */
 	  	function recursiveCopy( $src, $dst ) {
 
-	  			 Logger::getInstance()->debug( 'BaseTinyMCEController::copyRecursive Copy src \'' . $src . '\' to destination \'' . $dst . '\'.' );
+	  			 Logger::getInstance()->debug( 'PageController::copyRecursive Copy src \'' . $src . '\' to destination \'' . $dst . '\'.' );
 
 	  		     $dir = opendir( $src );
 			     mkdir( $dst );
@@ -368,17 +308,28 @@ class PageController extends BaseController {
 		 */
 	  	public function move( $treeSrc, $treeDst ) {
 
-	  		   Logger::getInstance()->debug( 'BaseTinyMCEController::copy $treeSrc = \'' . $treeSrc . '\'.' );
-	  		   Logger::getInstance()->debug( 'BaseTinyMCEController::copy $treeDst = \'' . $treeDst . '\'.' );
+	  		   Logger::getInstance()->debug( 'PageController::copy $treeSrc = \'' . $treeSrc . '\'.' );
+	  		   Logger::getInstance()->debug( 'PageController::copy $treeDst = \'' . $treeDst . '\'.' );
 
-	  		   $treeSrc = str_replace( ':', '/', $treeSrc );
-	  		   $treeDst = str_replace( ':', '/', $treeDst );
-	  		   $dstPath = $treeDst . '/' . array_pop( explode( '/', $treeSrc ) );
+	  		   $src = str_replace( ':', DIRECTORY_SEPARATOR, $treeSrc );
+	  		   $dst = str_replace( ':', DIRECTORY_SEPARATOR, $treeDst );
+	  		   $dstPath = $dst . DIRECTORY_SEPARATOR . array_pop( explode( DIRECTORY_SEPARATOR, $src ) );
 
-	  		   Logger::getInstance()->debug( 'BaseTinyMCEController::copy Copying src \'' . $treeSrc . '\' to destination \'' . $dstPath . '\'.' );
+	  		   Logger::getInstance()->debug( 'PageController::copy Copying src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
 
-	  		   header( 'content-type: application/json' );
-	  		   print rename( $treeSrc, $dstPath ) ? '{result:true, parent: "' . str_replace( '/', ':', $treeDst ) . '"}' : '{result:false}';
+	  		   $o = new stdClass;
+
+	  		   if( rename( $src, $dstPath ) ) {
+
+	  		   	   $o->success = true;
+	  		   	   $o->srcId = $treeSrc;
+	  		   	   $o->newParentId = $treeDst;
+
+	  		   	   $this->getRenderer()->render( $o );
+	  		   }
+
+	  		   $o->success = false;
+	  		   $this->getRenderer()->render( $o );
 	  	}
 
 	  	/**
@@ -401,7 +352,7 @@ class PageController extends BaseController {
 	  		   }
 	  		   catch( AgilePHP_Exception $e ) {
 
-	  		   		  Logger::getInstance()->debug( 'BaseTinyMCEController::upload Failed to upload file. Error code: ' . $e->getCode() . ', Message: ' . $e->getMessage() );
+	  		   		  Logger::getInstance()->debug( 'PageController::upload Failed to upload file. Error code: ' . $e->getCode() . ', Message: ' . $e->getMessage() );
 	  		   		  
 	  		   		  $o->success = false;
 	  		   		  $o->file = null;
@@ -427,13 +378,12 @@ class PageController extends BaseController {
 	  		   $filename = (str_replace( ':', '/', $path ) . '/' . $name);
 	  		   if( $filename == '.' ) $filename = './';
 
-	  		   Logger::getInstance()->debug( 'BaseTinyMCEController::createDirectory Creating new file \'' . $filename . '\'.' );
+	  		   Logger::getInstance()->debug( 'PageController::createDirectory Creating new file \'' . $filename . '\'.' );
 	  		   
 	  		   $o = new stdClass();
-	  		   $o->result = mkdir( $filename ) ? true : false;
+	  		   $o->success = mkdir( $filename ) ? true : false;
 
-	  		   $renderer = MVC::getInstance()->createRenderer( 'AJAXRenderer' );
-	  		   $renderer->render( $o );
+	  		   $this->getRenderer()->render( $o );
 	  	}
 	  	
 	   /**
@@ -449,10 +399,9 @@ class PageController extends BaseController {
 	  		   if( $filename == '.' ) $filename = './';
 
 	  		   $o = new stdClass();
-	  		   $o->result = touch( $filename ) ? true : false;
+	  		   $o->success = touch( $filename ) ? true : false;
 
-	  		   $renderer = MVC::getInstance()->createRenderer( 'AJAXRenderer' );
-	  		   $renderer->render( $o );
+	  		   $this->getRenderer()->render( $o );
 	  	}
 
         /**
@@ -477,5 +426,27 @@ class PageController extends BaseController {
 
 			    return $files;
 	  	}
+
+	  /**
+	   * Custom PHP error handling function which throws an AgilePHP_Exception instead of reporting
+	   * a PHP warning.
+	   * 
+	   * @param Integer $errno Error number
+	   * @param String $errmsg Error message
+	   * @param String $errfile The name of the file that caused the error
+	   * @param Integer $errline The line number that caused the error
+	   * @return false
+	   * @throws AgilePHP_Exception
+	   */
+ 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
+
+ 	  	     if( $errno == E_WARNING )
+	    	     throw new AgilePHP_Exception( $errmsg, $errno );
+	  }
+
+	  public function __destruct() {
+
+	  	 	  restore_error_handler();
+	  }
 }
 ?>

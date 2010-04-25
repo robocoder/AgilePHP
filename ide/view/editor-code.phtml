@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/IndexController/getBaseJS/<?= AgilePHP::getFramework()->isInDebugMode() ?>"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/codemirror/js/codemirror.js"></script>
+	    <title>AgilePHP IDE :: Code Editor</title>
+	  </head>
+	  <body style="width: 100%;">
+
+		<div style="height: 100%;">
+			<textarea id="code" style="height: 100%;"><?= $code ?></textarea>
+		</div>
+
+	    <script type="text/javascript">
+	      CodeMirror.fromTextArea( 'code', {
+		        parserfile: ["parsexml.js",
+		     		         "parsecss.js",
+		     		         "tokenizejavascript.js",
+		     		         "parsejavascript.js",
+		     		         "../contrib/php/js/tokenizephp.js",
+		     		         "../contrib/php/js/parsephp.js",
+		     		         "../contrib/php/js/parsephphtmlmixed.js"],
+		        stylesheet: [ AgilePHP.getDocumentRoot() + "components/codemirror/css/xmlcolors.css",
+		                      AgilePHP.getDocumentRoot() + "components/codemirror/css/jscolors.css",
+		         	          AgilePHP.getDocumentRoot() + "components/codemirror/css/csscolors.css",
+		         	          AgilePHP.getDocumentRoot() + "components/codemirror/contrib/php/css/phpcolors.css"],
+		        path: AgilePHP.getDocumentRoot() + "components/codemirror/js/",
+		        //continuousScanning: 500,
+		        lineNumbers: true
+	      });
+	    </script>
+	    
+	   </body>
+		
+</html>

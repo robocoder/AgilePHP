@@ -223,10 +223,21 @@ class AJAXRenderer extends BaseRenderer {
 	
 			  		   $value = null;
 			  		   if( $context != 'public' ) {
-	
-	  		 		  	   $property->setAccessible( true );
-			  		 	   $value = $property->getValue( $data );
-			  		 	   $property->setAccessible( false );
+
+			  		   	   if( defined( 'PHP_VERSION_ID' ) && PHP_VERSION_ID >= 50300 ) {
+
+		  		 		  	   $property->setAccessible( true );
+				  		 	   $value = $property->getValue( $data );
+				  		 	   $property->setAccessible( false );
+			  		   	   }
+			  		   	   else {
+
+			  		   	   		//try {
+			  		   	   			$accessor = 'get' . ucfirst( $property->getName() );
+			  		   	   			$value = call_user_func( array( $data, $action ) );  
+			  		   	   		//}
+			  		   	   		//catch( Exception $e ) { }
+			  		   	   }
 			  		   }
 			  		   else {
 		

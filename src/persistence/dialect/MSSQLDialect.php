@@ -30,6 +30,8 @@
  */
 class MSSQLDialect extends BasePersistence implements SQLDialect {
 
+	 private $connectFlag = -1;
+
 	 /**
 	  *  Initalize MSSQL Dialect.
 	  *  
@@ -40,23 +42,40 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 	  		 try {
 	  	  			$this->pdo = new PDO( 'odbc:DRIVER={' . $db->getDriver() . '};SERVER=' . $db->getHostname() . ';DATABASE=' . $db->getName(), 
-	  	     			$db->getUsername(), $db->getPassword() );   		
+	  	     			$db->getUsername(), $db->getPassword() );
+
+	  	     		$this->connectFlag = 1;
 	  	     }
-	  	     catch( PDOException $pdoe ){
+	  	     catch( PDOException $pdoe ) {
 
 	  	     	    Logger::getInstance()->debug( 'MSSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
 
 	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
 	  	     		// be invoked to create the database schema.
-	  	     	    if( strpos( $pdoe->getMessage(), 'Login failed' ) )
+	  	     	    if( strpos( $pdoe->getMessage(), 'Login failed' ) ) {
+
 	  	     	    	$this->pdo = new PDO( 'odbc:DRIVER={' . $db->getDriver() . '};SERVER=' . $db->getHostname(), $db->getUsername(), $db->getPassword() );
-	  	     	    else
+	  	     	    	$this->connectFlag = 0;
+	  	     	    }
+	  	     	    else {
+
+	  	     	    	$this->connectFlag = -1;
 	  	     	    	throw new AgilePHP_Exception( 'Failed to create MSSQLDialect instance. ' . $pdoe->getMessage() );
+	  	     	    }
 	  	     }
 
 	 	     $this->database = $db;
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#isConnected()
+	   */
+	  public function isConnected() {
+
+	  		 return $this->connectFlag;
+	  }
+	  
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/persistence/dialect/SQLDialect#create()

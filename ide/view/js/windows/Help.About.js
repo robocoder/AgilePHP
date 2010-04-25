@@ -14,8 +14,10 @@ AgilePHP.IDE.Window.Help.About = {
             animateTarget: 'btnAbout',
 
             html: '<div id="aboutWindow" style="background-color: #000000; height: 300px;">' +
-            		'<img src="view/images/logo.png" style="float: left; padding: 10px 10px 20px 10px;">' +
-            		'<div style="float: left; padding-left: 290px; padding-right: 25px; color: #FFFFFF">' + 
+            		'<a target="_blank" href="http://www.makeabyte.com/products_agilephp.html">' +
+            			'<img src="' + AgilePHP.getDocumentRoot() + '/view/images/logo.png" style="float: left; padding: 10px 10px 20px 10px;">' +
+            		'</a>' +
+            		'<div style="float: left; padding-left: 290px; padding-right: 25px; padding-top: 15px; color: #FFFFFF">' + 
             			'<div style="font-weight: bolder;">' + AgilePHP.IDE.appName + '</div>' +
             			'<div style="font-weight: bolder;">Version: ' + AgilePHP.IDE.version + '</div>' +
             			'<div>&copy; 2010 <a target="_blank" href="http://www.makeabyte.com" style="text-decoration: none; color: #FFFFFF;">Make A Byte, inc.</a></div>' +

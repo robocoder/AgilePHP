@@ -29,6 +29,10 @@ html, body {
 }
 
 /** Toolbar Styles */
+.fileNewProject {
+	
+	background: url( ../images/tree/16x16/project.png) no-repeat 0 0;
+}
 .fileImport {
 
 	background: url( ../images/toolbar/file-import.png) no-repeat 0 0;	
@@ -68,6 +72,10 @@ html, body {
 }
 
 /** Taskbar Window Button Styles **/
+button.fileNewProject {
+	
+	background: url( ../images/tree/16x16/project.png) no-repeat 0 0 !important;
+}
 button.fileImport {
 
 	background: url( ../images/toolbar/file-import.png) no-repeat 0 0 !important;
@@ -97,6 +105,77 @@ button.helpDocumentation {
 	background: url( ../images/toolbar/help-documentation.png) no-repeat 0 0 !important;
 }
 
+/** Window Styles */
+.window-header {
+
+	padding-bottom: 15px;
+}
+.window-branding {
+
+	float: left;
+	background-image: url( ../images/logo_vertical.png ) no-repeat 0 0 !important;
+	height: 500px;
+}
+
+/** Wizard Styles */
+.wizard-gradient-x {
+
+	background: #C0C0C0;
+}
+
+.wizard-label {
+
+	font-size: 12px;
+	font-style: italic;
+	margin: 10px 5px 10px 5px;
+}
+
+.wizard-label-selected {
+
+	font-style: italic;
+	font-size: 12px;
+	margin: 5px 5px 5px 5px;
+}
+
+.wizard-label-complete {
+	
+	font-weight: bold;
+	font-size: 12px;
+	margin: 5px 5px 5px 5px;
+}
+
+.wizard-summary {
+
+	overflow-y: scroll;
+	height: 160px;
+}
+
+.wizard-summary-category {
+
+	clear: both;
+	font-weight: bold;
+	font-size: 12px;
+	margin-top: 5px;
+	padding-bottom: 2px;
+}
+
+.wizard-summary-block {
+
+	clear: both;
+}
+
+.wizard-summary-label {
+
+	float: left;
+	clear: left;
+}
+
+.wizard-summary-item {
+
+	font-style: italic;
+	margin-left: 75px;
+}
+
 /** AgilePHP Styles */
 a {
 
@@ -104,7 +183,7 @@ a {
 }
 .info {
 
-	font-family:tahoma;
+	font-family: tahoma;
 	font-size: 12px;	
 }
 

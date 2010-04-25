@@ -7,10 +7,18 @@
 		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
 		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/tree-icons.css" type="text/css" rel="stylesheet"/>
 		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/resources/css/ext-all.css" type="text/css" rel="stylesheet"/>
+		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/ux/form/fileuploadfield.css" type="text/css" rel="stylesheet"/>
+		<![if IE]>
+    		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/ie.css" rel="stylesheet" type="text/css" />
+	    <![endif]>
+		<![if !IE]>
+    		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/ff.css" rel="stylesheet" type="text/css" />
+	    <![endif]>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/IndexController/getBaseJS/<?= AgilePHP::getFramework()->isInDebugMode() ?>"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/RemotingController/load/PluginsRemote"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/adapter/ext/ext-base.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/ext-all.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/ux/form/FileUploadField.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/Ext.Fx.shake.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Toolbar.js"></script>
@@ -24,6 +32,7 @@
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Window.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Notification.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.FileExplorer.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Editor.js"></script>
 		<script type="text/javascript">
 
 		AgilePHP.IDE.setDebug( true );

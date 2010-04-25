@@ -119,6 +119,7 @@ class PersistenceManager implements SQLDialect {
 	  	     		 	  break;
 
 	  	     	     case 'mssql':
+	  	     	     case 'sqlsrv':
 
 	  	     	     	  if( strtolower( $db->getDriver() ) == 'sqlsrv' ) {
 
@@ -911,6 +912,15 @@ class PersistenceManager implements SQLDialect {
 	     public function createRestrictSQL() {
 
 	     		 return $this->dialect->createRestrictSQL();
+	     }
+
+		 /**
+		  * (non-PHPdoc)
+		  * @see src/persistence/dialect/SQLDialect#isConnected()
+		  */
+	     public function isConnected() {
+
+	     		return $this->dialect->isConnected();
 	     }
 }
 ?>

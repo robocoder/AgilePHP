@@ -19,18 +19,19 @@
 		$agilephp = AgilePHP::getFramework();
 		$agilephp->setDefaultTimezone( 'America/New_York' );
 		$agilephp->setFrameworkRoot( '/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/src' );
+		AgilePHP::handleErrors();
 
 		MVC::getInstance()->processRequest();
  }
  catch( Exception $e ) {
 
-  	     Logger::getInstance()->error( $e->getMessage() );
+  	     Logger::getInstance()->error( $e->getMessage() . DIRECTORY_SEPARATOR . $e->getTraceAsString() );
 
-		 //$renderer = new ExtRenderer();
-		 //$renderer->setError( ($agilephp->isInDebugMode() ? '<pre>' . $e->getTraceAsString() . '</pre>' : $e->getMessage() ) );
-		 //$renderer->render( false );
+		 $renderer = new ExtFormRenderer();
+		 $renderer->setError( $e->getMessage() );
+		 $renderer->render( false );
 
-  	     $renderer = new PHTMLRenderer();
-  	     echo ($agilephp->isInDebugMode() ? $e->getMessage() . '<pre>' . $e->getTraceAsString() . '</pre>' : $e->getMessage() );
+  	     //$renderer = new PHTMLRenderer();
+  	     //echo ($agilephp->isInDebugMode() ? $e->getMessage() . '<pre>' . $e->getTraceAsString() . '</pre>' : $e->getMessage() );
  }
 ?>

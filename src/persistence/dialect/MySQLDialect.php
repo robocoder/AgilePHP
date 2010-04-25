@@ -29,6 +29,8 @@
  */
 class MySQLDialect extends BasePersistence implements SQLDialect {
 
+	  private $connectFlag = -1;
+
 	  /**
 	   * Initalize MySQLDialect
 	   * 
@@ -38,21 +40,37 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	  public function __construct( Database $db ) {
 
 	  	     try {
-	  	  			$this->pdo = new PDO( 'mysql:host=' . $db->getHostname() . ';dbname=' . $db->getName(), $db->getUsername(), $db->getPassword() );   		
+	  	  			$this->pdo = new PDO( 'mysql:host=' . $db->getHostname() . ';dbname=' . $db->getName(), $db->getUsername(), $db->getPassword() );
+	  	  			$this->connectFlag = 1;   		
 	  	     }
-	  	     catch( PDOException $pdoe ){
+	  	     catch( PDOException $pdoe ) {
 
 	  	     	    Logger::getInstance()->debug( 'MySQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
 
 	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
 	  	     		// be invoked to create the database schema.
-	  	     	    if( strpos( $pdoe->getMessage(), 'Unknown database' ) )
+	  	     	    if( strpos( $pdoe->getMessage(), 'Unknown database' ) ) {
+
 	  	     	    	$this->pdo = new PDO( 'mysql:host=' . $db->getHostname() . ';', $db->getUsername(), $db->getPassword() );
-	  	     	    else
+	  	     	    	$this->connectFlag = 0;
+	  	     	    }
+	  	     	    else {
+
+	  	     	    	$this->connectFlag = -1;
 	  	     	    	throw new AgilePHP_Exception( 'Failed to create MySQLDialect instance. ' . $pdoe->getMessage() );
+	  	     	    }
 	  	     }
 
 	 	     $this->database = $db;
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#isConnected()
+	   */
+	  public function isConnected() {
+
+	  		 return $this->connectFlag;
 	  }
 
 	  /**

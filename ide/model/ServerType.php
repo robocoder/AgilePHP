@@ -5,6 +5,7 @@ class ServerType {
 	private $id;
 	private $type;
 	private $name;
+	private $vendor;
 
 	public function __construct() { }
 
@@ -36,6 +37,16 @@ class ServerType {
 	public function getName() {
 
 		 return $this->name;
+	}
+	
+	public function setVendor( $vendor ) {
+		
+		   $this->vendor = $vendor;
+	}
+	
+	public function getVendor() {
+
+		   return $this->vendor;
 	}
 }
 ?>

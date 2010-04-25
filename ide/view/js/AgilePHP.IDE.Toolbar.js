@@ -18,6 +18,16 @@ AgilePHP.IDE.Toolbar = function() {
 		    	id: 'fileMenu',
 				text: 'File',
 				menu: [{
+
+					  id: 'toolbar-btn-newproject',
+					  text: 'New Project ...',
+					  iconCls: 'fileNewProject',
+					  tooltip: {text: 'Create New AgilePHP Project', title: 'New Project', autoHide: true},
+					  handler: function() {
+
+							  new AgilePHP.IDE.Window.File.NewProject().show();
+					  }
+				}, '-', {
 					  id: 'btnImport',
 					  text: 'Import',
 					  iconCls: 'fileImport',

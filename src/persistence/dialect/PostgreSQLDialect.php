@@ -29,6 +29,8 @@
  */
 class PostgreSQLDialect extends BasePersistence implements SQLDialect {
 
+	  private $connectFlag = -1;
+
 	  /**
 	   * Initalize PostgreSQLDialect
 	   * 
@@ -38,7 +40,14 @@ class PostgreSQLDialect extends BasePersistence implements SQLDialect {
 	  public function __construct( Database $db ) {
 
 	  	     try {
-	  	  			$this->pdo = new PDO( 'pgsql:host=' . $db->getHostname() . ';dbname=' . $db->getName(), $db->getUsername(), $db->getPassword() );		
+	  	     		$conn = 'pgsql:' .
+	  	     				(($db->getName()) ? 'dbname=' . $db->getName() . ';': '' ) .
+	  	  					(($db->getHostname()) ? 'host=' . $db->getHostname() . ';': '' ) .
+	  	  					(($db->getUsername()) ? 'user=' . $db->getUsername() . ';': '' ) .
+	  	  					(($db->getPassword()) ? 'password=' . $db->getPassword() . ';' : '' );
+
+	  	  			$this->pdo = new PDO( $conn );
+	  	  			$this->connectFlag = 1;	
 	  	     }
 	  	     catch( PDOException $pdoe ){
 
@@ -46,13 +55,37 @@ class PostgreSQLDialect extends BasePersistence implements SQLDialect {
 
 	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
 	  	     		// be invoked to create the database schema.
-	  	     	    if( strpos( $pdoe->getMessage(), 'Unknown database' ) )
-	  	     	    	$this->pdo = new PDO( 'pgsql:host=' . $db->getHostname() . ';', $db->getUsername(), $db->getPassword() );
-	  	     	    else
+	  	     		/*
+	  	     	    if( strpos( $pdoe->getMessage(), 'does not exist' ) ) {
+
+	  	     	    	$conn = 'pgsql:' .
+	  	  					(($db->getHostname()) ? 'host=' . $db->getHostname() . ';': '' ) .
+	  	  					(($db->getUsername()) ? 'user=' . $db->getUsername() . ';': '' ) .
+	  	  					(($db->getPassword()) ? 'password=' . $db->getPassword() . ';' : '' );
+
+	  	     	    	$this->pdo = new PDO( $conn );
+	  	     	    	$this->connectFlag = 0;
+	  	     	    }
+	  	     	    else {
+
+	  	     	    	$this->connectFlag = -1;
 	  	     	    	throw new AgilePHP_Exception( 'Failed to create PostgreSQLDialect instance. ' . $pdoe->getMessage() );
+	  	     	    }*/
+
+	  	     	    throw new AgilePHP_Exception( $pdoe->getMessage() );
+	  	     	    
 	  	     }
 
 	 	     $this->database = $db;
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#isConnected()
+	   */
+	  public function isConnected() {
+	  	
+	  		 return $this->connectFlag == true;
 	  }
 
 	  /**
