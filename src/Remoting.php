@@ -44,8 +44,6 @@ abstract class Remoting extends BaseController {
 	  		       $this->class = $class;
 	  		       $this->createRenderer( 'AJAXRenderer' );
 
-	  	 		   ini_set('error_prepend_string', '<phperror>');
-				   ini_set('error_append_string', '</phperror>');
 				   set_error_handler( 'Remoting::ErrorHandler' );
 				   ob_start( array( $this, 'captureErrors' ) );
 	  	 }
@@ -497,7 +495,7 @@ abstract class Remoting extends BaseController {
 	  }
 
 	  /**
-	   * Parses each PHP output buffer for php errors and converts them into an AgilePHP_RemotingException
+	   * Parses each PHP output buffer for php fatal error and converts to AgilePHP_RemotingException if present.
 	   * 
 	   * @param string $buffer PHP output buffer
 	   * @return void
@@ -505,17 +503,8 @@ abstract class Remoting extends BaseController {
 	   */
 	  public function captureErrors( $buffer ) {
 
-			 $output = $buffer;
 			 $matches = array();
 			 $errors = '';
-
-			 /*
-			 if( preg_match( '|<phperror>.*</phperror>|s', $output, &$matches ) ) {
-
-				 foreach( $matches as $error )
-					$errors .= strip_tags( $error );
-			 }
-			 */
 
 			 if( ereg('(error</b>:)(.+)(<br)', $buffer, $regs ) ) {
 
@@ -523,9 +512,6 @@ abstract class Remoting extends BaseController {
 		         $buffer = json_encode( array( '_class' => 'AgilePHP_RemotingException', 'message' => $err, 'trace' => debug_backtrace() ) );
 		     }
 		     return $buffer;
-
-		     //if( $errors ) throw new AgilePHP_RemotingException( $errors );
-			 //return $output;
 	  }
 
 	  /**
