@@ -1,14 +1,13 @@
-0.19a
+0.20a
 -----
 
-- Added AgilePHP.getDocumentRoot() to AgilePHP.js to return the HTTP relative path to the root of the application.
-- Bug fix to MVC::processRequest. Anything '.php' in the MVC string broke parsing.
-- Bug fix to AgilePHP_RemotingException where trace was not being included in exception.
-- Added AgilePHP handleErrors, ErrorHandler and setErrorHandler. Integrated with Logger component to provide appropriate levels.  
-- Pass by reference deprecation notices fixed.
-- Added _class field to AgilePHP_RemotingException to allow client side javascript to detect remoting exceptions.
-- Playing with AJAXRenderer::toJSON setAccessible call to execute user_func_arg on older versions of php using "bean-style" accessor.
-- Added isConnected to SQLDialect.
-- Added exception to SQLSRVDialect constructor that gets thrown if the driver is not installed on the server.
-- Refactored Remoting component to buffer output into captureErrors method to filter out all errors and convert them into JSON formatted AgilePHP_RemotingException.
-- More initial development on ide package - almost ready to be somewhat useful.
+- Bug fix to MySQLDialect::reverseEngineer. Missing $pm instantiation.
+- Refactored AJAXRenderer --
+	- toJSON include class names on versions of php prior to 5.3
+	-        fix to json array formatting
+	- 		 changed to public context
+	- toXML  changed to public context
+	- 		 bug fixes to logic involving arrays
+- More IDE development. working base window and wizard. reorganized windows for fileexplorer,
+  renamed toolbar to menubar, created "new project" wizard, "new controller", "new view" and
+  started on "new model". 

@@ -195,6 +195,8 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function reverseEngineer() {
 
+	  		 $pm = new PersistenceManager();
+	  	
 	  		 $Database = new Database();
 	  		 $Database->setId( $this->database->getId() );
 	  		 $Database->setName( $this->database->getName() );
@@ -239,18 +241,18 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 						   $Column->setType( $type );
 						   $Column->setLength( $length );
 
-						   if( $desc->Default )
+						   if( isset( $desc->Default ) && $desc->Default )
 						   	    $Column->setDefault( $desc->Default );
 
-						   if( $desc->NULL == 'NO' )
+						   if( isset( $desc->NULL ) && $desc->NULL == 'NO' )
 						   	   $Column->setRequired( true );
 
-						   if( $desc->KEY == 'PRI' )
+						   if( isset( $desc->KEY ) && $desc->KEY == 'PRI' )
 						   	   $Column->setPrimaryKey( true );
 
-						   if( $desc->Extra == 'auto_increment' )
+						   if( isset( $desc->Extra ) && $desc->Extra == 'auto_increment' )
 						   	   $Column->setAutoIncrement( true );
-      	      		   
+
       	      		  	   $Table->addColumn( $Column );
       	      		   }
 

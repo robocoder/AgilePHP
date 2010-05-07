@@ -14,25 +14,29 @@
 		<![if !IE]>
     		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/ff.css" rel="stylesheet" type="text/css" />
 	    <![endif]>
-		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/IndexController/getBaseJS/<?= AgilePHP::getFramework()->isInDebugMode() ?>"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/RemotingController/getBaseJS/<?= AgilePHP::getFramework()->isInDebugMode() ?>"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/RemotingController/load/PluginsRemote"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/adapter/ext/ext-base.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/ext-all.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/ux/form/FileUploadField.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/ux/grid/CheckColumn.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/Ext.Fx.shake.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.js"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Toolbar.js"></script>
+
+		<!--  Begin Bootstrap -->
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Window.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Menubar.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.TabPanel.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Properties.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Taskbar.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Debugger.js"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Workspace.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Desktop.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Login.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Plugins.js"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Window.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Notification.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.FileExplorer.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.IDE.Editor.js"></script>
+		<!--  End Bootstrap -->
 		<script type="text/javascript">
 
 		AgilePHP.IDE.setDebug( true );
@@ -43,7 +47,7 @@
 			bypassLogin = true;  // speed up login during development
 
 			(bypassLogin) ?
-				AgilePHP.IDE.Workspace.load() :
+				AgilePHP.IDE.Desktop.load() :
 				AgilePHP.IDE.Login.show();
 		});
 		</script>

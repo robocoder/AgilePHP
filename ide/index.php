@@ -30,8 +30,5 @@
 		 $renderer = new ExtFormRenderer();
 		 $renderer->setError( $e->getMessage() );
 		 $renderer->render( false );
-
-  	     //$renderer = new PHTMLRenderer();
-  	     //echo ($agilephp->isInDebugMode() ? $e->getMessage() . '<pre>' . $e->getTraceAsString() . '</pre>' : $e->getMessage() );
  }
 ?>

@@ -57,12 +57,15 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		 else if( $this->output == 'xml' ) {
 
+	  		 	 if( !$name ) $name = 'Result';
+
 	  		 	 $xml = $this->toXML( $data, $name );
 
 	  		 	 Logger::getInstance()->debug( 'AJAXRenderer::render Rendering XML ' . $xml );
 
 	  		 	 header( 'content-type: text/xml' );
 	  		 	 print $xml;
+	  		 	 exit;
 	  		 }
 	  }
 
@@ -95,6 +98,7 @@ class AJAXRenderer extends BaseRenderer {
 	  		 	 Logger::getInstance()->debug( 'AJAXRenderer::render Rendering XML ' . $xml );
 
 	  		 	 print $xml;
+	  		 	 exit;
 	  		 }
 	  }
 
@@ -138,6 +142,7 @@ class AJAXRenderer extends BaseRenderer {
 	  public function renderNoFormatNoHeader( $data ) {
 
 	  		 print $data;
+	  		 exit;
 	  }
 
 	  /**
@@ -174,7 +179,7 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param String $name Used internally within the method to perform recursion logic.
 	   * @return The JSON encoded data
 	   */
-	  private function toJSON( $data, $name = null ) {
+	  public function toJSON( $data, $name = null ) {
 
 	  		  $json = '';
 
@@ -188,7 +193,8 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		  	  		$i++;
 	  		  	  	 	$json .= (is_object( $value ) || is_array( $value )) ?
-	  		  	  	 				 $this->toJSON( $value, $name ) : "$key : " . json_encode( $value );
+	  		  	  	 				 $this->toJSON( $value, $name ) :
+	  		  	  	 				 ((is_numeric( $key )) ? json_encode( $value ) : "$key : " . json_encode( $value ) );
 	  		  	  	 	$json .= ( $i < count( $data ) ) ? ', ' : '';
 	  		  	  }
 	  		  	  $json .= ' ]';
@@ -220,7 +226,7 @@ class AJAXRenderer extends BaseRenderer {
 	
 		  		 	   else if( $property->isPrivate() )
 			  		 		  	$context = 'private';
-	
+
 			  		   $value = null;
 			  		   if( $context != 'public' ) {
 
@@ -231,19 +237,34 @@ class AJAXRenderer extends BaseRenderer {
 				  		 	   $property->setAccessible( false );
 			  		   	   }
 			  		   	   else {
+			  		   	   		// Cant set property accessible to retrieve value because we are on
+			  		   	   		// a legacy version of php - resort to guessing an accessor name
+			  		   	   		try {
+			  		   	   			$prop = $property->getName();
+			  		   	   			$getAccessor = 'get' . ucfirst( $property->getName() );
+			  		   	   			$isAccessor = 'is' . ucfirst( $property->getName() );
 
-			  		   	   		//try {
-			  		   	   			$accessor = 'get' . ucfirst( $property->getName() );
-			  		   	   			$value = call_user_func( array( $data, $action ) );  
-			  		   	   		//}
-			  		   	   		//catch( Exception $e ) { }
+			  		   	   			if( method_exists( $data, $getAccessor ) )
+			  		   	   				$method = $class->getMethod( $getAccessor );
+			  		   	   			else if( method_exists( $data, $isAccessor ) )
+			  		   	   				$method = $class->getMethod( $isAccessor );
+			  		   	   			else if( method_exists( $data, $prop ) )
+			  		   	   				$method = $class->getMethod( $prop );
+
+									$value = $method->invoke( $data );
+			  		   	   		}
+			  		   	   		catch( Exception $e ) {
+
+			  		   	   			   Logger::getInstance()->error( $data );
+			  		   	   			   Logger::getInstance()->error( $e->getMessage() );
+			  		   	   		}
 			  		   	   }
 			  		   }
 			  		   else {
-		
+
 			  		   	   $value = $property->getValue( $data );
 			  		   }
-	
+
 			  		   if( is_object( $value ) || is_array( $value ) )
 			  		   	   $json .= $this->toJSON( $value, $property->getName() ) . ' ';
 
@@ -270,7 +291,7 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param $name Used internally within the method to perform recursion logic
 	   * @return The XML string
 	   */
-	  private function toXML( $data, $name = 'Result', $isChild = false ) {
+	  public function toXML( $data, $name = 'Result', $isChild = false ) {
 
 	  		  $xml = ($isChild) ? '' : "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
 
@@ -319,7 +340,7 @@ class AJAXRenderer extends BaseRenderer {
 		  		 	  return $xml;
 	  		     }
 
-		  		 $xml = '<' . $class->getName() . '>';print_r( $class->getProperties() );
+		  		 $xml = '<' . $class->getName() . '>';
 		  		 foreach( $class->getProperties() as $property ) {
 	
 		  		 		  $context = null;
@@ -333,9 +354,35 @@ class AJAXRenderer extends BaseRenderer {
 		  		 		  $value = null;
 		  		 		  if( $context != 'public' ) {
 	
-		  		 		  	  $property->setAccessible( true );
-		  		 		  	  $value = $property->getValue( $data );
-		  		 		  	  $property->setAccessible( false );
+			  		 		  if( defined( 'PHP_VERSION_ID' ) && PHP_VERSION_ID >= 50300 ) {
+	
+			  		 		  	   $property->setAccessible( true );
+					  		 	   $value = $property->getValue( $data );
+					  		 	   $property->setAccessible( false );
+				  		   	   }
+				  		   	   else {
+				  		   	   		// Cant set property accessible to retrieve value because we are on
+				  		   	   		// a legacy version of php - resort to guessing an accessor name
+				  		   	   		try {
+				  		   	   			$prop = $property->getName();
+				  		   	   			$getAccessor = 'get' . ucfirst( $property->getName() );
+				  		   	   			$isAccessor = 'is' . ucfirst( $property->getName() );
+	
+				  		   	   			if( method_exists( $data, $getAccessor ) )
+				  		   	   				$method = $class->getMethod( $getAccessor );
+				  		   	   			else if( method_exists( $data, $isAccessor ) )
+				  		   	   				$method = $class->getMethod( $isAccessor );
+				  		   	   			else if( method_exists( $data, $prop ) )
+				  		   	   				$method = $class->getMethod( $prop );
+	
+										$value = $method->invoke( $data );
+				  		   	   		}
+				  		   	   		catch( Exception $e ) {
+	
+				  		   	   			   Logger::getInstance()->error( $data );
+				  		   	   			   Logger::getInstance()->error( $e->getMessage() );
+				  		   	   		}
+				  		   	   }
 		  		 		  }
 		  		 		  else {
 	
@@ -350,7 +397,8 @@ class AJAXRenderer extends BaseRenderer {
 			  		 		  $value = mb_convert_encoding( html_entity_decode( $value ), 'UTF-8', 'ISO-8859-1' );
 			  		 		  $xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
 		  		 		  }
-		  		 } 
+		  		 }
+		  		 $xml .= '</' . $class->getName() . '>';
 	  		 }
 	  		 return $xml;
 	  }

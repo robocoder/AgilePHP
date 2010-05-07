@@ -98,8 +98,8 @@ AgilePHP.IDE.Window = function( id, iconCls, title, width, height ) {
 					}
 			});
 
-			AgilePHP.IDE.Workspace.taskbar.add( this.trayBtn );
-			AgilePHP.IDE.Workspace.taskbar.doLayout();
+			AgilePHP.IDE.Desktop.taskbar.add( this.trayBtn );
+			AgilePHP.IDE.Desktop.taskbar.doLayout();
 		};
 
 		this.show = function() {
@@ -288,19 +288,3 @@ AgilePHP.IDE.Window.prototype.wizard = function( steps ) {
 
 	return this;
 };
-
-// Initalize main window objects for the application
-AgilePHP.IDE.Window.File = {};
-AgilePHP.IDE.Window.Tools = {};
-AgilePHP.IDE.Window.Help = {};
-
-// Load application windows source files
-AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/File.NewProject.js' );
-AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/File.Import.js' );
-AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/File.Export.js' );
-
-AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/Tools.DatabaseManager.js' );
-AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/Tools.DatabaseManager.Compare.js' );
-AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/Tools.Settings.js' );
-
-AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/windows/Help.About.js' );

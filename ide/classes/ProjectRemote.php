@@ -1,18 +1,14 @@
 <?php
 
 /**
- * Responsible for processing "new project" wizard requests.
+ * Responsible for processing all requests in regards to an agilephp project.
  * 
  * @author jhahn
  */
 class ProjectRemote {
 
+	  private $projectName;
 	  private $root;
-
-	  public function __construct() {
-
-	  		 //set_error_handler( 'ProjectRemote::ErrorHandler' );
-	  }
 
 	  /**
 	   * Creates a new project
@@ -33,7 +29,7 @@ class ProjectRemote {
  	  		 if( !isset( $workspace ) )
  	  		 	 throw new AgilePHP_Exception( 'Missing workspace value' );
 
- 	  		 if( !isset( $projectName ) )
+ 	  		 if( !isset( $projectName ) || !$this->projectName = $projectName )
  	  		 	 throw new AgilePHP_Exception( 'Missing project name' );
 
  	  		 if( !file_exists( $workspace ) )
@@ -47,57 +43,73 @@ class ProjectRemote {
  	  		 if( !mkdir( $this->root ) )
  	  		 	 throw new AgilePHP_Exception( 'Failed to create project at ' . $this->root );
 
- 	  		 $model = $this->root . DIRECTORY_SEPARATOR . 'model';
-	  		 if( !mkdir( $model ) )
-	  		 	 throw new AgilePHP_Exception( 'Failed to create project models directory at \'' . $model . '\'.' );
-	  		 	 
-	  		 $view = $this->root . DIRECTORY_SEPARATOR . 'view';
-	  		 if( !mkdir( $view ) )
-	  		 	 throw new AgilePHP_Exception( 'Failed to create project view directory at \'' . $view . '\'.' );
+  		 	 try {
+		 	  		 $model = $this->root . DIRECTORY_SEPARATOR . 'model';
+			  		 if( !mkdir( $model ) )
+			  		 	 throw new AgilePHP_Exception( 'Failed to create project models directory at \'' . $model . '\'.' );
+			  		 	 
+			  		 $view = $this->root . DIRECTORY_SEPARATOR . 'view';
+			  		 if( !mkdir( $view ) )
+			  		 	 throw new AgilePHP_Exception( 'Failed to create project view directory at \'' . $view . '\'.' );
+		
+			  		 $css = $this->root . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . 'css';
+			  		 if( !mkdir( $css ) )
+			  		 	 throw new AgilePHP_Exception( 'Failed to create project css directory at \'' . $css . '\'.' );
+		
+			  		 $control = $this->root . DIRECTORY_SEPARATOR . 'control';
+			  		 if( !mkdir( $control ) )
+			  		 	 throw new AgilePHP_Exception( 'Failed to create project controllers directory at \'' . $control . '\'.' );
+		
+			  		 $logs = $this->root . DIRECTORY_SEPARATOR . 'logs';
+			  		 if( !mkdir( $logs ) )
+			  		 	 throw new AgilePHP_Exception( 'Failed to create project logging directory at \'' . $logs . '\'.' );
+		
+			  		 if( !chmod( $logs, 0777 ) )
+			  		 	 throw new AgilePHP_Exception( 'Failed to change permissions to 077 on project logging directory \'' . $logs . '\'.' );
+		
+			  		 $components = $this->root . DIRECTORY_SEPARATOR . 'components';
+			  		 if( !mkdir( $components ) )
+			  		 	 throw new AgilePHP_Exception( 'Failed to create project components directory at \'' . $components . '\'.' );
+		
+			  		 $classes = $this->root . DIRECTORY_SEPARATOR . 'classes';
+			  		 if( !mkdir( $classes ) )
+			  		 	 throw new AgilePHP_Exception( 'Failed to create project classes directory at \'' . $classes . '\'.' );
+		
+			  		 $agilephp = $this->root . DIRECTORY_SEPARATOR . 'AgilePHP';
+			  		 FileUtils::copy( '..' . DIRECTORY_SEPARATOR . 'src', $agilephp );
+		
+			  		 if( $databaseEnable )
+				  		 $this->createPersistenceXML( $identityEnable, $sessionEnable, $databaseName, $databaseType,
+				  		 			$databaseHostname, $databaseUsername, $databasePassword, $databaseType /* instead of driver - maybe driver should be passed as hidden */ );
+		
+			  		 $this->createAgilePhpXML( $logEnable, $identityEnable, $cryptoEnable, $logLevel );
+			  		 $this->createAccessFile( ($databaseType) == 'sqlite' ? true : false, $databaseName );
+			  		 $this->createIndexDotPHP();
+			  		 $this->createStyleSheet();
 
-	  		 $css = $this->root . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . 'css';
-	  		 if( !mkdir( $css ) )
-	  		 	 throw new AgilePHP_Exception( 'Failed to create project css directory at \'' . $css . '\'.' );
+			  		 if( $ideEnable ) {
 
-	  		 $control = $this->root . DIRECTORY_SEPARATOR . 'control';
-	  		 if( !mkdir( $control ) )
-	  		 	 throw new AgilePHP_Exception( 'Failed to create project controllers directory at \'' . $control . '\'.' );
+			  		 	 switch( $idePlatform ) {
 
-	  		 $logs = $this->root . DIRECTORY_SEPARATOR . 'logs';
-	  		 if( !mkdir( $logs ) )
-	  		 	 throw new AgilePHP_Exception( 'Failed to create project logging directory at \'' . $logs . '\'.' );
+			  		 	 		 case 'eclipse':
+			  		 	 		 	$this->createEclipse();
+			  		 	 		 	break;
 
-	  		 if( !chmod( $logs, 0777 ) )
-	  		 	 throw new AgilePHP_Exception( 'Failed to change permissions to 077 on project logging directory \'' . $logs . '\'.' );
+			  		 	 		 case 'netbeans':
+			  		 	 		 	$this->createNetbeans();
+			  		 	 		 	break;
+			  		 	 }
+			  		 }
 
-	  		 $components = $this->root . DIRECTORY_SEPARATOR . 'components';
-	  		 if( !mkdir( $components ) )
-	  		 	 throw new AgilePHP_Exception( 'Failed to create project components directory at \'' . $components . '\'.' );
+			  		 return true;
+  		 	 }
+  		 	 catch( AgilePHP_Exception $e ) {
 
-	  		 $classes = $this->root . DIRECTORY_SEPARATOR . 'classes';
-	  		 if( !mkdir( $classes ) )
-	  		 	 throw new AgilePHP_Exception( 'Failed to create project classes directory at \'' . $classes . '\'.' );
+  		 	 		if( file_exists( $this->root ) )
+  		 	 			FileUtils::delete( $this->root );
 
-	  		 $agilephp = $this->root . DIRECTORY_SEPARATOR . 'AgilePHP';
-	  		 $this->recursiveCopy( '..' . DIRECTORY_SEPARATOR . 'src', $agilephp );
-
-	  		 if( getValue( 'databaseEnable' ) ) {
-
-		  		 $this->createPersistenceXML( getValue( 'identityEnable' ), getValue( 'sessionEnable' ), getValue( 'databaseName' ),
-		  		 				getValue( 'databaseType' ), getValue( 'databaseHostname' ), getValue( 'databaseUsername' ), getValue( 'databasePassword' ) );
-	  		 }
-
-	  		 $this->createAgilePhpXML( getValue( 'logEnable' ), getValue( 'identityEnable' ), getValue( 'cryptoEnable' ));
-	  		 $this->createAccessFile( (getValue( 'databaseType' ) == 'sqlite' ? true : false ) );
-	  		 $this->createIndexDotPHP();
-	  		 $this->createStyleSheet();
-
-	  		 //if( getValue( 'ideEnable' ) ) {
-
-	  		 	 
-	  		 //}
-
-	  		 return true;
+  		 	 		throw new AgilePHP_Exception( $e->getMessage() );
+  		 	 }
 	  }
 
 	  /**
@@ -106,7 +118,6 @@ class ProjectRemote {
 	   * @type
 	   */
 	  #@RemoteMethod
-	  //public function testDatabaseConnection( $type, $hostname, $name, $username, $password ) {
 	  public function testDatabaseConnection( $database ) {
 
 	  		 $Database = new Database();
@@ -124,42 +135,36 @@ class ProjectRemote {
 	  }
 
 	  /**
-	   * Performs recursive file copy
+	   * Utility method to replace *nix line breaks with windows line breaks if building on windows.
 	   * 
-	   * @param $src The source to copy
-	   * @param $dst The destination
+	   * @param String $file The fully qualified file path
 	   * @return void
 	   */
-	  private function recursiveCopy( $src, $dst ) {
+	  private function fixLineBreaks( $file ) {
 
-		      $dir = opendir( $src );
-			  mkdir( $dst );
-			  while( false !== ( $file = readdir( $dir ) ) ) {
+	  		  if( substr( getcwd(), 0, 1 ) != '/' ) {
 
-			      	 if( $file != '.' && $file != '..' && substr( $file, 0, 4 ) != '.svn' ) {
+	       		  $h = fopen( $file, 'r' );
+	      		  $data = '';
+	      		  while( !feof( $h ) )
+	      		 		  $data .= fgets( $h, 4096 );
+	      		  fclose( $h );
 
-			             if( is_dir( $src . DIRECTORY_SEPARATOR . $file ) )
+	      		  $data = str_replace( "\n", PHP_EOL, $data );
 
-			             	 $this->recursiveCopy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
-			             else {
-
-			             	copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
-
-			             	// Replace *nix line breaks with windows line breaks if building on windows.
-			             	$this->fixLineBreaks( $dst . DIRECTORY_SEPARATOR . $file );
-			             }
-			        }
-			 }
-			 closedir( $dir );
+             	  $h = fopen( $file, 'w' );
+			  	  fwrite( $h, $data );
+			  	  fclose( $h );
+	  		  }
 	  }
 
-	  private function createPersistenceXML( $identity, $session, $name, $type, $hostname, $username, $password ) {
+	  private function createPersistenceXML( $identity, $session, $name, $type, $hostname, $username, $password, $driver ) {
 
 	  		  $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
 			  $data .= '<!DOCTYPE persistence SYSTEM "AgilePHP/persistence/persistence.dtd">' . PHP_EOL;
 			  $data .= '<persistence>' . PHP_EOL;
-			  $data .= "\t<database id=\"db1\" name=\"" . ($type == 'sqlite' ? $this->getCache()->getProjectRoot() . '/' . $name : $name) . "\"" .
-			  				($type == 'mssql' ? ' driver="SQL Server Native Client 10.0"' : '') . PHP_EOL . "\t\t\ttype=\"" . $type . "\" hostname=\"" . $hostname .
+			  $data .= "\t<database id=\"db1\" name=\"" . ($type == 'sqlite' ? $this->root . '/' . $name . '.sqlite' : $name) . "\"" .
+			  				($type == 'mssql' ? ' driver="' . $db->getDriver() .'"' : '') . PHP_EOL . "\t\t\ttype=\"" . $type . "\" hostname=\"" . $hostname .
 	  		  				"\" username=\"" . $username . "\" password=\"" . $password . "\">" . PHP_EOL . PHP_EOL;
 
 			  if( $identity ) {
@@ -200,22 +205,22 @@ class ProjectRemote {
 			  $data .= "\t</database>" . PHP_EOL;
 			  $data .= '</persistence>';
 
-	  		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml', 'w' );
+	  		  $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'persistence.xml', 'w' );
 	  		  fwrite( $h, $data );
 	  		  fclose( $h );
 
-	  		  if( !file_exists( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'persistence.xml' ) )
+	  		  if( !file_exists( $this->root . DIRECTORY_SEPARATOR . 'persistence.xml' ) )
 	  		  	  throw new AgilePHP_Exception( 'Could not create default persistence.xml file' );
 	  }
 
-	  private function createAgilePhpXML( $debug, $identity, $crypto ) {
+	  private function createAgilePhpXML( $logger, $identity, $crypto, $logLevel ) {
 
 	  		  $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
 	  		  $data .= '<!DOCTYPE agilephp SYSTEM "AgilePHP/agilephp.dtd">' . PHP_EOL;
 	  		  $data .= '<agilephp>' . PHP_EOL;
 
-			  if( $debug )
-			 	  $data .= "\t<logger level=\"debug\"/>" . PHP_EOL;
+			  if( $logger )
+			 	  $data .= "\t<logger level=\"$logLevel\"/>" . PHP_EOL;
 
 			  if( $identity )
 			 	  $data .= "\t<identity resetPasswordUrl=\"http://localhost/index.php/LoginController/resetPassword\" confirmationUrl=\"http://localhost/index.php/LoginController/confirm\"/>" . PHP_EOL;
@@ -225,15 +230,18 @@ class ProjectRemote {
 
 			  $data .= '</agilephp>';
 
-			  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml', 'w' );
+			  $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'agilephp.xml', 'w' );
 	  		  fwrite( $h, $data );
 	  		  fclose( $h );
 
-	  		  if( !file_exists( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml' ) )
+	  		  if( !file_exists( $this->root . DIRECTORY_SEPARATOR . 'agilephp.xml' ) )
 	  		 	  throw new AgilePHP_Exception( 'Could not create default agilephp.xml file' );
 	  }
 
-	  private function createAccessFile( $sqlite = false ) {
+	  private function createAccessFile( $sqlite = false, $dbname = false ) {
+
+	  		  if( $sqlite && !$dbname )
+	  		  	  throw new AgilePHP_Exception( 'dbname parameter required when passing \'sqlite\'.' );
 
 	  		  $data = '<Files .htaccess>' . PHP_EOL;
 	  		  $data .= "\torder deny,allow" . PHP_EOL;
@@ -250,13 +258,13 @@ class ProjectRemote {
 
 			  if( $sqlite ) {
 
-			  	  $data .= PHP_EOL . "<Files " . $this->getCache()->getDBName() . ".sqlite>" . PHP_EOL;
+			  	  $data .= PHP_EOL . "<Files " . $dbname . ".sqlite>" . PHP_EOL;
 			  	  $data .= "\torder deny,allow" . PHP_EOL;
 			  	  $data .= "\tdeny from all" . PHP_EOL;
 			  	  $data .= "</Files>";
 		  	  }
 
-	  		  $htaccess = $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . '.htaccess';
+	  		  $htaccess = $this->root . DIRECTORY_SEPARATOR . '.htaccess';
 
 	  		  $h = fopen( $htaccess, 'w' );
 	  		  fwrite( $h, $data );
@@ -270,9 +278,9 @@ class ProjectRemote {
 	  	      $code = '<?php
 /**
  * AgilePHP Generated Index Page
- * ' . $this->getCache()->getProjectName() . '
+ * ' . $this->projectName . '
  * 
- * @package ' . $this->getCache()->getProjectName() . '
+ * @package ' . $this->projectName . '
  */
 
 /**
@@ -288,7 +296,7 @@ class ProjectRemote {
 
  try {
 		$agilephp = AgilePHP::getFramework();
-		$agilephp->setFrameworkRoot( \'' . $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'AgilePHP\' );
+		$agilephp->setFrameworkRoot( \'' . $this->root . DIRECTORY_SEPARATOR . 'AgilePHP\' );
 		$agilephp->setDefaultTimezone( \'America/New_York\' );
 
 		MVC::getInstance()->processRequest();
@@ -298,12 +306,12 @@ class ProjectRemote {
   	     Logger::getInstance()->error( $e->getMessage() );
 
 		 $renderer = new PHTMLRenderer();
-		 $renderer->set( \'title\', \'' . $this->getCache()->getProjectName() . ' :: Error Page\' );
+		 $renderer->set( \'title\', \'' . $this->projectName . ' :: Error Page\' );
 		 $renderer->set( \'error\', $e->getMessage() . ($agilephp->isInDebugMode() ? \'<pre>\' . $e->getTraceAsString() . \'</pre>\' : \'\' ) );
 		 $renderer->render( \'error\' );
  } 
 ?>';
-	  	 	  $h = fopen( $this->getCache()->getProjectRoot() . '/index.php', 'w' );
+	  	 	  $h = fopen( $this->root . '/index.php', 'w' );
 	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $code ) );
 	  		  fclose( $h );    
 	  }
@@ -427,34 +435,96 @@ a {
 	font-size:12px;
 	line-height:14px;
 }';
-	  		  $h = fopen( $this->getCache()->getProjectRoot() . DIRECTORY_SEPARATOR . 'view' .
+	  		  $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'view' .
 	  		  			DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'style.css', 'w' );
 	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $style ) );
 	  		  fclose( $h );    
 	  }
 
-	  /**
-	   * Custom PHP error handling function which throws an AgilePHP_Exception instead of echoing.
-	   * 
-	   * @param Integer $errno Error number
-	   * @param String $errmsg Error message
-	   * @param String $errfile The name of the file that caused the error
-	   * @param Integer $errline The line number that caused the error
-	   * @return false
-	   * @throws AgilePHP_Exception
-	   *
- 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
+	  public function createEclipse() {
 
- 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg . 
- 	  		 		  PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
+	  		  $dotProject = '<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>' . $this->projectName . '</name>
+	<comment>AgilePHP Generated Project</comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.wst.validation.validationbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.dltk.core.scriptbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.php.core.PHPNature</nature>
+	</natures>
+</projectDescription>';
 
- 	  		 throw new AgilePHP_Exception( $errmsg, $errno, $errfile, $errline );
+	  		  $h = fopen( $this->root . '/.project', 'w' );
+	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $dotProject ) );
+	  		  fclose( $h );
+
+	  		  $dotBuildpath = '<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path=""/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+</buildpath>';
+	  		  
+	  		  $h = fopen( $this->root . '/.buildpath', 'w' );
+	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $dotBuildpath ) );
+	  		  fclose( $h );
 	  }
-	  */
 
-	  public function __destruct() {
+	  public function createNetbeans() {
 
-	  		 //restore_error_handler();
+	  		 $nbproject = $this->root . '/nbproject';
+
+	  		 if( !mkdir( $nbproject ) )
+	  		 	 throw new AgilePHP_Exception( 'Could not create netbeans project directory \'' . $nbproject . '\'.' );
+	  		 
+	  		 $projectDotXml = '<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.php.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/php-project/1">
+            <name>' . $this->projectName . '</name>
+        </data>
+    </configuration>
+</project>';
+
+	  		 $h = fopen( $nbproject . '/project.xml', 'w' );
+	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $projectDotXml ) );
+	  		 fclose( $h );
+	  		  
+	  		 $projectDotProperties = 'include.path=${php.global.include.path}
+source.encoding=UTF-8
+src.dir=.
+tags.asp=false
+tags.short=true
+web.root=.';
+
+	  		 $h = fopen( $nbproject . '/project.properties', 'w' );
+	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $projectDotProperties ) );
+	  		 fclose( $h );
+
+	  		 $privateDotProperties = 'copy.src.files=false
+copy.src.target=' . $this->root . '
+index.file=index.php' . '
+run.as=LOCAL
+url=http://localhost/index.php';
+
+	  		 if( !mkdir( $nbproject . '/private' ) )
+	  		 	 throw new AgilePHP_Exception( 'Could not create netbeans project private directory \'' . $nbproject . '/private\'.' );
+
+	  		 $h = fopen( $nbproject . '/private/private.properties', 'w' );
+	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $privateDotProperties ) );
+	  		 fclose( $h );
 	  }
 }
 ?>

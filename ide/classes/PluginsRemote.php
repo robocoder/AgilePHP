@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * "Remote" class responsbile for answering client side requests in regards to plugins 
+ */
 class PluginsRemote {
 
 	  #@RemoteMethod

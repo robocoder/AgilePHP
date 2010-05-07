@@ -14,15 +14,15 @@ AgilePHP.IDE.Editor = function( id, type ) {
 
 					id: 'code-editor-' + id,
 					title: 'Code',
-					width: AgilePHP.IDE.Workspace.getTabPanel().getInnerWidth(),
-			        html: '<iframe frameborder="0" src="' + AgilePHP.getRequestBase() + '/PageController/load/code/' + id + '" ' + 
+					width: AgilePHP.IDE.Desktop.getTabPanel().getInnerWidth(),
+			        html: '<iframe frameborder="0" src="' + AgilePHP.getRequestBase() + '/FileExplorerController/load/code/' + id + '" ' + 
 			        			'width="100%" height="100%"/>'
 			    });
 				break;
 
 			case 'design':
 
-				new AgilePHP.XHR().request( AgilePHP.getRequestBase() + '/PageController/load/design/' + id, function( response ) {
+				new AgilePHP.XHR().request( AgilePHP.getRequestBase() + '/FileExplorerController/load/design/' + id, function( response ) {
 
 					var e = Ext.getCmp( 'design-editor-' + response.id );
 						e.setValue( unescape( response.code ) );
@@ -32,8 +32,8 @@ AgilePHP.IDE.Editor = function( id, type ) {
 
 						id: 'design-editor-' + id,
 						title: 'Design',
-						width: AgilePHP.IDE.Workspace.getTabPanel().getInnerWidth(),
-						height: AgilePHP.IDE.Workspace.getTabPanel().getFrameHeight(),
+						width: AgilePHP.IDE.Desktop.getTabPanel().getInnerWidth(),
+						height: AgilePHP.IDE.Desktop.getTabPanel().getFrameHeight(),
 						listeners: {
 	
 							render: function( component ) {

@@ -14,6 +14,23 @@ AgilePHP.IDE = {
 		AgilePHP.setDebug( AgilePHP.IDE.debug );
 	},
 
+	// not being used at the moment due to async loading causing issues with readiness in the app
+	bootstrap: function() {
+
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Window.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Menubar.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.TabPanel.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Properties.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Taskbar.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Debugger.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Desktop.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Login.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Plugins.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Notification.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.FileExplorer.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.IDE.Editor.js' );
+	},
+
 	logout: function() {
 
 		// Destroy AgilePHP session

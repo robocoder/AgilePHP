@@ -40,6 +40,6 @@ AgilePHP.IDE.Debugger = function() {
 						}
 					})
 		    ],
-		    bbar: AgilePHP.IDE.Workspace.taskbar
+		    bbar: AgilePHP.IDE.Desktop.taskbar
 	});
 };

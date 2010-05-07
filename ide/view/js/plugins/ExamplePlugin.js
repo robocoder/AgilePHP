@@ -1,8 +1,8 @@
 // ExamplePlugin constructor
 function ExamplePlugin() {
 
-		// Add a new tab to the workspace
-		AgilePHP.IDE.Workspace.addTab({
+		// Add a new tab to the desktop
+		AgilePHP.IDE.Desktop.addTab({
 				id: 'tabExamplePlugin',
 				title: 'Example Plugin',
 				iconCls: 'cdsLogo',
@@ -10,11 +10,11 @@ function ExamplePlugin() {
 					  '<div style="padding: 25px 25px 25px 25px;"><input type="button" onclick="ExamplePlugin.testMethod()" value="ExamplePlugin.testMethod()"/></div>'
 		});
 
-		// Set the active workspace tab to this plugin
-		//AgilePHP.IDE.Workspace.activateTab( 'tabExamplePlugin' );
+		// Set the active desktop tab to this plugin
+		//AgilePHP.IDE.Desktop.activateTab( 'tabExamplePlugin' );
 
 		// Add a new button to the toolbar
-		AgilePHP.IDE.Workspace.addToolbarButton({
+		AgilePHP.IDE.Desktop.addToolbarButton({
 			id : 'btnExamplePlugin',
 			text: 'Example Plugin',
 			menu: [{

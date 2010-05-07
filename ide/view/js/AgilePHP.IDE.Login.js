@@ -37,7 +37,7 @@ AgilePHP.IDE.Login = {
 			                    success: function() {
 
 			    					AgilePHP.IDE.Login.destroy();
-			    					setTimeout( 'AgilePHP.IDE.Workspace.load()', 1000 );
+			    					setTimeout( 'AgilePHP.IDE.Desktop.load()', 1000 );
 								},
 			                    failure: function( form, action ) {
 		
