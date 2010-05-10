@@ -67,7 +67,7 @@ class Id {
 	  	     $model = new $class;
 	  	     $model->$mutator( $params[0] );
 
-	  	     $pm = new PersistenceManager();
+	  	     $pm = PersistenceManager::getInstance();
 	 		 $activeRecord = $pm->find( $model );
 
 	 		 return (count( $activeRecord )) ?

@@ -71,7 +71,21 @@ html, body {
 	background: url( ../images/toolbar/help-about.png) no-repeat 0 0;	
 }
 
-/** Taskbar Window Button Styles **/
+/** Toolbar button styles */
+button.btn-refresh {
+
+	background: url( ../images/refresh.png) no-repeat 0 0 !important;	
+}
+button.btn-list-add {
+
+	background: url( ../images/list-add.png) no-repeat 0 0 !important;	
+}
+button.btn-list-remove {
+
+	background: url( ../images/list-remove.png) no-repeat 0 0 !important;	
+}
+
+/* Taskbar Button Styles **/
 button.fileNewProject {
 	
 	background: url( ../images/tree/16x16/project.png) no-repeat 0 0 !important;

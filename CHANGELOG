@@ -1,13 +1,15 @@
-0.20a
+0.21a
 -----
 
-- Bug fix to MySQLDialect::reverseEngineer. Missing $pm instantiation.
-- Refactored AJAXRenderer --
-	- toJSON include class names on versions of php prior to 5.3
-	-        fix to json array formatting
-	- 		 changed to public context
-	- toXML  changed to public context
-	- 		 bug fixes to logic involving arrays
-- More IDE development. working base window and wizard. reorganized windows for fileexplorer,
-  renamed toolbar to menubar, created "new project" wizard, "new controller", "new view" and
-  started on "new model". 
+- Bug fix to MySQLDialect::reverseEngineer. Typo in $desc->KEY and ->NULL
+- Added Column::setIndex and isIndex methods.
+- Added createTable and dropTable to SQLDialect interface.
+- Bug fix to PersistenceManager::getInstance when passing in a databaseId.
+- Refactored framework to use singleton instance of PersistenceManager instead of creating a new instance.
+- Bug fix to AJAXRenderer::toJSON and toXML methods where method could not be discovered.
+- Renamed PostgreSQLDialect to PGSQLDialect.
+- Bug fix to SQLSRVDialect::find instead of returning null, now returns empty array.
+- Refactored persistence unit tests. Now has one test case (and persistence.xml database) for each supported database engine.
+- Several other various bug fixes in persistence package thanks to new unit tests.
+- Finished up "New Model" wizard in IDE.
+- Lots of other polishing and touchups on IDE

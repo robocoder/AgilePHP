@@ -93,7 +93,10 @@ class PersistenceManager implements SQLDialect {
 	  	 public static function getInstance( $databaseId = null ) {
 
 	  	 		if( self::$instance == null )
-	  	 			self::$instance = new self;
+	  	 			self::$instance = new self( $databaseId );
+
+	  	 		if( $databaseId && $databaseId != self::$instance->database->getId() )
+		  	 		self::$instance = new self( $databaseId );
 
 	  	 		return self::$instance;
 	  	 }
@@ -105,6 +108,8 @@ class PersistenceManager implements SQLDialect {
 	  	  * @return void
 	  	  */
 	  	 public function connect( Database $db ) {
+
+	  	 		Logger::getInstance()->debug( 'PersistenceManager::connect Connecting to database \'' . $db->getId() . '\'.' );
 
 	  	 		switch( $db->getType() ) {
 
@@ -134,8 +139,8 @@ class PersistenceManager implements SQLDialect {
 
   	     		 	case 'pgsql':
   	     		 		
-  	     		 		 require_once 'persistence/dialect/PostgreSQLDialect.php';
-  	     		 		 $this->dialect = new PostgreSQLDialect( $db );
+  	     		 		 require_once 'persistence/dialect/PGSQLDialect.php';
+  	     		 		 $this->dialect = new PGSQLDialect( $db );
   	     		 	  	 break;
 
   	     		 	 /*
@@ -820,7 +825,17 @@ class PersistenceManager implements SQLDialect {
 		 public function create() {
 
 				 $this->dialect->create();
-		  }
+		 }
+		 
+		 /**
+		  * (non-PHPdoc)
+		  * 
+		  * @see src/persistence/dialect/SQLDialect#createTable(Table $table)
+		  */
+		 public function createTable( Table $table ) {
+
+		  		 $this->dialect->createTable( $table );
+		 }
 
 		  /**
 	   	   * Drops the database specified in persistence.xml
@@ -832,6 +847,16 @@ class PersistenceManager implements SQLDialect {
 
 	  			 $this->dialect->drop();
 	  	  }
+	  	  
+		 /**
+		  * (non-PHPdoc)
+		  * 
+		  * @see src/persistence/dialect/SQLDialect#dropTable(Table $table)
+		  */
+		 public function dropTable( Table $table ) {
+
+		  		 $this->dialect->dropTable( $table );
+		 }
 
 	  	  /**
 	   	   * Persists a domain model object

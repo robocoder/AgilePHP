@@ -92,78 +92,8 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 	  		 foreach( $this->database->getTables() as $table ) {
 
-	  		 		  $sql = 'CREATE TABLE ' . $table->getName() . ' ( ';
-
-	  		 		  foreach( $table->getColumns() as $column ) {
-
-	  		 				   $sql .= '[' . $column->getName() . '] ' . $column->getType() . 
-	  		 						   (($column->getLength()) ? '(' . $column->getLength() . ')' : '') .
-	  		 						   (($column->isRequired() == true) ? ' NOT NULL' : '') .
-	  		 						   (($column->isAutoIncrement() === true) ? ' IDENTITY(1,1)' : '') .
-	  		 						   (($column->getDefault() && $column->getType() != 'datetime' && 
-	  		 						   	 		$column->getType() != 'timestamp' && !$column->isAutoIncrement() &&
-	  		 						   	 		!$column->isPrimaryKey()) ?
-	  		 						   	 		' DEFAULT ' . $column->getDefault() : '') .
-	  		 						   ((!$column->getDefault() && !$column->isRequired() && !$column->isAutoIncrement() &&
-	  		 						   			!$column->isPrimaryKey()) ? ' DEFAULT NULL' : '') . ', ';
-	  		 		  }
-
-	  		 		  $pkeyColumns = $table->getPrimaryKeyColumns();
-	  		 		  if( count( $pkeyColumns ) ) {
-
-  	 				  	  $sql .= ' PRIMARY KEY ( ';
-	  	 				  for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
-
-	  	 					   $sql .= '[' . $pkeyColumns[$i]->getName() . ']';
-	
-	  	 						   if( ($i+1) < count( $pkeyColumns ) )
-	  	 						   	   $sql .= ', ';
-	  	 				  }
-	  	 				  $sql .= ' ), ';
-  	 				  }
-
-			   		  if( $table->hasForeignKey() ) {
-
-			      		  $bProcessedKeys = array();
-			   		  	  $foreignKeyColumns = $table->getForeignKeyColumns();
-			   		  	  for( $h=0; $h<count( $foreignKeyColumns ); $h++ ) {
-
-			   		  	  		   $fk = $foreignKeyColumns[$h]->getForeignKey();
-
-		   		  	  		       if( in_array( $fk->getName(), $bProcessedKeys ) )
-			   		  	  		       continue;
-
-			   		  	  		   $fk->setOnUpdate( str_replace( '_', ' ', $fk->getOnUpdate() ) );
-			   		  	  		   $fk->setOnDelete( str_replace( '_', ' ', $fk->getOnDelete() ) );
-
-	   		  	  	       		   // Get foreign keys which are part of the same relationship
-	   		  	  	       		   $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
-
-	   		  	  	       		   $sql .= ' CONSTRAINT ' . $fk->getName() . '';
-   	  	  	       		   	 	   $sql .= ' FOREIGN KEY ( ';
-	   		  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
-	   		  	  	       		   	 	$sql .= '' . $relatedKeys[$j]->getColumnInstance()->getName() . '';
-	   		  	  	       		   		if( ($j+1) < count( $relatedKeys ) )
-	   		  	  	       		   		    $sql .= ', ';
-	   		  	  	       		   }
-								   $sql .= ' ) REFERENCES ' . $fk->getReferencedTable() . ' ( ';
-	   		  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
-   	  	  	       		   		 	    $sql .= '' . $relatedKeys[$j]->getReferencedColumn() . '';
-	   		  	  	       		   	    if( ($j+1) < count( $relatedKeys ) )
-	   		  	  	       		   		     $sql .= ', ';
-	   		  	  		    	   }
-	   		  	  	       		   $sql .= ' ) ';
-	   		  	  	       		   $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '' );
-   		  	  		   			   $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' ) . ', ';
-
-			   		  	  		   array_push( $bProcessedKeys, $fk->getName() );
-			   		  	  }
-			   		  }
-
-					  $sql .= ');';
 					  try {
+			   		  		$sql = $this->toCreateTableSQL( $table );
 			   		  		$this->query( $sql );
 					  }
 					  catch( AgilePHP_PersistenceException $e ) {
@@ -185,6 +115,102 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  }
 
 	  /**
+	   * Creates the specified SQL table
+	   * 
+	   * @param Table $table The table instance to create
+	   * @return void
+	   * @throws AgilePHP_PersistenceException
+	   */
+	  public function createTable( Table $table ) {
+
+	   		  $this->query( $this->toCreateTableSQL( $table ) );
+	  }
+
+	  /**
+	   * Generates SQL CREATE TABLE code for the specified table.
+	   * 
+	   * @param Table $table The table to generate the CREATE TABLE code for
+	   * @return string The SQL CREATE TABLE code
+	   */
+	  private function toCreateTableSQL( Table $table ) {
+
+	  		  $lengthables = array( 'binary', 'char', 'decimal', 'nchar', 'numeric', 'nvarchar', 'varbinary', 'varchar' );
+	  		  $sql = 'CREATE TABLE ' . $table->getName() . ' ( ';
+
+  	 		  foreach( $table->getColumns() as $column ) {
+
+  	 				   $sql .= '[' . $column->getName() . '] ' . $column->getType() . 
+  	 						   ((in_array( $column->getType(), $lengthables ) && $column->getLength()) ? '(' . $column->getLength() . ')' : '') .
+  	 						   (($column->isRequired() == true) ? ' NOT NULL' : '') .
+  	 						   (($column->isAutoIncrement() === true) ? ' IDENTITY(1,1)' : '') .
+  	 						   (($column->getDefault() && $column->getType() != 'datetime' && 
+  	 						   	 		$column->getType() != 'timestamp' && !$column->isAutoIncrement() &&
+  	 						   	 		!$column->isPrimaryKey()) ?
+  	 						   	 		' DEFAULT \'' . $column->getDefault() . '\'' : '') .
+  	 						   ((!$column->getDefault() && !$column->isRequired() && !$column->isAutoIncrement() &&
+  	 						   			!$column->isPrimaryKey()) ? ' DEFAULT NULL' : '') . ', ';
+  	 		  }
+
+  	 		  $pkeyColumns = $table->getPrimaryKeyColumns();
+  	 		  if( count( $pkeyColumns ) ) {
+
+   			  	  $sql .= ' PRIMARY KEY ( ';
+   				  for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+
+   					   $sql .= '[' . $pkeyColumns[$i]->getName() . ']';
+
+   					   if( ($i+1) < count( $pkeyColumns ) )
+   						   $sql .= ', ';
+   				  }
+   				  $sql .= ' ), ';
+   			  }
+
+	   		  if( $table->hasForeignKey() ) {
+
+	      		  $bProcessedKeys = array();
+	   		  	  $foreignKeyColumns = $table->getForeignKeyColumns();
+	   		  	  for( $h=0; $h<count( $foreignKeyColumns ); $h++ ) {
+
+	   		  	  	   $fk = $foreignKeyColumns[$h]->getForeignKey();
+
+   		  	  		   if( in_array( $fk->getName(), $bProcessedKeys ) )
+	   		  	  		   continue;
+
+	   		  	  	   $fk->setOnUpdate( str_replace( '_', ' ', $fk->getOnUpdate() ) );
+	   		  	  	   $fk->setOnDelete( str_replace( '_', ' ', $fk->getOnDelete() ) );
+
+   	  	  	       	   // Get foreign keys which are part of the same relationship
+   	  	  	       	   $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
+
+   	  	  	       	   $sql .= ' CONSTRAINT ' . $fk->getName() . '';
+       	       		   $sql .= ' FOREIGN KEY ( ';
+   	  	  		       for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+ 
+   	  	  	       	  	    $sql .= '' . $relatedKeys[$j]->getColumnInstance()->getName() . '';
+   	  	  	       		    if( ($j+1) < count( $relatedKeys ) )
+   	  	  	       		         $sql .= ', ';
+   	  	  	       		    }
+						    $sql .= ' ) REFERENCES ' . $fk->getReferencedTable() . ' ( ';
+   	  	  		    	    for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+ 
+     	       		   		 	 $sql .= '' . $relatedKeys[$j]->getReferencedColumn() . '';
+   	  	  	       		   	     if( ($j+1) < count( $relatedKeys ) )
+   	  	  	       		   		     $sql .= ', ';
+   	  	  		    	    }
+   	  	  	       		    $sql .= ' ) ';
+   	  	  	       		    $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '' );
+     	  		   			$sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' ) . ', ';
+
+	   		  	  		    array_push( $bProcessedKeys, $fk->getName() );
+	   		  	   }
+	   		   }
+
+			   $sql .= ');';
+
+			   return $sql;
+	  }
+	  
+	  /**
 	   * (non-PHPdoc)
 	   * @see src/persistence/BasePersistence#truncate($model)
 	   */
@@ -201,6 +227,15 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  public function drop() {
 
   	 	 	 $this->query( 'DROP DATABASE ' . $this->getDatabase()->getName() );
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#dropTable(Table $table)
+	   */
+	  public function dropTable( Table $table ) {
+
+  	 	 $this->query( 'DROP TABLE ' . $table->getName() );
 	  }
 
 	  /**
@@ -254,7 +289,6 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 								 array_push( $values, $model->$accessor() );
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
-						    $sql .= ' LIMIT ' . $this->maxResults . ';';
 	    	   		 }
 
 	    	   		 // Execute query
@@ -265,7 +299,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 					 if( !count( $result ) ) {
 
 					 	 Logger::getInstance()->debug( 'MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
-					 	 return null;
+					 	 return array();
 					 }
 
 				 	 $index = 0;

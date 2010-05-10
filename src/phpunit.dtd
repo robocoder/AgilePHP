@@ -16,11 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!ELEMENT phpunit (php?, testsuite+)>
+<!ELEMENT phpunit (php?, testsuite?, testsuites?)>
 
-<!ELEMENT testsuite (file+)>
+<!ELEMENT testsuites (testsuite+)>
+
+<!ELEMENT testsuite (directory?, file+)>
 <!ATTLIST testsuite name CDATA #IMPLIED>
 
+<!ELEMENT directory (#PCDATA)>
 <!ELEMENT file (#PCDATA)>
 
 <!ELEMENT php (var*)>

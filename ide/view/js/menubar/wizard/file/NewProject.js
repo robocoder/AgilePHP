@@ -12,6 +12,7 @@ AgilePHP.IDE.Menubar.file.NewProject = function() {
 	var window = new AgilePHP.IDE.Window( id, 'fileNewProject', 'New Project Wizard', 550, 350 );
 
 	AgilePHP.IDE.Remoting.load( 'ProjectRemote' );
+	AgilePHP.IDE.Remoting.load( 'DatabaseManagerRemote' );
 
 	var pbar = new Ext.ProgressBar({
         id: id + 'progressbar',
@@ -487,7 +488,7 @@ AgilePHP.IDE.Menubar.file.NewProject = function() {
               	       					database.password = Ext.getCmp( id + '-form-database-password' ).getValue()
 
               	       				button.setDisabled( true );
-              	       				AgilePHP.Remoting.getStub( 'ProjectRemote' ).setCallback( function( response ) {
+              	       				AgilePHP.Remoting.getStub( 'DatabaseManagerRemote' ).setCallback( function( response ) {
 
               	       						button.setDisabled( false );
               	       						if( response._class == 'AgilePHP_RemotingException' ) {
@@ -519,8 +520,8 @@ AgilePHP.IDE.Menubar.file.NewProject = function() {
               	       						}
               	       				});
 
-              	       				var pr = new ProjectRemote();
-              	       					pr.testDatabaseConnection( database );
+              	       				var dbr = new DatabaseManagerRemote();
+              	       					dbr.testDatabaseConnection( database );
               	       			}
               	       		}
               	       	}]

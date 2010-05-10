@@ -40,6 +40,7 @@ class Column {
 	  private $sortable = true;
 	  private $selectable = false;
 	  private $required = false;
+	  private $index = false;
 	  private $primaryKey = false;
 	  private $autoIncrement = false;
 	  private $sanitize = true;
@@ -61,6 +62,7 @@ class Column {
 		  		 $this->sortable = ($column->attributes()->sortable == 'false') ? false : true;
 		  		 $this->selectable = ($column->attributes()->selectable == 'true') ? true : false;
 		  		 $this->required = ($column->attributes()->required == 'true') ? true : false;
+		  		 $this->index = ($column->attributes()->index == 'true') ? true : false;
 		  		 $this->primaryKey = ($column->attributes()->primaryKey == 'true') ? true : false;
 		  		 $this->autoIncrement = ($column->attributes()->autoIncrement == 'true') ? true : false;
 		  		 $this->sanitize = ($column->attributes()->sanitize == 'false') ? false : true;
@@ -303,7 +305,7 @@ class Column {
 	   */
 	  public function setRequired( $boolean ) {
 
-	  		 $this->required = $boolean;
+	  		 $this->required = $boolean ? true : false;
 	  }
 
 	  /**
@@ -313,7 +315,28 @@ class Column {
 	   */
 	  public function isRequired() {
 
-	  		 return ($this->required === true) ? true : false;
+	  		 return $this->required;
+	  }
+
+	  /**
+	   * Boolean flag indicating whether or not the column data is an index
+	   * 
+	   * @param $boolean True if this column is an index, false otherwise
+	   * @return void
+	   */
+	  public function setIndex( $boolean ) {
+
+	  		 $this->index = $boolean ? true : false;
+	  }
+
+	  /**
+	   * Returns boolean flag indicating whether or not the column is an index
+	   * 
+	   * @return bool True if the column is indexed, false otherwise
+	   */
+	  public function isIndex() {
+
+	  		 return $this->index;
 	  }
 
 	  /**

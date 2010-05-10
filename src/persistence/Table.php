@@ -432,7 +432,7 @@ class Table {
 	   */
 	  public function hasForeignKeyReferences() {
 
-	  		 $pm = new PersistenceManager();
+	  		 $pm = PersistenceManager::getInstance();
 	  		 foreach( $pm->getSelectedDatabase()->getTables() as $table )
 	  		 		  foreach( $table->getColumns() as $column )
 	  		 		  		   if( $column->isForeignKey() )

@@ -1,9 +1,30 @@
 <?php
+/**
+ * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
+ * Copyright (C) 2009-2010 Make A Byte, inc
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package com.makeabyte.agilephp.ide.classes
+ */
 
 /**
- * Responsible for processing all requests in regards to an agilephp project.
+ * Remoting class responsible for server side processing of agilephp projects.
  * 
- * @author jhahn
+ * @author Jeremy Hahn
+ * @copyright Make A Byte, inc
+ * @package com.makeabyte.agilephp.ide.classes
  */
 class ProjectRemote {
 
@@ -13,7 +34,9 @@ class ProjectRemote {
 	  /**
 	   * Creates a new project
 	   * 
-	   * @param $configs
+	   * @param array $configs An array of project configuration values
+	   * @return boolean True if the project was created successfully
+	   * @throws AgilePHP_Exception
 	   */
 	  #@RemoteMethod
  	  public function create( $configs ) {
@@ -110,28 +133,6 @@ class ProjectRemote {
 
   		 	 		throw new AgilePHP_Exception( $e->getMessage() );
   		 	 }
-	  }
-
-	  /**
-	   * Performs connection test to the database server configured on the "Database" wizard step.
-	   * 
-	   * @type
-	   */
-	  #@RemoteMethod
-	  public function testDatabaseConnection( $database ) {
-
-	  		 $Database = new Database();
-	  		 $Database->setType( $database->type );
-	  		 $Database->setDriver( $database->type );
-	  		 $Database->setHostname( $database->hostname );
-	  		 $Database->setName( $database->name );
-	  		 $Database->setUsername( $database->username );
-	  		 $Database->setPassword( $database->password );
-
-	  		 $pm = new PersistenceManager();
-	  		 $pm->connect( $Database );
-
-	  		 return $pm->isConnected();
 	  }
 
 	  /**

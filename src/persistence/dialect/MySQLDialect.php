@@ -83,8 +83,6 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function create() {
 
-	  		 $defaultKeywords = array( 'CURRENT_TIMESTAMP' );  // Default values that get passed unquoted
-
 	  		 $this->query( 'CREATE DATABASE ' . $this->database->getName() . ';' );
 	  		 
 	  		 // Now that the database is present, connect directly to the database.
@@ -93,93 +91,124 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 
 			 $this->query( 'SET foreign_key_checks = 0;' );
 
-	  		 foreach( $this->database->getTables() as $table ) {
+	  		 foreach( $this->database->getTables() as $table )
+			   		  $this->query( $this->toCreateTableSQL( $table ) );
 
-	  		 		  $sql = 'CREATE TABLE `' . $table->getName() . '` ( ';
-
-	  		 		  foreach( $table->getColumns() as $column ) {
-
-	  		 				   $sql .= '`' . $column->getName() . '` ' . $column->getType() . 
-	  		 						   (($column->getLength()) ? '(' . $column->getLength() . ')' : '') .
-	  		 						   (($column->isRequired() == true) ? ' NOT NULL' : '') .
-	  		 						   (($column->isAutoIncrement() === true) ? ' AUTO_INCREMENT' : '') .
-	  		 						   (($column->getDefault()) ? ' DEFAULT ' . (in_array($column->getDefault(),$defaultKeywords) ? $column->getDefault() : '\'' . $column->getDefault() . '\'') . '': '') .
-	  		 						   ((!$column->getDefault() && !$column->isRequired()) ? ' DEFAULT NULL' : '') . ', ';
-	  		 		  }
-
-  	 				  $pkeyColumns = $table->getPrimaryKeyColumns();
-  	 				  if( count( $pkeyColumns ) ) {
-
-  	 				  	  $sql .= ' PRIMARY KEY ( ';
-	  	 				  for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
-
-	  	 					   $sql .= '`' . $pkeyColumns[$i]->getName() . '`';
-	
-	  	 						   if( ($i+1) < count( $pkeyColumns ) )
-	  	 						   	   $sql .= ', ';
-	  	 				  }
-	  	 				  $sql .= ' )';
-
-	  	 				  /*
-	  	 				  if( count( $pkeyColumns ) > 1 )
-	  	 				  	  $sql .= ', UNIQUE KEY `' . $pkeyColumns[0]->getName() . '` (`' . $pkeyColumns[0]->getName() . '`)';
-	  	 				  */
-  	 				  }
-
-			   		  if( $table->hasForeignKey() ) {
-
-			      		  $bProcessedKeys = array();
-			   		  	  $foreignKeyColumns = $table->getForeignKeyColumns();
-			   		  	  for( $h=0; $h<count( $foreignKeyColumns ); $h++ ) {
-
-			   		  	  		   $fk = $foreignKeyColumns[$h]->getForeignKey();
-
-		   		  	  		       if( in_array( $fk->getName(), $bProcessedKeys ) )
-			   		  	  		       continue;
-
-	   		  	  	       		   // Get foreign keys which are part of the same relationship
-	   		  	  	       		   $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
-
-	   		  	  	       		   $sql .= ', KEY `' . $fk->getName() . '` ( ';
-
-	   		  	  	       		   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
-	   		  	  	       		   		array_push( $bProcessedKeys, $relatedKeys[$j]->getName() );
-	   		  	  	       		   		$sql .= '`' . $relatedKeys[$j]->getColumnInstance()->getName() . '`';
-	   		  	  	       		   		if( ($j+1) < count( $relatedKeys ) )
-	   		  	  	       		   		    $sql .= ', ';
-	   		  	  	       		   }
-	   		  	  	       		   $sql .= ' ), CONSTRAINT `' . $fk->getName() . '`';
-   	  	  	       		   	 	   $sql .= ' FOREIGN KEY ( ';
-	   		  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
-	   		  	  	       		   	 	$sql .= '`' . $relatedKeys[$j]->getColumnInstance()->getName() . '`';
-	   		  	  	       		   		if( ($j+1) < count( $relatedKeys ) )
-	   		  	  	       		   		    $sql .= ', ';
-	   		  	  	       		   }
-								   $sql .= ' ) REFERENCES `' . $fk->getReferencedTable() . '` ( ';
-	   		  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
-   	  	  	       		   		 	    $sql .= '`' . $relatedKeys[$j]->getReferencedColumn() . '`';
-	   		  	  	       		   	    if( ($j+1) < count( $relatedKeys ) )
-	   		  	  	       		   		     $sql .= ', ';
-	   		  	  		    	   }
-	   		  	  	       		   $sql .= ' ) ';
-   		  	  		   			   $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '' );
-   		  	  		   			   $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' );
-
-			   		  	  		   array_push( $bProcessedKeys, $fk->getName() );
-			   		  	  }
-			   		  }
-
-  	 				  $engineType = ($table->hasForeignKey() || $table->hasForeignKeyReferences()) ? 'INNODB' : 'MYISAM';
-					  $sql .= ') ENGINE=' . $engineType . ' DEFAULT CHARSET=latin1;';
-
-			   		  $this->query( $sql );
-	  		 }
 	  		 $this->query( 'SET foreign_key_checks = 1;' );
 	  }
-	  
+
+	  /**
+	   * (non-PHPdoc)
+	   * 
+	   * @see src/persistence/dialect/SQLDialect#createTable(Table $table)
+	   */
+	  public function createTable( Table $table ) {
+
+      	     $this->query( $this->toCreateTableSQL( $table ) );
+	  }
+
+	  /**
+	   * Generates SQL CREATE TABLE for the specified table.
+	   * 
+	   * @param Table $table The table to generate the CREATE TABLE code for
+	   * @return string The SQL CREATE TABLE code
+	   */
+	  private function toCreateTableSQL( Table $table ) {
+
+	  		  $defaultKeywords = array( 'CURRENT_TIMESTAMP' );  // Default values that get passed unquoted
+
+  	 		  $sql = 'CREATE TABLE `' . $table->getName() . '` ( ';
+
+  	 		  foreach( $table->getColumns() as $column ) {
+
+  	 				   $sql .= '`' . $column->getName() . '` ' . $column->getType() . 
+  	 						   (($column->getLength()) ? '(' . $column->getLength() . ')' : '') .
+  	 						   (($column->isRequired() == true) ? ' NOT NULL' : '') .
+  	 						   (($column->isAutoIncrement() === true) ? ' AUTO_INCREMENT' : '') .
+  	 						   (($column->getDefault()) ? ' DEFAULT ' . (in_array($column->getDefault(),$defaultKeywords) ? $column->getDefault() : '\'' . $column->getDefault() . '\'') . '': '') .
+  	 						   ((!$column->getDefault() && !$column->isRequired()) ? ' DEFAULT NULL' : '') . ', ';
+  	 		  }
+
+   			  $pkeyColumns = $table->getPrimaryKeyColumns();
+   			  if( count( $pkeyColumns ) ) {
+
+   			  	  $sql .= ' PRIMARY KEY ( ';
+   				  for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+
+   					   $sql .= '`' . $pkeyColumns[$i]->getName() . '`';
+
+   						   if( ($i+1) < count( $pkeyColumns ) )
+   						   	   $sql .= ', ';
+   				  }
+   				  $sql .= ' )';
+
+   				  /*
+   				  if( count( $pkeyColumns ) > 1 )
+   				  	  $sql .= ', UNIQUE KEY `' . $pkeyColumns[0]->getName() . '` (`' . $pkeyColumns[0]->getName() . '`)';
+   				  */
+   			  }
+
+	   		  if( $table->hasForeignKey() ) {
+
+	      		  $bProcessedKeys = array();
+	   		  	  $foreignKeyColumns = $table->getForeignKeyColumns();
+	   		  	  for( $h=0; $h<count( $foreignKeyColumns ); $h++ ) {
+
+	   		  	  		   $fk = $foreignKeyColumns[$h]->getForeignKey();
+
+   		  	  		       if( in_array( $fk->getName(), $bProcessedKeys ) )
+	   		  	  		       continue;
+
+   	  	  	       		   // Get foreign keys which are part of the same relationship
+   	  	  	       		   $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
+
+   	  	  	       		   $sql .= ', KEY `' . $fk->getName() . '` ( ';
+
+   	  	  	       		   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+ 
+   	  	  	       		   		array_push( $bProcessedKeys, $relatedKeys[$j]->getName() );
+   	  	  	       		   		$sql .= '`' . $relatedKeys[$j]->getColumnInstance()->getName() . '`';
+   	  	  	       		   		if( ($j+1) < count( $relatedKeys ) )
+   	  	  	       		   		    $sql .= ', ';
+   	  	  	       		   }
+   	  	  	       		   $sql .= ' ), CONSTRAINT `' . $fk->getName() . '`';
+       	       		   	 	   $sql .= ' FOREIGN KEY ( ';
+   	  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+ 
+   	  	  	       		   	 	$sql .= '`' . $relatedKeys[$j]->getColumnInstance()->getName() . '`';
+   	  	  	       		   		if( ($j+1) < count( $relatedKeys ) )
+   	  	  	       		   		    $sql .= ', ';
+   	  	  	       		   }
+						   $sql .= ' ) REFERENCES `' . $fk->getReferencedTable() . '` ( ';
+   	  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+ 
+       	       		   		 	    $sql .= '`' . $relatedKeys[$j]->getReferencedColumn() . '`';
+   	  	  	       		   	    if( ($j+1) < count( $relatedKeys ) )
+   	  	  	       		   		     $sql .= ', ';
+   	  	  		    	   }
+   	  	  	       		   $sql .= ' ) ';
+     	  		   			   $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '' );
+     	  		   			   $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' );
+
+	   		  	  		   array_push( $bProcessedKeys, $fk->getName() );
+	   		  	  }
+	   		  }
+
+   			  $engineType = ($table->hasForeignKey() || $table->hasForeignKeyReferences()) ? 'INNODB' : 'MYISAM';
+			  $sql .= ') ENGINE=' . $engineType . ' DEFAULT CHARSET=latin1;';
+
+	   		  return $sql;
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#dropTable(Table $table)
+	   */
+	  public function dropTable( Table $table ) {
+
+  	 	 	 $this->query( 'DROP TABLE ' . $table->getName() . ';' );
+	  }
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/persistence/dialect/SQLDialect#drop()
@@ -195,8 +224,6 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function reverseEngineer() {
 
-	  		 $pm = new PersistenceManager();
-	  	
 	  		 $Database = new Database();
 	  		 $Database->setId( $this->database->getId() );
 	  		 $Database->setName( $this->database->getName() );
@@ -205,12 +232,12 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	  		 $Database->setUsername( $this->database->getUsername() );
 	  		 $Database->setPassword( $this->database->getPassword() );
 
-	  		 $stmt = $pm->prepare( 'SHOW TABLES' );
+	  		 $stmt = $this->prepare( 'SHOW TABLES' );
       	     $stmt->execute();
       	     $stmt->setFetchMode( PDO::FETCH_OBJ );
       	     $tables = $stmt->fetchAll();
 
-      	     $tblIndex = 'Tables_in_' . $pm->getDatabase()->getName();
+      	     $tblIndex = 'Tables_in_' . $this->getDatabase()->getName();
 
       	     foreach( $tables as $sqlTable ) {
 
@@ -218,7 +245,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
       	     		  $Table->setName( str_replace( ' ', '_', $sqlTable->$tblIndex ) );
       	     		  $Table->setModel( ucfirst( $Table->getName() ) );
 
-      	      		  $stmt = $pm->query( 'DESC ' . $sqlTable->$tblIndex );
+      	      		  $stmt = $this->query( 'DESC ' . $sqlTable->$tblIndex );
       	      		  $stmt->setFetchMode( PDO::FETCH_OBJ );
       	      		  $descriptions = $stmt->fetchAll();
       	      		   
@@ -244,10 +271,10 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 						   if( isset( $desc->Default ) && $desc->Default )
 						   	    $Column->setDefault( $desc->Default );
 
-						   if( isset( $desc->NULL ) && $desc->NULL == 'NO' )
+						   if( isset( $desc->Null ) && $desc->Null == 'NO' )
 						   	   $Column->setRequired( true );
 
-						   if( isset( $desc->KEY ) && $desc->KEY == 'PRI' )
+						   if( isset( $desc->Key ) && $desc->Key == 'PRI' )
 						   	   $Column->setPrimaryKey( true );
 
 						   if( isset( $desc->Extra ) && $desc->Extra == 'auto_increment' )

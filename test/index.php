@@ -10,7 +10,7 @@
   	    $agilephp->setDisplayPhpErrors( true );
 
   	    (preg_match( '/microsoft/i', $_SERVER['SERVER_SOFTWARE'] )) ?
-      	     $agilephp->setFrameworkRoot( 'D:\Documents and Settings\JHahn\My Documents\Eclipse Workspace\AgilePHP\src' ) :
+      	     $agilephp->setFrameworkRoot( 'c:\inetpub\wwwroot\AgilePHP\src' ) :
       	     $agilephp->setFrameworkRoot( '/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/src' );
 
   	    $agilephp->setDefaultTimezone( 'America/New_York' );

@@ -2,39 +2,45 @@
 
 require_once 'BaseTest.php';
 
-class PersistenceManagerTest extends BaseTest {
+class MSSQLTest extends BaseTest {
 
 	  private $persistence;
 
-	  public function setUp() {
+	  public function __construct() {
 
-      	     $this->persistence = new PersistenceManager();
+	  		 parent::__construct();
+	  		 $this->persistence = PersistenceManager::getInstance( 'testcase_mssql' );
 	  }
 
 	  public function testPersistenceNotNull() {
 
-	  	     PHPUnit_Framework_Assert::assertNotNull( $this->persistence, "Failed to create an instance of PersistenceManager." );
+	  	     PHPUnit_Framework_Assert::assertNotNull( $this->persistence, 'Failed to create persistence manager for testcase_mssql' );
 	  }
 
-	  private function getMockData() {
-	  	
-	 	     $user = new User();
-	  		 $user->setUsername( 'phpunit' );
-	  		 $user->setPassword( 'phpunit' );
-	  		 $user->setEmail( 'root@localhost' );
-	  		 $user->setCreated( date( 'c', strtotime( 'now' ) ) );
-	  		 $user->setLastLogin( date( 'c', strtotime( 'now' ) ) );
+	  public function testCreate() {
 
-	  		 $role = new Role( 'admin' );
-
-	  		 $user->setRole( $role );
-
-	  		 return $user;
+	  		 $this->persistence->create();
 	  }
+
+	  public function testCreateTable() {
+
+	  		 $this->persistence->createTable( $this->getMockTable() );
+	  }
+
+	  /** @todo complete */ 
+	  public function testDropTable() {
+
+             $this->persistence->dropTable( $this->getMockTable() );
+      }
+
+	  /** @todo complete */ 
+	  public function testConstraint() { }
 
 	  public function testPersist() {
 
 	  		 $user = $this->getMockData();
+
+	  		 $this->persistence->persist( $this->getMockRole() );
 
 	  		 $this->persistence->persist( $user );
 			 $persisted = $this->persistence->find( $user );
@@ -51,19 +57,19 @@ class PersistenceManagerTest extends BaseTest {
 
 	  public function testRestrictedFind() {
 
-	  		 $this->persistence->setRestrictions( array( 'username' => 'test' ) );
+	  		 $this->persistence->setRestrictions( array( 'username' => 'phpunit' ) );
 	  		 $persisted = $this->persistence->find( new User() );
 
 	  		 PHPUnit_Framework_Assert::assertNotNull( $persisted, 'Error finding persisted record using restrictions logic' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $persisted[0]->getUsername(), 'test', 'Error finding persisted record using restrictions logic' );
+	  		 PHPUnit_Framework_Assert::assertEquals( $persisted[0]->getUsername(), 'phpunit', 'Error finding persisted record using restrictions logic' );
 	  }
 
 	  public function testMerge() {
 	  	
 	  		 $user = $this->getMockData();
 	  		 $user->setPassword( 'new password' );
-	  		 $user->setRole( new Role( 'test' ) );
-	  		 
+	  		 $user->setRole( $this->getMockRole() );
+
 	  		 $this->persistence->merge( $user );
 	  }
 
@@ -185,6 +191,63 @@ class PersistenceManagerTest extends BaseTest {
 	  		 		  PHPUnit_Framework_Assert::assertNotNull( $fkey->getReferencedTableInstance(), 'testGetForeignKeyTableAndColumnInstances failed to get table instance' );
 	  		 		  PHPUnit_Framework_Assert::assertNotNull( $fkey->getReferencedColumnInstance(), 'testGetForeignKeyTableAndColumnInstances failed to get column instance' );	  		 		  
 	  		 }
+	  }
+
+	  public function testDrop() {
+
+	  		 // ODBC has connection open to the database which prevents it from beind dropped
+             $this->setExpectedException( 'AgilePHP_PersistenceException' );
+
+             $this->persistence->drop();
+      }
+
+	  private function getMockTable() {
+
+	  		  $Table = new Table();
+	  		  $Table->setName( 'TestTable' );
+	  		  $Table->setModel( 'TestModel' );
+
+	  		  $Column1 = new Column( null, 'TestTable' );
+	  		  $Column1->setName( 'id' );
+	  		  $Column1->setType( 'integer' );
+	  		  $Column1->setLength( '255' );
+	  		  $Column1->setProperty( 'p1' );
+	  		  $Column1->setDisplay( 'Field 1' );
+	  		  $Column1->setRequired( true );
+	  		  $Column1->setPrimaryKey( true );
+	  		  $Column1->setAutoIncrement( true );
+
+	  		  $Column2 = new Column( null, 'TestTable' );
+	  		  $Column2->setName( 'fld2' );
+	  		  $Column2->setType( 'varchar' );
+	  		  $Column2->setLength( '100' );
+	  		  $Column2->setProperty( 'p2' );
+	  		  $Column2->setDisplay( 'Field 2' );
+	  		  $Column2->setDefault( 'This is a test value' );
+
+	  		  $Table->addColumn( $Column1 );
+	  		  $Table->addColumn( $Column2 );
+
+	  		  return $Table;
+	  }
+
+	  private function getMockRole() {
+
+	  		  return new Role( 'test' );
+	  }
+	  
+	  private function getMockData() {
+	  	
+	 	     $user = new User();
+	  		 $user->setUsername( 'phpunit' );
+	  		 $user->setPassword( 'phpunit' );
+	  		 $user->setEmail( 'root@localhost' );
+	  		 $user->setCreated( date( 'c', strtotime( 'now' ) ) );
+	  		 $user->setLastLogin( date( 'c', strtotime( 'now' ) ) );
+
+	  		 $user->setRole( $this->getMockRole() );
+
+	  		 return $user;
 	  }
 }
 ?>

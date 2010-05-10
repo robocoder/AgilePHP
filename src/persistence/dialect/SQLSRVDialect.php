@@ -85,106 +85,140 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 $params = array( 'Database' => $this->database->getName(), 'UID' => $this->database->getUsername(), 'PWD' => $this->database->getPassword() );
 	  		 if( !$this->conn = sqlsrv_connect( $this->database->getHostname(), $params ) )
 	  		 	 throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
-	  		 	 
+
 			 $constraintFails = array();
 
 	  		 foreach( $this->database->getTables() as $table ) {
 
-	  		 		  $sql = 'CREATE TABLE ' . $table->getName() . ' ( ';
+                                  $sql = $this->toCreateTableSQL( $table );
+                                  if( !$this->query( $sql ) ) {
 
-	  		 		  foreach( $table->getColumns() as $column ) {
+                                          $error = sqlsrv_errors();
 
-	  		 				   $sql .= '[' . $column->getName() . '] ' . $column->getType() . 
-	  		 						   (($column->getLength()) ? '(' . $column->getLength() . ')' : '') .
-	  		 						   (($column->isRequired() == true) ? ' NOT NULL' : '') .
-	  		 						   (($column->isAutoIncrement() === true) ? ' IDENTITY(1,1)' : '') .
-	  		 						   (($column->getDefault() && $column->getType() != 'datetime' && 
-	  		 						   	 		$column->getType() != 'timestamp' && !$column->isAutoIncrement() &&
-	  		 						   	 		!$column->isPrimaryKey()) ?
-	  		 						   	 		' DEFAULT ' . $column->getDefault() : '') .
-	  		 						   ((!$column->getDefault() && !$column->isRequired() && !$column->isAutoIncrement() &&
-	  		 						   			!$column->isPrimaryKey()) ? ' DEFAULT NULL' : '') . ', ';
-	  		 		  }
+                                          // This saves the create operation from blowing up if persistence.xml defines a table
+                                          // that references a table further down the persistence.xml file that has not been
+                                          // created yet. Is there a cleaner way - like disabling constraint checks?
+                                          if( stristr( $error[0]['message'], 'references invalid table' ) ) {
 
-	  		 		  $pkeyColumns = $table->getPrimaryKeyColumns();
-	  		 		  if( count( $pkeyColumns ) ) {
+                                                  array_push( $constraintFails, $sql );
+                                                  continue;
+                                          }
 
-  	 				  	  $sql .= ' PRIMARY KEY ( ';
-	  	 				  for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
-
-	  	 					   $sql .= '[' . $pkeyColumns[$i]->getName() . ']';
-	
-	  	 						   if( ($i+1) < count( $pkeyColumns ) )
-	  	 						   	   $sql .= ', ';
-	  	 				  }
-	  	 				  $sql .= ' ), ';
-  	 				  }
-
-			   		  if( $table->hasForeignKey() ) {
-
-			      		  $bProcessedKeys = array();
-			   		  	  $foreignKeyColumns = $table->getForeignKeyColumns();
-			   		  	  for( $h=0; $h<count( $foreignKeyColumns ); $h++ ) {
-
-			   		  	  		   $fk = $foreignKeyColumns[$h]->getForeignKey();
-
-		   		  	  		       if( in_array( $fk->getName(), $bProcessedKeys ) )
-			   		  	  		       continue;
-
-			   		  	  		   $fk->setOnUpdate( str_replace( '_', ' ', $fk->getOnUpdate() ) );
-			   		  	  		   $fk->setOnDelete( str_replace( '_', ' ', $fk->getOnDelete() ) );
-
-	   		  	  	       		   // Get foreign keys which are part of the same relationship
-	   		  	  	       		   $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
-
-	   		  	  	       		   $sql .= ' CONSTRAINT ' . $fk->getName() . '';
-   	  	  	       		   	 	   $sql .= ' FOREIGN KEY ( ';
-	   		  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
-	   		  	  	       		   	 	$sql .= '' . $relatedKeys[$j]->getColumnInstance()->getName() . '';
-	   		  	  	       		   		if( ($j+1) < count( $relatedKeys ) )
-	   		  	  	       		   		    $sql .= ', ';
-	   		  	  	       		   }
-								   $sql .= ' ) REFERENCES ' . $fk->getReferencedTable() . ' ( ';
-	   		  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
-   	  	  	       		   		 	    $sql .= '' . $relatedKeys[$j]->getReferencedColumn() . '';
-	   		  	  	       		   	    if( ($j+1) < count( $relatedKeys ) )
-	   		  	  	       		   		     $sql .= ', ';
-	   		  	  		    	   }
-	   		  	  	       		   $sql .= ' ) ';
-	   		  	  	       		   $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '' );
-   		  	  		   			   $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' ) . ', ';
-
-			   		  	  		   array_push( $bProcessedKeys, $fk->getName() );
-			   		  	  }
-			   		  }
-
-					  $sql .= ');';
-			   		  if( !$this->query( $sql ) ) {
-
-			   		  	  $error = sqlsrv_errors();
-
-			   		  	  // This saves the create operation from blowing up if persistence.xml defines a table
-			   		  	  // that references a table further down the persistence.xml file that has not been
-			   		  	  // created yet. Is there a cleaner way - like disabling constraint checks?
-			   		  	  if( stristr( $error[0]['message'], 'references invalid table' ) ) {
-			   		  	  
-			   		  	  	  array_push( $constraintFails, $sql );
-			   		  	  	  continue;
-			   		  	  }
-
-			   		  	  throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
-			   		  }
+                                          throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+                                  }
 	  		 }
 
 	  		 // Constraint hack continued
 	  		 if( count( $constraintFails ) )
 	  		 	 foreach( $constraintFails as $sql )
 	  		 	 		if( !$this->query( $sql ) )
-		  		 	 		throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );	  		 
+		  		 	 		throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) ); 		 
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#createTable(Table $table)
+	   */
+      public function createTable( Table $table ) {
+
+              $this->query( $this->toCreateTableSQL( $table ) );
+      }
+
+      /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#dropTable(Table $table)
+	   */
+      public function dropTable( Table $table ) {
+
+             $this->query( 'DROP TABLE ' . $table->getName() );
+      }
+
+      /**
+       * Returns SQL CREATE TABLE statement for the specified table
+       *
+       * @param Table $table The table to create the SQL code for
+       * @return string The SQL CREATE TABLE statement
+       */
+      private function toCreateTableSQL( Table $table ) {
+
+              $sql = 'CREATE TABLE ' . $table->getName() . ' ( ';
+
+              foreach( $table->getColumns() as $column ) {
+
+                       $sql .= '[' . $column->getName() . '] ' . $column->getType() .
+                                 (($column->getLength()) ? '(' . $column->getLength() . ')' : '') .
+                                 (($column->isRequired() == true) ? ' NOT NULL' : '') .
+                                 (($column->isAutoIncrement() === true) ? ' IDENTITY(1,1)' : '') .
+                                 (($column->getDefault() && $column->getType() != 'datetime' &&
+                                     $column->getType() != 'timestamp' && !$column->isAutoIncrement() &&
+                                     !$column->isPrimaryKey()) ? ' DEFAULT ' . $column->getDefault() : '') .
+                                 ((!$column->getDefault() && !$column->isRequired() && !$column->isAutoIncrement() &&
+                                      !$column->isPrimaryKey()) ? ' DEFAULT NULL' : '') . ', ';
+              }
+
+              $pkeyColumns = $table->getPrimaryKeyColumns();
+              if( count( $pkeyColumns ) ) {
+
+                  $sql .= ' PRIMARY KEY ( ';
+                  for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+
+                       $sql .= '[' . $pkeyColumns[$i]->getName() . ']';
+
+                       if( ($i+1) < count( $pkeyColumns ) )
+                           $sql .= ', ';
+                  }
+	              $sql .= ' ), ';
+              }
+
+              if( $table->hasForeignKey() ) {
+
+                  $bProcessedKeys = array();
+                  $foreignKeyColumns = $table->getForeignKeyColumns();
+                  for( $h=0; $h<count( $foreignKeyColumns ); $h++ ) {
+
+                        $fk = $foreignKeyColumns[$h]->getForeignKey();
+
+                        if( in_array( $fk->getName(), $bProcessedKeys ) )
+                            continue;
+
+                        $fk->setOnUpdate( str_replace( '_', ' ', $fk->getOnUpdate() ) );
+                        $fk->setOnDelete( str_replace( '_', ' ', $fk->getOnDelete() ) );
+
+                        // Get foreign keys which are part of the same relationship
+                        $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
+
+                        $sql .= ' CONSTRAINT ' . $fk->getName() . '';
+                        $sql .= ' FOREIGN KEY ( ';
+
+                        for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+
+                             $sql .= $relatedKeys[$j]->getColumnInstance()->getName();
+                             if( ($j+1) < count( $relatedKeys ) )
+                                 $sql .= ', ';
+                        }
+
+                        $sql .= ' ) REFERENCES ' . $fk->getReferencedTable() . ' ( ';
+
+                        for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+
+                             $sql .= '' . $relatedKeys[$j]->getReferencedColumn() . '';
+                             if( ($j+1) < count( $relatedKeys ) )
+                                 $sql .= ', ';
+                        }
+
+                        $sql .= ' ) ';
+                        $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '' );
+                        $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' ) . ', ';
+
+                        array_push( $bProcessedKeys, $fk->getName() );
+                   }
+              }
+
+              $sql .= ');';
+
+              return $sql;
+          }
+	  
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/AgilePHP/persistence/BasePersistence#beginTransaction()
@@ -229,6 +263,10 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function query( $sql, $params = array() ) {
 
+	  		 Logger::getInstance()->debug( 'BasePersistence::query Executing' .
+			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
+			  	     					'raw PDO::query ' . $sql . 'with $params ' . print_r( $params, true ) );
+
 	  		 return sqlsrv_query( $this->conn, $sql, (count( $params )) ? $params : null );
 	  }
 
@@ -238,6 +276,10 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function prepare( $statement ) {
 
+	  		 Logger::getInstance()->debug( 'SQLSRVDialect::prepare Preparing' .
+			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
+			  	     					'statement ' . $statement );
+	  	
 	  		 $this->statement = $statement;
 	  }
 	  
@@ -246,6 +288,10 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   * @see src/persistence/BasePersistence#execute($inputParameters)
 	   */
 	  public function execute( array $inputParameters = array() ) {
+
+	  		 Logger::getInstance()->debug( 'SQLSRVDialect::execute Executing' .
+			  	     		(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
+			  	     		'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
 	  		 // SQLSRV driver requires parameters passed to prepare be passed by reference
 	  		 $params = array();
@@ -334,7 +380,6 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 								 array_push( $values, $model->$accessor() );
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
-						    $sql .= ' LIMIT ' . $this->maxResults . ';';
 	    	   		 }
 
 					 $this->prepare( $sql );
@@ -343,7 +388,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 					 if( !sqlsrv_has_rows( $this->stmt ) ) { 
 
 					 	Logger::getInstance()->debug( 'SQLSRVDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
-					 	return null;
+					 	return array();
 					 }
 
 				 	 $index = 0;
@@ -395,8 +440,6 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
 	  		 		throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
-
-	  		 return null;
 	  }
 
 	  /**

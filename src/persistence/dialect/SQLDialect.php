@@ -313,6 +313,15 @@ interface SQLDialect {
 		  public function create();
 
 		  /**
+		   * Creates the specified table in the active database in use by the ORM framework
+		   * 
+		   * @param Table $table The table instance to create
+		   * @return void
+		   * @throws AgilePHP_PersistenceException
+		   */
+		  public function createTable( Table $table );
+
+		  /**
 	   	   * Drops the active database in use by the ORM framework
 	   	   * (defined in persistence.xml).
 	   	   * 
@@ -320,6 +329,16 @@ interface SQLDialect {
 	   	   * @throws AgilePHP_PersistenceException
 	   	   */
 	  	  public function drop();
+
+	  	  /**
+	   	   * Drops the specified table from the active database in use
+	   	   * by the ORM framework (defined in persistence.xml).
+	   	   * 
+	   	   * @param Table $table The table to drop
+	   	   * @return void
+	   	   * @throws AgilePHP_PersistenceException
+	   	   */
+	  	  public function dropTable( Table $table );
 
 	  	 /**
 	   	  * Persists a domain model object

@@ -13,6 +13,7 @@ AgilePHP.IDE.FileExplorer = {
 		selectedNode: null,
 		tree: null,
 		window: null,
+		highlightedNode: null,
 
 		getProjectName: function() {
 
@@ -299,7 +300,8 @@ AgilePHP.IDE.FileExplorer = {
 			            contextmenu: function( node, e ) {
 
 			        		AgilePHP.IDE.FileExplorer.setProjectNameFromNode( node.id );
-			        		
+			        		AgilePHP.IDE.FileExplorer.highlightedNode = node;
+
 				        	// Remove conditional menus/items before contextmenu is shown
 			                var el = Ext.getCmp( 'file-explorer-contextmenu-database' );
 			                if( el ) el.destroy();

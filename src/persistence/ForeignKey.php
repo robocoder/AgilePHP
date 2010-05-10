@@ -288,7 +288,7 @@ class ForeignKey {
 	   */
 	  public function getReferencedTableInstance() {
 
-	  		 $pm = new PersistenceManager();
+	  		 $pm = PersistenceManager::getInstance();
 	  		 return $pm->getTableByName( $this->getReferencedTable() );
 	  }
 
@@ -299,7 +299,7 @@ class ForeignKey {
 	   */
 	  public function getReferencedColumnInstance() {
 
-	  		 $pm = new PersistenceManager();
+	  		 $pm = PersistenceManager::getInstance();
 	  		 $table = $pm->getTableByName( $this->getReferencedTable() );
 
 	  		 foreach( $table->getColumns() as $column )
@@ -316,7 +316,7 @@ class ForeignKey {
 	   */
 	  public function getColumnInstance() {
 
-	  		 $pm = new PersistenceManager();
+	  		 $pm = PersistenceManager::getInstance();
 	  		 $table = $pm->getTableByName( $this->getFkTable() );
 
 	  		 foreach( $table->getColumns() as $column )

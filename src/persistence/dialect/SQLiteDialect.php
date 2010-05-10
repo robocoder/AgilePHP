@@ -60,132 +60,145 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function create() {
 
-	  		 foreach( $this->database->getTables() as $table ) {
-
-	  		 		$sql = 'CREATE TABLE "' . $table->getName() . '" ( ';
-
-	  			  	$bCandidate = false;
-
-	  		  	    // Compound keys are formatted differently in sqlite
-	  	            $pkeyColumns = $table->getPrimaryKeyColumns();
-	  		 		if( count( $pkeyColumns ) > 1 ) {
-
-		  		 		foreach( $table->getColumns() as $column ) {
-
-		  		 			     if( $column->isAutoIncrement() )
-		  		 			     	 Logger::getInstance()->debug( 'Ignoring autoIncrement="true" for column ' . $column->getName() . '. Sqlite does not support the use of auto-increment with compound primary keys' );
-
-		  		 				 $sql .= '"' . $column->getName() . '" ' . $column->getType() .
-		  		 						 (($column->isRequired() == true) ? ' NOT NULL' : '') .
-		  		 						 (($column->getDefault()) ? ' DEFAULT \'' . $column->getDefault() . '\'' : '') . ', ';
-		  		 		}
-		  		 		
-		  		 		$sql .= 'PRIMARY KEY ( ';
-		  		 		for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
-
-		  		 				 $sql .= '"' . $pkeyColumns[$i]->getName() . '"';
-
-		  		 				 if( ($i+1) < count( $pkeyColumns ) )
-		  		 				 	 $sql .= ', ';
-		  		 		}
-		  		 		$sql .= ' ) );';
-
-	  		 		}
-	  		 		else {
-
-		  		 		foreach( $table->getColumns() as $column ) {
-	
-		  		 			     if( $column->isAutoIncrement() && $column->isPrimaryKey() )
-		  		 			     	 $bCandidate = true;
-	
-		  		 				 $sql .= '"' . $column->getName() . '" ' . $column->getType() . (($column->isPrimaryKey() === true) ? ' PRIMARY KEY' : '') .
-		  		 						 (($column->isAutoIncrement() === true) ? ' AUTOINCREMENT' : '') .
-		  		 						 (($column->isRequired() == true) ? ' NOT NULL' : '') .
-		  		 						 (($column->getDefault()) ? ' DEFAULT \'' . $column->getDefault() . '\'' : '') .
-										 (($column->isForeignKey()) ? ' CONSTRAINT ' . $column->getForeignKey()->getName() . ' REFERENCES ' . $column->getForeignKey()->getReferencedTable() . '(' . $column->getForeignKey()->getReferencedColumn() . ')' : '') . ', ';
-		  		 		}
-	
-		  		 		// remove last comma and space
-				   		$sql = substr( $sql, 0, -2 );
-	  		 		}
-
-	  		 		$sql .= ' );';
-
-			   		//if( $bCandidate && (count( $table->getPrimaryKeyColumns() ) > 1) )
-			   			//throw new AgilePHP_PersistenceException( 'Sqlite does not allow the use of auto-increment with compound primary keys (' . $table->getName() . ')' );
-
-			   		$this->query( $sql );
-
-			   		// Throw exceptions
-	  		 		if( $this->pdo->errorInfo() !== null ) {
-
-	  		 			$info = $this->pdo->errorInfo();
-	  		 			if( $info[0] == '0000' )
-	  		 				continue;
-
-				  	    throw new AgilePHP_PersistenceException( $info[2], $info[1] );
-				  	}
-	  		 }
-
-	  		 // Create triggers for each of the foreign keys to enforce referential integrity after the tables have been built
-	  		 foreach( $this->database->getTables() as $table ) {
-
-			   		foreach( $table->getForeignKeyColumns() as $column ) {
-
-			   			// Create default restrict triggers for inserts, updates, and deletes to referenced column
-			   			$this->createInsertRestrictTrigger( $column->getForeignKey()->getName() . '_fkInsert', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
-			   			$this->createUpdateRestrictTrigger( $column->getForeignKey()->getName() . '_refUpdate', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
-			   			$this->createDeleteRestrictTrigger( $column->getForeignKey()->getName() . '_refDelete', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
-
-			   			// Set appropriate ON UPDATE clause based on persistence.xml configuration
-			   			switch( $column->getForeignKey()->getOnUpdate() ) {
-
-			   				case 'NO ACTION':
-			   					break;
-
-			   				case 'RESTRICT':
-			   					$this->createUpdateRestrictTrigger( $column->getForeignKey()->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $table->getName(), $column->getName(), $column->isRequired() );		
-			   					break;
-
-			   				case 'CASCADE':
-			   					$this->createUpdateCascadeTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
-			   					break;
-
-			   				case 'SET NULL':
-								$this->createUpdateSetNullTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
-			   					break;
-
-			   				case 'SET DEFAULT':
-			   					$this->createUpdateSetDefaultTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired(), $column->getDefault() );
-			   					break;
-			   			}
-
-			   			// Set appropriate ON DELETE clause based on persistence.xml configuration
-			   			switch( $column->getForeignKey()->getOnDelete() ) {
-
-			   				case 'NO ACTION':
-			   					break;
-
-			   				case 'RESTRICT':
-			   					$this->createDeleteRestrictTrigger( $column->getForeignKey()->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $table->getName(), $column->getName(), $column->isRequired() );		
-			   					break;
-
-			   				case 'CASCADE':
-			   					$this->createDeleteCascadeTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
-			   					break;
-
-			   				case 'SET NULL':
-			   					$this->createDeleteSetNullTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
-			   					break;
-
-			   				case 'SET_DEFAULT':
-								$this->createDeleteSetDefaultTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired(), $column->getDefault() );
-			   					break;
-			   			}
-			   		}
-	  		 }
+	  		 foreach( $this->database->getTables() as $table )
+	  		 		$this->createTable( $table );
+	  		 		
+	  		 foreach( $this->database->getTables() as $table )
+	  		 		$this->createTriggers( $table );
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#createTable(Table $table)
+	   */
+	  public function createTable( Table $table ) {
+	  	
+	  		 $sql = 'CREATE TABLE "' . $table->getName() . '" ( ';
+
+  		  	 $bCandidate = false;
+
+  	  	     // Format compound keys
+             $pkeyColumns = $table->getPrimaryKeyColumns();
+  	 		 if( count( $pkeyColumns ) > 1 ) {
+
+  		 		 foreach( $table->getColumns() as $column ) {
+
+  		 			      if( $column->isAutoIncrement() )
+  		 			     	  Logger::getInstance()->debug( 'Ignoring autoIncrement="true" for column ' . $column->getName() . '. Sqlite does not support the use of auto-increment with compound primary keys' );
+
+  		 				  $sql .= '"' . $column->getName() . '" ' . $column->getType() .
+  		 						 (($column->isRequired() == true) ? ' NOT NULL' : '') .
+  		 						 (($column->getDefault()) ? ' DEFAULT \'' . $column->getDefault() . '\'' : '') . ', ';
+  		 		 }
+  		 		
+  		 		 $sql .= 'PRIMARY KEY ( ';
+  		 		 for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+
+  		 			  $sql .= '"' . $pkeyColumns[$i]->getName() . '"';
+
+  		 			  if( ($i+1) < count( $pkeyColumns ) )
+  		 				  $sql .= ', ';
+  		 		 }
+  		 		 $sql .= ' ) );';
+
+  	 		 }
+  	 		 else {
+
+  		 		foreach( $table->getColumns() as $column ) {
+
+  		 			     if( $column->isAutoIncrement() && $column->isPrimaryKey() )
+  		 			     	 $bCandidate = true;
+
+  		 				 $sql .= '"' . $column->getName() . '" ' . $column->getType() . (($column->isPrimaryKey() === true) ? ' PRIMARY KEY' : '') .
+  		 						 (($column->isAutoIncrement() === true) ? ' AUTOINCREMENT' : '') .
+  		 						 (($column->isRequired() == true) ? ' NOT NULL' : '') .
+  		 						 (($column->getDefault()) ? ' DEFAULT \'' . $column->getDefault() . '\'' : '') .
+								 (($column->isForeignKey()) ? ' CONSTRAINT ' . $column->getForeignKey()->getName() . ' REFERENCES ' . $column->getForeignKey()->getReferencedTable() . '(' . $column->getForeignKey()->getReferencedColumn() . ')' : '') . ', ';
+  		 		}
+
+  		 		// remove last comma and space
+		   		$sql = substr( $sql, 0, -2 );
+  	 		}
+
+  	 		$sql .= ' );';
+
+	   		//if( $bCandidate && (count( $table->getPrimaryKeyColumns() ) > 1) )
+	   			//throw new AgilePHP_PersistenceException( 'Sqlite does not allow the use of auto-increment with compound primary keys (' . $table->getName() . ')' );
+
+	   		$this->query( $sql );
+
+	   		// Throw exceptions
+  	 		if( $this->pdo->errorInfo() !== null ) {
+
+  	 			$info = $this->pdo->errorInfo();
+  	 			if( $info[0] != '0000' )
+  	 				throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+			}
+	  }
+
+	  /**
+	   * Creates a set of triggers which enforce referential integrity
+	   * 
+	   * @param Table $table The table to create the trigger for
+	   * @return void
+	   */
+	  private function createTriggers( Table $table ) {
+	  	
+	  		  foreach( $table->getForeignKeyColumns() as $column ) {
+
+		   			// Create default restrict triggers for inserts, updates, and deletes to referenced column
+		   			$this->createInsertRestrictTrigger( $column->getForeignKey()->getName() . '_fkInsert', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   			$this->createUpdateRestrictTrigger( $column->getForeignKey()->getName() . '_refUpdate', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   			$this->createDeleteRestrictTrigger( $column->getForeignKey()->getName() . '_refDelete', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+
+		   			// Set appropriate ON UPDATE clause based on persistence.xml configuration
+		   			switch( $column->getForeignKey()->getOnUpdate() ) {
+
+		   				case 'NO ACTION':
+		   					break;
+
+		   				case 'RESTRICT':
+		   					$this->createUpdateRestrictTrigger( $column->getForeignKey()->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $table->getName(), $column->getName(), $column->isRequired() );		
+		   					break;
+
+		   				case 'CASCADE':
+		   					$this->createUpdateCascadeTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   					break;
+
+		   				case 'SET NULL':
+							$this->createUpdateSetNullTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   					break;
+
+		   				case 'SET DEFAULT':
+		   					$this->createUpdateSetDefaultTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired(), $column->getDefault() );
+		   					break;
+		   			}
+
+		   			// Set appropriate ON DELETE clause based on persistence.xml configuration
+		   			switch( $column->getForeignKey()->getOnDelete() ) {
+
+		   				case 'NO ACTION':
+		   					break;
+
+		   				case 'RESTRICT':
+		   					$this->createDeleteRestrictTrigger( $column->getForeignKey()->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $table->getName(), $column->getName(), $column->isRequired() );		
+		   					break;
+
+		   				case 'CASCADE':
+		   					$this->createDeleteCascadeTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   					break;
+
+		   				case 'SET NULL':
+		   					$this->createDeleteSetNullTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   					break;
+
+		   				case 'SET_DEFAULT':
+							$this->createDeleteSetDefaultTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired(), $column->getDefault() );
+		   					break;
+		   			}
+		   }
+	  }
+	  
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/persistence/BasePersistence#truncate($model)
@@ -194,6 +207,15 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 
 	  	     $table = $this->getTableByModel( $model );
 	  		 $this->query( 'DELETE FROM ' . $table->getName() . ';' );
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/persistence/dialect/SQLDialect#dropTable()
+	   */
+	  public function dropTable( Table $table ) {
+
+	  		 $this->query( 'DROP TABLE ' . $table->getName() );
 	  }
 
 	  /**

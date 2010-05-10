@@ -251,7 +251,7 @@ class AJAXRenderer extends BaseRenderer {
 			  		   	   			else if( method_exists( $data, $prop ) )
 			  		   	   				$method = $class->getMethod( $prop );
 
-									$value = $method->invoke( $data );
+									$value = ($method) ? $method->invoke( $data ) : '';
 			  		   	   		}
 			  		   	   		catch( Exception $e ) {
 
@@ -375,7 +375,7 @@ class AJAXRenderer extends BaseRenderer {
 				  		   	   			else if( method_exists( $data, $prop ) )
 				  		   	   				$method = $class->getMethod( $prop );
 	
-										$value = $method->invoke( $data );
+										$value = ($method) ? $method->invoke( $data ) : '';
 				  		   	   		}
 				  		   	   		catch( Exception $e ) {
 	

@@ -87,7 +87,7 @@ AgilePHP.IDE.FileExplorer.NewController = function() {
 	      	 			id: id + '-form-type-template',
 	      				xtype: 'radio',
 	      				name: 'type',
-	      				boxLabel: 'Custom',
+	      				boxLabel: 'Custom Template',
 	      				inputValue: 'custom',
 	      				listeners: {
 	  	            		check: function( radio, checked ) {

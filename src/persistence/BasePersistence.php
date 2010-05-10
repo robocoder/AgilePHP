@@ -38,7 +38,7 @@ require_once 'ForeignKey.php';
  */
 abstract class BasePersistence {
 
-		 private $PDOStatement;				 // Internally used PDO::Statement
+		 protected $PDOStatement;			 // Internally used PDO::Statement
 		 private $maxResults = 25;			 // Used during a call to 'find'
 		 private $distinct;					 // Sets SQL DISTINCT clause
 		 private $restrictions;				 // WHERE clause restrictions
@@ -665,8 +665,6 @@ abstract class BasePersistence {
 
 	  		 		throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
-
-	  		 return null;
 	  }
 
 	  /**

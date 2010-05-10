@@ -20,14 +20,14 @@
  */
 
 /**
- * Handles PostgreSQLDialect specific queries
+ * Handles PostgreSQL specific queries
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.persistence.dialect
  * @version 0.2a
  */
-class PostgreSQLDialect extends BasePersistence implements SQLDialect {
+class PGSQLDialect extends BasePersistence implements SQLDialect {
 
 	  private $connectFlag = -1;
 

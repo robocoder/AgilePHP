@@ -81,7 +81,7 @@ Visit the WIKI at http://www.makeabyte.com/agilephp/wiki for details on installa
  > Complete reverse engineering logic in dialect classes and generator/ReverseEngineerDatabase.
  > Add support for database diff's.
  > Finish creating unit tests for all framework components (naughty, naughty - TDD!)
- 
+ > Remove @version annotation from all classes
 
  --------------------------
  **      Known Bugs      **
