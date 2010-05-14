@@ -31,7 +31,7 @@ class FileUtils {
 	  /**
 	   * Performs a recursive delete
 	   * 
-	   * @param $src The tree source path to delete (colons substitutes for /)
+	   * @param $src The source path to delete
 	   * @return void
 	   * @throws AgilePHP_Exception
 	   */
@@ -39,24 +39,29 @@ class FileUtils {
 
 	  		 Logger::getInstance()->debug( 'FileUtils::delete Performing recursive delete on source \'' . $src . '\'.' );
 
+	  		 if( is_file( $src ) ) {
+
+	  		 	 if( !unlink( $src . DIRECTORY_SEPARATOR . $file ) )
+			         throw new AgilePHP_Exception( 'Failed to delete file ' . $src . DIRECTORY_SEPARATOR . $file );
+
+			     return true;
+	  		 }
+
 	  		 $dir = opendir( $src );
 			 while( false !== ( $file = readdir( $dir ) ) ) {
 
 			     	if( $file != '.' && $file != '..') {
 
-			            if ( is_dir( $src . DIRECTORY_SEPARATOR . $file) )
+			            if( is_dir( $src . DIRECTORY_SEPARATOR . $file ) )
 			                FileUtils::delete( $src . DIRECTORY_SEPARATOR . $file );
-			            else {
-			                
-			            	if( !unlink( $src . DIRECTORY_SEPARATOR . $file ) ) {
-			            		
-			            		Logger::getInstance()->debug( 'Failed to delete file ' . $src . DIRECTORY_SEPARATOR . $file );
-			                	throw new AgilePHP_Exception( 'Could not delete file ' . $src . DIRECTORY_SEPARATOR . $file );
-			            	}
-			            }
+			            else
+			            	if( !unlink( $src . DIRECTORY_SEPARATOR . $file ) )
+			                	throw new AgilePHP_Exception( 'Failed to delete file ' . $src . DIRECTORY_SEPARATOR . $file );
 			        }
 			 }
-			 rmdir( $src );
+			 closedir( $dir );
+			 if( !rmdir( $src ) )
+			 	 throw new AgilePHP_Exception( 'Failed to delete directory ' . $src . DIRECTORY_SEPARATOR . $file );
 
 			 return true;
 	  }
@@ -70,25 +75,29 @@ class FileUtils {
 	   */
 	  public static function copy( $src, $dst ) {
 
+	  		 Logger::getInstance()->debug( 'FileUtils::delete Performing recursive copy from source \'' . $src . '\' to destination \'' . $dst . '\'.' );
+
+	  		 if( is_file( $src ) ) {
+
+	  		 	 if( !copy( $src, $dst ) )
+	  		 	 	 throw new AgilePHP_Exception( 'Failed to copy ' . $src . ' to ' . $dst );
+
+	  		 	 return true;
+	  		 }
+
 		     $dir = opendir( $src );
-			 mkdir( $dst );
+
+			 if( !mkdir( $dst ) )
+			 	 throw new AgilePHP_Exception( 'Failed to create directory ' . $dst );
+
 			 while( false !== ( $file = readdir( $dir ) ) ) {
 
-			      	if( $file != '.' && $file != '..' && substr( $file, 0, 4 ) != '.svn' ) {
-
+			      	if( $file != '.' && $file != '..' && substr( $file, 0, 4 ) != '.svn' )
 			            if( is_dir( $src . DIRECTORY_SEPARATOR . $file ) )
-
-			             	return FileUtils::copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
-			            else {
-
-			             	if( !copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file ) ) {
-			             		
-			             		Logger::getInstance()->debug( 'Failed to copy ' . $src . ' to ' . $dst );
-			                	throw new AgilePHP_Exception( 'Could not copy ' . $src . ' to ' . $dst );
-			             	}
-			             	
-			            }
-			        }
+			             	FileUtils::copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
+			            else
+			             	if( !copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file ) )			             		
+			                	throw new AgilePHP_Exception( 'Failed to copy ' . $src . ' to ' . $dst );
 			 }
 			 closedir( $dir );
 
