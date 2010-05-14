@@ -37,6 +37,8 @@ class MVC {
 	  private $defaultRenderer = 'PHTMLRenderer';
 	  private $controller;
 	  private $action;
+	  private $parameters;
+	  private $sanitize = true;
 
 	  private function __construct() {
 
@@ -68,23 +70,17 @@ class MVC {
 	   */
 	  public function setConfig( SimpleXMLElement $config ) {
 
-	  		 if( $config->attributes()->controller ) {
-
-	  		 	 Logger::getInstance()->debug( 'MVC::setConfig loading default controller \'' . $config->attributes()->controller . '\' defined in agilephp.xml' );
+	  		 if( $config->attributes()->controller )
 	  		     $this->defaultController = (string)$config->attributes()->controller;
-	  		 }
 
-	  		 if( $config->attributes()->action ) {
-
-	  		 	 Logger::getInstance()->debug( 'MVC::setConfig loading default action \'' . $config->attributes()->action . '\' defined in agilephp.xml' );
+	  		 if( $config->attributes()->action )
 	  		 	 $this->defaultAction = (string)$config->attributes()->action;
-	  		 }
 
-	  		 if( $config->attributes()->renderer ) {
-
-	  		 	 Logger::getInstance()->debug( 'MVC::setConfig loading default renderer \'' . $config->attributes()->renderer . '\' defined in agilephp.xml' );
+	  		 if( $config->attributes()->renderer )
 	  		 	 $this->defaultRenderer = (string)$config->attributes()->renderer;
-	  		 }
+
+	  		 if( $config->attributes()->sanitize )
+	  		 	 $this->sanitize = $config->attributes()->sanitize == 'false' ? false : true;
 	  }
   
 	  /**
@@ -173,6 +169,16 @@ class MVC {
 
 	  		 return $this->action;
 	  }
+	  
+	  /**
+	   * Returns the action parameters specified in the request
+	   * 
+	   * @return Array Parameters passed to the invoked action
+	   */
+	  public function getParameters() {
+
+	  		 return $this->parameters;
+	  }
 
 	  /**
 	   * Parses the current request URI to obtain the controller, action method, and arguments
@@ -192,16 +198,16 @@ class MVC {
 	  	 
 	  	     if( count( $matches ) ) {
 
-		  	  	 $mvcPieces = explode( '/', $matches[count($matches)-1] );
-			  	 array_shift( $mvcPieces );
+		  	  	 $this->parameters = explode( '/', $matches[count($matches)-1] );
+			  	 array_shift( $this->parameters );
 
 			  	 // Assign controller and action
-		  	     $controller = (count($mvcPieces) > 0 && $mvcPieces[0] != '') ? $mvcPieces[0] : $this->getDefaultController(); 
-		  	     $action = (count( $mvcPieces ) > 1) ? $mvcPieces[1] : $this->getDefaultAction();
+		  	     $controller = (isset($this->parameters[0]) > 0 && $this->parameters[0] != '') ? $this->parameters[0] : $this->getDefaultController(); 
+		  	     $action = (isset($this->parameters[1])) ? $this->parameters[1] : $this->getDefaultAction();
 
 		  	     // Remove controller and action from mvcPieces
-		  	     array_shift( $mvcPieces );
-		  	     array_shift( $mvcPieces );
+		  	     array_shift( $this->parameters );
+		  	     array_shift( $this->parameters );
 
 		  	     // Security, Security, Security.... 
 		  	     $controller = addslashes( strip_tags( $controller ) );
@@ -223,12 +229,13 @@ class MVC {
 
 	  	     // This try/catch statement hides the exception stack of the inner call. This makes debugging difficult.
 	  	     //try {
-		  	     	if( isset( $mvcPieces ) ) {
+		  	     	if( isset($this->parameters[0]) ) {
 
 		  	     		$request = Scope::getRequestScope();
 
-		  	     		foreach( $mvcPieces as $key => $val )
-					  	     	 $mvcPieces[$key] = $request->sanitize( $val );
+		  	     		if( $this->sanitize )
+		  	     			foreach( $this->parameters as $key => $val )
+					  	     	 	 $this->parameters[$key] = $request->sanitize( $val );
 
 					  	// If this is a class thats been intercepted, check both the inner class and the interceptor for
 					  	// the presence of the requested method/action.
@@ -245,9 +252,9 @@ class MVC {
 					  	} 
 
 					  	Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
-					  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $mvcPieces  ) . '\'.' );
+					  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $this->parameters  ) . '\'.' );
 
-		  	     		call_user_func_array( array( $oController, $action ), $mvcPieces ); 
+		  	     		call_user_func_array( array( $oController, $action ), $this->parameters ); 
 		  	     	}
 		  	     	else {
 	
