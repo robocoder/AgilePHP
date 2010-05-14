@@ -219,13 +219,7 @@ class FileExplorerController extends BaseExtController {
 
 	  		   header( 'content-type: application/json' );
 
-	  		   if( is_dir( $treePath ) ) {
-
-	  		   	   print FileUtils::delete( $treePath ) ? '{success:true}' : '{success:false}';
-	  		   	   return;
-	  		   }
-
-	  		   print (unlink( $treePath ) ? '{success:true}' : '{success:false}');
+	  		   print FileUtils::delete( $treePath ) ? '{success:true}' : '{success:false}';
 	  	}
 
 	  	/**
@@ -251,15 +245,8 @@ class FileExplorerController extends BaseExtController {
 	  		   Logger::getInstance()->debug( 'FileExplorerController::copy Copying src \'' . $treeSrc . '\' to destination \'' . $dstPath . '\'.' );
 
 	  		   header( 'content-type: application/json' );
-	  		   if( is_dir( $treeSrc ) ) {
-
-	  		   	   FileUtils::copy( $treeSrc, $dstPath );
-	  		   	   print '{success:true, parent: "' . $dstId . '"}';
-	  		   	   return;
-	  		   }
-
-	  		   copy( $treeSrc, $dstPath );
-	  		   print '{success:true, parent: "' . $dstId . '"}';
+  		   	   FileUtils::copy( $treeSrc, $dstPath );
+  		   	   print '{success:true, parent: "' . $dstId . '"}';
 	  	}
 
 		/**
@@ -272,8 +259,8 @@ class FileExplorerController extends BaseExtController {
 		 */
 	  	public function move( $treeSrc, $treeDst ) {
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::copy $treeSrc = \'' . $treeSrc . '\'.' );
-	  		   Logger::getInstance()->debug( 'FileExplorerController::copy $treeDst = \'' . $treeDst . '\'.' );
+	  		   Logger::getInstance()->debug( 'FileExplorerController::move $treeSrc = \'' . $treeSrc . '\'.' );
+	  		   Logger::getInstance()->debug( 'FileExplorerController::move $treeDst = \'' . $treeDst . '\'.' );
 
 	  		   $src = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeSrc );
 	  		   $dst = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeDst );
@@ -281,7 +268,7 @@ class FileExplorerController extends BaseExtController {
 	  		   $array = explode( DIRECTORY_SEPARATOR, $src );
 	  		   $dstPath = $dst . DIRECTORY_SEPARATOR . array_pop( $array );
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::copy Copying src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
+	  		   Logger::getInstance()->debug( 'FileExplorerController::move Moving src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
 
 	  		   $o = new stdClass;
 
