@@ -317,12 +317,18 @@ AgilePHP.IDE.FileExplorer.NewModel = function() {
 
 	  	    		mode = 2; // create from database table
 
-	  	    		var data = newModelRemote.getTableColumnsMeta( selectedTable );
-			  	  	store.removeAll();
-			  	  	store.loadData( data );
+	  	    		newModelRemote.setCallback( function( response ) {
 
-			  	  	var columns = newModelRemote.getTableColumns( selectedTable );
-		  	    	Ext.getCmp( id + '-editorgridpanel-column-combo' ).getStore().loadData( columns );
+	  	    			store.removeAll();
+				  	  	store.loadData( response );
+	  	    		});
+	  	    		newModelRemote.getTableColumnsMeta( selectedTable );
+
+			  	  	newModelRemote.setCallback( function( columns ) {
+			  	  		
+			  	  		Ext.getCmp( id + '-editorgridpanel-column-combo' ).getStore().loadData( columns );
+			  	  	});
+			  	  	newModelRemote.getTableColumns( selectedTable );
 	  	    	}
 
             	return true;
@@ -386,8 +392,17 @@ AgilePHP.IDE.FileExplorer.NewModel = function() {
       	    }
       	}]);
 
-	Ext.getCmp( id + '-form-database-table' ).getStore().loadData( newModelRemote.getDatabaseTables() );
-	Ext.getCmp( id + '-editorgridpanel-type-combo' ).getStore().loadData( newModelRemote.getSQLDataTypes() );
+	newModelRemote.setCallback( function( tables ) {
+	
+		Ext.getCmp( id + '-form-database-table' ).getStore().loadData( tables );
+	});
+	newModelRemote.getDatabaseTables();
+
+	newModelRemote.setCallback( function( types ) {
+	
+		Ext.getCmp( id + '-editorgridpanel-type-combo' ).getStore().loadData( types );
+	});
+	newModelRemote.getSQLDataTypes()
 
 	return wizard;
 };

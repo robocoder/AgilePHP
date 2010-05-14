@@ -44,19 +44,21 @@ class FileUtils {
 
 			     	if( $file != '.' && $file != '..') {
 
-			            if ( is_dir( $src . '/' . $file) )
-			                FileUtils::delete( $src . '/' . $file );
+			            if ( is_dir( $src . DIRECTORY_SEPARATOR . $file) )
+			                FileUtils::delete( $src . DIRECTORY_SEPARATOR . $file );
 			            else {
 			                
-			            	if( !unlink( $src . '/' . $file ) ) {
+			            	if( !unlink( $src . DIRECTORY_SEPARATOR . $file ) ) {
 			            		
-			            		Logger::getInstance()->debug( 'Failed to delete file ' . $src . '/' . $file );
-			                	throw new AgilePHP_Exception( 'Could not delete file ' . $src . '/' . $file );
+			            		Logger::getInstance()->debug( 'Failed to delete file ' . $src . DIRECTORY_SEPARATOR . $file );
+			                	throw new AgilePHP_Exception( 'Could not delete file ' . $src . DIRECTORY_SEPARATOR . $file );
 			            	}
 			            }
 			        }
 			 }
-			 return rmdir( $src );
+			 rmdir( $src );
+
+			 return true;
 	  }
 
 	  /**
@@ -76,14 +78,21 @@ class FileUtils {
 
 			            if( is_dir( $src . DIRECTORY_SEPARATOR . $file ) )
 
-			             	FileUtils::copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
+			             	return FileUtils::copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
 			            else {
 
-			             	copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
+			             	if( !copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file ) ) {
+			             		
+			             		Logger::getInstance()->debug( 'Failed to copy ' . $src . ' to ' . $dst );
+			                	throw new AgilePHP_Exception( 'Could not copy ' . $src . ' to ' . $dst );
+			             	}
+			             	
 			            }
 			        }
 			 }
 			 closedir( $dir );
+
+			 return true;
 	  }
 }
 ?>

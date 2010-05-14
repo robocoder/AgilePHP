@@ -27,13 +27,10 @@ AgilePHP.IDE.FileExplorer = {
 
 		setProjectNameFromNode: function( nodeId ) {
 
-			var workspace = AgilePHP.IDE.FileExplorer.workspace;
-			var linebreak = (workspace.indexOf( '/' ) !== -1) ? '/' : '\'';
-			var nodePath = nodeId.replace( /:/g, linebreak );
-			var nodePath = nodePath.replace( workspace, '' );
-			var pieces = nodePath.split( linebreak );
+            var pieces = nodeId.split( /\|/ );
+                  pieces.pop(); // model directory
 
-			AgilePHP.IDE.FileExplorer.projectName = pieces[1];
+            AgilePHP.IDE.FileExplorer.projectName = pieces.pop();
 		},
 
 		/**
@@ -85,10 +82,12 @@ AgilePHP.IDE.FileExplorer = {
 
 		Panel: function() {
 
-			AgilePHP.IDE.getConfig( 'workspace', function( config ) {
+			var configs = new ConfigsRemote();
+				configs.setCallback( function( response ) {
 
-					AgilePHP.IDE.FileExplorer.workspace = config.value;
-			});
+					AgilePHP.IDE.FileExplorer.workspace = response.value;
+				});
+				configs.get( 'workspace' );
 
 			AgilePHP.IDE.FileExplorer.panel = new Ext.Panel({
 
@@ -265,7 +264,7 @@ AgilePHP.IDE.FileExplorer = {
 			                        		if( btn == 'yes' ) {
 			                        			
 			                        			AgilePHP.IDE.FileExplorer.selectedNode = item.parentMenu.contextNode;
-			                        			AgilePHP.IDE.FileExplorer._delete();
+			                        			AgilePHP.IDE.FileExplorer.delete();
 			                        		}
 			                        	});
 			                            break;
@@ -435,7 +434,7 @@ AgilePHP.IDE.FileExplorer = {
 	
 					if( node.isLeaf() && node.attributes.iconCls != 'mime-folder' ) {
 	
-						var pieces = node.id.split( ':' );
+						var pieces = node.id.split( '|' );
 				    	var id = pieces.join( '/' );
 				    	var title = pieces[ pieces.length -1 ];
 				    	AgilePHP.IDE.FileExplorer.newPage( node.id, node.text );
@@ -461,7 +460,7 @@ AgilePHP.IDE.FileExplorer = {
 	
 				return AgilePHP.IDE.FileExplorer.panel;
 		},
-		
+
 		/**
 		 * Performs AJAX request to copy the selected node.
 		 * 
@@ -483,7 +482,7 @@ AgilePHP.IDE.FileExplorer = {
 				AgilePHP.debug( response );
 				AgilePHP.IDE.error( "Error performing copy.\n" + response.errors.reason );
 			});
-		},		
+		},
 
 		/**
 		 * Performs AJAX request to move/rename the selected node.
@@ -512,7 +511,7 @@ AgilePHP.IDE.FileExplorer = {
 		/**
 		 * Performs AJAX request to delete the selected node.
 		 */
-		_delete : function() {
+		delete : function() {
 
 			if( this.selectedNode ) {
 

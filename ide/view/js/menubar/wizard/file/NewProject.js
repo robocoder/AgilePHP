@@ -111,8 +111,8 @@ AgilePHP.IDE.Menubar.file.NewProject = function() {
         });
 	    Ext.getCmp( 'step-8' ).add( pbar );
 
-	    var stub = AgilePHP.Remoting.getStub( 'ProjectRemote' );
-	    	stub.setCallback( function( response ) {
+	    var projectRemote = new ProjectRemote();
+	    	projectRemote.setCallback( function( response ) {
 
 	    		pbar.reset( true );
 		    	//Ext.getCmp( id + '-card-prev' ).setDisabled( true );
@@ -131,10 +131,8 @@ AgilePHP.IDE.Menubar.file.NewProject = function() {
 		    	Ext.getCmp( id + 'step-8-message' ).el.dom.innerHTML = '<div class="wizard-header">Your project was successfully created.</div>';
 
 		    	AgilePHP.IDE.FileExplorer.tree.getRootNode().reload(); // Reload tree root (workspace)
-		    })
-
-		var pr = new ProjectRemote();
-	        pr.create( params )
+		    });
+	        projectRemote.create( params );
 	};
 
 	/**
@@ -488,7 +486,8 @@ AgilePHP.IDE.Menubar.file.NewProject = function() {
               	       					database.password = Ext.getCmp( id + '-form-database-password' ).getValue()
 
               	       				button.setDisabled( true );
-              	       				AgilePHP.Remoting.getStub( 'DatabaseManagerRemote' ).setCallback( function( response ) {
+              	       				var dbManagerRemote = new DatabaseManagerRemote();
+              	       					dbManagerRemote.setCallback( function( response ) {
 
               	       						button.setDisabled( false );
               	       						if( response._class == 'AgilePHP_RemotingException' ) {
@@ -519,9 +518,7 @@ AgilePHP.IDE.Menubar.file.NewProject = function() {
               	       								AgilePHP.IDE.error( 'Unexpected response from server.' );
               	       						}
               	       				});
-
-              	       				var dbr = new DatabaseManagerRemote();
-              	       					dbr.testDatabaseConnection( database );
+              	       				dbManagerRemote.testDatabaseConnection( database );
               	       			}
               	       		}
               	       	}]
@@ -655,9 +652,6 @@ AgilePHP.IDE.Menubar.file.NewProject = function() {
               		}],
               		handler: function() {
 
-              			var nid = Ext.getCmp( id + '-form-workspace' ).getValue() + '/' + Ext.getCmp( id + '-form-name' ).getValue();
-              				nid = nid.replace( /\//g, ':' );
-              			AgilePHP.IDE.FileExplorer.tree.getNodeById( nid ).expand();
               			Ext.getCmp( id ).close();
               		}
               	}

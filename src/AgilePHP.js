@@ -564,7 +564,6 @@ var AgilePHP = {
 			 * set within the AgilePHP.MVC object.
 			 * 
 			 * @param callback {function} The callback function to execute after the XHR request has completed
-			 * @param arguments {String} A string of arguments delimited by a forward slash '/'
 			 * @return If no callback function is supplied, the call is treated synchronously and the result is returned. 
 			 */
 			processRequest : function( callback ) {
@@ -580,7 +579,8 @@ var AgilePHP = {
 				    else {
 
 				    	var xhr = new AgilePHP.XHR();
-				    	xhr.setSynchronous( true );
+				    		xhr.setSynchronous( true );
+
 				    	return xhr.request( url );
 				    }
 			}
@@ -591,7 +591,6 @@ var AgilePHP = {
 		 */
 		Remoting : {
 
-			stubs : [],
 			controller : null,
 
 			/**
@@ -602,7 +601,7 @@ var AgilePHP = {
 			 */
 			setController : function( controller ) {
 
-				this.controller = controller;
+				AgilePHP.Remoting.controller = controller;
 			},
 
 			/**
@@ -612,210 +611,53 @@ var AgilePHP = {
 			 */
 			getController : function() {
 
-				return this.controller;
+				return AgilePHP.Remoting.controller;
 			},
 
 			/**
-			 * Returns the client side stub responsible for a remote communication
-			 * with a PHP object.
+			 * Invokes a server side PHP object.
 			 * 
-			 * @param clazz {String} The name of the class to retrieve the Stub for.
-			 * @return {Object} The client side remoting Stub
+			 * @param stub {object} The client side Stub instance respresenting a remote PHP object.
+			 * @param method {string} The name of the remote method to invoke
+			 * @param parameters {array} An array containing the arguments/parameters to pass into
 			 */
-			getStub : function( clazz ) {
-			
-				for( var i=0; i<this.stubs.length; i++ )
-					if( this.stubs[i].clazz == clazz )
-						return this.stubs[i];
-			},
+			invoke: function( stub, method, parameters ) {
 
-			/**
-			 * Constructor for a client side Stub, responsible for handling
-			 * remoting calls to a server side PHP object.
-			 * 
-			 * @param {string} clazz The name of the server side PHP class to remote
-			 */
-			Stub : function( clazz ) {
+				 AgilePHP.debug( 'AgilePHP.Remoting.invoke' );
+				 AgilePHP.debug( stub );
+				 AgilePHP.debug( method );
+				 AgilePHP.debug( parameters );
 
-				this.clazz = clazz;
-				this.callback = null;
+				 var action = (stub._stateful) ? 'invokeStateful' : 'invoke';
 
-				/**
-				 * Sets the callback function which gets executed when the remoting call is complete
-				 * 
-				 * @param {function} callback The callback function to execute when the remoting
-				 * 							  AJAX request has completed
-				 */
-				AgilePHP.Remoting.Stub.prototype.setCallback = function( callback ) {
+				 var clazz = stub._class
+				 var callback = stub._callback;
 
-					this.callback = callback;
-				};
+				 delete stub._class;
+				 delete stub._stateful;
+				 delete stub._callback;
 
-				/**
-				 * Invokes a server side PHP object.
-				 * 
-				 * @param method {string} The name of the remote method to invoke
-				 * @param parameters {array} An array containing the arguments/parameters to pass into
-				 * 							 the remote method.
-				 * @param instance {object} The client side Stub instance responsible for remoting to the
-				 * 							server side PHP object. The Stub state is used
-				 * 							to construct the remote object.
-				 */
-				AgilePHP.Remoting.Stub.prototype.invoke = function( method, parameters, instance ) {
+				 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/' + action;
+				 var data = 'class=' + clazz + '&method=' + method + '&constructorArgs=' + JSON.stringify( stub );
 
-					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.clazz + '\' ).invoke' );
-					 AgilePHP.debug( method );
-					 AgilePHP.debug( parameters );
-					 AgilePHP.debug( instance );
+				 if( parameters != undefined ) {
 
-					 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invoke';
-					 var data = 'class=' + this.clazz + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
+					 var o = new Object();
+					 for( var i=0; i<parameters.length; i++ )
+						  o[ 'argument' + (i+1) ] = parameters[i];
 
-					 if( parameters != undefined ) {
+					 data += '&parameters=' + JSON.stringify( o );
+				 }
 
-						 var o = new Object();
-						 for( var i=0; i<parameters.length; i++ )
-							  o[ 'argument' + (i+1) ] = parameters[i];
+				 if( callback == undefined ) {
 
-						 data += '&parameters=' + JSON.stringify( o );
-					 }
+					 var xhr = new AgilePHP.XHR();
+					 	 xhr.setSynchronous( true );
 
-					 if( this.callback == undefined ) {
-						 
-						 var xhr = new AgilePHP.XHR();
-						 xhr.setSynchronous( true );
-						 return xhr.post( url, data );
-					 }
-					 else
-						 new AgilePHP.XHR().post( url, data, this.callback );
-				};
+					 return xhr.post( url, data );
+				 }
 
-				/**
-				 * Invokes a stateful instance of a server side PHP object. AgilePHP stores objects
-				 * invoked by this method in the SessionScope state.
-				 *  
-				 * @param method {string} The name of the remote method to invoke
-				 * @param parameters {array} An array containing the arguments/parameters to pass into
-				 * 							 the remote method.
-				 * @param instance {object} The client side Stub instance responsible for remoting to the
-				 * 							server side PHP object. The Stub state is used
-				 * 							to construct the remote object.
-				 */
-				AgilePHP.Remoting.Stub.prototype.invokeStateful = function( method, parameters, instance ) {
-
-					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.clazz + '\' ).invokeStateful' );
-					 AgilePHP.debug( method );
-					 AgilePHP.debug( parameters );
-					 AgilePHP.debug( instance );
-
-					 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invokeStateful';
-					 var data = 'class=' + this.clazz + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
-
-					 if( parameters != undefined ) {
-
-						 var o = new Object();
-						 for( var i=0; i<parameters.length; i++ )
-							  o[ 'argument' + (i+1) ] = parameters[i];
-
-						 data += '&parameters=' + JSON.stringify( o );
-					 }
-
-					 if( this.callback == undefined ) {
-
-						 var xhr = new AgilePHP.XHR();
-						 	 xhr.setSynchronous( true );
-						 return xhr.post( url, data );
-					 }
-					 else
-						 new AgilePHP.XHR().post( url, data, this.callback );
-				};
-
-				/**
-				 * Invokes a server side PHP object which has been intercepted. Intercepted classes are renamed
-				 * and the InterceptorProxy is given the name of the intercepted class. This call goes around
-				 * the proxy to examine the annotations in the remote class to determine the #@RemoteMethod
-				 * calls which can be invoked.
-				 * 
-				 * @param method {string} The name of the remote method to invoke
-				 * @param parameters {array} An array containing the arguments/parameters to pass into
-				 * 							 the remote method.
-				 * @param instance {object} The client side Stub instance responsible for remoting to the
-				 * 							server side PHP object. The Stub state is used
-				 * 							to construct the remote object.
-				 */
-				AgilePHP.Remoting.Stub.prototype.invokeIntercepted = function( method, parameters, instance ) {
-
-					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.clazz + '\' ).invokeIntercepted' );
-					 AgilePHP.debug( method );
-					 AgilePHP.debug( parameters );
-					 AgilePHP.debug( instance );
-
-					 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invokeIntercepted';
-					 var data = 'class=' + this.clazz + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
-
-					 if( parameters != undefined ) {
-
-						 var o = new Object();
-						 for( var i=0; i<parameters.length; i++ )
-							  o[ 'argument' + (i+1) ] = parameters[i];
-
-						 data += '&parameters=' + JSON.stringify( o );
-					 }
-
-					 if( this.callback == undefined ) {
-						 
-						 var xhr = new AgilePHP.XHR();
-						 	 xhr.setSynchronous( true );
-						 return xhr.post( url, data );
-					 }
-					 else
-						 new AgilePHP.XHR().post( url, data, this.callback );
-				};
-
-				/**
-				 * Invokes a server side PHP object which has been intercepted within a stateful SessionScope context.
-				 * Intercepted classes are renamed and the InterceptorProxy is given the name of the intercepted class.
-				 * This call goes around the proxy to examine the annotations in the remote class to determine the
-				 * #@RemoteMethod calls which can be invoked.
-				 * 
-				 * @param method {string} The name of the remote method to invoke
-				 * @param parameters {array} An array containing the arguments/parameters to pass into
-				 * 							 the remote method.
-				 * @param instance {object} The client side Stub instance responsible for remoting to the
-				 * 							server side PHP object. The Stub state is used
-				 * 							to construct the remote object.
-				 */ 
-				AgilePHP.Remoting.Stub.prototype.invokeInterceptedStateful = function( method, parameters, instance ) {
-					
-					 AgilePHP.debug( 'AgilePHP.Remoting.Stub( \'' + this.clazz + '\' ).invokeInterceptedStateful' );
-					 AgilePHP.debug( method );
-					 AgilePHP.debug( parameters );
-					 AgilePHP.debug( instance );
-
-					 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invokeInterceptedStateful';
-					 var data = 'class=' + this.clazz + '&method=' + method + '&stub=' + (instance != undefined ? JSON.stringify( instance ) : '');
-
-					 if( parameters != undefined ) {
-
-						 var o = new Object();
-						 for( var i=0; i<parameters.length; i++ )
-							  o[ 'argument' + (i+1) ] = parameters[i];
-
-						 data += '&parameters=' + JSON.stringify( o );
-					 }
-
-					 if( this.callback == undefined ) {
-						 
-						 var xhr = new AgilePHP.XHR();
-						 xhr.setSynchronous( true );
-						 return xhr.post( url, data );
-					 }
-					 else
-						 new AgilePHP.XHR().post( url, data, this.callback );
-				};
-
-				// Push the stub onto the stack
-				AgilePHP.Remoting.stubs.push( this );
-			}			
+				 new AgilePHP.XHR().post( url, data, callback );
+			}
 		}
 }

@@ -188,14 +188,14 @@ class RequestScope {
 
 	  /**
 	   * Sanitizes the specified data by running it through htmlspecialchars,
-	   * addslashes, and strip_tags. The data is also urldecoded. 
+	   * addslashes, and strip_tags. 
 	   * 
 	   * @param String $data The data to sanitize
 	   * @return The sanitized data
 	   */
 	  public function sanitize( $data ) {
 
-	  		 return htmlspecialchars( addslashes( strip_tags( urldecode( $data ) ) ) );
+	  		 return htmlspecialchars( addslashes( strip_tags( $data ) ) );
 	  }
 }
 ?>

@@ -79,28 +79,7 @@ AgilePHP.IDE = {
 		   buttons: Ext.Msg.OK,
 		   icon: Ext.MessageBox.INFO
 		});
-	},
-
-	getConfig: function( name, callback ) {
-
-		var stub = AgilePHP.Remoting.getStub( 'ConfigsRemote' );
-			stub.setCallback( callback );
-
-		new ConfigsRemote().get( name );		    
-	},
-
-	getConfigs: function( callback ) {
-
-		var stub = AgilePHP.Remoting.getStub( 'ConfigsRemote' );
-			stub.setCallback( callback );
-
-		new ConfigsRemote().getConfigs();
 	}
-};
-
-AgilePHP.IDE.Configs = {
-
-	workspace: null
 };
 
 AgilePHP.IDE.Remoting = {
@@ -121,6 +100,3 @@ AgilePHP.IDE.Remoting = {
 			}
 		}
 };
-
-// Dynamically load required javascript libraries
-AgilePHP.IDE.Remoting.load( 'ConfigsRemote' );

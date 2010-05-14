@@ -31,6 +31,8 @@ class ProjectRemote {
 	  private $projectName;
 	  private $root;
 
+	  public function __construct() { }
+
 	  /**
 	   * Creates a new project
 	   * 

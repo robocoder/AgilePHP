@@ -41,7 +41,11 @@ abstract class Remoting extends BaseController {
 	  	  */
 	  	 protected function __construct( $class = null ) {
 
-	  		       $this->class = $class;
+	  	 		   $clazz = ($class) ? $class : $this;
+
+	  	 		   $c = new ReflectionClass( $clazz );
+	  	 		   $this->class = $c->getName();
+
 	  		       $this->createRenderer( 'AJAXRenderer' );
 
 				   set_error_handler( 'Remoting::ErrorHandler' );
@@ -75,470 +79,284 @@ abstract class Remoting extends BaseController {
 	   	  * 
 	   	  * @return String Session id for the current request
 	  	  */
-	  	public function getSessionId() {
+	  	 public function getSessionId() {
 
 	  		   $sessionId = Scope::getInstance()->getSessionScope()->getSessionId();
 
 	  		   Logger::getInstance()->debug( 'Remoting::getSessionId Returning session id \'' . $sessionId . '\'.' );
 
 	  		   return $sessionId;
-	  	}
+	  	 }
 
-	  	/**
-	   	 * Invokes the specified class/method/args using a stateful instance stored in SessionScope. If
-	   	 * a stateful instance does not exist, a new instance is created and stored in the SessionScope
-	   	 * for future calls.
-	   	 * 
-	   	 * @return mixed Returns the result of the invocation
-	   	 * @throws AgilePHP_RemotingException
-	   	 */
-	  	public function invokeStateful() {
+		 /**
+	  	  * Destroys the session used for stateful remoting
+	 	  *  
+	   	  * @param String $sessionId The id of the session to destroy
+	      * @return void
+	      */
+	     public function destroySession( $sessionId ) {
 
-	  		   $request = Scope::getInstance()->getRequestScope();
-	  		   $session = Scope::getInstance()->getSessionScope();
+	  		    $session = Scope::getInstance()->getSessionScope()->setSessionId( $sessionId );
+	  		    $session->destroy(); 
+	     }
+	      
+		 /**
+		  * Creates a dynamic javascript proxy stub/interface used for remoting standard PHP classes
+		  * 
+		  * @param bool $stateful True to configure the remoting stub to invoke stateful server side calls. The
+		  * 				 	  remoted object is kept in the SessionScope.
+	  	  * @return void
+	  	  * @throws AgilePHP_RemotingException
+		  */
+		 protected function createStub( $stateful = false ) { 
 
-	  		   $class = $request->getSanitized( 'class' );
-	    	   $method = $request->getSanitized( 'method' );
-	    	   $stub = $this->decode( $request->getSanitized( 'stub' ) );
-	    	   $args = $this->decode( $request->getSanitized( 'parameters' ) );
-
-	  		   if( !$classes = $session->get( 'REMOTING_classes' ) ) {
-
-	  		 	   $session->set( 'REMOTING_classes', array() );
-	  		 	   $classes = array();
-	  		   }
-
-	  		   try {
-		  	         $clazz = new ReflectionClass( $class );
-
-		  	         // Restore the instance from an existing session
-	  		   	  	 if( array_key_exists( $class, $classes ) ) {
-
-	  		 	   		 $instance = $classes[$class];
-	  		 	   		 Logger::getInstance()->debug( 'Remoting::invokeStateful Loading instance of \'' . $class . '\' from session state.' );
-	  		   		 }
-
-	  		   		 // Create a new instance using client stub constructor values 
-		  	         else if( $stub ) {
-
-		  	         	 $instance = $clazz->newInstanceArgs( (array)$stub );
-		  	         	 Logger::getInstance()->debug( 'Remoting::invokeStateful Creating new instance of \'' . $class . '\' from client stub.' );
-		  	         }
-		  	         
-		  	         // Create a new instance without constructor parameters
-		  	         else {
-
-		  	         	$instance = $clazz->newInstance();
-		  	         	Logger::getInstance()->debug( 'Remoting::invokeStateful Creating new instance of \'' . $class . '\'.' );
-		  	         }
-
-		  		     $m = $clazz->getMethod( $method );
-		  		     $result = $args ? $m->invokeArgs( $instance, (array)$args ) : $m->invoke( $instance );
-		  		     $classes[$class] = $instance;
-		  		     $session->set( 'REMOTING_classes', $classes );
-
-		  		     $this->getRenderer()->render( $result );
-	  		   }
-	  		   catch( Exception $e ) {
-
-	  		 		  throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
-	  		   }
-	    }
-
-	  	/**
-	  	 * Destroys the session used for stateful remoting
-	 	 *  
-	   	 * @param String $sessionId The id of the session to destroy
-	     * @return void
-	     */
-	    public function destroySession( $sessionId ) {
-
-	  		   $session = Scope::getInstance()->getSessionScope()->setSessionId( $sessionId );
-	  		   $session->destroy(); 
-	    }
-
-	    /**
-	     * Invokes a non-persistent/stateful instance of the requested class/method
-	     * passing in arguments if any were defined. This non-stateful approach is
-	     * how most RPC web services work.
-	     * 
-	   	 * @return mixed Returns the result of the invocation
-	   	 * @throws AgilePHP_RemotingException
-	     */
-	    public function invoke() {
-
-	    	   $request = Scope::getInstance()->getRequestScope();
-
-	    	   $class = $request->getSanitized( 'class' );
-	    	   $method = $request->getSanitized( 'method' );
-	    	   $stub = $this->decode( $request->getSanitized( 'stub' ) );
-	    	   $args = $this->decode( $request->getSanitized( 'parameters' ) );
-	    	   
-	  		   Logger::getInstance()->debug( 'Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
-	  		 	  	'\', stub \'' . print_r( $stub, true ) . '\', args \'' . print_r( $args, true ) . '\'.' );
-
-	  		   try {
-		  	         $clazz = new ReflectionClass( $class );
-		  	         $instance = $stub ? $clazz->newInstanceArgs( (array)$stub ) : $clazz->newInstance();
-		  		     $m = $clazz->getMethod( $method );
-
-		  		     $this->getRenderer()->render( $args ? $m->invokeArgs( $instance, (array)$args ) : $m->invoke( $instance ) );
-	  		   }
-	  		   catch( Exception $e ) {
-
-	  		 		  throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
-	  		   }
-	    }
-
-	    /**
-	     * Performs RMI invocation on an intercepted class (non-stateful).
-	     * 
-	   	 * @return mixed Returns the result of the invocation
-	   	 * @throws AgilePHP_RemotingException
-	     */
-	    public function invokeIntercepted() {
-
-	    	   $request = Scope::getInstance()->getRequestScope();
-
-	    	   $class = $request->getSanitized( 'class' );
-	    	   $method = $request->getSanitized( 'method' );
-	    	   $stub = $this->decode( $request->getSanitized( 'stub' ) );
-	    	   $args = $this->decode( $request->getSanitized( 'parameters' ) );
-
-	  		   Logger::getInstance()->debug( 'Remoting::invokeIntercepted Invoking class \'' . $class . '\', method \'' . $method .
-	  		 	  	'\', stub \'' . print_r( $stub, true ) . '\', args \'' . print_r( $args, true ) . '\'.' );
-
-	  		   try {
-		  	         $clazz = new ReflectionClass( $class );
-		  	         $instance = $stub ? $clazz->newInstanceArgs( (array)$stub ) : $clazz->newInstance();
-		  		     $m = $clazz->getMethod( '__call' );
-		  		     $callArgs = array( $method, (array) $args );
-		  		     $this->getRenderer()->render( $args ? $m->invokeArgs( $instance, $callArgs ) : $m->invokeArgs( $instance, $method ) );
-	  		   }
-	  		   catch( Exception $e ) {
-
-	  		 		  throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
-	  		   }
-	    }
-	    
-		/**
-	   	 * Invokes the specified intercepted class/method/args using a stateful instance stored in SessionScope. If
-	   	 * a stateful instance does not exist, a new instance is created and stored in the SessionScope
-	   	 * for future calls.
-	   	 * 
-	   	 * @return mixed Returns the result of the invocation
-	   	 * @throws AgilePHP_RemotingException
-	   	 */
-	  	public function invokeInterceptedStateful() {
-
-	  		   $request = Scope::getInstance()->getRequestScope();
-	  		   $session = Scope::getInstance()->getSessionScope();
-
-	  		   $class = $request->getSanitized( 'class' );
-	    	   $method = $request->getSanitized( 'method' );
-	    	   $stub = $this->decode( $request->getSanitized( 'stub' ) );
-	    	   $args = $this->decode( $request->getSanitized( 'parameters' ) );
-
-	  		   if( !$classes = $session->get( 'REMOTING_classes' ) ) {
-
-	  		 	   $session->set( 'REMOTING_classes', array() );
-	  		 	   $classes = array();
-	  		   }
-
-	  		   try {
-		  	         $clazz = new ReflectionClass( $class );
-
-		  	         // Restore the instance from an existing session
-	  		   	  	 if( array_key_exists( $class, $classes ) ) {
-
-	  		 	   		 $instance = $classes[$class];
-	  		 	   		 Logger::getInstance()->debug( 'Remoting::invokeStateful Loading instance of \'' . $class . '\' from session state.' );
-	  		   		 }
-
-	  		   		 // Create a new instance using client stub constructor values 
-		  	         else if( $stub ) {
-
-		  	         	 $instance = $clazz->newInstanceArgs( (array)$stub );
-		  	         	 Logger::getInstance()->debug( 'Remoting::invokeStateful Creating new instance of \'' . $class . '\' from client stub.' );
-		  	         }
-		  	         
-		  	         // Create a new instance without constructor parameters
-		  	         else {
-
-		  	         	$instance = $clazz->newInstance();
-		  	         	Logger::getInstance()->debug( 'Remoting::invokeStateful Creating new instance of \'' . $class . '\'.' );
-		  	         }
-
-
-		  		     $m = $clazz->getMethod( '__call' );
-		  		     $callArgs = array( $method, (array) $args );
-		  		     $result = $args ? $m->invokeArgs( $instance, $callArgs ) : $m->invokeArgs( $instance, $method );
-		  		     $classes[$class] = $instance;
-		  		     $session->set( 'REMOTING_classes', $classes );
-
-		  		     $this->getRenderer()->render( $result );
-	  		   }
-	  		   catch( Exception $e ) {
-
-	  		 		  throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
-	  		   }
-	    }
-
-		/**
-		 * Creates a dynamic javascript proxy stub/interface used for remoting PHP classes. This method
-		 * handles both standard and intercepted classes.
-		 * 
-		 * @param bool $stateful True to configure the remoting stub to invoke stateful server side calls. The
-	     * 					 	 remoted object is kept in the SessionScope.
-	  	 * @return void
-	  	 * @throws AgilePHP_RemotingException
-		 */
-		protected function createStub( $stateful = false ) {
-
-		 		  try {
-		  		 	     $clazz = new ReflectionClass( $this->class );
-		  		 		 if( $clazz->getMethod( 'getInterceptedInstance' ) )
-			  		 	     return $this->createInterceptedStub( $stateful );
-		 		  }
-		 		  catch( Exception $e ) { }
-
-		 		  // Standard PHP class requested
-		  		  return $this->createStandardStub( $stateful );
-		}
-
-		/**
-	     * Creates a dynamic javascript proxy stub/interface used for remoting AgilePHP intercepted classes
-	     * 
-	     * @param bool $stateful True to configure the remoting stub to invoke stateful server side calls. The
-	     * 					 	 remoted object is kept in the SessionScope.
-  	     * @return void
-  	     * @throws AgilePHP_RemotingException
-	     */
-	    protected function createInterceptedStub( $stateful = false ) {
-
-	  		   try {
-	  		 		  $clazz = new ReflectionClass( $this->class );
-	  		 		  $interceptedClazz = new ReflectionClass( $this->class . '_Intercepted' );
-
-	  		 		  // Create javascript object w/ matching constructor parameters
-	  		 		  $constructor = $interceptedClazz->getConstructor();
-	  		 		  if( $constructor ) {
-
-	  		 			  $js = 'function ' . $this->class . '( ';
-	  		 			  $params = $constructor->getParameters();
-	  		 			  for( $i=0; $i<count( $params ); $i++ ) {
-	  		 				
-	  		 				   $js .= $params[$i]->getName();
-	  		 				   $js .= ( $i+1 < count( $params ) ) ? ', ' : '';
-	  		 			  }
-	  		 			  $js .= " ) {\n";
-	  		 			  for( $i=0; $i<count( $params ); $i++ )
-	  		 				   $js .= 'this.' . $params[$i]->getName() . ' = ' . $params[$i]->getName() . ";\n";
-
-	  		 			  $js .= "}\n";
-	  		 		  }
-	  		 		  else
-	  		 			  $js = 'function ' . $this->class . "() { }\n";
-
-	  		 		  // create methods
-	  		 		  $methods = Annotation::getMethodsAsArray( $this->class );
-	  		 		  foreach( $methods as $name => $annotations ) {
-
-	  		 		  			foreach( $annotations as $annotation ) {
-	  		 		  	   	
-		  		 		  	   		    if( $annotation instanceof RemoteMethod ) {
-
-			  		 				   	    // create function
-				  		 				    $js .= $this->class . '.prototype.' . $name . ' = function( ';
-
-				  		 				    $rMethod = new ReflectionMethod( $clazz->getName() . '_Intercepted', $name );
-				  		 				    $params = $rMethod->getParameters();
-				  		 				    for( $j=0; $j<count( $params ); $j++ ) {
+		  		   try {
+		  		 		  $clazz = new AnnotatedClass( $this->class );
 	
-				  		 				 	  	 $js .= $params[$j]->getName();
-				  		 				 	 	 $js .= ( ($j+1) < count( $params ) ) ? ', ' : '';
-				  		 				    }
+		  		 		  // Create javascript object w/ matching constructor parameters
+		  		 		  $constructor = $clazz->getConstructor();
+		  		 		  if( $constructor ) {
 	
-				  		 				    $js .= " ) {\n";
+		  		 			  $js = 'function ' . $this->class . '( ';
+		  		 			  $params = $constructor->getParameters();
+		  		 			  for( $i=0; $i<count( $params ); $i++ ) {
+		  		 				
+		  		 				   $js .= $params[$i]->getName();
+		  		 				   $js .= ( $i+1 < count( $params ) ) ? ', ' : '';
+		  		 			  }
+		  		 			  $js .= " ) {\n";
+		  		 			  for( $i=0; $i<count( $params ); $i++ )
+		  		 				   $js .= 'this.' . $params[$i]->getName() . ' = ' . $params[$i]->getName() . ";\n";
 	
-				  		 				    // function body
-				  		 				    $js .= "return AgilePHP.Remoting.getStub( '" . $this->class . "' )." . 
-				  		 				   			($stateful ? 'invokeInterceptedStateful' : 'invokeIntercepted') . 
-				  		 				   			"( '" . $name . 
-				  		 				   			"', arguments" . ($constructor ? ', this' : '' ) . " );\n";
+		  		 			  $js .= "}\n\n";
+		  		 		  }
+		  		 		  else
+		  		 			  $js = 'function ' . $this->class . "() { }\n\n";
 	
-				  		 				    // function closure
-			  		 				 	    $js .= "}\n";
-			  		 				    }
-	  		 		  	       }
-	  		 		  }
+	
+		  		 		  // create methods
+		  		 		  $methods = $clazz->getMethods();
+		  		 		  for( $i=0; $i<count( $methods ); $i++ ) {
+	
+	  		 				   if( $methods[$i]->isAnnotated() && $methods[$i]->hasAnnotation( 'RemoteMethod' ) ) {
 
-	  		 		  $js .= "\nnew AgilePHP.Remoting.Stub( '" . $this->class . "' );\n";
+	  		 				   	   // Make sure the remote class does not define a setCallback method
+	  		 				   	   if( $methods[$i]->getName() == 'setCallback' )
+	  		 				   	   	   throw new RemotingException( 'Invalid #@RemoteMethod setCallback defined in class \'' . $this->class . '\'.' );
 
-	  		 		  echo $js;
-	  		 }
-	  		 catch( Exception $e ) {
+	  		 				   	   // create function
+		  		 				   $js .= $this->class . '.prototype.' . $methods[$i]->getName() . ' = function( ';
+		  		 				   $params = $methods[$i]->getParameters();
+		  		 				   for( $j=0; $j<count( $params ); $j++ ) {
 
-	  		 		throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
-	  		 }
-	 }
-
-	 /**
-	  * Creates a dynamic javascript proxy stub/interface used for remoting standard PHP classes
-	  * 
-	  * @param bool $stateful True to configure the remoting stub to invoke stateful server side calls. The
-	     * 				 	  remoted object is kept in the SessionScope.
-  	  * @return void
-  	  * @throws AgilePHP_RemotingException
-	  */
-	 protected function createStandardStub( $stateful = false ) { 
-	 	
-	  		   try {
-	  		 		  $clazz = new AnnotatedClass( $this->class );
-
-	  		 		  // Create javascript object w/ matching constructor parameters
-	  		 		  $constructor = $clazz->getConstructor();
-	  		 		  if( $constructor ) {
-
-	  		 			  $js = 'function ' . $this->class . '( ';
-	  		 			  $params = $constructor->getParameters();
-	  		 			  for( $i=0; $i<count( $params ); $i++ ) {
-	  		 				
-	  		 				   $js .= $params[$i]->getName();
-	  		 				   $js .= ( $i+1 < count( $params ) ) ? ', ' : '';
-	  		 			  }
-	  		 			  $js .= " ) {\n";
-	  		 			  for( $i=0; $i<count( $params ); $i++ )
-	  		 				   $js .= 'this.' . $params[$i]->getName() . ' = ' . $params[$i]->getName() . ";\n";
-
-	  		 			  $js .= "}\n";
-	  		 		  }
-	  		 		  else
-	  		 			  $js = 'function ' . $this->class . "() { }\n";
-
-
-	  		 		  // create methods
-	  		 		  $methods = $clazz->getMethods();
-	  		 		  for( $i=0; $i<count( $methods ); $i++ ) {
-
-  		 				   if( $methods[$i]->isAnnotated() && $methods[$i]->hasAnnotation( 'RemoteMethod' ) ) {
-
-  		 				   	   // create function
-	  		 				   $js .= $this->class . '.prototype.' . $methods[$i]->getName() . ' = function( ';
-
-	  		 				   $params = $methods[$i]->getParameters();
-	  		 				   for( $j=0; $j<count( $params ); $j++ ) {
-
-	  		 				 	 	$js .= $params[$j]->getName();
-	  		 				 	 	$js .= ( ($j+1) < count( $params ) ) ? ', ' : '';
+		  		 				 	 	$js .= $params[$j]->getName();
+		  		 				 	 	$js .= ( ($j+1) < count( $params ) ) ? ', ' : '';
+		  		 				   }
+		  		 				   $js .= " ) {\n\n";
+		  		 				   // function body
+		  		 				   $js .= "\treturn AgilePHP.Remoting.invoke( this, '" . $methods[$i]->getName() . "', arguments );\n";
+		  		 				   // function closure
+	  		 				 	   $js .= "}\n\n";
 	  		 				   }
+		  		 		  }
 
-	  		 				   $js .= " ) {\n";
+		  		 		  // Remoting internals - store class name and callback hook
+		  		 		  $js .= $this->class . ".prototype._class = '" . $this->class . "';\n";
+		  		 		  $js .= $this->class . ".prototype._stateful = " . (($stateful) ? 'true' : 'false') . ";\n";
+	 				 	  $js .= $this->class . ".prototype._callback = null;\n";
+	  		 			  $js .= $this->class . ".prototype.setCallback = function( func ) {\n" .
+	  		 			  				"\tthis._callback = func;\n}\n";
+		  		 		  echo $js;
+		  		 }
+		  		 catch( Exception $e ) {
 
-	  		 				   // function body
-	  		 				   $js .= "return AgilePHP.Remoting.getStub( '" . $this->class . "' )." . 
-	  		 				   			($stateful ? 'invokeStateful' : 'invoke') . 
-	  		 				   			"( '" . $methods[$i]->getName() . 
-	  		 				   			"', arguments" . ($constructor ? ', this' : '' ) . " );\n";
+		  		 		throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
+		  		 }
+		  }
 
-	  		 				   // function closure
-  		 				 	   $js .= "}\n";
-  		 				   }
-	  		 		  }
+		  /**
+	       * Invokes a non-persistent/stateful instance of the requested class/method
+	       * passing in arguments if any were defined. This non-stateful approach is
+	       * how most RPC web services work.
+	       * 
+	   	   * @return mixed Returns the result of the invocation
+	   	   * @throws AgilePHP_RemotingException
+	       */
+	      public function invoke() {
 
-	  		 		  $js .= "\nnew AgilePHP.Remoting.Stub( '" . $this->class . "' );\n";
+	    	     $request = Scope::getInstance()->getRequestScope();
 
-	  		 		  echo $js;
-	  		 }
-	  		 catch( Exception $e ) {
+	    	     $stateful = $request->getSanitized( 'stateful' );
+	    	     if( $stateful ) $this->invokeStateful();
 
-	  		 		throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
-	  		 }
-	  }
+	    	     $class = $request->getSanitized( 'class' );
+	    	     $method = $request->getSanitized( 'method' );
+	    	     $constructorArgs = $this->decode( $request->getSanitized( 'constructorArgs' ) );
+	    	     $args = $this->decode( $request->getSanitized( 'parameters' ) );
 
-	  /**
-	   * Returns the raw JavaScript contents of the AgilePHP.js file and pre-configures the library
-	   * with a default AgilePHP.debug and AgilePHP.Remoting.controller value.
-	   * 
-	   * @param bool $debug True to enable client side AgilePHP debugging.
-	   * @return void
-	   */
-	  public function getBaseJS( $debug = false ) {
+	  		     Logger::getInstance()->debug( 'Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
+	  		 	   	 '\', constructorArgs \'' . print_r( $constructorArgs, true ) . '\', args \'' . print_r( $args, true ) . '\'.' );
 
-	  		 $js = file_get_contents( AgilePHP::getFramework()->getFrameworkRoot() . '/AgilePHP.js' );
+	  		     try {
+		  	           $clazz = new ReflectionClass( $class );
+		  	           $instance = $constructorArgs ? $clazz->newInstanceArgs( (array)$constructorArgs ) : $clazz->newInstance();
+		  		       $m = $clazz->getMethod( $method );
 
-	  		 if( $debug ) $js .= "\nAgilePHP.setDebug( true );";
+		  		       $this->getRenderer()->render( $args ? $m->invokeArgs( $instance, (array)$args ) : $m->invoke( $instance ) );
+	  		     }
+	  		     catch( Exception $e ) {
 
-	  		 $js .= "\nAgilePHP.setRequestBase( '" . AgilePHP::getFramework()->getRequestBase() . "' );";
-	  		 $js .= "\nAgilePHP.Remoting.setController( '" . MVC::getInstance()->getController() . "' );";
+	  		 		    throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
+	  		     }
+	      }
 
-	  		 header( 'content-type: application/json' );
-	  		 print $js;
-	  }
+	  	  /**
+	   	   * Invokes the specified class/method/args using a stateful instance stored in SessionScope. If
+	   	   * a stateful instance does not exist, a new instance is created and stored in the SessionScope
+	   	   * for future calls.
+	   	   * 
+	   	   * @return mixed Returns the result of the invocation
+	   	   * @throws AgilePHP_RemotingException
+	   	   */
+	  	  public function invokeStateful() {
 
-	  /**
-	   * Decodes POST variables
-	   * 
-	   * @param String $data The client side data to decode
-	   * @return Object The JSON decoded object
-	   * @throws AgilePHP_RemotingException if the received data does not unmarshall into an object
-	   */
-	  private function decode( $data ) {
+	  		     $request = Scope::getInstance()->getRequestScope();
+	  		     $session = Scope::getInstance()->getSessionScope();
 
-	  		  if( !$data ) return;
+	  		     $class = $request->getSanitized( 'class' );
+	    	     $method = $request->getSanitized( 'method' );
+	    	     $stub = $this->decode( $request->getSanitized( 'stub' ) );
+	    	     $args = $this->decode( $request->getSanitized( 'parameters' ) );
 
-	  		  $o = json_decode( stripslashes( htmlspecialchars_decode( stripslashes( urldecode( $data ) ) ) ) );
-	  		  if( !is_object( $o ) )
-	  		  	  throw new AgilePHP_RemotingException( 'Malformed request' );
+	  		     if( !$classes = $session->get( 'REMOTING_classes' ) ) {
 
-	  		  return $o;
-	  }
+	  		 	     $session->set( 'REMOTING_classes', array() );
+	  		 	     $classes = array();
+	  		     }
 
-	  /**
-	   * Parses each PHP output buffer for php fatal error and converts to AgilePHP_RemotingException if present.
-	   * 
-	   * @param string $buffer PHP output buffer
-	   * @return void
-	   * throws AgilePHP_RemotingException
-	   */
-	  public function captureErrors( $buffer ) {
+	  		     try {
+		  	          $clazz = new ReflectionClass( $class );
 
-			 $matches = array();
-			 $errors = '';
+		  	          // Restore the instance from an existing session
+	  		   	  	  if( array_key_exists( $class, $classes ) ) {
 
-			 if( ereg('(error</b>:)(.+)(<br)', $buffer, $regs ) ) {
+	  		 	   		  $instance = $classes[$class];
+	  		 	   		  Logger::getInstance()->debug( 'Remoting::invokeStateful Loading instance of \'' . $class . '\' from session state.' );
+	  		   		  }
 
-			 	 $err = preg_replace("/<.*?>/","",$regs[2]);
-		         $buffer = json_encode( array( '_class' => 'AgilePHP_RemotingException', 'message' => $err, 'trace' => debug_backtrace() ) );
-		     }
-		     return $buffer;
-	  }
+	  		   		  // Create a new instance using client stub constructor values 
+		  	          else if( $stub ) {
 
-	  /**
-	   * Custom PHP error handling function which throws an AgilePHP_RemotingException instead of echoing.
-	   * 
-	   * @param Integer $errno Error number
-	   * @param String $errmsg Error message
-	   * @param String $errfile The name of the file that caused the error
-	   * @param Integer $errline The line number that caused the error
-	   * @return false
-	   * @throws AgilePHP_Exception
-	   */
- 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
+		  	          	  $instance = $clazz->newInstanceArgs( (array)$stub );
+		  	         	  Logger::getInstance()->debug( 'Remoting::invokeStateful Creating new instance of \'' . $class . '\' from client stub.' );
+		  	          }
+		  	         
+		  	          // Create a new instance without constructor parameters
+		  	          else {
 
- 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg . 
- 	  		 		  PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
+		  	          	 $instance = $clazz->newInstance();
+		  	         	 Logger::getInstance()->debug( 'Remoting::invokeStateful Creating new instance of \'' . $class . '\'.' );
+		  	          }
 
- 	  		 throw new AgilePHP_RemotingException( $errmsg, $errno, $errfile, $errline );
-	  }
+		  		      $m = $clazz->getMethod( $method );
+		  		      $result = $args ? $m->invokeArgs( $instance, (array)$args ) : $m->invoke( $instance );
+		  		      $classes[$class] = $instance;
+		  		      $session->set( 'REMOTING_classes', $classes );
 
-	  /**
-	   * Flush PHP output buffer and restore error handler
-	   */
-	  public function __destruct() {
+		  		      $this->getRenderer()->render( $result );
+	  		     }
+	  		     catch( Exception $e ) {
 
-	  		 ob_end_flush();
-	  		 restore_error_handler();
-	  }
+	  		 		    throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
+	  		     }
+	      }
+	
+		  /**
+		   * Overloads the getBaseJS method defined in BaseController to return the client side AgilePHP
+		   * library with default AgilePHP.Remoting.controller value pre-defined according to the
+		   * controller which invoked the call.
+		   * 
+		   * @param bool $debug True to enable client side AgilePHP debugging.
+		   * @return void
+		   */
+		  public function getBaseJS( $debug = false ) {
+	
+		  		 $js = file_get_contents( AgilePHP::getFramework()->getFrameworkRoot() . '/AgilePHP.js' );
+	
+		  		 if( $debug ) $js .= "\nAgilePHP.setDebug( true );";
+	
+		  		 $js .= "\nAgilePHP.setRequestBase( '" . AgilePHP::getFramework()->getRequestBase() . "' );";
+		  		 $js .= "\nAgilePHP.Remoting.setController( '" . MVC::getInstance()->getController() . "' );";
+	
+		  		 header( 'content-type: application/json' );
+		  		 print $js;
+		  }
+
+		  /**
+		   * Decodes JSON formatted POST variables into a PHP object.
+		   * 
+		   * @param String $data The client side JSON object to parse
+		   * @return Object The JSON decoded object
+		   * @throws AgilePHP_RemotingException if the received data does not unmarshall into a PHP object
+		   */
+		  private function decode( $data ) {
+
+		  		  if( !$data ) return;
+
+		  		  Logger::getInstance()->debug( 'Remoting::decode ' . $data );
+
+		  		  $o = json_decode( htmlspecialchars_decode( stripslashes( urldecode( $data ) ) ) );
+		  		  if( !is_object( $o ) )
+		  		  	  throw new AgilePHP_RemotingException( 'Malformed data' );
+
+		  		  return $o;
+		  }
+
+		  /**
+		   * Parses each PHP output buffer for php fatal error and converts to AgilePHP_RemotingException if present.
+		   * 
+		   * @param string $buffer PHP output buffer
+		   * @return void
+		   * throws AgilePHP_RemotingException
+		   */
+		  public function captureErrors( $buffer ) {
+	
+				 $matches = array();
+				 $errors = '';
+	
+				 if( preg_match('/(error<\/b>:)(.+)(<br)/', $buffer, $regs ) ) {
+	
+				 	 $err = preg_replace("/<.*?>/","",$regs[2]);
+			         $buffer = json_encode( array( '_class' => 'AgilePHP_RemotingException', 'message' => $err, 'trace' => debug_backtrace() ) );
+			     }
+			     return $buffer;
+		  }
+	
+		  /**
+		   * Custom PHP error handling function which throws an AgilePHP_RemotingException instead of echoing.
+		   * 
+		   * @param Integer $errno Error number
+		   * @param String $errmsg Error message
+		   * @param String $errfile The name of the file that caused the error
+		   * @param Integer $errline The line number that caused the error
+		   * @return false
+		   * @throws AgilePHP_Exception
+		   */
+	 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
+	
+	 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg . 
+	 	  		 		  PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
+	
+	 	  		 throw new AgilePHP_RemotingException( $errmsg, $errno, $errfile, $errline );
+		  }
+	
+		  /**
+		   * Flush PHP output buffer and restore error handler
+		   */
+		  public function __destruct() {
+
+		  		 ob_end_clean();
+		  		 restore_error_handler();
+		  }
 }
 ?>

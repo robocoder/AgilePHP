@@ -28,6 +28,8 @@
  */
 class NewModelRemote {
 
+	  public function __construct() { }
+
 	  /**
 	   * Returns a list of database table names for the current database connection.
 	   * 

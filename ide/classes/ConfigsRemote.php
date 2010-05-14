@@ -28,6 +28,8 @@
  */
 class ConfigsRemote {
 
+	  public function __construct() { }
+
 	  #@RemoteMethod
  	  public function get( $name ) {
 

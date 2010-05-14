@@ -33,15 +33,12 @@ class FileExplorerController extends BaseExtController {
 		 public function __construct() {
 
 		 		parent::__construct();
-
-		 		set_error_handler( 'FileExplorerController::ErrorHandler' );
-
 		 		$this->createRenderer( 'AJAXRenderer' );
 		 }
 
 		 public function index() { 
 
-		 		throw new AgilePHP_Exception( 'Malformed request' );
+		 		throw new AgilePHP_Exception( 'Invalid request' );
 		 }
 
 	     /**
@@ -71,15 +68,8 @@ class FileExplorerController extends BaseExtController {
 		  */
 		 public function load( $type, $id ) {
 
-		 		//$pieces = explode( '.', $id );
-		 		//$extension = strtolower( $pieces[count($pieces)-1] );
+		 		$code = $this->getContents( str_replace( '|', DIRECTORY_SEPARATOR, $id ) );
 
-		 		$code = $this->getContents( str_replace( ':', '/', $id ) );
-
-		 		Logger::getInstance()->info( $code );
-		 		Logger::getInstance()->info( $type );
-		 		Logger::getInstance()->info( $id );
-	 		
 		 		switch( $type ) {
 
 		 			case 'code':
@@ -148,12 +138,10 @@ class FileExplorerController extends BaseExtController {
 		 		};
 
 		 		$request = Scope::getInstance()->getRequestScope();
-
 		 		$node = $request->getSanitized( 'node' );
-		 		$path = preg_replace( '/:/', DIRECTORY_SEPARATOR, $node );
+		 		$path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $node );
 
-		 		// root tree node / workspace directory
-		 		if( $path == '.' ) {
+		 		if( !$path || $path == '.' ) {
 
 		 			$config = new Config();
 		 			$config->setName( 'workspace' );
@@ -176,7 +164,7 @@ class FileExplorerController extends BaseExtController {
 				    		$extension = ( (!count( $matches )) ? '' : $matches[1]);
 				    	}
 
-				    	$serialized_node = preg_replace( '/\//', ':', $fileInfo->getPathname() );
+				    	$serialized_node = preg_replace( '/\\' . DIRECTORY_SEPARATOR . '/', '|', $fileInfo->getPathname() );
 
 				    	$stdClass = new stdClass();
 				    	$stdClass->id = $serialized_node;
@@ -222,9 +210,11 @@ class FileExplorerController extends BaseExtController {
 		 * @param $treePath The path to delete.
 		 * @return void
 		 */
+		 #@RemoteMethod
 	  	public function delete( $treePath ) {
 
-	  		   $treePath = str_replace( ':', '/', $treePath );
+	  		   $treePath = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treePath );
+
 	  		   Logger::getInstance()->debug( 'FileExplorerController::delete Deleting treePath \'' . $treePath . '\'.' );
 
 	  		   header( 'content-type: application/json' );
@@ -235,7 +225,7 @@ class FileExplorerController extends BaseExtController {
 	  		   	   return;
 	  		   }
 
-	  		   print (unlink( str_replace( ':', '/', $treePath ) ) ? '{success:true}' : '{success:false}');
+	  		   print (unlink( $treePath ) ? '{success:true}' : '{success:false}');
 	  	}
 
 	  	/**
@@ -249,11 +239,14 @@ class FileExplorerController extends BaseExtController {
 
 	  		   Logger::getInstance()->debug( 'FileExplorerController::copy $treeSrc = \'' . $treeSrc . '\', $treeDst = \'' . $treeDst . '\'.' );
 
-	  		   $treeSrc = str_replace( ':', '/', $treeSrc );
-	  		   $treeDst = str_replace( ':', '/', $treeDst );
+	  		   $srcId = $treeSrc;
+	  		   $dstId = $treeDst;
 
-	  		   $array = explode( '/', $treeSrc );
-	  		   $dstPath = $treeDst . '/' . array_pop( $array );
+	  		   $treeSrc = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeSrc );
+	  		   $treeDst = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeDst );
+
+	  		   $array = explode( DIRECTORY_SEPARATOR, $treeSrc );
+	  		   $dstPath = $treeDst . DIRECTORY_SEPARATOR . array_pop( $array );
 
 	  		   Logger::getInstance()->debug( 'FileExplorerController::copy Copying src \'' . $treeSrc . '\' to destination \'' . $dstPath . '\'.' );
 
@@ -261,12 +254,12 @@ class FileExplorerController extends BaseExtController {
 	  		   if( is_dir( $treeSrc ) ) {
 
 	  		   	   FileUtils::copy( $treeSrc, $dstPath );
-	  		   	   print '{success:true, parent: "' . str_replace( '/', ':', $treeDst ) . '"}';
+	  		   	   print '{success:true, parent: "' . $dstId . '"}';
 	  		   	   return;
 	  		   }
 
 	  		   copy( $treeSrc, $dstPath );
-	  		   print '{success:true, parent: "' . str_replace( '/', ':', $treeDst ) . '"}';
+	  		   print '{success:true, parent: "' . $dstId . '"}';
 	  	}
 
 		/**
@@ -282,8 +275,9 @@ class FileExplorerController extends BaseExtController {
 	  		   Logger::getInstance()->debug( 'FileExplorerController::copy $treeSrc = \'' . $treeSrc . '\'.' );
 	  		   Logger::getInstance()->debug( 'FileExplorerController::copy $treeDst = \'' . $treeDst . '\'.' );
 
-	  		   $src = str_replace( ':', DIRECTORY_SEPARATOR, $treeSrc );
-	  		   $dst = str_replace( ':', DIRECTORY_SEPARATOR, $treeDst );
+	  		   $src = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeSrc );
+	  		   $dst = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeDst );
+
 	  		   $array = explode( DIRECTORY_SEPARATOR, $src );
 	  		   $dstPath = $dst . DIRECTORY_SEPARATOR . array_pop( $array );
 
@@ -313,7 +307,7 @@ class FileExplorerController extends BaseExtController {
 	  	 */
 		public function upload( $treePath ) {
 
-			   $path = str_replace( ':', '/', $treePath );
+			   $path = str_replace( '|', DIRECTORY_SEPARATOR, $treePath );
 			   $renderer = MVC::getInstance()->createRenderer( 'AJAXRenderer' );
 			   $o = new stdClass();
 
@@ -348,8 +342,8 @@ class FileExplorerController extends BaseExtController {
 	  	 */
 	  	public function createDirectory( $path, $name ) {
 
-	  		   $filename = (str_replace( ':', '/', $path ) . '/' . $name);
-	  		   if( $filename == '.' ) $filename = './';
+	  		   $filename = (str_replace( '|', DIRECTORY_SEPARATOR, $path ) . DIRECTORY_SEPARATOR . $name);
+	  		   if( $filename == '.' ) $filename = '.' . DIRECTORY_SEPARATOR;
 
 	  		   Logger::getInstance()->debug( 'FileExplorerController::createDirectory Creating new file \'' . $filename . '\'.' );
 	  		   
@@ -358,7 +352,7 @@ class FileExplorerController extends BaseExtController {
 
 	  		   $this->getRenderer()->render( $o );
 	  	}
-	  	
+
 	   /**
 	  	 * Creates a new file.
 	  	 * 
@@ -368,8 +362,8 @@ class FileExplorerController extends BaseExtController {
 	  	 */
 	  	public function createFile( $path, $name ) {
 
-	  		   $filename = str_replace( ':', '/', $path ) . '/' . $name;
-	  		   if( $filename == '.' ) $filename = './';
+	  		   $filename = str_replace( '|', DIRECTORY_SEPARATOR, $path ) . DIRECTORY_SEPARATOR . $name;
+	  		   if( $filename == '.' ) $filename = '.' . DIRECTORY_SEPARATOR;
 
 	  		   $o = new stdClass();
 	  		   $o->success = touch( $filename ) ? true : false;
@@ -377,17 +371,6 @@ class FileExplorerController extends BaseExtController {
 	  		   $this->getRenderer()->render( $o );
 	  	}
 
-	  	public function test() {
-
-	  		   $nmr = new NewModelRemote;
-	  		   $columns = $nmr->getDatabaseColumns( 'users' );
-	  		   
-	  		   $renderer = new AJAXRenderer();
-	  		   $renderer->setOutput( 'xml' );
-	  		   $renderer->render( $columns );
-	  		   exit;
-	  	}
-	  	
 	  	/**
 	  	 * Renders a JSON object which contains a list of domain models which are present in the
 	  	 * specified project, relative to the workspace configuration.
@@ -567,7 +550,7 @@ class FileExplorerController extends BaseExtController {
 
 	  		   $o = new stdClass;
 	  		   $o->success = true;
-	  		   $o->nodeId = str_replace( DIRECTORY_SEPARATOR, ':', $projectRoot ) . ':control';
+	  		   $o->nodeId = str_replace( DIRECTORY_SEPARATOR, '|', $projectRoot ) . '|control';
 
 	  		   $this->getRenderer()->render( $o );
 	  	}
@@ -612,7 +595,7 @@ class FileExplorerController extends BaseExtController {
 
 	  		   $o = new stdClass;
 	  		   $o->success = true;
-	  		   $o->nodeId = str_replace( DIRECTORY_SEPARATOR, ':', $projectRoot ) . ':view';
+	  		   $o->nodeId = str_replace( DIRECTORY_SEPARATOR, '|', $projectRoot ) . '|view';
 
 	  		   $this->getRenderer()->render( $o );
 	  	}

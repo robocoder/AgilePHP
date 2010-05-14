@@ -28,6 +28,8 @@
  */
 class DatabaseManagerRemote {
 
+	  public function __construct() { }
+
 	  #@RemoteMethod
 	  public function getServers() {
 

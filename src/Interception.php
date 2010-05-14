@@ -109,9 +109,8 @@ class Interception {
 
 	  		 if( class_exists( $this->class, false ) ) return;
 
-	  		 $className = $this->class;
 	  		 $code = $this->getSourceCode( $this->class );
-	  		 $code = preg_replace( '/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code );
+	  		 $code = preg_replace( '/class\s' . $this->class . '\s/', 'class ' . $this->class . '_Intercepted ', $code );
 
 			 $code = $this->clean( $code );
 	  		 if( eval( $code ) === false )
@@ -133,16 +132,28 @@ class Interception {
 	  		 $code = preg_replace( '/InterceptorProxy/', $className, $code );
 
 	  		 $stubs = $this->getMethodStubs();
-	  		 $proxyMethods = array( '__construct', 'getInstance', 'getInterceptedInstance',
+	  		 $proxyMethods = array( 'getInstance', 'getInterceptedInstance',
 	  		 						   '__get', '__set', '__isset', '__unset', '__call' );
 
+	  		 $constructor = null;
+
+	  		 // Create method stubs in the proxy which match those in the intercepted class
 	  		 for( $i=0; $i<count( $stubs['signatures'] ); $i++ ) {
 
-	  		 		if( in_array( $stubs['methods'][$i], $proxyMethods ) ) continue;
+	  		 		if( $stubs['methods'][$i] == '__construct' ) {
+
+	  		 			$constructor = $stubs['signatures'][$i];
+	  		 			continue;
+	  		 		}
+	  		 		else if( in_array( $stubs['methods'][$i], $proxyMethods ) ) continue;
 
 	  		 		$call = $stubs['signatures'][$i] . ' { return $this->__call( "' . $stubs['methods'][$i] . '", array' . $stubs['params'][$i] . ' ); } ';
 	  		 		$code = preg_replace( '/\}\s*\?>/m', "\t" . $call . PHP_EOL . '}' . PHP_EOL . '?>', $code );
 	  		 }
+
+	  		 // Make sure the proxy constructor matches the intercepted class
+	  		 if( $constructor )
+	  		 	 $code = preg_replace( '/public\sfunction\s__construct.*\)/', $constructor, $code );
 
 	  		 $code = $this->clean( $code );
 	  		 if( eval( $code ) === false )
