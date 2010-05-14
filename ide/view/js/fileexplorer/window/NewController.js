@@ -122,6 +122,8 @@ AgilePHP.IDE.FileExplorer.NewController = function() {
 
 			      	   	Ext.getCmp( id + '-form' ).getForm().submit({
 			                method: 'POST', 
+			                waitTitle: 'Working', 
+		                    waitMsg: 'Creating controller...',
 			                success: function( form, action ) {
 
 								Ext.getCmp( id ).close();

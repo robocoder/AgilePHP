@@ -85,7 +85,9 @@ AgilePHP.IDE.FileExplorer.NewView = function() {
 	            handler: function() {
 
 			      	   	Ext.getCmp( id + '-form' ).getForm().submit({
-			                method: 'POST', 
+			                method: 'POST',
+			                waitTitle: 'Working', 
+		                    waitMsg: 'Creating view...',
 			                success: function( form, action ) {
 
 								Ext.getCmp( id ).close();

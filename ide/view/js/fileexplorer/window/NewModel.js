@@ -379,21 +379,23 @@ AgilePHP.IDE.FileExplorer.NewModel = function() {
       	    			properties.push( record.json );
       	    	});
 
-      	    	newModelRemote.create( tableName, 
+      	    	newModelRemote.setCallback( function( response ) {
+
+      	    		AgilePHP.IDE.FileExplorer.highlightedNode.reload();
+      	    	});
+      	    	newModelRemote.create( tableName,
 			 				AgilePHP.IDE.FileExplorer.workspace,
 			 				AgilePHP.IDE.FileExplorer.projectName,
 			 				properties,
 			 				Ext.getCmp( id + '-form-persistence' ).getValue(),
 			 				createTableFlag );
 
-      	    	AgilePHP.IDE.FileExplorer.highlightedNode.reload();
-
       	    	win.close();
       	    }
       	}]);
 
 	newModelRemote.setCallback( function( tables ) {
-	
+
 		Ext.getCmp( id + '-form-database-table' ).getStore().loadData( tables );
 	});
 	newModelRemote.getDatabaseTables();
