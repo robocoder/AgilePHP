@@ -355,7 +355,7 @@ abstract class Remoting extends BaseController {
 		   */
 		  public function __destruct() {
 
-		  		 ob_end_clean();
+		  		 ob_end_flush();
 		  		 restore_error_handler();
 		  }
 }

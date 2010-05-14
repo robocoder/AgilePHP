@@ -30,21 +30,24 @@
 class RemotingController extends Remoting {
 
 	  public function __construct() {
-
 	  		 parent::__construct();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/mvc/BaseController#index()
+	   * @see AgilePHP/mvc/BaseController#index()
+	   * @throws AgilePHP_RemotingException
 	   */
-	  public function index() { }
+	  public function index() {
+	  		 throw new AgilePHP_RemotingException( 'Malformed Request' );
+	  }
 
 	  /**
 	   * Loads the specified class
 	   *  
 	   * @param $class The class to remote
 	   * @return void
+	   * @throws AgilePHP_RemotingException
 	   */
 	  public function load( $class ) {
 

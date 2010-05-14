@@ -332,7 +332,7 @@ AgilePHP.IDE.FileExplorer = {
 			                	}
 
 			                	// Conditionally show database menu for persistence.xml
-			                	if( node.id.match( /:persistence.xml$/i ) ) {
+			                	if( node.id.match( /|persistence.xml$/i ) ) {
 
 			                		if( !Ext.get( 'file-explorer-contextmenu-database' ) ) {
 
