@@ -60,7 +60,7 @@ class InvocationContext {
 
 	  		 // PHP stack state that caused the interception
 	  		 $backtrace = debug_backtrace();
-	  		 $this->callee = $backtrace[2];
+	  		 $this->callee = (isset($backtrace[2]) ? $backtrace[2] : $backtrace[1]);
 	  }
 
 	  /**
@@ -120,6 +120,18 @@ class InvocationContext {
 	  		 return $this->target;
 	  }
 
+	  /**
+	   * Sets the intercepted target instance
+	   *
+	   * @param Object $instance The intercepted target instance
+	   * @return void
+	   */
+	  public function setTarget( $instance ) {
+
+	  		 $this->target = $instance;
+	  }
+
+	  
 	  /**
 	   * Returns the instance of the interceptor annotation which caused the interception.
 	   *  

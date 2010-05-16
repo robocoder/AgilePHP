@@ -628,16 +628,13 @@ var AgilePHP = {
 				 AgilePHP.debug( method );
 				 AgilePHP.debug( parameters );
 
-				 var action = (stub._stateful) ? 'invokeStateful' : 'invoke';
-
 				 var clazz = stub._class
 				 var callback = stub._callback;
 
 				 delete stub._class;
-				 delete stub._stateful;
 				 delete stub._callback;
 
-				 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/' + action;
+				 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invoke';
 				 var data = 'class=' + clazz + '&method=' + method + '&constructorArgs=' + JSON.stringify( stub );
 
 				 if( parameters != undefined ) {

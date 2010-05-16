@@ -76,6 +76,13 @@ class RequestParam {
 	  public $sanitize = true;
 
 	  /**
+	   * Boolean flag indicating whether or not the field is required. Defaults to false (not required).
+	   * 
+	   * @var bool True if required, false otherwise.
+	   */
+	  public $required = false;
+
+	  /**
 	   * Sets the annotated property value with the HTML input value
 	   * 
 	   * @param InvocationContext $ic The InvocationContext of the intercepted call
@@ -86,8 +93,13 @@ class RequestParam {
 
 	  		 if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 
-	  		 		return ($ic->getInterceptor()->sanitize) ? Scope::getRequestScope()->getSanitized( ($this->name) ? $ic->getInterceptor()->name : $ic->getField() ) :
-			 			Scope::getRequestScope()->get( ($this->name) ? $ic->getInterceptor()->name : $ic->getField() );
+	  		 		$request = Scope::getRequestScope();
+	  		 		$name = ($this->name) ? $ic->getInterceptor()->name : $ic->getField();
+
+	  		 		if( $this->required && !$request->get( $name ) )
+	  		 			throw new AgilePHP_Exception( $name . ' is required' );
+
+	  		 		return ($ic->getInterceptor()->sanitize) ? $request->getSanitized( $name ) : $request->get( $name );
 	  		 }
 	  }
 }

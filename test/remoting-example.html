@@ -33,7 +33,7 @@
 
 			/** AgilePHP Remoting */
 			function doVariousRMITests() {
-				
+
 					// Instantiate the remote PHP object and invoke a few #@RemoteMethod's
 					var rmi = new RMITest('test1', 'test2', 'test3');
 					    rmi.testme( 'arg1', 'arg2' );  // executed synchronous since no callback defined
@@ -44,9 +44,10 @@
 						 // response has already eval'd
 						 AgilePHP.debug( response );
 					});
-					rmi.setTest2('1111');
+					rmi.setTest2( '1111' );
 					rmi.testme2( 1, 2 ); // Access denied by #@Restrict( name = 'foo' )
 					rmi.show();
+					rmi.getTest2();
 
 					// RMITest2 is kept stateful within AgilePHP SessionScope
 					var rmi2 = new RMITest2();

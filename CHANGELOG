@@ -1,11 +1,11 @@
-0.22a
------
+0.23a
+----
 
-- Bug fix to Remoting::decode. One too many stripslashes for windows liking.
-- Refactored Remoting::captureErrors ereg to preg_match to fix deprecation warning.
-- Added constructor parameter support to Interception.
-- Refactored the remoting component and client side javascript library - lots of optimizations
-  and now allows callback methods to be set for each remote method call rather than one callback
-  for the whole stub.
-- Windows compatibility refactoring on IDE code thus far.
-- Removed urldecode from RequestScope::sanitize.
+- Added #@AfterInvoke with associated behaviors which now provides POSA2 interceptor before and after hooks.
+- Refactored SessionScope to fix bug which occurred when an object's destructor set a new session variable and
+  SessionScope already persisted.
+- Added #@Stateful interceptor
+- Refactored remoting component to get rid of invokeStateful since now any class can be treated as stateful
+  at code time by the developer with the #@Stateful interceptor.
+- Refactored #@RequestParam interceptor to support 'required' attribute
+- Removed invokeStateful from remoting logic since now any class can be #@Stateful

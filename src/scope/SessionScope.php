@@ -35,6 +35,9 @@ class SessionScope {
 
 	  private $oldSession;
 	  private $session;
+	  private $persisted = false;
+
+	  private function __clone() { }
 
 	  /**
 	   * Initalizes the 'SessionScope' object with a default sessionId. If an
@@ -57,11 +60,12 @@ class SessionScope {
 	  	      	  $this->oldSession->setId( $_COOKIE['AGILEPHP_SESSION_ID'] );
 
 	  	      	  $pm = new PersistenceManager();
-  		 	 	  $persistedSession = $pm->find( $this->session );
-  		 	 	  if( !$persistedSession ) return;
+  		 	 	  $persisted = $pm->find( $this->session );
+  		 	 	  if( !isset( $persisted[0] ) ) return;
 
-  		 	 	  $this->session->setData( $persistedSession[0]->getData() );
-  		 	 	  $this->oldSession->setData( $persistedSession[0]->getData() );
+  		 	 	  $this->persisted = true;
+  		 	 	  $this->session->setData( $persisted[0]->getData() );
+  		 	 	  $this->oldSession->setData( $persisted[0]->getData() );
 	  	      }
 	  	      else {
 
@@ -167,12 +171,12 @@ class SessionScope {
 	  public function refresh() {
 
 		     $pm = new PersistenceManager();
-  	 	 	 $persistedSession = $pm->find( $this->session );
+  	 	 	 $persisted = $pm->find( $this->session );
 
-  	 	 	 if( $persistedSession ) {
+  	 	 	 if( $persisted ) {
 
-  	 	 	  	 $this->session->setData( $persistedSession->getData() );
-  	 	 	  	 $this->oldSession->setData( $persistedSession->getData() );
+  	 	 	  	 $this->session->setData( $persisted->getData() );
+  	 	 	  	 $this->oldSession->setData( $persisted->getData() );
   	 	 	 }
   	 	 	 else {
   	 	 	 	
@@ -218,10 +222,7 @@ class SessionScope {
 	   */
 	  public function isPersisted() {
 
-	  		 if( $this->oldSession->getData() == null && $this->getSession()->getData() )
-	  		 	 return false;
-
-	  		 return $this->oldSession->getData() == $this->session->getData();
+	  		 return $this->persisted == true;
 	  }
 
 	  /**

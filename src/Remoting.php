@@ -108,7 +108,7 @@ abstract class Remoting extends BaseController {
 	  	  * @return void
 	  	  * @throws AgilePHP_RemotingException
 		  */
-		 protected function createStub( $stateful = false ) { 
+		 protected function createStub() { 
 
 		  		   try {
 		  		 		  $clazz = new AnnotatedClass( $this->class );
@@ -162,7 +162,6 @@ abstract class Remoting extends BaseController {
 
 		  		 		  // Remoting internals - store class name and callback hook
 		  		 		  $js .= $this->class . ".prototype._class = '" . $this->class . "';\n";
-		  		 		  $js .= $this->class . ".prototype._stateful = " . (($stateful) ? 'true' : 'false') . ";\n";
 	 				 	  $js .= $this->class . ".prototype._callback = null;\n";
 	  		 			  $js .= $this->class . ".prototype.setCallback = function( func ) {\n" .
 	  		 			  				"\tthis._callback = func;\n}\n";
@@ -210,67 +209,6 @@ abstract class Remoting extends BaseController {
 	  		     }
 	      }
 
-	  	  /**
-	   	   * Invokes the specified class/method/args using a stateful instance stored in SessionScope. If
-	   	   * a stateful instance does not exist, a new instance is created and stored in the SessionScope
-	   	   * for future calls.
-	   	   * 
-	   	   * @return mixed Returns the result of the invocation
-	   	   * @throws AgilePHP_RemotingException
-	   	   */
-	  	  public function invokeStateful() {
-
-	  		     $request = Scope::getInstance()->getRequestScope();
-	  		     $session = Scope::getInstance()->getSessionScope();
-
-	  		     $class = $request->getSanitized( 'class' );
-	    	     $method = $request->getSanitized( 'method' );
-	    	     $stub = $this->decode( $request->getSanitized( 'stub' ) );
-	    	     $args = $this->decode( $request->getSanitized( 'parameters' ) );
-
-	  		     if( !$classes = $session->get( 'REMOTING_classes' ) ) {
-
-	  		 	     $session->set( 'REMOTING_classes', array() );
-	  		 	     $classes = array();
-	  		     }
-
-	  		     try {
-		  	          $clazz = new ReflectionClass( $class );
-
-		  	          // Restore the instance from an existing session
-	  		   	  	  if( array_key_exists( $class, $classes ) ) {
-
-	  		 	   		  $instance = $classes[$class];
-	  		 	   		  Logger::getInstance()->debug( 'Remoting::invokeStateful Loading instance of \'' . $class . '\' from session state.' );
-	  		   		  }
-
-	  		   		  // Create a new instance using client stub constructor values 
-		  	          else if( $stub ) {
-
-		  	          	  $instance = $clazz->newInstanceArgs( (array)$stub );
-		  	         	  Logger::getInstance()->debug( 'Remoting::invokeStateful Creating new instance of \'' . $class . '\' from client stub.' );
-		  	          }
-		  	         
-		  	          // Create a new instance without constructor parameters
-		  	          else {
-
-		  	          	 $instance = $clazz->newInstance();
-		  	         	 Logger::getInstance()->debug( 'Remoting::invokeStateful Creating new instance of \'' . $class . '\'.' );
-		  	          }
-
-		  		      $m = $clazz->getMethod( $method );
-		  		      $result = $args ? $m->invokeArgs( $instance, (array)$args ) : $m->invoke( $instance );
-		  		      $classes[$class] = $instance;
-		  		      $session->set( 'REMOTING_classes', $classes );
-
-		  		      $this->getRenderer()->render( $result );
-	  		     }
-	  		     catch( Exception $e ) {
-
-	  		 		    throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
-	  		     }
-	      }
-	
 		  /**
 		   * Overloads the getBaseJS method defined in BaseController to return the client side AgilePHP
 		   * library with default AgilePHP.Remoting.controller value pre-defined according to the
