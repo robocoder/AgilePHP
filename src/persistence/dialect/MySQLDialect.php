@@ -239,6 +239,25 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 
       	     $tblIndex = 'Tables_in_' . $this->getDatabase()->getName();
 
+      	     $fkeyQuery  = 'SELECT
+								kcu.CONSTRAINT_NAME AS \'constraint\',
+								kcu.TABLE_NAME AS \'table\',
+								kcu.COLUMN_NAME AS \'column\',
+								kcu.REFERENCED_TABLE_NAME AS \'referenced_table\',
+								kcu.REFERENCED_COLUMN_NAME AS \'referenced_column\',
+								rc.UPDATE_RULE AS \'update_rule\',
+								rc.DELETE_RULE AS \'delete_rule\'
+							FROM information_schema.key_column_usage AS kcu
+							INNER JOIN information_schema.REFERENTIAL_CONSTRAINTS AS rc
+							WHERE kcu.TABLE_SCHEMA = rc.CONSTRAINT_SCHEMA
+							  AND kcu.CONSTRAINT_NAME = rc.CONSTRAINT_NAME
+							  AND rc.CONSTRAINT_SCHEMA = \'' . $Database->getName() . '\'
+							  AND kcu.REFERENCED_TABLE_NAME IS NOT NULL';
+
+      	     $stmt = $this->query( $fkeyQuery );
+      	     $stmt->setFetchMode( PDO::FETCH_OBJ );
+			 $foreignKeys = $stmt->fetchAll();
+		 
       	     foreach( $tables as $sqlTable ) {
 
       	     		  $Table = new Table();
@@ -280,6 +299,24 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 						   if( isset( $desc->Extra ) && $desc->Extra == 'auto_increment' )
 						   	   $Column->setAutoIncrement( true );
 
+	      	      		   foreach( $foreignKeys as $fkey ) {
+	
+									if( $fkey->table == $Table->getName() &&
+										$fkey->column == $Column->getName() ) {
+	
+											$ForeignKey = new ForeignKey( null, $fkey->table, $fkey->column );
+											$ForeignKey->setName( $fkey->constraint );
+											$ForeignKey->setType( 'one-to-many' );
+											$ForeignKey->setReferencedTable( $fkey->referenced_table );
+											$ForeignKey->setReferencedColumn( $fkey->referenced_column );
+											$ForeignKey->setReferencedController( ucfirst( $fkey->referenced_table ) . 'Controller' );
+											$ForeignKey->setOnDelete( $fkey->delete_rule );
+											$ForeignKey->setOnUpdate( $fkey->update_rule );
+	
+											$Column->setForeignKey( $ForeignKey );
+										}
+	      	      		   }
+						   	   
       	      		  	   $Table->addColumn( $Column );
       	      		   }
 

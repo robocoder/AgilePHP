@@ -84,12 +84,14 @@ class Upload {
 	   * Saves the upload contained in the $_FILES array for the specified
 	   * file input $name.
 	   * 
+	   * @param String $filename Optional file name to save the upload as. Defaults to the name of the uploaded file.
 	   * @return String The uploaded file path.
 	   * @throws AgilePHP_PersistenceException if any errors occur
 	   */
-	  public function save() {
+	  public function save( $filename = null ) {
 
-			 $target = $this->getDirectory() . DIRECTORY_SEPARATOR . $_FILES[ $this->getName() ]['name'];
+	  		 $name = ($filename) ? $filename : $_FILES[ $this->getName() ]['name'];
+			 $target = $this->getDirectory() . DIRECTORY_SEPARATOR . $name;
 
 			 Logger::getInstance()->debug( 'Upload::save Saving upload with name \'' . $this->getName() . '\' to target path \'' . $target . '\'.' );
 

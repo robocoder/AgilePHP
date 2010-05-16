@@ -518,7 +518,7 @@ AgilePHP.IDE.Menubar.file.NewProject = function() {
               	       								AgilePHP.IDE.error( 'Unexpected response from server.' );
               	       						}
               	       				});
-              	       				dbManagerRemote.testDatabaseConnection( database );
+              	       				dbManagerRemote.testConnection( database );
               	       			}
               	       		}
               	       	}]

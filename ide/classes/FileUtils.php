@@ -41,8 +41,8 @@ class FileUtils {
 
 	  		 if( is_file( $src ) ) {
 
-	  		 	 if( !unlink( $src . DIRECTORY_SEPARATOR . $file ) )
-			         throw new AgilePHP_Exception( 'Failed to delete file ' . $src . DIRECTORY_SEPARATOR . $file );
+	  		 	 if( !unlink( $src ) )
+			         throw new AgilePHP_Exception( 'Failed to delete file ' . $src );
 
 			     return true;
 	  		 }

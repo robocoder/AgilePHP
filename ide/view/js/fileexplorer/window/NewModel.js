@@ -319,14 +319,26 @@ AgilePHP.IDE.FileExplorer.NewModel = function() {
 
 	  	    		newModelRemote.setCallback( function( response ) {
 
+	  	    			if( response._class == 'AgilePHP_RemotingException' ) {
+
+			  	  			AgilePHP.IDE.error( response.message );
+			  	  			return false;
+			  	  		}
+
 	  	    			store.removeAll();
 				  	  	store.loadData( response );
 	  	    		});
 	  	    		newModelRemote.getTableColumnsMeta( selectedTable );
 
-			  	  	newModelRemote.setCallback( function( columns ) {
-			  	  		
-			  	  		Ext.getCmp( id + '-editorgridpanel-column-combo' ).getStore().loadData( columns );
+			  	  	newModelRemote.setCallback( function( response ) {
+
+			  	  		if( response._class == 'AgilePHP_RemotingException' ) {
+
+			  	  			AgilePHP.IDE.error( response.message );
+			  	  			return false;
+			  	  		}
+
+			  	  		Ext.getCmp( id + '-editorgridpanel-column-combo' ).getStore().loadData( response );
 			  	  	});
 			  	  	newModelRemote.getTableColumns( selectedTable );
 	  	    	}
@@ -381,7 +393,14 @@ AgilePHP.IDE.FileExplorer.NewModel = function() {
 
       	    	newModelRemote.setCallback( function( response ) {
 
+      	    		if( response._class == 'AgilePHP_RemotingException' ) {
+
+		  	  			AgilePHP.IDE.error( response.message );
+		  	  			win.show();
+		  	  			return false;
+		  	  		}
       	    		AgilePHP.IDE.FileExplorer.highlightedNode.reload();
+      	    		win.close();
       	    	});
       	    	newModelRemote.create( tableName,
 			 				AgilePHP.IDE.FileExplorer.workspace,
@@ -390,7 +409,7 @@ AgilePHP.IDE.FileExplorer.NewModel = function() {
 			 				Ext.getCmp( id + '-form-persistence' ).getValue(),
 			 				createTableFlag );
 
-      	    	win.close();
+      	    	win.hide();
       	    }
       	}]);
 

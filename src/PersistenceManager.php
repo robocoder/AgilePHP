@@ -54,14 +54,15 @@ class PersistenceManager implements SQLDialect {
 	   * If a 'databaseId' is present, PersistenceManager is initalized with the specified database.
 	   * 
 	   * @param String $databaseId Optional database id as defined in persistence.xml Defaults to the first database in persistence.xml.
+	   * @param String $persistenceXml Optional file path to a persistence.xml file. Defalts to projectRoot/persistence.xml
 	   * @return void
 	   */
-	  public function __construct( $databaseId = null ) {
+	  public function __construct( $databaseId = null, $persistenceXml = null ) {
 
-	   	     $persistence_xml = AgilePHP::getFramework()->getWebRoot() . '/persistence.xml';
+	  		 $persistence_xml = ($persistenceXml) ? $persistenceXml : AgilePHP::getFramework()->getWebRoot() . '/persistence.xml';
 
 	   	     if( !file_exists( $persistence_xml ) )
-	   	     	 throw new AgilePHP_PersistenceException( 'PersistenceManager requires the presence of persistence.xml at \'' . $persistence_xml . '\'.' );
+	   	     	 throw new AgilePHP_PersistenceException( 'PersistenceManager failed to locate persistence.xml at \'' . $persistence_xml . '\'.' );
 
 	  	     $xml = simplexml_load_file( $persistence_xml );
 

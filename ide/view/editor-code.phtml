@@ -9,13 +9,12 @@
 	    <title>AgilePHP IDE :: Code Editor</title>
 	  </head>
 	  <body style="width: 100%;">
-
 		<div style="height: 100%;">
 			<textarea id="code" style="height: 100%;"><?= $code ?></textarea>
 		</div>
-
 	    <script type="text/javascript">
-	      CodeMirror.fromTextArea( 'code', {
+	     var editor = CodeMirror.fromTextArea( 'code', {
+		        id: '<?= $id ?>',
 		        parserfile: ["parsexml.js",
 		     		         "parsecss.js",
 		     		         "tokenizejavascript.js",
@@ -29,10 +28,30 @@
 		         	          AgilePHP.getDocumentRoot() + "components/codemirror/contrib/php/css/phpcolors.css"],
 		        path: AgilePHP.getDocumentRoot() + "components/codemirror/js/",
 		        //continuousScanning: 500,
-		        lineNumbers: true
+		        lineNumbers: true,
+		        saveFunction: function() {
+
+	    	  	    var data = 'id=' + this.id + '&code=' + escape( editor.getCode() );
+		    	    var url = AgilePHP.getRequestBase() + '/FileExplorerController/save';
+
+		  			new AgilePHP.XHR().post( url, data, function( response ) {
+
+		  				 if( !response || !response.success ) {
+
+		  					 alert( 'Error saving document' );
+		  					 return false;
+		  				 }
+
+		  				 if( response._class == 'AgilePHP_RemotingException' ) {
+
+			  				 alert( response.message );
+			  				 return false;
+		  				 }
+
+		  				 alert( 'Document saved' );
+		  			});
+	      		}
 	      });
 	    </script>
-	    
 	   </body>
-		
 </html>

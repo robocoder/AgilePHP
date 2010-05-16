@@ -47,6 +47,14 @@ h3 {
 
 	background: url( ../images/tree/16x16/document-save.png) no-repeat 0 0 !important;
 }
+.btn-edit-refresh {
+
+	background: url( ../images/tree/16x16/refresh.png) no-repeat 0 0 !important;
+}
+.btn-edit-rename {
+
+	background: url( ../images/tree/16x16/rename.png) no-repeat 0 0 !important;
+}
 .btn-edit-copy {
 
 	background: url( ../images/tree/16x16/edit-copy.png) no-repeat 0 0 !important;
@@ -70,6 +78,18 @@ h3 {
 .btn-upload {
 
 	background: url( ../images/tree/16x16/upload.png) no-repeat 0 0;
+}
+.btn-new-database {
+
+	background: url( ../images/tree/16x16/new-database.png) no-repeat 0 0 !important;
+}
+.btn-reverse-engineer-database {
+
+	background: url( ../images/tree/16x16/reverse-engineer-database.png) no-repeat 0 0 !important;
+}
+.btn-trash {
+
+	background: url( ../images/tree/16x16/trash.png) no-repeat 0 0 !important;
 }
 .btn-greyed {
 

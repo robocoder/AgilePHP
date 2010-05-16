@@ -33,6 +33,8 @@ class FileExplorerController extends BaseExtController {
 		 public function __construct() {
 
 		 		parent::__construct();
+		 		
+		 		set_error_handler( 'FileExplorerController::ErrorHandler' );
 		 		$this->createRenderer( 'AJAXRenderer' );
 		 }
 
@@ -68,7 +70,7 @@ class FileExplorerController extends BaseExtController {
 		  */
 		 public function load( $type, $id ) {
 
-		 		$code = $this->getContents( str_replace( '|', DIRECTORY_SEPARATOR, $id ) );
+		 		$code = $this->getContents( preg_replace( '/\|/', DIRECTORY_SEPARATOR, $id ) );
 
 		 		switch( $type ) {
 
@@ -77,6 +79,7 @@ class FileExplorerController extends BaseExtController {
 		 				 //if( $extension == 'phtml' ) {
 
 			 				 $renderer = new PHTMLRenderer();
+			 				 $renderer->set( 'id', $id );
 			 				 $renderer->set( 'code', htmlentities( $code ) );
 			 				 $renderer->render( 'editor-code' );
 
@@ -105,23 +108,28 @@ class FileExplorerController extends BaseExtController {
 		  * @param $file The file path where the passed content gets written
 		  * @return void
 		  */
-		 public function save( $file ) {
+		 public function save() {
 
-		 		$this->file = str_replace( ':', '/', $file );
+		 		$request = Scope::getRequestScope();
 
-		 		Logger::getInstance()->debug( 'FileExplorerController::save Saving content: \'' . $_POST['content'] . '\'.' );
-				Logger::getInstance()->debug( 'FileExplorerController::save Saving file \'' . $this->file . '\'.' );
+		 		$id = $request->get( 'id' );
 
-				$content = stripslashes( $_POST['content'] );
-				
-		 		$h = fopen( $this->file, 'w' );
-		 		$result = fwrite( $h, $content );
+		 		$file = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $id );
+		 		$code = stripslashes( html_entity_decode( $_POST['code'] ) );
+
+		 		Logger::getInstance()->debug( $code );
+		 		
+		 		$h = fopen( $file, 'w' );
+		 		$result = fwrite( $h, $code );
 		 		fclose( $h );
 
 		 		if( $result === false )
-		 		    throw new AgilePHP_Exception( 'Failed to save view.' );
+		 		    throw new AgilePHP_Exception( 'Failed to save code' );
 
-	 		    $this->loadPage();
+		 		$o = new stdClass;
+		 		$o->success = true;
+
+		 		$this->getRenderer()->render( $o );
 		 }
 
 		 /**
@@ -285,6 +293,42 @@ class FileExplorerController extends BaseExtController {
 	  		   $this->getRenderer()->render( $o );
 	  	}
 
+	    /**
+		 * Event handler for file explorer rename context menu item.
+		 * 
+		 * @param $treeSrc The tree source node / file system path (colons substituted for /)
+		 * @param $dst The tree destination node / file system path (colons substituted for /)
+		 * @return void
+		 */
+	  	public function rename( $treeSrc, $dst ) {
+
+	  		   Logger::getInstance()->debug( 'FileExplorerController::rename $treeSrc = \'' . $treeSrc . '\'.' );
+	  		   Logger::getInstance()->debug( 'FileExplorerController::rename $dst = \'' . $dst . '\'.' );
+
+	  		   $src = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeSrc );
+
+	  		   $array = explode( DIRECTORY_SEPARATOR, $src );
+	  		   array_pop( $array );
+
+	  		   $parent = implode( DIRECTORY_SEPARATOR, $array );
+	  		   $dstPath = $parent . DIRECTORY_SEPARATOR . $dst; 
+
+	  		   Logger::getInstance()->debug( 'FileExplorerController::rename Renaming src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
+
+	  		   $o = new stdClass;
+
+	  		   if( rename( $src, $dstPath ) ) {
+
+	  		   	   $o->success = true;
+	  		   	   $o->parentId = preg_replace( '/\\' . DIRECTORY_SEPARATOR . '/', '|', $parent );
+
+	  		   	   $this->getRenderer()->render( $o );
+	  		   }
+
+	  		   $o->success = false;
+	  		   $this->getRenderer()->render( $o );
+	  	}
+
 	  	/**
 	  	 * Event handler for file uploads. Saves the chosen file to the specified
 	  	 * $treePath destination.
@@ -294,7 +338,12 @@ class FileExplorerController extends BaseExtController {
 	  	 */
 		public function upload( $treePath ) {
 
-			   $path = str_replace( '|', DIRECTORY_SEPARATOR, $treePath );
+			   $request = Scope::getRequestScope();
+			   $name = $request->get( 'name' );
+
+			   $filename = ($name) ? $name : null;
+
+			   $path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treePath );
 			   $renderer = MVC::getInstance()->createRenderer( 'AJAXRenderer' );
 			   $o = new stdClass();
 
@@ -302,7 +351,7 @@ class FileExplorerController extends BaseExtController {
 		    		   $upload = new Upload();
 		  	    	   $upload->setName( 'upload' );
 		  	    	   $upload->setDirectory( $path );
-		  	    	   $path = $upload->save();
+		  	    	   $path = $upload->save( $filename );
 	  		   }
 	  		   catch( AgilePHP_Exception $e ) {
 
@@ -482,6 +531,13 @@ class FileExplorerController extends BaseExtController {
 			   $this->getRenderer()->render( $o );
 	  	}
 
+	  	/**
+	  	 * Creates a new controller in the specified project
+	  	 * 
+	  	 * @param String $projectName The name of the project in the workspace to create the controller for
+	  	 * @return void
+	  	 * @throws AgilePHP_Exception
+	  	 */
 	  	public function createController( $projectName ) {
 
 	  		   $config = new Config();
@@ -522,9 +578,7 @@ class FileExplorerController extends BaseExtController {
 	  		   			break;
 
 	  		   		case 'custom':
-
 	  		   			$controller = $request->getSanitized( 'controller' ) . '.php';
-
 				 	    copy( '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $controller,
 				 	    	  $controlDir . DIRECTORY_SEPARATOR . $controller );
 
@@ -542,6 +596,13 @@ class FileExplorerController extends BaseExtController {
 	  		   $this->getRenderer()->render( $o );
 	  	}
 
+	  	/**
+	  	 * Creates a new view in the specified project
+	  	 * 
+	  	 * @param String $projectName The name of the project in the workspace to create the view for
+	  	 * @return void
+	  	 * @throws AgilePHP_Exception
+	  	 */
 		public function createView( $projectName ) {
 
 	  		   $config = new Config();

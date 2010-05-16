@@ -210,6 +210,14 @@ AgilePHP.IDE.FileExplorer = {
 			            		  }
 
 					            }, '-', {
+					                id: 'file-explorer-contextmenu-edit-refresh',
+					                text: 'Refresh',
+					                iconCls: 'btn-edit-refresh'
+					            }, {
+					                id: 'file-explorer-contextmenu-edit-rename',
+					                text: 'Rename',
+					                iconCls: 'btn-edit-rename'
+					            }, {
 					                id: 'file-explorer-contextmenu-edit-copy',
 					                text: 'Copy',
 					                iconCls: 'btn-edit-copy'
@@ -238,6 +246,34 @@ AgilePHP.IDE.FileExplorer = {
 			                itemclick: function( item ) {
 
 			                    switch( item.id ) {
+
+				                    case 'file-explorer-contextmenu-edit-refresh':
+				                		
+			                            AgilePHP.IDE.FileExplorer.highlightedNode.reload();
+		                            break;
+
+				                    case 'file-explorer-contextmenu-edit-rename':
+
+				                    	Ext.Msg.prompt( 'Rename', 'Enter the new name', function( btn, text ) {
+
+				                    		if( btn == 'ok' ) {
+
+				                    			var src = AgilePHP.IDE.FileExplorer.highlightedNode.id;
+
+				                    			var url = AgilePHP.getRequestBase() + '/FileExplorerController/rename/' + src + '/' + text;
+				                    			new AgilePHP.XHR().request( url, function( response ) {
+
+				                    				 if( response.success == true ) {
+
+				                    					 AgilePHP.IDE.FileExplorer.tree.getNodeById( response.parentId ).reload();
+				                    					 return;
+				                    				 }
+
+				                    				 AgilePHP.IDE.error( "Error performing rename operation" );
+				                    			});
+				                    	    }
+				                    	});
+			                            break;
 
 			                        case 'file-explorer-contextmenu-edit-copy':
 		
@@ -348,15 +384,63 @@ AgilePHP.IDE.FileExplorer = {
 						                			items: [{
 						                			
 						                				id: 'file-explorer-contextmenu-database-create',
-						                				text: 'Create'
+						                				text: 'Create',
+						                				iconCls: 'btn-new-database',
+						                				handler: function() {
+
+						                					var dbManagerRemote = new DatabaseManagerRemote();
+					                							dbManagerRemote.setCallback( function( response ) {
+					                								
+					                								if( response._class == 'AgilePHP_RemotingException' ) {
+
+					                									AgilePHP.IDE.error( response.message )
+					                									return;
+					                								}
+
+					                								AgilePHP.IDE.info( 'Database successfully created' );
+					                							});
+					                							dbManagerRemote.create( AgilePHP.IDE.FileExplorer.workspace, AgilePHP.IDE.FileExplorer.projectName );
+						                				}
 						                			}, {
 						                			
 						                				id: 'file-explorer-contextmenu-database-drop',
-						                				text: 'Drop'
+						                				text: 'Drop',
+						                				iconCls: 'btn-trash',
+						                				handler: function() {
+
+							                				var dbManagerRemote = new DatabaseManagerRemote();
+				                								dbManagerRemote.setCallback( function( response ) {
+				                								
+				                								if( response._class == 'AgilePHP_RemotingException' ) {
+	
+				                									AgilePHP.IDE.error( response.message )
+				                									return;
+				                								}
+	
+				                								AgilePHP.IDE.info( 'Database successfully dropped' );
+				                							});
+				                							dbManagerRemote.drop( AgilePHP.IDE.FileExplorer.workspace, AgilePHP.IDE.FileExplorer.projectName );
+						                				}
 						                			}, {
 						                			
 						                				id: 'file-explorer-contextmenu-database-reverseengineer',
-						                				text: 'Reverse Engineer'
+						                				text: 'Reverse Engineer',
+						                				iconCls: 'btn-reverse-engineer-database',
+						                				handler: function() {
+						                				
+							                				var dbManagerRemote = new DatabaseManagerRemote();
+				                								dbManagerRemote.setCallback( function( response ) {
+				                								
+				                								if( response._class == 'AgilePHP_RemotingException' ) {
+		
+				                									AgilePHP.IDE.error( response.message )
+				                									return;
+				                								}
+
+				                								AgilePHP.IDE.info( 'persistence.xml successfully configured' );
+				                							});
+				                							dbManagerRemote.reverseEngineer( AgilePHP.IDE.FileExplorer.workspace, AgilePHP.IDE.FileExplorer.projectName );
+						                				}
 						                			}]
 				                				}
 				                			
@@ -551,17 +635,18 @@ AgilePHP.IDE.FileExplorer = {
 		        labelWidth: 50,
 		        defaults: {
 		            anchor: '95%',
-		            allowBlank: false,
 		            msgTarget: 'side'
 		        },
 		        items: [{
 		            xtype: 'textfield',
-		            fieldLabel: 'Name'
+		            fieldLabel: 'Name',
+		            name: 'name'
 		        },{
 		            xtype: 'fileuploadfield',
 		            emptyText: 'Select a file',
 		            fieldLabel: 'File',
 		            name: 'upload',
+		            allowBlank: false,
 		            buttonText: '',
 		            buttonCfg: {
 		                iconCls: 'btn-new-file'
@@ -577,12 +662,12 @@ AgilePHP.IDE.FileExplorer = {
 
 			                    url: AgilePHP.getRequestBase() + '/FileExplorerController/upload/' + AgilePHP.IDE.FileExplorer.selectedNode.id,
 			                    waitMsg: 'Uploading your file...',
-			                    success: function( fp, o ){
+			                    success: function( fp, o ) {
 
 			                        win.destroy();
 			                        fp.destroy();
 
-			                        AgilePHP.IDE.FileExplorer.tree.getRootNode().reload();
+			                        AgilePHP.IDE.FileExplorer.highlightedNode.reload();
 			                    }
 			                });
 		                }
