@@ -222,20 +222,24 @@ class AgilePHP {
 	  }
 
 	  /**
-	   * Loads a class from the web application 'classes' directory using a
-	   * package classpath syntax.
+	   * Loads a class from the web application 'classes' or 'components' directory using a
+	   * package dot type notation. First the classes directory is searched, then components.
 	   * 
 	   * @param String $classpath The dot notation classpath (my.package.ClassName)
 	   * @return void
 	   * @throws AgilePHP_Exception If an error occurred loading the specified classpath
 	   */
-	  public function import( $classpath ) {
+	  public static function import( $classpath ) {
 
 	  		 $file = preg_replace( '/\./', DIRECTORY_SEPARATOR, $classpath );
-	  		 if( $file == null )
-	  		 	 throw new AgilePHP_Exception( 'Error loading classpath: ' . $classpath );
+	  		 if( file_exists( 'classes' . DIRECTORY_SEPARATOR . $file . '.php' ) )
+	  		 	 require_once( 'classes' . DIRECTORY_SEPARATOR . $file . '.php' );
 
-	  		 require_once( 'classes' . DIRECTORY_SEPARATOR . $file . '.php' );
+	  		 else if( file_exists( 'components' . DIRECTORY_SEPARATOR . $file . '.php' ) )
+	  		 	 require_once( 'components' . DIRECTORY_SEPARATOR . $file . '.php' );
+
+	  		 else
+  		 	 	throw new AgilePHP_Exception( 'Failed to import source from \'' . $classpath . '\'.' );
 	  }
 
 	  /**

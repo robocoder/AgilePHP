@@ -37,6 +37,7 @@ class InvocationContext {
 	  private $interceptor;
 	  private $callee;
 	  private $field;
+	  private $return;
 
 	  public $proceed = false;
 
@@ -163,6 +164,26 @@ class InvocationContext {
 	  		 return $this->field;
 	  }
 
+	  /**
+	   * Sets the value which the intercepted method call returned
+	   * 
+	   * @param mixed The value which the intercepted method call returned
+	   */
+	  public function setReturn( $return ) {
+
+	  		 $this->return = $return;
+	  }
+
+	  /**
+	   * Returns the value which the intercepted method call returned
+	   * 
+	   * @return The value which the intercepted method call returned
+	   */
+	  public function getReturn() {
+
+	  		 return $this->return;
+	  }
+	  
 	  /**
 	   * Causes the intercepted invocation to continue, using the method and parameters
 	   * contained in the state of the InvocationContext instance. If this method is not

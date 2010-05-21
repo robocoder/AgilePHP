@@ -648,6 +648,80 @@ class FileExplorerController extends BaseExtController {
 	  		   $this->getRenderer()->render( $o );
 	  	}
 
+	  	/**
+	  	 * Returns all components for the specified project
+	  	 * 
+	  	 * @param $projectName The project name
+	  	 * @return stdClass Object that stores a list of components
+	  	 * 
+	  	 * @todo validate xml document
+	  	 */
+	  	public function getComponents( $workspace, $projectName ) {
+
+	  		   function getConfiguration( $path ) {
+
+	  		   			$componentXml = $path . DIRECTORY_SEPARATOR . 'component.xml';
+		 				if( !file_exists( $componentXml ) )
+		 					return false;
+
+		 				$xml = simplexml_load_file( $componentXml );
+
+		 				/*
+		 				$dom = new DOMDocument();
+			 			$dom->Load( $componentXml );
+						if( !$dom->schemaValidate( AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR . 'component.dtd' ) );
+						//if( !$dom->validate() );
+						 	throw new AgilePHP_PersistenceException( 'component.xml Document Object Model validation failed.' );
+						*/
+
+		 				$properties = array();
+		 				$types = array();
+		 				foreach( $xml->component->param as $param ) {
+
+		 						 $properties[(string)$param->attributes()->name] = (string)$param->attributes()->value;
+		 						 $types[(string)$param->attributes()->name] = (string)$param->attributes()->type;
+		 				}
+
+		 				$o = new stdClass;
+	 					$o->name = (string)$xml->component->attributes()->name;
+	 					$o->version = (string)$xml->component->attributes()->version;
+	 					$o->language = (string)$xml->component->attributes()->language;
+	 					$o->properties = $properties;
+	 					$o->types = $types;
+
+		 				return $o;
+		 	   };
+
+		 	   $path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
+		 	   $path .= DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'components';
+
+		 	   if( !file_exists( $path ) ) throw new AgilePHP_Exception( 'Path doesnt exist at \'' . $path . '\'.' );
+
+		 	   $components = array();
+
+		 	   foreach( new DirectoryIterator( $path ) as $fileInfo ) {
+
+				    	if( $fileInfo->isDot() ) continue;
+				    	if( !$fileInfo->isDir() ) continue;
+				    	if( !$config = getConfiguration( $path . DIRECTORY_SEPARATOR . $fileInfo->getFilename() ) ) continue;
+
+				    	$serialized_node = preg_replace( '/\\' . DIRECTORY_SEPARATOR . '/', '|', $fileInfo->getPathname() );
+
+				    	$stdClass = new stdClass();
+				    	$stdClass->id = $serialized_node;
+				    	$stdClass->text = $fileInfo->getFilename();
+				    	$stdClass->iconCls = 'btn-new-component';
+				    	$stdClass->leaf = true;
+				    	$stdClass->component = $config;
+
+				   		array_push( $components, $stdClass );
+				}
+
+				sort( $components );
+
+				$this->getRenderer()->render( $components );
+	  	}
+
         /**
 	     * Utility method to replace *nix line breaks with windows line breaks if building on windows.
 	     * 

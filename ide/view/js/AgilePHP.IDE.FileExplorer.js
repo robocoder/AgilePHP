@@ -1,8 +1,10 @@
 AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/fileexplorer/window/NewModel.js' );
 AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/fileexplorer/window/NewView.js' );
 AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/fileexplorer/window/NewController.js' );
+AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/fileexplorer/window/NewComponent.js' );
 
 AgilePHP.IDE.Remoting.load( 'NewModelRemote' );
+AgilePHP.IDE.Remoting.load( 'ComponentsRemote' );
 
 AgilePHP.IDE.FileExplorer = {
 
@@ -23,14 +25,6 @@ AgilePHP.IDE.FileExplorer = {
 		getTree: function() {
 
 			return AgilePHP.IDE.FileExplorer.tree;
-		},
-
-		setProjectNameFromNode: function( nodeId ) {
-
-            var pieces = nodeId.split( /\|/ );
-                  pieces.pop(); // model directory
-
-            AgilePHP.IDE.FileExplorer.projectName = pieces.pop();
 		},
 
 		/**
@@ -203,6 +197,10 @@ AgilePHP.IDE.FileExplorer = {
 							                        case 'file-explorer-contextmenu-new-controller':
 							                        	new AgilePHP.IDE.FileExplorer.NewController().show();
 							                        break;
+
+							                        case 'file-explorer-contextmenu-new-component':
+							                        	new AgilePHP.IDE.FileExplorer.NewComponent().show();
+							                        break;
 							                    }
 							                }
 						          		 },
@@ -334,7 +332,6 @@ AgilePHP.IDE.FileExplorer = {
 
 			            contextmenu: function( node, e ) {
 
-			        		AgilePHP.IDE.FileExplorer.setProjectNameFromNode( node.id );
 			        		AgilePHP.IDE.FileExplorer.highlightedNode = node;
 
 				        	// Remove conditional menus/items before contextmenu is shown
@@ -536,9 +533,32 @@ AgilePHP.IDE.FileExplorer = {
 
 				AgilePHP.IDE.FileExplorer.tree.on( 'click', function( node, e ) {
 
-						 
+					// Keep track of which project is being worked on
+					var workspace = AgilePHP.IDE.FileExplorer.workspace;
+						workspace = workspace.replace( /\\/g, '|' );
+						workspace = workspace.replace( /\//g, '|' );
+
+					var nodeId = node.id;
+						nodeId = nodeId.replace( workspace, '' );
+
+					var pieces = nodeId.split( /\|/ );
+						pieces.shift();
+
+					var project = pieces.shift();
+					if( AgilePHP.IDE.FileExplorer.projectName != project ) {
+
+						AgilePHP.IDE.FileExplorer.projectName = project;
+
+						// Clear the component property panel store
+						Ext.getCmp( 'ide-properties-grid' ).setSource({});
+						
+						// Project changed, update component panel
+			            var t = Ext.getCmp( 'ide-properties-components-treepanel' );
+			            	t.getLoader().dataUrl = AgilePHP.getRequestBase() + '/FileExplorerController/getComponents/' + workspace + '/' + project;
+			            	t.getRootNode().reload();
+					}
 				});
-	
+
 				AgilePHP.IDE.FileExplorer.panel.add( AgilePHP.IDE.FileExplorer.tree );
 				//AgilePHP.IDE.FileExplorer.tree.getRootNode().expand();
 	

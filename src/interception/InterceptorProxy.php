@@ -229,14 +229,28 @@ class InterceptorProxy {
 								               if( $ctx instanceof InvocationContext && $ctx->proceed ) {
 
 												   $m = $class->getMethod( $ctx->getMethod() );
-												   if( $m !== null )
-												  	   return $args ? $m->invokeArgs( $this->object, $ctx->getParameters() ) : $m->invoke( $this->object );
+												   if( $m !== null ) {
+
+												   	   // Capture the return value and update the InvocationContext with the return value for #@AroundInvoke
+												  	   $return = $args ? $m->invokeArgs( $this->object, $ctx->getParameters() ) : $m->invoke( $this->object );
+												  	   $invocationCtx->setReturn( $return );
+												   }
 								               }
 			     		 	 	 		   }
-					     		 	 	   if( $interceptorMethod->hasAnnotation( 'AfterInvoke' ) ) {
+			     		 	 	 		   // Execute #@AfterInvoke interceptor methods passing in the InvocationContext as it
+			     		 	 	 		   // was returned from the #@AroundInvoke operation if it exists. Otherwise the initial
+			     		 	 	 		   // call to #@AroundInvoke is passed into #@AfterInvoke.
+			     		 	 	 		   foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
 
-			     		 	 	 		  	   $invocationCtx = new InvocationContext( $this->object, $method, $args, $interception->getInterceptor() );
-								               $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
+						     		 	 	   if( $interceptorMethod->hasAnnotation( 'AfterInvoke' ) ) {
+
+						     		 	 	   		if( !isset( $invocationCtx ) )
+						     		 	 	   	   	   $invocationCtx = new InvocationContext( $this->object, $method, $args, $interception->getInterceptor() );
+	
+									               $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
+										           if( $ctx instanceof InvocationContext && $ctx->proceed )
+					     		 	 	 		   	   return $ctx->getReturn();
+									           }
 			     		 	 	 		   }
 			     		 	 	  }
 			     		 	  }

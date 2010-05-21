@@ -1,12 +1,9 @@
-0.24a
+0.25a
 -----
 
-- Refactored Upload::save to support optional file name argument.
-- Refactored MySQLDialect::reverseEngineer to add support for foreign keys.
-- Refactored PersistenceManager constructor to support new optional persistence.xml file path argument.
-
-- Lots of new goodies in the IDE
-	Code editor now saves using CTRL+S (in Safari CTRL+SHIFT+S)
-	Added 'refresh' context menu item to file explorer
-	FileExplorer 'Database' context menu items are now functional
-	Deleted FileUtilsRemote
+- Added $type variable to AgilePHP::import to allow loading of components as well as classes
+- Created #@Audit interceptor
+- Refactored InterceptorProxy #@AfterInvoke logic - needs more performance tuning and possibly debugging
+- Refactored AgilePHP::import to be static and also support loading of components as well as classes.
+- Created Component and ComponentParam classes along with a component.dtd which still needs some debugging
+  since validation is currently failing.

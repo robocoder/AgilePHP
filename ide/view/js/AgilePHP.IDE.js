@@ -79,6 +79,20 @@ AgilePHP.IDE = {
 		   buttons: Ext.Msg.OK,
 		   icon: Ext.MessageBox.INFO
 		});
+	},
+	
+	dateRenderer : function( value, metaData, record, rowIndex, colIndex, store ) {
+
+		var month = value.substring( 0, 2 );
+		var date = value.substring( 2, 4 );
+		var year = value.substring( 4, 8 );
+		var hour = value.substring( 8, 10 );
+		var mins = value.substring( 10, 12 );
+		var secs = value.substring( 12, 14 );
+
+		var retval = month + '/' + date + '/' + year + ' ' + hour + ':' + mins + ':' + secs;
+
+		return retval;
 	}
 };
 
