@@ -89,6 +89,7 @@ class DatabaseManagerRemote {
 	  #@RemoteMethod
 	  public function create( $workspace, $projectName ) {
 
+	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 	  		 $persistence_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'persistence.xml';
 
 	  		 $pm = new PersistenceManager( false, $persistence_xml );
@@ -105,6 +106,7 @@ class DatabaseManagerRemote {
 	  #@RemoteMethod
 	  public function drop( $workspace, $projectName ) {
 
+	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 	  		 $persistence_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'persistence.xml';
 
 	  		 $pm = new PersistenceManager( false, $persistence_xml );
@@ -121,6 +123,7 @@ class DatabaseManagerRemote {
 	  #@RemoteMethod
 	  public function reverseEngineer( $workspace, $projectName ) {
 
+	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 	  		 $projectPath = $workspace . DIRECTORY_SEPARATOR . $projectName;
 	  		 $persistence_xml =  $projectPath . DIRECTORY_SEPARATOR . 'persistence.xml';
 
@@ -172,7 +175,7 @@ class DatabaseManagerRemote {
 	      	      		   	   $foreignKey = $column->getForeignKey();
       	      		   	   	   $foreignKeyXml = "\t\t\t\t";
       	      		   	   	   $foreignKeyXml .= '<foreignKey name="' . $foreignKey->getName() . '" type="' . $foreignKey->getType() . '" ';
-      	      		   	   	   $foreignKeyXml .= 'onDelete="' . $foreignKey->getOnDelete() . '" onUpdate="' . $foreignKey->getOnUpdate() . '" ' . PHP_EOL;
+      	      		   	   	   $foreignKeyXml .= 'onDelete="' . str_replace( ' ', '_', $foreignKey->getOnDelete() ) . '" onUpdate="' . str_replace( ' ', '_', $foreignKey->getOnUpdate() ) . '" ' . PHP_EOL;
       	      		   	   	   $foreignKeyXml .= "\t\t\t\t\t" . 'table="' . $foreignKey->getReferencedTable() . '" column="' . $foreignKey->getReferencedColumn() . '" ';
       	      		   	   	   $foreignKeyXml .= 'controller="' . $foreignKey->getReferencedController() . '"/>';
 

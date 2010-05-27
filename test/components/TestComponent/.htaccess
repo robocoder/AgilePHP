@@ -1,0 +1,8 @@
+<Files .htaccess>
+	order deny,allow
+	deny from all
+</Files>
+<Files component.xml>
+	order deny,allow
+	deny from all
+</Files>

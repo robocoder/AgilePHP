@@ -16,8 +16,7 @@
 	<div class="info-box-title">Description</div>
 	<div class="nav-bar">
 					<span class="disabled">Description</span> |
-							<a href="#sec-descendents">Descendents</a>
-			|											<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
 						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
 						
 					</div>
@@ -31,7 +30,7 @@
 				<li><span class="field">abstract:</span> </li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_src---persistence---BasePersistence.php.html">/src/persistence/BasePersistence.php</a> (line <span class="field">39</span>)
+			Located in <a class="field" href="_build---AgilePHP---persistence---BasePersistence.php.html">/build/AgilePHP/persistence/BasePersistence.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a39">39</a></span>)
 		</p>
 		
 				
@@ -40,49 +39,6 @@
 			</div>
 </div>
 
-	<a name="sec-descendents"></a>
-	<div class="info-box">
-		<div class="info-box-title">Direct descendents</div>
-		<div class="nav-bar">
-			<a href="#sec-description">Description</a> |
-			<span class="disabled">Descendents</span>
-			|												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
-								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
-							
-								</div>
-		<div class="info-box-body">
-			<table cellpadding="2" cellspacing="0" class="class-table">
-				<tr>
-					<th class="class-table-header">Class</th>
-					<th class="class-table-header">Description</th>
-				</tr>
-								<tr>
-					<td style="padding-right: 2em"><a href="../com-makeabyte-agilephp-persistence-dialect/SQLiteDialect.html">SQLiteDialect</a></td>
-					<td>
-											Responsible for SQLite specific database operations
-										</td>
-				</tr>
-								<tr>
-					<td style="padding-right: 2em"><a href="../com-makeabyte-agilephp-persistence-dialect/MSSQLDialect.html">MSSQLDialect</a></td>
-					<td>
-											Responsible for MSSQL specific database operations.
-										</td>
-				</tr>
-								<tr>
-					<td style="padding-right: 2em"><a href="../com-makeabyte-agilephp-persistence-dialect/MySQLDialect.html">MySQLDialect</a></td>
-					<td>
-											Handles MySQL specific queries
-										</td>
-				</tr>
-								<tr>
-					<td style="padding-right: 2em"><a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html">SQLSRVDialect</a></td>
-					<td>
-											Responsible for MSSQL specific database operations.
-										</td>
-				</tr>
-							</table>
-		</div>
-	</div>
 
 
 	<a name="sec-var-summary"></a>
@@ -90,7 +46,6 @@
 		<div class="info-box-title">Variable Summary</span></div>
 		<div class="nav-bar">
 			<a href="#sec-description">Description</a> |
-							<a href="#sec-descendents">Descendents</a> |
 						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
 							| 
 									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
@@ -98,7 +53,7 @@
 								</div>
 		<div class="info-box-body">
 			<div class="var-summary">
-																																																<div class="var-title">
+																																																								<div class="var-title">
 					<span class="var-type">mixed</span>
 					<a href="#$database" title="details" class="var-name">$database</a>
 				</div>
@@ -109,6 +64,10 @@
 																<div class="var-title">
 					<span class="var-type">mixed</span>
 					<a href="#$pdo" title="details" class="var-name">$pdo</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">mixed</span>
+					<a href="#$PDOStatement" title="details" class="var-name">$PDOStatement</a>
 				</div>
 																<div class="var-title">
 					<span class="var-type">mixed</span>
@@ -123,7 +82,6 @@
 		<div class="info-box-title">Method Summary</span></div>
 		<div class="nav-bar">
 			<a href="#sec-description">Description</a> |
-							<a href="#sec-descendents">Descendents</a> |
 																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
 				 
 				|
@@ -178,12 +136,6 @@
 											<span class="method-result">The</span>
 										<a href="#createRestrictSQL" title="details" class="method-name">createRestrictSQL</a>
 										()
-									</div>
-														
-				<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#createWhereClauseFromModel" title="details" class="method-name">createWhereClauseFromModel</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">&$model</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$primaryKeys</span>)
 									</div>
 														
 				<div class="method-definition">
@@ -368,6 +320,12 @@
 														
 				<div class="method-definition">
 											<span class="method-result">void</span>
+										<a href="#setComparisonLogicOperator" title="details" class="method-name">setComparisonLogicOperator</a>
+											(<span class="var-type">$operator</span>&nbsp;<span class="var-name">$operator</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
 										<a href="#setDistinct" title="details" class="method-name">setDistinct</a>
 											(<span class="var-type">$columnName</span>&nbsp;<span class="var-name">$columnName</span>)
 									</div>
@@ -440,7 +398,6 @@
 		<div class="info-box-title">Variables</div>
 		<div class="nav-bar">
 			<a href="#sec-description">Description</a> |
-							<a href="#sec-descendents">Descendents</a> |
 										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
 						
 			
@@ -457,7 +414,7 @@
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$database</span>
-						(line <span class="line-number">53</span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a54">54</a></span>)
 		</span>
 	</div>
 
@@ -478,7 +435,7 @@
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$model</span>
-						(line <span class="line-number">52</span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a53">53</a></span>)
 		</span>
 	</div>
 
@@ -499,7 +456,28 @@
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$pdo</span>
-						(line <span class="line-number">51</span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a52">52</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$PDOStatement" id="$PDOStatement"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">mixed</span>
+			<span class="var-name">$PDOStatement</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a41">41</a></span>)
 		</span>
 	</div>
 
@@ -514,13 +492,13 @@
 
 </div>
 <a name="var$transactionInProgress" id="$transactionInProgress"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$transactionInProgress</span>
-						(line <span class="line-number">54</span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a55">55</a></span>)
 		</span>
 	</div>
 
@@ -543,7 +521,6 @@
 		<div class="info-box-title">Methods</div>
 		<div class="nav-bar">
 			<a href="#sec-description">Description</a> |
-							<a href="#sec-descendents">Descendents</a> |
 															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
 																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
 						
@@ -551,10 +528,10 @@
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
 <a name="method__construct" id="__construct"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number">56</span>)
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a57">57</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -572,31 +549,12 @@
 	
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLiteDialect.html#method__construct">SQLiteDialect::__construct()</a>
-							</li>
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/MSSQLDialect.html#method__construct">MSSQLDialect::__construct()</a>
-								: Initalize MSSQL Dialect.
-							</li>
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/MySQLDialect.html#method__construct">MySQLDialect::__construct()</a>
-								: Initalize MySQLDialect
-							</li>
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#method__construct">SQLSRVDialect::__construct()</a>
-								: Initalize SQLSRVDialect.
-							</li>
-				</ul>
 	</div>
 <a name="method__destruct" id="__destruct"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">Destructor __destruct</span> (line <span class="line-number">1063</span>)
+		<span class="method-title">Destructor __destruct</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a1104">1104</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -617,10 +575,10 @@
 			
 	</div>
 <a name="methodbeginTransaction" id="beginTransaction"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">beginTransaction</span> (line <span class="line-number">183</span>)
+		<span class="method-title">beginTransaction</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a184">184</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -642,20 +600,12 @@
 	
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodbeginTransaction">SQLSRVDialect::beginTransaction()</a>
-								: (non-PHPdoc)
-							</li>
-				</ul>
 	</div>
 <a name="methodclose" id="close"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">close</span> (line <span class="line-number">711</span>)
+		<span class="method-title">close</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a738">738</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -674,20 +624,12 @@
 	
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodclose">SQLSRVDialect::close()</a>
-								: (non-PHPdoc)
-							</li>
-				</ul>
 	</div>
 <a name="methodcommit" id="commit"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">commit</span> (line <span class="line-number">205</span>)
+		<span class="method-title">commit</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a206">206</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -709,20 +651,12 @@
 	
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodcommit">SQLSRVDialect::commit()</a>
-								: (non-PHPdoc)
-							</li>
-				</ul>
 	</div>
 <a name="methodcompare" id="compare"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">compare</span> (line <span class="line-number">1122</span>)
+		<span class="method-title">compare</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a1163">1163</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -753,10 +687,10 @@
 			
 	</div>
 <a name="methodcount" id="count"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">count</span> (line <span class="line-number">692</span>)
+		<span class="method-title">count</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a719">719</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -781,20 +715,12 @@
 				</ul>
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodcount">SQLSRVDialect::count()</a>
-								: Returns the total number of records in the specified model.
-							</li>
-				</ul>
 	</div>
 <a name="methodcreateRestrictSQL" id="createRestrictSQL"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">createRestrictSQL</span> (line <span class="line-number">784</span>)
+		<span class="method-title">createRestrictSQL</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a825">825</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -815,42 +741,11 @@
 		
 			
 	</div>
-<a name="methodcreateWhereClauseFromModel" id="createWhereClauseFromModel"><!-- --></a>
-<div class="oddrow">
-	
-	<div class="method-header">
-		<span class="method-title">createWhereClauseFromModel</span> (line <span class="line-number">557</span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">access:</span> protected</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			createWhereClauseFromModel
-		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">&$model</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$primaryKeys</span>)
-			</div>
-	
-			<ul class="parameters">
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">&$model</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$primaryKeys</span>			</li>
-				</ul>
-		
-			
-	</div>
 <a name="methoddelete" id="delete"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">delete</span> (line <span class="line-number">516</span>)
+		<span class="method-title">delete</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a556">556</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -880,7 +775,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">exec</span> (line <span class="line-number">330</span>)
+		<span class="method-title">exec</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a331">331</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -911,7 +806,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">execute</span> (line <span class="line-number">284</span>)
+		<span class="method-title">execute</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a285">285</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -937,20 +832,12 @@
 				</ul>
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodexecute">SQLSRVDialect::execute()</a>
-								: (non-PHPdoc)
-							</li>
-				</ul>
 	</div>
 <a name="methodfind" id="find"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">find</span> (line <span class="line-number">580</span>)
+		<span class="method-title">find</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a606">606</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -975,24 +862,12 @@
 				</ul>
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/MSSQLDialect.html#methodfind">MSSQLDialect::find()</a>
-								: Overrides parent find method to provide MSSQL specific TOP command to limit returned result sets.
-							</li>
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodfind">SQLSRVDialect::find()</a>
-								: Overrides parent find method to provide MSSQL specific syntax.
-							</li>
-				</ul>
 	</div>
 <a name="methodgetAvailableDrivers" id="getAvailableDrivers"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getAvailableDrivers</span> (line <span class="line-number">73</span>)
+		<span class="method-title">getAvailableDrivers</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a74">74</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1016,7 +891,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getColumnNameForProperty</span> (line <span class="line-number">1025</span>)
+		<span class="method-title">getColumnNameForProperty</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a1066">1066</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1050,7 +925,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDatabase</span> (line <span class="line-number">83</span>)
+		<span class="method-title">getDatabase</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a84">84</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1075,7 +950,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDisplayNameForColumn</span> (line <span class="line-number">974</span>)
+		<span class="method-title">getDisplayNameForColumn</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a1015">1015</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1108,7 +983,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDistinct</span> (line <span class="line-number">105</span>)
+		<span class="method-title">getDistinct</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a106">106</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1133,7 +1008,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getGroupBy</span> (line <span class="line-number">170</span>)
+		<span class="method-title">getGroupBy</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a171">171</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1158,7 +1033,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getIdentityModel</span> (line <span class="line-number">887</span>)
+		<span class="method-title">getIdentityModel</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a928">928</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1183,7 +1058,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getIdentityTable</span> (line <span class="line-number">869</span>)
+		<span class="method-title">getIdentityTable</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a910">910</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1208,7 +1083,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getMaxResults</span> (line <span class="line-number">128</span>)
+		<span class="method-title">getMaxResults</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a129">129</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1233,7 +1108,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getOffset</span> (line <span class="line-number">149</span>)
+		<span class="method-title">getOffset</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a150">150</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1258,7 +1133,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getOrderBy</span> (line <span class="line-number">736</span>)
+		<span class="method-title">getOrderBy</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a763">763</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1283,7 +1158,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getPDOInstance</span> (line <span class="line-number">63</span>)
+		<span class="method-title">getPDOInstance</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a64">64</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1308,7 +1183,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getPropertyNameForColumn</span> (line <span class="line-number">1002</span>)
+		<span class="method-title">getPropertyNameForColumn</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a1043">1043</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1342,7 +1217,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getRestrictions</span> (line <span class="line-number">760</span>)
+		<span class="method-title">getRestrictions</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a787">787</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1367,7 +1242,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getSessionModel</span> (line <span class="line-number">949</span>)
+		<span class="method-title">getSessionModel</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a990">990</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1392,7 +1267,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getSessionTable</span> (line <span class="line-number">931</span>)
+		<span class="method-title">getSessionTable</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a972">972</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1417,7 +1292,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getTableByModel</span> (line <span class="line-number">812</span>)
+		<span class="method-title">getTableByModel</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a853">853</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1447,7 +1322,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getTableByModelName</span> (line <span class="line-number">838</span>)
+		<span class="method-title">getTableByModelName</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a879">879</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1477,7 +1352,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getTableByName</span> (line <span class="line-number">853</span>)
+		<span class="method-title">getTableByName</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a894">894</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1507,7 +1382,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">isEmpty</span> (line <span class="line-number">1075</span>)
+		<span class="method-title">isEmpty</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a1116">1116</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1537,7 +1412,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">merge</span> (line <span class="line-number">453</span>)
+		<span class="method-title">merge</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a467">467</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1567,7 +1442,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">persist</span> (line <span class="line-number">387</span>)
+		<span class="method-title">persist</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a388">388</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1597,7 +1472,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">prepare</span> (line <span class="line-number">252</span>)
+		<span class="method-title">prepare</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a253">253</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1623,20 +1498,12 @@
 				</ul>
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodprepare">SQLSRVDialect::prepare()</a>
-								: (non-PHPdoc)
-							</li>
-				</ul>
 	</div>
 <a name="methodquery" id="query"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">query</span> (line <span class="line-number">347</span>)
+		<span class="method-title">query</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a348">348</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1663,20 +1530,12 @@
 				</ul>
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodquery">SQLSRVDialect::query()</a>
-								: A statement resource. If the statement cannot be created and/or executed, false is returned.
-							</li>
-				</ul>
 	</div>
 <a name="methodquote" id="quote"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">quote</span> (line <span class="line-number">375</span>)
+		<span class="method-title">quote</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a376">376</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1707,7 +1566,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">rollBack</span> (line <span class="line-number">229</span>)
+		<span class="method-title">rollBack</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a230">230</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1737,20 +1596,41 @@
 				</ul>
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodrollBack">SQLSRVDialect::rollBack()</a>
-								: (non-PHPdoc)
-							</li>
-				</ul>
 	</div>
-<a name="methodsetDistinct" id="setDistinct"><!-- --></a>
+<a name="methodsetComparisonLogicOperator" id="setComparisonLogicOperator"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setDistinct</span> (line <span class="line-number">94</span>)
+		<span class="method-title">setComparisonLogicOperator</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a812">812</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the comparison operator (&lt;|&gt;|=|LIKE) used in SQL WHERE clause.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setComparisonLogicOperator
+		</span>
+					(<span class="var-type">$operator</span>&nbsp;<span class="var-name">$operator</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$operator</span>
+				<span class="var-name">$operator</span><span class="var-description">: The logical comparison operator used is SQL where clauses. Default is '='.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDistinct" id="setDistinct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDistinct</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a95">95</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1776,10 +1656,10 @@
 			
 	</div>
 <a name="methodsetGroupBy" id="setGroupBy"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setGroupBy</span> (line <span class="line-number">160</span>)
+		<span class="method-title">setGroupBy</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a161">161</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1805,10 +1685,10 @@
 			
 	</div>
 <a name="methodsetMaxResults" id="setMaxResults"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setMaxResults</span> (line <span class="line-number">117</span>)
+		<span class="method-title">setMaxResults</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a118">118</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1834,10 +1714,10 @@
 			
 	</div>
 <a name="methodsetOffset" id="setOffset"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setOffset</span> (line <span class="line-number">139</span>)
+		<span class="method-title">setOffset</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a140">140</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1863,10 +1743,10 @@
 			
 	</div>
 <a name="methodsetOrderBy" id="setOrderBy"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setOrderBy</span> (line <span class="line-number">723</span>)
+		<span class="method-title">setOrderBy</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a750">750</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1895,10 +1775,10 @@
 			
 	</div>
 <a name="methodsetRestrictions" id="setRestrictions"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setRestrictions</span> (line <span class="line-number">750</span>)
+		<span class="method-title">setRestrictions</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a777">777</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1924,10 +1804,10 @@
 			
 	</div>
 <a name="methodsetRestrictionsLogicOperator" id="setRestrictionsLogicOperator"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setRestrictionsLogicOperator</span> (line <span class="line-number">771</span>)
+		<span class="method-title">setRestrictionsLogicOperator</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a798">798</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1953,10 +1833,10 @@
 			
 	</div>
 <a name="methodtoAccessor" id="toAccessor"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">toAccessor</span> (line <span class="line-number">1164</span>)
+		<span class="method-title">toAccessor</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a1205">1205</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1983,10 +1863,10 @@
 			
 	</div>
 <a name="methodtoBigInt" id="toBigInt"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">toBigInt</span> (line <span class="line-number">1048</span>)
+		<span class="method-title">toBigInt</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a1089">1089</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2012,10 +1892,10 @@
 			
 	</div>
 <a name="methodtoMutator" id="toMutator"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">toMutator</span> (line <span class="line-number">1177</span>)
+		<span class="method-title">toMutator</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a1218">1218</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2042,10 +1922,10 @@
 			
 	</div>
 <a name="methodtruncate" id="truncate"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">truncate</span> (line <span class="line-number">549</span>)
+		<span class="method-title">truncate</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-persistence__buildAgilePHPpersistenceBasePersistence.php.html#a589">589</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -2070,22 +1950,6 @@
 				</ul>
 		
 			
-			<hr class="separator" />
-		<div class="notes">Redefined in descendants as:</div>
-		<ul class="redefinitions">
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLiteDialect.html#methodtruncate">SQLiteDialect::truncate()</a>
-								: (non-PHPdoc)
-							</li>
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/MSSQLDialect.html#methodtruncate">MSSQLDialect::truncate()</a>
-								: (non-PHPdoc)
-							</li>
-					<li>
-				<a href="../com-makeabyte-agilephp-persistence-dialect/SQLSRVDialect.html#methodtruncate">SQLSRVDialect::truncate()</a>
-								: (non-PHPdoc)
-							</li>
-				</ul>
 	</div>
 						
 		</div>
@@ -2093,7 +1957,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Sat, 06 Mar 2010 20:17:58 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.1</a>
+		Documentation generated on Thu, 27 May 2010 00:05:46 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

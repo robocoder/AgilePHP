@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="AgilePHP Framework" basedir="." default="main">
+    
+    <property file="${project.basedir}/build.properties"/>
+    
+    <property name="package" value="${phing.project.name}"/>
+    <property name="apidoc.dir" value="${project.basedir}/apidoc"/>
+    <property name="build.dir" value="${project.basedir}/build"/>
+    <property name="ide.dir" value="${project.basedir}/ide"/>
+    <property name="ide.logs" value="${ide.dir}/logs"/>
+    <property name="src.dir" value="${project.basedir}/src"/>
+    <property name="test.dir" value="${project.basedir}/test"/>
+    <property name="test.logs" value="${test.dir}/logs"/>
+    <property name="phpunit.reports" value="${test.dir}/phpunit/reports"/>
+    
+    <version releasetype="Bugfix" file="VERSION" property="build.version"/>
+    
+    <fileset dir="${src.dir}" id="srcfiles">
+        <include name="**"/>
+    </fileset>
+	
+	<fileset dir="${project.basedir}" id="distfiles">
+        <include name="apidoc/**"/>
+		<include name="src/**"/>
+		<include name="ide/**"/>
+		<include name="CHANGELOG"/>
+		<include name="CREDITS"/>
+		<include name="LICENSE"/>
+		<include name="README"/>
+		<include name="VERSION"/>
+    </fileset>
+    
+    <tstamp>
+        <!-- Format is, e.g. Sat, 03 Oct 2009, 16:31 -->
+        <format property="buildtime" pattern="%a, %d %b %Y, %H:%M"/>
+    </tstamp>
+
+    <target name="main" description="Default target" depends="test">
+        
+        <phplint>
+            <fileset dir="src">
+                <include name="**/*.php"/>
+            </fileset>
+        </phplint>
+        
+        <jsllint>
+            <fileset dir="src">
+                <include name="**/*.js"/>
+            </fileset>
+        </jsllint>
+        
+        <copy todir="${build.dir}/AgilePHP">
+            <fileset refid="srcfiles"/>
+        </copy>
+        
+        <jsMin targetDir="${build.dir}/AgilePHP" failOnError="true">
+            <fileset dir="${build.dir}/AgilePHP">
+                <include name="AgilePHP.js"/>
+                <include name="remoting/json2.js"/>
+            </fileset>
+        </jsMin>
+        <move file="${build.dir}/AgilePHP/AgilePHP-min.js" tofile="${build.dir}/AgilePHP/AgilePHP.js" overwrite="true"/>
+        <move file="${build.dir}/AgilePHP/remoting/json2-min.js" tofile="${build.dir}/AgilePHP/remoting/json2.js" overwrite="true"/>
+    </target>
+    
+    <target name="apidoc" description="Generates apidoc using phpDocumentor">
+        <exec dir="${project.basedir}" logoutput="true"
+         command="phpdoc -d . -t apidoc -o HTML:frames:phpdoc.de -ti '${phing.project.name}' -ue on -s on"/>
+    </target>
+    
+    <target name="archive" description="Creates a distributable gzip archive">
+        <zip destfile="${build.dir}/agilephp-${build.version}-src.zip">
+            <fileset dir=".">
+                <include name="**/**"/>
+            </fileset>
+        </zip>
+        <tar destfile="${build.dir}/agilephp-${build.version}-src.tar">
+            <fileset dir=".">
+                <exclude name="${build.dir}/**"/>
+                <include name="**/**"/>
+            </fileset>
+        </tar>
+		<zip destfile="${build.dir}/agilephp-${build.version}-framework.zip">
+            <fileset dir="${build.dir}/AgilePHP">
+                <include name="**/**"/>
+            </fileset>
+        </zip>
+        <tar destfile="${build.dir}/agilephp-${build.version}-framework.tar">
+            <fileset dir="${build.dir}/AgilePHP">
+                <exclude name="${build.dir}/**"/>
+                <include name="**/**"/>
+            </fileset>
+        </tar>
+		<zip destfile="${build.dir}/agilephp-${build.version}-studio.zip">
+            <fileset dir="${ide.dir}">
+            	<exclude name="logs"/>
+                <include name="**/**"/>
+            </fileset>
+        </zip>
+        <tar destfile="${build.dir}/agilephp-${build.version}-studio.tar">
+            <fileset dir="${ide.dir}">
+                <exclude name="logs"/>
+                <include name="**/**"/>
+            </fileset>
+        </tar>
+		<pharpackage destfile="${build.dir}/AgilePHP.phar" basedir="${build.dir}/AgilePHP"
+				 webstub="AgilePHP.php" alias="AgilePHP" signature="md5">
+            <fileset refid="distfiles"/>
+            <metadata>
+                <element name="version" value="$(build.version}"/>
+                <element name="authors">
+                    <element name="Jeremy Hahn">
+                        <element name="e-mail" value="jeremy.hahn@makeabyte.com"/>
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+		<pharpackage destfile="${build.dir}/studio.phar" basedir="${ide.dir}"
+				 webstub="studio.phar" alias="studio" signature="md5">
+            <fileset refid="distfiles"/>
+            <metadata>
+                <element name="version" value="$(build.version}"/>
+                <element name="authors">
+                    <element name="Jeremy Hahn">
+                        <element name="e-mail" value="jeremy.hahn@makeabyte.com"/>
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+    </target>
+
+    <target name="test" description="Runs PHPUnit test suites">
+        <delete dir="${phpunit.reports}" includeemptydirs="true" verbose="true"/>
+        <mkdir dir="${phpunit.reports}"/>
+        <phpunit bootstrap="${test.dir}/phpunit/bootstrap.php" haltonfailure="true" haltonerror="true" printsummary="true">
+            <formatter todir="${phpunit.reports}" type="xml"/>
+            <batchtest>
+                <fileset dir="${test.dir}/phpunit">
+                	<include name="persistence/MySQLTest.php"/>
+                    <include name="AnnotationTest.php"/>
+                    <include name="InterceptorTest.php"/>
+					<include name="RenderersTest.php"/>
+					<include name="SoapDocumentLiteralTest.php"/>
+					<include name="SoapRpcEncodedTest.php"/>
+					<include name="SoapRpcLiteralTest.php"/>
+                    <!-- <include name="**/*Test.php" /> -->
+                </fileset>
+            </batchtest>
+        </phpunit>
+        <phpunitreport infile="${phpunit.reports}/testsuites.xml"
+         styledir="${phpunit.styles.dir}"
+         format="frames"
+         todir="${phpunit.reports}"/>
+    </target>
+
+	<target name="dist" depends="main,apidoc,archive"/>
+
+    <target name="clean" description="Deletes build related artifacts" depends="delete-logs">
+        <delete dir="${apidoc.dir}"/>
+        <delete dir="${build.dir}"/>
+        <delete dir="${phpunit.reports}"/>
+    </target>
+	
+    <target name="delete-logs" description="Deletes log files from test and ide packages">
+        <delete dir="${test.logs}" includeemptydirs="true" verbose="true"/>
+        <delete dir="${ide.logs}" includeemptydirs="true" verbose="true"/>
+    </target>
+
+    <target name="pear">
+        <pearpkg name="AgilePHP" dir="${build.dir}" destFile="${build.dir}/package.xml">
+            <fileset refid="distfiles"/>
+            <option name="notes">
+                Make sure to check README and CHANGELOG for latest details.
+            </option>
+            <option name="description">
+                AgilePHP is a component-based framework for PHP 5 with lots of goodies
+            </option>
+            <option name="summary">
+                The Rapid "for developers" PHP5 framework
+            </option>
+            <option name="version" value="${build.version}"/>
+            <option name="state" value="alpha"/>
+            <option name="license" value="GNU General Public License v3"/>
+            <mapping name="maintainers">
+                <element>
+                    <element key="handle" value="codejunkie"/>
+                    <element key="name" value="Jeremy Hahn"/>
+                    <element key="email" value="jeremy.hahn@makeabyte.com"/>
+                    <element key="role" value="lead"/>
+                </element>
+            </mapping>
+        </pearpkg>
+        <exec dir="${build.dir}" logoutput="true" command="pear package"/>
+    </target>
+
+    <target name="pear2">
+        <pearpkg2 name="AgilePHP" dir="${build.dir}/AgilePHP">
+            <fileset refid="distfiles"/>
+            <option name="outputdirectory" value="${build.dir}"/>
+            <option name="packagefile" value="package2.xml"/>
+            <option name="packagedirectory" value="${build.dir}"/>
+            <option name="baseinstalldir" value="AgilePHP"/>
+            <option name="channel" value="pear.makeabyte.com"/>
+            <option name="summary" value="This is my summary"/>
+            <option name="description" value="The Rapid &quot;for developers$quot; PHP5 framework"/>
+            <option name="apiversion" value="${build.version}"/>
+            <option name="apistability" value="alpha"/>
+            <option name="releaseversion" value="${build.version}"/>
+            <option name="releasestability" value="alpha"/>
+            <option name="license" value="none"/>
+            <option name="phpdep" value="5.3.0"/>
+            <option name="pearinstallerdep" value="1.4.6"/>
+            <option name="packagetype" value="php"/>
+            <option name="notes" value="AgilePHP is a component-based framework for PHP 5 with lots of goodies"/>
+            <mapping name="maintainers">
+                <element>
+                    <element key="handle" value="codejunkie"/>
+                    <element key="name" value="Jeremy Hahn"/>
+                    <element key="email" value="jeremy.hahn@makeabyte.com"/>
+                    <element key="role" value="lead"/>
+                </element>
+            </mapping>
+        </pearpkg2>
+    </target>
+
+    <!-- Helper targets used to install build and test tools -->
+
+    <target name="install-phpdocumentor" description="Installs phpDocumentor via PEAR">
+        <exec dir="${project.basedir}" logoutput="true"
+         command="pear install phpDocumentor XML_Beautifier"/>
+    </target>
+
+    <target name="install-phpunit" description="Installs PHPUnit via PEAR">
+        <exec dir="${project.basedir}" logoutput="true"
+         command="pear channel-discover pear.phpunit.de"/>
+        <exec dir="${project.basedir}" logoutput="true"
+         command="pear install phpunit/PHPUnit"/>
+    </target>
+
+    <target name="install-firephp" description="Installs FirePHP via PEAR">
+        <exec dir="${project.basedir}" logoutput="true"
+         command="pear channel-discover pear.firephp.org"/>
+        <exec dir="${project.basedir}" logoutput="true"
+         command="pear install firephp/FirePHPCore"/>
+    </target>
+
+</project>

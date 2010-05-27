@@ -20,8 +20,7 @@
  */
 
 /**
- * Generated SOAP client by wsdl2php that is responsible for communication
- * to the OpenAppstore API.
+ * Responsible for OpenAppstore integration
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
@@ -40,7 +39,7 @@ class ComponentsRemote {
 
  	  		 $config->setName( 'appstore_endpoint' );
  	  		 $endpoint = $config->getValue();
- 	  		 
+
  	  		 $config->setName( 'appstore_username' );
  	  		 $username = $config->getValue();
 
@@ -67,7 +66,6 @@ class ComponentsRemote {
 	  }
 
 	  #@RemoteMethod
-	  #@Audit
 	  public function install( $projectRoot, $id, $appId ) {
 
 	  		 $projectRoot = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $projectRoot );
@@ -76,7 +74,32 @@ class ComponentsRemote {
 			 if( !$this->unzip( $projectRoot, $file ) )
 	             throw new AgilePHP_Exception( 'Could not extract downloaded component \'' . $file . '\'.' );
 
-	         $this->copyController( $projectRoot, $appId );
+	         $component = $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $appId . DIRECTORY_SEPARATOR . $appId . '.php';
+	         $controller = $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.php';
+
+	         if( !file_exists( $component ) ) {
+
+	         	 Logger::getInstance()->warn( 'ComponentsRemote::install Missing component controller at \'' . $file . '\'.' );
+	         	 return false;
+	         }
+
+	         // Load database schema
+	         $component_xml = $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'component.xml';
+	         if( file_exists( $component_xml ) ) {
+	
+	         	 $persistence_xml = $projectRoot . DIRECTORY_SEPARATOR . 'persistence.xml';
+		  		 $xml = simplexml_load_file( $component_xml );
+	
+		  		 if( isset( $xml->component->persistence ) ) {
+
+		  		 	 $pm = new PersistenceManager( null, $persistence_xml );
+			  		 foreach( $xml->component->persistence->table as $table ) {
+
+				  		 	  $Table = new Table( $table );
+				  		 	  $pm->createTable( $table );
+			  		 }
+		  		 }
+	         }
 	  }
 
 	  #@RemoteMethod
@@ -106,7 +129,6 @@ class ComponentsRemote {
 	   * @param $appId The appId of the application in OpenAppstore
 	   * @return The file path to the downloaded file
 	   */
-	  #@Audit
 	  private function download( $projectRoot, $id, $appId ) {
 
 	  		  $path = $projectRoot . DIRECTORY_SEPARATOR . 'components';
@@ -119,7 +141,6 @@ class ComponentsRemote {
 	   * @param $file The file path of the archive to extract
 	   * @return True if the archive was successfully extracted or false if on failure
 	   */
-	  #@Audit
 	  private function unzip( $projectRoot, $file ) {
 
 			  $zip = new ZipArchive();
@@ -146,7 +167,6 @@ class ComponentsRemote {
 	   * @param string $projectRoot The full file path to the project
 	   * @param string $componentName The name of the component to copy the controllers from
 	   */
-	  #@Audit
 	  private function copyController( $projectRoot, $componentName ) {
 
 	  		  $it = new RecursiveDirectoryIterator( $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $componentName );

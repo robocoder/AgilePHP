@@ -12,11 +12,8 @@
 <h2>[com-makeabyte-agilephp-interception] element index</h2>
 	<h3>Package indexes</h3>
 	<ul>
-				<li><a href="elementindex_com-makeabyte-agilephp-generator.html">com-makeabyte-agilephp-generator</a></li>
+				<li><a href="elementindex_com-makeabyte-agilephp-annotation.html">com-makeabyte-agilephp-annotation</a></li>
 					<li><a href="elementindex_default.html">default</a></li>
-					<li><a href="elementindex_com-makeabyte-agilephp-generator-util.html">com-makeabyte-agilephp-generator-util</a></li>
-					<li><a href="elementindex_JSMin.html">JSMin</a></li>
-					<li><a href="elementindex_com-makeabyte-agilephp-annotation.html">com-makeabyte-agilephp-annotation</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-annotation-annotations.html">com-makeabyte-agilephp-annotation-annotations</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp.html">com-makeabyte-agilephp</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-persistence.html">com-makeabyte-agilephp-persistence</a></li>
@@ -25,12 +22,19 @@
 							<li><a href="elementindex_com-makeabyte-agilephp-scope.html">com-makeabyte-agilephp-scope</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-mvc.html">com-makeabyte-agilephp-mvc</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-identity.html">com-makeabyte-agilephp-identity</a></li>
+					<li><a href="elementindex_com-makeabyte-agilephp-generator.html">com-makeabyte-agilephp-generator</a></li>
+					<li><a href="elementindex_com-makeabyte-agilephp-generator-util.html">com-makeabyte-agilephp-generator-util</a></li>
+					<li><a href="elementindex_JSMin.html">JSMin</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-test-components.html">com-makeabyte-agilephp-test-components</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-test-model.html">com-makeabyte-agilephp-test-model</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-test-control.html">com-makeabyte-agilephp-test-control</a></li>
+					<li><a href="elementindex_com-makeabyte-agilephp-component.html">com-makeabyte-agilephp-component</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-test-classes-interceptors.html">com-makeabyte-agilephp-test-classes-interceptors</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-test-classes.html">com-makeabyte-agilephp-test-classes</a></li>
 					<li><a href="elementindex_com-makeabyte-agilephp-test-classes-annotations.html">com-makeabyte-agilephp-test-classes-annotations</a></li>
+					<li><a href="elementindex_com-makeabyte-agilephp-ide-control.html">com-makeabyte-agilephp-ide-control</a></li>
+					<li><a href="elementindex_com-makeabyte-agilephp-ide.html">com-makeabyte-agilephp-ide</a></li>
+					<li><a href="elementindex_com-makeabyte-agilephp-ide-classes.html">com-makeabyte-agilephp-ide-classes</a></li>
 			</ul>
 <a href="elementindex.html">All elements</a>
 <br />
@@ -69,6 +73,13 @@
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="com-makeabyte-agilephp-interception/InterceptorProxy.html#method__construct">InterceptorProxy::__construct()</a> in InterceptorProxy.php</div>
 							<div class="index-item-description">Initalizes the intercepted class by creating a new instance, passing in  any constructor arguments as required. Class level interceptors are invoked  here, as well as dependancy injections via #@In.</div>
+					</dd>
+			<dt class="field">
+						<span class="method-title">__destruct</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="com-makeabyte-agilephp-interception/InterceptorProxy.html#method__destruct">InterceptorProxy::__destruct()</a> in InterceptorProxy.php</div>
+							<div class="index-item-description">Invokes class level interceptor #@AfterInvoke methods upon destruction.</div>
 					</dd>
 			<dt class="field">
 						<span class="method-title">__get</span>
@@ -114,6 +125,13 @@
 							<div class="index-item-description">Returns the callee PHP stack state. This provides information about the PHP file  and calls that caused the interception.</div>
 					</dd>
 			<dt class="field">
+						<span class="method-title">getField</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="com-makeabyte-agilephp-interception/InvocationContext.html#methodgetField">InvocationContext::getField()</a> in InvocationContext.php</div>
+							<div class="index-item-description">Returns the name of the field if a property/field level annotation caused the interception.</div>
+					</dd>
+			<dt class="field">
 						<span class="method-title">getInstance</span>
 					</dt>
 		<dd class="index-item-body">
@@ -149,6 +167,13 @@
 							<div class="index-item-description">Returns the parameters being passed into the intercepted method.</div>
 					</dd>
 			<dt class="field">
+						<span class="method-title">getReturn</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="com-makeabyte-agilephp-interception/InvocationContext.html#methodgetReturn">InvocationContext::getReturn()</a> in InvocationContext.php</div>
+							<div class="index-item-description">Returns the value which the intercepted method call returned</div>
+					</dd>
+			<dt class="field">
 						<span class="method-title">getTarget</span>
 					</dt>
 		<dd class="index-item-body">
@@ -163,6 +188,18 @@
 		<div style="clear: both"></div>
 	</div>
 	<dl>
+			<dt class="field">
+						<span class="include-title">InterceptorProxy.php</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="com-makeabyte-agilephp-interception/_build---AgilePHP---interception---InterceptorProxy.php.html">InterceptorProxy.php</a> in InterceptorProxy.php</div>
+					</dd>
+			<dt class="field">
+						<span class="include-title">InvocationContext.php</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="com-makeabyte-agilephp-interception/_build---AgilePHP---interception---InvocationContext.php.html">InvocationContext.php</a> in InvocationContext.php</div>
+					</dd>
 			<dt class="field">
 						InterceptorProxy
 					</dt>
@@ -231,6 +268,20 @@
 		<dd class="index-item-body">
 			<div class="index-item-details"><a href="com-makeabyte-agilephp-interception/InvocationContext.html#methodsetParameters">InvocationContext::setParameters()</a> in InvocationContext.php</div>
 							<div class="index-item-description">Transforms the state of method parameters. This is used by interceptors  to cause a different set of parameters to be passed into the method  being invoked.</div>
+					</dd>
+			<dt class="field">
+						<span class="method-title">setReturn</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="com-makeabyte-agilephp-interception/InvocationContext.html#methodsetReturn">InvocationContext::setReturn()</a> in InvocationContext.php</div>
+							<div class="index-item-description">Sets the value which the intercepted method call returned</div>
+					</dd>
+			<dt class="field">
+						<span class="method-title">setTarget</span>
+					</dt>
+		<dd class="index-item-body">
+			<div class="index-item-details"><a href="com-makeabyte-agilephp-interception/InvocationContext.html#methodsetTarget">InvocationContext::setTarget()</a> in InvocationContext.php</div>
+							<div class="index-item-description">Sets the intercepted target instance</div>
 					</dd>
 		</dl>
 

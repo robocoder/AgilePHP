@@ -57,6 +57,21 @@
 			<column name="value" type="text"/>
 		</table>
 
+		<table name="Table1" model="TestComponent\Table1" display="Table1" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true"/>
+			<column name="field1" type="varchar" length="255" required="true"/>
+			<column name="field2" type="varchar" length="10" default="Foo"/>
+			<column name="field3" type="int" length="10">
+				<foreignKey name="FK_Table1" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE" 
+					table="Table2" column="id" controller="Table2Controller"/>
+			</column>
+		</table>
+		<table name="Table2" model="TestComponent\Table2" display="Table2" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true"/>
+			<column name="name" type="varchar" length="100" required="true"/>
+			<column name="description" type="text"/>
+		</table>
+
 	</database>
 
 </persistence>

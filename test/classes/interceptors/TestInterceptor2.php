@@ -43,7 +43,7 @@ class TestInterceptor2 {
 
 	  		 $class = new ReflectionClass( $ic->getTarget() );
 
-	  		 $message = 'TestInterceptor2::audit @AroundInvoke This is what the InvocationContext looks like: ' . print_r( $ic, true );
+	  		 $message = 'TestInterceptor2::audit @AroundInvoke This is what the InvocationContext interceptor state looks like: ' . print_r( $ic->getInterceptor(), true );
 
  	  		 $this->logger->debug( $message );
 	  }

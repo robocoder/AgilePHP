@@ -47,9 +47,38 @@
 			<column name="data" type="text" description="Name of recipient"/>
 			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP"/>
 		</table>
+		<table name="table1" model="Table1" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true"/>
+			<column name="field1" type="varchar" length="255" required="true"/>
+			<column name="field2" type="varchar" length="10" default="Foo"/>
+			<column name="field3" type="int" length="10">
+				<foreignKey name="FK_Table1" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE" 
+					table="table2" column="id" controller="TestComponent" select="name"/>
+			</column>
+		</table>
+		<table name="table2" model="Table2" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true"/>
+			<column name="name" type="varchar" length="100" required="true"/>
+			<column name="description" type="text"/>
+		</table>
+		<table name="table3" model="TestComponent\model\Table1" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false"/>
+			<column name="field1" type="varchar" length="255" required="true"/>
+			<column name="field2" type="varchar" length="10" default="Foo"/>
+			<column name="field3" type="int" length="10">
+				<foreignKey name="FK_Table1_2" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE" 
+					table="table4" column="id" controller="TestComponent" select="name"/>
+			</column>
+		</table>
+		<table name="table4" model="TestComponent\model\Table2" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false"/>
+			<column name="name" type="varchar" length="100" required="true"/>
+			<column name="description" type="text"/>
+		</table>
 	</database>
 
-	<!-- Tests below are for testing database server specific testcases -->
+	<!-- Databases below satisfy database server specific unit tests -->
+
 	<database id="testcase_mysql" name="agilephp_test_mysql" type="mysql" hostname="localhost" username="php" password="php007">
 		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
 			<column name="username" type="varchar" length="150" primaryKey="true" required="true"/>
@@ -75,6 +104,34 @@
 			<column name="id" type="varchar" length="21" primaryKey="true" description="Unique ID"/>
 			<column name="data" type="text" description="Name of recipient"/>
 			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP"/>
+		</table>		
+		<table name="table1" model="Table1" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true"/>
+			<column name="field1" type="varchar" length="255" required="true"/>
+			<column name="field2" type="varchar" length="10" default="Foo"/>
+			<column name="field3" type="int" length="10">
+				<foreignKey name="FK_Table1" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE" 
+					table="table2" column="id" controller="TestComponent" select="name"/>
+			</column>
+		</table>
+		<table name="table2" model="Table2" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true"/>
+			<column name="name" type="varchar" length="100" required="true"/>
+			<column name="description" type="text"/>
+		</table>
+		<table name="table3" model="TestComponent\model\Table1" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false"/>
+			<column name="field1" type="varchar" length="255" required="true"/>
+			<column name="field2" type="varchar" length="10" default="Foo"/>
+			<column name="field3" type="int" length="10">
+				<foreignKey name="FK_Table1_2" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE" 
+					table="table4" column="id" controller="TestComponent" select="name"/>
+			</column>
+		</table>
+		<table name="table4" model="TestComponent\model\Table2" description="">
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false"/>
+			<column name="name" type="varchar" length="100" required="true"/>
+			<column name="description" type="text"/>
 		</table>
 	</database>
 

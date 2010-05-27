@@ -1,9 +1,13 @@
-0.25a
------
-
-- Added $type variable to AgilePHP::import to allow loading of components as well as classes
-- Created #@Audit interceptor
-- Refactored InterceptorProxy #@AfterInvoke logic - needs more performance tuning and possibly debugging
-- Refactored AgilePHP::import to be static and also support loading of components as well as classes.
-- Created Component and ComponentParam classes along with a component.dtd which still needs some debugging
-  since validation is currently failing.
+- Using phing moving forward to automate builds, tests, and deployments
+- Lots of refactoring of the overall framework:
+	- Logger is now static
+	- Added #@AfterInvoke method so now interceptors are more in alignment with POSA2
+	- Added namespace support!
+	- Some bug fixes to BasePersistence (dialect classes need refactoring) and changed how persist/merge happens
+	  on models which contain a foreign key reference / object
+	- Removed constructor argument from Role object.
+	- User object no longer returns a Session or Role instance if a record doesnt exist in the database.
+	- Started setting up Atlassian tools at:
+		jira.makeabyte.com
+		fisheye.makeabyte.com
+		bamboo.makeabyte.com

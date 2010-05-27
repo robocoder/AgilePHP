@@ -2,14 +2,9 @@
 <!DOCTYPE agilephp SYSTEM "../src/agilephp.dtd">
 
 <agilephp>
-
 	<!-- <mvc controller="IndexController" action="index" renderer="PHTMLRenderer"/> -->
-	<!-- <scope type="application" application="phpunit" key="test" value="ApplicationScope works!"/> -->
-	<!-- <scope type="session" key="test" value="SessionScope works!"/> -->
-	<!-- <scope type="request" key="test" value="RequestScope works!"/> -->
 	<logger level="debug"/>
 	<identity resetPasswordUrl="http://localhost/test/index.php/LoginController/resetPassword"
 		 confirmationUrl="http://localhost/test/index.php/LoginController/confirm"/>
 	<crypto algorithm="sha256" iv="1234567890" key="This is a secret key" />
-
 </agilephp>

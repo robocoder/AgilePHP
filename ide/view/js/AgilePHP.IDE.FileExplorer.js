@@ -8,7 +8,7 @@ AgilePHP.IDE.Remoting.load( 'ComponentsRemote' );
 
 AgilePHP.IDE.FileExplorer = {
 
-		projectName: null,
+		selectedProject: null,
 		workspace: null,
 		panel: null,
 		pasteMode: null,
@@ -17,9 +17,14 @@ AgilePHP.IDE.FileExplorer = {
 		window: null,
 		highlightedNode: null,
 
-		getProjectName: function() {
+		getWorkspace: function() {
 
-			return AgilePHP.IDE.FileExplorer.projectName;
+			return AgilePHP.IDE.FileExplorer.workspace;
+		},
+
+		getSelectedProject: function() {
+
+			return AgilePHP.IDE.FileExplorer.selectedProject;
 		},
 
 		getTree: function() {
@@ -79,7 +84,11 @@ AgilePHP.IDE.FileExplorer = {
 			var configs = new ConfigsRemote();
 				configs.setCallback( function( response ) {
 
-					AgilePHP.IDE.FileExplorer.workspace = response.value;
+					var workspace = response.value;
+						workspace = workspace.replace( /\\/g, '|' );
+						workspace = workspace.replace( /\//g, '|' );
+
+					AgilePHP.IDE.FileExplorer.workspace = workspace;
 				});
 				configs.get( 'workspace' );
 
@@ -332,8 +341,6 @@ AgilePHP.IDE.FileExplorer = {
 
 			            contextmenu: function( node, e ) {
 
-			        		AgilePHP.IDE.FileExplorer.highlightedNode = node;
-
 				        	// Remove conditional menus/items before contextmenu is shown
 			                var el = Ext.getCmp( 'file-explorer-contextmenu-database' );
 			                if( el ) el.destroy();
@@ -396,7 +403,7 @@ AgilePHP.IDE.FileExplorer = {
 
 					                								AgilePHP.IDE.info( 'Database successfully created' );
 					                							});
-					                							dbManagerRemote.create( AgilePHP.IDE.FileExplorer.workspace, AgilePHP.IDE.FileExplorer.projectName );
+					                							dbManagerRemote.create( AgilePHP.IDE.FileExplorer.getWorkspace(), AgilePHP.IDE.FileExplorer.getSelectedProject() );
 						                				}
 						                			}, {
 						                			
@@ -416,7 +423,7 @@ AgilePHP.IDE.FileExplorer = {
 	
 				                								AgilePHP.IDE.info( 'Database successfully dropped' );
 				                							});
-				                							dbManagerRemote.drop( AgilePHP.IDE.FileExplorer.workspace, AgilePHP.IDE.FileExplorer.projectName );
+				                							dbManagerRemote.drop( AgilePHP.IDE.FileExplorer.getWorkspace(), AgilePHP.IDE.FileExplorer.getSelectedProject() );
 						                				}
 						                			}, {
 						                			
@@ -436,7 +443,7 @@ AgilePHP.IDE.FileExplorer = {
 
 				                								AgilePHP.IDE.info( 'persistence.xml successfully configured' );
 				                							});
-				                							dbManagerRemote.reverseEngineer( AgilePHP.IDE.FileExplorer.workspace, AgilePHP.IDE.FileExplorer.projectName );
+				                							dbManagerRemote.reverseEngineer( AgilePHP.IDE.FileExplorer.getWorkspace(), AgilePHP.IDE.FileExplorer.getSelectedProject() );
 						                				}
 						                			}]
 				                				}
@@ -512,32 +519,36 @@ AgilePHP.IDE.FileExplorer = {
 			    }),
 
 			    AgilePHP.IDE.FileExplorer.tree.on( 'dblclick', function( node, e ) {
-	
+
 					if( node.isLeaf() && node.attributes.iconCls != 'mime-folder' ) {
-	
+
 						var pieces = node.id.split( '|' );
 				    	var id = pieces.join( '/' );
 				    	var title = pieces[ pieces.length -1 ];
 				    	AgilePHP.IDE.FileExplorer.newPage( node.id, node.text );
 					}
 				});
-	
+
 				AgilePHP.IDE.FileExplorer.tree.on( 'nodedrop', function( e ) {
-		
-						AgilePHP.debug( 'nodedrop event fired' );
-						AgilePHP.debug( e );
-		
+
 						var url = AgilePHP.getRequestBase() + '/FileExplorerController/move/' + e.dropNode.id + '/' + e.target.id;
 						var response = new AgilePHP.XHR().request( url, AgilePHP.IDE.FileExplorer.moveHandler );
 				});
 
-				AgilePHP.IDE.FileExplorer.tree.on( 'click', function( node, e ) {
+				AgilePHP.IDE.FileExplorer.tree.on( 'click', function( node ) {
+
+					AgilePHP.IDE.FileExplorer.highlightedNode = node;
+
+					// Cant find an Ext event that will fire once for both the following scenerios:
+					// 
+					// User clicks tree icon to expand node
+					// User clicks once on the tree node
+					// 
+					// So, instead this is a dirty hack to prevent the web server from being DOS'd
+					AgilePHP.IDE.FileExplorer.tree.nodeClicked = true;
 
 					// Keep track of which project is being worked on
-					var workspace = AgilePHP.IDE.FileExplorer.workspace;
-						workspace = workspace.replace( /\\/g, '|' );
-						workspace = workspace.replace( /\//g, '|' );
-
+					var workspace = AgilePHP.IDE.FileExplorer.getWorkspace();
 					var nodeId = node.id;
 						nodeId = nodeId.replace( workspace, '' );
 
@@ -545,13 +556,46 @@ AgilePHP.IDE.FileExplorer = {
 						pieces.shift();
 
 					var project = pieces.shift();
-					if( AgilePHP.IDE.FileExplorer.projectName != project ) {
 
-						AgilePHP.IDE.FileExplorer.projectName = project;
+					if( AgilePHP.IDE.FileExplorer.getSelectedProject() != project ) {
+
+						AgilePHP.IDE.FileExplorer.selectedProject = project;
 
 						// Clear the component property panel store
 						Ext.getCmp( 'ide-properties-grid' ).setSource({});
-						
+
+						// Project changed, update component panel
+			            var t = Ext.getCmp( 'ide-properties-components-treepanel' );
+			            	t.getLoader().dataUrl = AgilePHP.getRequestBase() + '/FileExplorerController/getComponents/' + workspace + '/' + project;
+			            	t.getRootNode().reload();
+					}
+					
+					AgilePHP.IDE.FileExplorer.tree.nodeClicked = false;
+				});
+
+				AgilePHP.IDE.FileExplorer.tree.on( 'expandnode', function( node ) {
+
+					AgilePHP.IDE.FileExplorer.highlightedNode = node;
+
+					if( AgilePHP.IDE.FileExplorer.tree.nodeClicked ) return false;
+
+					// Keep track of which project is being worked on
+					var workspace = AgilePHP.IDE.FileExplorer.getWorkspace();
+					var nodeId = node.id;
+						nodeId = nodeId.replace( workspace, '' );
+
+					var pieces = nodeId.split( /\|/ );
+						pieces.shift();
+
+					var project = pieces.shift();
+
+					if( AgilePHP.IDE.FileExplorer.getSelectedProject() != project ) {
+
+						AgilePHP.IDE.FileExplorer.selectedProject = project;
+
+						// Clear the component property panel store
+						Ext.getCmp( 'ide-properties-grid' ).setSource({});
+
 						// Project changed, update component panel
 			            var t = Ext.getCmp( 'ide-properties-components-treepanel' );
 			            	t.getLoader().dataUrl = AgilePHP.getRequestBase() + '/FileExplorerController/getComponents/' + workspace + '/' + project;
@@ -560,8 +604,7 @@ AgilePHP.IDE.FileExplorer = {
 				});
 
 				AgilePHP.IDE.FileExplorer.panel.add( AgilePHP.IDE.FileExplorer.tree );
-				//AgilePHP.IDE.FileExplorer.tree.getRootNode().expand();
-	
+
 				return AgilePHP.IDE.FileExplorer.panel;
 		},
 

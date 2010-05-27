@@ -332,13 +332,16 @@ AgilePHP.IDE.FileExplorer.NewModel = function() {
 
 			  	  	newModelRemote.setCallback( function( response ) {
 
+			  	  		if( response ) {
+
+			  	  			Ext.getCmp( id + '-editorgridpanel-column-combo' ).getStore().loadData( response );
+			  	  			return true;
+			  	  		}
 			  	  		if( response._class == 'AgilePHP_RemotingException' ) {
 
 			  	  			AgilePHP.IDE.error( response.message );
 			  	  			return false;
 			  	  		}
-
-			  	  		Ext.getCmp( id + '-editorgridpanel-column-combo' ).getStore().loadData( response );
 			  	  	});
 			  	  	newModelRemote.getTableColumns( selectedTable );
 	  	    	}
@@ -404,12 +407,12 @@ AgilePHP.IDE.FileExplorer.NewModel = function() {
       	    	});
       	    	newModelRemote.create( tableName,
 			 				AgilePHP.IDE.FileExplorer.workspace,
-			 				AgilePHP.IDE.FileExplorer.projectName,
+			 				AgilePHP.IDE.FileExplorer.getSelectedProject(),
 			 				properties,
 			 				Ext.getCmp( id + '-form-persistence' ).getValue(),
 			 				createTableFlag );
 
-      	    	win.hide();
+      	    	Ext.getCmp( 'fe-new-model' ).hide();
       	    }
       	}]);
 

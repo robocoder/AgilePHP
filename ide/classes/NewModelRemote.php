@@ -143,6 +143,7 @@ class NewModelRemote {
 	  public function create( $tableName, $workspace, $projectName, $properties, $updatePersistenceDotXml, $createTable ) {
 
 
+	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 	  		 $modelName = ucfirst( preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $tableName ) );
 	  		 $path = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model';
 
@@ -215,7 +216,7 @@ class NewModelRemote {
       		  	 		  $Column->setDisplay( $value[2] );
       		  	 		  $Column->setType( $value[3] );
       	    		  	  $Column->setLength( $value[4] );
-      	    		   	  $Column->setDefault( ($value[5] == '(null)') ? '' : $value[5] );
+      	    		   	  $Column->setDefault( $value[5] );
       	    		   	  $Column->setVisible( $value[6] );
       	    		   	  $Column->setRequired( $value[7] );
       	    		   	  $Column->setIndex( $value[8] );
@@ -260,6 +261,8 @@ class NewModelRemote {
       	     	 $pm = new PersistenceManager();
       	     	 $pm->createTable( $Table );
       	     }
+
+      	     return true;
 	  }
 }
 ?>

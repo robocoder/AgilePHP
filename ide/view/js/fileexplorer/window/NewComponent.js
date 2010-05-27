@@ -102,16 +102,21 @@ AgilePHP.IDE.FileExplorer.NewComponent = function() {
 				text: 'Install',
 				iconCls: 'btn-list-add',
 				handler: function() {
-		
+
 					var grid = Ext.getCmp( id + '-new-component-grid' );
 					var data = grid.getSelectionModel().getSelected().json;
 
 					componentsRemote.setCallback( function( response ) {
 
 						new AgilePHP.IDE.Notification( '<b>Information</b>', 'Component is finished installing.')
+			            var t = Ext.getCmp( 'ide-properties-components-treepanel' );
+			            	t.getLoader().dataUrl = AgilePHP.getRequestBase() + '/FileExplorerController/getComponents/' + workspace + '/' + project;
+			            	t.getRootNode().reload();
+
+			            AgilePHP.IDE.FileExplorer.highlightedNode.reload();
 					});
-					var workspace = AgilePHP.IDE.FileExplorer.workspace;
-					var project = AgilePHP.IDE.FileExplorer.projectName;
+					var workspace = AgilePHP.IDE.FileExplorer.getWorkspace();
+					var project = AgilePHP.IDE.FileExplorer.getSelectedProject();
 					var projectRoot = workspace + '|' + project;
 
 					componentsRemote.install( projectRoot, data[0], data[1] );
