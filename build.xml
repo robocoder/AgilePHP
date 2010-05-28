@@ -63,7 +63,7 @@
         <move file="${build.dir}/AgilePHP/AgilePHP-min.js" tofile="${build.dir}/AgilePHP/AgilePHP.js" overwrite="true"/>
         <move file="${build.dir}/AgilePHP/remoting/json2-min.js" tofile="${build.dir}/AgilePHP/remoting/json2.js" overwrite="true"/>
     </target>
-    
+
     <target name="apidoc" description="Generates apidoc using phpDocumentor">
         <exec dir="${project.basedir}" logoutput="true"
          command="phpdoc -d . -t apidoc -o HTML:frames:phpdoc.de -ti '${phing.project.name}' -ue on -s on"/>
@@ -104,30 +104,6 @@
                 <include name="**/**"/>
             </fileset>
         </tar>
-		<pharpackage destfile="${build.dir}/AgilePHP.phar" basedir="${build.dir}/AgilePHP"
-				 webstub="AgilePHP.php" alias="AgilePHP" signature="md5">
-            <fileset refid="distfiles"/>
-            <metadata>
-                <element name="version" value="$(build.version}"/>
-                <element name="authors">
-                    <element name="Jeremy Hahn">
-                        <element name="e-mail" value="jeremy.hahn@makeabyte.com"/>
-                    </element>
-                </element>
-            </metadata>
-        </pharpackage>
-		<pharpackage destfile="${build.dir}/studio.phar" basedir="${ide.dir}"
-				 webstub="studio.phar" alias="studio" signature="md5">
-            <fileset refid="distfiles"/>
-            <metadata>
-                <element name="version" value="$(build.version}"/>
-                <element name="authors">
-                    <element name="Jeremy Hahn">
-                        <element name="e-mail" value="jeremy.hahn@makeabyte.com"/>
-                    </element>
-                </element>
-            </metadata>
-        </pharpackage>
     </target>
 
     <target name="test" description="Runs PHPUnit test suites">
@@ -166,6 +142,33 @@
         <delete dir="${test.logs}" includeemptydirs="true" verbose="true"/>
         <delete dir="${ide.logs}" includeemptydirs="true" verbose="true"/>
     </target>
+	
+	<target name="phar" description="Creates phar files for AgilePHP and the Studio package">
+		<pharpackage destfile="${build.dir}/AgilePHP.phar" basedir="${build.dir}/AgilePHP"
+				 webstub="AgilePHP.php" alias="AgilePHP" signature="md5">
+            <fileset refid="distfiles"/>
+            <metadata>
+                <element name="version" value="$(build.version}"/>
+                <element name="authors">
+                    <element name="Jeremy Hahn">
+                        <element name="e-mail" value="jeremy.hahn@makeabyte.com"/>
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+		<pharpackage destfile="${build.dir}/studio.phar" basedir="${ide.dir}"
+				 webstub="studio.phar" alias="studio" signature="md5">
+            <fileset refid="distfiles"/>
+            <metadata>
+                <element name="version" value="$(build.version}"/>
+                <element name="authors">
+                    <element name="Jeremy Hahn">
+                        <element name="e-mail" value="jeremy.hahn@makeabyte.com"/>
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>	
+	</target>
 
     <target name="pear">
         <pearpkg name="AgilePHP" dir="${build.dir}" destFile="${build.dir}/package.xml">

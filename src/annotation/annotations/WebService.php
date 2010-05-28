@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation.annotations
- * @version 0.1a
  * <code>
  * #@WebService( serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI' )
  * class MyAPI {

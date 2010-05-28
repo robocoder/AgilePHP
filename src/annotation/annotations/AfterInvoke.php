@@ -26,8 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation.annotations
- * @version 0.2a
- * <code>
+  * <code>
  * #@Interceptor
  * class MyInterceptor {
  * 

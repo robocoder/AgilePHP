@@ -79,7 +79,7 @@ class ComponentsRemote {
 
 	         if( !file_exists( $component ) ) {
 
-	         	 Logger::getInstance()->warn( 'ComponentsRemote::install Missing component controller at \'' . $file . '\'.' );
+	         	 Logger::warn( 'ComponentsRemote::install Missing component controller at \'' . $file . '\'.' );
 	         	 return false;
 	         }
 

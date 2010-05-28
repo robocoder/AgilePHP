@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.2a
  */
 class Table {
 
@@ -346,13 +345,13 @@ class Table {
 			   		  if( $column->getProperty() == $property )
 			   			  return $column->getName();
 
-			 Logger::getInstance()->warn( 'Table::getColumnByProperty Could not find a property name corresponding to \'' . $property . '\'. Attempting to return column name instead.' );
+			 Logger::warn( 'Table::getColumnByProperty Could not find a property name corresponding to \'' . $property . '\'. Attempting to return column name instead.' );
 
 			 foreach( $this->getColumns() as $column )
 			   		  if( $column->getName() == $property )
 			   			  return $column->getName();
 
-			 Logger::getInstance()->warn( 'Table::getColumnByProperty Warning about could not find a matching column name corresponding to \'' . $property . '\'. Returning null.' );
+			 Logger::warn( 'Table::getColumnByProperty Warning about could not find a matching column name corresponding to \'' . $property . '\'. Returning null.' );
 
 			 return null;
 	  }
@@ -370,7 +369,7 @@ class Table {
 	  		 		  if( $column->getModelPropertyName() == $property )
 	  		 		  	  return $column->getDisplay() ? $column->getDisplay() : ucfirst( $column->getName() ); 
 
-			 Logger::getInstance()->debug( 'Table::getDisplayNameByProperty returning null value for property \'' . $property . '\'.' );
+			 Logger::debug( 'Table::getDisplayNameByProperty returning null value for property \'' . $property . '\'.' );
 
 	  		 return null;
 	  }

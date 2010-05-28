@@ -34,7 +34,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
- * @version 0.1a
  */
 
 #@WebService( serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI' )
@@ -187,7 +186,7 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	  #@WebMethod
 	  public function arrayOfArraysTest( array $strings ) {
 
-	  		 Logger::getInstance()->debug( $strings );
+	  		 Logger::debug( $strings );
 
 	  		 $o = new arrayOfArraysTestResponse;
 	  		 $o->return = $strings->strings->strings;

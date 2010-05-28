@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.components
- * @version 0.2a
  */
 class Mailer {
 

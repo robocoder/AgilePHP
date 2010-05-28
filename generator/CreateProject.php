@@ -393,7 +393,7 @@ class CreateProject extends AgilePHPGen {
  }
  catch( Exception $e ) {
 
-  	     Logger::getInstance()->error( $e->getMessage() );
+  	     Logger::error( $e->getMessage() );
 
 		 $renderer = new PHTMLRenderer();
 		 $renderer->set( \'title\', \'' . $this->getCache()->getProjectName() . ' :: Error Page\' );

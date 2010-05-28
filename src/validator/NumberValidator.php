@@ -16,46 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.ide.model
+ * @package com.makeabyte.agilephp.validator
  */
 
 /**
- * Configuration model
- * 
+ * Validates data to ensure the specified value is either a whole number or floating decimal.
+ *  
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.ide.model
+ * @package com.makeabyte.agilephp.validator
  */
-class Config {
+class NumberValidator extends Validator {
 
-	  private $name;
-	  private $value;
+	  /**
+	   * Validates a number by ensuring it is either an int or float.
+	   * 
+	   * @param mixed $data The data to validate
+	   * @return bool True if validation is successful, false otherwise
+	   */
+	  public function validate() {
 
-	  public function __construct( $name = null, $value = null ) {
-
-	  		 $this->name = $name;
-	  		 $this->value = $value;
+	  		 return is_int( $this->data ) || is_float( $this->data );
 	  }
 
-	  #@Id
-	  public function setName( $name ) {
-	  	
-	  		 $this->name = $name;
-	  }
-	  
-	  public function getName() {
-	  	
-	  		 return $this->name;
-	  }
-	  
-	  public function setValue( $value ) {
-	  	
-	  		 $this->value = $value;
-	  }
-	  
-	  public function getValue() {
-	  	
-	  		 return $this->value;
-	  }
 }
 ?>

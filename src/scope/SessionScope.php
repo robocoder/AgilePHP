@@ -27,7 +27,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
- * @version 0.4a
  */
 class SessionScope {
 
@@ -54,7 +53,7 @@ class SessionScope {
 
 	  	      if( isset( $_COOKIE['AGILEPHP_SESSION_ID'] ) ) {
 
-	  	      	  Logger::getInstance()->debug( 'SessionScope::__construct Initalizing session from previous cookie.' );
+	  	      	  Logger::debug( 'SessionScope::__construct Initalizing session from previous cookie.' );
 
 	  	      	  $this->session->setId( $_COOKIE['AGILEPHP_SESSION_ID'] );
 	  	      	  $this->oldSession->setId( $_COOKIE['AGILEPHP_SESSION_ID'] );
@@ -69,7 +68,7 @@ class SessionScope {
 	  	      }
 	  	      else {
 
-	  	      	  Logger::getInstance()->debug( 'SessionScope::__construct Initalizing session with a new cookie.' );
+	  	      	  Logger::debug( 'SessionScope::__construct Initalizing session with a new cookie.' );
 
 		  	      $this->createSessionId();
 		  	      setcookie( 'AGILEPHP_SESSION_ID', $this->session->getId(), (time()+3600*24*30), '/' ); // 30 days
@@ -121,7 +120,7 @@ class SessionScope {
 	  		 $this->session->setId( $id );
 
 	  		 setcookie( 'AGILEPHP_SESSION_ID', $id, time()+3600*24*30, '/' ); // 30 days
-	  		 Logger::getInstance()->debug( 'SessionScope::setSessionId Initalizing session from specified session id and dropping a new session cookie' );
+	  		 Logger::debug( 'SessionScope::setSessionId Initalizing session from specified session id and dropping a new session cookie' );
 
 	  		 $pm = new PersistenceManager();
 	  		 if( $persistedSession = $pm->find( $this->getSession() ) ) {
@@ -197,7 +196,7 @@ class SessionScope {
 	  		 $this->session->setData( array() );
 	  		 $this->oldSession->setData( array() );
 
-	  		 Logger::getInstance()->debug( 'SessionScope::clear Session cleared' );
+	  		 Logger::debug( 'SessionScope::clear Session cleared' );
 	  }
 
 	  /**
@@ -239,7 +238,7 @@ class SessionScope {
 		  	 catch( Exception $e ) {
 
 		  	 	    $message = 'SessionScope::__destruct ' . $e->getMessage();
-		  		    Logger::getInstance()->error( $message );
+		  		    Logger::error( $message );
 		  	}
 	  }
 
@@ -250,7 +249,7 @@ class SessionScope {
 	   */
 	  public function persist() {
 
-	  		 Logger::getInstance()->debug( 'SessionScope::persist Persisting session' );
+	  		 Logger::debug( 'SessionScope::persist Persisting session' );
 
 	  	     if( !$this->getSession()->getData() ) return;
 

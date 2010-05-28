@@ -83,7 +83,7 @@ class FileExplorerController extends BaseExtController {
 			 				 $renderer->set( 'code', htmlentities( $code ) );
 			 				 $renderer->render( 'editor-code' );
 
-			 				 Logger::getInstance()->error( $renderer );
+			 				 Logger::error( $renderer );
 		 				 //}
 		 				 break;
 
@@ -117,7 +117,7 @@ class FileExplorerController extends BaseExtController {
 		 		$file = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $id );
 		 		$code = stripslashes( html_entity_decode( $_POST['code'] ) );
 
-		 		Logger::getInstance()->debug( $code );
+		 		Logger::debug( $code );
 		 		
 		 		$h = fopen( $file, 'w' );
 		 		$result = fwrite( $h, $code );
@@ -223,7 +223,7 @@ class FileExplorerController extends BaseExtController {
 
 	  		   $treePath = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treePath );
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::delete Deleting treePath \'' . $treePath . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::delete Deleting treePath \'' . $treePath . '\'.' );
 
 	  		   header( 'content-type: application/json' );
 
@@ -239,7 +239,7 @@ class FileExplorerController extends BaseExtController {
 	  	 */
 	  	public function copy( $treeSrc, $treeDst ) {
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::copy $treeSrc = \'' . $treeSrc . '\', $treeDst = \'' . $treeDst . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::copy $treeSrc = \'' . $treeSrc . '\', $treeDst = \'' . $treeDst . '\'.' );
 
 	  		   $srcId = $treeSrc;
 	  		   $dstId = $treeDst;
@@ -250,7 +250,7 @@ class FileExplorerController extends BaseExtController {
 	  		   $array = explode( DIRECTORY_SEPARATOR, $treeSrc );
 	  		   $dstPath = $treeDst . DIRECTORY_SEPARATOR . array_pop( $array );
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::copy Copying src \'' . $treeSrc . '\' to destination \'' . $dstPath . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::copy Copying src \'' . $treeSrc . '\' to destination \'' . $dstPath . '\'.' );
 
 	  		   header( 'content-type: application/json' );
   		   	   FileUtils::copy( $treeSrc, $dstPath );
@@ -267,8 +267,8 @@ class FileExplorerController extends BaseExtController {
 		 */
 	  	public function move( $treeSrc, $treeDst ) {
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::move $treeSrc = \'' . $treeSrc . '\'.' );
-	  		   Logger::getInstance()->debug( 'FileExplorerController::move $treeDst = \'' . $treeDst . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::move $treeSrc = \'' . $treeSrc . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::move $treeDst = \'' . $treeDst . '\'.' );
 
 	  		   $src = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeSrc );
 	  		   $dst = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeDst );
@@ -276,7 +276,7 @@ class FileExplorerController extends BaseExtController {
 	  		   $array = explode( DIRECTORY_SEPARATOR, $src );
 	  		   $dstPath = $dst . DIRECTORY_SEPARATOR . array_pop( $array );
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::move Moving src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::move Moving src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
 
 	  		   $o = new stdClass;
 
@@ -302,8 +302,8 @@ class FileExplorerController extends BaseExtController {
 		 */
 	  	public function rename( $treeSrc, $dst ) {
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::rename $treeSrc = \'' . $treeSrc . '\'.' );
-	  		   Logger::getInstance()->debug( 'FileExplorerController::rename $dst = \'' . $dst . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::rename $treeSrc = \'' . $treeSrc . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::rename $dst = \'' . $dst . '\'.' );
 
 	  		   $src = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeSrc );
 
@@ -313,7 +313,7 @@ class FileExplorerController extends BaseExtController {
 	  		   $parent = implode( DIRECTORY_SEPARATOR, $array );
 	  		   $dstPath = $parent . DIRECTORY_SEPARATOR . $dst; 
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::rename Renaming src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::rename Renaming src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
 
 	  		   $o = new stdClass;
 
@@ -355,7 +355,7 @@ class FileExplorerController extends BaseExtController {
 	  		   }
 	  		   catch( AgilePHP_Exception $e ) {
 
-	  		   		  Logger::getInstance()->debug( 'FileExplorerController::upload Failed to upload file. Error code: ' . $e->getCode() . ', Message: ' . $e->getMessage() );
+	  		   		  Logger::debug( 'FileExplorerController::upload Failed to upload file. Error code: ' . $e->getCode() . ', Message: ' . $e->getMessage() );
 	  		   		  
 	  		   		  $o->success = false;
 	  		   		  $o->file = null;
@@ -381,7 +381,7 @@ class FileExplorerController extends BaseExtController {
 	  		   $filename = (str_replace( '|', DIRECTORY_SEPARATOR, $path ) . DIRECTORY_SEPARATOR . $name);
 	  		   if( $filename == '.' ) $filename = '.' . DIRECTORY_SEPARATOR;
 
-	  		   Logger::getInstance()->debug( 'FileExplorerController::createDirectory Creating new file \'' . $filename . '\'.' );
+	  		   Logger::debug( 'FileExplorerController::createDirectory Creating new file \'' . $filename . '\'.' );
 	  		   
 	  		   $o = new stdClass();
 	  		   $o->success = mkdir( $filename ) ? true : false;

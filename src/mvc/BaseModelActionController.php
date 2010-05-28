@@ -424,7 +424,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	 	       	  		 break;
 
 	 	       	  		 default:
-	 	       	  		   	Logger::getInstance()->debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $type .
+	 	       	  		   	Logger::debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $type .
 	 	       	  		   									  '\'. Using (' . ($isSanitized) ? 'sanitized' : 'raw' . ') value \'' . $value . '\'.' );
 	 	       	  		   	return $value;
 	 	       	  		 break;

@@ -18,14 +18,14 @@
  try {
 		$agilephp = AgilePHP::getFramework();
 		$agilephp->setDefaultTimezone( 'America/New_York' );
-		$agilephp->setFrameworkRoot( '/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/src' );
+		$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . '/../src' ) );
 		AgilePHP::handleErrors();
 
 		MVC::getInstance()->processRequest();
  }
  catch( Exception $e ) {
 
-  	     Logger::getInstance()->error( $e->getMessage() . DIRECTORY_SEPARATOR . $e->getTraceAsString() );
+  	     Logger::error( $e->getMessage() . DIRECTORY_SEPARATOR . $e->getTraceAsString() );
 
 		 $renderer = new ExtFormRenderer();
 		 $renderer->setError( $e->getMessage() );

@@ -31,7 +31,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
- * @version 0.1a
  */
 
 #@WebService( serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/SoapRpcEncodedTestAPI' )

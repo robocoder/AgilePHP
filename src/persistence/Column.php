@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.2a
  */
 class Column {
 
@@ -44,6 +43,7 @@ class Column {
 	  private $primaryKey = false;
 	  private $autoIncrement = false;
 	  private $sanitize = true;
+	  private $validator;
 
 	  private $foreignKey;
 
@@ -66,7 +66,8 @@ class Column {
 		  		 $this->primaryKey = ($column->attributes()->primaryKey == 'true') ? true : false;
 		  		 $this->autoIncrement = ($column->attributes()->autoIncrement == 'true') ? true : false;
 		  		 $this->sanitize = ($column->attributes()->sanitize == 'false') ? false : true;
-	
+		  		 $this->validator = (string)$column->attributes()->validator;
+
 		  		 if( $column->foreignKey )
 		  		 	 $this->foreignKey = new ForeignKey( $column->foreignKey, $tableName, $this->name );
 	  		 }
@@ -443,6 +444,27 @@ class Column {
 	  public function setSanitize( $bool ) {
 
 	  		 $this->sanitize = $bool;
+	  }
+
+	  /**
+	   * Sets the validator responsible for validating the data.
+	   * 
+	   * @param Validator $validator The validator responsible for verifying the integrity of the data
+	   * @return void
+	   */
+	  public function setValidator( Validator $validator ) {
+
+	  		 $this->validator = $validator;
+	  }
+
+	  /**
+	   * Returns the validator responsible for validating the data.
+	   * 
+	   * @return Validator $validator The validator responsible for verifying the integrity of the data
+	   */
+	  public function getValidator() {
+
+	  		 return $this->validator;
 	  }
 
 	  /**

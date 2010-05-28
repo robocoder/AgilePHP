@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -16,46 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.ide.model
+ * @package com.makeabyte.agilephp.validator
  */
 
 /**
- * Configuration model
- * 
+ * Validates IPv4 addresses.
+ *  
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.ide.model
+ * @package com.makeabyte.agilephp.validator
  */
-class Config {
+class IPv4Validator extends Validator {
 
-	  private $name;
-	  private $value;
+	  /**
+	   * Validates the specified data by ensuring it is a valid IP address.
+	   * 
+	   * @return bool True if the specified data is a valid IP address, false otherwise.
+	   */
+	  public function validate() {
 
-	  public function __construct( $name = null, $value = null ) {
+	  		 if( preg_match( '/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $this->data ) )
+	  		 	 return true;
 
-	  		 $this->name = $name;
-	  		 $this->value = $value;
-	  }
-
-	  #@Id
-	  public function setName( $name ) {
-	  	
-	  		 $this->name = $name;
-	  }
-	  
-	  public function getName() {
-	  	
-	  		 return $this->name;
-	  }
-	  
-	  public function setValue( $value ) {
-	  	
-	  		 $this->value = $value;
-	  }
-	  
-	  public function getValue() {
-	  	
-	  		 return $this->value;
+	  		 return false;
 	  }
 }
 ?>

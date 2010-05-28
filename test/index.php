@@ -8,11 +8,7 @@
  try {
  		$agilephp = AgilePHP::getFramework();  	
   	    $agilephp->setDisplayPhpErrors( true );
-
-  	    (preg_match( '/microsoft/i', $_SERVER['SERVER_SOFTWARE'] )) ?
-      	     $agilephp->setFrameworkRoot( 'c:\inetpub\wwwroot\AgilePHP\src' ) :
-      	     $agilephp->setFrameworkRoot( '/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/src' );
-
+    	$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . '/../src' ) );
   	    $agilephp->setDefaultTimezone( 'America/New_York' );
 
   		MVC::getInstance()->processRequest();
@@ -21,7 +17,7 @@
 
   	     require_once '../src/mvc/PHTMLRenderer.php';
 
-  	     Logger::getInstance()->error( $e->getMessage() );
+  	     Logger::error( $e->getMessage() );
 
   	     $renderer = new PHTMLRenderer();
   	     $renderer->set( 'title', 'AgilePHP Framework :: Error Page' );

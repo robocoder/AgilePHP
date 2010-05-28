@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -16,46 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.ide.model
+ * @package com.makeabyte.agilephp.validator
  */
 
 /**
- * Configuration model
- * 
+ * Validates string data
+ *  
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.ide.model
+ * @package com.makeabyte.agilephp.validator
  */
-class Config {
+class StringValidator extends Validator {
 
-	  private $name;
-	  private $value;
+	  /**
+	   * Returns boolean indicator based on whether or not the specified data
+	   * is a string.
+	   * 
+	   * @return bool True if the data is a string, false otherwise.
+	   * 			  NOTE: Empty strings are NOT considered valid.
+	   */
+	  public function validate() {
 
-	  public function __construct( $name = null, $value = null ) {
-
-	  		 $this->name = $name;
-	  		 $this->value = $value;
-	  }
-
-	  #@Id
-	  public function setName( $name ) {
-	  	
-	  		 $this->name = $name;
-	  }
-	  
-	  public function getName() {
-	  	
-	  		 return $this->name;
-	  }
-	  
-	  public function setValue( $value ) {
-	  	
-	  		 $this->value = $value;
-	  }
-	  
-	  public function getValue() {
-	  	
-	  		 return $this->value;
+   			 return is_string( $this->data );
 	  }
 }
 ?>

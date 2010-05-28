@@ -26,18 +26,10 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes.interceptors
- * @version 0.1a
  */
 
 #@Interceptor
 class TestInterceptor {
-
-	  #@AroundInvoke 
-	  public function test( InvocationContext $ic ) {
-
-	  		 $message = "TestInterceptor::test Executed @AroundInvoke\n";
-	  		 $ic->getTarget()->logger->debug( $message );
-	  }
 
 	  /**
 	   * An example using the InvocationContext getMethod in logic criteria
@@ -60,7 +52,7 @@ class TestInterceptor {
 	  		 	 return $ic->proceed();
 	  		 }
 
-	  		 // Note: This interceptor stops the interception chain since there is no $ic->proceed being invoked!
+	  		 // Note: The interceptor chain stops here since $ic->proceed is not being returned!
 	  }
 }
 ?>

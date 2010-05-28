@@ -26,7 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
- * @version 0.1a
  */
 class RequestParamController extends BaseController {
 
@@ -36,7 +35,7 @@ class RequestParamController extends BaseController {
 	  #@RequestParam( name = 'comments', sanitize = false )
 	  public $comments;
 
-	  #@In( class = Logger::getInstance() )
+	  #@In( class = Logger )
 	  public $logger;
 
 	  public function __construct() {

@@ -1,12 +1,12 @@
 <?php
 
-require_once 'test/classes/MathTest.php';
-
 /**
  * This tests the RPC/LITERAL web service type. Note that since use literal removes
  * type information from the WSDL, it is not possible to restore returned objects 
  * as PHP data types using a SOAPClient classmap. All objects are returned as stdClass
  * when using RPC/LITERAL.
+ *
+ * @package com.makeabyte.agilephp.test.soap
  */
 class SoapRpcLiteralTest extends BaseTest {
 

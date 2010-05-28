@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package com.makeabyte.agilephp.test.persistence
+ */
 class SQLiteTest extends BaseTest {
 
 	  private $persistence;

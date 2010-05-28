@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package com.makeabyte.agilephp.test
+ */
 class BaseTest extends PHPUnit_Framework_TestCase {
 
 	  private $agilephp;

@@ -1,8 +1,14 @@
 <?php
 
+/**
+ * @package com.makeabyte.agilephp.test.annotation
+ */
 class AnnotationTest extends BaseTest {
 
-	  public function test_getClassAnnotations() {
+	  /**
+	   * @test
+	   */
+	  public function getClassLevelAnnotations() {
 
 	  		 $class = Annotation::getClass( 'MockAnnotations' );
 
@@ -26,24 +32,30 @@ class AnnotationTest extends BaseTest {
 			 PHPUnit_Framework_Assert::assertType( 'TestAnnotation1', $ta1[0], 'Failed to assert first array element returned by getAnnotation() is an instance of TestAnnotation1' );
 			 PHPUnit_Framework_Assert::assertType( 'TestAnnotation1', $ta1[1], 'Failed to assert second array element returned by getAnnotation() is an instance of TestAnnotation1' );
 
-			 #@TestAnnotation3( name = 'Name value', name2 = 'Name 2 value' );
-	  		 #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Logger::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
+			 #@TestAnnotation3( name = 'Name value', name2 = 'Name 2 value', obj1 = Identity::getInstance() );
+	  		 #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Identity::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
 	  		 $ta3 = $class->getAnnotation( 'TestAnnotation3' );
 	  		 PHPUnit_Framework_Assert::assertType( 'array', $ta3, 'Failed to assert getAnnotation() returned array for annotation TestAnnotation3' );
 	  		 PHPUnit_Framework_Assert::assertType( 'TestAnnotation3', $ta3[0], 'Failed to assert first array element returned by getAnnotation() is an instance of TestAnnotation3' );
 			 PHPUnit_Framework_Assert::assertType( 'TestAnnotation3', $ta3[1], 'Failed to assert second array element returned by getAnnotation() is an instance of TestAnnotation3' );
 
 			 PHPUnit_Framework_Assert::assertType( 'string', $ta3[0]->name, 'Failed to assert TestAnnotation3::name element 1 contains a string value' );
+			 PHPUnit_Framework_Assert::assertType( 'Identity', $ta3[0]->obj1, 'Failed to assert TestAnnotation3::obj1 element 1 is type Identity' );
+			 PHPUnit_Framework_Assert::assertTrue( $ta3[0]->obj1 instanceof Identity, 'Failed to assert TestAnnotation3::obj1 element 1 is an instance of Identity' );
+			 PHPUnit_Framework_Assert::assertTrue( $ta3[0]->obj1->getModel() instanceof User, 'Failed to assert TestAnnotation3::obj1::model is an instance of User' );
 
 			 PHPUnit_Framework_Assert::assertType( 'string', $ta3[1]->name, 'Failed to assert TestAnnotation3::name element 2 contains a string value' );
 			 PHPUnit_Framework_Assert::assertType( 'array', $ta3[1]->name2, 'Failed to assert TestAnnotation3::name2 element 2 contains an array value' );
 			 PHPUnit_Framework_Assert::assertEquals( 'test', $ta3[1]->name2['key1'], 'Failed to get TestAnnotation3::name2 element 2, element 1 by associative key index' );
 			 PHPUnit_Framework_Assert::assertEquals( 'test2', $ta3[1]->name2[0], 'Failed to get TestAnnotation3::name2 element 2, element 2 by numeric key index 0' );
-			 PHPUnit_Framework_Assert::assertType( 'Logger', $ta3[1]->obj1, 'Failed to assert TestAnnotation3::obj1 element 2 is type Logger' );
-			 PHPUnit_Framework_Assert::assertTrue( $ta3[1]->obj1 instanceof Logger, 'Failed to assert TestAnnotation3::obj1 element 2 is an instance of Logger' );
+			 PHPUnit_Framework_Assert::assertType( 'Identity', $ta3[1]->obj1, 'Failed to assert TestAnnotation3::obj1 element 2 is type Identity' );
+			 PHPUnit_Framework_Assert::assertTrue( $ta3[1]->obj1 instanceof Identity, 'Failed to assert TestAnnotation3::obj1 element 2 is an instance of Identity' );
 	  }
 
-	  public function test_getMethod() {
+	  /**
+	   * @test
+	   */
+	  public function getMethodAnnoationsByMethodName() {
 
 	  		 $class = Annotation::getClass( 'MockAnnotations' );
 
@@ -64,15 +76,18 @@ class AnnotationTest extends BaseTest {
 	  		 PHPUnit_Framework_Assert::assertFalse( $m2->isAnnotated(), 'Failed to assert that method2 is NOT annotated using isAnnotated()' );
 
 	  		 #@TestAnnotation2( name = "Name 1 value", name2 = "Name 2 value" )
-	  		 #@TestAnnotation3( name = "value", name2 = "value 2", obj1 = Logger::getInstance() )
-	  		 #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Logger::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
+	  		 #@TestAnnotation3( name = "value", name2 = "value 2", obj1 = Identity::getInstance() )
+	  		 #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Identity::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
 	  		 $m4 = $class->getMethod( 'method4' );
 	  		 PHPUnit_Framework_Assert::assertTrue( $m4->isAnnotated(), 'Failed to assert that method4 is annotated using isAnnotated()' );
 	  		 $annotations = $m4->getAnnotations( 'TestAnnotation3' );
 	  		 PHPUnit_Framework_Assert::assertType( 'array', $annotations, 'Failed to assert that getAnnotations( \'TestAnnotation3\' ) on method4 is type array' );
 	  }
 
-	  public function test_getMethods() {
+	  /**
+	   * @test
+	   */
+	  public function getMethodLevelAnnotations() {
 
 	  		 $class = Annotation::getClass( 'MockAnnotations' );
 	  		 $methods = $class->getMethods();
@@ -80,15 +95,18 @@ class AnnotationTest extends BaseTest {
 	  		 PHPUnit_Framework_Assert::assertType( 'array', $methods, 'Failed to assert AnnotatedClass::getMethods() returned type array' );
 
 	  		 #@TestAnnotation2( name = "Name 1 value", name2 = "Name 2 value" )
-			 #@TestAnnotation3( name = "value", name2 = "value 2", obj1 = Logger::getInstance() )
-	  		 #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Logger::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
+			 #@TestAnnotation3( name = "value", name2 = "value 2", obj1 = Identity::getInstance() )
+	  		 #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Identity::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
 	  		 PHPUnit_Framework_Assert::assertType( 'AnnotatedMethod', $methods[2], 'Failed to assert type is AnnotatedMethod' );
 	  		 PHPUnit_Framework_Assert::assertType( 'array', $methods[2]->getAnnotations(), 'Failed to assert AnnotatedMethod object at element 3 contains an array of annotations' );
 	  		 PHPUnit_Framework_Assert::assertEquals( 'value', $methods[2]->getAnnotation( 'TestAnnotation3' )->name, 'Failed to assert AnnotatedMethod at element 3 TestAnnotation3::name annotation is equal to \'value\'.' );
-	  		 PHPUnit_Framework_Assert::assertType( 'Logger', $methods[2]->getAnnotation( 'TestAnnotation3' )->obj1, 'Failed to assert method4\'s first TestAnnotation3::obj1 annotation is type Logger' );
+	  		 PHPUnit_Framework_Assert::assertType( 'Identity', $methods[2]->getAnnotation( 'TestAnnotation3' )->obj1, 'Failed to assert method4\'s first TestAnnotation3::obj1 annotation is type Identity' );
 	  }
 
-	  public function test_getProperties() {
+	  /**
+	   * @test
+	   */
+	  public function getPropertyLevelAnnotations() {
 
 	  		 $class = Annotation::getClass( 'MockAnnotations' );
 	  		 $properties = $class->getProperties();
@@ -96,7 +114,7 @@ class AnnotationTest extends BaseTest {
 	  		 PHPUnit_Framework_Assert::assertType( 'array', $properties, 'Failed to assert AnnotatedClass::getProperties() returned type array' );
 
 	  		 #@TestAnnotation1( name = "value" )
-	  		 #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Logger::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
+	  		 #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Identity::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
 			 $foo = $class->getProperty( 'foo' );
 			 $annotations = $foo->getAnnotations();
 			 PHPUnit_Framework_Assert::assertType( 'AnnotatedProperty', $foo, 'Failed to assert type is AnnotatedProperty' );

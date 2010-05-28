@@ -27,7 +27,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes.interceptors
- * @version 0.1a
  */
 
 #@Interceptor
@@ -36,16 +35,13 @@ class TestInterceptor2 {
 	  public $param1;
 	  public $param2 = array();
 	  public $param3;
-	  public $logger;
 
 	  #@AroundInvoke
 	  public function audit( InvocationContext $ic ) {
 
 	  		 $class = new ReflectionClass( $ic->getTarget() );
-
 	  		 $message = 'TestInterceptor2::audit @AroundInvoke This is what the InvocationContext interceptor state looks like: ' . print_r( $ic->getInterceptor(), true );
-
- 	  		 $this->logger->debug( $message );
+ 	  		 Logger::debug( $message );
 	  }
 
 	  /**

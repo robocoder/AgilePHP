@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes
- * @version 0.1a
  */
 require_once 'annotations/TestAnnotation1.php';
 require_once 'annotations/TestAnnotation2.php';
@@ -52,8 +51,8 @@ require_once 'annotations/TestAnnotation3.php';
  #@TestAnnotation2( name = "Name 1 value", name2 = "Name 2 value" )
  #@TestAnnotation2( name = 'Name 1 value', name2 = 'Name 2 value' )
   
- #@TestAnnotation3( name = 'Name value', name2 = 'Name 2 value', obj1 = new Role( 'admin' ) )
- #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Logger::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
+ #@TestAnnotation3( name = 'Name value', name2 = 'Name 2 value', obj1 = Identity::getInstance() )
+ #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Identity::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
 
 /**
  * The classic start of an eclipse file...
@@ -68,7 +67,7 @@ class MockAnnotations {
 	   * @var string
 	   */
 	  #@TestAnnotation1( name = "value" )
-	  #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Logger::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
+	  #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Identity::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
 	  private $foo;
 	  
 	  #@Simple
@@ -90,12 +89,12 @@ class MockAnnotations {
 	  public function method2() { }
 
 	  #@Simple
-	  #@TestAnnotation3( name = "value", name2 = "value 2", obj1 = Logger::getInstance() )
+	  #@TestAnnotation3( name = "value", name2 = "value 2", obj1 = Identity::getInstance() )
 	  public function method3() { }
 
 	  #@TestAnnotation2( name = "Name 1 value", name2 = "Name 2 value" )
-	  #@TestAnnotation3( name = "value", name2 = "value 2", obj1 = Logger::getInstance() )
-	  #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Logger::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
+	  #@TestAnnotation3( name = "value", name2 = "value 2", obj1 = Identity::getInstance() )
+	  #@TestAnnotation3( name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = Identity::getInstance(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" } )
 	  public function method4() { }
 }
 ?>

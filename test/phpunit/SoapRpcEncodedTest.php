@@ -1,7 +1,7 @@
 <?php
-
-require_once 'test/classes/MathTest.php';
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class SoapRpcEncodedTest extends BaseTest {
 
  	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapRpcEncodedTestAPI', 

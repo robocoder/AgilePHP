@@ -26,8 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
- * @version 0.1a
- * @example @SQLDateTime
  */
 
 #@Interceptor
@@ -64,14 +62,14 @@ class SQLDateTime {
 
 	  		 	 $ic->setParameters( $params );
 
-	  		 	 Logger::getInstance()->debug( '#@SQLDateTime::setDateTime Set value to ' . $params[$parameter] );
+	  		 	 Logger::debug( '#@SQLDateTime::setDateTime Set value to ' . $params[$parameter] );
 
 	  		 	 return $ic->proceed();
 	  		 }
 
 			 $ic->setParameters( array( date( 'Y-m-d H:i:s', $params[0] ) ) );
 
-			 Logger::getInstance()->debug( '#@SQLDateTime::setDateTime Set value to ' . date( 'Y-m-d H:i:s', $params[0] ) );
+			 Logger::debug( '#@SQLDateTime::setDateTime Set value to ' . date( 'Y-m-d H:i:s', $params[0] ) );
 
 			 return $ic->proceed();
 	  }

@@ -26,8 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation.annotations
- * @version 0.3a
- * <code>
+  * <code>
  * class MyClassRemote {
  * 
  * #@RemoteMethod

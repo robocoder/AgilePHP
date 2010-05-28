@@ -25,16 +25,12 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes
- * @version 0.1a
  */
 
-#@TestInterceptor2( param1 = "test", param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role( 'phpunit' ), logger = Logger::getInstance() )
+#@TestInterceptor2( param1 = "test", param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role() )
 class MockInterceptionTarget {
 
 	  private $property1;
-
-	  #@In( class = Logger::getInstance() )
-	  public $logger;
 
 	  public function __construct() { }
 
@@ -45,11 +41,10 @@ class MockInterceptionTarget {
 	   * @return void
 	   */
 	  #@TestInterceptor
-	  #@TestInterceptor2( param1 = Crypto::getInstance()->setAlgorithm( 'md5' ), param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role( 'phpunit' ), logger = Logger::getInstance() )
+	  #@TestInterceptor2( param1 = Crypto::getInstance()->setAlgorithm( 'md5' ), param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role() )
 	  public function setProperty1( $value ) {
 
-	  		 $this->logger->debug( 'MockInterceptionTarget setProperty1 with value \'' . $value . '\' and this is using the injected instance of Logger :D' );
-
+	  		 Logger::debug( 'MockInterceptionTarget::setProperty1 with value \'' . $value . '\'.' );
 	  		 $this->property1 = $value;
 	  }
 
@@ -73,7 +68,7 @@ class MockInterceptionTarget {
 	  #@Restrict( role = 'admin' )
 	  public function restrictedMethod() {
 
-	  		 return 'restrictedMethod';
+	  		 Logger::debug( 'MockInterceptionTarget::restrictedMethod invoked' );
 	  }
 
 	  /**
@@ -85,7 +80,7 @@ class MockInterceptionTarget {
 	  #@LoggedIn
 	  public function secureMethod() {
 
-	  		 return 'secureMethod';
+	  		 Logger::debug( 'MockInterceptionTarget::secureMethod invoked' );
 	  }
 }
 ?>

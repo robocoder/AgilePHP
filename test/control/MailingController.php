@@ -26,7 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
- * @version 0.1a
  */
 class MailingController extends BaseModelActionController {
 

@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package com.makeabyte.agilephp.test.interception
+ */
 class InterceptorTest extends BaseTest {
 
 	  /**
@@ -17,10 +19,6 @@ class InterceptorTest extends BaseTest {
 
 	 	  	 // The call to setProperty1 is intercepted and set to 'intercepted value' by #@TestInterceptor property1Setter #@AroundInvoke method
 	  		 PHPUnit_Framework_Assert::assertEquals( 'intercepted value', $mit->getProperty1(), 'Failed to assert MockInterceptionTarget::property1 equals "intercepted value"' );
-
-	  		 // The dependency injection @In interceptor set the public logger property to an instance of Logger :)
-	  		 PHPUnit_Framework_Assert::assertType( 'Logger', $mit->logger, 'Failed to assert MockInterceptionTarget::logger is type Logger. Dependancy injection failed' );
-	  		 PHPUnit_Framework_Assert::assertTrue( $mit->logger instanceof Logger, 'Failed to assert MockInterceptionTarget::logger is an instance of Logger. Dependency injection failed.' );
 	  }
 
 	  /**
@@ -39,10 +37,10 @@ class InterceptorTest extends BaseTest {
 	  		 		throw new AgilePHP_AccessDeniedException('');
 	  		 }
 	  }
-	  
+
 	  /**
 	   * @test
-       * @expectedException AgilePHP_NotLoggedInException
+	   * @expectedException AgilePHP_NotLoggedInException
        */
 	  public function LoggedInInterceptorTest() {
 

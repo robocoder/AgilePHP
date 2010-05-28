@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence.dialect
- * @version 0.3a
  */
 class SQLiteDialect extends BasePersistence implements SQLDialect {
 
@@ -84,7 +83,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   		 		 foreach( $table->getColumns() as $column ) {
 
   		 			      if( $column->isAutoIncrement() )
-  		 			     	  Logger::getInstance()->debug( 'Ignoring autoIncrement="true" for column ' . $column->getName() . '. Sqlite does not support the use of auto-increment with compound primary keys' );
+  		 			     	  Logger::debug( 'Ignoring autoIncrement="true" for column ' . $column->getName() . '. Sqlite does not support the use of auto-increment with compound primary keys' );
 
   		 				  $sql .= '"' . $column->getName() . '" ' . $column->getType() .
   		 						 (($column->isRequired() == true) ? ' NOT NULL' : '') .

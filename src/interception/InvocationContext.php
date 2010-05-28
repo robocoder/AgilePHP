@@ -27,7 +27,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception
- * @version 0.1a
  */
 class InvocationContext {
 

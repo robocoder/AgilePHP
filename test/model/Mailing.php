@@ -28,7 +28,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.model
- * @version 0.1a
  */
 class Mailing {
 	

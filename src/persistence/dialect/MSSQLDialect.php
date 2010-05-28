@@ -26,8 +26,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence.dialect
- * @version 0.3a
- */
+  */
 class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 	 private $connectFlag = -1;
@@ -48,7 +47,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  	     }
 	  	     catch( PDOException $pdoe ) {
 
-	  	     	    Logger::getInstance()->debug( 'MSSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
+	  	     	    Logger::debug( 'MSSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
 
 	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
 	  	     		// be invoked to create the database schema.
@@ -251,7 +250,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 			 $newModel = $table->getModelInstance();
 			 $values = array();			
 
-			 Logger::getInstance()->debug( 'MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
+			 Logger::debug( 'MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		 try {
 	  		  	    $pkeyColumns = $table->getPrimaryKeyColumns();
@@ -298,7 +297,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 					 if( !count( $result ) ) {
 
-					 	 Logger::getInstance()->debug( 'MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	 Logger::debug( 'MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	 return array();
 					 }
 

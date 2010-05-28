@@ -5,6 +5,8 @@
  * type information from the WSDL, it is not possible to restore returned objects 
  * as PHP data types using a SOAPClient classmap. All objects are returned as stdClass
  * when using RPC/LITERAL.
+ * 
+ * @package com.makeabyte.agilephp.test.soap
  */
 class SoapDocumentLiteralTest extends BaseTest {
 
@@ -15,10 +17,7 @@ class SoapDocumentLiteralTest extends BaseTest {
 				  'exceptions' => 1,
  	  			  'cache_wsdl' => 0,
  	  			  'style' => SOAP_DOCUMENT,
- 	  			  'use' => SOAP_LITERAL 	  			  
-			 	  // 'soap_version' => SOAP_1_2,
- 	  			  // 'encoding' => 'UTF-8',
- 	   			  //'features' => USE_SINGLE_ELEMENT_ARRAYS
+ 	  			  'use' => SOAP_LITERAL
  	  );
 
 	  private $client;
@@ -194,97 +193,145 @@ class SoapDocumentLiteralTest extends BaseTest {
 			  }
 	  }
 }
+
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class test {
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class testResponse {
   public $return; // string
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class add {
   public $a; // int
   public $b; // int
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class addResponse {
   public $return; // int
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class subtract {
   public $a; // int
   public $b; // int
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class subtractResponse {
   public $return; // int
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class multiply {
   public $a; // int
   public $b; // int
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class multiplyResponse {
   public $return; // int
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class divide {
   public $a; // int
   public $b; // int
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class divideResponse {
   public $return; // int
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class objectParameterTest {
   public $MathTest; // MathTest
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class objectParameterTestResponse {
   public $return; // int
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class MathTestArray {
   public $MathTests; // MathTest
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class arrayOfObjectsTest {
   public $MathTests; // MathTestArray
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class arrayOfObjectsTestResponse {
   public $return; // MathTestArray
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class stringArray {
   public $strings; // string
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class arrayStringTest {
   public $strings; // stringArray
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class arrayStringTestResponse {
   public $return; // stringArray
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class stringArrayArray {
   public $strings; // stringArray
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class arrayOfArraysTest {
   public $strings; // stringArrayArray
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class arrayOfArraysTestResponse {
   public $return; // stringArrayArray
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class arrayAddTest {
   public $MathTests; // MathTestArray
 }
-
+/**
+ * @package com.makeabyte.agilephp.test.soap
+ */
 class arrayAddTestResponse {
   public $return; // int
 }

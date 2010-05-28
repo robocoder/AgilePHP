@@ -18,6 +18,14 @@
  *
  * @package com.makeabyte.agilephp.interception.interceptors
  */
+
+/**
+ * Logs a call state context both before and after a method invocation.
+ * 
+ * @author Jeremy Hahn
+ * @copyright Make A Byte, inc
+ * @package com.makeabyte.agilephp.interception.interceptors
+ */
 #@Interceptor
 class Audit {
 
@@ -45,15 +53,15 @@ class Audit {
 	  		 $level = (in_array( $this->level, $this->valid)) ? $this->level : 'debug';
 	  		 if( $this->verbose ) {
 
-	  		 	 Logger::getInstance()->$level( '#@Audit::logInvocation' );
-	  		 	 Logger::getInstance()->$level( $ic );
+	  		 	 Logger::$level( '#@Audit::logInvocation' );
+	  		 	 Logger::$level( $ic );
 	  		 	 return $ic->proceed();	 
 	  		 }
 
 	  		 $callee = $ic->getCallee();
 	  		 $message = 'class = \'' . $callee['class'] . '\', method = \'' . $callee['function'] . '\', args = \'' . implode( ',', $ic->getParameters() ) . '\'';
 
-	  		 Logger::getInstance()->$level( '#@Audit::logInvocation ' . $message ); 
+	  		 Logger::$level( '#@Audit::logInvocation ' . $message ); 
 	  		 return $ic->proceed();
 	  }
 
@@ -63,14 +71,14 @@ class Audit {
 	  		 $level = (in_array( $this->level, $this->valid)) ? $this->level : 'debug';
 	  		 if( $this->verbose ) {
 
-	  		 	 Logger::getInstance()->$level( '#@Audit::logReturn' );
-	  		 	 Logger::getInstance()->$level( $ic );
+	  		 	 Logger::$level( '#@Audit::logReturn' );
+	  		 	 Logger::$level( $ic );
 	  		 	 return $ic->proceed();	 
 	  		 }
 
 	  		 $return = $ic->getReturn();
-	  		 Logger::getInstance()->$level( '#@Audit::logReturn' );
-	  		 Logger::getInstance()->$level( (($return) ? $return : '(null)') );
+	  		 Logger::$level( '#@Audit::logReturn' );
+	  		 Logger::$level( (($return) ? $return : '(null)') );
 
 	  		 return $ic->proceed();
 	  }

@@ -27,7 +27,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
- * @version 0.2a
  * <code>
  * #@Restrict( role = 'admin' )
  * public function methodThatRequiresCertainRole() {
@@ -121,7 +120,7 @@ class Restrict {
 	   */
 	  private function audit( $message, $ic ) {
 
-	  		  Logger::getInstance()->error( '#@Restrict::audit Access Denied ' . print_r( $ic, true ) );
+	  		  Logger::error( '#@Restrict::audit Access Denied ' . print_r( $ic, true ) );
 	  		  throw new AgilePHP_AccessDeniedException( $message );
 	  }
 }

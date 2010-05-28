@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @package com.makeabyte.agilephp.test.mvc
+ */
 class RenderersTest extends BaseTest {
 
 	  /**

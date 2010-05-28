@@ -27,7 +27,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
- * @version 0.1a
  * <code>
  * #@Id
  * public function setId( $id ) {
@@ -36,7 +35,6 @@
  * }
  * </code>
  */
-
 #@Interceptor
 class Id {
 
@@ -97,7 +95,7 @@ class Id {
 	  		   	   $b->$mutator( $a->$accessor() );
 		  	  }
 
-  	 		  Logger::getInstance()->debug( '#@Id::populate Created ActiveRecord state for model \'' . preg_replace( '/_Intercepted/', '' , $classA->getName() ) . '\'.' );
+  	 		  Logger::debug( '#@Id::populate Created ActiveRecord state for model \'' . preg_replace( '/_Intercepted/', '' , $classA->getName() ) . '\'.' );
 	  }
 }
 ?>

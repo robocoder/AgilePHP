@@ -26,7 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.annotation
- * @version 0.4a
  */
 class AnnotatedClass extends ReflectionClass {
 

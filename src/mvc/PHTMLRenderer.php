@@ -30,7 +30,7 @@
 class PHTMLRenderer extends BaseRenderer {
 
       /**
-	   * Renders a view by dumping all 'store' variables to locallly scoped (page) variables. The view
+	   * Renders a view by dumping all 'store' variables to locally scoped (page) variables. The view
 	   * is expected to be in <webapp>/view.
 	   * 
 	   * @param String $view The view which is rendered from the web app's 'view' directory
@@ -38,7 +38,7 @@ class PHTMLRenderer extends BaseRenderer {
        */
       public function render( $view ) {
 
-      	 	 $path = AgilePHP::getFramework()->getWebRoot() . '/view/' . $view . '.phtml';
+      	 	 $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . $view . '.phtml';
 
       	 	 if( !file_exists( $path ) )
       	 	      throw new AgilePHP_Exception( 'Error rendering application view. Path does not exist ' . $path );
@@ -46,36 +46,7 @@ class PHTMLRenderer extends BaseRenderer {
       	 	 foreach( $this->getStore() as $key => $value )
 	                  $$key = $value;
 
-	         Logger::getInstance()->debug( 'PHTMLRenderer::render executed with parameter $view = \'' . $view . '\'' );
-
-	         // Prevent local variables from being visible to the view
-	         unset( $f );
-	         unset( $view );
-			 unset( $key );
-			 unset( $value );
-
-	         require_once $path;
-	  }
-
-	  /**
-	   * Renders a component view by dumping all 'store' variables to locallly scoped (page) variables. The view is
-	   * expected to be in <webapp>/component/<component_name>/view.
-	   * 
-	   * @param $componentName The name of the component to render
-	   * @param $view The name of the component view to render
-	   * @return void
-	   */
-	  public function renderComponent( $componentName, $view ) {
-
-	  		 $path = AgilePHP::getFramework()->getWebRoot() . '/components/' . $componentName . '/view/' . $view . '.phtml';
-
-      	 	 if( !file_exists( $path ) )
-      	 	      throw new AgilePHP_Exception( 'Error rendering component view. Path does not exist ' . $path );
-  
-      	 	 foreach( $this->getStore() as $key => $value )
-	                  $$key = $value;
-
-	         Logger::getInstance()->debug( 'PHTMLRenderer::renderComponent Executed with parameter $componentName = \'' . $componentName . '\'' );
+	         Logger::debug( 'PHTMLRenderer::render executed with parameter $view = \'' . $view . '\'' );
 
 	         // Prevent local variables from being visible to the view
 	         unset( $f );

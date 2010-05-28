@@ -48,7 +48,7 @@ class ProjectRemote {
  		 	 	  $name = $config->name;
  	  		   	  $$name = $config->value;
 
- 	  		   	  Logger::getInstance()->debug( $name . ' = ' . $$name );
+ 	  		   	  Logger::debug( $name . ' = ' . $$name );
  		 	 }
 
  	  		 if( !isset( $workspace ) )
@@ -306,7 +306,7 @@ class ProjectRemote {
  }
  catch( Exception $e ) {
 
-  	     Logger::getInstance()->error( $e->getMessage() );
+  	     Logger::error( $e->getMessage() );
 
 		 $renderer = new PHTMLRenderer();
 		 $renderer->set( \'title\', \'' . $this->projectName . ' :: Error Page\' );

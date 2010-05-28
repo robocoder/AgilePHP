@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
  * @abstract
  */
 abstract class BaseRenderer {

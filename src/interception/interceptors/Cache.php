@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
- * @version 0.2a
  * <code>
  * class MyClass {
  * 
@@ -121,7 +120,7 @@ class Cache {
 
 	   	      ob_end_flush();
 
-	   	      Logger::getInstance()->debug( '#@Cache::serveAndCache Cached ' . $this->file );
+	   	      Logger::debug( '#@Cache::serveAndCache Cached ' . $this->file );
 	  }
 
 	  /**
