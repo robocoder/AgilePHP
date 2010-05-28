@@ -25,38 +25,10 @@
 <p class="short-description">AgilePHP interceptor responsible for populating class properties with  HTTP POST variables (gotten from RequestScope).</p>
 	<ul class="tags">
 				<li><span class="field">author:</span> Jeremy Hahn</li>
-				<li><span class="field">version:</span> 0.1a  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-key">class&nbsp;</span><span class="src-id">MyFormProcessor&nbsp;</span><span class="src-sym">{</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;<span class="src-comm">//&nbsp;Defaults&nbsp;to&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;property/field</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-comm">#@RequestParam</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-var">$fname</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;<span class="src-comm">//&nbsp;Optionally,&nbsp;we&nbsp;can&nbsp;specify&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;input&nbsp;element</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-comm">#@RequestParam(&nbsp;name&nbsp;=&nbsp;'email'&nbsp;)</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-var">$emailaddress</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;<span class="src-comm">//&nbsp;Optionally,&nbsp;we&nbsp;can&nbsp;also&nbsp;specify&nbsp;no&nbsp;sanitation</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-comm">#@RequestParam(&nbsp;name&nbsp;=&nbsp;'password',&nbsp;sanitize&nbsp;=&nbsp;false&nbsp;)</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-var">$plainTextPassword</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">showEmail</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Displays&nbsp;the&nbsp;first&nbsp;name&nbsp;entered&nbsp;in&nbsp;&lt;input&nbsp;name=&quot;fname&quot;/&gt;</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-var">fname</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Displays&nbsp;the&nbsp;email&nbsp;address&nbsp;entered&nbsp;in&nbsp;&lt;input&nbsp;name=&quot;email&quot;/&gt;</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-var">emailaddress</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Displays&nbsp;a&nbsp;plain&nbsp;text&nbsp;password&nbsp;as&nbsp;entered&nbsp;in&nbsp;&lt;input&nbsp;type=&quot;password&quot;&nbsp;name=&quot;password&quot;/&gt;</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-var">plainTextPassword</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
-</ol></div></li>
 				<li><span class="field">copyright:</span> Make A Byte, inc</li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_build---AgilePHP---interception---interceptors---RequestParam.php.html">/build/AgilePHP/interception/interceptors/RequestParam.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a62">62</a></span>)
+			Located in <a class="field" href="_build---AgilePHP---interception---interceptors---RequestParam.php.html">/build/AgilePHP/interception/interceptors/RequestParam.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a61">61</a></span>)
 		</p>
 		
 				
@@ -132,13 +104,13 @@
 		<div class="info-box-body">
 			
 <a name="var$name" id="$name"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">String</span>
 			<span class="var-name">$name</span>
-						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a69">69</a></span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a68">68</a></span>)
 		</span>
 	</div>
 
@@ -155,13 +127,13 @@
 
 </div>
 <a name="var$required" id="$required"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$required</span>
-			 = <span class="var-default"> false</span>			(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a83">83</a></span>)
+			 = <span class="var-default"> false</span>			(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a82">82</a></span>)
 		</span>
 	</div>
 
@@ -178,13 +150,13 @@
 
 </div>
 <a name="var$sanitize" id="$sanitize"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$sanitize</span>
-			 = <span class="var-default"> true</span>			(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a76">76</a></span>)
+			 = <span class="var-default"> true</span>			(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a75">75</a></span>)
 		</span>
 	</div>
 
@@ -216,10 +188,10 @@
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
 <a name="methodsetFormValue" id="setFormValue"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setFormValue</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a92">92</a></span>)
+		<span class="method-title">setFormValue</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRequestParam.php.html#a91">91</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -250,7 +222,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 27 May 2010 00:08:05 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Thu, 27 May 2010 23:50:41 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

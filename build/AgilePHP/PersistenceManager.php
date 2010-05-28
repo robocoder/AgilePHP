@@ -31,7 +31,6 @@ require_once 'persistence/BasePersistence.php';
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.2a
  */
 class PersistenceManager implements SQLDialect {
 
@@ -110,7 +109,7 @@ class PersistenceManager implements SQLDialect {
 	  	  */
 	  	 public function connect( Database $db ) {
 
-	  	 		Logger::getInstance()->debug( 'PersistenceManager::connect Connecting to database \'' . $db->getId() . '\'.' );
+	  	 		Logger::debug( 'PersistenceManager::connect Connecting to database \'' . $db->getId() . '\'.' );
 
 	  	 		switch( $db->getType() ) {
 
@@ -451,7 +450,7 @@ class PersistenceManager implements SQLDialect {
 	      */
 	     public function executeQuery() {
 
-	     		Logger::getInstance()->debug( 'PersistenceManager::executeQuery ' . $this->sql );
+	     		Logger::debug( 'PersistenceManager::executeQuery ' . $this->sql );
 	     		return $this->dialect->query( $this->sql );
 	     }
 
@@ -512,7 +511,7 @@ class PersistenceManager implements SQLDialect {
 	  		 	   $this->dialect->setRestrictionsLogicOperator( 'AND' );
 	  		 	   $this->dialect->setComparisonLogicOperator( '=' );
 
-				   Logger::getInstance()->debug( 'BaseModelController::setPage ' . $this->page );
+				   Logger::debug( 'BaseModelController::setPage ' . $this->page );
 	     }
 
 	     /**

@@ -26,7 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence.dialect
- * @version 0.3a
  */
 class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
@@ -225,7 +224,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function beginTransaction() {
 	  	
-	  		 Logger::getInstance()->debug( 'SQLSRVDialect::beginTransaction Beginning transaction' );
+	  		 Logger::debug( 'SQLSRVDialect::beginTransaction Beginning transaction' );
 	  }
 	  
 	  /**
@@ -236,7 +235,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
 	  		 sqlsrv_commit( $this->conn );
 
-	  		 Logger::getInstance()->debug( 'SQLSRVDialect::commit Transaction successfully committed.' );
+	  		 Logger::debug( 'SQLSRVDialect::commit Transaction successfully committed.' );
 	  }
 	  
 	  /**
@@ -245,7 +244,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function rollBack( $message = null, $code = 0 ) {
 
-	  		 Logger::getInstance()->debug( 'SQLSRVDialect::rollBack ' . (($message == null) ? '' : ' ' . $message ) );
+	  		 Logger::debug( 'SQLSRVDialect::rollBack ' . (($message == null) ? '' : ' ' . $message ) );
 
 	  		 $this->transactionInProgress = false;
 	  		 sqlsrv_rollback( $this->conn );
@@ -263,7 +262,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function query( $sql, $params = array() ) {
 
-	  		 Logger::getInstance()->debug( 'BasePersistence::query Executing' .
+	  		 Logger::debug( 'BasePersistence::query Executing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'raw PDO::query ' . $sql . 'with $params ' . print_r( $params, true ) );
 
@@ -276,7 +275,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function prepare( $statement ) {
 
-	  		 Logger::getInstance()->debug( 'SQLSRVDialect::prepare Preparing' .
+	  		 Logger::debug( 'SQLSRVDialect::prepare Preparing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'statement ' . $statement );
 	  	
@@ -289,7 +288,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function execute( array $inputParameters = array() ) {
 
-	  		 Logger::getInstance()->debug( 'SQLSRVDialect::execute Executing' .
+	  		 Logger::debug( 'SQLSRVDialect::execute Executing' .
 			  	     		(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     		'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
@@ -337,7 +336,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 			 $newModel = $table->getModelInstance();
 			 $values = array();
 
-			 Logger::getInstance()->debug( 'SQLSRVDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
+			 Logger::debug( 'SQLSRVDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		 try {
 	  		  	    $pkeyColumns = $table->getPrimaryKeyColumns();
@@ -387,7 +386,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
 					 if( !sqlsrv_has_rows( $this->stmt ) ) { 
 
-					 	Logger::getInstance()->debug( 'SQLSRVDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	Logger::debug( 'SQLSRVDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	return array();
 					 }
 

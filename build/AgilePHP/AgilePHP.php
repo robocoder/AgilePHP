@@ -146,7 +146,7 @@ class AgilePHP {
 	  	     if( strpos( ':' . $path, $path ) === false )
 	  	     	 ini_set( 'include_path', ini_get( 'include_path' ) . PATH_SEPARATOR . $path );
 
-	  	     Logger::getInstance()->debug( ini_get( 'include_path' ) );
+	  	     Logger::debug( ini_get( 'include_path' ) );
 	  }
 
 	  /**
@@ -233,7 +233,7 @@ class AgilePHP {
 	   */
 	  public static function import( $classpath ) {
 
-	  		 Logger::getInstance()->debug( 'AgilePHP::import ' . $classpath );
+	  		 Logger::debug( 'AgilePHP::import ' . $classpath );
 
 	  		 $file = preg_replace( '/\./', DIRECTORY_SEPARATOR, $classpath );
 	  		 if( file_exists( 'classes' . DIRECTORY_SEPARATOR . $file . '.php' ) )
@@ -298,16 +298,6 @@ class AgilePHP {
 	  }
 
 	  /**
-	   * Returns the agilephp.xml configuration as a SimpleXMLElement.
-	   * 
-	   * @return SimpleXMLElement The SimpleXMLElement instance that contains agilephp.xml configuration
-	   */
-	  public function getXmlConfiguration() {
-
-		     return $this->xml;
-	  }
-
-	  /**
 	   * Calls PHP date_default_timezone_set function to set the current timezone.
 	   * 
 	   * @param String $timezone The timezone to use as default.
@@ -329,7 +319,7 @@ class AgilePHP {
 	   */
 	  public function addInterception( Interception $interception ) {
 
-	  		 Logger::getInstance()->debug( 'AgilePHP::addInterception Adding interception for class \'' . $interception->getClass() . '\'.' );
+	  		 Logger::debug( 'AgilePHP::addInterception Adding interception for class \'' . $interception->getClass() . '\'.' );
 
 	  		 array_push( $this->interceptions, $interception );
 	  }
@@ -358,8 +348,8 @@ class AgilePHP {
 	  		  if( !file_exists( $agilephp_xml ) )
 	  		  	  return;
 
-	  	      $this->xml = simplexml_load_file( $agilephp_xml );
-	  	      
+	  	      $xml = simplexml_load_file( $agilephp_xml );
+
 	  		  $dom = new DOMDocument();
  			  $dom->Load( $agilephp_xml );			 
 			  if( !$dom->validate() ) {
@@ -368,22 +358,25 @@ class AgilePHP {
 			 	  return;
 			  }
 
-	  	      if( $this->xml->mvc ) {
+	  	      if( $xml->mvc ) {
 
 	  	      	  require_once 'MVC.php';
 
-	  	      	  $mvc = MVC::getInstance();
-	  	      	  $mvc->setconfig( $this->xml->mvc );
-	  	      }
+	  	      	  $controller = (string)$xml->mvc->attributes()->controller;
+	  	      	  $action = (string)$xml->mvc->attributes()->action;
+	  	      	  $renderer = (string)$xml->mvc->attributes()->renderer;
+	  	      	  $sanitize = (string)$xml->mvc->attributes()->sanitize;
 
-	  		  if( $this->xml->logger ) {
+	  	      	  $mvc = MVC::getInstance();
+	  	      	  $mvc->setconfig( $controller, $action, $renderer, $sanitize );
+  	      	  }
+
+	  		  if( $xml->logger ) {
 
 	  	      	  require_once 'Logger.php';
-	  	      	  $logger = Logger::getInstance();
-	  	      	  $logger->setConfig( $this->xml->logger );
-
-	  	      	  if( $this->xml->logger->attributes()->level == 'debug' )
-	  	      	  	  $this->setDebugMode( true );
+	  	      	  $level = $xml->logger->attributes()->level;
+	  	      	  Logger::setLevel( $level );
+  	      	  	  if( $level == 'debug' ) $this->setDebugMode( true );
 	  	      }
 	  }
 
@@ -440,24 +433,24 @@ class AgilePHP {
  	  		 	case E_NOTICE:
  	  		 	case E_USER_NOTICE:
 
- 	  		 		Logger::getInstance()->info( $entry );
+ 	  		 		Logger::info( $entry );
  	  		 		break;
 
  	  		 	case E_WARNING:
  	  		 	case E_USER_WARNING:
  	  		 		
- 	  		 		Logger::getInstance()->warn( $entry );
+ 	  		 		Logger::warn( $entry );
  	  		 		break;
 
  	  		 	case E_ERROR:
  	  		 	case E_USER_ERROR:
  	  		 	case E_RECOVERABLE_ERROR:
 
- 	  		 		Logger::getInstance()->error( $entry );
+ 	  		 		Logger::error( $entry );
  	  		 		break;
 
  	  		 	default:
- 	  		 		Logger::getInstance()->debug( $entry );
+ 	  		 		Logger::debug( $entry );
  	  		 }
     	      
 	  }

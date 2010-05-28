@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.2a
  */
 class MVC {
 
@@ -68,19 +67,12 @@ class MVC {
 	   * @param SimpleXMLElement $config SimpleXMLElement containing the MVC configuration.
 	   * @return void
 	   */
-	  public function setConfig( SimpleXMLElement $config ) {
+	  public function setConfig( $controller, $action, $renderer, $sanitize ) {
 
-	  		 if( $config->attributes()->controller )
-	  		     $this->defaultController = (string)$config->attributes()->controller;
-
-	  		 if( $config->attributes()->action )
-	  		 	 $this->defaultAction = (string)$config->attributes()->action;
-
-	  		 if( $config->attributes()->renderer )
-	  		 	 $this->defaultRenderer = (string)$config->attributes()->renderer;
-
-	  		 if( $config->attributes()->sanitize )
-	  		 	 $this->sanitize = $config->attributes()->sanitize == 'false' ? false : true;
+	  		 if( $controller ) $this->defaultController = $controller;
+	  		 if( $action ) $this->defaultAction = $action;
+	  		 if( $renderer ) $this->defaultRenderer = $renderer;
+	  		 if( $sanitize ) $this->sanitize = $sanitize;
 	  }
   
 	  /**
@@ -251,14 +243,14 @@ class MVC {
 						  		throw new AgilePHP_Exception( 'The specified action \'' . $action . '\' does not exist.' );
 					  	} 
 
-					  	Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+					  	Logger::debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
 					  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $this->parameters  ) . '\'.' );
 
 		  	     		call_user_func_array( array( $oController, $action ), $this->parameters ); 
 		  	     	}
 		  	     	else {
 	
-		  	     		Logger::getInstance()->debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+		  	     		Logger::debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
 					  	     			'\', action \'' . $this->action . '\'.' );
 	
 		  	     		$oController->$action();
@@ -279,7 +271,7 @@ class MVC {
 
 	  	     $path = AgilePHP::getFramework()->getFrameworkRoot() . '/mvc/' . $this->getDefaultRenderer() . '.php';
 
-	  	     Logger::getInstance()->debug( 'MVC::createDefaultRenderer loading renderer: ' . $this->getDefaultRenderer() );
+	  	     Logger::debug( 'MVC::createDefaultRenderer loading renderer: ' . $this->getDefaultRenderer() );
 
 	  	     if( !file_exists( $path ) )
 	  	     	 throw new AgilePHP_Exception( 'Default framework renderer could not be loaded from: ' . $path );
@@ -299,7 +291,7 @@ class MVC {
 
 	  	     $path = AgilePHP::getFramework()->getFrameworkRoot() . '/mvc/' . $renderer . '.php';
 
-	  	     Logger::getInstance()->debug( 'MVC::createRenderer loading renderer: ' . $renderer );
+	  	     Logger::debug( 'MVC::createRenderer loading renderer: ' . $renderer );
 
 	  		 if( !file_exists( $path ) )
 	  	     	 throw new AgilePHP_Exception( 'Framework renderer could not be loaded from: ' . $path );
@@ -320,7 +312,7 @@ class MVC {
 
 	  	     $path = AgilePHP::getFramework()->getWebRoot() . '/classes/' . $classpath . '/' . $renderer . '.php';
 
-	  	     Logger::getInstance()->debug( 'MVC::createDefaultRenderer loading custom renderer: ' . $renderer );
+	  	     Logger::debug( 'MVC::createDefaultRenderer loading custom renderer: ' . $renderer );
 
 	  	     if( !file_exists( $path ) )
 	  	     	 throw new AgilePHP_Exception( 'Custom renderer could not be loaded from: ' . $path );

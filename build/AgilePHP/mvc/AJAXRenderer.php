@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.mvc
- * @version 0.3a
  */
 class AJAXRenderer extends BaseRenderer {
 
@@ -48,7 +47,7 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		 	 $json = $this->toJSON( $data, $name );
 
-	  		 	 Logger::getInstance()->debug( 'AJAXRenderer::render Rendering JSON ' . $json );
+	  		 	 Logger::debug( 'AJAXRenderer::render Rendering JSON ' . $json );
 
 	  		 	 header( 'content-type: application/json' );
 	  		 	 print $json;
@@ -61,7 +60,7 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		 	 $xml = $this->toXML( $data, $name );
 
-	  		 	 Logger::getInstance()->debug( 'AJAXRenderer::render Rendering XML ' . $xml );
+	  		 	 Logger::debug( 'AJAXRenderer::render Rendering XML ' . $xml );
 
 	  		 	 header( 'content-type: text/xml' );
 	  		 	 print $xml;
@@ -85,7 +84,7 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		 	 $json = $this->toJSON( $data );
 
-	  		 	 Logger::getInstance()->debug( 'AJAXRenderer::render Rendering JSON ' . $json );
+	  		 	 Logger::debug( 'AJAXRenderer::render Rendering JSON ' . $json );
 
 	  		 	 print $json;
 	  		 	 exit;
@@ -95,7 +94,7 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		 	 $xml = $this->toXML( $data );
 
-	  		 	 Logger::getInstance()->debug( 'AJAXRenderer::render Rendering XML ' . $xml );
+	  		 	 Logger::debug( 'AJAXRenderer::render Rendering XML ' . $xml );
 
 	  		 	 print $xml;
 	  		 	 exit;
@@ -255,8 +254,8 @@ class AJAXRenderer extends BaseRenderer {
 			  		   	   		}
 			  		   	   		catch( Exception $e ) {
 
-			  		   	   			   Logger::getInstance()->error( $data );
-			  		   	   			   Logger::getInstance()->error( $e->getMessage() );
+			  		   	   			   Logger::error( $data );
+			  		   	   			   Logger::error( $e->getMessage() );
 			  		   	   		}
 			  		   	   }
 			  		   }
@@ -379,8 +378,8 @@ class AJAXRenderer extends BaseRenderer {
 				  		   	   		}
 				  		   	   		catch( Exception $e ) {
 	
-				  		   	   			   Logger::getInstance()->error( $data );
-				  		   	   			   Logger::getInstance()->error( $e->getMessage() );
+				  		   	   			   Logger::error( $data );
+				  		   	   			   Logger::error( $e->getMessage() );
 				  		   	   		}
 				  		   	   }
 		  		 		  }

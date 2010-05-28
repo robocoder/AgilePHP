@@ -26,7 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.2a
  * @abstract
  */
 abstract class BaseModelController extends BaseController {
@@ -393,7 +392,7 @@ abstract class BaseModelController extends BaseController {
 	  	     	 	    $this->getModel()->$mutator( null );
 	  	           }
 
-	  	           Logger::getInstance()->debug( 'BaseModelController::clear ' );
+	  	           Logger::debug( 'BaseModelController::clear ' );
 	     }
 
 	     /**

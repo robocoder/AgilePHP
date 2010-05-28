@@ -26,8 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation.annotations
- * @version 0.1a
- * @see http://www.ibm.com/developerworks/webservices/library/ws-whichwsdl
  * <code>
  * #@WebService( serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI' )
  * #@SOAPBinding( style = SOAPStyle::RPC, use = SOAPStyle::ENCODED )

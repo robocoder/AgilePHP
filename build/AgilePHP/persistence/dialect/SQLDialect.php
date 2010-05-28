@@ -26,7 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence.dialect
- * @version 0.2a
  */
 interface SQLDialect {
 

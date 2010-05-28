@@ -20,48 +20,31 @@
  */
 
 /**
- * Performs basic logging functionality
+ * Responsible for basic disk logging
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.2a
  */
 class Logger {
 
 	  private static $instance;
-	  private $debug = false;
+	  private static $level;
 
 	  private function __construct() {}
 	  private function __clone() {}
 
 	  /**
-	   * Factory method that creates an instance of the configured Logger. If
-	   * a logger has not been configured in agilephp.xml, an instance of
-	   * 'FileLogger' is returned. 
-	   * 
-	   * @return An instance of the configured logger in agilephp.xml. Default is 'FileLogger'.
-	   * @static
-	   */
-	  public static function getInstance() {
-
-	  		 if( self::$instance == null )
-				 self::$instance = new self;
-
-	  		 return self::$instance;
-	  }
-
-	  /**
 	   * Used by AgilePHP main framework class to automatically load Logger based on agilephp.xml
 	   * configuration.
 	   * 
-	   * @param SimpleXMLElement $config The SimpleXMLElement containing the agilephp.xml Logger configuration 
+	   * @param string $level The logging level (INFO|WARN|ERROR|DEBUG) 
 	   * @return void
+	   * @static
 	   */
-	  public function setConfig( SimpleXMLElement $config ) {
+	  public static function setLevel( $level) {
 
-			 if( $config->attributes()->level == 'debug' )
-			  	 $this->debug = true;
+		  	  self::$level = strtolower( $level );
 	  }
 
 	  /**
@@ -69,11 +52,12 @@ class Logger {
 	   * 
 	   * @param String $message The debug message to log
 	   * @return void
+	   * @static
 	   */
-	  public function debug( $message ) {
+	  public static function debug( $message ) {
 
-	  	 	 if( $this->debug || AgilePHP::getFramework()->isInDebugMode() )
-	  		 	 $this->write( $message, 'DEBUG' );
+	  	 	 if( self::$level == 'debug' || AgilePHP::getFramework()->isInDebugMode() )
+	  		 	 self::write( $message, 'DEBUG' );
 	  }
 
 	  /**
@@ -81,10 +65,11 @@ class Logger {
 	   * 
 	   * @param String $message The warning message to log
 	   * @return void
+	   * @static
 	   */
-	  public function warn( $message ) {
+	  public static function warn( $message ) {
 
-	  		 $this->write( $message, 'WARN' );
+	  		 self::write( $message, 'WARN' );
 	  }
 
 	  /**
@@ -92,10 +77,11 @@ class Logger {
 	   * 
 	   * @param String $message The informative message to log
 	   * @return void
+	   * @static
 	   */
-	  public function info( $message ) {
+	  public static function info( $message ) {
 
-	  		 $this->write( $message, 'INFO' );
+	  		 self::write( $message, 'INFO' );
 	  }
 
 	  /**
@@ -103,10 +89,11 @@ class Logger {
 	   * 
 	   * @param String $message The error message to log.
 	   * @return void
+	   * @static
 	   */
-	  public function error( $message ) {
+	  public static function error( $message ) {
 
-	  		 $this->write( $message, 'ERROR' );
+	  		 self::write( $message, 'ERROR' );
 	  }
 
 	  /**
@@ -115,8 +102,9 @@ class Logger {
 	   * @param String $message The message to log
 	   * @param String $level The 'log level' (warn|info|error|debug)
 	   * @return void
+	   * @static
 	   */
-	  private function write( $message, $level ) {
+	  private static function write( $message, $level ) {
 
 	  		  $address = (isset( $_SERVER['REMOTE_ADDR'] )) ? $_SERVER['REMOTE_ADDR'] : 'localhost';
 

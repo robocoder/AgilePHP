@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.2a
  * @abstract
  */
 abstract class BaseModelXmlController extends BaseModelController {
@@ -100,8 +99,8 @@ abstract class BaseModelXmlController extends BaseModelController {
 	  			   $xml .= '<fieldCount>' . $fieldCount . '</fieldCount>
 	  			 	   	</Form>';
 
-	  			   Logger::getInstance()->debug( 'BaseModelXmlController::getModelAsFormXML called with parameters controller = ' . $controller . ', action = ' . $action );
-	  			   Logger::getInstance()->debug( 'BaseModelXmlController::getModelAsFormXML returning xml ' . $xml );
+	  			   Logger::debug( 'BaseModelXmlController::getModelAsFormXML called with parameters controller = ' . $controller . ', action = ' . $action );
+	  			   Logger::debug( 'BaseModelXmlController::getModelAsFormXML returning xml ' . $xml );
 
   			 	   return $xml;
 	     }
@@ -255,7 +254,7 @@ abstract class BaseModelXmlController extends BaseModelController {
 
 			 	   $xml = $doc->saveXML();
 			 	   
-			 	   Logger::getInstance()->debug( 'BaseModelXmlController::getResultListAsXML ' . $xml );
+			 	   Logger::debug( 'BaseModelXmlController::getResultListAsXML ' . $xml );
 
 	  			   return $xml;
 	     }

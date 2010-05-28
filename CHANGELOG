@@ -1,4 +1,1 @@
-- Refactored Logger class to be completely static (and updated all packages accordingly)
-- Deleted stale unit testing and build related files
-- Removed PHTMLRenderer::renderComponent.
-- Hooks in place for integrating custom/specified validators for persistence columns
+- apidoc and build updates

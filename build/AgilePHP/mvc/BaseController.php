@@ -27,8 +27,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.2a
- * @static
  * @abstract
  */
 abstract class BaseController {

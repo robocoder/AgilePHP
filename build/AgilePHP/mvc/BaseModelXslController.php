@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.2a
  * @abstract
  */
 abstract class BaseModelXslController extends BaseModelXmlController {
@@ -221,7 +220,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 									</xsl:template>
 								</xsl:stylesheet>';
 
-				   Logger::getInstance()->debug( 'BaseModelXslController::getModelListXSL Returning ' . $xsl );
+				   Logger::debug( 'BaseModelXslController::getModelListXSL Returning ' . $xsl );
 
 	     		   return $xsl;
 	     }
@@ -249,7 +248,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 				   $form->setMode( $this->getModelPersistenceAction() );
 	     	       $xsl = $form->getXSL( $pkeyValues, $this->getPage() );
 
-	     	       Logger::getInstance()->debug( 'BaseModelXslController::getModelFormXSL Returning ' . $xsl );
+	     	       Logger::debug( 'BaseModelXslController::getModelFormXSL Returning ' . $xsl );
 
 	     	       return $xsl;
 	     }

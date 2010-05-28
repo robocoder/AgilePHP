@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.2a
  */
 class Upload {
 
@@ -93,7 +92,7 @@ class Upload {
 	  		 $name = ($filename) ? $filename : $_FILES[ $this->getName() ]['name'];
 			 $target = $this->getDirectory() . DIRECTORY_SEPARATOR . $name;
 
-			 Logger::getInstance()->debug( 'Upload::save Saving upload with name \'' . $this->getName() . '\' to target path \'' . $target . '\'.' );
+			 Logger::debug( 'Upload::save Saving upload with name \'' . $this->getName() . '\' to target path \'' . $target . '\'.' );
 
 			 if( !move_uploaded_file( $_FILES[ $this->getName() ]['tmp_name'], $target ) ) {
 
@@ -130,14 +129,14 @@ class Upload {
 
 			 	 if( !$error ) return;
 
-			 	 Logger::getInstance()->debug( 'Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.' );
+			 	 Logger::debug( 'Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.' );
 
 			 	 throw new AgilePHP_PersistenceException( $error, $_FILES[ $this->getName() ]['error'] );
 			 }
 
 			 chmod( $target, 0755 );
 
-			 Logger::getInstance()->debug( 'Upload::save Upload successfully saved' );
+			 Logger::debug( 'Upload::save Upload successfully saved' );
 
 			 return $target;
 	  }
@@ -150,9 +149,9 @@ class Upload {
 	  public function delete() {
 
 	  		 if( !unlink( $this->getDirectory() .'/' . $_FILES[ $this->getName() ]['name'] ) )
-	  		 	 Logger::getInstance()->debug( 'Upload::delete Failed to delete upload' );
+	  		 	 Logger::debug( 'Upload::delete Failed to delete upload' );
 	  		 else
-	  		 	 Logger::getInstance()->debug( 'Upload::delete Delete successful' );
+	  		 	 Logger::debug( 'Upload::delete Delete successful' );
 	  }
 }
 ?>

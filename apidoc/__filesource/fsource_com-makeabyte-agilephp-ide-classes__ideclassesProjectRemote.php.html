@@ -61,7 +61,7 @@
 <li><div class="src-line"><a name="a48"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-var">$name&nbsp;</span>=&nbsp;<span class="src-var">$config</span><span class="src-sym">-&gt;</span><span class="src-id">name</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line"><a name="a49"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$<span class="src-var">$name&nbsp;</span>=&nbsp;<span class="src-var">$config</span><span class="src-sym">-&gt;</span><span class="src-id">value</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line"><a name="a50"></a>&nbsp;</div></li>
-<li><div class="src-line"><a name="a51"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../com-makeabyte-agilephp/Logger.html">Logger</a></span><span class="src-sym">::</span><a href="../com-makeabyte-agilephp/Logger.html#methodgetInstance">getInstance</a><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">debug</span><span class="src-sym">(&nbsp;</span><span class="src-var">$name&nbsp;</span>.&nbsp;<span class="src-str">'&nbsp;=&nbsp;'&nbsp;</span>.&nbsp;$<span class="src-var">$name&nbsp;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a51"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-id"><a href="../com-makeabyte-agilephp/Logger.html">Logger</a></span><span class="src-sym">::</span><a href="../com-makeabyte-agilephp/Logger.html#methoddebug">debug</a><span class="src-sym">(&nbsp;</span><span class="src-var">$name&nbsp;</span>.&nbsp;<span class="src-str">'&nbsp;=&nbsp;'&nbsp;</span>.&nbsp;$<span class="src-var">$name&nbsp;</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
 <li><div class="src-line"><a name="a52"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
 <li><div class="src-line"><a name="a53"></a>&nbsp;</div></li>
 <li><div class="src-line"><a name="a54"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">if</span><span class="src-sym">(&nbsp;</span><span class="src-sym">!</span>isset<span class="src-sym">(&nbsp;</span><span class="src-var">$workspace&nbsp;</span><span class="src-sym">)&nbsp;)</span></div></li>
@@ -319,7 +319,7 @@
 <li><div class="src-line"><a name="a306"></a><span class="src-str">&nbsp;}</span></div></li>
 <li><div class="src-line"><a name="a307"></a><span class="src-str">&nbsp;catch(&nbsp;Exception&nbsp;$e&nbsp;)&nbsp;{</span></div></li>
 <li><div class="src-line"><a name="a308"></a>&nbsp;</div></li>
-<li><div class="src-line"><a name="a309"></a><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logger::getInstance()-&gt;error(&nbsp;$e-&gt;getMessage()&nbsp;);</span></div></li>
+<li><div class="src-line"><a name="a309"></a><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logger::error(&nbsp;$e-&gt;getMessage()&nbsp;);</span></div></li>
 <li><div class="src-line"><a name="a310"></a>&nbsp;</div></li>
 <li><div class="src-line"><a name="a311"></a><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$renderer&nbsp;=&nbsp;new&nbsp;PHTMLRenderer();</span></div></li>
 <li><div class="src-line"><a name="a312"></a><span class="src-str">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$renderer-&gt;set(&nbsp;\'title\',&nbsp;\''&nbsp;</span>.&nbsp;<span class="src-var">$this</span><span class="src-sym">-&gt;</span><span class="src-var">projectName&nbsp;</span>.&nbsp;<span class="src-str">'&nbsp;::&nbsp;Error&nbsp;Page\'&nbsp;);</span></div></li>
@@ -547,7 +547,7 @@
 </ol></div>
 </div>
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 27 May 2010 00:08:00 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Thu, 27 May 2010 23:50:35 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</body>
 </html>

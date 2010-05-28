@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.2a
  */
 class Form {
 
@@ -573,7 +572,7 @@ class Form {
 		  		        </xsl:template>
 					  </xsl:stylesheet>';
 
-	  		   Logger::getInstance()->debug( $xsl );
+	  		   Logger::debug( $xsl );
 
 	  		   return $xsl;
 	  }

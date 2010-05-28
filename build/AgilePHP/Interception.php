@@ -33,7 +33,6 @@ require_once 'interception/InvocationContext.php';
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp
- * @version 0.3a
  */
 
 class Interception {

@@ -26,7 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception.interceptors
- * @version 0.1a
  * <code>
  * #@Password
  * public function setPassword( $myPassword ) {
@@ -88,14 +87,14 @@ class Password {
 	  		 	 $params[$this->parameter] = $crypto->getDigest( $params[$this->parameter] );
 	  		 	 $ic->setParameters( $params );
 
-	  		 	 Logger::getInstance()->debug( $logMessage );
+	  		 	 Logger::debug( $logMessage );
 
 	  		 	 return $ic->proceed();
 	  		 }
 
 			 $ic->setParameters( array( $crypto->getDigest( $params[0] ) ) );
 
-			 Logger::getInstance()->debug( $logMessage );
+			 Logger::debug( $logMessage );
 
 			 return $ic->proceed();
 	  }

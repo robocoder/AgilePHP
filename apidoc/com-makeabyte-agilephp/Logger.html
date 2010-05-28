@@ -21,14 +21,13 @@
 					</div>
 	<div class="info-box-body">
         		<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Performs basic logging functionality</p>
+<p class="short-description">Responsible for basic disk logging</p>
 	<ul class="tags">
 				<li><span class="field">author:</span> Jeremy Hahn</li>
-				<li><span class="field">version:</span> 0.2a</li>
 				<li><span class="field">copyright:</span> Make A Byte, inc</li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_build---AgilePHP---Logger.php.html">/build/AgilePHP/Logger.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a30">30</a></span>)
+			Located in <a class="field" href="_build---AgilePHP---Logger.php.html">/build/AgilePHP/Logger.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a29">29</a></span>)
 		</p>
 		
 				
@@ -49,43 +48,37 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																										
+										
 				<div class="method-definition">
-					static 						<span class="method-result">An</span>
-										<a href="#getInstance" title="details" class="method-name">getInstance</a>
-										()
-									</div>
-																																										
-				<div class="method-definition">
-											<span class="method-result">void</span>
+					static 						<span class="method-result">void</span>
 										<a href="#debug" title="details" class="method-name">debug</a>
 											(<span class="var-type">String</span>&nbsp;<span class="var-name">$message</span>)
 									</div>
 														
 				<div class="method-definition">
-											<span class="method-result">void</span>
+					static 						<span class="method-result">void</span>
 										<a href="#error" title="details" class="method-name">error</a>
 											(<span class="var-type">String</span>&nbsp;<span class="var-name">$message</span>)
 									</div>
-																						
+														
 				<div class="method-definition">
-											<span class="method-result">void</span>
+					static 						<span class="method-result">void</span>
 										<a href="#info" title="details" class="method-name">info</a>
 											(<span class="var-type">String</span>&nbsp;<span class="var-name">$message</span>)
 									</div>
 														
 				<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#setConfig" title="details" class="method-name">setConfig</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$config</span>)
+					static 						<span class="method-result">void</span>
+										<a href="#setLevel" title="details" class="method-name">setLevel</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$level</span>)
 									</div>
 														
 				<div class="method-definition">
-											<span class="method-result">void</span>
+					static 						<span class="method-result">void</span>
 										<a href="#warn" title="details" class="method-name">warn</a>
 											(<span class="var-type">String</span>&nbsp;<span class="var-name">$message</span>)
 									</div>
-											</div>
+																																																							</div>
 		</div>
 	</div>		
 
@@ -100,36 +93,11 @@
 		</div>
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
-<a name="methodgetInstance" id="getInstance"><!-- --></a>
-<div class="evenrow">
-	
-	<div class="method-header">
-		<span class="method-title">static getInstance</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a46">46</a></span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Factory method that creates an instance of the configured Logger. If  a logger has not been configured in agilephp.xml, an instance of  'FileLogger' is returned.</p>
-	<ul class="tags">
-				<li><span class="field">return:</span> instance of the configured logger in agilephp.xml. Default is 'FileLogger'.</li>
-				<li><span class="field">access:</span> public</li>
-			</ul>
-	
-	<div class="method-signature">
-		static <span class="method-result">An</span>
-		<span class="method-name">
-			getInstance
-		</span>
-				()
-			</div>
-	
-		
-			
-	</div>
 <a name="methoddebug" id="debug"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">debug</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a73">73</a></span>)
+		<span class="method-title">static debug</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a57">57</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -139,7 +107,7 @@
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		static <span class="method-result">void</span>
 		<span class="method-name">
 			debug
 		</span>
@@ -158,7 +126,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">error</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a107">107</a></span>)
+		<span class="method-title">static error</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a94">94</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -168,7 +136,7 @@
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		static <span class="method-result">void</span>
 		<span class="method-name">
 			error
 		</span>
@@ -187,7 +155,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">info</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a96">96</a></span>)
+		<span class="method-title">static info</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a82">82</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -197,7 +165,7 @@
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		static <span class="method-result">void</span>
 		<span class="method-name">
 			info
 		</span>
@@ -212,11 +180,11 @@
 		
 			
 	</div>
-<a name="methodsetConfig" id="setConfig"><!-- --></a>
+<a name="methodsetLevel" id="setLevel"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setConfig</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a61">61</a></span>)
+		<span class="method-title">static setLevel</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a45">45</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -226,17 +194,17 @@
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		static <span class="method-result">void</span>
 		<span class="method-name">
-			setConfig
+			setLevel
 		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$config</span>)
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$level</span>)
 			</div>
 	
 			<ul class="parameters">
 					<li>
-				<span class="var-type">SimpleXMLElement</span>
-				<span class="var-name">$config</span><span class="var-description">: The SimpleXMLElement containing the agilephp.xml Logger configuration</span>			</li>
+				<span class="var-type">string</span>
+				<span class="var-name">$level</span><span class="var-description">: The logging level (INFO|WARN|ERROR|DEBUG)</span>			</li>
 				</ul>
 		
 			
@@ -245,7 +213,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">warn</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a85">85</a></span>)
+		<span class="method-title">static warn</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPLogger.php.html#a70">70</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -255,7 +223,7 @@
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">void</span>
+		static <span class="method-result">void</span>
 		<span class="method-name">
 			warn
 		</span>
@@ -276,7 +244,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 27 May 2010 00:07:12 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Thu, 27 May 2010 23:49:36 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

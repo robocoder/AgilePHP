@@ -40,7 +40,6 @@ require_once 'identity/IdentityModel.php';
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.3a
  */
 class Identity implements IdentityManager {
 
@@ -57,8 +56,8 @@ class Identity implements IdentityManager {
 
 	  private function __construct() {
 
-	  		  // agilephp.xml configuration
-	  		  $xml = AgilePHP::getFramework()->getXmlConfiguration();
+	  		  $agilephp_xml = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
+	  		  $xml = simplexml_load_file( $agilephp_xml );
 
 	  		  if( !$xml->identity )
 	  		  	  throw new AgilePHP_Exception( 'Identity component requires a valid component configuration entry in agilephp.xml' );
@@ -67,13 +66,13 @@ class Identity implements IdentityManager {
 
 	  	      	  $this->model = new $model();
 		  		  $this->modelName = $model;
-		  		  Logger::getInstance()->debug( 'Identity::__construct Initalizing domain model object \'' . $this->getModelName() . '\'.' );
+		  		  Logger::debug( 'Identity::__construct Initalizing domain model object \'' . $this->getModelName() . '\'.' );
 	  	      }
 	  	      else {
 
 	  	      	  $this->model = new User();
 	  	      	  $this->modelName = 'User';
-	  	      	  Logger::getInstance()->debug( 'Identity::__construct Initalizing with framework \'User\' domain model object.' );
+	  	      	  Logger::debug( 'Identity::__construct Initalizing with framework \'User\' domain model object.' );
 	  	      }
 
 	  		  $passwordResetUrl = (string)$xml->identity->attributes()->resetPasswordUrl;
@@ -431,7 +430,7 @@ class Identity implements IdentityManager {
 
 	  		 if( !$this->getModel() ) throw new AgilePHP_Exception( 'Identity::login Valid user domain model required' );
 
-	  	     Logger::getInstance()->debug( 'Identity::login Authenticating username \'' . $username . '\' with password \'' . $password . '\'.' );
+	  	     Logger::debug( 'Identity::login Authenticating username \'' . $username . '\' with password \'' . $password . '\'.' );
 	  	     
 	  		 $this->getModel()->setUsername( $username );
 
@@ -477,7 +476,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function logout() {
 
-	  		 Logger::getInstance()->debug( 'Identity::logout' );
+	  		 Logger::debug( 'Identity::logout' );
 	  		 if( isset( $this->session ) ) $this->session->destroy();
 	  }
 
@@ -598,7 +597,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function __destruct() {
 
-	  		 Logger::getInstance()->debug( 'Identity::__destruct Instance destroyed' );
+	  		 Logger::debug( 'Identity::__destruct Instance destroyed' );
 	  }
 }
 ?>

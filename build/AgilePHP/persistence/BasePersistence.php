@@ -33,7 +33,6 @@ require_once 'ForeignKey.php';
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.persistence
- * @version 0.2a
  * @abstract
  */
 abstract class BasePersistence {
@@ -183,7 +182,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function beginTransaction() {
 
-	  		    Logger::getInstance()->debug( 'BasePersistence::beginTransaction Beginning transaction' );
+	  		    Logger::debug( 'BasePersistence::beginTransaction Beginning transaction' );
 
 	  		    try {
 	  		   	 	  $this->pdo->beginTransaction();
@@ -205,7 +204,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function commit() {
 
-	  		    Logger::getInstance()->debug( 'BasePersistence::commit Transaction successfully committed' );
+	  		    Logger::debug( 'BasePersistence::commit Transaction successfully committed' );
 
 	  		    try {
 	  		   		  $this->pdo->commit();
@@ -229,7 +228,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function rollBack( $message = null, $code = 0 ) {
 
-	  		    Logger::getInstance()->debug( 'BasePersistence::rollBack' . (($message == null) ? '' : ' ' . $message ));
+	  		    Logger::debug( 'BasePersistence::rollBack' . (($message == null) ? '' : ' ' . $message ));
 
 	  		    try {
 	  		    	  $this->pdo->rollBack();
@@ -252,7 +251,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function prepare( $statement ) {
 
-	  		    Logger::getInstance()->debug( 'BasePersistence::prepare Preparing' . 
+	  		    Logger::debug( 'BasePersistence::prepare Preparing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'statement ' . $statement );
 
@@ -284,7 +283,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function execute( array $inputParameters = array() ) {
 
-	  		    Logger::getInstance()->debug( 'BasePersistence::execute Executing' . 
+	  		    Logger::debug( 'BasePersistence::execute Executing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
@@ -330,7 +329,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function exec( $statement ) {
 
-	  		    Logger::getInstance()->debug( 'BasePersistence::exec Executing raw' . 
+	  		    Logger::debug( 'BasePersistence::exec Executing raw' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'PDO::exec query ' . $sql );
 
@@ -347,7 +346,7 @@ abstract class BasePersistence {
 	   	  */
 	  	 public function query( $sql ) {
 
-	  		    Logger::getInstance()->debug( 'BasePersistence::query Executing' . 
+	  		    Logger::debug( 'BasePersistence::query Executing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'raw PDO::query ' . $sql );
 
@@ -392,7 +391,7 @@ abstract class BasePersistence {
 	   		   $values = array();
 			   $table = $this->getTableByModel( $model );
 
-			   Logger::getInstance()->debug( 'BasePersistence::persist Performing persist on model \'' . $table->getModel() . '\'.' );
+			   Logger::debug( 'BasePersistence::persist Performing persist on model \'' . $table->getModel() . '\'.' );
 
 	   		   $this->validate( $table, true );
 
@@ -469,7 +468,7 @@ abstract class BasePersistence {
 	    	   $this->model = $model;
 	    	   $table = $this->getTableByModel( $model );
 
-	    	   Logger::getInstance()->debug( 'BasePersistence::merge Performing merge on model \'' . $table->getModel() . '\'.' );
+	    	   Logger::debug( 'BasePersistence::merge Performing merge on model \'' . $table->getModel() . '\'.' );
 
 	    	   $this->model = $model;
 	  	       $values = array();
@@ -557,7 +556,7 @@ abstract class BasePersistence {
 
 	      	   $table = $this->getTableByModel( $model );
 
-	      	   Logger::getInstance()->debug( 'BasePersistence::delete Performing delete on model \'' . $table->getModel() . '\'.' );
+	      	   Logger::debug( 'BasePersistence::delete Performing delete on model \'' . $table->getModel() . '\'.' );
 
 	    	   $values = array();
 		       $columns = $table->getPrimaryKeyColumns();
@@ -609,7 +608,7 @@ abstract class BasePersistence {
 			   $newModel = $table->getModelInstance();
 			   $values = array();
 
-			   Logger::getInstance()->debug( 'BasePersistence::find Performing find on model \'' . $table->getModel() . '\'.' );
+			   Logger::debug( 'BasePersistence::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		   try {
 	  		   		 if( $this->isEmpty( $model ) ) {
@@ -655,7 +654,7 @@ abstract class BasePersistence {
 
 					 if( !count( $result ) ) {
 
-					 	 Logger::getInstance()->debug( 'BasePersistence::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	 Logger::debug( 'BasePersistence::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	 return null;
 					 }
 
@@ -1187,7 +1186,7 @@ abstract class BasePersistence {
 	  		  }
 	  		  catch( Exception $e ) {
 
-	  		  		 Logger::getInstance()->debug( 'BasePersistence::compare ' . $e->getMessage() );
+	  		  		 Logger::debug( 'BasePersistence::compare ' . $e->getMessage() );
 	  		  		 return false;
 	  		  }
 
@@ -1337,7 +1336,7 @@ abstract class BasePersistence {
 				  	           if( $length > $column->getLength() ) {
 
 				  	           	   $message = 'BasePersistence::checkSize Persistence validation failed on property \'' . $columnName . '\'. Length attribute defined in persistence.xml with a length of \'' . $column->getLength() . '\' but the property has a length of \'' . $length . '\'.';
-				  	           	   Logger::getInstance()->debug( $message . "\n\$table = " . print_r( $table, true ) . ", \$columnName = " . $columnName . ', value = ' . $value );
+				  	           	   Logger::debug( $message . "\n\$table = " . print_r( $table, true ) . ", \$columnName = " . $columnName . ', value = ' . $value );
 				  	               throw new AgilePHP_PersistenceException( $message );
 				  	           }
               	       	   }

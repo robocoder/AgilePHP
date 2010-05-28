@@ -25,37 +25,10 @@
 <p class="short-description">AgilePHP interceptor responsible for throwing an AgilePHP_AccessDeniedException if  the current logged in user (represented by the state of the Identity component)  does not contain the specified role.</p>
 	<ul class="tags">
 				<li><span class="field">author:</span> Jeremy Hahn</li>
-				<li><span class="field">version:</span> <p>0.2a  <div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-comm">#@Restrict(&nbsp;role&nbsp;=&nbsp;'admin'&nbsp;)</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">methodThatRequiresCertainRole</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Some&nbsp;logic&nbsp;that&nbsp;requires&nbsp;the&nbsp;current&nbsp;logged&nbsp;in&nbsp;user</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;to&nbsp;be&nbsp;a&nbsp;member&nbsp;of&nbsp;the&nbsp;'admin'&nbsp;role.</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
-</ol></div></p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-comm">#@Restrict(&nbsp;role&nbsp;=&nbsp;'admin',&nbsp;message&nbsp;=&nbsp;'Your&nbsp;not&nbsp;allowed&nbsp;here!'&nbsp;)</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">methodThatRequiresCertainRole</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Some&nbsp;logic&nbsp;that&nbsp;requires&nbsp;the&nbsp;current&nbsp;logged&nbsp;in&nbsp;user</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;to&nbsp;be&nbsp;a&nbsp;member&nbsp;of&nbsp;the&nbsp;'admin'&nbsp;role&nbsp;and&nbsp;will&nbsp;use&nbsp;the</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;message&nbsp;'Your&nbsp;not&nbsp;allowed&nbsp;here!'&nbsp;in&nbsp;the&nbsp;AccessDeniedException</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
-</ol></div></p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-comm">#@Restrict(&nbsp;roles&nbsp;=&nbsp;{&nbsp;'admin',&nbsp;'member'&nbsp;},&nbsp;message&nbsp;=&nbsp;'Your&nbsp;not&nbsp;allowed&nbsp;here!'&nbsp;)</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">methodThatRequiresCertainRole</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Some&nbsp;logic&nbsp;that&nbsp;requires&nbsp;the&nbsp;current&nbsp;logged&nbsp;in&nbsp;user</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;to&nbsp;be&nbsp;a&nbsp;member&nbsp;of&nbsp;one&nbsp;of&nbsp;the&nbsp;specified&nbsp;roles&nbsp;in&nbsp;the&nbsp;roles&nbsp;array</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
-</ol></div></p><p><div class="src-code"><ol><li><div class="src-line">&nbsp;<span class="src-comm">#@Restrict(&nbsp;roles&nbsp;=&nbsp;{&nbsp;'admin',&nbsp;'member'&nbsp;},&nbsp;message&nbsp;=&nbsp;'Your&nbsp;not&nbsp;allowed&nbsp;here!'&nbsp;)</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><span class="src-id">methodThatRequiresCertainRole</span><span class="src-sym">(</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
-<li><div class="src-line">&nbsp;</div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;Some&nbsp;logic&nbsp;that&nbsp;requires&nbsp;the&nbsp;current&nbsp;logged&nbsp;in&nbsp;user</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;to&nbsp;be&nbsp;a&nbsp;member&nbsp;of&nbsp;one&nbsp;of&nbsp;the&nbsp;specified&nbsp;roles&nbsp;in&nbsp;the&nbsp;array&nbsp;argument.</span></div></li>
-<li><div class="src-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">//&nbsp;If&nbsp;not&nbsp;a&nbsp;member,&nbsp;use&nbsp;the&nbsp;message&nbsp;parameter&nbsp;in&nbsp;the&nbsp;exception&nbsp;message.</span></div></li>
-<li><div class="src-line">&nbsp;<span class="src-sym">}</span></div></li>
-</ol></div></p></li>
 				<li><span class="field">copyright:</span> Make A Byte, inc</li>
 			</ul>
 		<p class="notes">
-			Located in <a class="field" href="_build---AgilePHP---interception---interceptors---Restrict.php.html">/build/AgilePHP/interception/interceptors/Restrict.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a71">71</a></span>)
+			Located in <a class="field" href="_build---AgilePHP---interception---interceptors---Restrict.php.html">/build/AgilePHP/interception/interceptors/Restrict.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a70">70</a></span>)
 		</p>
 		
 				
@@ -131,13 +104,13 @@
 		<div class="info-box-body">
 			
 <a name="var$message" id="$message"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">String</span>
 			<span class="var-name">$message</span>
-						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a93">93</a></span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a92">92</a></span>)
 		</span>
 	</div>
 
@@ -154,13 +127,13 @@
 
 </div>
 <a name="var$role" id="$role"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">String</span>
 			<span class="var-name">$role</span>
-						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a78">78</a></span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a77">77</a></span>)
 		</span>
 	</div>
 
@@ -177,13 +150,13 @@
 
 </div>
 <a name="var$roles" id="$roles"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
 		<span class="var-title">
 			<span class="var-type">Array</span>
 			<span class="var-name">$roles</span>
-						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a85">85</a></span>)
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a84">84</a></span>)
 		</span>
 	</div>
 
@@ -215,10 +188,10 @@
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
 <a name="methodrequireRole" id="requireRole"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">requireRole</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a96">96</a></span>)
+		<span class="method-title">requireRole</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-interception-interceptors__buildAgilePHPinterceptioninterceptorsRestrict.php.html#a95">95</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -248,7 +221,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 27 May 2010 00:08:08 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Thu, 27 May 2010 23:50:44 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

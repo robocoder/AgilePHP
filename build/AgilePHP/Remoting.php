@@ -26,7 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
  * @abstract
  */
 abstract class Remoting extends BaseController {
@@ -83,7 +82,7 @@ abstract class Remoting extends BaseController {
 
 	  		   $sessionId = Scope::getInstance()->getSessionScope()->getSessionId();
 
-	  		   Logger::getInstance()->debug( 'Remoting::getSessionId Returning session id \'' . $sessionId . '\'.' );
+	  		   Logger::debug( 'Remoting::getSessionId Returning session id \'' . $sessionId . '\'.' );
 
 	  		   return $sessionId;
 	  	 }
@@ -193,7 +192,7 @@ abstract class Remoting extends BaseController {
 	    	     $constructorArgs = $this->decode( $request->getSanitized( 'constructorArgs' ) );
 	    	     $args = $this->decode( $request->getSanitized( 'parameters' ) );
 
-	  		     Logger::getInstance()->debug( 'Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
+	  		     Logger::debug( 'Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
 	  		 	   	 '\', constructorArgs \'' . print_r( $constructorArgs, true ) . '\', args \'' . print_r( $args, true ) . '\'.' );
 
 	  		     try {
@@ -241,7 +240,7 @@ abstract class Remoting extends BaseController {
 
 		  		  if( !$data ) return;
 
-		  		  Logger::getInstance()->debug( 'Remoting::decode ' . $data );
+		  		  Logger::debug( 'Remoting::decode ' . $data );
 
 		  		  $o = json_decode( htmlspecialchars_decode( stripslashes( urldecode( $data ) ) ) );
 		  		  if( !is_object( $o ) )

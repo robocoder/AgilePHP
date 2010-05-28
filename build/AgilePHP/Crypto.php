@@ -40,7 +40,8 @@ class Crypto {
 	   */
 	  public function __construct() {
 
-	  		 $xml = AgilePHP::getFramework()->getXmlConfiguration();
+	  		 $agilephp_xml = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
+	  		 $xml = simplexml_load_file( $agilephp_xml );
 
 	  	     if( $xml->crypto ) {
 

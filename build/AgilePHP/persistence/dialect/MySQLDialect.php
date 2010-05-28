@@ -25,7 +25,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.persistence.dialect
- * @version 0.2a
  */
 class MySQLDialect extends BasePersistence implements SQLDialect {
 
@@ -45,7 +44,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	  	     }
 	  	     catch( PDOException $pdoe ) {
 
-	  	     	    Logger::getInstance()->debug( 'MySQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
+	  	     	    Logger::debug( 'MySQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
 
 	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
 	  	     		// be invoked to create the database schema.

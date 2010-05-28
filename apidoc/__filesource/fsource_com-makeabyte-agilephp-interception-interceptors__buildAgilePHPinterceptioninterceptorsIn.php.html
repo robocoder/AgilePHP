@@ -39,53 +39,52 @@
 <li><div class="src-line"><a name="a26"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@author</span><span class="src-doc">&nbsp;Jeremy&nbsp;Hahn</span></div></li>
 <li><div class="src-line"><a name="a27"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@copyright</span><span class="src-doc">&nbsp;Make&nbsp;A&nbsp;Byte,&nbsp;inc</span></div></li>
 <li><div class="src-line"><a name="a28"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@package</span><span class="src-doc">&nbsp;com.makeabyte.agilephp.interception.interceptors</span></div></li>
-<li><div class="src-line"><a name="a29"></a><span class="src-doc">&nbsp;*&nbsp;</span><span class="src-doc-coretag">@version</span><span class="src-doc">&nbsp;0.1a</span></div></li>
-<li><div class="src-line"><a name="a30"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&lt;code&gt;</span></div></li>
-<li><div class="src-line"><a name="a31"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;class&nbsp;MyClass&nbsp;{</span></div></li>
-<li><div class="src-line"><a name="a32"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
-<li><div class="src-line"><a name="a33"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;#@In(&nbsp;class&nbsp;=&nbsp;new&nbsp;MyClass2()&nbsp;)</span></div></li>
-<li><div class="src-line"><a name="a34"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;public&nbsp;$myClasss;</span></div></li>
-<li><div class="src-line"><a name="a35"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
-<li><div class="src-line"><a name="a36"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;public&nbsp;function&nbsp;invokeMe()&nbsp;{</span></div></li>
-<li><div class="src-line"><a name="a37"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
-<li><div class="src-line"><a name="a38"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;myClass2-&gt;someMethod();</span></div></li>
-<li><div class="src-line"><a name="a39"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;}</span></div></li>
-<li><div class="src-line"><a name="a40"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
-<li><div class="src-line"><a name="a41"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;}</span></div></li>
-<li><div class="src-line"><a name="a42"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&lt;/code&gt;</span></div></li>
-<li><div class="src-line"><a name="a43"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
-<li><div class="src-line"><a name="a44"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&lt;code&gt;</span></div></li>
-<li><div class="src-line"><a name="a45"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;class&nbsp;MyClass&nbsp;{</span></div></li>
-<li><div class="src-line"><a name="a46"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
-<li><div class="src-line"><a name="a47"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;#@In(&nbsp;class&nbsp;=&nbsp;MySingleton::getInstance()&nbsp;)</span></div></li>
-<li><div class="src-line"><a name="a48"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;public&nbsp;$mySingleton;</span></div></li>
-<li><div class="src-line"><a name="a49"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
-<li><div class="src-line"><a name="a50"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;public&nbsp;function&nbsp;invokeMe()&nbsp;{</span></div></li>
-<li><div class="src-line"><a name="a51"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
-<li><div class="src-line"><a name="a52"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$singleton&nbsp;=&nbsp;$this-&gt;mySingleton;</span></div></li>
-<li><div class="src-line"><a name="a53"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$singleton::someMethod();</span></div></li>
-<li><div class="src-line"><a name="a54"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;}</span></div></li>
-<li><div class="src-line"><a name="a55"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
-<li><div class="src-line"><a name="a56"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;}</span></div></li>
-<li><div class="src-line"><a name="a57"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&lt;/code&gt;</span></div></li>
-<li><div class="src-line"><a name="a58"></a><span class="src-doc">&nbsp;*/</span></div></li>
-<li><div class="src-line"><a name="a59"></a>&nbsp;</div></li>
-<li><div class="src-line"><a name="a60"></a><span class="src-comm">#@Interceptor</span></div></li>
-<li><div class="src-line"><a name="a61"></a><span class="src-key">class&nbsp;</span><a href="../com-makeabyte-agilephp-interception-interceptors/In.html">In</a>&nbsp;<span class="src-sym">{</span></div></li>
-<li><div class="src-line"><a name="a62"></a>&nbsp;</div></li>
-<li><div class="src-line"><a name="a63"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><a href="../com-makeabyte-agilephp-interception-interceptors/In.html#var$class">$class</a><span class="src-sym">;</span></div></li>
-<li><div class="src-line"><a name="a64"></a>&nbsp;</div></li>
-<li><div class="src-line"><a name="a65"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">#@AroundInvoke</span></div></li>
-<li><div class="src-line"><a name="a66"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><a href="../com-makeabyte-agilephp-interception-interceptors/In.html#methodsetValue">setValue</a><span class="src-sym">(&nbsp;</span><span class="src-id">InvocationContext&nbsp;</span><span class="src-var">$ic&nbsp;</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
-<li><div class="src-line"><a name="a67"></a>&nbsp;</div></li>
-<li><div class="src-line"><a name="a68"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">return&nbsp;</span><span class="src-var">$ic</span><span class="src-sym">-&gt;</span><span class="src-id">getInterceptor</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">class</span><span class="src-sym">;</span></div></li>
-<li><div class="src-line"><a name="a69"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
-<li><div class="src-line"><a name="a70"></a><span class="src-sym">}</span></div></li>
-<li><div class="src-line"><a name="a71"></a><span class="src-php">?&gt;</span></div></li>
+<li><div class="src-line"><a name="a29"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&lt;code&gt;</span></div></li>
+<li><div class="src-line"><a name="a30"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;class&nbsp;MyClass&nbsp;{</span></div></li>
+<li><div class="src-line"><a name="a31"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a32"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;#@In(&nbsp;class&nbsp;=&nbsp;new&nbsp;MyClass2()&nbsp;)</span></div></li>
+<li><div class="src-line"><a name="a33"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;public&nbsp;$myClasss;</span></div></li>
+<li><div class="src-line"><a name="a34"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a35"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;public&nbsp;function&nbsp;invokeMe()&nbsp;{</span></div></li>
+<li><div class="src-line"><a name="a36"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a37"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;myClass2-&gt;someMethod();</span></div></li>
+<li><div class="src-line"><a name="a38"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;}</span></div></li>
+<li><div class="src-line"><a name="a39"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a40"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;}</span></div></li>
+<li><div class="src-line"><a name="a41"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&lt;/code&gt;</span></div></li>
+<li><div class="src-line"><a name="a42"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a43"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&lt;code&gt;</span></div></li>
+<li><div class="src-line"><a name="a44"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;class&nbsp;MyClass&nbsp;{</span></div></li>
+<li><div class="src-line"><a name="a45"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a46"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;#@In(&nbsp;class&nbsp;=&nbsp;MySingleton::getInstance()&nbsp;)</span></div></li>
+<li><div class="src-line"><a name="a47"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;public&nbsp;$mySingleton;</span></div></li>
+<li><div class="src-line"><a name="a48"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a49"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;public&nbsp;function&nbsp;invokeMe()&nbsp;{</span></div></li>
+<li><div class="src-line"><a name="a50"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a51"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$singleton&nbsp;=&nbsp;$this-&gt;mySingleton;</span></div></li>
+<li><div class="src-line"><a name="a52"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$singleton::someMethod();</span></div></li>
+<li><div class="src-line"><a name="a53"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;}</span></div></li>
+<li><div class="src-line"><a name="a54"></a><span class="src-doc">&nbsp;*&nbsp;</span></div></li>
+<li><div class="src-line"><a name="a55"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;}</span></div></li>
+<li><div class="src-line"><a name="a56"></a><span class="src-doc">&nbsp;*&nbsp;&nbsp;&lt;/code&gt;</span></div></li>
+<li><div class="src-line"><a name="a57"></a><span class="src-doc">&nbsp;*/</span></div></li>
+<li><div class="src-line"><a name="a58"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a59"></a><span class="src-comm">#@Interceptor</span></div></li>
+<li><div class="src-line"><a name="a60"></a><span class="src-key">class&nbsp;</span><a href="../com-makeabyte-agilephp-interception-interceptors/In.html">In</a>&nbsp;<span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a61"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a62"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><a href="../com-makeabyte-agilephp-interception-interceptors/In.html#var$class">$class</a><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a63"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a64"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-comm">#@AroundInvoke</span></div></li>
+<li><div class="src-line"><a name="a65"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">public&nbsp;</span><span class="src-key">function&nbsp;</span><a href="../com-makeabyte-agilephp-interception-interceptors/In.html#methodsetValue">setValue</a><span class="src-sym">(&nbsp;</span><span class="src-id">InvocationContext&nbsp;</span><span class="src-var">$ic&nbsp;</span><span class="src-sym">)&nbsp;</span><span class="src-sym">{</span></div></li>
+<li><div class="src-line"><a name="a66"></a>&nbsp;</div></li>
+<li><div class="src-line"><a name="a67"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-key">return&nbsp;</span><span class="src-var">$ic</span><span class="src-sym">-&gt;</span><span class="src-id">getInterceptor</span><span class="src-sym">(</span><span class="src-sym">)</span><span class="src-sym">-&gt;</span><span class="src-id">class</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line"><a name="a68"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a69"></a><span class="src-sym">}</span></div></li>
+<li><div class="src-line"><a name="a70"></a><span class="src-php">?&gt;</span></div></li>
 </ol></div>
 </div>
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 27 May 2010 00:06:51 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Thu, 27 May 2010 23:49:10 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</body>
 </html>

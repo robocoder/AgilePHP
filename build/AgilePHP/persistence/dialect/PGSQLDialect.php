@@ -25,7 +25,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.persistence.dialect
- * @version 0.2a
+ * @todo COMPLETE - NOT READY FOR USE!!!
  */
 class PGSQLDialect extends BasePersistence implements SQLDialect {
 
@@ -51,7 +51,7 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 	  	     }
 	  	     catch( PDOException $pdoe ){
 
-	  	     	    Logger::getInstance()->debug( 'PostgreSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
+	  	     	    Logger::debug( 'PostgreSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
 
 	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
 	  	     		// be invoked to create the database schema.
