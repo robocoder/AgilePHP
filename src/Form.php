@@ -572,7 +572,7 @@ class Form {
 		  		        </xsl:template>
 					  </xsl:stylesheet>';
 
-	  		   Logger::debug( $xsl );
+	  		   Log::debug( $xsl );
 
 	  		   return $xsl;
 	  }

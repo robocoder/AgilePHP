@@ -66,13 +66,13 @@ class Identity implements IdentityManager {
 
 	  	      	  $this->model = new $model();
 		  		  $this->modelName = $model;
-		  		  Logger::debug( 'Identity::__construct Initalizing domain model object \'' . $this->getModelName() . '\'.' );
+		  		  Log::debug( 'Identity::__construct Initalizing domain model object \'' . $this->getModelName() . '\'.' );
 	  	      }
 	  	      else {
 
 	  	      	  $this->model = new User();
 	  	      	  $this->modelName = 'User';
-	  	      	  Logger::debug( 'Identity::__construct Initalizing with framework \'User\' domain model object.' );
+	  	      	  Log::debug( 'Identity::__construct Initalizing with framework \'User\' domain model object.' );
 	  	      }
 
 	  		  $passwordResetUrl = (string)$xml->identity->attributes()->resetPasswordUrl;
@@ -430,7 +430,7 @@ class Identity implements IdentityManager {
 
 	  		 if( !$this->getModel() ) throw new AgilePHP_Exception( 'Identity::login Valid user domain model required' );
 
-	  	     Logger::debug( 'Identity::login Authenticating username \'' . $username . '\' with password \'' . $password . '\'.' );
+	  	     Log::debug( 'Identity::login Authenticating username \'' . $username . '\' with password \'' . $password . '\'.' );
 	  	     
 	  		 $this->getModel()->setUsername( $username );
 
@@ -476,7 +476,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function logout() {
 
-	  		 Logger::debug( 'Identity::logout' );
+	  		 Log::debug( 'Identity::logout' );
 	  		 if( isset( $this->session ) ) $this->session->destroy();
 	  }
 
@@ -597,7 +597,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function __destruct() {
 
-	  		 Logger::debug( 'Identity::__destruct Instance destroyed' );
+	  		 Log::debug( 'Identity::__destruct Instance destroyed' );
 	  }
 }
 ?>

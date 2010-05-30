@@ -224,7 +224,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function beginTransaction() {
 	  	
-	  		 Logger::debug( 'SQLSRVDialect::beginTransaction Beginning transaction' );
+	  		 Log::debug( 'SQLSRVDialect::beginTransaction Beginning transaction' );
 	  }
 	  
 	  /**
@@ -235,7 +235,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
 	  		 sqlsrv_commit( $this->conn );
 
-	  		 Logger::debug( 'SQLSRVDialect::commit Transaction successfully committed.' );
+	  		 Log::debug( 'SQLSRVDialect::commit Transaction successfully committed.' );
 	  }
 	  
 	  /**
@@ -244,7 +244,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function rollBack( $message = null, $code = 0 ) {
 
-	  		 Logger::debug( 'SQLSRVDialect::rollBack ' . (($message == null) ? '' : ' ' . $message ) );
+	  		 Log::debug( 'SQLSRVDialect::rollBack ' . (($message == null) ? '' : ' ' . $message ) );
 
 	  		 $this->transactionInProgress = false;
 	  		 sqlsrv_rollback( $this->conn );
@@ -262,7 +262,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function query( $sql, $params = array() ) {
 
-	  		 Logger::debug( 'BasePersistence::query Executing' .
+	  		 Log::debug( 'BasePersistence::query Executing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'raw PDO::query ' . $sql . 'with $params ' . print_r( $params, true ) );
 
@@ -275,7 +275,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function prepare( $statement ) {
 
-	  		 Logger::debug( 'SQLSRVDialect::prepare Preparing' .
+	  		 Log::debug( 'SQLSRVDialect::prepare Preparing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'statement ' . $statement );
 	  	
@@ -288,7 +288,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   */
 	  public function execute( array $inputParameters = array() ) {
 
-	  		 Logger::debug( 'SQLSRVDialect::execute Executing' .
+	  		 Log::debug( 'SQLSRVDialect::execute Executing' .
 			  	     		(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     		'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
@@ -336,7 +336,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 			 $newModel = $table->getModelInstance();
 			 $values = array();
 
-			 Logger::debug( 'SQLSRVDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
+			 Log::debug( 'SQLSRVDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		 try {
 	  		  	    $pkeyColumns = $table->getPrimaryKeyColumns();
@@ -386,7 +386,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
 					 if( !sqlsrv_has_rows( $this->stmt ) ) { 
 
-					 	Logger::debug( 'SQLSRVDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	Log::debug( 'SQLSRVDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	return array();
 					 }
 

@@ -29,11 +29,6 @@
  */
 abstract class BaseModelXmlController extends BaseModelController {
 
-		 protected function __construct() {
-
-		 		   parent::__construct();
-		 }
-
 		 /**
 		  * Creates an XML document representing a model. If the 'id' parameter is set, a
 		  * lookup is performed for the model with the specified 'id' and the XML is returned with
@@ -99,8 +94,8 @@ abstract class BaseModelXmlController extends BaseModelController {
 	  			   $xml .= '<fieldCount>' . $fieldCount . '</fieldCount>
 	  			 	   	</Form>';
 
-	  			   Logger::debug( 'BaseModelXmlController::getModelAsFormXML called with parameters controller = ' . $controller . ', action = ' . $action );
-	  			   Logger::debug( 'BaseModelXmlController::getModelAsFormXML returning xml ' . $xml );
+	  			   Log::debug( 'BaseModelXmlController::getModelAsFormXML called with parameters controller = ' . $controller . ', action = ' . $action );
+	  			   Log::debug( 'BaseModelXmlController::getModelAsFormXML returning xml ' . $xml );
 
   			 	   return $xml;
 	     }
@@ -254,7 +249,7 @@ abstract class BaseModelXmlController extends BaseModelController {
 
 			 	   $xml = $doc->saveXML();
 			 	   
-			 	   Logger::debug( 'BaseModelXmlController::getResultListAsXML ' . $xml );
+			 	   Log::debug( 'BaseModelXmlController::getResultListAsXML ' . $xml );
 
 	  			   return $xml;
 	     }

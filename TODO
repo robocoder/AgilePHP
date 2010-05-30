@@ -1,0 +1,20 @@
+----------
+** TODO **
+----------
+> Iron out RequestScope CSFR issues in regards to destroying session and making requests from client side javascript.
+> Persistence framework needs to support many-to-many relationships
+> Need to revisit PersistenceRenderer and make an easy way to
+   allow different client side rendering libraries like jquery, dojo, extjs, etc (adapter?)
+> Add calendar, spinner, date picker, and other widgets to persistence rendering
+> AJAX Push / Comet (PHP socket daemon?)
+> Create dialect classes for the following database servers:
+    firebird
+    informix
+    oracle
+    dblib
+    ibm
+> Finish PGSQLDialect
+> Finish unit tests in persistence package
+> Finish Form::toJSON method (this should probably use AJAXRenderer)
+> Need to update MSSQLDialect::find to use LIKE clause for text, ntext, and image data types.
+> Finish creating unit tests for all framework components (naughty, naughty - TDD!)

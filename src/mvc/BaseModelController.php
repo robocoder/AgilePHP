@@ -35,7 +35,7 @@ abstract class BaseModelController extends BaseController {
 	     /**
 	      * Initalizes parent and executes a default SELECT query for the first 25 records.
 	      */
-	     protected function __construct() {
+	     public function __construct() {
 
 	     	       parent::__construct();
 
@@ -392,7 +392,7 @@ abstract class BaseModelController extends BaseController {
 	  	     	 	    $this->getModel()->$mutator( null );
 	  	           }
 
-	  	           Logger::debug( 'BaseModelController::clear ' );
+	  	           Log::debug( 'BaseModelController::clear ' );
 	     }
 
 	     /**

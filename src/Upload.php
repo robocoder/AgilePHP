@@ -92,7 +92,7 @@ class Upload {
 	  		 $name = ($filename) ? $filename : $_FILES[ $this->getName() ]['name'];
 			 $target = $this->getDirectory() . DIRECTORY_SEPARATOR . $name;
 
-			 Logger::debug( 'Upload::save Saving upload with name \'' . $this->getName() . '\' to target path \'' . $target . '\'.' );
+			 Log::debug( 'Upload::save Saving upload with name \'' . $this->getName() . '\' to target path \'' . $target . '\'.' );
 
 			 if( !move_uploaded_file( $_FILES[ $this->getName() ]['tmp_name'], $target ) ) {
 
@@ -129,14 +129,14 @@ class Upload {
 
 			 	 if( !$error ) return;
 
-			 	 Logger::debug( 'Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.' );
+			 	 Log::debug( 'Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.' );
 
 			 	 throw new AgilePHP_PersistenceException( $error, $_FILES[ $this->getName() ]['error'] );
 			 }
 
 			 chmod( $target, 0755 );
 
-			 Logger::debug( 'Upload::save Upload successfully saved' );
+			 Log::debug( 'Upload::save Upload successfully saved' );
 
 			 return $target;
 	  }
@@ -149,9 +149,9 @@ class Upload {
 	  public function delete() {
 
 	  		 if( !unlink( $this->getDirectory() .'/' . $_FILES[ $this->getName() ]['name'] ) )
-	  		 	 Logger::debug( 'Upload::delete Failed to delete upload' );
+	  		 	 Log::debug( 'Upload::delete Failed to delete upload' );
 	  		 else
-	  		 	 Logger::debug( 'Upload::delete Delete successful' );
+	  		 	 Log::debug( 'Upload::delete Delete successful' );
 	  }
 }
 ?>

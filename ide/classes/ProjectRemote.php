@@ -48,8 +48,10 @@ class ProjectRemote {
  		 	 	  $name = $config->name;
  	  		   	  $$name = $config->value;
 
- 	  		   	  Logger::debug( $name . ' = ' . $$name );
+ 	  		   	  Log::debug( $name . ' = ' . $$name );
  		 	 }
+
+ 		 	 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 
  	  		 if( !isset( $workspace ) )
  	  		 	 throw new AgilePHP_Exception( 'Missing workspace value' );
@@ -99,14 +101,14 @@ class ProjectRemote {
 			  		 $classes = $this->root . DIRECTORY_SEPARATOR . 'classes';
 			  		 if( !mkdir( $classes ) )
 			  		 	 throw new AgilePHP_Exception( 'Failed to create project classes directory at \'' . $classes . '\'.' );
-		
+
 			  		 $agilephp = $this->root . DIRECTORY_SEPARATOR . 'AgilePHP';
 			  		 FileUtils::copy( '..' . DIRECTORY_SEPARATOR . 'src', $agilephp );
-		
+
 			  		 if( $databaseEnable )
 				  		 $this->createPersistenceXML( $identityEnable, $sessionEnable, $databaseName, $databaseType,
 				  		 			$databaseHostname, $databaseUsername, $databasePassword, $databaseType /* instead of driver - maybe driver should be passed as hidden */ );
-		
+
 			  		 $this->createAgilePhpXML( $logEnable, $identityEnable, $cryptoEnable, $logLevel );
 			  		 $this->createAccessFile( ($databaseType) == 'sqlite' ? true : false, $databaseName );
 			  		 $this->createIndexDotPHP();
@@ -299,14 +301,14 @@ class ProjectRemote {
 
  try {
 		$agilephp = AgilePHP::getFramework();
-		$agilephp->setFrameworkRoot( \'' . $this->root . DIRECTORY_SEPARATOR . 'AgilePHP\' );
+		$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . \'/AgilePHP\' ) );
 		$agilephp->setDefaultTimezone( \'America/New_York\' );
 
-		MVC::getInstance()->processRequest();
+		MVC::getInstance()->dispatch();
  }
  catch( Exception $e ) {
 
-  	     Logger::error( $e->getMessage() );
+  	     Log::error( $e->getMessage() );
 
 		 $renderer = new PHTMLRenderer();
 		 $renderer->set( \'title\', \'' . $this->projectName . ' :: Error Page\' );
@@ -322,13 +324,14 @@ class ProjectRemote {
 	  private function createStyleSheet() {
 	  	
 	  		  $style = '@CHARSET "UTF-8";
-	  		  
-/** AgilePHP Styles */
 
 a {
 
 	text-decoration: none;	
 }
+
+	  		  
+/** AgilePHP Styles */
 
 .info {
 

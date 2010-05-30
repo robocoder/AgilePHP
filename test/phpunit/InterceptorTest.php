@@ -23,6 +23,15 @@ class InterceptorTest extends BaseTest {
 
 	  /**
 	   * @test
+	   */
+	  public function LoggerInterceptorTest() {
+
+	  		 $mit = new MockInterceptionTarget();
+	  		 PHPUnit_Framework_Assert::assertType( 'LogProvider', $mit->getLogger(), 'Logger instance does not exist' );
+	  }
+	  
+	  /**
+	   * @test
 	   * @expectedException AgilePHP_AccessDeniedException
 	   */
 	  public function RestrictInterceptorTest() {

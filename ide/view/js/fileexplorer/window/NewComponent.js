@@ -86,6 +86,46 @@ AgilePHP.IDE.FileExplorer.NewComponent = function() {
 					cm: colModel,
 			        stripeRows: true,
 			        stateId: 'grid',
+			        tbar: new Ext.Toolbar({
+			        	id: id + '-new-component-grid-toolbar',
+			        	items: [{
+							id: id + '-new-component-grid-toolbar-install',
+							text: 'Install',
+							iconCls: 'btn-list-add',
+							handler: function() {
+	
+								var grid = Ext.getCmp( id + '-new-component-grid' );
+								var data = grid.getSelectionModel().getSelected().json;
+	
+								componentsRemote.setCallback( function( response ) {
+	
+									if( !response ) {
+	
+										AgilePHP.IDE.error( 'No reply from server' );
+										return false;
+									}
+									if( response._class == 'AgilePHP_RemotingException' ) {
+	
+										AgilePHP.IDE.error( response.message );
+										return false;
+									}
+	
+									new AgilePHP.IDE.Notification( '<b>Information</b>', 'Component is finished installing.')
+						            var t = Ext.getCmp( 'ide-properties-components-treepanel' );
+						            	t.getLoader().dataUrl = AgilePHP.getRequestBase() + '/FileExplorerController/getComponents/' + workspace + '/' + project;
+						            	t.getRootNode().reload();
+	
+						            AgilePHP.IDE.FileExplorer.highlightedNode.reload();
+								});
+								var workspace = AgilePHP.IDE.FileExplorer.getWorkspace();
+								var project = AgilePHP.IDE.FileExplorer.getSelectedProject();
+								var projectRoot = workspace + '|' + project;
+	
+								componentsRemote.install( projectRoot, data[0], data[1] );
+								win.close();
+			        		}
+			        	}]
+					}),
 			        bbar: new Ext.PagingToolbar({
 			        	 id: id + '-new-component-pagingtoolbar',
 			             pageSize: 6,
@@ -95,35 +135,6 @@ AgilePHP.IDE.FileExplorer.NewComponent = function() {
 			             emptyMsg: 'No data to display'
 			        })
 				}));
-
-	var ptoolbar = Ext.getCmp( id + '-new-component-pagingtoolbar' ); 
-	ptoolbar.insertButton( 11, {
-				id: id + '-new-component-pagingtoolbar-install',
-				text: 'Install',
-				iconCls: 'btn-list-add',
-				handler: function() {
-
-					var grid = Ext.getCmp( id + '-new-component-grid' );
-					var data = grid.getSelectionModel().getSelected().json;
-
-					componentsRemote.setCallback( function( response ) {
-
-						new AgilePHP.IDE.Notification( '<b>Information</b>', 'Component is finished installing.')
-			            var t = Ext.getCmp( 'ide-properties-components-treepanel' );
-			            	t.getLoader().dataUrl = AgilePHP.getRequestBase() + '/FileExplorerController/getComponents/' + workspace + '/' + project;
-			            	t.getRootNode().reload();
-
-			            AgilePHP.IDE.FileExplorer.highlightedNode.reload();
-					});
-					var workspace = AgilePHP.IDE.FileExplorer.getWorkspace();
-					var project = AgilePHP.IDE.FileExplorer.getSelectedProject();
-					var projectRoot = workspace + '|' + project;
-
-					componentsRemote.install( projectRoot, data[0], data[1] );
-					win.close();
-				}
-	});
-	ptoolbar.doLayout();
 
 	return win;
 };

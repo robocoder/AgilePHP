@@ -37,7 +37,7 @@ class FileUtils {
 	   */
 	  public static function delete( $src ) {
 
-	  		 Logger::debug( 'FileUtils::delete Performing recursive delete on source \'' . $src . '\'.' );
+	  		 Log::debug( 'FileUtils::delete Performing recursive delete on source \'' . $src . '\'.' );
 
 	  		 if( is_file( $src ) ) {
 
@@ -75,7 +75,7 @@ class FileUtils {
 	   */
 	  public static function copy( $src, $dst ) {
 
-	  		 Logger::debug( 'FileUtils::delete Performing recursive copy from source \'' . $src . '\' to destination \'' . $dst . '\'.' );
+	  		 Log::debug( 'FileUtils::delete Performing recursive copy from source \'' . $src . '\' to destination \'' . $dst . '\'.' );
 
 	  		 if( is_file( $src ) ) {
 

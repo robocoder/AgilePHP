@@ -5,19 +5,21 @@
 
  require_once '../src/AgilePHP.php';
 
+
  try {
  		$agilephp = AgilePHP::getFramework();  	
   	    $agilephp->setDisplayPhpErrors( true );
     	$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . '/../src' ) );
+    	
   	    $agilephp->setDefaultTimezone( 'America/New_York' );
 
-  		MVC::getInstance()->processRequest();
+  		MVC::getInstance()->dispatch();
  }
  catch( AgilePHP_Exception $e ) {
 
   	     require_once '../src/mvc/PHTMLRenderer.php';
 
-  	     Logger::error( $e->getMessage() );
+  	     Log::error( $e->getMessage() );
 
   	     $renderer = new PHTMLRenderer();
   	     $renderer->set( 'title', 'AgilePHP Framework :: Error Page' );

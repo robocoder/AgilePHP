@@ -38,9 +38,9 @@ abstract class BaseController {
 	      * 
 	      * @return void
 	      */
-	     protected function __construct() {
+	     public function __construct() {
 
-	  	           $this->renderer = AgilePHP::getFramework()->getMVC()->createDefaultRenderer();
+	  	        $this->renderer = AgilePHP::getFramework()->getMVC()->createDefaultRenderer();
 	     }
 
 	     /**

@@ -6,7 +6,7 @@
  * as PHP data types using a SOAPClient classmap. All objects are returned as stdClass
  * when using RPC/LITERAL.
  *
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class SoapRpcLiteralTest extends BaseTest {
 

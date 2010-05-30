@@ -41,7 +41,7 @@ class TestInterceptor2 {
 
 	  		 $class = new ReflectionClass( $ic->getTarget() );
 	  		 $message = 'TestInterceptor2::audit @AroundInvoke This is what the InvocationContext interceptor state looks like: ' . print_r( $ic->getInterceptor(), true );
- 	  		 Logger::debug( $message );
+ 	  		 Log::debug( $message );
 	  }
 
 	  /**

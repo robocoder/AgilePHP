@@ -62,14 +62,14 @@ class SQLDateTime {
 
 	  		 	 $ic->setParameters( $params );
 
-	  		 	 Logger::debug( '#@SQLDateTime::setDateTime Set value to ' . $params[$parameter] );
+	  		 	 Log::debug( '#@SQLDateTime::setDateTime Set value to ' . $params[$parameter] );
 
 	  		 	 return $ic->proceed();
 	  		 }
 
 			 $ic->setParameters( array( date( 'Y-m-d H:i:s', $params[0] ) ) );
 
-			 Logger::debug( '#@SQLDateTime::setDateTime Set value to ' . date( 'Y-m-d H:i:s', $params[0] ) );
+			 Log::debug( '#@SQLDateTime::setDateTime Set value to ' . date( 'Y-m-d H:i:s', $params[0] ) );
 
 			 return $ic->proceed();
 	  }

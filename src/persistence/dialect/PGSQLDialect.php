@@ -51,7 +51,7 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 	  	     }
 	  	     catch( PDOException $pdoe ){
 
-	  	     	    Logger::debug( 'PostgreSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
+	  	     	    Log::debug( 'PostgreSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
 
 	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
 	  	     		// be invoked to create the database schema.

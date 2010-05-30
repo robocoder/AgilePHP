@@ -182,7 +182,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function beginTransaction() {
 
-	  		    Logger::debug( 'BasePersistence::beginTransaction Beginning transaction' );
+	  		    Log::debug( 'BasePersistence::beginTransaction Beginning transaction' );
 
 	  		    try {
 	  		   	 	  $this->pdo->beginTransaction();
@@ -204,7 +204,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function commit() {
 
-	  		    Logger::debug( 'BasePersistence::commit Transaction successfully committed' );
+	  		    Log::debug( 'BasePersistence::commit Transaction successfully committed' );
 
 	  		    try {
 	  		   		  $this->pdo->commit();
@@ -228,7 +228,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function rollBack( $message = null, $code = 0 ) {
 
-	  		    Logger::debug( 'BasePersistence::rollBack' . (($message == null) ? '' : ' ' . $message ));
+	  		    Log::debug( 'BasePersistence::rollBack' . (($message == null) ? '' : ' ' . $message ));
 
 	  		    try {
 	  		    	  $this->pdo->rollBack();
@@ -251,7 +251,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function prepare( $statement ) {
 
-	  		    Logger::debug( 'BasePersistence::prepare Preparing' . 
+	  		    Log::debug( 'BasePersistence::prepare Preparing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'statement ' . $statement );
 
@@ -283,7 +283,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function execute( array $inputParameters = array() ) {
 
-	  		    Logger::debug( 'BasePersistence::execute Executing' . 
+	  		    Log::debug( 'BasePersistence::execute Executing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
@@ -329,7 +329,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function exec( $statement ) {
 
-	  		    Logger::debug( 'BasePersistence::exec Executing raw' . 
+	  		    Log::debug( 'BasePersistence::exec Executing raw' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'PDO::exec query ' . $sql );
 
@@ -346,7 +346,7 @@ abstract class BasePersistence {
 	   	  */
 	  	 public function query( $sql ) {
 
-	  		    Logger::debug( 'BasePersistence::query Executing' . 
+	  		    Log::debug( 'BasePersistence::query Executing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'raw PDO::query ' . $sql );
 
@@ -391,7 +391,7 @@ abstract class BasePersistence {
 	   		   $values = array();
 			   $table = $this->getTableByModel( $model );
 
-			   Logger::debug( 'BasePersistence::persist Performing persist on model \'' . $table->getModel() . '\'.' );
+			   Log::debug( 'BasePersistence::persist Performing persist on model \'' . $table->getModel() . '\'.' );
 
 	   		   $this->validate( $table, true );
 
@@ -468,7 +468,7 @@ abstract class BasePersistence {
 	    	   $this->model = $model;
 	    	   $table = $this->getTableByModel( $model );
 
-	    	   Logger::debug( 'BasePersistence::merge Performing merge on model \'' . $table->getModel() . '\'.' );
+	    	   Log::debug( 'BasePersistence::merge Performing merge on model \'' . $table->getModel() . '\'.' );
 
 	    	   $this->model = $model;
 	  	       $values = array();
@@ -556,7 +556,7 @@ abstract class BasePersistence {
 
 	      	   $table = $this->getTableByModel( $model );
 
-	      	   Logger::debug( 'BasePersistence::delete Performing delete on model \'' . $table->getModel() . '\'.' );
+	      	   Log::debug( 'BasePersistence::delete Performing delete on model \'' . $table->getModel() . '\'.' );
 
 	    	   $values = array();
 		       $columns = $table->getPrimaryKeyColumns();
@@ -608,7 +608,7 @@ abstract class BasePersistence {
 			   $newModel = $table->getModelInstance();
 			   $values = array();
 
-			   Logger::debug( 'BasePersistence::find Performing find on model \'' . $table->getModel() . '\'.' );
+			   Log::debug( 'BasePersistence::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		   try {
 	  		   		 if( $this->isEmpty( $model ) ) {
@@ -654,7 +654,7 @@ abstract class BasePersistence {
 
 					 if( !count( $result ) ) {
 
-					 	 Logger::debug( 'BasePersistence::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	 Log::debug( 'BasePersistence::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	 return null;
 					 }
 
@@ -1186,7 +1186,7 @@ abstract class BasePersistence {
 	  		  }
 	  		  catch( Exception $e ) {
 
-	  		  		 Logger::debug( 'BasePersistence::compare ' . $e->getMessage() );
+	  		  		 Log::debug( 'BasePersistence::compare ' . $e->getMessage() );
 	  		  		 return false;
 	  		  }
 
@@ -1336,7 +1336,7 @@ abstract class BasePersistence {
 				  	           if( $length > $column->getLength() ) {
 
 				  	           	   $message = 'BasePersistence::checkSize Persistence validation failed on property \'' . $columnName . '\'. Length attribute defined in persistence.xml with a length of \'' . $column->getLength() . '\' but the property has a length of \'' . $length . '\'.';
-				  	           	   Logger::debug( $message . "\n\$table = " . print_r( $table, true ) . ", \$columnName = " . $columnName . ', value = ' . $value );
+				  	           	   Log::debug( $message . "\n\$table = " . print_r( $table, true ) . ", \$columnName = " . $columnName . ', value = ' . $value );
 				  	               throw new AgilePHP_PersistenceException( $message );
 				  	           }
               	       	   }

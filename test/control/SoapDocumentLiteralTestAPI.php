@@ -186,7 +186,7 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	  #@WebMethod
 	  public function arrayOfArraysTest( array $strings ) {
 
-	  		 Logger::debug( $strings );
+	  		 Log::debug( $strings );
 
 	  		 $o = new arrayOfArraysTestResponse;
 	  		 $o->return = $strings->strings->strings;

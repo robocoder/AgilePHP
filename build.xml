@@ -29,6 +29,7 @@
 		<include name="LICENSE"/>
 		<include name="README"/>
 		<include name="VERSION"/>
+		<include name="TODO"/>
     </fileset>
     
     <tstamp>
@@ -75,35 +76,22 @@
                 <include name="**/**"/>
             </fileset>
         </zip>
-        <tar destfile="${build.dir}/agilephp-${build.version}-src.tar">
-            <fileset dir=".">
-                <exclude name="${build.dir}/**"/>
+		<zip destfile="${build.dir}/agilephp-${build.version}-apidoc.zip">
+            <fileset dir="${apidoc.dir}">
                 <include name="**/**"/>
             </fileset>
-        </tar>
+        </zip>
 		<zip destfile="${build.dir}/agilephp-${build.version}-framework.zip">
             <fileset dir="${build.dir}/AgilePHP">
                 <include name="**/**"/>
             </fileset>
         </zip>
-        <tar destfile="${build.dir}/agilephp-${build.version}-framework.tar">
-            <fileset dir="${build.dir}/AgilePHP">
-                <exclude name="${build.dir}/**"/>
-                <include name="**/**"/>
-            </fileset>
-        </tar>
-		<zip destfile="${build.dir}/agilephp-${build.version}-studio.zip">
+        <zip destfile="${build.dir}/agilephp-${build.version}-studio.zip">
             <fileset dir="${ide.dir}">
             	<exclude name="logs"/>
                 <include name="**/**"/>
             </fileset>
         </zip>
-        <tar destfile="${build.dir}/agilephp-${build.version}-studio.tar">
-            <fileset dir="${ide.dir}">
-                <exclude name="logs"/>
-                <include name="**/**"/>
-            </fileset>
-        </tar>
     </target>
 
     <target name="test" description="Runs PHPUnit test suites">
@@ -113,14 +101,11 @@
             <formatter todir="${phpunit.reports}" type="xml"/>
             <batchtest>
                 <fileset dir="${test.dir}/phpunit">
-                	<include name="persistence/MySQLTest.php"/>
-                    <include name="AnnotationTest.php"/>
-                    <include name="InterceptorTest.php"/>
-					<include name="RenderersTest.php"/>
-					<include name="SoapDocumentLiteralTest.php"/>
-					<include name="SoapRpcEncodedTest.php"/>
-					<include name="SoapRpcLiteralTest.php"/>
-                    <!-- <include name="**/*Test.php" /> -->
+                	<exclude name="persistence/MSSQLTest.php"/>
+					<exclude name="persistence/PGSQLTest.php"/>
+					<exclude name="persistence/SQLiteTest.php"/>
+					<exclude name="persistence/SQLSRVTest.php"/>
+                    <include name="**/*Test.php" />
                 </fileset>
             </batchtest>
         </phpunit>

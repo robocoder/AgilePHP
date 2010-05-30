@@ -495,17 +495,23 @@ class AnnotationParser {
 	 	 	  $filename = array_pop( $namespace );
 	 	 	  $namespace = implode( DIRECTORY_SEPARATOR, $namespace ) . DIRECTORY_SEPARATOR;
 
-		  	  $it = new RecursiveDirectoryIterator( $directory );
-			  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
+	 	 	  try {
+				  	  $it = new RecursiveDirectoryIterator( $directory );
+					  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
+		
+					   	       if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
+					   	      	   substr( $file, -4 ) != 'view' ) {
+		
+					   	      	   $pieces = explode( DIRECTORY_SEPARATOR, $file );
+					   	      	   $item = array_pop( $pieces ); 
+						 		   if( $item == $filename ) return file_get_contents( $file );
+						       }
+					  }
+	 	 	  }
+	 	 	  catch( Exception $e ) {
 
-			   	       if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
-			   	      	   substr( $file, -4 ) != 'view' ) {
-
-			   	      	   $pieces = explode( DIRECTORY_SEPARATOR, $file );
-			   	      	   $item = array_pop( $pieces ); 
-				 		   if( $item == $filename ) return file_get_contents( $file );
-				       }
-			  }
+	 	 	  		 Log::debug( $e );
+	 	 	  }
 	  }
 }
 ?>

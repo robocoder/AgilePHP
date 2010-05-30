@@ -1,6 +1,6 @@
 <?php
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class SoapRpcEncodedTest extends BaseTest {
 

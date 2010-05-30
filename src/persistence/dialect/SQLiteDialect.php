@@ -83,7 +83,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   		 		 foreach( $table->getColumns() as $column ) {
 
   		 			      if( $column->isAutoIncrement() )
-  		 			     	  Logger::debug( 'Ignoring autoIncrement="true" for column ' . $column->getName() . '. Sqlite does not support the use of auto-increment with compound primary keys' );
+  		 			     	  Log::debug( 'Ignoring autoIncrement="true" for column ' . $column->getName() . '. Sqlite does not support the use of auto-increment with compound primary keys' );
 
   		 				  $sql .= '"' . $column->getName() . '" ' . $column->getType() .
   		 						 (($column->isRequired() == true) ? ' NOT NULL' : '') .

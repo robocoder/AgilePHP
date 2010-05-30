@@ -21,11 +21,11 @@
 		$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . '/../src' ) );
 		AgilePHP::handleErrors();
 
-		MVC::getInstance()->processRequest();
+		MVC::getInstance()->dispatch();
  }
  catch( Exception $e ) {
 
-  	     Logger::error( $e->getMessage() . DIRECTORY_SEPARATOR . $e->getTraceAsString() );
+  	     Log::error( $e->getMessage() . DIRECTORY_SEPARATOR . $e->getTraceAsString() );
 
 		 $renderer = new ExtFormRenderer();
 		 $renderer->setError( $e->getMessage() );

@@ -6,7 +6,7 @@
  * as PHP data types using a SOAPClient classmap. All objects are returned as stdClass
  * when using RPC/LITERAL.
  * 
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class SoapDocumentLiteralTest extends BaseTest {
 
@@ -195,142 +195,142 @@ class SoapDocumentLiteralTest extends BaseTest {
 }
 
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class test {
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class testResponse {
   public $return; // string
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class add {
   public $a; // int
   public $b; // int
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class addResponse {
   public $return; // int
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class subtract {
   public $a; // int
   public $b; // int
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class subtractResponse {
   public $return; // int
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class multiply {
   public $a; // int
   public $b; // int
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class multiplyResponse {
   public $return; // int
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class divide {
   public $a; // int
   public $b; // int
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class divideResponse {
   public $return; // int
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class objectParameterTest {
   public $MathTest; // MathTest
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class objectParameterTestResponse {
   public $return; // int
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class MathTestArray {
   public $MathTests; // MathTest
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayOfObjectsTest {
   public $MathTests; // MathTestArray
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayOfObjectsTestResponse {
   public $return; // MathTestArray
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class stringArray {
   public $strings; // string
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayStringTest {
   public $strings; // stringArray
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayStringTestResponse {
   public $return; // stringArray
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class stringArrayArray {
   public $strings; // stringArray
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayOfArraysTest {
   public $strings; // stringArrayArray
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayOfArraysTestResponse {
   public $return; // stringArrayArray
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayAddTest {
   public $MathTests; // MathTestArray
 }
 /**
- * @package com.makeabyte.agilephp.test.soap
+ * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayAddTestResponse {
   public $return; // int

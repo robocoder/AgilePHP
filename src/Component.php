@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -21,8 +22,9 @@
 
 /**
  * Provides base logic for AgilePHP components. Read/transform component.xml
- * to native PHP objects upon construction and provides helper methods to
- * access its configuration. 
+ * to native PHP objects upon construction and provides helper methods for
+ * accessing configuration parameters and dispatching requests for component
+ * front controller.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
@@ -36,7 +38,6 @@ abstract class Component extends BaseController {
 	  private $name;
 	  private $version;
 	  private $enabled;
-	  private $language;
 	  private $params = array();
 
 	  /**
@@ -44,44 +45,43 @@ abstract class Component extends BaseController {
 	   * 
 	   * @return void
 	   */
-	  protected function __construct() {
+	  public function __construct() {
 
-	  		$class = get_class( $this );
-	  		$componentXml = 'components' . DIRECTORY_SEPARATOR . $class . DIRECTORY_SEPARATOR . 'component.xml';
- 			if( !file_exists( $componentXml ) )
- 				throw new AgilePHP_Exception( $componentXml . ' does not exist' );
+	  		 $class = get_class( $this );
+	  		 $componentXml = 'components' . DIRECTORY_SEPARATOR . $class . DIRECTORY_SEPARATOR . 'component.xml';
+ 			 if( !file_exists( $componentXml ) )
+ 				 throw new AgilePHP_Exception( $componentXml . ' does not exist' );
 
- 			$xml = simplexml_load_file( $componentXml );
- 			/**
-			 * @todo Validate the component.xml file against the component.dtd
-			 * 
- 			 * $dom = new DOMDocument();
- 			 * $dom->Load( $componentXml );
-			 * if( !$dom->validate() );
-			 *	   throw new AgilePHP_PersistenceException( 'component.xml Document Object Model validation failed.' );
-			 */
- 			$properties = array();
- 			$types = array();
- 			foreach( $xml->component->param as $param ) {
+ 			 $xml = simplexml_load_file( $componentXml );
+ 			 /**
+			  * @todo Validate the component.xml file against the component.dtd
+			  * 
+ 			  * $dom = new DOMDocument();
+ 			  * $dom->Load( $componentXml );
+			  * if( !$dom->validate() );
+			  *	   throw new AgilePHP_PersistenceException( 'component.xml Document Object Model validation failed.' );
+			  */
+ 			 $properties = array();
+ 			 $types = array();
+ 			 foreach( $xml->component->param as $param ) {
 
- 					 $properties[(string)$param->attributes()->name] = (string)$param->attributes()->value;
- 					 $types[(string)$param->attributes()->name] = (string)$param->attributes()->type;
- 			}
+ 					  $properties[(string)$param->attributes()->name] = (string)$param->attributes()->value;
+ 					  $types[(string)$param->attributes()->name] = (string)$param->attributes()->type;
+ 			 }
 
- 			$this->name = (string)$xml->component->attributes()->name;
- 			$this->version = (string)$xml->component->attributes()->version;
- 			$this->language = (string)$xml->component->attributes()->language;
- 			$this->enabled = (string)$xml->component->attributes()->enabled;
+ 			 $this->name = (string)$xml->component->attributes()->name;
+ 			 $this->version = (string)$xml->component->attributes()->version;
+ 			 $this->enabled = (string)$xml->component->attributes()->enabled;
 
- 			foreach( $xml->component->param as $param ) {
+ 			 foreach( $xml->component->param as $param ) {
 
- 					 $cp = new ComponentParam();
- 					 $cp->setName( (string)$param->attributes()->name );
- 					 $cp->setType( (string)$param->attributes()->type );
- 					 $cp->setValue( (string)$param->attributes()->value );
+ 					  $cp = new ComponentParam();
+ 					  $cp->setName( (string)$param->attributes()->name );
+ 					  $cp->setType( (string)$param->attributes()->type );
+ 					  $cp->setValue( (string)$param->attributes()->value );
 
- 					 array_push( $this->params, $cp );
- 			}
+ 					  array_push( $this->params, $cp );
+ 			 }
 	  }
 
 	  /**
@@ -145,27 +145,6 @@ abstract class Component extends BaseController {
 	  protected function isEnabled() {
 
 	  		 	return $this->enabled == true ? true : false;
-	  }
-
-	  /**
-	   * Sets the programming language of this component
-	   * 
-	   * @param string $lang The language of the component
-	   * @return void
-	   */
-	  protected function setLanguage( $lang ) {
-
-	  			$this->language = $lang;
-	  }
-
-	  /**
-	   * Gets the language of the component
-	   * 
-	   * @return string The programming language of the component
-	   */
-	  protected function getLanguage() {
-
-	  			return $this->language;
 	  }
 
 	  /**

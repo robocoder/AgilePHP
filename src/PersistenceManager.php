@@ -104,12 +104,12 @@ class PersistenceManager implements SQLDialect {
 	  	 /**
 	  	  * Establishes a connection to the specified database.
 	  	  * 
-	  	  * @param String $db A Database object to establish the connection with
+	  	  * @param Database $db A Database object to establish a connection with
 	  	  * @return void
 	  	  */
 	  	 public function connect( Database $db ) {
 
-	  	 		Logger::debug( 'PersistenceManager::connect Connecting to database \'' . $db->getId() . '\'.' );
+	  	 		Log::debug( 'PersistenceManager::connect Connecting to database \'' . $db->getId() . '\'.' );
 
 	  	 		switch( $db->getType() ) {
 
@@ -450,7 +450,7 @@ class PersistenceManager implements SQLDialect {
 	      */
 	     public function executeQuery() {
 
-	     		Logger::debug( 'PersistenceManager::executeQuery ' . $this->sql );
+	     		Log::debug( 'PersistenceManager::executeQuery ' . $this->sql );
 	     		return $this->dialect->query( $this->sql );
 	     }
 
@@ -511,7 +511,7 @@ class PersistenceManager implements SQLDialect {
 	  		 	   $this->dialect->setRestrictionsLogicOperator( 'AND' );
 	  		 	   $this->dialect->setComparisonLogicOperator( '=' );
 
-				   Logger::debug( 'BaseModelController::setPage ' . $this->page );
+				   Log::debug( 'BaseModelController::setPage ' . $this->page );
 	     }
 
 	     /**

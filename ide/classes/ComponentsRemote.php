@@ -74,14 +74,7 @@ class ComponentsRemote {
 			 if( !$this->unzip( $projectRoot, $file ) )
 	             throw new AgilePHP_Exception( 'Could not extract downloaded component \'' . $file . '\'.' );
 
-	         $component = $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $appId . DIRECTORY_SEPARATOR . $appId . '.php';
-	         $controller = $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.php';
-
-	         if( !file_exists( $component ) ) {
-
-	         	 Logger::warn( 'ComponentsRemote::install Missing component controller at \'' . $file . '\'.' );
-	         	 return false;
-	         }
+	         $this->copyController( $projectRoot, $appId );
 
 	         // Load database schema
 	         $component_xml = $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'component.xml';
@@ -100,6 +93,8 @@ class ComponentsRemote {
 			  		 }
 		  		 }
 	         }
+
+	         return true;
 	  }
 
 	  #@RemoteMethod
@@ -165,22 +160,31 @@ class ComponentsRemote {
 	   * Copies componentcontroller.php to the project/control directory if it exists
 	   * 
 	   * @param string $projectRoot The full file path to the project
-	   * @param string $componentName The name of the component to copy the controllers from
+	   * @param string $appId The appId of the component as it lives in the appstore.
+	   * @return void
+	   * @throws AgilePHP_Exception
 	   */
-	  private function copyController( $projectRoot, $componentName ) {
+	  private function copyController( $projectRoot, $appId ) {
 
-	  		  $it = new RecursiveDirectoryIterator( $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $componentName );
+	  		  $it = new RecursiveDirectoryIterator( $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $appId );
 		 	  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
 
 		   	      	   if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
 
-				 		   if( strtolower( basename( $file ) ) == 'appcontroller.php' ) {
+		   	      	   	   $thisFile = basename( $file );
+				 		   if( $thisFile == $appId . '.phar' ) {
 
-				 		   		if( !copy( $file, $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $componentName . '.php' ) )
-				 		   			 throw new AgilePHP_Exception( 'Failed to copy component controller to project.' );
+				 		   		if( !copy( $file, $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.phar' ) )
+				 		   			 throw new AgilePHP_Exception( 'Failed to copy phar component to project controller directory.' );
 
-				 		   		if( !unlink( $file ) )
-				 		   			throw new AgilePHP_Exception( 'Failed to delete downloaded component.' );
+				 		   		if( !unlink( $file ) ) throw new AgilePHP_Exception( 'Failed to clean up downloaded component.' );
+				 		   }
+		   	      	   	   else if( $thisFile == $appId . '.php' ) {
+
+				 		   		if( !copy( $file, $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.php' ) )
+				 		   			 throw new AgilePHP_Exception( 'Failed to copy component controller to project controller directory.' );
+
+				 		   		if( !unlink( $file ) ) throw new AgilePHP_Exception( 'Failed to clean up downloaded component.' );
 				 		   }
 		   	      	   }
 		 	  }

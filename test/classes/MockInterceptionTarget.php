@@ -30,6 +30,9 @@
 #@TestInterceptor2( param1 = "test", param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role() )
 class MockInterceptionTarget {
 
+	  #@Logger
+	  public $logger;
+
 	  private $property1;
 
 	  public function __construct() { }
@@ -44,7 +47,7 @@ class MockInterceptionTarget {
 	  #@TestInterceptor2( param1 = Crypto::getInstance()->setAlgorithm( 'md5' ), param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role() )
 	  public function setProperty1( $value ) {
 
-	  		 Logger::debug( 'MockInterceptionTarget::setProperty1 with value \'' . $value . '\'.' );
+	  		 Log::debug( 'MockInterceptionTarget::setProperty1 with value \'' . $value . '\'.' );
 	  		 $this->property1 = $value;
 	  }
 
@@ -68,7 +71,7 @@ class MockInterceptionTarget {
 	  #@Restrict( role = 'admin' )
 	  public function restrictedMethod() {
 
-	  		 Logger::debug( 'MockInterceptionTarget::restrictedMethod invoked' );
+	  		 Log::debug( 'MockInterceptionTarget::restrictedMethod invoked' );
 	  }
 
 	  /**
@@ -80,7 +83,15 @@ class MockInterceptionTarget {
 	  #@LoggedIn
 	  public function secureMethod() {
 
-	  		 Logger::debug( 'MockInterceptionTarget::secureMethod invoked' );
+	  		 Log::debug( 'MockInterceptionTarget::secureMethod invoked' );
+	  }
+
+	  /**
+	   * Returns the injected #@Logger instance from LogFactory
+	   */
+	  public function getLogger() {
+
+	  		 return $this->logger;
 	  }
 }
 ?>
