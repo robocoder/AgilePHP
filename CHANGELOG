@@ -1,5 +1,1 @@
-- Added more validators and completed implementation within the ORM and MVC components
-- Added persistence/type package filled with interceptors that can be used to decorate
-  mutators/setters to guarantee proper data type casting between PHP and SQL.
-- Updated test/persistence.xml to use validators.
-- Removed all instances of Scope::getInstance and removed singleton mechanics from Scope component.
+- Renamed ide package to studio 

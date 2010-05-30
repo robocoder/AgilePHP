@@ -7,8 +7,8 @@
     <property name="package" value="${phing.project.name}"/>
     <property name="apidoc.dir" value="${project.basedir}/apidoc"/>
     <property name="build.dir" value="${project.basedir}/build"/>
-    <property name="ide.dir" value="${project.basedir}/ide"/>
-    <property name="ide.logs" value="${ide.dir}/logs"/>
+    <property name="studio.dir" value="${project.basedir}/studio"/>
+    <property name="studio.logs" value="${studio.dir}/logs"/>
     <property name="src.dir" value="${project.basedir}/src"/>
     <property name="test.dir" value="${project.basedir}/test"/>
     <property name="test.logs" value="${test.dir}/logs"/>
@@ -23,7 +23,7 @@
 	<fileset dir="${project.basedir}" id="distfiles">
         <include name="apidoc/**"/>
 		<include name="src/**"/>
-		<include name="ide/**"/>
+		<include name="studio/**"/>
 		<include name="CHANGELOG"/>
 		<include name="CREDITS"/>
 		<include name="LICENSE"/>
@@ -87,7 +87,7 @@
             </fileset>
         </zip>
         <zip destfile="${build.dir}/agilephp-${build.version}-studio.zip">
-            <fileset dir="${ide.dir}">
+            <fileset dir="${studio.dir}">
             	<exclude name="logs"/>
                 <include name="**/**"/>
             </fileset>
@@ -123,9 +123,9 @@
         <delete dir="${phpunit.reports}"/>
     </target>
 	
-    <target name="delete-logs" description="Deletes log files from test and ide packages">
+    <target name="delete-logs" description="Deletes log files from test and studio packages">
         <delete dir="${test.logs}" includeemptydirs="true" verbose="true"/>
-        <delete dir="${ide.logs}" includeemptydirs="true" verbose="true"/>
+        <delete dir="${studio.logs}" includeemptydirs="true" verbose="true"/>
     </target>
 	
 	<target name="phar" description="Creates phar files for AgilePHP and the Studio package">
@@ -141,7 +141,7 @@
                 </element>
             </metadata>
         </pharpackage>
-		<pharpackage destfile="${build.dir}/studio.phar" basedir="${ide.dir}"
+		<pharpackage destfile="${build.dir}/studio.phar" basedir="${studio.dir}"
 				 webstub="studio.phar" alias="studio" signature="md5">
             <fileset refid="distfiles"/>
             <metadata>
@@ -162,10 +162,10 @@
                 Make sure to check README and CHANGELOG for latest details.
             </option>
             <option name="description">
-                AgilePHP is a component-based framework for PHP 5 with lots of goodies
+                AgilePHP is a component-based framework for PHP 5.3+ with lots of goodies
             </option>
             <option name="summary">
-                The Rapid "for developers" PHP5 framework
+                The Rapid "for developers" PHP framework
             </option>
             <option name="version" value="${build.version}"/>
             <option name="state" value="alpha"/>

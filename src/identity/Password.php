@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.interception.interceptors
+ * @package com.makeabyte.agilephp.identity
  */
 
 /**
@@ -25,7 +25,7 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.interception.interceptors
+ * @package com.makeabyte.agilephp.identity
  * <code>
  * #@Password
  * public function setPassword( $myPassword ) {
