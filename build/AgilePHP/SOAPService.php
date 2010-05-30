@@ -31,11 +31,6 @@
  */
 abstract class SOAPService extends BaseController {
 
-		 public function __construct() {
-
-		 		parent::__construct();
-		 }
-
 		 /**
 		  * Invokes the requested SOAP method.
 		  * 

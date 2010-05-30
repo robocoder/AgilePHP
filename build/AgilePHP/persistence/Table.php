@@ -345,13 +345,13 @@ class Table {
 			   		  if( $column->getProperty() == $property )
 			   			  return $column->getName();
 
-			 Logger::warn( 'Table::getColumnByProperty Could not find a property name corresponding to \'' . $property . '\'. Attempting to return column name instead.' );
+			 Log::warn( 'Table::getColumnByProperty Could not find a property name corresponding to \'' . $property . '\'. Attempting to return column name instead.' );
 
 			 foreach( $this->getColumns() as $column )
 			   		  if( $column->getName() == $property )
 			   			  return $column->getName();
 
-			 Logger::warn( 'Table::getColumnByProperty Warning about could not find a matching column name corresponding to \'' . $property . '\'. Returning null.' );
+			 Log::warn( 'Table::getColumnByProperty Warning about could not find a matching column name corresponding to \'' . $property . '\'. Returning null.' );
 
 			 return null;
 	  }
@@ -369,7 +369,7 @@ class Table {
 	  		 		  if( $column->getModelPropertyName() == $property )
 	  		 		  	  return $column->getDisplay() ? $column->getDisplay() : ucfirst( $column->getName() ); 
 
-			 Logger::debug( 'Table::getDisplayNameByProperty returning null value for property \'' . $property . '\'.' );
+			 Log::debug( 'Table::getDisplayNameByProperty returning null value for property \'' . $property . '\'.' );
 
 	  		 return null;
 	  }

@@ -1,96 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="Phing Batchtest" tests="77" assertions="212" failures="0" errors="0" time="11.089237">
-    <testsuite name="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" fullPackage="com.makeabyte.agilephp.test.soap" package="com.makeabyte.agilephp.test.soap" tests="12" assertions="28" failures="0" errors="0" time="3.362330">
-      <testcase name="testShowAvailableMethods" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="39" assertions="1" time="0.001302"/>
-      <testcase name="testTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="44" assertions="1" time="0.334218"/>
-      <testcase name="testAdd" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="50" assertions="1" time="0.331583"/>
-      <testcase name="testSubtract" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="56" assertions="1" time="0.335525"/>
-      <testcase name="testMultiply" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="62" assertions="1" time="0.334417"/>
-      <testcase name="testDivide" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="68" assertions="1" time="0.333394"/>
-      <testcase name="testObjectParameterTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="75" assertions="1" time="0.334412"/>
-      <testcase name="testArrayStringTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="81" assertions="3" time="0.334989"/>
-      <testcase name="testArrayOfObjectsTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="90" assertions="7" time="0.338720"/>
-      <testcase name="testArrayOfArraysTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="103" assertions="8" time="0.332896"/>
-      <testcase name="testArrayAddTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="118" assertions="1" time="0.349726"/>
-      <testcase name="testAgilePHPNotNull" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="16" assertions="2" time="0.001148"/>
+  <testsuite name="Phing Batchtest" tests="93" assertions="227" failures="0" errors="0" time="8.949511">
+    <testsuite name="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" fullPackage="com.makeabyte.agilephp.test.webservice.soap" package="com.makeabyte.agilephp.test.webservice.soap" tests="12" assertions="28" failures="0" errors="0" time="2.225449">
+      <testcase name="testShowAvailableMethods" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="39" assertions="1" time="0.001586"/>
+      <testcase name="testTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="44" assertions="1" time="0.231987"/>
+      <testcase name="testAdd" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="50" assertions="1" time="0.233145"/>
+      <testcase name="testSubtract" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="56" assertions="1" time="0.232447"/>
+      <testcase name="testMultiply" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="62" assertions="1" time="0.235189"/>
+      <testcase name="testDivide" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="68" assertions="1" time="0.227073"/>
+      <testcase name="testObjectParameterTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="75" assertions="1" time="0.210359"/>
+      <testcase name="testArrayStringTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="81" assertions="3" time="0.210147"/>
+      <testcase name="testArrayOfObjectsTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="90" assertions="7" time="0.207850"/>
+      <testcase name="testArrayOfArraysTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="103" assertions="8" time="0.212763"/>
+      <testcase name="testArrayAddTest" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="118" assertions="1" time="0.221568"/>
+      <testcase name="testAgilePHPNotNull" class="SoapRpcLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php" line="16" assertions="2" time="0.001335"/>
     </testsuite>
-    <testsuite name="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" fullPackage="com.makeabyte.agilephp.test.mvc" package="com.makeabyte.agilephp.test.mvc" tests="4" assertions="3" failures="0" errors="0" time="0.167141">
-      <testcase name="PHTMLRenderer" class="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" line="10" assertions="0" time="0.057612"/>
-      <testcase name="AJAXRendererJSON" class="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" line="24" assertions="0" time="0.053669"/>
-      <testcase name="AJAXRendererXML" class="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" line="39" assertions="1" time="0.054741"/>
-      <testcase name="testAgilePHPNotNull" class="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" line="16" assertions="2" time="0.001119"/>
+    <testsuite name="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" fullPackage="com.makeabyte.agilephp.test.mvc" package="com.makeabyte.agilephp.test.mvc" tests="4" assertions="3" failures="0" errors="0" time="0.284522">
+      <testcase name="PHTMLRenderer" class="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" line="10" assertions="0" time="0.100008"/>
+      <testcase name="AJAXRendererJSON" class="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" line="24" assertions="0" time="0.087757"/>
+      <testcase name="AJAXRendererXML" class="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" line="39" assertions="1" time="0.095469"/>
+      <testcase name="testAgilePHPNotNull" class="RenderersTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/RenderersTest.php" line="16" assertions="2" time="0.001288"/>
     </testsuite>
-    <testsuite name="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" fullPackage="com.makeabyte.agilephp.test.soap" package="com.makeabyte.agilephp.test.soap" tests="12" assertions="20" failures="0" errors="0" time="3.166092">
-      <testcase name="testShowAvailableMethods" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="69" assertions="1" time="0.001262"/>
-      <testcase name="testTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="74" assertions="1" time="0.341366"/>
-      <testcase name="testAdd" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="80" assertions="1" time="0.350393"/>
-      <testcase name="testSubtract" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="90" assertions="1" time="0.357032"/>
-      <testcase name="testMultiply" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="100" assertions="1" time="0.350124"/>
-      <testcase name="testDivide" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="110" assertions="1" time="0.344299"/>
-      <testcase name="testObjectParameterTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="120" assertions="1" time="0.354744"/>
-      <testcase name="testArrayStringTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="129" assertions="3" time="0.354632"/>
-      <testcase name="testArrayOfObjectsTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="141" assertions="7" time="0.355398"/>
-      <testcase name="testArrayOfArraysTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="157" assertions="0" time="0.001102"/>
-      <testcase name="testArrayAddTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="172" assertions="1" time="0.354625"/>
-      <testcase name="testAgilePHPNotNull" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="16" assertions="2" time="0.001115"/>
+    <testsuite name="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" fullPackage="com.makeabyte.agilephp.test.webservice.soap" package="com.makeabyte.agilephp.test.webservice.soap" tests="12" assertions="20" failures="0" errors="0" time="2.694285">
+      <testcase name="testShowAvailableMethods" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="69" assertions="1" time="0.001326"/>
+      <testcase name="testTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="74" assertions="1" time="0.247991"/>
+      <testcase name="testAdd" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="80" assertions="1" time="0.249644"/>
+      <testcase name="testSubtract" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="90" assertions="1" time="0.250460"/>
+      <testcase name="testMultiply" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="100" assertions="1" time="0.682898"/>
+      <testcase name="testDivide" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="110" assertions="1" time="0.249442"/>
+      <testcase name="testObjectParameterTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="120" assertions="1" time="0.246512"/>
+      <testcase name="testArrayStringTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="129" assertions="3" time="0.249762"/>
+      <testcase name="testArrayOfObjectsTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="141" assertions="7" time="0.264617"/>
+      <testcase name="testArrayOfArraysTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="157" assertions="0" time="0.001263"/>
+      <testcase name="testArrayAddTest" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="172" assertions="1" time="0.249070"/>
+      <testcase name="testAgilePHPNotNull" class="SoapDocumentLiteralTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapDocumentLiteralTest.php" line="16" assertions="2" time="0.001300"/>
     </testsuite>
-    <testsuite name="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" fullPackage="com.makeabyte.agilephp.test.annotation" package="com.makeabyte.agilephp.test.annotation" tests="5" assertions="45" failures="0" errors="0" time="0.302287">
-      <testcase name="getClassLevelAnnotations" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="11" assertions="23" time="0.295749"/>
-      <testcase name="getMethodAnnoationsByMethodName" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="58" assertions="9" time="0.001838"/>
-      <testcase name="getMethodLevelAnnotations" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="90" assertions="5" time="0.001711"/>
-      <testcase name="getPropertyLevelAnnotations" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="109" assertions="6" time="0.001734"/>
-      <testcase name="testAgilePHPNotNull" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="16" assertions="2" time="0.001255"/>
+    <testsuite name="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" fullPackage="com.makeabyte.agilephp.test.annotation" package="com.makeabyte.agilephp.test.annotation" tests="5" assertions="45" failures="0" errors="0" time="0.378620">
+      <testcase name="getClassLevelAnnotations" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="11" assertions="23" time="0.371431"/>
+      <testcase name="getMethodAnnoationsByMethodName" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="58" assertions="9" time="0.001973"/>
+      <testcase name="getMethodLevelAnnotations" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="90" assertions="5" time="0.001943"/>
+      <testcase name="getPropertyLevelAnnotations" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="109" assertions="6" time="0.001973"/>
+      <testcase name="testAgilePHPNotNull" class="AnnotationTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/AnnotationTest.php" line="16" assertions="2" time="0.001300"/>
     </testsuite>
-    <testsuite name="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" fullPackage="com.makeabyte.agilephp.test.persistence" package="com.makeabyte.agilephp.test.persistence" tests="28" assertions="84" failures="0" errors="0" time="0.503766">
-      <testcase name="testPersistenceNotNull" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="15" assertions="2" time="0.001094"/>
-      <testcase name="testCreate" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="20" assertions="0" time="0.099433"/>
-      <testcase name="testCreateTable" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="25" assertions="0" time="0.012901"/>
-      <testcase name="testDropTable" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="30" assertions="0" time="0.002249"/>
-      <testcase name="testPersistWithNewForeignKey" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="52" assertions="4" time="0.090795"/>
-      <testcase name="testPersistWithExistingForeignKey" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="73" assertions="5" time="0.016345"/>
-      <testcase name="testMergeWithNewForeignKey" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="99" assertions="5" time="0.021828"/>
-      <testcase name="testMergeWithExistingForeignKey" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="126" assertions="10" time="0.027032"/>
-      <testcase name="testTable1Find" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="161" assertions="3" time="0.017260"/>
-      <testcase name="testConstraint" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="174" assertions="0" time="0.059027"/>
-      <testcase name="testPersist" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="189" assertions="2" time="0.026613"/>
-      <testcase name="testFind" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="201" assertions="2" time="0.033362"/>
-      <testcase name="testRestrictedFind" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="208" assertions="3" time="0.014671"/>
-      <testcase name="testMerge" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="217" assertions="0" time="0.026312"/>
-      <testcase name="testDelete" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="225" assertions="2" time="0.029687"/>
-      <testcase name="testGetTableByModel" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="234" assertions="3" time="0.001270"/>
-      <testcase name="testGetTableByModelName" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="243" assertions="3" time="0.001148"/>
-      <testcase name="testGetTableByName" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="251" assertions="3" time="0.001151"/>
-      <testcase name="testGetIdentityTable" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="259" assertions="3" time="0.001147"/>
-      <testcase name="testGetIdentityModel" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="267" assertions="3" time="0.001359"/>
-      <testcase name="testGetSessionTable" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="277" assertions="3" time="0.001145"/>
-      <testcase name="testGetSessionModel" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="285" assertions="3" time="0.001155"/>
-      <testcase name="testGetPrimaryKeyColumns" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="295" assertions="4" time="0.001182"/>
-      <testcase name="testGetForeignKeyColumns" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="305" assertions="4" time="0.001205"/>
-      <testcase name="testGetForeignKeys" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="315" assertions="7" time="0.001293"/>
-      <testcase name="testGetForeignKeyTableAndColumnInstances" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="331" assertions="8" time="0.001300"/>
-      <testcase name="testDrop" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="345" assertions="0" time="0.010692"/>
-      <testcase name="testAgilePHPNotNull" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="16" assertions="2" time="0.001111"/>
+    <testsuite name="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" fullPackage="com.makeabyte.agilephp.test.logger" package="com.makeabyte.agilephp.test.logger" tests="9" assertions="10" failures="0" errors="0" time="0.014816">
+      <testcase name="info" class="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" line="17" assertions="1" time="0.001754"/>
+      <testcase name="warn" class="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" line="30" assertions="1" time="0.001596"/>
+      <testcase name="error" class="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" line="43" assertions="1" time="0.001714"/>
+      <testcase name="debug" class="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" line="56" assertions="1" time="0.001662"/>
+      <testcase name="singleton_info" class="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" line="69" assertions="1" time="0.001693"/>
+      <testcase name="singleton_warn" class="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" line="82" assertions="1" time="0.001629"/>
+      <testcase name="singleton_error" class="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" line="95" assertions="1" time="0.001822"/>
+      <testcase name="singleton_debug" class="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" line="108" assertions="1" time="0.001635"/>
+      <testcase name="testAgilePHPNotNull" class="FileLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/FileLoggerTest.php" line="16" assertions="2" time="0.001310"/>
     </testsuite>
-    <testsuite name="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" fullPackage="com.makeabyte.agilephp.test.interception" package="com.makeabyte.agilephp.test.interception" tests="4" assertions="5" failures="0" errors="0" time="0.153227">
-      <testcase name="changeMethodParameterAndInjectLoggerTest" class="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" line="15" assertions="1" time="0.147010"/>
-      <testcase name="RestrictInterceptorTest" class="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" line="28" assertions="1" time="0.002647"/>
-      <testcase name="LoggedInInterceptorTest" class="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" line="45" assertions="1" time="0.002457"/>
-      <testcase name="testAgilePHPNotNull" class="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" line="16" assertions="2" time="0.001113"/>
+    <testsuite name="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" fullPackage="com.makeabyte.agilephp.test.persistence" package="com.makeabyte.agilephp.test.persistence" tests="28" assertions="84" failures="0" errors="0" time="0.533223">
+      <testcase name="testPersistenceNotNull" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="15" assertions="2" time="0.001320"/>
+      <testcase name="testCreate" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="20" assertions="0" time="0.096185"/>
+      <testcase name="testCreateTable" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="25" assertions="0" time="0.005540"/>
+      <testcase name="testDropTable" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="30" assertions="0" time="0.002362"/>
+      <testcase name="testPersistWithNewForeignKey" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="52" assertions="4" time="0.106569"/>
+      <testcase name="testPersistWithExistingForeignKey" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="73" assertions="5" time="0.016591"/>
+      <testcase name="testMergeWithNewForeignKey" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="99" assertions="5" time="0.023141"/>
+      <testcase name="testMergeWithExistingForeignKey" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="126" assertions="10" time="0.028442"/>
+      <testcase name="testTable1Find" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="161" assertions="3" time="0.018355"/>
+      <testcase name="testConstraint" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="174" assertions="0" time="0.068183"/>
+      <testcase name="testPersist" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="189" assertions="2" time="0.027806"/>
+      <testcase name="testFind" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="201" assertions="2" time="0.036092"/>
+      <testcase name="testRestrictedFind" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="208" assertions="3" time="0.015678"/>
+      <testcase name="testMerge" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="217" assertions="0" time="0.027424"/>
+      <testcase name="testDelete" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="225" assertions="2" time="0.031293"/>
+      <testcase name="testGetTableByModel" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="234" assertions="3" time="0.001514"/>
+      <testcase name="testGetTableByModelName" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="243" assertions="3" time="0.001388"/>
+      <testcase name="testGetTableByName" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="251" assertions="3" time="0.001286"/>
+      <testcase name="testGetIdentityTable" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="259" assertions="3" time="0.001307"/>
+      <testcase name="testGetIdentityModel" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="267" assertions="3" time="0.001477"/>
+      <testcase name="testGetSessionTable" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="277" assertions="3" time="0.001343"/>
+      <testcase name="testGetSessionModel" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="285" assertions="3" time="0.001353"/>
+      <testcase name="testGetPrimaryKeyColumns" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="295" assertions="4" time="0.001371"/>
+      <testcase name="testGetForeignKeyColumns" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="305" assertions="4" time="0.001428"/>
+      <testcase name="testGetForeignKeys" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="315" assertions="7" time="0.001490"/>
+      <testcase name="testGetForeignKeyTableAndColumnInstances" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="331" assertions="8" time="0.001489"/>
+      <testcase name="testDrop" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="345" assertions="0" time="0.011507"/>
+      <testcase name="testAgilePHPNotNull" class="MySQLTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/persistence/MySQLTest.php" line="16" assertions="2" time="0.001289"/>
     </testsuite>
-    <testsuite name="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" fullPackage="com.makeabyte.agilephp.test.soap" package="com.makeabyte.agilephp.test.soap" tests="12" assertions="27" failures="0" errors="0" time="3.434394">
-      <testcase name="testShowAvailableMethods" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="33" assertions="1" time="0.001135"/>
-      <testcase name="testTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="38" assertions="1" time="0.333491"/>
-      <testcase name="testAdd" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="44" assertions="1" time="0.335430"/>
-      <testcase name="testSubtract" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="50" assertions="1" time="0.335056"/>
-      <testcase name="testMultiply" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="56" assertions="1" time="0.338749"/>
-      <testcase name="testDivide" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="62" assertions="1" time="0.341289"/>
-      <testcase name="testObjectParameterTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="68" assertions="1" time="0.335857"/>
-      <testcase name="testArrayStringTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="74" assertions="3" time="0.347777"/>
-      <testcase name="testArrayOfObjectsTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="82" assertions="7" time="0.333895"/>
-      <testcase name="testArrayOfArraysTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="95" assertions="7" time="0.381248"/>
-      <testcase name="testArrayAddTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="107" assertions="1" time="0.349345"/>
-      <testcase name="testAgilePHPNotNull" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="16" assertions="2" time="0.001122"/>
+    <testsuite name="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" fullPackage="com.makeabyte.agilephp.test.interception" package="com.makeabyte.agilephp.test.interception" tests="5" assertions="6" failures="0" errors="0" time="0.209560">
+      <testcase name="changeMethodParameterAndInjectLoggerTest" class="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" line="15" assertions="1" time="0.199435"/>
+      <testcase name="LoggerInterceptorTest" class="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" line="27" assertions="1" time="0.002689"/>
+      <testcase name="RestrictInterceptorTest" class="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" line="37" assertions="1" time="0.003140"/>
+      <testcase name="LoggedInInterceptorTest" class="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" line="54" assertions="1" time="0.002984"/>
+      <testcase name="testAgilePHPNotNull" class="InterceptorTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/InterceptorTest.php" line="16" assertions="2" time="0.001312"/>
+    </testsuite>
+    <testsuite name="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" fullPackage="com.makeabyte.agilephp.test.webservice.soap" package="com.makeabyte.agilephp.test.webservice.soap" tests="12" assertions="27" failures="0" errors="0" time="2.590829">
+      <testcase name="testShowAvailableMethods" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="33" assertions="1" time="0.001390"/>
+      <testcase name="testTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="38" assertions="1" time="0.241073"/>
+      <testcase name="testAdd" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="44" assertions="1" time="0.242156"/>
+      <testcase name="testSubtract" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="50" assertions="1" time="0.239727"/>
+      <testcase name="testMultiply" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="56" assertions="1" time="0.242244"/>
+      <testcase name="testDivide" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="62" assertions="1" time="0.240479"/>
+      <testcase name="testObjectParameterTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="68" assertions="1" time="0.242879"/>
+      <testcase name="testArrayStringTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="74" assertions="3" time="0.239463"/>
+      <testcase name="testArrayOfObjectsTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="82" assertions="7" time="0.235928"/>
+      <testcase name="testArrayOfArraysTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="95" assertions="7" time="0.239586"/>
+      <testcase name="testArrayAddTest" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="107" assertions="1" time="0.424598"/>
+      <testcase name="testAgilePHPNotNull" class="SoapRpcEncodedTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcEncodedTest.php" line="16" assertions="2" time="0.001306"/>
+    </testsuite>
+    <testsuite name="BaseTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/BaseTest.php" fullPackage="com.makeabyte.agilephp.test" package="com.makeabyte.agilephp.test" tests="1" assertions="2" failures="0" errors="0" time="0.001311">
+      <testcase name="testAgilePHPNotNull" class="BaseTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/BaseTest.php" line="16" assertions="2" time="0.001311"/>
+    </testsuite>
+    <testsuite name="SysLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SysLoggerTest.php" fullPackage="com.makeabyte.agilephp.test.logger" package="com.makeabyte.agilephp.test.logger" tests="5" assertions="2" failures="0" errors="0" time="0.016897">
+      <testcase name="info" class="SysLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SysLoggerTest.php" line="17" assertions="0" time="0.011250"/>
+      <testcase name="warn" class="SysLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SysLoggerTest.php" line="28" assertions="0" time="0.001435"/>
+      <testcase name="error" class="SysLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SysLoggerTest.php" line="39" assertions="0" time="0.001460"/>
+      <testcase name="debug" class="SysLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SysLoggerTest.php" line="50" assertions="0" time="0.001441"/>
+      <testcase name="testAgilePHPNotNull" class="SysLoggerTest" file="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SysLoggerTest.php" line="16" assertions="2" time="0.001311"/>
     </testsuite>
   </testsuite>
 </testsuites>

@@ -48,13 +48,19 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																																										
+																																																																																		
 				<div class="method-definition">
 					static 						<span class="method-result">Singleton</span>
 										<a href="#getInstance" title="details" class="method-name">getInstance</a>
 										()
 									</div>
-																																																																		
+																						
+				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#setConfig" title="details" class="method-name">setConfig</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$controller</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$action</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$renderer</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$sanitize</span>, <span class="var-type">SimpleXMLElement</span>&nbsp;<span class="var-name">$config</span>)
+									</div>
+																																										
 				<div class="method-definition">
 											<span class="method-result">Object</span>
 										<a href="#createCustomRenderer" title="details" class="method-name">createCustomRenderer</a>
@@ -71,6 +77,12 @@
 											<span class="method-result">Object</span>
 										<a href="#createRenderer" title="details" class="method-name">createRenderer</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$renderer</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#dispatch" title="details" class="method-name">dispatch</a>
+										()
 									</div>
 														
 				<div class="method-definition">
@@ -108,19 +120,7 @@
 										<a href="#getParameters" title="details" class="method-name">getParameters</a>
 										()
 									</div>
-														
-				<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#processRequest" title="details" class="method-name">processRequest</a>
-										()
-									</div>
-														
-				<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#setConfig" title="details" class="method-name">setConfig</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$controller</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$action</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$renderer</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$sanitize</span>, <span class="var-type">SimpleXMLElement</span>&nbsp;<span class="var-name">$config</span>)
-									</div>
-														
+																						
 				<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#setDefaultAction" title="details" class="method-name">setDefaultAction</a>
@@ -154,7 +154,7 @@
 		<div class="info-box-body">
 			<A NAME='method_detail'></A>
 <a name="methodgetInstance" id="getInstance"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
 		<span class="method-title">static getInstance</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a56">56</a></span>)
@@ -178,11 +178,52 @@
 		
 			
 	</div>
+<a name="methodsetConfig" id="setConfig"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static setConfig</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a71">71</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Initalizes the MVC component with agilephp.xml configuration.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">void</span>
+		<span class="method-name">
+			setConfig
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$controller</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$action</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$renderer</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$sanitize</span>, <span class="var-type">SimpleXMLElement</span>&nbsp;<span class="var-name">$config</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">SimpleXMLElement</span>
+				<span class="var-name">$config</span><span class="var-description">: SimpleXMLElement containing the MVC configuration.</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$controller</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$action</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$renderer</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$sanitize</span>			</li>
+				</ul>
+		
+			
+	</div>
 <a name="methodcreateCustomRenderer" id="createCustomRenderer"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">createCustomRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a311">311</a></span>)
+		<span class="method-title">createCustomRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a323">323</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -215,7 +256,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">createDefaultRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a270">270</a></span>)
+		<span class="method-title">createDefaultRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a282">282</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -240,7 +281,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">createRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a290">290</a></span>)
+		<span class="method-title">createRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a302">302</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -266,11 +307,36 @@
 		
 			
 	</div>
-<a name="methodgetAction" id="getAction"><!-- --></a>
+<a name="methoddispatch" id="dispatch"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getAction</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a160">160</a></span>)
+		<span class="method-title">dispatch</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a186">186</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Parses the current request URI to obtain the controller, action method, and arguments  present for this request and then performs the invocation. If these parameters ARE NOT  present, the default controller and default action method are used instead.</p>
+<p class="description"><p>NOTE: The URI requirement to communicate with this MVC system is as follows        http://domain.com/ScriptName.php/ControllerName/ActionMethod/arg1/arg2/arg3/etc...</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			dispatch
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetAction" id="getAction"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getAction</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a161">161</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -292,10 +358,10 @@
 			
 	</div>
 <a name="methodgetController" id="getController"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getController</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a150">150</a></span>)
+		<span class="method-title">getController</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a151">151</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -317,10 +383,10 @@
 			
 	</div>
 <a name="methodgetDefaultAction" id="getDefaultAction"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDefaultAction</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a119">119</a></span>)
+		<span class="method-title">getDefaultAction</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a120">120</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -342,10 +408,10 @@
 			
 	</div>
 <a name="methodgetDefaultController" id="getDefaultController"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDefaultController</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a96">96</a></span>)
+		<span class="method-title">getDefaultController</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a97">97</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -367,10 +433,10 @@
 			
 	</div>
 <a name="methodgetDefaultRenderer" id="getDefaultRenderer"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getDefaultRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a140">140</a></span>)
+		<span class="method-title">getDefaultRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a141">141</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -392,10 +458,10 @@
 			
 	</div>
 <a name="methodgetParameters" id="getParameters"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getParameters</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a170">170</a></span>)
+		<span class="method-title">getParameters</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a171">171</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -416,77 +482,11 @@
 		
 			
 	</div>
-<a name="methodprocessRequest" id="processRequest"><!-- --></a>
-<div class="evenrow">
-	
-	<div class="method-header">
-		<span class="method-title">processRequest</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a185">185</a></span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Parses the current request URI to obtain the controller, action method, and arguments  present for this request and then performs the invocation. If these parameters ARE NOT  present, the default controller and default action method are used instead.</p>
-<p class="description"><p>NOTE: The URI requirement to communicate with this MVC system is as follows        http://domain.com/ScriptName.php/ControllerName/ActionMethod/arg1/arg2/arg3/etc...</p></p>
-	<ul class="tags">
-				<li><span class="field">access:</span> public</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			processRequest
-		</span>
-				()
-			</div>
-	
-		
-			
-	</div>
-<a name="methodsetConfig" id="setConfig"><!-- --></a>
+<a name="methodsetDefaultAction" id="setDefaultAction"><!-- --></a>
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setConfig</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a70">70</a></span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Initalizes the MVC component with agilephp.xml configuration.</p>
-	<ul class="tags">
-				<li><span class="field">access:</span> public</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			setConfig
-		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$controller</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$action</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$renderer</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$sanitize</span>, <span class="var-type">SimpleXMLElement</span>&nbsp;<span class="var-name">$config</span>)
-			</div>
-	
-			<ul class="parameters">
-					<li>
-				<span class="var-type">SimpleXMLElement</span>
-				<span class="var-name">$config</span><span class="var-description">: SimpleXMLElement containing the MVC configuration.</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$controller</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$action</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$renderer</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$sanitize</span>			</li>
-				</ul>
-		
-			
-	</div>
-<a name="methodsetDefaultAction" id="setDefaultAction"><!-- --></a>
-<div class="evenrow">
-	
-	<div class="method-header">
-		<span class="method-title">setDefaultAction</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a108">108</a></span>)
+		<span class="method-title">setDefaultAction</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a109">109</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -512,10 +512,10 @@
 			
 	</div>
 <a name="methodsetDefaultController" id="setDefaultController"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setDefaultController</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a85">85</a></span>)
+		<span class="method-title">setDefaultController</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a86">86</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -541,10 +541,10 @@
 			
 	</div>
 <a name="methodsetDefaultRenderer" id="setDefaultRenderer"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setDefaultRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a130">130</a></span>)
+		<span class="method-title">setDefaultRenderer</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPMVC.php.html#a131">131</a></span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -575,7 +575,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 27 May 2010 23:50:03 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Sat, 29 May 2010 22:54:34 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

@@ -46,7 +46,7 @@ class PHTMLRenderer extends BaseRenderer {
       	 	 foreach( $this->getStore() as $key => $value )
 	                  $$key = $value;
 
-	         Logger::debug( 'PHTMLRenderer::render executed with parameter $view = \'' . $view . '\'' );
+	         Log::debug( 'PHTMLRenderer::render executed with parameter $view = \'' . $view . '\'' );
 
 	         // Prevent local variables from being visible to the view
 	         unset( $f );

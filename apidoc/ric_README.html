@@ -99,31 +99,6 @@ pear install firephp/FirePHPCore
 Visit the WIKI at http://www.makeabyte.com/agilephp/wiki for details on installation, configuration, and tutorials.
 
 
-----------
-** TODO **
-----------
-&gt; Add constructor argument support to InterceptorProxy
-&gt; Iron out RequestScope CSFR issues in regards to destroying session and making requests from client side javascript.
-&gt; Persistence framework needs to support many-to-many relationships
-&gt; Need to revisit PersistenceRenderer and make an easy way to
-   allow different client side rendering libraries like jquery, dojo, extjs, etc (adapter?)
-&gt; Add calendar, spinner, date picker, and other widgets to persistence rendering
-&gt; AJAX Push / Comet (PHP socket daemon?)
-&gt; Create dialect classes for the following database servers:
-    firebird
-    informix
-    oracle
-    dblib
-    ibm
-&gt; Finish Form::toJSON method (this should probably use AJAXRenderer)
-&gt; Need to update MSSQLDialect::find to use LIKE clause for text, ntext, and image data types.
-&gt; Need to add support to persistence/Column for multiple foreign keys per column (is this bad database design?)
-&gt; Complete reverse engineering logic in dialect classes and generator/ReverseEngineerDatabase.
-&gt; Add support for database diff's.
-&gt; Finish creating unit tests for all framework components (naughty, naughty - TDD!)
-&gt; Remove @version annotation from all classes
-
-
  --------------------------
  **      Known Bugs      **
  --------------------------
@@ -140,7 +115,7 @@ Reason: The text, ntext, and image data types cannot be compared or sorted, exce
 Resolution: Need to update MSSQLDialect class to use LIKE clause for column types listed above.
 </pre>
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 27 May 2010 23:46:34 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Sat, 29 May 2010 22:51:26 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</body>
 </html>

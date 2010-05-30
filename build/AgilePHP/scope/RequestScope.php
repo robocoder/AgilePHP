@@ -54,7 +54,7 @@ class RequestScope {
 
 	  	      	  	  $rt = (!isset( $this->store['AGILEPHP_REQUEST_TOKEN'] ) ) ? null : $this->store['AGILEPHP_REQUEST_TOKEN'];
 
-	  	      	  	  Logger::debug( 'RequestScope::__construct Found invalid request token \'' . $rt . '\', expected \'' . $_COOKIE['AGILEPHP_REQUEST_TOKEN'] . '\'.' );
+	  	      	  	  Log::debug( 'RequestScope::__construct Found invalid request token \'' . $rt . '\', expected \'' . $_COOKIE['AGILEPHP_REQUEST_TOKEN'] . '\'.' );
 	  	      	  	  throw new AgilePHP_Exception( 'Invalid request token \'' . $rt . '\'. Possible Cross-Site Forgery Request (CSFR) attempt.' );
 	  	      	  }
 	  	      	  else {

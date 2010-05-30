@@ -29,11 +29,6 @@
  */
 abstract class BaseModelXslController extends BaseModelXmlController {
 
-		 protected function __construct() {
-
-		 		   parent::__construct();
-		 }
-
 		 /**
 	      * Generates an XSL stylesheet from the domain model object's properties. Designed to be used in conjuction
 	      * with getResultListAsPagedXML() to perform an XSLT transformation.
@@ -220,7 +215,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 									</xsl:template>
 								</xsl:stylesheet>';
 
-				   Logger::debug( 'BaseModelXslController::getModelListXSL Returning ' . $xsl );
+				   Log::debug( 'BaseModelXslController::getModelListXSL Returning ' . $xsl );
 
 	     		   return $xsl;
 	     }
@@ -248,7 +243,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 				   $form->setMode( $this->getModelPersistenceAction() );
 	     	       $xsl = $form->getXSL( $pkeyValues, $this->getPage() );
 
-	     	       Logger::debug( 'BaseModelXslController::getModelFormXSL Returning ' . $xsl );
+	     	       Log::debug( 'BaseModelXslController::getModelFormXSL Returning ' . $xsl );
 
 	     	       return $xsl;
 	     }

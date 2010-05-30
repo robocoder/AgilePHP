@@ -66,6 +66,7 @@ class MVC {
 	   * 
 	   * @param SimpleXMLElement $config SimpleXMLElement containing the MVC configuration.
 	   * @return void
+	   * @static
 	   */
 	  public function setConfig( $controller, $action, $renderer, $sanitize ) {
 
@@ -182,7 +183,7 @@ class MVC {
 	   * 
 	   * @return void
 	   */
-	  public function processRequest() {
+	  public function dispatch() {
 
 	  		 $path = (isset( $_SERVER['PHP_SELF'] )) ? $_SERVER['PHP_SELF'] : '/';
 
@@ -213,8 +214,19 @@ class MVC {
 		  	 $this->action = isset( $action ) ? $action : $this->getDefaultAction();
 
 		     // Make sure controllers are loaded from the web application control directory ONLY.
-	  	     if( !in_array( $this->controller, get_declared_classes() ) )
+	  	     if( !in_array( $this->controller, get_declared_classes() ) ) {
+
+	  	     	 // Load front controller style phars first
+	  	     	 $phar = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
+	  		  				DIRECTORY_SEPARATOR . $controller . '.phar';
+
+	  		  	 if( file_exists( $phar ) ) {
+	  		  	 	 require_once $phar;
+	  		  	 	 return;
+	  		  	 }
+
 	  	     	 $this->loadController( $controller );
+	  	     }
 
 	  	     $oController = new $this->controller;
 	  	     $action = $this->action;
@@ -243,14 +255,14 @@ class MVC {
 						  		throw new AgilePHP_Exception( 'The specified action \'' . $action . '\' does not exist.' );
 					  	} 
 
-					  	Logger::debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+					  	Log::debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
 					  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $this->parameters  ) . '\'.' );
 
 		  	     		call_user_func_array( array( $oController, $action ), $this->parameters ); 
 		  	     	}
 		  	     	else {
 	
-		  	     		Logger::debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+		  	     		Log::debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
 					  	     			'\', action \'' . $this->action . '\'.' );
 	
 		  	     		$oController->$action();
@@ -271,7 +283,7 @@ class MVC {
 
 	  	     $path = AgilePHP::getFramework()->getFrameworkRoot() . '/mvc/' . $this->getDefaultRenderer() . '.php';
 
-	  	     Logger::debug( 'MVC::createDefaultRenderer loading renderer: ' . $this->getDefaultRenderer() );
+	  	     Log::debug( 'MVC::createDefaultRenderer loading renderer: ' . $this->getDefaultRenderer() );
 
 	  	     if( !file_exists( $path ) )
 	  	     	 throw new AgilePHP_Exception( 'Default framework renderer could not be loaded from: ' . $path );
@@ -291,7 +303,7 @@ class MVC {
 
 	  	     $path = AgilePHP::getFramework()->getFrameworkRoot() . '/mvc/' . $renderer . '.php';
 
-	  	     Logger::debug( 'MVC::createRenderer loading renderer: ' . $renderer );
+	  	     Log::debug( 'MVC::createRenderer loading renderer: ' . $renderer );
 
 	  		 if( !file_exists( $path ) )
 	  	     	 throw new AgilePHP_Exception( 'Framework renderer could not be loaded from: ' . $path );
@@ -312,7 +324,7 @@ class MVC {
 
 	  	     $path = AgilePHP::getFramework()->getWebRoot() . '/classes/' . $classpath . '/' . $renderer . '.php';
 
-	  	     Logger::debug( 'MVC::createDefaultRenderer loading custom renderer: ' . $renderer );
+	  	     Log::debug( 'MVC::createDefaultRenderer loading custom renderer: ' . $renderer );
 
 	  	     if( !file_exists( $path ) )
 	  	     	 throw new AgilePHP_Exception( 'Custom renderer could not be loaded from: ' . $path );
@@ -357,7 +369,7 @@ class MVC {
 				       }
 			  }
 
-	  		  throw new AgilePHP_Exception( 'The requested controller could not be found.' );
+	  		  throw new AgilePHP_Exception( 'The requested controller \'' . $controller . '\' could not be found.' );
 	  }
 }
 ?>

@@ -47,7 +47,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  	     }
 	  	     catch( PDOException $pdoe ) {
 
-	  	     	    Logger::debug( 'MSSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
+	  	     	    Log::debug( 'MSSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
 
 	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
 	  	     		// be invoked to create the database schema.
@@ -250,7 +250,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 			 $newModel = $table->getModelInstance();
 			 $values = array();			
 
-			 Logger::debug( 'MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
+			 Log::debug( 'MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		 try {
 	  		  	    $pkeyColumns = $table->getPrimaryKeyColumns();
@@ -297,7 +297,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 					 if( !count( $result ) ) {
 
-					 	 Logger::debug( 'MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	 Log::debug( 'MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	 return array();
 					 }
 

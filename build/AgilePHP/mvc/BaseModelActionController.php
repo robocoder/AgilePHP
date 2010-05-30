@@ -39,7 +39,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 		  * @param String $requiredRole An optional role to require
 		  * @return void
 		  */
-	     protected function __construct( $requireLogon = true, $requiredRole = 'admin' ) {
+	     public function __construct( $requireLogon = true, $requiredRole = 'admin' ) {
 
 	     	       if( $requireLogon ) {
 
@@ -424,7 +424,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	 	       	  		 break;
 
 	 	       	  		 default:
-	 	       	  		   	Logger::debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $type .
+	 	       	  		   	Log::debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $type .
 	 	       	  		   									  '\'. Using (' . ($isSanitized) ? 'sanitized' : 'raw' . ') value \'' . $value . '\'.' );
 	 	       	  		   	return $value;
 	 	       	  		 break;

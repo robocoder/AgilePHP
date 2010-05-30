@@ -22,7 +22,6 @@
 <!ATTLIST component name CDATA #IMPLIED>
 <!ATTLIST component version CDATA #IMPLIED>
 <!ATTLIST component enabled CDATA #FIXED "false">
-<!ATTLIST component language CDATA #IMPLIED>
 
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #IMPLIED>

@@ -148,10 +148,10 @@ class XSLTRenderer extends BaseRenderer {
 	   */
  	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
 
- 	  	     if( $errno==E_WARNING && (substr_count( $errmsg, "DOMDocument::loadXML()" ) > 0 ) )
+ 	  	     if( $errno == E_WARNING && (substr_count( $errmsg, "DOMDocument::loadXML()" ) > 0 ) )
 	    	     throw new AgilePHP_Exception( $errmsg );
-	    	 else
-	             return false;
+
+	         return false;
 	  }
 }
 ?>

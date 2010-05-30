@@ -32,6 +32,7 @@
 
 <!ELEMENT logger (#PCDATA)>
 <!ATTLIST logger level ( debug | info | warn | error ) #REQUIRED>
+<!ATTLIST logger provider CDATA #IMPLIED>
 
 <!ELEMENT scope (#PCDATA)>
 <!ATTLIST scope type ( application | session | conversation | request ) #REQUIRED>

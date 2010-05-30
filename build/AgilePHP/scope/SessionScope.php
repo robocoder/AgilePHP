@@ -53,7 +53,7 @@ class SessionScope {
 
 	  	      if( isset( $_COOKIE['AGILEPHP_SESSION_ID'] ) ) {
 
-	  	      	  Logger::debug( 'SessionScope::__construct Initalizing session from previous cookie.' );
+	  	      	  Log::debug( 'SessionScope::__construct Initalizing session from previous cookie.' );
 
 	  	      	  $this->session->setId( $_COOKIE['AGILEPHP_SESSION_ID'] );
 	  	      	  $this->oldSession->setId( $_COOKIE['AGILEPHP_SESSION_ID'] );
@@ -68,7 +68,7 @@ class SessionScope {
 	  	      }
 	  	      else {
 
-	  	      	  Logger::debug( 'SessionScope::__construct Initalizing session with a new cookie.' );
+	  	      	  Log::debug( 'SessionScope::__construct Initalizing session with a new cookie.' );
 
 		  	      $this->createSessionId();
 		  	      setcookie( 'AGILEPHP_SESSION_ID', $this->session->getId(), (time()+3600*24*30), '/' ); // 30 days
@@ -120,7 +120,7 @@ class SessionScope {
 	  		 $this->session->setId( $id );
 
 	  		 setcookie( 'AGILEPHP_SESSION_ID', $id, time()+3600*24*30, '/' ); // 30 days
-	  		 Logger::debug( 'SessionScope::setSessionId Initalizing session from specified session id and dropping a new session cookie' );
+	  		 Log::debug( 'SessionScope::setSessionId Initalizing session from specified session id and dropping a new session cookie' );
 
 	  		 $pm = new PersistenceManager();
 	  		 if( $persistedSession = $pm->find( $this->getSession() ) ) {
@@ -196,7 +196,7 @@ class SessionScope {
 	  		 $this->session->setData( array() );
 	  		 $this->oldSession->setData( array() );
 
-	  		 Logger::debug( 'SessionScope::clear Session cleared' );
+	  		 Log::debug( 'SessionScope::clear Session cleared' );
 	  }
 
 	  /**
@@ -238,7 +238,7 @@ class SessionScope {
 		  	 catch( Exception $e ) {
 
 		  	 	    $message = 'SessionScope::__destruct ' . $e->getMessage();
-		  		    Logger::error( $message );
+		  		    Log::error( $message );
 		  	}
 	  }
 
@@ -249,7 +249,7 @@ class SessionScope {
 	   */
 	  public function persist() {
 
-	  		 Logger::debug( 'SessionScope::persist Persisting session' );
+	  		 Log::debug( 'SessionScope::persist Persisting session' );
 
 	  	     if( !$this->getSession()->getData() ) return;
 

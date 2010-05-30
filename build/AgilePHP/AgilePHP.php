@@ -31,7 +31,6 @@ class AgilePHP {
 
 	  private static $instance;
 	  private $displayPhpErrors = true;
-	  private $mvc;							// Model-View-Control component singleton instance
 	  private $webroot;						// The full system path to the web application
 	  private $frameworkRoot;				// The full system path to the location of the AgilePHP framework
 	  private $documentRoot;				// The relative path to the web app from the server's document root.
@@ -87,7 +86,7 @@ class AgilePHP {
 
 	  	     return self::$instance;
 	  }
-	  
+
 	  /**
 	   * Accessor method for Model-View-Control component. The MVC component this method returns is
 	   * created as follows:
@@ -96,18 +95,11 @@ class AgilePHP {
 	   * 	configuration, the MVC component is created using the specified values when AgilePHP
 	   * 	framework is instantiated by a call to 'getFramework'.
 	   * 
-	   * 2) A call to 'initMVC' has already loaded the MVC component so this method will return the
-	   * 	already created component.
-	   * 
-	   * 3) No agilephp.xml file is present. This method will obtain a singleton instance, store it
-	   * 	internally, and then return the stored instance.  
+	   * 2) No agilephp.xml file is present. This method will return a singleton instance.
 	   */
 	  public function getMVC() {
 
-	  		 if( $this->mvc == null )
-	  		     $this->mvc = MVC::getInstance();
-
-	  		 return $this->mvc;
+	  		 return MVC::getInstance();
 	  }
 
 	  /**
@@ -143,10 +135,12 @@ class AgilePHP {
 
 	  	     $this->frameworkRoot = $path;
 
-	  	     if( strpos( ':' . $path, $path ) === false )
-	  	     	 ini_set( 'include_path', ini_get( 'include_path' ) . PATH_SEPARATOR . $path );
+	  	     $include_path = ini_get( 'include_path' );
 
-	  	     Logger::debug( ini_get( 'include_path' ) );
+	  	     if( strpos( $include_path, ':' . $path ) === false )
+	  	     	 ini_set( 'include_path', $include_path . PATH_SEPARATOR . ':' . $path );
+
+	  	     Log::debug( 'Initalizing framework with php include_path: ' . ini_get( 'include_path' ) );
 	  }
 
 	  /**
@@ -220,6 +214,9 @@ class AgilePHP {
 	   */
 	  public function getAppName() {
 
+	  		 if( !$this->appName )
+	  		 	  $this->appName = (isset( $_SERVER['REMOTE_ADDR'] )) ? $_SERVER['REMOTE_ADDR'] : 'localhost';
+
 	  		 return $this->appName;
 	  }
 
@@ -233,7 +230,7 @@ class AgilePHP {
 	   */
 	  public static function import( $classpath ) {
 
-	  		 Logger::debug( 'AgilePHP::import ' . $classpath );
+	  		 Log::debug( 'AgilePHP::import ' . $classpath );
 
 	  		 $file = preg_replace( '/\./', DIRECTORY_SEPARATOR, $classpath );
 	  		 if( file_exists( 'classes' . DIRECTORY_SEPARATOR . $file . '.php' ) )
@@ -262,18 +259,6 @@ class AgilePHP {
 	  	      	 ini_set( 'display_errors', '1' );
 	  	      	 error_reporting( E_ALL );
 	  	     }
-	  }
-
-	  /**
-	   * Initalizes a default Model-View-Control component without reading
-	   * agilephp.xml configuration.
-	   * 
-	   * @return void
-	   */
-	  public function initMVC() {
-
-	  	     $this->mvc = MVC::getInstance();
-	  	     $this->mvc->processRequest();
 	  }
 
 	  /**
@@ -319,7 +304,7 @@ class AgilePHP {
 	   */
 	  public function addInterception( Interception $interception ) {
 
-	  		 Logger::debug( 'AgilePHP::addInterception Adding interception for class \'' . $interception->getClass() . '\'.' );
+	  		 Log::debug( 'AgilePHP::addInterception Adding interception for class \'' . $interception->getClass() . '\'.' );
 
 	  		 array_push( $this->interceptions, $interception );
 	  }
@@ -332,6 +317,19 @@ class AgilePHP {
 	  public function getInterceptions() {
 
 	  		 return $this->interceptions;
+	  }
+
+	  /**
+	   * Returns the agilephp.xml file as a SimpleXMLElement. NOTE: This method reads the xml file
+	   * with each call to avoid "Exception: Serialization of 'SimpleXMLElement' is not allowed" in
+	   * unit tests. Is this a php bug?
+	   * 
+	   * @return SimpleXMLElement agilephp.xml configuration
+	   */
+	  public function getConfiguration() {
+
+	  		 $agilephp_xml = $this->getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
+  	      	 return simplexml_load_file( $agilephp_xml );
 	  }
 
 	  /**
@@ -354,7 +352,7 @@ class AgilePHP {
  			  $dom->Load( $agilephp_xml );			 
 			  if( !$dom->validate() ) {
 
-			 	  throw new AgilePHP_Exception( "agilephp.xml Document Object Model validation failed. You can validate your configurations with the DTD at AgilePHP/core/agilephp.dtd." );
+			 	  throw new AgilePHP_Exception( "agilephp.xml Document Object Model validation failed. You can validate your configurations with the DTD at AgilePHP/agilephp.dtd." );
 			 	  return;
 			  }
 
@@ -367,17 +365,8 @@ class AgilePHP {
 	  	      	  $renderer = (string)$xml->mvc->attributes()->renderer;
 	  	      	  $sanitize = (string)$xml->mvc->attributes()->sanitize;
 
-	  	      	  $mvc = MVC::getInstance();
-	  	      	  $mvc->setconfig( $controller, $action, $renderer, $sanitize );
-  	      	  }
-
-	  		  if( $xml->logger ) {
-
-	  	      	  require_once 'Logger.php';
-	  	      	  $level = $xml->logger->attributes()->level;
-	  	      	  Logger::setLevel( $level );
-  	      	  	  if( $level == 'debug' ) $this->setDebugMode( true );
-	  	      }
+	  	      	  MVC::getInstance()->setconfig( $controller, $action, $renderer, $sanitize );
+  	      	  } 	      	  
 	  }
 
 	  /**
@@ -433,24 +422,24 @@ class AgilePHP {
  	  		 	case E_NOTICE:
  	  		 	case E_USER_NOTICE:
 
- 	  		 		Logger::info( $entry );
+ 	  		 		Log::info( $entry );
  	  		 		break;
 
  	  		 	case E_WARNING:
  	  		 	case E_USER_WARNING:
  	  		 		
- 	  		 		Logger::warn( $entry );
+ 	  		 		Log::warn( $entry );
  	  		 		break;
 
  	  		 	case E_ERROR:
  	  		 	case E_USER_ERROR:
  	  		 	case E_RECOVERABLE_ERROR:
 
- 	  		 		Logger::error( $entry );
+ 	  		 		Log::error( $entry );
  	  		 		break;
 
  	  		 	default:
- 	  		 		Logger::debug( $entry );
+ 	  		 		Log::debug( $entry );
  	  		 }
     	      
 	  }
@@ -617,7 +606,7 @@ function __autoload( $class ) {
 require_once 'Annotation.php';
 require_once 'Interception.php';
 require_once 'Interception.php';
-require_once 'annotation/annotations/AroundInvoke.php';
+require_once 'interception/AroundInvoke.php';
 
 /**
  * If the class being loaded is annotated with any interceptors, an InterceptorProxy
