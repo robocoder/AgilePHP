@@ -145,7 +145,7 @@ class FileExplorerController extends BaseExtController {
 		 				 return file_exists( $path . DIRECTORY_SEPARATOR . 'agilephp.xml' );
 		 		};
 
-		 		$request = Scope::getInstance()->getRequestScope();
+		 		$request = Scope::getRequestScope();
 		 		$node = $request->getSanitized( 'node' );
 		 		$path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $node );
 

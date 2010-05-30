@@ -46,7 +46,7 @@ class ExtLoginController extends BaseExtController {
 	   */
 	  public function login() {
 
-	  		 $request = Scope::getInstance()->getRequestScope();
+	  		 $request = Scope::getRequestScope();
 
 	  		 if( !$username = $request->getSanitized( 'username' ) ) {
 
@@ -62,7 +62,7 @@ class ExtLoginController extends BaseExtController {
 
 			 if( !Identity::getInstance()->login( $username, $password ) ) {
 
-			 	 Scope::getInstance()->getRequestScope()->invalidate();
+			 	 Scope::getRequestScope()->invalidate();
 			 	 $this->getRenderer()->setError( 'Invalid username/password' );
 	  		 	 $this->getRenderer()->render( false );
 			 }

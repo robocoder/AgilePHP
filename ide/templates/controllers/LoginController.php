@@ -32,7 +32,7 @@ class LoginController extends BaseController {
 	   */
 	  public function register() {
 
-	  		 $request = Scope::getInstance()->getRequestScope();
+	  		 $request = Scope::getRequestScope();
 
 	  		 if( !$username = $request->get( 'username' ) )
 	  		 	 throw new AgilePHP_Exception( 'Username required' );
@@ -66,7 +66,7 @@ class LoginController extends BaseController {
 	   */
 	  public function confirm( $token, $sessionId ) {
 
-	  		 $request = Scope::getInstance()->getRequestScope();
+	  		 $request = Scope::getRequestScope();
 
 	  		 $identity = Identity::getInstance();
 	  		 $identity->confirm( $request->sanitize( $token ), $request->sanitize( $sessionId ) );
@@ -84,7 +84,7 @@ class LoginController extends BaseController {
 	   */
 	  public function login() {
 
-	  		 $request = Scope::getInstance()->getRequestScope();
+	  		 $request = Scope::getRequestScope();
 
 	  		 if( !$username = $request->getSanitized( 'username' ) ) {
 	  		 	
@@ -101,7 +101,7 @@ class LoginController extends BaseController {
 
 			 if( !Identity::getInstance()->login( $username, $password ) ) {
 
-			 	 Scope::getInstance()->getRequestScope()->invalidate();
+			 	 Scope::getRequestScope()->invalidate();
 	  	      	 $this->getRenderer()->set( 'error', 'Invalid username/password' );
 	  	      	 $this->getRenderer()->render( 'login' );
 	  	      	 return;
@@ -139,7 +139,7 @@ class LoginController extends BaseController {
 	   */
 	  public function forgotPassword() {
 
-	  		 $request = Scope::getInstance()->getRequestScope();
+	  		 $request = Scope::getRequestScope();
 
 	  		 $identity = Identity::getInstance();
 

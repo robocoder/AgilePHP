@@ -83,7 +83,7 @@ class Identity implements IdentityManager {
 	  		  if( $confirmUrl )
 	  		      $this->confirmationUrl = $confirmUrl;
 	  		      
-	  		  $this->session = Scope::getInstance()->getSessionScope();
+	  		  $this->session = Scope::getSessionScope();
 
 	  		  // Initalize Identity from previous session if one exits
       		  if( $username = $this->session->get( 'IDENTITY_USERNAME' ) ) {

@@ -1,18 +1,5 @@
-- Renamed MVC::processRequest to MVC::dispatch
-- Added front controller style phar components to MVC dispatch
-- Removed language attribute from component element in component.dtd
-- Remoted Component::language and added getParams and getConfiguration methods.
-- Refactored BaseController::__construct to be public instead of protected.
-- Re-vamped logger package:
-	- logging providers can now be plugged in
-	- added #@Logger interceptor to shorthand #@In( class = LogFactory::getLogger() )
-	- added static "Log" facade class 
-	- Added Logging unit tests
-	- did search/replace all on entire project to replace Logger:: with Log::
-- Added #@Logger unit test to interceptor testing package
-- Started moving interceptors related to a specific package under their respective package rather
-  than being housed in interception/interceptors
-- Added ability to MVC::dispatch to dispatch to phar front controller style components
-- Removed phar from archive build target, added apidoc
-- Deleted generator package in favor of the studio/ide package
-- updated TODO, moved TODO to its own file
+- Added more validators and completed implementation within the ORM and MVC components
+- Added persistence/type package filled with interceptors that can be used to decorate
+  mutators/setters to guarantee proper data type casting between PHP and SQL.
+- Updated test/persistence.xml to use validators.
+- Removed all instances of Scope::getInstance and removed singleton mechanics from Scope component.

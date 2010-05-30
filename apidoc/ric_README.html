@@ -113,9 +113,15 @@ See: http://bugs.php.net/bug.php?id=40452
 Issue: Clicking on sortable column headers rendered by mvc/XSLTRenderer breaks in some cases when using MSSQLDialect class.
 Reason: The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator.
 Resolution: Need to update MSSQLDialect class to use LIKE clause for column types listed above.
+
+Issue: Phing dist target fails with the following error:
+	   PHP Fatal error:  SOAP-ERROR: Parsing WSDL: Couldn't load from 'http://localhost/test/index.php/SoapRpcLiteralTestAPI/wsdl' : Extra content at the end of the document
+ in /home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php on line 28
+Reason: test/logs is not writable or the URL being used to access the SOAP web services virtualhost does not exist
+Resolution: chmod -R 777 test/logs
 </pre>
 	<p class="notes" id="credit">
-		Documentation generated on Sat, 29 May 2010 22:51:26 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Sun, 30 May 2010 14:10:15 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</body>
 </html>

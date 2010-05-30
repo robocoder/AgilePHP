@@ -35,7 +35,7 @@ class AJAXController extends BaseController {
 	  		 $this->createRenderer( 'AJAXRenderer' );
 
 	  		 // CSFR token seems to cause some interference with the javascript code - needs to be ironed out!
-	  		 //Scope::getInstance()->getRequestScope()->createToken();
+	  		 //Scope::getRequestScope()->createToken();
 	  }
 
 	  /**
@@ -63,7 +63,7 @@ class AJAXController extends BaseController {
 	  public function formSubmit() {
 
 	  		 $stdClass = new stdClass();
-	  		 $stdClass->result = implode( ',', Scope::getInstance()->getRequestScope()->getParameters() );
+	  		 $stdClass->result = implode( ',', Scope::getRequestScope()->getParameters() );
 
 	  		 $this->getRenderer()->render( $stdClass );
 	  }

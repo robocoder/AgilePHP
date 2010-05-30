@@ -279,7 +279,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      */
 		 protected function setModelValues() {
 
-	  		       $request = Scope::getInstance()->getRequestScope();
+	  		       $request = Scope::getRequestScope();
 	     	       $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
 
 	  		       if( !$request->getParameters() )
@@ -287,148 +287,66 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
   	 	  	       foreach( $table->getColumns() as $column ) {
 
+  	 	  	       		    $name = $column->getModelPropertyName();
+		  	 	  	       	$value = $request->get( $name );
+
+		  	 	  	       	$accessor = $this->toAccessor( $name );
+		  	 	  	       	$mutator = $this->toMutator( $name );
+
+  	 	  	       			// Set model values to null if they are not present in the POST array
 		  	 	  	       	if( !$request->get( $column->getModelPropertyName() ) ) {
 
-		  	 	  	       		$mutator = $this->toMutator( $column->getModelPropertyName() );
 	  		 	  	            $this->getModel()->$mutator( null );
 	  		 	  	        	continue;
 		  	 	  	       	}
 
-		  	 	  	        foreach( $request->getParameters() as $name => $value ) {
-		
-			  		     		    if( $name == 'AGILEPHP_REQUEST_TOKEN' ) continue;
-		
-			  		     		    if( $name == 'password1' || $name == 'password2' ) {
-		
-			  		     		  	    if( $name == 'password2' ) continue;
-		
-			  		     		  	    if( $request->getSanitized( 'password1' ) !== $request->getSanitized( 'password2' ) ) {
-		
-			  		     		  	 	    $this->getRenderer()->set( 'error', 'Passwords don\'t match' );
-			  		     		  	  	    $this->getRenderer()->render( 'error' );
-			  		     		  	  	    exit;
-			  		     		  	    }
-		
-			  		     		  	    if( $request->getSanitized( 'oldPassword' ) != $value )
-											$this->getModel()->setPassword( $value );
-		
-										continue;
-			  		     		    }
+		  	 	  	       	// Password fields usually have a confirm box that needs to verify the integrity
+		  	 	  	       	// of the password. This logic will make sure 'password1' and 'password2' fields match.
+		  	 	  	       	// The password present in the database at the time the form is loaded is expected to be
+		  	 	  	       	// present in the POST array named 'oldPassword'.
+  	 	  	       			if( $name == 'password1' || $name == 'password2' ) {
 
-			  		     		    $accessor = $this->toAccessor( $name );
-			  		     		    $mutator = $this->toMutator( $name );
+			  		     		if( $name == 'password2' ) continue;
 
-				  	 	  	        if( $column->getModelPropertyName() == $name ) {
-		
-			     		   			 	$value = ($column->getSanitize() === true) ? 
-		   	  	        		 				urldecode( stripslashes( stripslashes( $request->sanitize( $value ) ) ) ) :
-		   	  	        		 				urldecode( stripslashes( stripslashes( $value ) ) );
+			  		     		if( $request->getSanitized( 'password1' ) !== $request->getSanitized( 'password2' ) ) {
 
-				     		   			if( $column->isForeignKey() ) {
+			  		     		    $this->getRenderer()->set( 'error', 'Passwords don\'t match' );
+			  		     		    $this->getRenderer()->render( 'error' );
+			  		     		    exit;
+			  		     		}
 
-		  		 	  	        			$fmodelName = $column->getForeignKey()->getReferencedTableInstance()->getModel();
-		  		 	  	        			$fModel = new $fmodelName();
+			  		     		if( $request->getSanitized( 'oldPassword' ) != $value )
+									$this->getModel()->setPassword( $value );
 
-		  		 	  	        			$casted = $this->getCastedValue( $column->getType(), $value, $column->getSanitize() );
-		 							     	$this->getModel()->$mutator( $casted );
+								continue;
+			  		     	}
 
-		  		 	  	        			// php namespace support
-				     		   				$namespace = explode( '\\', $fmodelName );
-		  		 	  	        			$className = array_pop( $namespace );
+			  		     	// Dont sanitize the value if the column has sanitize="false" set in persistence.xml
+		  		     		$value = ($column->getSanitize() === true) ? 
+	   	  	        		 				urldecode( stripslashes( stripslashes( $request->sanitize( $value ) ) ) ) :
+	   	  	        		 				urldecode( stripslashes( stripslashes( $value ) ) );
 
-									        $instanceMutator = $this->toMutator( $className );
-									        $accessor = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-									        $fModel->$accessor( $casted );
- 							     			$this->getModel()->$instanceMutator( (($casted) ? $fModel : NULL) );
+	   	  	        		if( $column->isForeignKey() ) {
 
-									     	continue;
-							     		}
+  	 	  	        			$fmodelName = $column->getForeignKey()->getReferencedTableInstance()->getModel();
+  	 	  	        			$fModel = new $fmodelName();
 
-					     		   		$this->getModel()->$mutator( $this->getCastedValue( $column->getType(), $value, $column->getSanitize() ) );
-			     		   			}
-		  	 	  	        }
+ 						     	$this->getModel()->$mutator( $value );
+
+  	 	  	        			// php namespace support
+	     		   				$namespace = explode( '\\', $fmodelName );
+  	 	  	        			$className = array_pop( $namespace );
+
+						        $instanceMutator = $this->toMutator( $className );
+						        $accessor = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+						        $fModel->$accessor( $value );
+ 				     			$this->getModel()->$instanceMutator( (($value) ? $fModel : NULL) );
+
+						     	continue;
+				     		}
+
+   		   		 			$this->getModel()->$mutator( $value );
   	 	  	     }
-  	 	  	     //print_r( $this->getModel() );
-	     }
-
-	     /**
-	      * Responsible for returning proper data type mappings between SQL and PHP.
-	      * 
-	      * @param String $type The column type specified in persistence.xml for the property being set.
-	      * @param $mutator The mutator method name to invoke on the current model.
-	      * @param $value The SQL data type being set.
-	      * @return void
-	      */
-	     protected function getCastedValue( $type, $value, $isSanitized ) {
-
-	     		 if( $value == 'NULL' ) return NULL;
-	     	
-			     switch( $type ) {
-
-	 	       	  		 case 'boolean':
-	 	       	  		  	  return $value == true ? true : false;
- 	       	  		  	 break;
-
-	 	       	  		 case 'integer':
-	 	       	  		 case 'tinyiny':
-	 	       	  		 case 'smallint':
-	 	       	  		 	  return (integer) $value;
-	 	       	  		 break;
-	
-	 	       	  		 case 'int':
-	 	       	  		  	  return (int) $value;
-	 	       	  		 break;
-
-	 	       	  		 case 'bigint':
-							  return $this->getPersistenceManager()->toBigInt( $value );
-						 break;
-
-	 	       	  		 case 'double':
-	 	       	  		  	  return (float) $value;
-	 	       	  		 break;
-
-	 	       	  		 case 'decimal':
-	 	       	  		  	  return (float) $value;
-	 	       	  		 break;
-
-	 	       	  		 case 'float':
-	 	       	  		 case 'money':
-	 	       	  		  	  return (float) $value;
-	 	       	  		 break;
-
-	 	       	  		 case 'text':
-	 	       	  		 case 'char':
-	 	       	  		 case 'varchar':
-	 	       	  		 case 'nvarchar':
-	 	       	  		 case 'ntext':
-	 	       	  		  	  return (string) $value;
-	 	       	  		 break;
-
-	 	       	  		 case 'date':
-	 	       	  		  	  return date( 'c', strtotime( $value ) );
-	 	       	  		 break;
-
-	 	       	  		 case 'datetime':
-	 	       	  		 case 'smalldatetime':
-	 	       	  		  	  return date( 'c', strtotime( $value ) );
-	 	       	  		 break;
-
-	 	       	  		 case 'bit':
-	 	       	  		  	  return ($value == 1) ? 1 : 'NULL'; 
-	 	       	  		 break;
-
-	 	       	  		 case 'varbinary':
-	 	       	  		 case 'image':
-	 	       	  		 case 'uniqueidentifier':
-	 	       	  		 	  return $value;	
-	 	       	  		 break;
-
-	 	       	  		 default:
-	 	       	  		   	Log::debug( 'BaseModelActionController::setModelValues Warning about unsupported persistence data type \'' . $type .
-	 	       	  		   									  '\'. Using (' . ($isSanitized) ? 'sanitized' : 'raw' . ') value \'' . $value . '\'.' );
-	 	       	  		   	return $value;
-	 	       	  		 break;
-        			   }
 	     }
 }
 ?>

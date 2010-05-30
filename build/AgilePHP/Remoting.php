@@ -80,7 +80,7 @@ abstract class Remoting extends BaseController {
 	  	  */
 	  	 public function getSessionId() {
 
-	  		   $sessionId = Scope::getInstance()->getSessionScope()->getSessionId();
+	  		   $sessionId = Scope::getSessionScope()->getSessionId();
 
 	  		   Log::debug( 'Remoting::getSessionId Returning session id \'' . $sessionId . '\'.' );
 
@@ -95,7 +95,7 @@ abstract class Remoting extends BaseController {
 	      */
 	     public function destroySession( $sessionId ) {
 
-	  		    $session = Scope::getInstance()->getSessionScope()->setSessionId( $sessionId );
+	  		    $session = Scope::getSessionScope()->setSessionId( $sessionId );
 	  		    $session->destroy(); 
 	     }
 	      
@@ -182,7 +182,7 @@ abstract class Remoting extends BaseController {
 	       */
 	      public function invoke() {
 
-	    	     $request = Scope::getInstance()->getRequestScope();
+	    	     $request = Scope::getRequestScope();
 
 	    	     $stateful = $request->getSanitized( 'stateful' );
 	    	     if( $stateful ) $this->invokeStateful();

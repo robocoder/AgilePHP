@@ -54,7 +54,7 @@ class InventoryController extends BaseModelActionController {
 	   */
 	  public function persist() {
 
-	  	     $request = Scope::getInstance()->getRequestScope();
+	  	     $request = Scope::getRequestScope();
 
 	  	     $image = null;
 	  	     $video = null;
@@ -105,7 +105,7 @@ class InventoryController extends BaseModelActionController {
 			 if( $contentLength > $maxSize )
 			 	 throw new AgilePHP_Exception( 'HTTP Content-Length greater than PHP configuration directive \'post_max_size\' (results in empty $_POST array). Content-Length = \'' . $contentLength . '\', post_max_size = \'' . $maxSize . '\'' );
 
-	  		 $request = Scope::getInstance()->getRequestScope();
+	  		 $request = Scope::getRequestScope();
 
 			 foreach( $_FILES as $key => $upload )
 			          $this->upload( $key );

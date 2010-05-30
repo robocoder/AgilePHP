@@ -36,7 +36,7 @@ class NumberValidator extends Validator {
 	   */
 	  public function validate() {
 
-	  		 return is_int( $this->data ) || is_float( $this->data );
+	  		 return is_numeric( $this->data );
 	  }
 
 }

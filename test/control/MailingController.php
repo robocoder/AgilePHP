@@ -47,7 +47,7 @@ class MailingController extends BaseModelActionController {
 
 	  	     if( $process == true ) {
 
-	  	     	 $request = Scope::getInstance()->getRequestScope();
+	  	     	 $request = Scope::getRequestScope();
 	  	     	 $error = null;
 		  		 $message = null;
 		  		 $failed = array();

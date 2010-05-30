@@ -94,7 +94,7 @@ class IndexController extends BaseController {
 	   */
 	  public function contactSubmit() {
 
-	  		 $request = Scope::getInstance()->getRequestScope();
+	  		 $request = Scope::getRequestScope();
 
 	  	     $body = 'Name: ' . $request->get( 'name' ) . 
 	  	     		 "\nEmail: " . $request->get( 'email' ) .
@@ -150,7 +150,7 @@ class IndexController extends BaseController {
 	   */
 	  public function formExamplePOST() {
 
-	  		 $params = Scope::getInstance()->getRequestScope()->getParameters();
+	  		 $params = Scope::getRequestScope()->getParameters();
 
 	  		 $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Form Example - POSTED!' );
 	  		 $this->getRenderer()->set( 'parameters', $params );

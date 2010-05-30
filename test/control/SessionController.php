@@ -33,9 +33,7 @@ class SessionController extends BaseModelActionController {
 
 	  public function __construct() {
 
-	 	  	 Scope::getInstance()->getSessionScope();
 	  		 $this->model = new Session();
-
 	  		 parent::__construct();
 	  }
 

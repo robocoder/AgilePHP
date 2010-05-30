@@ -48,12 +48,5 @@ abstract class Validator {
 	   * @return boolean True if the data is valid, false otherwise. 
 	   */
 	  abstract public function validate();
-
-	  /**
-	   * Casts the value to the specified type
-	   * 
-	   * @return mixed The casted value
-	   */
-	  abstract public function cast();
 }
 ?>

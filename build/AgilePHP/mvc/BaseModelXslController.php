@@ -232,7 +232,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 	     	       $action = AgilePHP::getFramework()->getRequestBase() . '/{/Form/controller}/{/Form/action}/' . $pkeyValues . '/' . $this->getPage();
 
-	     	       $token = Scope::getInstance()->getRequestScope()->createToken();
+	     	       $token = Scope::getRequestScope()->createToken();
 
 	     	       // php namespace support
 	     	       $namespace = explode( '\\', $this->getModelName() );

@@ -1078,7 +1078,7 @@ abstract class BasePersistence {
 
 	  		 return null;
 	  }
-	  
+
 	  /**
 	   * Converts the specified parameter to a bigint.
 	   * 
@@ -1302,159 +1302,41 @@ abstract class BasePersistence {
 			  	       if( $isPersist == true && $column->isPrimaryKey() || $column->isAutoIncrement() )
 			  	       	   continue;
 
-			  	       if( $column->isRequired() )
-			  	       	   $this->checkType( $table, $column->getModelPropertyName() );
+			  	       // Verify length
+			  	       if( $length = $column->getLength() ) {
 
-			  	       $this->checkSize( $table, $column->getName(), $this->model->$accessor() );
+			  	       	   $dataLen = strlen( $this->model->$accessor() );
+			  	       	   if( $dataLen > $length ) {
 
-			  		   if( $column->isRequired() && $this->model->$accessor() === null )
-			  		       throw new AgilePHP_PersistenceException( 'BasePersistence::validate Persistence validation failed on property \'' . $column->getName() . '\'. Required field contains null value.' );
+			  	       	   	   $message = 'BasePersistence::validate Persistence validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Length defined in persistence.xml as \'' . $column->getLength() . '\' but the has a length of \'' . $dataLen . '\'.';
+			  	       	   	   Log::debug( $message );
+			  	       	   	   throw new AgilePHP_PersistenceException( $message );
+			  	       	   }
+			  	       }
+
+			  	       // Verify required fields contain data
+			  		   if( $column->isRequired() && $this->model->$accessor() === null ) {
+			  		   	
+			  		   	   $message = 'BasePersistence::validate Persistence validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Required field contains null value.';
+			  		   	   Log::debug( $message );
+			  		       throw new AgilePHP_PersistenceException( $message );
+			  		   }
+
+			  		   // Use specified validator to verify data integrity
+			  	       if( $validator = $column->getValidator() ) {
+
+			  	       	   // Allow null values for columns that are not required
+			  	       	   if( !$column->isRequired() && $this->model->$accessor() == null ) continue;
+
+			  	       	   $o = new $validator( $this->model->$accessor() );
+			  	       	   if( !$o->validate() ) {
+
+			  	       	   	   $message = 'BasePersistence::validate Persistence validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype( $this->model->$accessor() ) . '\' using validator \'' . $validator . '\'.';
+			  	       	   	   Log::debug( $message );
+			  	       	   	   throw new AgilePHP_PersistenceException( $message );
+			  	       	   }			  	       	   	   
+			  	       }
 			  }
-	  }
-
-	  /**
-	   * Returns boolean response based on the 'size' configuration in persistence.xml
-	   * for the specified column name.
-	   * 
-	   * @param $tableElement SimpleXML table element containing the column to validate
-	   * @param $column The name of the column to validate
-	   * @param $value The length of the model's property
-	   * @return True if the column meets the configured size requirement, false otherwise
-	   */
-	  private function checkSize( $table, $columnName, $value ) {
-
-	  		  if( is_object( $value ) ) return; // Skip foreign key models
-
-              $length = strlen( $value );
-
-              foreach( $table->getColumns() as $column ) {
-
-              	       if( $column->getName() == $columnName ) {
-
-              	       	   if( $column->getLength() ) {
-
-				  	           if( $length > $column->getLength() ) {
-
-				  	           	   $message = 'BasePersistence::checkSize Persistence validation failed on property \'' . $columnName . '\'. Length attribute defined in persistence.xml with a length of \'' . $column->getLength() . '\' but the property has a length of \'' . $length . '\'.';
-				  	           	   Log::debug( $message . "\n\$table = " . print_r( $table, true ) . ", \$columnName = " . $columnName . ', value = ' . $value );
-				  	               throw new AgilePHP_PersistenceException( $message );
-				  	           }
-              	       	   }
-              	       }
-              }
-	  }
-
-	  /**
-	   * Checks a variable/property value against persistence.xml configuration if its a required
-	   * property.
-	   * 
-	   * @param $tableElement SimpleXML table element containing the model's property
-	   * @param $property The model property to test
-	   * @return True if the property type matches its counter-part in persistence.xml, false otherwise.
-	   * @throws Exception
-	   */
-	  private function checkType( $table, $propertyName ) {
-
-	  	      $accessor = 'get' . ucfirst( $propertyName );
-
-	  		  foreach( $table->getColumns() as $column ) {
-
-	  		  	       if( $column->getName() == $propertyName && $column->isRequired() ) {
-
-	  		  	       	   switch( $column->getType() ) {
-
-			  	      		  case 'boolean':
-			  	      		  		if( !is_bool( $this->model->$accessor() ) )
-			  	      		  			throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'boolean' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  	    break;
-
-			  	      		  case 'bigint':
-			  	      		  		//TODO: PHP has issues with 64-bit signed and unsigned numbers. This needs patching!
-			  	      		  		if( !is_float( $this->model->$accessor() ) )
-			  	      		  			throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'bigint' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-
-			  	      		  case 'int':
-			  	      		  		if( !is_int( $this->model->$accessor() ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'int' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-			  	      		  		
-			  	      		  case 'integer':
-			  	      		  		if( !is_integer( $this->model->$accessor() ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'integer' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-
-			  	      		  case 'double':
-			  	      		  		if( !is_double( $this->model->$accessor() ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'double' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-			  	      		  		
-			  	      		  case 'decimal':
-			  	      		  		if( !is_float( $this->model->$accessor() ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'decimal/float' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-
-			  	      		  case 'string':
-			  	      		  		if( !is_string( $this->model->$accessor() ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'string' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-
-			  	      		  case 'text':
-			  	      		  		// LET TEXT THROUGH UNCHECKED
-			  	      		  		//if( !is_string( $this->model->$accessor() ) )
-			  	      		  		//    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'text' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-
-			  	      		  case 'varchar':
-			  	      		  		if( !is_string( $this->model->$accessor() ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'varchar/string' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-
-			  	      		  case 'array':
-			  	      		  		if( !is_array( $this->model->$accessor() ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'array' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-
-			  	      		  case 'object':
-			  	      		  		if( !is_object( $this->model->$accessor() ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'object' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-
-			  	      		  case 'float':
-			  	      		  		if( !is_float( $this->model->$accessor() ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'float' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-			  	      		  		
-			  	      		  case 'bit':
-			  	      		  		if( $this->model->$accessor() != 0 && $this->model->$accessor() != 1 )
-			  	      		  		    throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'bit' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  		break;
-
-			  	      		  case 'date':
-			  	      		  	    if( strtotime( $this->model->$accessor() ) === false )
-			  	      		  	        throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'date' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  	    break;
-			  	      		  	    
-			  	      		  case 'datetime':
-			  	      		  	    if( strtotime( $this->model->$accessor() ) === false )
-			  	      		  	        throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Expected type 'datetime' but found '" . gettype( $this->model->$accessor() ) . "' for table '" . $table->getName() . "'." );
-			  	      		  	    break;
-			  	      		  	    
-			  	      		  case 'blob':
-			  	      		  		if( !sizeof( $_FILES ) )
-			  	      		  		    throw new AgilePHP_PersistenceException( 'Persistence validation failed on property \'' . $propertyName . '\'. Expected type \'blob\' but PHP $_FILES array is empty for table \'' . $table->getName() . '\'.' );
-			  	      		  		break;
-
-			  	      		  case 'password':
-			  	      		  		if( !is_string( $this->model->$accessor() ) )
-			  	      		  			throw new AgilePHP_PersistenceException( 'Persistence validation failed on property \'' . $propertyName . '\'. Expected type \'password/string\' but found \'' . gettype( $this->model->$accessor() . '\'.' ) );
-
-			  	      		  default:
-			  	      		  	  throw new AgilePHP_PersistenceException( "Persistence validation failed on property '$propertyName'. Unsupported data type specified in persistence.xml (" . $column->getType() . ")" );
-			  	      		  	  break;
-	  		  	       	   }
-			  	      }
-	  		  }
 	  }
 }
 ?>

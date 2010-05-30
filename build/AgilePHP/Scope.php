@@ -36,24 +36,8 @@ require_once 'scope/SessionScope.php';
  */
 class Scope {
 
-	  private static $instance;
-
 	  private function __construct() {}
 	  private function __clone() {}
-
-	  /**
-	   * Returns a singleton instance of Scope.
-	   * 
-	   * @return An instance of Scope
-	   * @static
-	   */
-	  public static function getInstance() {
-
-	     	 if( self::$instance == null )
-	  	         self::$instance = new self;
-
-	  	     return self::$instance;
-	  }
 
 	  /**
 	   * Returns a singleton instance of ApplicationScope.
@@ -64,8 +48,6 @@ class Scope {
 	   * @static
 	   */
 	  public static function getApplicationScope( $appName = null ) {
-
-	  		 require_once 'scope/ApplicationScope.php';
 
 	  	     return ApplicationScope::getInstance( $appName );
 	  }
@@ -78,8 +60,6 @@ class Scope {
 	   */
 	  public static function getSessionScope() {
 
-	  		 require_once 'scope/SessionScope.php';
-
 	  		 return SessionScope::getInstance();
 	  }
 
@@ -90,8 +70,6 @@ class Scope {
 	   * @static
 	   */
 	  public static function getRequestScope() {
-
-	  		 require_once 'scope/RequestScope.php';
 
 	  	     return RequestScope::getInstance(); 
 	  }
