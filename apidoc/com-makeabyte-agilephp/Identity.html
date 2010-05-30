@@ -1,0 +1,1207 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Identity</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Identity</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+                <p class="implements">
+            Implements interfaces:
+            <ul>
+                <li><a href="../com-makeabyte-agilephp-identity/IdentityManager.html">IdentityManager</a></li>            </ul>
+        </p>
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Provides a means for tracking a users identity throughout the  web application. The Identity component automatically handles  creating sessions, persistence, and sending emails to deal with  password resets.</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jeremy Hahn</li>
+				<li><span class="field">copyright:</span> Make A Byte, inc</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_build---AgilePHP---Identity.php.html">/build/AgilePHP/Identity.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a44">44</a></span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																										
+				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#getInstance" title="details" class="method-name">getInstance</a>
+										()
+									</div>
+																																																																																																																																																																																																																										
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#__destruct" title="details" class="method-name">__destruct</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#confirm" title="details" class="method-name">confirm</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$token</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$sessionId</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#delete" title="details" class="method-name">delete</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#forgotPassword" title="details" class="method-name">forgotPassword</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getConfirmationUrl" title="details" class="method-name">getConfirmationUrl</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getCreated" title="details" class="method-name">getCreated</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getEmail" title="details" class="method-name">getEmail</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getEnabled" title="details" class="method-name">getEnabled</a>
+										()
+									</div>
+																						
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getLastLogin" title="details" class="method-name">getLastLogin</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getModel" title="details" class="method-name">getModel</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getPassword" title="details" class="method-name">getPassword</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getPasswordResetUrl" title="details" class="method-name">getPasswordResetUrl</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getRole" title="details" class="method-name">getRole</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getUsername" title="details" class="method-name">getUsername</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#hasRole" title="details" class="method-name">hasRole</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$role</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#isLoggedIn" title="details" class="method-name">isLoggedIn</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#login" title="details" class="method-name">login</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$username</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$password</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#logout" title="details" class="method-name">logout</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#merge" title="details" class="method-name">merge</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#persist" title="details" class="method-name">persist</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#refresh" title="details" class="method-name">refresh</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#register" title="details" class="method-name">register</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#resetPassword" title="details" class="method-name">resetPassword</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$token</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$sessionId</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#revokeRole" title="details" class="method-name">revokeRole</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setCreated" title="details" class="method-name">setCreated</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$dateTime</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setEmail" title="details" class="method-name">setEmail</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$email</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setEnabled" title="details" class="method-name">setEnabled</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setLastLogin" title="details" class="method-name">setLastLogin</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$dateTime</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setModel" title="details" class="method-name">setModel</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$model</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setPassword" title="details" class="method-name">setPassword</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$password</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setPasswordResetUrl" title="details" class="method-name">setPasswordResetUrl</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$url</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setRole" title="details" class="method-name">setRole</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$role</span>)
+									</div>
+														
+				<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setUsername" title="details" class="method-name">setUsername</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$username</span>)
+									</div>
+											</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodgetInstance" id="getInstance"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getInstance</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a112">112</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a singleton instance of the 'Identity' component.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">void</span>
+		<span class="method-name">
+			getInstance
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="method__destruct" id="__destruct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Destructor __destruct</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a598">598</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Destructor prints log debug entry notifying that the identity instance has been destroyed.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			__destruct
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodconfirm" id="confirm"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">confirm</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a404">404</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> confirm($token, $sessionId)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			confirm
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$token</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$sessionId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$token</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$sessionId</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddelete" id="delete"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">delete</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a516">516</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> delete()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			delete
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodforgotPassword" id="forgotPassword"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">forgotPassword</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a316">316</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> forgotPassword()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			forgotPassword
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetConfirmationUrl" id="getConfirmationUrl"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getConfirmationUrl</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a307">307</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getConfirmationUrl()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getConfirmationUrl
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetCreated" id="getCreated"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getCreated</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a205">205</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getCreated()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getCreated
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetEmail" id="getEmail"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getEmail</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a187">187</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getEmail()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getEmail
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetEnabled" id="getEnabled"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getEnabled</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a241">241</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getEnabled()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getEnabled
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetLastLogin" id="getLastLogin"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getLastLogin</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a223">223</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getLastLogin()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getLastLogin
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetModel" id="getModel"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getModel</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a133">133</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getModel()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getModel
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetPassword" id="getPassword"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getPassword</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a169">169</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getPassword()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getPassword
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetPasswordResetUrl" id="getPasswordResetUrl"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getPasswordResetUrl</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a298">298</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getPasswordResetUrl()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getPasswordResetUrl
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetRole" id="getRole"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getRole</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a259">259</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getRole()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getRole
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetUsername" id="getUsername"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getUsername</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a160">160</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> getUsername()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getUsername
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodhasRole" id="hasRole"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">hasRole</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a268">268</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> hasRole($role)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			hasRole
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$role</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$role</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisLoggedIn" id="isLoggedIn"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isLoggedIn</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a487">487</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> isLoggedIn()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isLoggedIn
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodlogin" id="login"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">login</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a429">429</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> login($username, $password)</li>
+				<li><span class="field">throws:</span> AgilePHP_AccessDeniedException</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			login
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$username</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$password</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$username</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$password</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodlogout" id="logout"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">logout</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a477">477</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> logout()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			logout
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodmerge" id="merge"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">merge</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a506">506</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> merge()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			merge
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodpersist" id="persist"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">persist</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a496">496</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> persist()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			persist
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodrefresh" id="refresh"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">refresh</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a526">526</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> refresh()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			refresh
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodregister" id="register"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">register</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a378">378</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> register()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			register
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodresetPassword" id="resetPassword"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">resetPassword</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a353">353</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> resetPassword($token, $sessionId)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			resetPassword
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$token</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$sessionId</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$token</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$sessionId</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodrevokeRole" id="revokeRole"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">revokeRole</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a280">280</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> revokeRole()</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			revokeRole
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodsetCreated" id="setCreated"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setCreated</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a196">196</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> setCreated($dateTime)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setCreated
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$dateTime</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$dateTime</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetEmail" id="setEmail"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setEmail</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a178">178</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> setEmail($email)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setEmail
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$email</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$email</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetEnabled" id="setEnabled"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setEnabled</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a232">232</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> setEnabled($value)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setEnabled
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetLastLogin" id="setLastLogin"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setLastLogin</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a214">214</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> setLastLogin($dateTime)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setLastLogin
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$dateTime</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$dateTime</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetModel" id="setModel"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setModel</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a124">124</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> setModel($model)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setModel
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$model</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$model</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetPassword" id="setPassword"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setPassword</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a151">151</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> setPassword($password)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setPassword
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$password</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$password</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetPasswordResetUrl" id="setPasswordResetUrl"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setPasswordResetUrl</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a289">289</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> setPasswordResetUrl($url)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setPasswordResetUrl
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$url</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$url</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetRole" id="setRole"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setRole</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a250">250</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> setRole($role)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setRole
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$role</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../com-makeabyte-agilephp-identity/Role.html">Role</a></span>
+				<span class="var-name">$role</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetUsername" id="setUsername"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setUsername</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp__buildAgilePHPIdentity.php.html#a142">142</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
+	<ul class="tags">
+				<li><span class="field">see:</span> setUsername($username)</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setUsername
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$username</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$username</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sun, 30 May 2010 18:17:08 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>
