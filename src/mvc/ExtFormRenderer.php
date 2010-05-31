@@ -70,6 +70,7 @@ class ExtFormRenderer extends AJAXRenderer {
 	  public function render( $result ) {
 
 	  		 $this->result->success = ($result && !property_exists( $this->result, 'reason' )) ? true : false;
+	  		 if( $this->getStore() ) $this->result->data = $this->getStore();
 	  		 parent::render( $this->result );
 	  }
 }
