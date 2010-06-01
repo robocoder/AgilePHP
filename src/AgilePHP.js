@@ -591,6 +591,7 @@ var AgilePHP = {
 		 */
 		Remoting : {
 
+			classes: [],
 			controller : null,
 
 			/**
@@ -655,6 +656,33 @@ var AgilePHP = {
 				 }
 
 				 new AgilePHP.XHR().post( url, data, callback );
+			},
+
+			/**
+			 * Checks to see if the specified class already has a stub loaded
+			 * 
+			 * @param {String} clazz The remote class name
+			 * @return Boolean True if the stub has already been loaded, false otherwise
+			 */
+			isLoaded: function( clazz ) {
+
+				 return AgilePHP.Remoting.classes[clazz] == true;
+			},
+
+			/**
+			 * Loads a remoting stub for the specified class
+			 * 
+			 * @param {String} The remote class name
+			 * @return void
+			 */
+			load: function( clazz ) {
+
+				if( !AgilePHP.Remoting.classes[clazz] ) {
+
+					AgilePHP.Remoting.classes[clazz] = true;
+					AgilePHP.loadScript( AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.getController() + '/index/' + clazz );
+				}
 			}
+
 		}
 }
