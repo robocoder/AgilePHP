@@ -21,7 +21,8 @@
 
 /**
  * Provides client side JavaScript remoting to PHP objects. Handles 
- * marshalling/unmarshalling of JSON objects between the client and server. 
+ * marshalling/unmarshalling of JSON objects between the client and server
+ * as well as providing client side stubs for remote classes.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
@@ -38,17 +39,31 @@ abstract class Remoting extends BaseController {
 	  	  * @param String $class
 	  	  * @return void
 	  	  */
-	  	 public function __construct( $class = null ) {
+	  	 public function __construct() {
 
-	  	 		   $clazz = ($class) ? $class : $this;
+	  		    $this->createRenderer( 'AJAXRenderer' );
 
-	  	 		   $c = new ReflectionClass( $clazz );
-	  	 		   $this->class = $c->getName();
+				set_error_handler( 'Remoting::ErrorHandler' );
+				ob_start( array( $this, 'captureErrors' ) );
+	  	 }
 
-	  		       $this->createRenderer( 'AJAXRenderer' );
+		 /**
+	      * Loads a Remoting stub for the specified class and outputs it in JSON format
+	      * to the client. If no class is specified a Remoting stub will be generated
+	      * for the extension class.
+	   	  *  
+	   	  * @param $class The class to remote
+	   	  * @return void
+	   	  * @throws AgilePHP_RemotingException
+	   	  */
+	  	 public function index( $class = null ) {
 
-				   set_error_handler( 'Remoting::ErrorHandler' );
-				   ob_start( array( $this, 'captureErrors' ) );
+	  	 		$clazz = ($class) ? $class : $this;
+
+	  	 		$c = new ReflectionClass( $clazz );
+	  	 		$this->class = $c->getName();
+
+	  	 		$this->createStub();
 	  	 }
 
 	  	 /**
@@ -131,8 +146,7 @@ abstract class Remoting extends BaseController {
 		  		 		  }
 		  		 		  else
 		  		 			  $js = 'function ' . $this->class . "() { }\n\n";
-	
-	
+
 		  		 		  // create methods
 		  		 		  $methods = $clazz->getMethods();
 		  		 		  for( $i=0; $i<count( $methods ); $i++ ) {
@@ -191,6 +205,13 @@ abstract class Remoting extends BaseController {
 	    	     $method = $request->getSanitized( 'method' );
 	    	     $constructorArgs = $this->decode( $request->getSanitized( 'constructorArgs' ) );
 	    	     $args = $this->decode( $request->getSanitized( 'parameters' ) );
+
+	    	     // Security, Security, Security...
+	    	     $clazz = new AnnotatedClass( $class );
+	    	     $methods = $clazz->getMethods();
+	    	     for( $i=0; $i<count( $methods ); $i++ )
+	  		 		 if( $methods[$i]->getName() == $method && !$methods[$i]->hasAnnotation( 'RemoteMethod' ) )
+	  		 		 	 throw new AgilePHP_RemotingException( 'No hacking please...' );
 
 	  		     Log::debug( 'Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
 	  		 	   	 '\', constructorArgs \'' . print_r( $constructorArgs, true ) . '\', args \'' . print_r( $args, true ) . '\'.' );
