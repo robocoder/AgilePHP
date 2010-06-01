@@ -27,6 +27,18 @@ html, body {
 
 	background: url( ../images/tabs/debugger.png) no-repeat 0 0;	
 }
+.tabOpenAppstore {
+
+	background: url( ../images/tabs/openappstore.png) no-repeat 0 0;	
+}
+.tabPEAR {
+
+	background: url( ../images/tabs/pear.png) no-repeat 0 0;	
+}
+.tabPECL {
+
+	background: url( ../images/tabs/pecl.png) no-repeat 0 0;	
+}
 
 /** Toolbar Styles */
 .fileNewProject {
@@ -84,6 +96,14 @@ button.btn-list-remove {
 
 	background: url( ../images/list-remove.png) no-repeat 0 0 !important;	
 }
+button.btn-search {
+
+	background: url( ../images/search.png) no-repeat 0 0 !important;	
+}
+button.btn-download {
+
+	background: url( ../images/download.png) no-repeat 0 0 !important;	
+}
 
 /* Taskbar Button Styles **/
 button.fileNewProject {
@@ -130,6 +150,20 @@ button.helpDocumentation {
 	float: left;
 	background-image: url( ../images/logo_vertical.png ) no-repeat 0 0 !important;
 	height: 500px;
+}
+
+.window-copyright {
+
+	position: absolute;
+	margin-top: 150px;
+	margin-left: 15px;
+	font-size: 10px;
+	z-index: 100;
+}
+.window-heading {
+
+	padding: 15px 15px 15px 15px;
+	font-weight: bold;
 }
 
 /** Wizard Styles */

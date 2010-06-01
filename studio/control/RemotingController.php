@@ -29,33 +29,19 @@
  */
 class RemotingController extends Remoting {
 
-	  public function __construct() {
-	  		 parent::__construct();
-	  }
-
 	  /**
-	   * (non-PHPdoc)
-	   * @see AgilePHP/mvc/BaseController#index()
-	   * @throws AgilePHP_RemotingException
-	   */
-	  public function index() {
-	  		 throw new AgilePHP_RemotingException( 'Malformed Request' );
-	  }
-
-	  /**
-	   * Loads the specified class
-	   *  
-	   * @param $class The class to remote
+	   * Overloads the parent invoke method to require an authenticated session  
+	   * before allowing a client to invoke any remote methods
+	   * 
 	   * @return void
-	   * @throws AgilePHP_RemotingException
 	   */
-	  public function load( $class ) {
+	  public function invoke() {
 
-	  		 if( !isset( $class ) || count( $class ) < 1 )
-				 throw new AgilePHP_RemotingException( 'Class required' );
+	  		 // Require authentication for all remote invocations
+	  	     if( !Identity::getInstance()->isLoggedIn() )
+	  		 	 throw new AgilePHP_AccessDeniedException( 'You must be logged in to view the requested content.' );
 
-			 parent::__construct( $class );
-			 parent::createStub();
+	  		 parent::invoke();
 	  }
 }
 ?>

@@ -3,8 +3,8 @@ AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/fileexplorer/window/N
 AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/fileexplorer/window/NewController.js' );
 AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/fileexplorer/window/NewComponent.js' );
 
-AgilePHP.Studio.Remoting.load( 'NewModelRemote' );
-AgilePHP.Studio.Remoting.load( 'ComponentsRemote' );
+AgilePHP.Remoting.load( 'NewModelRemote' );
+AgilePHP.Remoting.load( 'ComponentsRemote' );
 
 AgilePHP.Studio.FileExplorer = {
 

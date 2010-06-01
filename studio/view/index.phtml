@@ -15,7 +15,7 @@
     		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/ff.css" rel="stylesheet" type="text/css" />
 	    <![endif]>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/RemotingController/getBaseJS/<?= AgilePHP::getFramework()->isInDebugMode() ?>"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/RemotingController/load/ConfigsRemote"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getRequestBase() ?>/RemotingController/index/ConfigsRemote"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/adapter/ext/ext-base.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/ext-all.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/components/ext/ux/form/FileUploadField.js"></script>
@@ -31,7 +31,7 @@
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.Studio.Taskbar.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.Studio.Debugger.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.Studio.Desktop.js"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.Studio.Login.js"></script>
+		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.Studio.LoginWindow.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.Studio.Plugins.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.Studio.Notification.js"></script>
 		<script type="text/javascript" src="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/js/AgilePHP.Studio.FileExplorer.js"></script>
@@ -44,16 +44,16 @@
 
 		Ext.onReady( function() {
 
-			bypassLogin = true;  // speed up login during development
+			bypassLogin = false;  // speed up login during development
 
 			(bypassLogin) ?
 				AgilePHP.Studio.Desktop.load() :
-				AgilePHP.Studio.Login.show();
+				new AgilePHP.Studio.LoginWindow();
 		});
 		</script>
 	</head>
 
 	<body>
-		
+		<div id="login-window"></div>
 	</body>
 </html>

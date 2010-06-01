@@ -51,12 +51,11 @@ AgilePHP.Studio.Desktop = {
 
 		destroy: function() {
 
-			//Ext.get( 'studio-workspace' ).fadeOut({ duration: .5});
-			Ext.get( 'studio-menubar' ).fadeOut({ duration: .5});
-			Ext.get( 'studio-taskbar' ).fadeOut({ duration: .5});
-			setTimeout( 'Ext.getCmp( "studio-workspace" ).destroy();' +
-						'Ext.getCmp( "studio-menubar" ).destroy();' +
-						'Ext.getCmp( "studio-taskbar" ).destroy();', 500 );
+			//Ext.getCmp( 'studio-viewport' ).getEl().fadeOut({ easing: 'easeOut', duration: 1});
+			//setTimeout( 'Ext.getCmp( "studio-viewport" ).destroy();', 500 );
+			
+			Ext.getCmp( 'studio-viewport' ).destroy();
+			Ext.getCmp( 'file-explorer-contextmenu' ).destroy();
 		},
 
 		getPanel: function() {

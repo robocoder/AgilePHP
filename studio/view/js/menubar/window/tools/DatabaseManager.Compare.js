@@ -1,4 +1,4 @@
-AgilePHP.Studio.Remoting.load( 'DatabaseManagerRemote' );
+AgilePHP.Remoting.load( 'DatabaseManagerRemote' );
 
 AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare = function() {
 

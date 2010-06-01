@@ -98,6 +98,7 @@ AgilePHP.Studio.Menubar.tools = {
 			   id: 'studio-menubar-tools-settings',
 			   text: 'Settings',
 			   iconCls: 'toolsSettings',
+			   disabled: true,
 			   handler: function() {
 	
 					if( !Ext.WindowMgr.get( 'toolsSettingsWindow' ) ) {
@@ -135,7 +136,7 @@ AgilePHP.Studio.Menubar.help = {
 
 AgilePHP.Studio.Menubar.create = function() {
 
-	return new Ext.Toolbar({
+	var toolbar = new Ext.Toolbar({
 
 			id: 'studio-menubar',
 			region: 'north',
@@ -156,4 +157,11 @@ AgilePHP.Studio.Menubar.create = function() {
 				return AgilePHP.Studio.Menubar.help;
 			}
 	});
+
+	if( AgilePHP.Studio.User.getRole() == 'admin' ) {
+
+		Ext.getCmp( 'studio-menubar-tools-settings' ).setDisabled( false );
+	}
+
+	return toolbar;
 };

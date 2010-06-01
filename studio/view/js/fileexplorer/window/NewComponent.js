@@ -35,10 +35,6 @@ AgilePHP.Studio.FileExplorer.NewComponent = function() {
 	});
 
 	var checkbox = new Ext.grid.CheckboxSelectionModel();
-		checkbox.on( 'rowselect', function( selectionModel, rowIndex, record ) {
-
-		  			alert( record );
-	  	});
 
 	var colModel = new Ext.grid.ColumnModel(
 		    [

@@ -11,8 +11,8 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
 	}
 	var window = new AgilePHP.Studio.Window( id, 'fileNewProject', 'New Project Wizard', 550, 350 );
 
-	AgilePHP.Studio.Remoting.load( 'ProjectRemote' );
-	AgilePHP.Studio.Remoting.load( 'DatabaseManagerRemote' );
+	AgilePHP.Remoting.load( 'ProjectRemote' );
+	AgilePHP.Remoting.load( 'DatabaseManagerRemote' );
 
 	var pbar = new Ext.ProgressBar({
         id: id + 'progressbar',

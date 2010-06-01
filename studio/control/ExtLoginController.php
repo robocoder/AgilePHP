@@ -67,6 +67,8 @@ class ExtLoginController extends BaseExtController {
 	  		 	 $this->getRenderer()->render( false );
 			 }
 
+			 $this->getRenderer()->set( 'username', Identity::getInstance()->getUsername() );
+			 $this->getRenderer()->set( 'role', Identity::getInstance()->getRole()->getName() );
 	  	     $this->getRenderer()->render( true );
 	  }
 

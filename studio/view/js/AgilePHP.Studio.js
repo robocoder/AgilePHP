@@ -38,8 +38,8 @@ AgilePHP.Studio = {
 			xhr.request( AgilePHP.getRequestBase() + '/ExtLoginController/logout' );
 
 		// Destroy the workspace and load the login form
-		AgilePHP.Studio.Workspace.destroy();
-		setTimeout( 'AgilePHP.Studio.Login.show()', 500 );
+		AgilePHP.Studio.Desktop.destroy();
+		setTimeout( 'new AgilePHP.Studio.LoginWindow()', 500 );
 
 		// Destroy all window instances
 		Ext.WindowMgr.getBy( function( window ) {
@@ -96,21 +96,28 @@ AgilePHP.Studio = {
 	}
 };
 
-AgilePHP.Studio.Remoting = {
+AgilePHP.Studio.User = {
 
-		classes: [],
+		username: null,
+		role: null,
 
-		isLoaded: function( clazz ) {
+		setUsername: function( username ) {
 
-			return AgilePHP.Studio.Remoting.classes[clazz] == true;
+				AgilePHP.Studio.User.username = username;
 		},
 
-		load: function( clazz ) {
+		getUsername: function() {
 
-			if( !AgilePHP.Studio.Remoting.classes[clazz] ) {
+				return AgilePHP.Studio.User.username;
+		},
 
-				AgilePHP.Studio.Remoting.classes[clazz] = true;
-				AgilePHP.loadScript( AgilePHP.getRequestBase() + '/RemotingController/load/' + clazz );
-			}
+		setRole: function( role ) {
+
+				AgilePHP.Studio.User.role = role;
+		},
+
+		getRole: function() {
+
+				return AgilePHP.Studio.User.role;
 		}
 };
