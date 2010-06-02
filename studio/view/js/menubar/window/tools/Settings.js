@@ -3,12 +3,24 @@ AgilePHP.Remoting.load( 'PearPeclRemote' );
 AgilePHP.Studio.Menubar.tools.Settings = function() {
 
 	var id = 'menubar-tools-settings';
-	var win = new AgilePHP.Studio.Window( id, 'toolsSettings', 'Settings', 550 );
-	
+	var win = new AgilePHP.Studio.Window( id, 'toolsSettings', 'Settings', 550, 500 );
+
+	var pearPagingMemoryProxy = new Ext.ux.data.PagingMemoryProxy( [] );
+	var peclPagingMemoryProxy = new Ext.ux.data.PagingMemoryProxy( [] );
+
+	// Remote PHP class 
 	var pearPeclRemote = new PearPeclRemote();
+
+	 	// Get installed PEAR extensions
 		pearPeclRemote.setCallback( function( response ) {
 
 			if( !response ) return false; // no packages installed
+
+			if( response._class == 'AgilePHP_RemotingException' ) {
+
+				AgilePHP.Studio.error( response.message );
+				return false;
+			}
 
 			var data = [];
 			for( var i=0; i<response.exts.length; i++ ) {
@@ -19,88 +31,145 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 				             response.exts[i][2]
 				 ]);
 			}
-			Ext.getCmp( id + '-grid-pear' ).getStore().loadData( data );
+			pearPagingMemoryProxy.data = data;
+			Ext.getCmp( id + '-pear-pagingtoolbar' ).doRefresh();
 		});
-		pearPeclRemote.getInstalledPearExts();
+		pearPeclRemote.getInstalledExtensions( 'pear' );
 
-	var store = new Ext.data.Store({
-        proxy: new Ext.data.MemoryProxy( [] ),
+		// Get installed PECL extensions
+		pearPeclRemote.setCallback( function( response ) {
+
+			if( !response ) return false; // no packages installed
+
+			if( response._class == 'AgilePHP_RemotingException' ) {
+
+				AgilePHP.Studio.error( response.message );
+				return false;
+			}
+
+			var data = [];
+			for( var i=0; i<response.exts.length; i++ ) {
+
+				 data.push([ 
+				             response.exts[i][0],
+				             response.exts[i][1],
+				             response.exts[i][2]
+				 ]);
+			}
+			peclPagingMemoryProxy.data = data;
+			Ext.getCmp( id + '-pecl-pagingtoolbar' ).doRefresh();
+		});
+		pearPeclRemote.getInstalledExtensions( 'pecl' );
+
+	var pearStore = new Ext.data.Store({
+        proxy: pearPagingMemoryProxy,
         reader: new Ext.data.ArrayReader({}, [
-                   {name: id + '-package'},
-	               {name: id + '-version'},
-	               {name: id + '-state'}
-	          ])
+                   {name: id + '-pear-package'},
+	               {name: id + '-pear-version'},
+	               {name: id + '-pear-state'}
+	          ]),
+	    remoteSort: true
+	});
+
+	var peclStore = new Ext.data.Store({
+        proxy: peclPagingMemoryProxy,
+        reader: new Ext.data.ArrayReader({}, [
+                   {name: id + '-pecl-package'},
+	               {name: id + '-pecl-version'},
+	               {name: id + '-pecl-state'}
+	          ]),
+	    remoteSort: true
 	});
 
 	var checkbox = new Ext.grid.CheckboxSelectionModel();
 
-	var colModel = new Ext.grid.ColumnModel(
+	var pearModel = new Ext.grid.ColumnModel(
 		    [
 			  checkbox,
 			  {
 		        header: 'Package',
 		        readOnly: true,
-		        dataIndex: id + '-package',
-		        width: 200
+		        dataIndex: id + '-pear-package',
+		        width: 200,
+		        sortable: true
 		      },{
 		        header: 'Version',
-		        dataIndex: id + '-version',
-		        width: 50
+		        dataIndex: id + '-pear-version',
+		        width: 50,
+		        sortable: true
 		      },{
 		        header: 'State',
-		        dataIndex: id + '-state',
-		        width: 100
+		        dataIndex: id + '-pear-state',
+		        width: 100,
+		        sortable: true
 		      }]
 		    );
-		colModel.defaultSortable= true;
+		pearModel.defaultSortable = true;
 
-	var pearGrid =  new Ext.grid.GridPanel({
+	var peclModel = new Ext.grid.ColumnModel(
+			    [
+				  checkbox,
+				  {
+			        header: 'Package',
+			        readOnly: true,
+			        dataIndex: id + '-pecl-package',
+			        width: 200,
+			        sortable: true
+			      },{
+			        header: 'Version',
+			        dataIndex: id + '-pecl-version',
+			        width: 50,
+			        sortable: true
+			      },{
+			        header: 'State',
+			        dataIndex: id + '-pecl-state',
+			        width: 100,
+			        sortable: true
+			      }]
+			    );
+	peclModel.defaultSortable = true;
+
+	var pearGrid =  new AgilePHP.Studio.PagedGridPanel({
 	  		id: id + '-grid-pear',
-	        store: store,
+	        store: pearStore,
 	        viewConfig: {
 	            forceFit: true
 			},
-			cm: colModel,
+			cm: pearModel,
 	        stripeRows: true,
-	        stateId: 'grid',
+	        stateId: id + '-grid-pear-state',
 	        tbar: new Ext.Toolbar({
 	        	id: id + '-grid-pear-toolbar',
 	        	items: [{
 					id: id + '-grid-pear-toolbar-install',
-					text: 'Install',
-					iconCls: 'btn-list-add',
+					text: 'Uninstall',
+					iconCls: 'btn-list-remove',
 					disabled: true,
 					handler: function() {
 	
-						var grid = Ext.getCmp( id + '-grid-pear' );
-						var data = grid.getSelectionModel().getSelected().json;
-	
-						componentsRemote.setCallback( function( response ) {
-	
-							if( !response ) {
-	
-								AgilePHP.Studio.error( 'No reply from server' );
-								return false;
-							}
-							if( response._class == 'AgilePHP_RemotingException' ) {
-	
-								AgilePHP.Studio.error( response.message );
-								return false;
-							}
-	
-							new AgilePHP.Studio.Notification( '<b>Information</b>', 'Component is finished installing.')
-				            var t = Ext.getCmp( 'studio-properties-components-treepanel' );
-				            	t.getLoader().dataUrl = AgilePHP.getRequestBase() + '/FileExplorerController/getComponents/' + workspace + '/' + project;
-				            	t.getRootNode().reload();
-	
-				            AgilePHP.Studio.FileExplorer.highlightedNode.reload();
-						});
-						var workspace = AgilePHP.Studio.FileExplorer.getWorkspace();
-						var project = AgilePHP.Studio.FileExplorer.getSelectedProject();
-						var projectRoot = workspace + '|' + project;
-	
-						componentsRemote.install( projectRoot, data[0], data[1] );
-						win.close();
+			        		pearPeclRemote.setCallback( function( response ) {
+
+			        			if( !response ) return false; // no packages installed
+
+			        			if( response._class == 'AgilePHP_RemotingException' ) {
+
+			        				AgilePHP.Studio.error( response.message );
+			        				return false;
+			        			}
+
+			        			var data = [];
+			        			for( var i=0; i<response.exts.length; i++ ) {
+		
+			        				 data.push([ 
+			        				             response.exts[i][0],
+			        				             response.exts[i][1],
+			        				             response.exts[i][2]
+			        				 ]);
+			        			}
+			        			pearPagingMemoryProxy.data = data;
+			        			Ext.getCmp( id + '-pear-pagingtoolbar' ).doRefresh();
+			        		});
+			        		pearPeclRemote.uninstall( 'pear', pearGrid.getSelectionModel().getSelected().json[0] );
 	        		}
 	        	}, {
 					id: id + '-grid-pear-toolbar-channels',
@@ -121,14 +190,14 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
       	       		}
       	       	}]
 			}),
-	        bbar: new Ext.PagingToolbar({
+	        bbar: {
 	        	 id: id + '-pear-pagingtoolbar',
-	             pageSize: 6,
-	             store: store,
+	        	 xtype: 'paging',
+	             pageSize: 5,
 	             displayInfo: true,
 	             displayMsg: 'Displaying data {0} - {1} of {2}',
 	             emptyMsg: 'No data to display'
-	        }),
+	        },
 	        listeners: {
 				
 				rowclick: function( grid, rowIndex, e ) {
@@ -138,53 +207,47 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 			}
 	});
 		
-	var peclGrid =  new Ext.grid.GridPanel({
+	var peclGrid =  new AgilePHP.Studio.PagedGridPanel({
 	  		id: id + '-grid-pecl',
-	        store: store,
+	        store: peclStore,
 	        viewConfig: {
 	            forceFit: true
 			},
-			cm: colModel,
+			cm: peclModel,
 	        stripeRows: true,
 	        stateId: 'grid',
 	        tbar: new Ext.Toolbar({
 	        	id: id + '-grid-pecl-toolbar',
 	        	items: [{
 					id: id + '-grid-pecl-toolbar-install',
-					text: 'Install',
-					iconCls: 'btn-list-add',
+					text: 'Uninstall',
+					iconCls: 'btn-list-remove',
 					disabled: true,
 					handler: function() {
 	
-						var grid = Ext.getCmp( id + '-grid-pecl' );
-						var data = grid.getSelectionModel().getSelected().json;
-	
-						componentsRemote.setCallback( function( response ) {
-	
-							if( !response ) {
-	
-								AgilePHP.Studio.error( 'No reply from server' );
-								return false;
-							}
-							if( response._class == 'AgilePHP_RemotingException' ) {
-	
-								AgilePHP.Studio.error( response.message );
-								return false;
-							}
-	
-							new AgilePHP.Studio.Notification( '<b>Information</b>', 'Component is finished installing.')
-				            var t = Ext.getCmp( 'studio-properties-components-treepanel' );
-				            	t.getLoader().dataUrl = AgilePHP.getRequestBase() + '/FileExplorerController/getComponents/' + workspace + '/' + project;
-				            	t.getRootNode().reload();
-	
-				            AgilePHP.Studio.FileExplorer.highlightedNode.reload();
-						});
-						var workspace = AgilePHP.Studio.FileExplorer.getWorkspace();
-						var project = AgilePHP.Studio.FileExplorer.getSelectedProject();
-						var projectRoot = workspace + '|' + project;
-	
-						componentsRemote.install( projectRoot, data[0], data[1] );
-						win.close();
+			        		pearPeclRemote.setCallback( function( response ) {
+		
+			        			if( !response ) return false; // no packages installed
+		
+			        			if( response._class == 'AgilePHP_RemotingException' ) {
+		
+			        				AgilePHP.Studio.error( response.message );
+			        				return false;
+			        			}
+		
+			        			var data = [];
+			        			for( var i=0; i<response.exts.length; i++ ) {
+		
+			        				 data.push([ 
+			        				             response.exts[i][0],
+			        				             response.exts[i][1],
+			        				             response.exts[i][2]
+			        				 ]);
+			        			}
+			        			peclPagingMemoryProxy.data = data;
+			        			Ext.getCmp( id + '-pecl-pagingtoolbar' ).doRefresh();
+			        		});
+			        		pearPeclRemote.uninstall( 'pecl', peclGrid.getSelectionModel().getSelected().json[0] );
 	        		}
 	        	}, {
 					id: id + '-grid-pecl-toolbar-channels',
@@ -201,14 +264,14 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 					iconCls: 'btn-search'
       	       	}]
 			}),
-	        bbar: new Ext.PagingToolbar({
+	        bbar: {
 	        	 id: id + '-pecl-pagingtoolbar',
-	             pageSize: 6,
-	             store: store,
+	        	 xtype: 'paging',
+	             pageSize: 5,
 	             displayInfo: true,
 	             displayMsg: 'Displaying data {0} - {1} of {2}',
 	             emptyMsg: 'No data to display'
-	        }),
+	        },
 	        listeners: {
 				
 				rowclick: function( grid, rowIndex, e ) {
@@ -226,7 +289,6 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 	    enableTabScroll: true,
 	    margins: '3 0 3 0',
 	    cmargins: '3 0 3 0',
-	    //tabPosition: 'bottom',
 	    items:[{
 	    	id: id + 'studio-tabpanel-pear',
 	    	title: 'PEAR',
@@ -239,14 +301,7 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 	    	iconCls: 'tabPECL',
 	    	layout: 'fit',
 	    	items: [peclGrid]
-	    }],
-	    listeners: {
-
-			resize: function( tabPanel ) {
-
-				//tabPanel.setHeight( document.documentElement.clientHeight - 90 )
-			}
-		}
+	    }]
 	});
 	
 	win.add( tabpanel );

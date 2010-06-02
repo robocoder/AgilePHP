@@ -53,7 +53,14 @@ AgilePHP.Studio.Desktop = {
 
 			//Ext.getCmp( 'studio-viewport' ).getEl().fadeOut({ easing: 'easeOut', duration: 1});
 			//setTimeout( 'Ext.getCmp( "studio-viewport" ).destroy();', 500 );
-			
+
+			// Destroy all window instances
+			Ext.WindowMgr.getBy( function( window ) {
+
+				window.destroy();
+				return true;
+			}, this );
+
 			Ext.getCmp( 'studio-viewport' ).destroy();
 			Ext.getCmp( 'file-explorer-contextmenu' ).destroy();
 		},

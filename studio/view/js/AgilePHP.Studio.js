@@ -1,4 +1,7 @@
-Ext.QuickTips.init();
+/**
+ * Base AgilePHP Studio JavaScript object
+ * @static
+ */
 AgilePHP.Studio = {
 
 	author: 'Jeremy Hahn',
@@ -8,13 +11,24 @@ AgilePHP.Studio = {
 	package: 'com.makeabyte.agilephp.studio',
 	appName: 'AgilePHP Framework IDE',
 
+	/**
+	 * Puts the Studio and AgilePHP framework into debug mode
+	 * 
+	 * @param {Boolean} val True to enable debug mode, false otherwise.
+	 * 						Defaults to false.
+	 * @return void
+	 */
 	setDebug: function( val ) {
 
 		AgilePHP.Studio.debug = (val) ? true : false;
 		AgilePHP.setDebug( AgilePHP.Studio.debug );
 	},
 
-	// not being used at the moment due to async loading causing issues with readiness in the app
+	/**
+	 * Asynchronously loads required JavaScript libraries.
+	 * 
+	 * @return void
+	 */
 	bootstrap: function() {
 
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.Window.js' );
@@ -24,13 +38,25 @@ AgilePHP.Studio = {
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.Taskbar.js' );
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.Debugger.js' );
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.Desktop.js' );
-		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.Login.js' );
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.Plugins.js' );
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.Notification.js' );
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.FileExplorer.js' );
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.Editor.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/AgilePHP.Studio.PagedGridPanel.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'components/ext/ux/form/FileUploadField.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'components/ext/ux/grid/CheckColumn.js' );
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'components/ext/ux/PagingMemoryProxy.js' );
+		
+		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/RemotingProxy.js' );
 	},
 
+	/**
+	 * Logs a user out of the Studio by killing the server side session using the AgilePHP
+	 * Identity component, destorying all user interface components, and loads the login
+	 * window.
+	 * 
+	 * @return void
+	 */
 	logout: function() {
 
 		// Destroy AgilePHP session
@@ -40,14 +66,13 @@ AgilePHP.Studio = {
 		// Destroy the workspace and load the login form
 		AgilePHP.Studio.Desktop.destroy();
 		setTimeout( 'new AgilePHP.Studio.LoginWindow()', 500 );
-
-		// Destroy all window instances
-		Ext.WindowMgr.getBy( function( window ) {
-			window.destroy();
-			return true;
-		}, this );
 	},
 
+	/**
+	 * Displays an error dialog.
+	 * 
+	 * @return void
+	 */
 	error: function( message ) {
 
 		Ext.Msg.show({
@@ -58,7 +83,12 @@ AgilePHP.Studio = {
 		   icon: Ext.MessageBox.ERROR
 		});
 	},
-	
+
+	/**
+	 * Displays a warning dialog.
+	 * 
+	 * @return void
+	 */
 	warn: function( message ) {
 
 		Ext.Msg.show({
@@ -70,6 +100,11 @@ AgilePHP.Studio = {
 		});
 	},
 
+	/**
+	 * Displays an information dialog.
+	 * 
+	 * @return void
+	 */
 	info: function( message ) {
 
 		Ext.Msg.show({
@@ -80,7 +115,12 @@ AgilePHP.Studio = {
 		   icon: Ext.MessageBox.INFO
 		});
 	},
-	
+
+	/**
+	 * Custom Ext date formatter
+	 * 
+	 * @return void
+	 */
 	dateRenderer : function( value, metaData, record, rowIndex, colIndex, store ) {
 
 		var month = value.substring( 0, 2 );
@@ -96,26 +136,53 @@ AgilePHP.Studio = {
 	}
 };
 
+/**
+ * Stores the current logged in user
+ * 
+ * @static
+ */
 AgilePHP.Studio.User = {
 
 		username: null,
 		role: null,
 
+		/**
+		 * Sets the username of the current logged in user
+		 * 
+		 * @param {String} username The username of the current logged in user
+		 * @return void
+		 */
 		setUsername: function( username ) {
 
 				AgilePHP.Studio.User.username = username;
 		},
 
+		/**
+		 * Gets the username of the current logged in user
+		 * 
+		 * @return {String} The username of the current logged in user
+		 */
 		getUsername: function() {
 
 				return AgilePHP.Studio.User.username;
 		},
 
+		/**
+		 * Sets the role which the current logged in user is a member
+		 * 
+		 * @param {String} role The role which the current logged in user is a member of
+		 * @return void
+		 */
 		setRole: function( role ) {
 
 				AgilePHP.Studio.User.role = role;
 		},
 
+		/**
+		 * Returns the name of the role which the current logged in user belongs
+		 * 
+		 * @return {String} The role which the current logged in user belongs
+		 */
 		getRole: function() {
 
 				return AgilePHP.Studio.User.role;

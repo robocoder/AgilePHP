@@ -120,8 +120,7 @@ class Restrict {
 	   */
 	  private function audit( $message, $ic ) {
 
-	  		  Log::error( '#@Restrict::audit Access Denied for user \'' . Identity::getInstance()->getUsername() . 
-	  		  		'\' with role \'' . Identity::getInstance()->getRole()->getName() . '\' ' . print_r( $ic, true ) );
+	  		  Log::error( '#@Restrict::audit Access Denied ' . print_r( Identity::getInstance(), true ) );
 
 	  		  throw new AgilePHP_AccessDeniedException( $message );
 	  }
