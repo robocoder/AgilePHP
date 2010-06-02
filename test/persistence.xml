@@ -83,7 +83,7 @@
 		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
 			<column name="username" type="varchar" length="150" primaryKey="true" required="true" validator="StringValidator"/>
 			<column name="password" type="varchar" length="255" required="true" validator="PasswordValidator"/>
-			<column name="email" type="varchar" display="Email" length="255" required="true" validator="EmailValidator"/>
+			<column name="email" type="varchar" display="Email" length="255" required="true" />
 			<column name="created" type="datetime" required="true" validator="DateValidator"/>
 			<column name="last_login" property="lastLogin" display="Last Login" type="datetime" validator="DateValidator"/>
 			<column name="roleId" type="varchar" length="25" display="Role" validator="StringValidator">

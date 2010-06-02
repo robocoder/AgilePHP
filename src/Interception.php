@@ -19,11 +19,11 @@
  * @package com.makeabyte.agilephp
  */
 
-/**
- * Includes all interception package dependancies
- */
+require_once 'interception/InterceptorFilter.php';
 require_once 'interception/InterceptorProxy.php';
 require_once 'interception/InvocationContext.php';
+require_once 'interception/AroundInvoke.php';
+require_once 'interception/AfterInvoke.php';
 
 /**
  * Performs interceptions by creating a dynamic proxy for intercepted
@@ -110,14 +110,26 @@ class Interception {
 			 $namespace = explode( '\\', $this->class );
 			 $className = $namespace[count($namespace)-1];
 		 	 $namespace = implode( '\\', $namespace );
-	  		 $class = str_replace( '\\', '::', $this->class );
-	  		 
-	  		 if( class_exists( $class, false ) ) return;
 
-	  		 $code = $this->getSourceCode( $this->class );
+		 	 if( class_exists( $this->class, false ) ) return;
+
+		 	 if( strpos( $className, 'phar://' ) !== false ) {
+
+		 	 	 $code = file_get_contents( $className );
+		 	 	 $namespace = explode( '/', $className );
+		 	 	 $className = array_pop( $namespace );
+		 	 	 $className = preg_replace( '/\.php/', '', $className );
+		 	 }
+		 	 else {
+
+	  		 	 $code = AgilePHP::getSource( $this->class );
+		 	 }
+
 	  		 $code = preg_replace( '/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code );
-
 			 $code = $this->clean( $code );
+
+			 Log::debug( 'Interception::createInterceptedTarget ' . PHP_EOL . $code );
+			 
 	  		 if( eval( $code ) === false )
 	  		 	 throw new AgilePHP_InterceptionException( 'Failed to create intercepted target' );
 	  }
@@ -139,8 +151,21 @@ class Interception {
 
 	  		 if( class_exists( $className, false ) ) return;
 
+	 	     // Phar support
+	  		 if( strpos( $className, 'phar://' ) !== false ) {
+
+		     	 $className = preg_replace( '/phar:\/\//', '', $className );
+		     	 $nspieces = explode( '/', $className );
+		     	 array_pop( $nspieces );
+		     	 $namespace = implode( '\\', $nspieces );
+
+	  		 	 $pieces = explode( '/', $className );
+	  		 	 $className = array_pop( $pieces );
+	  		 	 $className = preg_replace( '/\.php/', '', $className );
+		     }
+	  		 
 	  	     $code = ($namespace) ? 'namespace ' . $namespace . ';' : ''; 
-	  		 $code .= $this->getSourceCode( 'InterceptorProxy' );
+	  		 $code .= AgilePHP::getSource( 'InterceptorProxy' );
 	  		 $code = preg_replace( '/InterceptorProxy/', $className, $code );
 
 	  		 $stubs = $this->getMethodStubs();
@@ -168,6 +193,9 @@ class Interception {
 	  		 	 $code = preg_replace( '/public\sfunction\s__construct.*\)/', $constructor, $code );
 
 	  		 $code = $this->clean( $code );
+
+	  		 Log::debug( 'Interception::createInterceptorProxy ' . PHP_EOL . $code );
+
 	  		 if( eval( $code ) === false )
 	  		 	 throw new AgilePHP_InterceptionException( 'Failed to create interceptor proxy for \'' . $this->class . '\'.' );
 	  }
@@ -182,7 +210,7 @@ class Interception {
 	   */
 	  private function getMethodStubs() {
 
-	  		  $code = $this->getSourceCode( $this->class );
+	  		  $code = AgilePHP::getSource( $this->class );
 	  		  preg_match_all( '/(public\s+function\s+(.*?)(\(.*\)))\s/', $code, $matches );
 
 	  		  if( !isset( $matches[1] ) )
@@ -217,81 +245,5 @@ class Interception {
 
 	  		  return $code;
 	  }
-
-	  /**
-	   * Returns the PHP file content to be parsed.
-	   * 
-	   * @return String PHP code
-	   * @throws AgilePHP_InterceptionException if the source could not be loaded
-	   */
-	  public function getSourceCode( $class ) {
-
-	  		 // php namespace support
-			 $namespace = explode( '\\', $class );
-		 	 $class = array_pop( $namespace );
-		 	 $namespace = implode( DIRECTORY_SEPARATOR, $namespace ) . DIRECTORY_SEPARATOR;
-
-			 // Load framework classes
-			 $path = AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-		     if( file_exists( $path ) ) {
-	
-		     	 return file_get_contents( $path );
-		     }
-			 $it = new RecursiveDirectoryIterator( AgilePHP::getFramework()->getFrameworkRoot() );
-			 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
-	
-			   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
-	
-			   	      	  $array = explode( DIRECTORY_SEPARATOR, $file );
-				 		  if( array_pop( $array ) == $class . '.php' ) {
-	
-			     	 		  return file_get_contents( $file );
-				 		  }
-				      }
-			 }
-	
-			 // Load web application classes
-	  	     $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
-	  	     		 DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-	  	     if( file_exists( $path ) ) {
-	
-			     return file_get_contents( $path );
-	  	     }
-	  	     $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'model' .
-	  	     		 DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-		     if( file_exists( $path ) ) {
-	
-			      return file_get_contents( $path );
-		     }
-		     $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'classes' .
-		     		 DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-	  	     if( file_exists( $path ) ) {
-	
-			     return file_get_contents( $path );
-	  	     }
-			 $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'components' .
-			 		 DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-		     if( file_exists( $path ) ) {
-	
-			     return file_get_contents( $path );
-		     }
-	  	     // Not found in the usual places - perform deep scan
-		  	 $it = new RecursiveDirectoryIterator( AgilePHP::getFramework()->getWebRoot() );
-			 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
-	
-			   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
-			   	      	  substr( $file, -4 ) != 'view' ) {
-	
-			   	      	  $pieces = explode( DIRECTORY_SEPARATOR, $file );
-				 		  if( array_pop( $pieces ) == $class . '.php' ) {
-	
-			     	 		  return file_get_contents( $file );
-				 		  }
-				      }
-			 }
-
-			 throw new AgilePHP_InterceptionException( 'Failed to load source code for class \'' . $class . '\'.' );
-	  }
 }
-
 ?>

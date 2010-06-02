@@ -210,9 +210,23 @@ class InterceptorProxy {
 	  		 $interceptions = \AgilePHP::getFramework()->getInterceptions();
 		     foreach( $interceptions as $interception ) {
 
-		     		  if( $interception->getClass() == get_class( $this ) && $interception->getMethod() == $method ) {
+					  // Phar support
+					  if( strpos( $interception->getClass(), 'phar://' ) !== false ) {
 
-		     		 	 	  $interceptorClass = new \AnnotatedClass( $interception->getInterceptor() );
+					  	  $className = preg_replace( '/phar:\/\//', '', $interception->getClass() );
+				     	  $nspieces = explode( '/', $className );
+				     	  array_pop( $nspieces );
+				     	  $namespace = implode( '\\', $nspieces );
+
+			  		 	  $pieces = explode( '/', $className );
+			  		 	  $className = array_pop( $pieces );
+			  		 	  $fqcn = $namespace . '\\' . preg_replace( '/\.php/', '', $className );
+					  }
+
+		     		  if( ($interception->getClass() == get_class( $this ) || isset( $fqcn ) && $fqcn == get_class( $this ))
+		     		  			 && $interception->getMethod() == $method ) {
+
+		     		  		  $interceptorClass = new \AnnotatedClass( $interception->getInterceptor() );
 		     		 	 	  foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
 
 		     		 	 	  		   $invoked = false;

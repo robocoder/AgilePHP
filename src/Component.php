@@ -1,5 +1,4 @@
 <?php
-
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -156,14 +155,29 @@ abstract class Component extends BaseController {
 	   * @param array $parameters An array of parameters to pass into the specified controller / action combo
 	   * @return mixed The return from the invoked call
 	   */
-	  protected function dispatch( BaseController $controller, $method, array $parameters = null ) {
+	  public function dispatch( $controller, $action, array $parameters = null ) {
 
-	  			$controllerCls = get_class( $controller );
-	  			$namespace = explode( '\\', $controllerCls );
-	  			$controllerName = array_pop( $namespace );
-
+	  			$namespace = explode( '\\', $controller );
+	  			$componentURI = implode( '/', $namespace );
+	  			//$controllerName = array_pop( $namespace );
 	  			$component = get_class( $this );
 
+	  			// Phar component support
+	  			$pharURI = 'phar://' . $componentURI . '.php';
+	  			if( file_exists( $pharURI ) ) {
+
+	  				new InterceptorFilter( $pharURI );
+
+	  				$instance = new $controller;
+
+	  				return $instance->$action();
+
+				    die('<b>dead</b>');
+				    
+					//return call_user_func_array( array( $instance, $action ), $parameters );
+	  			}
+
+	  			// This is a non-phar component
 	  		  	$f = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $component . DIRECTORY_SEPARATOR . 'control';
 		  	  	$it = new RecursiveDirectoryIterator( $f );
 			  	foreach( new RecursiveIteratorIterator( $it ) as $file ) {
@@ -176,8 +190,8 @@ abstract class Component extends BaseController {
 			   	      	   	 if( $item == $controllerName . '.php' ) {
 
 				 		   	   	 __autoload( $controllerName );
-				 		       	 if( !$parameters ) return $controller->$method();
-					  		 	 return call_user_func_array( array( $controller, $method ), $parameters );
+				 		       	 if( !$parameters ) return $controller->$action();
+					  		 	 return call_user_func_array( array( $controller, $action ), $parameters );
 				 		   	 }
 				       	 }
 			  	}
