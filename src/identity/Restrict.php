@@ -97,8 +97,8 @@ class Restrict {
 	  		 $message = $ic->getInterceptor()->message ? $ic->getInterceptor()->message : 'Access Denied';
 
 	  		 $requiredRole = $ic->getInterceptor()->role;
-	  	     if( $requiredRole && !Identity::getInstance()->hasRole( $requiredRole ) )
-	  	     	 $this->audit( $message, $ic );
+	  	     if( Identity::getInstance()->hasRole( $requiredRole ) )
+	  	     	 return $ic->proceed();
 
 	  	     $roles = $ic->getInterceptor()->roles;
 	  	     if( is_array( $roles ) ) {
@@ -120,7 +120,9 @@ class Restrict {
 	   */
 	  private function audit( $message, $ic ) {
 
-	  		  Log::error( '#@Restrict::audit Access Denied ' . print_r( $ic, true ) );
+	  		  Log::error( '#@Restrict::audit Access Denied for user \'' . Identity::getInstance()->getUsername() . 
+	  		  		'\' with role \'' . Identity::getInstance()->getRole()->getName() . '\' ' . print_r( $ic, true ) );
+
 	  		  throw new AgilePHP_AccessDeniedException( $message );
 	  }
 }
