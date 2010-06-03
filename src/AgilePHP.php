@@ -21,6 +21,8 @@
 
 require_once 'Annotation.php';
 require_once 'Interception.php';
+require_once 'logger/LogFactory.php';
+require_once 'Log.php';
 
 spl_autoload_register( 'AgilePHP::autoload' );
 
@@ -549,10 +551,13 @@ final class AgilePHP {
 	   */
 	  public static function autoload( $class ) {
 
+	  		 Log::debug( 'AgilePHP::autoload Loading \'' . $class . '\'.' );
+
 	  		 // Parse class for AgilePHP interceptors
 	  		 new InterceptorFilter( $class );
 
-			 if( class_exists( $class, false ) ) return;
+			 // Intercepted classes are loaded upon interception
+	  		 if( class_exists( $class , false ) ) return;
 
 			 $namespace = explode( '\\', $class );
 			 $class = array_pop( $namespace );

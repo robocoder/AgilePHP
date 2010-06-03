@@ -109,7 +109,7 @@ class Interception {
 	  		 // php namespace support
 			 $namespace = explode( '\\', $this->class );
 			 $className = $namespace[count($namespace)-1];
-		 	 $namespace = implode( '\\', $namespace );
+		 	 $this->namespace = implode( '\\', $namespace );
 
 		 	 if( class_exists( $this->class, false ) ) return;
 
@@ -122,7 +122,13 @@ class Interception {
 		 	 }
 		 	 else {
 
-	  		 	 $code = AgilePHP::getSource( $this->class );
+		 	 	 try {
+	  		 	 	   $code = AgilePHP::getSource( $this->class );
+		 	 	 }
+		 	 	 catch( AgilePHP_Exception $e ) {
+		 	 	 	
+		 	 	 		throw new AgilePHP_InterceptionException( $e->getMessage(), $e->getCode() );
+		 	 	 }
 		 	 }
 
 	  		 $code = preg_replace( '/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code );
@@ -139,6 +145,7 @@ class Interception {
 	   * on the class created by Interception::createInterceptedTarget().
 	   * 
 	   * @return void
+	   * @throws AgilePHP_InterceptionException if there was an issue creating the InterceptorProxy
 	   */
 	  public function createInterceptorProxy() {
 
@@ -164,8 +171,16 @@ class Interception {
 	  		 	 $className = preg_replace( '/\.php/', '', $className );
 		     }
 	  		 
-	  	     $code = ($namespace) ? 'namespace ' . $namespace . ';' : ''; 
-	  		 $code .= AgilePHP::getSource( 'InterceptorProxy' );
+	  	     $code = ($namespace) ? 'namespace ' . $namespace . ';' : '';
+
+	  	     try {
+	  		 		$code .= AgilePHP::getSource( 'InterceptorProxy' );
+	  	     }
+	  	     catch( AgilePHP_Exception $e ) {
+
+	  	     		throw new AgilePHP_InterceptionException( $e->getMessage(), $e->getCode() );
+	  	     }
+
 	  		 $code = preg_replace( '/InterceptorProxy/', $className, $code );
 
 	  		 $stubs = $this->getMethodStubs();
@@ -206,7 +221,8 @@ class Interception {
 	   * on the intercepted target class name, the reflection results will actually be
 	   * taking place on the InterceptorProxy class and not return expected results. 
 	   * 
-	   * @return void
+	   * @return array Returns an associative array which contains all method signatures,
+	   * 			   methods, and their parameters for the intercepted class. 
 	   */
 	  private function getMethodStubs() {
 

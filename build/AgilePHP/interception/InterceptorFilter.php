@@ -32,7 +32,6 @@ class InterceptorFilter {
 
 	  public function __construct( $class ) {
 
-	  		 // Process class level annotations
 			 $classAnnotations = Annotation::getClassAsArray( $class );
 	  	     if( count( $classAnnotations ) ) {
 
@@ -48,7 +47,6 @@ class InterceptorFilter {
 				 }
 	  	     }
 
-	  	     // Process method level annotations
 			 $annotatedMethods = Annotation::getMethodsAsArray( $class );
 		 	 if( count( $annotatedMethods ) ) {
 
@@ -67,7 +65,6 @@ class InterceptorFilter {
 				 }
 	  	     }
 
-	  	     // Proces property/field level annotations
 	  	     $annotatedProperties = Annotation::getPropertiesAsArray( $class );	  	     
 		 	 if( count( $annotatedProperties ) ) {
 

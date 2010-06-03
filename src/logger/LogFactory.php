@@ -45,11 +45,19 @@ abstract class LogFactory {
 
 			     		$provider = (string)$xml->logger->attributes()->provider;
 			     		$provider = ($provider) ? $provider : 'FileLogger';
+
+			     		// Try to load the specified Logger from the framework/logger directory
+			     		$path = AgilePHP::getFramework()->getFrameworkRoot() . 
+				  						DIRECTORY_SEPARATOR . 'logger' . DIRECTORY_SEPARATOR . 'FileLogger.php';
+			     		if( file_exists( $path ) ) require_once $path;
 			     	}
 			     	else {
-			     		
+
 			     		$level = 'info';
 			     		$provider = 'FileLogger';
+
+				  		require_once AgilePHP::getFramework()->getFrameworkRoot() . 
+				  						DIRECTORY_SEPARATOR . 'logger' . DIRECTORY_SEPARATOR . 'FileLogger.php';
 			     	}
 
 			     	// Logger type specifically requested

@@ -34,8 +34,8 @@ this.post(url,data,callback);}},MVC:{controller:'IndexController',action:'index'
 AgilePHP.MVC.parameters=params;},processRequest:function(callback){var url=AgilePHP.getRequestBase()+'/'+this.getController()+'/'+this.getAction();if(this.parameters.length)
 url+='/'+this.parameters.join('/');if(callback!=undefined)
 new AgilePHP.XHR().request(url,callback)
-else{var xhr=new AgilePHP.XHR();xhr.setSynchronous(true);return xhr.request(url);}}},Remoting:{controller:null,setController:function(controller){AgilePHP.Remoting.controller=controller;},getController:function(){return AgilePHP.Remoting.controller;},invoke:function(stub,method,parameters){AgilePHP.debug('AgilePHP.Remoting.invoke');AgilePHP.debug(stub);AgilePHP.debug(method);AgilePHP.debug(parameters);var clazz=stub._class
+else{var xhr=new AgilePHP.XHR();xhr.setSynchronous(true);return xhr.request(url);}}},Remoting:{classes:[],controller:null,setController:function(controller){AgilePHP.Remoting.controller=controller;},getController:function(){return AgilePHP.Remoting.controller;},invoke:function(stub,method,parameters){AgilePHP.debug('AgilePHP.Remoting.invoke');AgilePHP.debug(stub);AgilePHP.debug(method);AgilePHP.debug(parameters);var clazz=stub._class
 var callback=stub._callback;delete stub._class;delete stub._callback;var url=AgilePHP.getRequestBase()+'/'+AgilePHP.Remoting.controller+'/invoke';var data='class='+clazz+'&method='+method+'&constructorArgs='+JSON.stringify(stub);if(parameters!=undefined){var o=new Object();for(var i=0;i<parameters.length;i++)
 o['argument'+(i+1)]=parameters[i];data+='&parameters='+JSON.stringify(o);}
 if(callback==undefined){var xhr=new AgilePHP.XHR();xhr.setSynchronous(true);return xhr.post(url,data);}
-new AgilePHP.XHR().post(url,data,callback);}}}
+new AgilePHP.XHR().post(url,data,callback);},isLoaded:function(clazz){return AgilePHP.Remoting.classes[clazz]==true;},load:function(clazz){if(!AgilePHP.Remoting.classes[clazz]){AgilePHP.Remoting.classes[clazz]=true;AgilePHP.loadScript(AgilePHP.getRequestBase()+'/'+AgilePHP.Remoting.getController()+'/index/'+clazz);}}}}

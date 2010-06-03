@@ -461,57 +461,22 @@ class AnnotationParser {
 	  }
 
 	  /**
-	   * Returns the PHP file content to be parsed.
+	   * Retrieves the raw PHP source code for the file being parsed.
 	   * 
-	   * @return PHP code
+	   * @return String The raw PHP source code for the file being parsed
 	   * @static
+	   * @throws AgilePHP_AnnotationException if the source could not be retrieved
 	   */
 	  public static function getSourceCode() {
 
-	  		 if( $code = self::search( AgilePHP::getFramework()->getFrameworkRoot() ) )
-	  		     return $code;
+	  		 try {
+		  		   $class = preg_replace( '/_Intercepted/', '', self::$class );
+		  		   return AgilePHP::getSource( $class );
+	  		 }
+	  		 catch( AgilePHP_Exception $e ) {
 
-	  		 if( $code = self::search( AgilePHP::getFramework()->getWebRoot() ) )
-	  		     return $code;
-
-	  		 throw new AgilePHP_AnnotationException( 'Failed to load source code for class \'' . self::$class . '\'.' );
-	  }
-
-	  /**
-	   * Recursively scan the specified directory in an effort to find self::$class to load its
-	   * source code.
-	   * 
-	   * @param String $directory The directory to inspect. 
-	   * @return File contents for self::$filename or void if the file contents could not be located
-	   * @static
-	   */
-	  private static function search( $directory ) {
-
-	  		  $filename = (preg_match( '/_Intercepted/', self::$filename )) ? 
-	  		  					str_replace( '_Intercepted', '' , self::$filename ) : self::$filename;
-
-	  		  // php namespace support
-	  		  $namespace = explode( '\\', $filename );
-	 	 	  $filename = array_pop( $namespace );
-	 	 	  $namespace = implode( DIRECTORY_SEPARATOR, $namespace ) . DIRECTORY_SEPARATOR;
-
-	 	 	  try {
-				  	  $it = new RecursiveDirectoryIterator( $directory );
-					  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
-		
-					   	       if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
-					   	      	   substr( $file, -4 ) != 'view' ) {
-		
-					   	      	   $pieces = explode( DIRECTORY_SEPARATOR, $file );
-					   	      	   $item = array_pop( $pieces ); 
-						 		   if( $item == $filename ) return file_get_contents( $file );
-						       }
-					  }
-	 	 	  }
-	 	 	  catch( Exception $e ) {
-
-	 	 	  		 Log::debug( $e );
-	 	 	  }
+	  		 		throw new AgilePHP_AnnotationException( $e->getMessage(), $e->getCode() );
+	  		 }
 	  }
 }
 ?>

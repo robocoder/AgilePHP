@@ -347,7 +347,7 @@ class MVC {
 
 	  		  if( file_exists( $f ) ) {
 
-	  		  	  __autoload( $controller );
+	  		  	  AgilePHP::autoload( $controller );
 	  		  	  return;
 	  		  }
 
@@ -363,7 +363,7 @@ class MVC {
 
 			   	      	   if( $item == $controller . '.php' ) {
 
-				 		   	   __autoload( $controller );
+				 		   	   AgilePHP::autoload( $controller );
 				 		       return;
 				 		   }
 				       }
