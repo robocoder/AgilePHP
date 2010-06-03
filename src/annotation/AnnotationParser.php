@@ -467,16 +467,16 @@ class AnnotationParser {
 	   * @static
 	   * @throws AgilePHP_AnnotationException if the source could not be retrieved
 	   */
-	  public static function getSourceCode() {
+	  private static function getSourceCode() {
 
-	  		 try {
-		  		   $class = preg_replace( '/_Intercepted/', '', self::$class );
-		  		   return AgilePHP::getSource( $class );
-	  		 }
-	  		 catch( AgilePHP_Exception $e ) {
+	  		  try {
+		  		    $class = preg_replace( '/_Intercepted/', '', self::$class );
+		  		    return AgilePHP::getSource( $class );
+	  		  }
+	  		  catch( AgilePHP_Exception $e ) {
 
-	  		 		throw new AgilePHP_AnnotationException( $e->getMessage(), $e->getCode() );
-	  		 }
+	  		 		 throw new AgilePHP_AnnotationException( $e->getMessage(), $e->getCode() );
+	  		  }
 	  }
 }
 ?>
