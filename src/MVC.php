@@ -255,14 +255,14 @@ class MVC {
 						  		throw new AgilePHP_Exception( 'The specified action \'' . $action . '\' does not exist.' );
 					  	} 
 
-					  	Log::debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+					  	Log::debug( 'MVC::dispatch Invoking controller \'' . $this->controller . 
 					  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $this->parameters  ) . '\'.' );
 
 		  	     		call_user_func_array( array( $oController, $action ), $this->parameters ); 
 		  	     	}
 		  	     	else {
 	
-		  	     		Log::debug( 'MVC::processRequest Invoking controller \'' . $this->controller . 
+		  	     		Log::debug( 'MVC::dispatch Invoking controller \'' . $this->controller . 
 					  	     			'\', action \'' . $this->action . '\'.' );
 	
 		  	     		$oController->$action();
