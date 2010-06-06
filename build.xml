@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="AgilePHP Framework" basedir="." default="main">
-    
+
     <property file="${project.basedir}/build.properties"/>
-    
+
     <property name="package" value="${phing.project.name}"/>
-    <property name="apidoc.dir" value="${project.basedir}/apidoc"/>
     <property name="build.dir" value="${project.basedir}/build"/>
+	<property name="apidoc.dir" value="${project.basedir}/build/apidoc"/>
     <property name="studio.dir" value="${project.basedir}/studio"/>
     <property name="studio.logs" value="${studio.dir}/logs"/>
     <property name="src.dir" value="${project.basedir}/src"/>
     <property name="test.dir" value="${project.basedir}/test"/>
     <property name="test.logs" value="${test.dir}/logs"/>
-    <property name="phpunit.reports" value="${test.dir}/phpunit/reports"/>
-    
+    <property name="phpunit.reports" value="${build.dir}/reports/phpunit"/>
+
     <version releasetype="Bugfix" file="VERSION" property="build.version"/>
-    
+
     <fileset dir="${src.dir}" id="srcfiles">
         <include name="**"/>
     </fileset>
-	
+
 	<fileset dir="${project.basedir}" id="distfiles">
         <include name="apidoc/**"/>
 		<include name="src/**"/>
@@ -31,30 +31,30 @@
 		<include name="VERSION"/>
 		<include name="TODO"/>
     </fileset>
-    
+
     <tstamp>
         <!-- Format is, e.g. Sat, 03 Oct 2009, 16:31 -->
         <format property="buildtime" pattern="%a, %d %b %Y, %H:%M"/>
     </tstamp>
 
-    <target name="main" description="Default target" depends="test">
-        
+    <target name="main" description="Default target" depends="clean,test">
+
         <phplint>
             <fileset dir="src">
                 <include name="**/*.php"/>
             </fileset>
         </phplint>
-        
+
         <jsllint>
             <fileset dir="src">
                 <include name="**/*.js"/>
             </fileset>
         </jsllint>
-        
+
         <copy todir="${build.dir}/AgilePHP">
             <fileset refid="srcfiles"/>
         </copy>
-        
+
         <jsMin targetDir="${build.dir}/AgilePHP" failOnError="true">
             <fileset dir="${build.dir}/AgilePHP">
                 <include name="AgilePHP.js"/>
@@ -67,9 +67,9 @@
 
     <target name="apidoc" description="Generates apidoc using phpDocumentor">
         <exec dir="${project.basedir}" logoutput="true"
-         command="phpdoc -d . -t apidoc -o HTML:frames:phpdoc.de -ti '${phing.project.name}' -ue on -s on"/>
+         command="phpdoc -d . -t build/apidoc -o HTML:frames:phpdoc.de -ti '${phing.project.name}' -ue on -s on"/>
     </target>
-    
+
     <target name="archive" description="Creates a distributable gzip archive">
         <zip destfile="${build.dir}/agilephp-${build.version}-src.zip">
             <fileset dir=".">
@@ -101,6 +101,7 @@
             <formatter todir="${phpunit.reports}" type="xml"/>
             <batchtest>
                 <fileset dir="${test.dir}/phpunit">
+                	<include name="UserRestServiceTest.php" />
                 	<exclude name="persistence/MSSQLTest.php"/>
 					<exclude name="persistence/PGSQLTest.php"/>
 					<exclude name="persistence/SQLiteTest.php"/>
@@ -118,16 +119,18 @@
 	<target name="dist" depends="main,apidoc,archive"/>
 
     <target name="clean" description="Deletes build related artifacts" depends="delete-logs">
-        <delete dir="${apidoc.dir}"/>
         <delete dir="${build.dir}"/>
-        <delete dir="${phpunit.reports}"/>
     </target>
-	
+
     <target name="delete-logs" description="Deletes log files from test and studio packages">
         <delete dir="${test.logs}" includeemptydirs="true" verbose="true"/>
         <delete dir="${studio.logs}" includeemptydirs="true" verbose="true"/>
+		<mkdir dir="${test.logs}"/>
+		<mkdir dir="${studio.logs}"/>
+		<chmod file="${test.logs}" mode="0777" verbose="true" />
+		<chmod file="${studio.logs}" mode="0777" verbose="true" />
     </target>
-	
+
 	<target name="phar" description="Creates phar files for AgilePHP and the Studio package">
 		<pharpackage destfile="${build.dir}/AgilePHP.phar" basedir="${build.dir}/AgilePHP"
 				 webstub="AgilePHP.php" alias="AgilePHP" signature="md5">

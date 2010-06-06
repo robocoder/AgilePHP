@@ -47,9 +47,13 @@ class FileLogger implements LogProvider {
 	  	     	 throw new AgilePHP_Exception( 'Logging directory is not writable. The PHP process requires write access to this directory.' );
 
 	  	     $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date( "m-d-y" ) . '.log';
-	  	     if( !file_exists( $filename ) )
+	  	     if( !file_exists( $filename ) ) {
+
 	  	     	 if( !touch( $filename ) )
 	  	     	 	 throw new AgilePHP_Exception( 'Unable to create log file at \'' . $filename . '\'.' );
+
+	  	     	 @chmod( $filename, 0777 );
+	  	     }
 
 	  		 $this->log = fopen(  $filename, 'a+' );
   	  }

@@ -1,14 +1,3 @@
-- Cleaned up a few lines of code in AgilePHP.php.
-- Moved MVC require_once from constructor to top of the code page and collapsed constructor.
-- Moved exception classes into their respective packages.
-- Commented out Interception Log references. Outputs too much code to log file.
-- Added error codes to MVC component - need to start assigning error code "blocks" to all components.
-- Added AJAXRenderer::toYAML
-- Changed all occurances of text/xml to application/xml in AJAXRenderer.
-- Removed duplicate functionality between XSLTRenderer::renderXslFile and XSLTRenderer::getRenderedXslFile.
-- Renamed XSLTRenderer::renderXslFile to XSLTRenderer::renderXsl.
-- Added YAML support to AJAXRenderer.
-- Added XSLTRenderer::clientTransform which allows specifying an XSL URI so the client can perform its own transformation.
-- Created rest package w/ unit test. Still needs lots of TLC, but off to a good start and working.
-- Refactored InterceptorProxy to handle class level interceptors that need to return a method to invoke.
-- Deleting test/phpunit/reports, apidoc and build directories from src tree and moving to build tree 
+- Refactored FileLogger to change permissions on log file to 0777 when created.
+- checking in rest code that somehow got left out of last checkin
+- cleaned up build.xml to support new project structure
