@@ -346,11 +346,8 @@ final class AgilePHP {
 
 	  		  $dom = new DOMDocument();
  			  $dom->Load( $agilephp_xml );			 
-			  if( !$dom->validate() ) {
-
-			 	  throw new AgilePHP_Exception( "agilephp.xml Document Object Model validation failed. You can validate your configurations with the DTD at AgilePHP/agilephp.dtd." );
-			 	  return;
-			  }
+			  if( !$dom->validate() )
+			 	  throw new AgilePHP_Exception( 'agilephp.xml Document Object Model validation failed. Validate your document using AgilePHP/agilephp.dtd' );
 
   	      	 return simplexml_load_file( $agilephp_xml );
 	  }

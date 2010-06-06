@@ -298,8 +298,8 @@ class AnnotationParser {
 							   //preg_match_all( '/@(.*)?,?/', $props[1][0], $childAnnotes );
 		
 							   // Add arrays to annotation instance and remove it from the properties
-			  		  		   if( isset( $arrays[0] ) ) {
-		
+			  		  		   if( isset( $arrays[0] ) && $arrays[0] != null ) {
+
 			  		  		   	   $result = self::parseKeyArrayValuePairs( $oAnnotation, $arrays[0], $props[1][0] );
 			  		  		   	   $oAnnotation = $result->annotation;
 			  		  		   	   $props[1][0] = $result->properties;

@@ -10,6 +10,7 @@
  		$agilephp = AgilePHP::getFramework();  	
   	    $agilephp->setDisplayPhpErrors( true );
     	$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . '/../src' ) );
+    	$agilephp->setAppName( 'AgilePHP Framework Tests' );
     	
   	    $agilephp->setDefaultTimezone( 'America/New_York' );
 

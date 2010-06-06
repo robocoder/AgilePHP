@@ -134,7 +134,7 @@ class Interception {
 	  		 $code = preg_replace( '/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code );
 			 $code = $this->clean( $code );
 
-			 Log::debug( 'Interception::createInterceptedTarget ' . PHP_EOL . $code );
+			 //Log::debug( 'Interception::createInterceptedTarget ' . PHP_EOL . $code );
 			 
 	  		 if( eval( $code ) === false )
 	  		 	 throw new AgilePHP_InterceptionException( 'Failed to create intercepted target' );
@@ -209,7 +209,7 @@ class Interception {
 
 	  		 $code = $this->clean( $code );
 
-	  		 Log::debug( 'Interception::createInterceptorProxy ' . PHP_EOL . $code );
+	  		 //Log::debug( 'Interception::createInterceptorProxy ' . PHP_EOL . $code );
 
 	  		 if( eval( $code ) === false )
 	  		 	 throw new AgilePHP_InterceptionException( 'Failed to create interceptor proxy for \'' . $this->class . '\'.' );

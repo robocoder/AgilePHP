@@ -53,6 +53,50 @@ class XSLTRenderer extends BaseRenderer {
 	  }
 
 	  /**
+	   * Renders a view by performing an XSLT transformation. The XSL document
+	   * is read in from the specified xsl view.
+	   * 
+	   * @param String $xsl XSL document located in the web app view directory
+	   * @param String $xml XML document supplying the XSL data
+	   * @return void
+       */
+      public function renderXsl( $xsl, $xml='' ) {
+
+      	 	 $dom = new DomDocument();
+			 $dom->load( AgilePHP::getFramework()->getWebRoot() . '/view/' . $xsl . '.xsl' );
+
+			 $xp = new XSLTProcessor();
+			 $xsl = $xp->importStylesheet( $dom );
+
+			 $doc = new DomDocument();
+			 $doc->loadXML( $xml );
+
+			 $xslt = $xp->transformToXml( $doc );
+
+			 print $xslt;
+	  }
+
+	  /**
+	   * Renders the specified XML document with a <xsl:stylesheet> element which
+	   * uses the specified $xsl parameter in its href attribute.
+	   * 
+	   * @param String $xsl A valid href attribute location pointing to an XSL document that the
+	   * 				    client will use to transform the XML data into HTML.
+	   * @param @string $xml The XML data document
+	   * @return void
+       */
+      public function clientTransform( $xsl, $xml='' ) {
+
+      	     $out = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">';
+      		 $out = '<?xml version="1.0" encoding="ISO-8859-1"?>' . PHP_EOL;
+      		 $out .= '<?xml-stylesheet type="text/xsl" href="' . $xsl . '"?>' . PHP_EOL;
+      		 $out .= $xml;
+
+      		 header( 'content-type: text/xml' );
+      		 print $out;
+	  }
+
+	  /**
 	   * Performs an XSLT transformation and returns the rendered HTML.
 	   * 
 	   * @param String $xsl XSL document
@@ -82,54 +126,6 @@ class XSLTRenderer extends BaseRenderer {
 			 $xslt = $xp->transformToXml( $doc );
 
 			 restore_error_handler();
-
-			 return $xslt;
-	  }
-
-	  /**
-	   * Renders a view by performing an XSLT transformation. The XSL document
-	   * is read in from the specified xsl view.
-	   * 
-	   * @param String $xsl XSL document located in the web app view directory
-	   * @param String $xml XML document
-	   * @return void
-       */
-      public function renderXslFile( $xsl, $xml='' ) {
-
-      	 	 $dom = new DomDocument();
-			 $dom->load( AgilePHP::getFramework()->getWebRoot() . '/view/' . $xsl . '.xsl' );
-
-			 $xp = new XSLTProcessor();
-			 $xsl = $xp->importStylesheet( $dom );
-
-			 $doc = new DomDocument();
-			 $doc->loadXML( $xml );
-
-			 $xslt = $xp->transformToXml( $doc );
-
-			 print $xslt;
-	  }
-
-	  /**
-	   * Performs an XSLT tranformation using a specified XSL view document and returns the HTML result.
-	   * The XSL document is read in from the web application 'view' directory.
-	   * 
-	   * @param String $xsl XSL document located in the web app view directory
-	   * @param String $xml Optional XML document
-	   * @return void
-       */
-      public function getRenderedXslFile( $xsl, $xml='' ) {
-
-      	 	 $dom = new DomDocument();
-			 $dom->load( AgilePHP::getFramework()->getWebRoot() . '/view/' . $xsl . '.xsl' );
-
-			 $xp = new XSLTProcessor();
-			 $xsl = $xp->importStylesheet( $dom );
-
-			 $doc = new DomDocument();
-			 $doc->loadXML( $xml );
-
-			 $xslt = $xp->transformToXml( $doc );
 
 			 return $xslt;
 	  }

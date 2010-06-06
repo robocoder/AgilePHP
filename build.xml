@@ -58,11 +58,11 @@
         <jsMin targetDir="${build.dir}/AgilePHP" failOnError="true">
             <fileset dir="${build.dir}/AgilePHP">
                 <include name="AgilePHP.js"/>
-                <include name="remoting/json2.js"/>
+                <include name="json2.js"/>
             </fileset>
         </jsMin>
         <move file="${build.dir}/AgilePHP/AgilePHP-min.js" tofile="${build.dir}/AgilePHP/AgilePHP.js" overwrite="true"/>
-        <move file="${build.dir}/AgilePHP/remoting/json2-min.js" tofile="${build.dir}/AgilePHP/remoting/json2.js" overwrite="true"/>
+        <move file="${build.dir}/AgilePHP/json2-min.js" tofile="${build.dir}/AgilePHP/json2.js" overwrite="true"/>
     </target>
 
     <target name="apidoc" description="Generates apidoc using phpDocumentor">

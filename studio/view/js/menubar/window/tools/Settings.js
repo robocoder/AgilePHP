@@ -70,7 +70,8 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 	          ]),
 	    remoteSort: true
 	});
-
+	pearStore.load({params:{start:0, limit:5}});
+	
 	var peclStore = new Ext.data.Store({
         proxy: peclPagingMemoryProxy,
         reader: new Ext.data.ArrayReader({}, [

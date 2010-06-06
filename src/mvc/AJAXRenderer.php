@@ -62,7 +62,7 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		 	 Log::debug( 'AJAXRenderer::render Rendering XML ' . $xml );
 
-	  		 	 header( 'content-type: text/xml' );
+	  		 	 header( 'content-type: application/xml' );
 	  		 	 print $xml;
 	  		 	 exit;
 	  		 }
@@ -123,7 +123,7 @@ class AJAXRenderer extends BaseRenderer {
 
 			  		 case 'xml':
 			  		 case 'XML':
-			  		 	header( 'content-type: text/xml' );
+			  		 	header( 'content-type: application/xml' );
 	  		 	 		break;
 	  		 }
 
@@ -229,35 +229,9 @@ class AJAXRenderer extends BaseRenderer {
 			  		   $value = null;
 			  		   if( $context != 'public' ) {
 
-			  		   	   if( defined( 'PHP_VERSION_ID' ) && PHP_VERSION_ID >= 50300 ) {
-
-		  		 		  	   $property->setAccessible( true );
-				  		 	   $value = $property->getValue( $data );
-				  		 	   $property->setAccessible( false );
-			  		   	   }
-			  		   	   else {
-			  		   	   		// Cant set property accessible to retrieve value because we are on
-			  		   	   		// a legacy version of php - resort to guessing an accessor name
-			  		   	   		try {
-			  		   	   			$prop = $property->getName();
-			  		   	   			$getAccessor = 'get' . ucfirst( $property->getName() );
-			  		   	   			$isAccessor = 'is' . ucfirst( $property->getName() );
-
-			  		   	   			if( method_exists( $data, $getAccessor ) )
-			  		   	   				$method = $class->getMethod( $getAccessor );
-			  		   	   			else if( method_exists( $data, $isAccessor ) )
-			  		   	   				$method = $class->getMethod( $isAccessor );
-			  		   	   			else if( method_exists( $data, $prop ) )
-			  		   	   				$method = $class->getMethod( $prop );
-
-									$value = ($method) ? $method->invoke( $data ) : '';
-			  		   	   		}
-			  		   	   		catch( Exception $e ) {
-
-			  		   	   			   Log::error( $data );
-			  		   	   			   Log::error( $e->getMessage() );
-			  		   	   		}
-			  		   	   }
+	  		 		  	   $property->setAccessible( true );
+			  		 	   $value = $property->getValue( $data );
+			  		 	   $property->setAccessible( false );
 			  		   }
 			  		   else {
 
@@ -314,7 +288,7 @@ class AJAXRenderer extends BaseRenderer {
 	  	      }
 
 	  	      else if( is_object( $data ) ) {
-	  	     	
+
 	  	      	  $class = new ReflectionClass( $data );
 
 	  	      	  // stdClass has public properties
@@ -339,9 +313,18 @@ class AJAXRenderer extends BaseRenderer {
 		  		 	  return $xml;
 	  		     }
 
-		  		 $xml = '<' . $class->getName() . '>';
+		  	     // @todo Interceptors are still being somewhat intrusive to reflection operations
+	  		     if( method_exists( $data, 'getInterceptedInstance' ) ) {
+
+	  		     	 $name = preg_replace( '/_Intercepted/', '', $class->getName() );
+	  		     	 $instance = $data->getInterceptedInstance();
+	  		     	 $class = new ReflectionClass( $instance );
+	  		     	 $data = $instance;
+	  		     }
+
+		  		 $xml = '<' . $name . '>';
 		  		 foreach( $class->getProperties() as $property ) {
-	
+
 		  		 		  $context = null;
 		  		 		  if( $property->isPublic() )
 		  		 		  	  $context = 'public';
@@ -352,36 +335,10 @@ class AJAXRenderer extends BaseRenderer {
 	
 		  		 		  $value = null;
 		  		 		  if( $context != 'public' ) {
-	
-			  		 		  if( defined( 'PHP_VERSION_ID' ) && PHP_VERSION_ID >= 50300 ) {
-	
-			  		 		  	   $property->setAccessible( true );
-					  		 	   $value = $property->getValue( $data );
-					  		 	   $property->setAccessible( false );
-				  		   	   }
-				  		   	   else {
-				  		   	   		// Cant set property accessible to retrieve value because we are on
-				  		   	   		// a legacy version of php - resort to guessing an accessor name
-				  		   	   		try {
-				  		   	   			$prop = $property->getName();
-				  		   	   			$getAccessor = 'get' . ucfirst( $property->getName() );
-				  		   	   			$isAccessor = 'is' . ucfirst( $property->getName() );
-	
-				  		   	   			if( method_exists( $data, $getAccessor ) )
-				  		   	   				$method = $class->getMethod( $getAccessor );
-				  		   	   			else if( method_exists( $data, $isAccessor ) )
-				  		   	   				$method = $class->getMethod( $isAccessor );
-				  		   	   			else if( method_exists( $data, $prop ) )
-				  		   	   				$method = $class->getMethod( $prop );
-	
-										$value = ($method) ? $method->invoke( $data ) : '';
-				  		   	   		}
-				  		   	   		catch( Exception $e ) {
-	
-				  		   	   			   Log::error( $data );
-				  		   	   			   Log::error( $e->getMessage() );
-				  		   	   		}
-				  		   	   }
+
+		  		 		  	  $property->setAccessible( true );
+				  		 	  $value = $property->getValue( $data );
+				  		 	  $property->setAccessible( false );
 		  		 		  }
 		  		 		  else {
 	
@@ -397,9 +354,22 @@ class AJAXRenderer extends BaseRenderer {
 			  		 		  $xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
 		  		 		  }
 		  		 }
-		  		 $xml .= '</' . $class->getName() . '>';
+		  		 $xml .= '</' . $name . '>';
 	  		 }
 	  		 return $xml;
+	  }
+
+	  /**
+	   * Transforms the specified PHP data to YAML.
+	   * 
+	   * @param mixed $data Data to transform into YAML
+	   * @param $encoding YAML_ANY_ENCODING, YAML_UTF8_ENCODING, YAML_UTF16LE_ENCODING, YAML_UTF16BE_ENCODING. Defaults to YAML_ANY_ENCODING.
+	   * @param $int $linebreak YAML_ANY_BREAK, YAML_CR_BREAK, YAML_LN_BREAK, YAML_CRLN_BREAK. Defaults to YAML_ANY_BREAK
+	   * @return $int string The YAML formatted data.
+	   */
+	  public function toYAML( $data, $encoding = YAML_ANY_ENCODING, $linebreak = YAML_ANY_BREAK ) {
+
+	  		 return yaml_emit( $data, $encoding, $linebreak );
 	  }
 }
 ?>

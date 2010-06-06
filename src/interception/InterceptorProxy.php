@@ -67,8 +67,11 @@ class InterceptorProxy {
 
 		     		 	 	 	   	  $invocationCtx = new \InvocationContext( $this->object, null, null, $interception->getInterceptor() );
 							          $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
-							          if( $ctx instanceof InvocationContext && $ctx->proceed )
+							          if( $ctx instanceof InvocationContext && $ctx->proceed ) {
+
 							          	  $this->object = $ctx->getTarget();
+								          if( $ctx->getMethod() ) $this->__call( $ctx->getMethod(), $ctx->getParameters() );
+							          }
 		     		 	 	 	  }
 	     		 	 	 }
 		     		 }
@@ -226,47 +229,59 @@ class InterceptorProxy {
 		     		  if( ($interception->getClass() == get_class( $this ) || isset( $fqcn ) && $fqcn == get_class( $this ))
 		     		  			 && $interception->getMethod() == $method ) {
 
-		     		  		  $interceptorClass = new \AnnotatedClass( $interception->getInterceptor() );
-		     		 	 	  foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
+	     		  		   $interceptorClass = new \AnnotatedClass( $interception->getInterceptor() );
+	     		 	 	   foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
 
-		     		 	 	  		   $invoked = false;
-		     		 	 	  		   $invocationCtx = new \InvocationContext( $this->object, $method, $args, $interception->getInterceptor() );
+	     		 	 	  		    $invoked = false;
+	     		 	 	 	 	    if( $interceptorMethod->hasAnnotation( 'AroundInvoke' ) ) {
 
-		     		 	 	 	 	   if( $interceptorMethod->hasAnnotation( 'AroundInvoke' ) ) {
+	     		 	 	 	 	   	    $invocationCtx = new \InvocationContext( $this->object, $method, $args, $interception->getInterceptor() );
+						                $invocationCtx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
 
-							               $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
-							               $invocationCtx = $ctx;
+						                // Only execute the intercepted __call if the InvocationContext has had its proceed() method invoked.
+						                if( $invocationCtx instanceof \InvocationContext && $invocationCtx->proceed ) {
 
-							               // Only execute the intercepted __call if the InvocationContext has had its proceed() method invoked.
-							               if( $ctx instanceof \InvocationContext && $ctx->proceed ) {
+										    $m = $class->getMethod( $invocationCtx->getMethod() );
 
-											   $m = $class->getMethod( $ctx->getMethod() );
-											   if( $m !== null ) {
+									   	    // Capture the return value and update the InvocationContext with the return value for #@AroundInvoke
+									  	    $return = $args ? $m->invokeArgs( $this->object, $invocationCtx->getParameters() ) : $m->invoke( $this->object );
+									  	    $invocationCtx->setReturn( $return );
+									  	    $invoked = true;
+						                }
+						                else
+						               	    unset( $invocationCtx );
+	     		 	 	 		    }
 
-											   	   // Capture the return value and update the InvocationContext with the return value for #@AroundInvoke
-											  	   $return = $args ? $m->invokeArgs( $this->object, $ctx->getParameters() ) : $m->invoke( $this->object );
-											  	   $invocationCtx->setReturn( $return );
-											  	   $invoked = true;
-											   }
-							               }
-		     		 	 	 		   }
+	     		 	 	 		    // Execute #@AfterInvoke interceptor methods passing in the InvocationContext as it
+	     		 	 	 		    // was returned from the #@AroundInvoke operation if it exists. Otherwise the initial
+	     		 	 	 		    // call to #@AroundInvoke is passed into #@AfterInvoke.
+	     		 	 	 		    foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
 
-		     		 	 	 		   // Execute #@AfterInvoke interceptor methods passing in the InvocationContext as it
-		     		 	 	 		   // was returned from the #@AroundInvoke operation if it exists. Otherwise the initial
-		     		 	 	 		   // call to #@AroundInvoke is passed into #@AfterInvoke.
-		     		 	 	 		   foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
+					     		 	 	     if( $interceptorMethod->hasAnnotation( 'AfterInvoke' ) ) {
+	
+					     		 	 	   	     // If a method does not have an #@AroundInvoke method, InvocationContext::return
+					     		 	 	   	     // will be null. This will execute the intended call as desired and store the return
+					     		 	 	   	     // value in a new InvocationContext instance so it can be processed by #@AfterInvoke
+					     		 	 	   	     if( !isset( $invocationCtx ) ) {
+	
+					     		 	 	   	   	     $invocationCtx = new \InvocationContext( $this->object, $method, $args, $interception->getInterceptor() );
+					     		 	 	   	   	     $m = $class->getMethod( $method );
+					     		 	 	   	   	     $return = $args ? $m->invokeArgs( $this->object, $args ) : $m->invoke( $this->object );
+					     		 	 	   	   	     $invocationCtx->setReturn( $return );
+					     		 	 	   	     }
+	
+					     		 	 	   	     $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
+									             if( $ctx instanceof InvocationContext && $ctx->proceed )
+				     		 	 	 		   	     return $ctx->getReturn();
+								             }
+	     		 	 	 		   }
 
-					     		 	 	   if( $interceptorMethod->hasAnnotation( 'AfterInvoke' ) ) {
-
-								               $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
-									           if( $ctx instanceof InvocationContext && $ctx->proceed )
-				     		 	 	 		   	   return $ctx->getReturn();
-								           }
-		     		 	 	 		   }
-
-		     		 	 	 		   if( $invoked ) return $return;
-		     		 	 	  }
-		     		 	  }
+	     		 	 	 		   // If #@AroundInvoke was executed and has a return value but there werent
+	     		 	 	 		   // any #@AfterInvoke methods specified, we need to return the value from
+	     		 	 	 		   // the #@AroundInvoke invocation.
+	     		 	 	 		   if( $invoked ) return $return;
+	     		 	 	  }
+		     		   }
 		     }
 
 	  		 // No interceptors, invoke the intercepted method as it was called.
