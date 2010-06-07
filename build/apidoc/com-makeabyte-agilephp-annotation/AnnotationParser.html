@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class AnnotationParser</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class AnnotationParser</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Responsible for parsing and returning annotation details about PHP classes.</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jeremy Hahn</li>
+				<li><span class="field">copyright:</span> Make A Byte, inc.</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_build---AgilePHP---annotation---AnnotationParser.php.html">/build/AgilePHP/annotation/AnnotationParser.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp-annotation__buildAgilePHPannotationAnnotationParser.php.html#a29">29</a></span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+										
+				<div class="method-definition">
+					static 						<span class="method-result">Array</span>
+										<a href="#getClassAnnotations" title="details" class="method-name">getClassAnnotations</a>
+											(<span class="var-type"><a href="../com-makeabyte-agilephp-annotation/AnnotatedClass.html">AnnotatedClass</a></span>&nbsp;<span class="var-name">$class</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">Array</span>
+										<a href="#getClassAnnotationsAsArray" title="details" class="method-name">getClassAnnotationsAsArray</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$class</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result"><a href="../com-makeabyte-agilephp-annotation/AnnotationParser.html">AnnotationParser</a></span>
+										<a href="#getInstance" title="details" class="method-name">getInstance</a>
+										()
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">Array</span>
+										<a href="#getMethodAnnotations" title="details" class="method-name">getMethodAnnotations</a>
+											(<span class="var-type"><a href="../com-makeabyte-agilephp-annotation/AnnotatedMethod.html">AnnotatedMethod</a></span>&nbsp;<span class="var-name">$method</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">Array</span>
+										<a href="#getMethodAnnotationsAsArray" title="details" class="method-name">getMethodAnnotationsAsArray</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$class</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$method</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">Array</span>
+										<a href="#getPropertyAnnotations" title="details" class="method-name">getPropertyAnnotations</a>
+											(<span class="var-type"><a href="../com-makeabyte-agilephp-annotation/AnnotatedProperty.html">AnnotatedProperty</a></span>&nbsp;<span class="var-name">$property</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">Array</span>
+										<a href="#getPropertyAnnotationsAsArray" title="details" class="method-name">getPropertyAnnotationsAsArray</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$class</span>)
+									</div>
+														
+				<div class="method-definition">
+					static 						<span class="method-result">void</span>
+										<a href="#parse" title="details" class="method-name">parse</a>
+											(<span class="var-type">String</span>&nbsp;<span class="var-name">$class</span>)
+									</div>
+																																																																															</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodgetClassAnnotations" id="getClassAnnotations"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getClassAnnotations</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-annotation__buildAgilePHPannotationAnnotationParser.php.html#a172">172</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an array of class level annotations or false if no class  level annotations are present.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of class level annotations or false if no annotations           are present.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">Array</span>
+		<span class="method-name">
+			getClassAnnotations
+		</span>
+					(<span class="var-type"><a href="../com-makeabyte-agilephp-annotation/AnnotatedClass.html">AnnotatedClass</a></span>&nbsp;<span class="var-name">$class</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../com-makeabyte-agilephp-annotation/AnnotatedClass.html">AnnotatedClass</a></span>
+				<span class="var-name">$class</span><span class="var-description">: An instance of the annotated class to inspect.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetClassAnnotationsAsArray" id="getClassAnnotationsAsArray"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getClassAnnotationsAsArray</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-annotation__buildAgilePHPannotationAnnotationParser.php.html#a227">227</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an array of class level annotations</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of class level annotations, void otherwise</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">Array</span>
+		<span class="method-name">
+			getClassAnnotationsAsArray
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$class</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$class</span><span class="var-description">: The name of the class to inspect</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetInstance" id="getInstance"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getInstance</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-annotation__buildAgilePHPannotationAnnotationParser.php.html#a49">49</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns a Singletom instance of AnnotationParser.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> Singleton instance of AnnotationParser</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result"><a href="../com-makeabyte-agilephp-annotation/AnnotationParser.html">AnnotationParser</a></span>
+		<span class="method-name">
+			getInstance
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetMethodAnnotations" id="getMethodAnnotations"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getMethodAnnotations</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-annotation__buildAgilePHPannotationAnnotationParser.php.html#a207">207</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an array of method level annotations or false if no annotations  are found for the specified method.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of method level annotations or false if no annotations are present.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">Array</span>
+		<span class="method-name">
+			getMethodAnnotations
+		</span>
+					(<span class="var-type"><a href="../com-makeabyte-agilephp-annotation/AnnotatedMethod.html">AnnotatedMethod</a></span>&nbsp;<span class="var-name">$method</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../com-makeabyte-agilephp-annotation/AnnotatedMethod.html">AnnotatedMethod</a></span>
+				<span class="var-name">$method</span><span class="var-description">: The AnnotatedMethod instance to inspect.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetMethodAnnotationsAsArray" id="getMethodAnnotationsAsArray"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getMethodAnnotationsAsArray</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-annotation__buildAgilePHPannotationAnnotationParser.php.html#a241">241</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an array of method level annotations for the specified class</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of method level annotations, void otherwise</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">Array</span>
+		<span class="method-name">
+			getMethodAnnotationsAsArray
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$class</span>, <span class="var-type">String</span>&nbsp;<span class="var-name">$method</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$class</span><span class="var-description">: The name of the class to inspect</span>			</li>
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$method</span><span class="var-description">: The name of the method to inspect</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetPropertyAnnotations" id="getPropertyAnnotations"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getPropertyAnnotations</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-annotation__buildAgilePHPannotationAnnotationParser.php.html#a185">185</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an array of property level annotations or false if no annotations  are present for the specified property.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of property level annotations</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">Array</span>
+		<span class="method-name">
+			getPropertyAnnotations
+		</span>
+					(<span class="var-type"><a href="../com-makeabyte-agilephp-annotation/AnnotatedProperty.html">AnnotatedProperty</a></span>&nbsp;<span class="var-name">$property</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../com-makeabyte-agilephp-annotation/AnnotatedProperty.html">AnnotatedProperty</a></span>
+				<span class="var-name">$property</span><span class="var-description">: The AnnotatedProperty instance to inspect.</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetPropertyAnnotationsAsArray" id="getPropertyAnnotationsAsArray"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static getPropertyAnnotationsAsArray</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-annotation__buildAgilePHPannotationAnnotationParser.php.html#a254">254</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns an array of property level annotations for the specified class.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> of property level annotations, void otherwise</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">Array</span>
+		<span class="method-name">
+			getPropertyAnnotationsAsArray
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$class</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$class</span><span class="var-description">: The name of the class to inspect</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodparse" id="parse"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static parse</span> (line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-annotation__buildAgilePHPannotationAnnotationParser.php.html#a65">65</a></span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Breaks the class file into PHP tokens and extracts all interface,  class, method, and property level annotations.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		static <span class="method-result">void</span>
+		<span class="method-name">
+			parse
+		</span>
+					(<span class="var-type">String</span>&nbsp;<span class="var-name">$class</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">String</span>
+				<span class="var-name">$class</span><span class="var-description">: The name of the class to parse</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sun, 06 Jun 2010 19:52:42 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>

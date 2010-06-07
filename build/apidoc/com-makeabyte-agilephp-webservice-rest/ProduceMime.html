@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class ProduceMime</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class ProduceMime</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+													</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Forces the REST method processor (#@GET|#@POST|#@PUT|#@DELETE) to transform</p>
+<p class="description"><p>data returned by the service to the specified mime type before passing the response  back to the client. This annotation also overrides the client HTTP Accept header. If  the client does not list the specified #@ProduceMime::type then a &quot;406 Not Acceptable&quot;  is returned to the client. The returned service resource data is transformed and sent  to the client based on the specified #@ProduceMime::type as follows:</p><p>1) application/xml       = Well formed XML		(expects SimpleXMLElement returned)  2) application/json      = Well formed JSON		(any return type supported)  3) application/x-yaml    = Well formed YAML		(any return type supported)  4) application/xhtml+xml = raw data passed from the service resource</p></p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Jeremy Hahn</li>
+				<li><span class="field">copyright:</span> Make A Byte, inc</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_build---AgilePHP---webservice---rest---ProduceMime.php.html">/build/AgilePHP/webservice/rest/ProduceMime.php</a> (line <span class="field"><a href="../__filesource/fsource_com-makeabyte-agilephp-webservice-rest__buildAgilePHPwebservicerestProduceMime.php.html#a49">49</a></span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																								<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$type" title="details" class="var-name">$type</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<span class="disabled">Vars</span>
+						
+			
+								</div>
+		<div class="info-box-body">
+			
+<a name="var$type" id="$type"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$type</span>
+						(line <span class="line-number"><a href="../__filesource/fsource_com-makeabyte-agilephp-webservice-rest__buildAgilePHPwebservicerestProduceMime.php.html#a61">61</a></span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">A supported AgilePHP REST mime type. The following mime types are supported:</p>
+<p class="description"><p>1) application/xml  2) application/json  3) application/x-yaml  4) application/xhtml+xml</p></p>
+	<ul class="tags">
+				<li><span class="field">var:</span> A supported mime type used to produce and transform service return data</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sun, 06 Jun 2010 19:55:59 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+	</p>
+	</div></body>
+</html>
