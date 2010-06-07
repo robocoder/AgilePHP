@@ -26,35 +26,5 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
  */
-class RemotingController extends Remoting {
-
-	  public function __construct() {
-	  		 parent::__construct();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see AgilePHP/mvc/BaseController#index()
-	   * @throws RemotingException
-	   */
-	  public function index() {
-	  		 throw new RemotingException( 'Malformed Request' );
-	  }
-
-	  /**
-	   * Loads the specified class
-	   *  
-	   * @param $class The class to remote
-	   * @return void
-	   * @throws RemotingException
-	   */
-	  public function load( $class ) {
-
-	  		 if( !isset( $class ) || count( $class ) < 1 )
-				 throw new RemotingException( 'Class required' );
-
-			 parent::__construct( $class );
-			 parent::createStub();
-	  }
-}
+class RemotingController extends Remoting { }
 ?>

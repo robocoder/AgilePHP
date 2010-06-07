@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.webservice
+ * @package com.makeabyte.agilephp.webservice.soap
  */
 
 /**
@@ -25,7 +25,7 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.webservice
+ * @package com.makeabyte.agilephp.webservice.soap
  * <code>
  * #@WebService( serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI' )
  * #@SOAPBinding( style = SOAPStyle::RPC, use = SOAPStyle::ENCODED )
@@ -55,8 +55,7 @@ class SOAPBinding {
  *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.webservice
- * @version 0.1a
+ * @package com.makeabyte.agilephp.webservice.soap
  */
 class SOAPStyle {
 

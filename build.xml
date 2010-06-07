@@ -21,7 +21,6 @@
     </fileset>
 
 	<fileset dir="${project.basedir}" id="distfiles">
-        <include name="apidoc/**"/>
 		<include name="src/**"/>
 		<include name="studio/**"/>
 		<include name="CHANGELOG"/>
@@ -58,11 +57,9 @@
         <jsMin targetDir="${build.dir}/AgilePHP" failOnError="true">
             <fileset dir="${build.dir}/AgilePHP">
                 <include name="AgilePHP.js"/>
-                <include name="json2.js"/>
+                <include name="webservice/remoting/json2.js"/>
             </fileset>
         </jsMin>
-        <move file="${build.dir}/AgilePHP/AgilePHP-min.js" tofile="${build.dir}/AgilePHP/AgilePHP.js" overwrite="true"/>
-        <move file="${build.dir}/AgilePHP/json2-min.js" tofile="${build.dir}/AgilePHP/json2.js" overwrite="true"/>
     </target>
 
     <target name="apidoc" description="Generates apidoc using phpDocumentor">
@@ -101,7 +98,6 @@
             <formatter todir="${phpunit.reports}" type="xml"/>
             <batchtest>
                 <fileset dir="${test.dir}/phpunit">
-                	<include name="UserRestServiceTest.php" />
                 	<exclude name="persistence/MSSQLTest.php"/>
 					<exclude name="persistence/PGSQLTest.php"/>
 					<exclude name="persistence/SQLiteTest.php"/>

@@ -25,6 +25,17 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.logger
+ * <code>
+ * class MyClass {
+ * 
+ * 		 // Calls to this function are logged including class, method, parameters, and return value.
+ * 		 #@Audit
+ * 		 public function doSomething( $param1, $param2 ) {
+ * 
+ * 				return 'something useful';
+ * 		 }
+ * }
+ * </code>
  */
 #@Interceptor
 class Audit {

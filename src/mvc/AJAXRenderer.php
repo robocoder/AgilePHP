@@ -178,7 +178,7 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param String $name Used internally within the method to perform recursion logic.
 	   * @return The JSON encoded data
 	   */
-	  public function toJSON( $data, $name = null ) {
+	  public function toJSON( $data, $name = null, $isChild = false ) {
 
 	  		  $json = '';
 
@@ -209,7 +209,15 @@ class AJAXRenderer extends BaseRenderer {
 		  		  if( $class->getName() == 'stdClass' )
 		  		  	  return json_encode( $data );
 
-	  		  	  $json .= '{ ';
+		  		  $json .= ($isChild) ? '"' . $class->getName() . '" : { ' : ' { "' . $class->getName() . '" : { ';
+
+	  		  	  // @todo Interceptors are still being somewhat intrusive to reflection operations
+	  		      if( method_exists( $data, 'getInterceptedInstance' ) ) {
+
+	  		     	  $name = preg_replace( '/_Intercepted/', '', $class->getName() );
+	  		     	  $data = $data->getInterceptedInstance();
+	  		     	  $class = new ReflectionClass( $data );
+	  		      }
 
 		  		  $properties = $class->getProperties();
 			  	  for( $i=0; $i<count( $properties ); $i++ ) {
@@ -239,14 +247,14 @@ class AJAXRenderer extends BaseRenderer {
 			  		   }
 
 			  		   if( is_object( $value ) || is_array( $value ) )
-			  		   	   $json .= $this->toJSON( $value, $property->getName() ) . ' ';
+			  		   	   $json .= $this->toJSON( $value, $property->getName(), true ) . ' ';
 
 			  		   else
 			  		   		$json .= $property->getName() . ' : ' . json_encode( $value );
 
 			  		   $json .= ( ($i+1) < count( $properties ) ) ? ', ' : '';
 			  	  }
-			  	  $json .= ' }';
+			  	  $json .= ($isChild) ? '} ' : ' } }';
 		  	  }
 
 		  	  else {

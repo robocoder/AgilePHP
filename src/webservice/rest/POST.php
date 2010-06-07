@@ -24,7 +24,7 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.webservice
+ * @package com.makeabyte.agilephp.webservice.rest
  * <code>
  * class MyClassRemote {
  * 

@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.component
+ * @package com.makeabyte.agilephp.test.component
  */
 
 // Import custom PHTMLRenderer from TestComponent. Since we
@@ -30,6 +30,7 @@ AgilePHP::import( 'TestComponent.classes.PHTMLRenderer' );
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte inc,
+ * @package com.makeabyte.agilephp.test.component
  */
 class TestComponent extends Component {
 

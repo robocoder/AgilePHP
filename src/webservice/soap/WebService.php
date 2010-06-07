@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.webservice
+ * @package com.makeabyte.agilephp.webservice.soap
  */
 
 /**
@@ -24,7 +24,7 @@
  *  
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.webservice
+ * @package com.makeabyte.agilephp.webservice.soap
  * <code>
  * #@WebService( serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI' )
  * class MyAPI {

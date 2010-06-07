@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.webservice.soap
+ * @package com.makeabyte.agilephp.webservice.remoting
  */
 
 /**
@@ -25,7 +25,7 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.webservice.soap
+ * @package com.makeabyte.agilephp.webservice.remoting
   * <code>
  * class MyClassRemote {
  * 

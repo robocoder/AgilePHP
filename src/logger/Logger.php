@@ -26,6 +26,13 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.logger
+ * <code>
+ * class MyClass {
+ * 
+ * 		 #@Logger
+ * 		 public $logger;  // injected instance of the configured LogProvider
+ * }
+ * </code>
  */
 #@Interceptor
 class Logger {
