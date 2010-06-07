@@ -156,14 +156,7 @@ class IndexController extends BaseController {
 	  		 $this->getRenderer()->set( 'parameters', $params );
 	  		 $this->getRenderer()->render( 'form-example' );
 	  }
-public function test() {
-	$user = new User();
-	$user->setUsername( 'admin' );
-	
-	$ajax = new AJAXRenderer();
-	
-	print_r( $ajax->toJSON( $user ) )
-}
+
 	  /**
 	   * Renders the admin PHTML view
 	   * 
