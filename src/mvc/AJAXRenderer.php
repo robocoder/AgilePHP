@@ -193,7 +193,7 @@ class AJAXRenderer extends BaseRenderer {
 	  		  	  		$i++;
 	  		  	  	 	$json .= (is_object( $value ) || is_array( $value )) ?
 	  		  	  	 				 $this->toJSON( $value, $name ) :
-	  		  	  	 				 ((is_numeric( $key )) ? json_encode( $value ) : "$key : " . json_encode( $value ) );
+	  		  	  	 				 ((is_numeric( $key )) ? json_encode( $value ) : json_encode( $value ) );
 	  		  	  	 	$json .= ( $i < count( $data ) ) ? ', ' : '';
 	  		  	  }
 	  		  	  $json .= ' ]';
@@ -250,7 +250,7 @@ class AJAXRenderer extends BaseRenderer {
 			  		   	   $json .= $this->toJSON( $value, $property->getName(), true ) . ' ';
 
 			  		   else
-			  		   		$json .= $property->getName() . ' : ' . json_encode( $value );
+			  		   		$json .= '"' . $property->getName() . '" : ' . json_encode( $value );
 
 			  		   $json .= ( ($i+1) < count( $properties ) ) ? ', ' : '';
 			  	  }
