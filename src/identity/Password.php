@@ -57,13 +57,13 @@ class Password {
 	   * 
 	   * @param InvocationContext $ic The intercepted invocation context
 	   * @return mixed The InvocationContext if the call has been altered, void otherwise
-	   * @throws AgilePHP_InterceptionException if a specified parameter index is out of bounds
+	   * @throws InterceptionException if a specified parameter index is out of bounds
 	   */
 	  #@AroundInvoke
 	  public function hash( InvocationContext $ic ) {
 
 	  		 if( !$ic->getParameters() )
-	  		 	 throw new AgilePHP_InterceptionException( '#@Password::encrypt Requires a method which accepts at least one parameter.' );
+	  		 	 throw new InterceptionException( '#@Password::encrypt Requires a method which accepts at least one parameter.' );
 
 		  	 // Dont encrypt passwords coming from persistence 'find' operation.
 	  		 $callee = $ic->getCallee();
@@ -82,7 +82,7 @@ class Password {
 	  		 if( $this->parameter ) {
 
 	  		 	 if( !array_key_exists( $this->parameter, $params ) )
-	  		 	 	 throw new AgilePHP_InterceptionException( '#@Password::parameter index out of bounds' );
+	  		 	 	 throw new InterceptionException( '#@Password::parameter index out of bounds' );
 
 	  		 	 $params[$this->parameter] = $crypto->getDigest( $params[$this->parameter] );
 	  		 	 $ic->setParameters( $params );

@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -16,32 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.studio.control
+ * @package com.makeabyte.agilephp.identity
  */
 
 /**
- * Controller responsible for exposing server side PHP classes to AgilePHP client
- * side remoting operations.
+ * Thrown when a user attempts to access content which they do not have
+ * permission to view.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.studio.control
+ * @package com.makeabyte.agilephp.identity
+ * @throws AccessDeniedException
  */
-class RemotingController extends Remoting {
-
-	  /**
-	   * Overloads the parent invoke method to require an authenticated session  
-	   * before allowing a client to invoke any remote methods
-	   * 
-	   * @return void
-	   */
-	  public function invoke() {
-
-	  		 // Require authentication for all remote invocations
-	  	     if( !Identity::getInstance()->isLoggedIn() )
-	  		 	 throw new AccessDeniedException( 'You must be logged in to view the requested content.' );
-
-	  		 parent::invoke();
-	  }
-}
+class AccessDeniedException extends AgilePHP_Exception { }
 ?>

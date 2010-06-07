@@ -681,7 +681,7 @@ class FileExplorerController extends BaseExtController {
 			 			$dom->Load( $componentXml );
 						if( !$dom->schemaValidate( AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR . 'component.dtd' ) );
 						//if( !$dom->validate() );
-						 	throw new AgilePHP_PersistenceException( 'component.xml Document Object Model validation failed.' );
+						 	throw new PersistenceException( 'component.xml Document Object Model validation failed.' );
 						*/
 
 		 				$properties = array();

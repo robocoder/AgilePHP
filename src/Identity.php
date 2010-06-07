@@ -424,7 +424,7 @@ class Identity implements IdentityManager {
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#login($username, $password)
-	   * @throws AgilePHP_AccessDeniedException
+	   * @throws AccessDeniedException
 	   */
 	  public function login( $username, $password ) {
 
@@ -455,7 +455,7 @@ class Identity implements IdentityManager {
 	  		 }
 
 	  		 if( !$this->getModel()->getEnabled() )
-	  		 	 throw new AgilePHP_AccessDeniedException( 'Your account has been disabled.' );
+	  		 	 throw new AccessDeniedException( 'Your account has been disabled.' );
 
 	  		 // The session needs to be persisted first to avoid primary key constraint violation
   	  		 $this->session->set( 'IDENTITY_LOGGEDIN', true );

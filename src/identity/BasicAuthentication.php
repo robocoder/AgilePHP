@@ -65,7 +65,7 @@ class BasicAuthentication {
 	   *  			  authentication logic. The custom authenticator should
 	   *  			  return true if authentication was successful, or false
 	   *  			  for anything else. The interceptor will handle throwing
-	   *  			  an AgilePHP_AccessDeniedException if false is returned.
+	   *  			  an AccessDeniedException if false is returned.
 	   *  <code>
 	   *  Example:
 	   *  #@BasicAuthentication( authenticator = 'myAuthenticator' )
@@ -78,7 +78,7 @@ class BasicAuthentication {
 	   * 
 	   * @param InvocationContext $ic The context of the intercepted call
 	   * @return InvocationContext if the authentication was successful.
-	   * @throws AgilePHP_AccessDeniedException
+	   * @throws AccessDeniedException
 	   */
 	  #@AroundInvoke
 	  public function prompt( InvocationContext $ic ) {
@@ -94,18 +94,18 @@ class BasicAuthentication {
 		  	     	 if( $object->$authenticator( $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] ) )
 		  	     	 	 return $ic->proceed();
 
-		  	     	 throw new AgilePHP_AccessDeniedException( 'Invalid username/password' );
+		  	     	 throw new AccessDeniedException( 'Invalid username/password' );
 	  		 	 }
 
 	  		 	 if( Identity::getInstance()->login( $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] ) )
 	  		 	 	 return $ic->proceed();
 
-	  		 	 throw new AgilePHP_AccessDeniedException( 'Invalid username/password' );
+	  		 	 throw new AccessDeniedException( 'Invalid username/password' );
 	  		 }
 
 	  		 $realm = ($this->realm == null) ? $_SERVER['HTTP_HOST'] : $this->realm;
 	  		 header( 'WWW-Authenticate: Basic realm=' . $realm );
-		     throw new AgilePHP_AccessDeniedException( 'Unauthorized' );
+		     throw new AccessDeniedException( 'Unauthorized' );
 	  }
 }
 ?>

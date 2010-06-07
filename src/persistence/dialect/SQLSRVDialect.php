@@ -43,7 +43,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   public function __construct( Database $db ) {
 
 	   		  if( !function_exists( 'sqlsrv_connect' ) )
-	   		  	  throw new AgilePHP_PersistenceException( 'Microsoft SQL Server Driver for PHP is not installed on the server.' );
+	   		  	  throw new PersistenceException( 'Microsoft SQL Server Driver for PHP is not installed on the server.' );
 
 	   		  $params = array( 'Database' => $db->getName(), 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
 	   		  $noDbParams = array( 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
@@ -54,7 +54,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 			 	  if( !$this->conn = sqlsrv_connect( $db->getHostname(), $noDbParams ) ) { // Create statement needs to bind to server
 
 			 	  	  $this->connectFlag = -1;
-			 	  	  throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+			 	  	  throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
 			 	  }
 	  	      }
 
@@ -83,7 +83,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 $this->close();
 	  		 $params = array( 'Database' => $this->database->getName(), 'UID' => $this->database->getUsername(), 'PWD' => $this->database->getPassword() );
 	  		 if( !$this->conn = sqlsrv_connect( $this->database->getHostname(), $params ) )
-	  		 	 throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+	  		 	 throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
 
 			 $constraintFails = array();
 
@@ -103,7 +103,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
                                                   continue;
                                           }
 
-                                          throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+                                          throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
                                   }
 	  		 }
 
@@ -111,7 +111,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 if( count( $constraintFails ) )
 	  		 	 foreach( $constraintFails as $sql )
 	  		 	 		if( !$this->query( $sql ) )
-		  		 	 		throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) ); 		 
+		  		 	 		throw new PersistenceException( print_r( sqlsrv_errors(), true ) ); 		 
 	  }
 
 	  /**
@@ -249,7 +249,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 $this->transactionInProgress = false;
 	  		 sqlsrv_rollback( $this->conn );
 
-	  		 if( $message ) throw new AgilePHP_PersistenceException( $message, $code );
+	  		 if( $message ) throw new PersistenceException( $message, $code );
 	  }
 
 	  /**
@@ -298,10 +298,10 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 	 $params[$i] = &$inputParameters[$i];
 
 	  		 if( !$this->stmt = sqlsrv_prepare( $this->conn, $this->statement, $params ) )
-	  		 	 throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+	  		 	 throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
 
 	  		 if( !sqlsrv_execute( $this->stmt ) )
-	  		 	 throw new AgilePHP_PersistenceException( print_r( sqlsrv_errors(), true ) );
+	  		 	 throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
 	  }
 	  
 	  /**
@@ -327,7 +327,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   * Overrides parent find method to provide MSSQL specific syntax.
 	   * 
 	   * @param $model A domain model object. Any fields which are set in the object are used to filter results.
-	   * @throws AgilePHP_PersistenceException If any primary keys contain null values or any
+	   * @throws PersistenceException If any primary keys contain null values or any
 	   * 		   errors are encountered executing queries
 	   */
 	  public function find( $model ) {
@@ -437,7 +437,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 }
 	  		 catch( Exception $e ) {
 
-	  		 		throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+	  		 		throw new PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
 	  }
 

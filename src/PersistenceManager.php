@@ -19,9 +19,7 @@
  * @package com.makeabyte.agilephp
  */
 
-/**
- * Includes base persistence dependencies
- */
+require_once 'persistence/PersistenceException.php';
 require_once 'persistence/dialect/SQLDialect.php';
 require_once 'persistence/BasePersistence.php';
 
@@ -61,14 +59,14 @@ class PersistenceManager implements SQLDialect {
 	  		 $persistence_xml = ($persistenceXml) ? $persistenceXml : AgilePHP::getFramework()->getWebRoot() . '/persistence.xml';
 
 	   	     if( !file_exists( $persistence_xml ) )
-	   	     	 throw new AgilePHP_PersistenceException( 'PersistenceManager failed to locate persistence.xml at \'' . $persistence_xml . '\'.' );
+	   	     	 throw new PersistenceException( 'PersistenceManager failed to locate persistence.xml at \'' . $persistence_xml . '\'.' );
 
 	  	     $xml = simplexml_load_file( $persistence_xml );
 
  	  	     $dom = new DOMDocument();
  			 $dom->Load( $persistence_xml );
 			 if( !$dom->validate() )
-			 	 throw new AgilePHP_PersistenceException( 'persistence.xml Document Object Model validation failed.' );
+			 	 throw new PersistenceException( 'persistence.xml Document Object Model validation failed.' );
 
 			 if( !$xml->database ) return;
 
@@ -166,7 +164,7 @@ class PersistenceManager implements SQLDialect {
 					*/
 
   	     		 	default:
-  	     		 		 throw new AgilePHP_PersistenceException( "Invalid database type specified in persistence.xml for database with id '" . $db->getId() . "'." );
+  	     		 		 throw new PersistenceException( "Invalid database type specified in persistence.xml for database with id '" . $db->getId() . "'." );
   	     		 	  	 break;
 	  	     	}
 
@@ -336,7 +334,7 @@ class PersistenceManager implements SQLDialect {
 	  	  * Begins a transaction
 	  	  * 
 	  	  * @return void
-	  	  * @throws AgilePHP_PersistenceException
+	  	  * @throws PersistenceException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-beginTransaction.php
 	  	  */
@@ -349,7 +347,7 @@ class PersistenceManager implements SQLDialect {
 	  	  * Commits an already started transaction.
 	  	  * 
 	  	  * @return void
-	  	  * @throws AgilePHP_PersistenceException
+	  	  * @throws PersistenceException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-commit.php
 	  	  */
@@ -364,7 +362,7 @@ class PersistenceManager implements SQLDialect {
 	  	  * @param $message Error/reason why the transaction was rolled back
 	  	  * @param $code An error/reason code
 	  	  * @return void
-	  	  * @throws AgilePHP_PersistenceException
+	  	  * @throws PersistenceException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-rollBack.php
 	  	  */
@@ -841,7 +839,7 @@ class PersistenceManager implements SQLDialect {
 	   	   * Drops the database specified in persistence.xml
 	   	   * 
 	   	   * @return void
-	   	   * @throws AgilePHP_PersistenceException
+	   	   * @throws PersistenceException
 	   	   */
 	  	  public function drop() {
 
@@ -863,7 +861,7 @@ class PersistenceManager implements SQLDialect {
 	   	   * 
 		   * @param $model The model object to persist
 		   * @return PDOStatement
-		   * @throws AgilePHP_PersistenceException
+		   * @throws PersistenceException
 		   */
 	  	  public function persist( $model ) {
 
@@ -875,7 +873,7 @@ class PersistenceManager implements SQLDialect {
 	   	   * 
 		   * @param $model The model object to merge/update
 		   * @return PDOStatement
-		   * @throws AgilePHP_PersistenceException
+		   * @throws PersistenceException
 		   */
 	  	  public function merge( $model ) {
 
@@ -887,7 +885,7 @@ class PersistenceManager implements SQLDialect {
 	   	   * 
 		   * @param $model The domain model object to delete
 		   * @return PDOStatement
-		   * @throws AgilePHP_PersistenceException
+		   * @throws PersistenceException
 		   */
 		  public function delete( $model ) {
 
@@ -899,7 +897,7 @@ class PersistenceManager implements SQLDialect {
 	   	   * 
 		   * @param $model A domain model object
 		   * @return PDOStatement
-		   * @throws AgilePHP_PersistenceException
+		   * @throws PersistenceException
 		   */
 		 public function truncate( $model ) {
 
@@ -912,7 +910,7 @@ class PersistenceManager implements SQLDialect {
 	   	  * @param Object $model A domain model object with its primary key field set
 	      * @return Returns the same model which was passed (populated with the
 	      * 		 database values) or null if a matching record could not be found.
-	      * @throws AgilePHP_PersistenceException
+	      * @throws PersistenceException
 	      */
 	  	 public function find( $model ) {
 

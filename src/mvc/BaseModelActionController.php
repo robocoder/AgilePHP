@@ -44,10 +44,10 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     	       if( $requireLogon ) {
 
 		     		   if( !Identity::getInstance()->isLoggedIn() )
-		  	     		   throw new AgilePHP_NotLoggedInException( 'Login Required' );
+		  	     		   throw new NotLoggedInException( 'Login Required' );
 
 			  	       if( !Identity::getInstance()->hasRole( $requiredRole ) )
-			  	     	   throw new AgilePHP_AccessDeniedException( 'Access Denied. This area is reserved for ' . $requiredRole );
+			  	     	   throw new AccessDeniedException( 'Access Denied. This area is reserved for ' . $requiredRole );
 	     		   }
 
 	     		   parent::__construct();

@@ -127,7 +127,7 @@ AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare.databases = [];
 
 AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare.remoteDatabasesHandler = function( data ) {
 
-	 if( typeof data == 'AgilePHP_RemotingException' ) {
+	 if( typeof data == 'RemotingException' ) {
 
 		 AgilePHP.Studio.error( data.message );
 		 return false;

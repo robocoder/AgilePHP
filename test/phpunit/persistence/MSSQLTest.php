@@ -196,7 +196,7 @@ class MSSQLTest extends BaseTest {
 	  public function testDrop() {
 
 	  		 // ODBC has connection open to the database which prevents it from beind dropped
-             $this->setExpectedException( 'AgilePHP_PersistenceException' );
+             $this->setExpectedException( 'PersistenceException' );
 
              $this->persistence->drop();
       }

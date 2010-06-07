@@ -139,7 +139,7 @@ class LoginController extends BaseController {
 	   * the #@BasicAuthentication interceptor uses the AgilePHP Identity component.
 	   *
 	   * @return void
-	   * @throws AgilePHP_AccessDeniedException
+	   * @throws AccessDeniedException
 	   */
 	  #@BasicAuthentication
 	  public function basicAuthentication() {
@@ -151,7 +151,7 @@ class LoginController extends BaseController {
 	   * Authenticates the visitor using HTTP basic authentication and a custom realm.
 	   *
 	   * @return void
-	   * @throws AgilePHP_AccessDeniedException
+	   * @throws AccessDeniedException
 	   */
 	  #@BasicAuthentication( realm = 'test' )
 	  public function basicAuthWithCustomRealm() {
@@ -165,7 +165,7 @@ class LoginController extends BaseController {
 	   * performing the authentication logic in this case.
 	   * 
 	   * @return void
-	   * @throws AgilePHP_AccessDeniedException
+	   * @throws AccessDeniedException
 	   */
 	  #@BasicAuthentication( authenticator = 'basicAuthenticator' )
 	  public function basicAuthWithCustomAuthenticator() {

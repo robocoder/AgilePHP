@@ -34,7 +34,7 @@ class SQLiteTest extends BaseTest {
 	  		 try {
 	  		 		$this->persistence->query( 'desc ' . $this->getMockTable()->getName() . ';' );
 	  		 }
-	  		 catch( AgilePHP_PersistenceException $e ) {
+	  		 catch( PersistenceException $e ) {
 
 	  		 		if( preg_match( '/doesn\'t exist/', $e->getMessage() ) ) return;
 	  		 		PHPUnit_Framework_Assert::fail( $e->getMessage() );
@@ -51,7 +51,7 @@ class SQLiteTest extends BaseTest {
 	  		 	$user = $this->getMockData();
 	  		 	$this->persistence->persist( $user );
 	  		 }
-	  		 catch( AgilePHP_PersistenceException $e ) {
+	  		 catch( PersistenceException $e ) {
 
 	  		 		if( preg_match( '/violates foreign key constraint/', $e->getMessage() ) ) return;
 	  		 		PHPUnit_Framework_Assert::fail( $e->getMessage() );

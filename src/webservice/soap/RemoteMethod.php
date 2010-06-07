@@ -16,32 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.studio.control
+ * @package com.makeabyte.agilephp.webservice.soap
  */
 
 /**
- * Controller responsible for exposing server side PHP classes to AgilePHP client
- * side remoting operations.
+ * Annotation which authorizes a method for use with the
+ * AgilePHP Remoting component.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.studio.control
+ * @package com.makeabyte.agilephp.webservice.soap
+  * <code>
+ * class MyClassRemote {
+ * 
+ * #@RemoteMethod
+ * public function remoteMethod() {
+ * 
+ * 		 // This code is being called from javascript with ease.
+ * 		 // It may also be used as any standard PHP class within PHP.
+ * }
+ * }
+ * </code>
  */
-class RemotingController extends Remoting {
-
-	  /**
-	   * Overloads the parent invoke method to require an authenticated session  
-	   * before allowing a client to invoke any remote methods
-	   * 
-	   * @return void
-	   */
-	  public function invoke() {
-
-	  		 // Require authentication for all remote invocations
-	  	     if( !Identity::getInstance()->isLoggedIn() )
-	  		 	 throw new AccessDeniedException( 'You must be logged in to view the requested content.' );
-
-	  		 parent::invoke();
-	  }
-}
+class RemoteMethod { }
 ?>

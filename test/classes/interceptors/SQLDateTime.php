@@ -41,7 +41,7 @@ class SQLDateTime {
 	  public function setDateTime( InvocationContext $ic ) {
 
 	  		 if( !$ic->getParameters() )
-	  		 	 throw new AgilePHP_InterceptionException( '#@SQLDateTime::encrypt Requires a method which accepts at least one parameter.' );
+	  		 	 throw new InterceptionException( '#@SQLDateTime::encrypt Requires a method which accepts at least one parameter.' );
 
 		  	 // Dont process arguments being set by persistence classes
 	  		 $callee = $ic->getCallee();
@@ -56,7 +56,7 @@ class SQLDateTime {
 	  		 if( $parameter ) {
 
 	  		 	 if( !array_key_exists( $parameter, $params ) )
-	  		 	 	 throw new AgilePHP_InterceptionException( '#@SQLDateTime::parameter index out of bounds' );
+	  		 	 	 throw new InterceptionException( '#@SQLDateTime::parameter index out of bounds' );
 
 	  		 	 $params[$parameter] = date( 'Y-m-d H:i:s', $params[$parameter] );
 

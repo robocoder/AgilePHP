@@ -85,7 +85,7 @@ class Upload {
 	   * 
 	   * @param String $filename Optional file name to save the upload as. Defaults to the name of the uploaded file.
 	   * @return String The uploaded file path.
-	   * @throws AgilePHP_PersistenceException if any errors occur
+	   * @throws PersistenceException if any errors occur
 	   */
 	  public function save( $filename = null ) {
 
@@ -131,7 +131,7 @@ class Upload {
 
 			 	 Log::debug( 'Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.' );
 
-			 	 throw new AgilePHP_PersistenceException( $error, $_FILES[ $this->getName() ]['error'] );
+			 	 throw new PersistenceException( $error, $_FILES[ $this->getName() ]['error'] );
 			 }
 
 			 chmod( $target, 0755 );

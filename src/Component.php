@@ -58,7 +58,7 @@ abstract class Component extends BaseController {
  			  * $dom = new DOMDocument();
  			  * $dom->Load( $componentXml );
 			  * if( !$dom->validate() );
-			  *	   throw new AgilePHP_PersistenceException( 'component.xml Document Object Model validation failed.' );
+			  *	   throw new PersistenceException( 'component.xml Document Object Model validation failed.' );
 			  */
  			 $properties = array();
  			 $types = array();

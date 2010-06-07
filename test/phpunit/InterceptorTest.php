@@ -32,24 +32,24 @@ class InterceptorTest extends BaseTest {
 	  
 	  /**
 	   * @test
-	   * @expectedException AgilePHP_AccessDeniedException
+	   * @expectedException AccessDeniedException
 	   */
 	  public function RestrictInterceptorTest() {
 
 	  		 try {
 			  		 $mit = new MockInterceptionTarget();
 			  		 $mit->restrictedMethod( 'test' );
-			  		 PHPUnit_Framework_Assert::fail( '#@Restrict did not throw AgilePHP_AccessDeniedException' );
+			  		 PHPUnit_Framework_Assert::fail( '#@Restrict did not throw AccessDeniedException' );
 	  		 }
 	  		 catch( Exception $e ) {
 
-	  		 		throw new AgilePHP_AccessDeniedException('');
+	  		 		throw new AccessDeniedException('');
 	  		 }
 	  }
 
 	  /**
 	   * @test
-	   * @expectedException AgilePHP_NotLoggedInException
+	   * @expectedException NotLoggedInException
        */
 	  public function LoggedInInterceptorTest() {
 
@@ -59,7 +59,7 @@ class InterceptorTest extends BaseTest {
 	  		 }
 	  		 catch( Exception $e ) {
 
-	  		 		throw new AgilePHP_NotLoggedInException('');
+	  		 		throw new NotLoggedInException('');
 	  		 }
 	  }
 }

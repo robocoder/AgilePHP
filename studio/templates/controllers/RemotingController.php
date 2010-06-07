@@ -13,7 +13,7 @@ class RemotingController extends Remoting {
 	  public function load( $class ) {
 
 	  		 if( !isset( $class ) || count( $class ) < 1 )
-				 throw new AgilePHP_RemotingException( 'Class required' );
+				 throw new RemotingException( 'Class required' );
 
 			 parent::__construct( $class );
 			 parent::createStub();

@@ -82,7 +82,7 @@ class InterceptorProxy {
 		     		 	 	 // Execute property level interceptors
 		     		 	 	 $p = new \ReflectionProperty( $this->object, $interception->getProperty() );
 		     		 	 	 if( !$p->isPublic() )
-		     		 	 	 	 throw new \AgilePHP_InterceptionException( 'Property level interceptor requires public context at \'' . $proxiedClass .
+		     		 	 	 	 throw new \InterceptionException( 'Property level interceptor requires public context at \'' . $proxiedClass .
 		     		 	 	 	 		 '::' . $interception->getProperty() . '\'.' );
 
      		 	 	 		$interceptorClass = new \AnnotatedClass( $interception->getInterceptor() );
@@ -139,7 +139,7 @@ class InterceptorProxy {
 	   * 
 	   * @param String $property The property/field name being accessed
 	   * @return The property/field value
-	   * @throws AgilePHP_InterceptionException
+	   * @throws InterceptionException
 	   */
 	  public function __get( $property ) {
 
@@ -149,7 +149,7 @@ class InterceptorProxy {
 	  	     }
 	  	     catch( ReflectionException $re ) {
 
-	  	     		throw new \AgilePHP_InterceptionException( $re->getMessage(), $re->getCode() );
+	  	     		throw new \InterceptionException( $re->getMessage(), $re->getCode() );
 	  	     }
   	  }
 
@@ -159,7 +159,7 @@ class InterceptorProxy {
   	   * @param String $property The property/field name being set
   	   * @param mixed $value The value to set
   	   * @return void
-  	   * @throws AgilePHP_InterceptionException
+  	   * @throws InterceptionException
   	   */
   	  public function __set( $property, $value ) {
 
@@ -169,7 +169,7 @@ class InterceptorProxy {
 	  	     }
 	  	     catch( ReflectionException $re ) {
 
-	  	     		throw new \AgilePHP_InterceptionException( $re->getMessage(), $re->getCode() );
+	  	     		throw new \InterceptionException( $re->getMessage(), $re->getCode() );
 	  	     }
       }
 
@@ -178,7 +178,7 @@ class InterceptorProxy {
        * 
        * @param $property The property/field being tested
        * @return True if the property/field is set, false otherwise
-       * @throws AgilePHP_InterceptionException
+       * @throws InterceptionException
        */
   	  public function __isset( $property ) {
 
@@ -190,7 +190,7 @@ class InterceptorProxy {
   	   * 
   	   * @param String $property The property/field being unset
   	   * @return void
-  	   * @throws AgilePHP_InterceptionException
+  	   * @throws InterceptionException
   	   */
   	  public function __unset( $property ) {
 
@@ -203,7 +203,7 @@ class InterceptorProxy {
   	   * @param String $method The method being called
   	   * @param Array $args The arguments being passed
   	   * @return The result of the intercepted method invocation
-  	   * @throws AgilePHP_InterceptionException
+  	   * @throws InterceptionException
   	   */
 	  public function __call( $method, $args ) {
 

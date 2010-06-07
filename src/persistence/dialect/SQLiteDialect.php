@@ -40,7 +40,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	  		 catch( PDOException $e ) {
 
 	  		 		$this->connectFlag = -1;
-	  		 	    throw new AgilePHP_PersistenceException( $e->getMessage() );
+	  		 	    throw new PersistenceException( $e->getMessage() );
 	  		 }
 	  }
 
@@ -122,7 +122,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 		$sql .= ' );';
 
 	   		//if( $bCandidate && (count( $table->getPrimaryKeyColumns() ) > 1) )
-	   			//throw new AgilePHP_PersistenceException( 'Sqlite does not allow the use of auto-increment with compound primary keys (' . $table->getName() . ')' );
+	   			//throw new PersistenceException( 'Sqlite does not allow the use of auto-increment with compound primary keys (' . $table->getName() . ')' );
 
 	   		$this->query( $sql );
 
@@ -131,7 +131,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 
   	 			$info = $this->pdo->errorInfo();
   	 			if( $info[0] != '0000' )
-  	 				throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+  	 				throw new PersistenceException( $info[2], $info[1] );
 			}
 	  }
 
@@ -226,12 +226,12 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 	 	 $dbfile = $this->database->getName() . '.sqlite';
 
   	 	 	 if( !file_exists( $dbfile ) )
-  	  	 	 	 throw new AgilePHP_PersistenceException( 'Could not locate sqlite database: ' . $dbfile );
+  	  	 	 	 throw new PersistenceException( 'Could not locate sqlite database: ' . $dbfile );
 
   	  	 	 chmod( $dbfile, 0777 );
 
   	  	 	 if( !unlink( $dbfile ) )
-  		 	 	throw new AgilePHP_PersistenceException( 'Could not drop/delete the sqlite database: ' . $dbfile );
+  		 	 	throw new PersistenceException( 'Could not drop/delete the sqlite database: ' . $dbfile );
 	  }
 
 	  /**
@@ -342,7 +342,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   * @param String $rColumn The referenced column name
 	   * @param bool $notNull True if the column is marked as NOT NULL / required, false otherwise.
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  private function createInsertRestrictTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
 
@@ -360,7 +360,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 			  $info = $this->pdo->errorInfo();
   	 			  if( $info[0] == '0000' ) return;
 
-		  	      throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+		  	      throw new PersistenceException( $info[2], $info[1] );
 		  	  }
 	  }
 
@@ -375,7 +375,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   * @param String $rColumn The referenced column name
 	   * @param bool $notNull True if the column is marked as NOT NULL / required, false otherwise.
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  private function createUpdateRestrictTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
 	
@@ -393,7 +393,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 			  $info = $this->pdo->errorInfo();
   	 			  if( $info[0] == '0000' ) return;
 
-		  	      throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+		  	      throw new PersistenceException( $info[2], $info[1] );
 		  	  }
 	  }
 
@@ -408,7 +408,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   * @param String $rColumn The referenced column name
 	   * @param bool $notNull True if the column is marked as NOT NULL / required, false otherwise.
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  private function createDeleteRestrictTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
 	
@@ -426,7 +426,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 			  $info = $this->pdo->errorInfo();
   	 			  if( $info[0] == '0000' ) return;
 
-		  	      throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+		  	      throw new PersistenceException( $info[2], $info[1] );
 		  	  }
 	  }
 
@@ -441,7 +441,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   * @param String $rColumn The referenced column name
 	   * @param bool $notNull True if the column is marked as NOT NULL / required, false otherwise.
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  private function createUpdateCascadeTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
 
@@ -458,7 +458,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 			  $info = $this->pdo->errorInfo();
   	 			  if( $info[0] == '0000' ) return;
 
-		  	      throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+		  	      throw new PersistenceException( $info[2], $info[1] );
 		  	  }
 	  }
 
@@ -473,7 +473,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   * @param String $rColumn The referenced column name
 	   * @param bool $notNull True if the column is marked as NOT NULL / required, false otherwise.
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  private function createDeleteCascadeTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
 
@@ -490,7 +490,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 			  $info = $this->pdo->errorInfo();
   	 			  if( $info[0] == '0000' ) return;
 
-		  	      throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+		  	      throw new PersistenceException( $info[2], $info[1] );
 		  	  }
 	  }
 
@@ -505,7 +505,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   * @param String $rColumn The referenced column name
 	   * @param bool $notNull True if the column is marked as NOT NULL / required, false otherwise.
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  private function createUpdateSetNullTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
 
@@ -522,7 +522,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 			  $info = $this->pdo->errorInfo();
   	 			  if( $info[0] == '0000' ) return;
 
-		  	      throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+		  	      throw new PersistenceException( $info[2], $info[1] );
 		  	  }
 	  }
 
@@ -537,7 +537,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   * @param String $rColumn The referenced column name
 	   * @param bool $notNull True if the column is marked as NOT NULL / required, false otherwise.
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  private function createDeleteSetNullTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
 
@@ -554,7 +554,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 			  $info = $this->pdo->errorInfo();
   	 			  if( $info[0] == '0000' ) return;
 
-		  	      throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+		  	      throw new PersistenceException( $info[2], $info[1] );
 		  	  }
 	  }
 	  
@@ -570,7 +570,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   * @param bool $notNull True if the column is marked as NOT NULL / required, false otherwise.
 	   * @param mixed $default The default value of the column to set as configured in persistence.xml
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  private function createUpdateSetDefaultTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false, $default ) {
 
@@ -587,7 +587,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 			  $info = $this->pdo->errorInfo();
   	 			  if( $info[0] == '0000' ) return;
 
-		  	      throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+		  	      throw new PersistenceException( $info[2], $info[1] );
 		  	  }
 	  }
 
@@ -603,7 +603,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
 	   * @param bool $notNull True if the column is marked as NOT NULL / required, false otherwise.
 	   * @param mixed $default The default value of the column to set as configured in persistence.xml
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  private function createDeleteSetDefaultTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false, $default ) {
 
@@ -620,7 +620,7 @@ class SQLiteDialect extends BasePersistence implements SQLDialect {
   	 			  $info = $this->pdo->errorInfo();
   	 			  if( $info[0] == '0000' ) return;
 
-		  	      throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+		  	      throw new PersistenceException( $info[2], $info[1] );
 		  	  }
 	  }  
 }

@@ -16,7 +16,7 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 
 			if( !response ) return false; // no packages installed
 
-			if( response._class == 'AgilePHP_RemotingException' ) {
+			if( response._class == 'RemotingException' ) {
 
 				AgilePHP.Studio.error( response.message );
 				return false;
@@ -41,7 +41,7 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 
 			if( !response ) return false; // no packages installed
 
-			if( response._class == 'AgilePHP_RemotingException' ) {
+			if( response._class == 'RemotingException' ) {
 
 				AgilePHP.Studio.error( response.message );
 				return false;
@@ -152,7 +152,7 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 
 			        			if( !response ) return false; // no packages installed
 
-			        			if( response._class == 'AgilePHP_RemotingException' ) {
+			        			if( response._class == 'RemotingException' ) {
 
 			        				AgilePHP.Studio.error( response.message );
 			        				return false;
@@ -230,7 +230,7 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 		
 			        			if( !response ) return false; // no packages installed
 		
-			        			if( response._class == 'AgilePHP_RemotingException' ) {
+			        			if( response._class == 'RemotingException' ) {
 		
 			        				AgilePHP.Studio.error( response.message );
 			        				return false;

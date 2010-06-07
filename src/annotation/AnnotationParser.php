@@ -465,7 +465,7 @@ class AnnotationParser {
 	   * 
 	   * @return String The raw PHP source code for the file being parsed
 	   * @static
-	   * @throws AgilePHP_AnnotationException if the source could not be retrieved
+	   * @throws AnnotationException if the source could not be retrieved
 	   */
 	  private static function getSourceCode() {
 
@@ -475,7 +475,7 @@ class AnnotationParser {
 	  		  }
 	  		  catch( AgilePHP_Exception $e ) {
 
-	  		 		 throw new AgilePHP_AnnotationException( $e->getMessage(), $e->getCode() );
+	  		 		 throw new AnnotationException( $e->getMessage(), $e->getCode() );
 	  		  }
 	  }
 }

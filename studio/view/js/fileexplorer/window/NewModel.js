@@ -319,7 +319,7 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
 	  	    		newModelRemote.setCallback( function( response ) {
 
-	  	    			if( response._class == 'AgilePHP_RemotingException' ) {
+	  	    			if( response._class == 'RemotingException' ) {
 
 			  	  			AgilePHP.Studio.error( response.message );
 			  	  			return false;
@@ -337,7 +337,7 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 			  	  			Ext.getCmp( id + '-editorgridpanel-column-combo' ).getStore().loadData( response );
 			  	  			return true;
 			  	  		}
-			  	  		if( response._class == 'AgilePHP_RemotingException' ) {
+			  	  		if( response._class == 'RemotingException' ) {
 
 			  	  			AgilePHP.Studio.error( response.message );
 			  	  			return false;
@@ -396,7 +396,7 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
       	    	newModelRemote.setCallback( function( response ) {
 
-      	    		if( response._class == 'AgilePHP_RemotingException' ) {
+      	    		if( response._class == 'RemotingException' ) {
 
 		  	  			AgilePHP.Studio.error( response.message );
 		  	  			win.show();

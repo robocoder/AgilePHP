@@ -20,7 +20,7 @@
  */
 
 /**
- * AgilePHP interceptor responsible for throwing an AgilePHP_NotLoggedInException if
+ * AgilePHP interceptor responsible for throwing an NotLoggedInException if
  * the current request does not have an authenticated Identity session.
  * 
  * @author Jeremy Hahn
@@ -60,7 +60,7 @@ class LoggedIn {
 	  		 $message = ($this->message) ? $this->message : 'You must be logged in to view the requested content!';
 
 	  		 if( !Identity::getInstance()->isLoggedIn() )
-	  		 	 throw new AgilePHP_NotLoggedInException( $message );
+	  		 	 throw new NotLoggedInException( $message );
 	  }
 }
 ?>

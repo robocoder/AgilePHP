@@ -46,7 +46,7 @@ class BooleanType {
 	  public function cast( InvocationContext $ic ) {
 
 	  		 if( !$ic->getParameters() )
-	  		 	 throw new AgilePHP_InterceptionException( '#@BooleanType::cast Requires a method which accepts at least one parameter.' );
+	  		 	 throw new InterceptionException( '#@BooleanType::cast Requires a method which accepts at least one parameter.' );
 
 		  	 // Dont process arguments being set by persistence classes
 	  		 $callee = $ic->getCallee();

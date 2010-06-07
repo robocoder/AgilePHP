@@ -95,7 +95,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 			   		  		$sql = $this->toCreateTableSQL( $table );
 			   		  		$this->query( $sql );
 					  }
-					  catch( AgilePHP_PersistenceException $e ) {
+					  catch( PersistenceException $e ) {
 
 							 if( strpos( $e->getMessage(), 'references invalid table' ) ) {
 
@@ -103,7 +103,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 			   		  	  	  	 continue;
 			   		  	  	 }
 
-			   		  	  	 throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+			   		  	  	 throw new PersistenceException( $e->getMessage(), $e->getCode() );
 			   		  }
 	  		 }
 
@@ -118,7 +118,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	   * 
 	   * @param Table $table The table instance to create
 	   * @return void
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  public function createTable( Table $table ) {
 
@@ -241,7 +241,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	   * Overrides parent find method to provide MSSQL specific TOP command to limit returned result sets.
 	   * 
 	   * @param $model A domain model object. Any fields which are set in the object are used to filter results.
-	   * @throws AgilePHP_PersistenceException If any primary keys contain null values or any
+	   * @throws PersistenceException If any primary keys contain null values or any
 	   * 		   errors are encountered executing queries
 	   */
 	  public function find( $model ) {
@@ -344,7 +344,7 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 	  		 }
 	  		 catch( Exception $e ) {
 
-	  		 		throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+	  		 		throw new PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
 
 	  		 return null;

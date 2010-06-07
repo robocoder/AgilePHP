@@ -19,6 +19,9 @@
  * @package com.makeabyte.agilephp
  */
 
+require_once 'webservice/remoting/RemotingException.php';
+require_once 'webservice/remoting/RemoteMethod.php';
+
 /**
  * Provides client side JavaScript remoting to PHP objects. Handles 
  * marshalling/unmarshalling of JSON objects between the client and server
@@ -54,7 +57,7 @@ abstract class Remoting extends BaseController {
 	   	  *  
 	   	  * @param $class The class to remote
 	   	  * @return void
-	   	  * @throws AgilePHP_RemotingException
+	   	  * @throws RemotingException
 	   	  */
 	  	 public function index( $class = null ) {
 
@@ -120,7 +123,7 @@ abstract class Remoting extends BaseController {
 		  * @param bool $stateful True to configure the remoting stub to invoke stateful server side calls. The
 		  * 				 	  remoted object is kept in the SessionScope.
 	  	  * @return void
-	  	  * @throws AgilePHP_RemotingException
+	  	  * @throws RemotingException
 		  */
 		 protected function createStub() { 
 
@@ -182,7 +185,7 @@ abstract class Remoting extends BaseController {
 		  		 }
 		  		 catch( Exception $e ) {
 
-		  		 		throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
+		  		 		throw new RemotingException( $e->getMessage(), $e->getCode() );
 		  		 }
 		  }
 
@@ -192,7 +195,7 @@ abstract class Remoting extends BaseController {
 	       * how most RPC web services work.
 	       * 
 	   	   * @return mixed Returns the result of the invocation
-	   	   * @throws AgilePHP_RemotingException
+	   	   * @throws RemotingException
 	       */
 	      public function invoke() {
 
@@ -211,7 +214,7 @@ abstract class Remoting extends BaseController {
 	    	     $methods = $clazz->getMethods();
 	    	     for( $i=0; $i<count( $methods ); $i++ )
 	  		 		 if( $methods[$i]->getName() == $method && !$methods[$i]->hasAnnotation( 'RemoteMethod' ) )
-	  		 		 	 throw new AgilePHP_RemotingException( 'No hacking please...' );
+	  		 		 	 throw new RemotingException( 'No hacking please...' );
 
 	  		     Log::debug( 'Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
 	  		 	   	 '\', constructorArgs \'' . print_r( $constructorArgs, true ) . '\', args \'' . print_r( $args, true ) . '\'.' );
@@ -225,7 +228,7 @@ abstract class Remoting extends BaseController {
 	  		     }
 	  		     catch( Exception $e ) {
 
-	  		 		    throw new AgilePHP_RemotingException( $e->getMessage(), $e->getCode() );
+	  		 		    throw new RemotingException( $e->getMessage(), $e->getCode() );
 	  		     }
 	      }
 
@@ -255,7 +258,7 @@ abstract class Remoting extends BaseController {
 		   * 
 		   * @param String $data The client side JSON object to parse
 		   * @return Object The JSON decoded object
-		   * @throws AgilePHP_RemotingException if the received data does not unmarshall into a PHP object
+		   * @throws RemotingException if the received data does not unmarshall into a PHP object
 		   */
 		  private function decode( $data ) {
 
@@ -265,17 +268,17 @@ abstract class Remoting extends BaseController {
 
 		  		  $o = json_decode( htmlspecialchars_decode( stripslashes( urldecode( $data ) ) ) );
 		  		  if( !is_object( $o ) )
-		  		  	  throw new AgilePHP_RemotingException( 'Malformed data' );
+		  		  	  throw new RemotingException( 'Malformed data' );
 
 		  		  return $o;
 		  }
 
 		  /**
-		   * Parses each PHP output buffer for php fatal error and converts to AgilePHP_RemotingException if present.
+		   * Parses each PHP output buffer for php fatal error and converts to RemotingException if present.
 		   * 
 		   * @param string $buffer PHP output buffer
 		   * @return void
-		   * throws AgilePHP_RemotingException
+		   * throws RemotingException
 		   */
 		  public function captureErrors( $buffer ) {
 	
@@ -285,13 +288,13 @@ abstract class Remoting extends BaseController {
 				 if( preg_match('/(error<\/b>:)(.+)(<br)/', $buffer, $regs ) ) {
 	
 				 	 $err = preg_replace("/<.*?>/","",$regs[2]);
-			         $buffer = json_encode( array( '_class' => 'AgilePHP_RemotingException', 'message' => $err, 'trace' => debug_backtrace() ) );
+			         $buffer = json_encode( array( '_class' => 'RemotingException', 'message' => $err, 'trace' => debug_backtrace() ) );
 			     }
 			     return $buffer;
 		  }
 	
 		  /**
-		   * Custom PHP error handling function which throws an AgilePHP_RemotingException instead of echoing.
+		   * Custom PHP error handling function which throws an RemotingException instead of echoing.
 		   * 
 		   * @param Integer $errno Error number
 		   * @param String $errmsg Error message
@@ -305,7 +308,7 @@ abstract class Remoting extends BaseController {
 	 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg . 
 	 	  		 		  PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
 	
-	 	  		 throw new AgilePHP_RemotingException( $errmsg, $errno, $errfile, $errline );
+	 	  		 throw new RemotingException( $errmsg, $errno, $errfile, $errline );
 		  }
 	
 		  /**

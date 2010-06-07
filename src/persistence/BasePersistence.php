@@ -176,7 +176,7 @@ abstract class BasePersistence {
 	  	  * Begins a transaction
 	  	  * 
 	  	  * @return void
-	  	  * @throws AgilePHP_PersistenceException
+	  	  * @throws PersistenceException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-beginTransaction.php
 	  	  */
@@ -190,7 +190,7 @@ abstract class BasePersistence {
 	  		    }
 	  		    catch( PDOException $e ) {
 
-	  		   		   throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+	  		   		   throw new PersistenceException( $e->getMessage(), $e->getCode() );
 	  		    }
 	  	 }
 
@@ -198,7 +198,7 @@ abstract class BasePersistence {
 	  	  * Commits an already started transaction.
 	  	  * 
 	  	  * @return void
-	  	  * @throws AgilePHP_PersistenceException
+	  	  * @throws PersistenceException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-commit.php
 	  	  */
@@ -212,7 +212,7 @@ abstract class BasePersistence {
 	  		    }
 	  		    catch( PDOException $e ) {
 
-	  		   		   throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+	  		   		   throw new PersistenceException( $e->getMessage(), $e->getCode() );
 	  		    }
 	  	 }
 
@@ -222,7 +222,7 @@ abstract class BasePersistence {
 	  	  * @param $message Error/reason why the transaction was rolled back
 	  	  * @param $code An error/reason code
 	  	  * @return void
-	  	  * @throws AgilePHP_PersistenceException
+	  	  * @throws PersistenceException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-rollBack.php
 	  	  */
@@ -236,10 +236,10 @@ abstract class BasePersistence {
 	  		    }
 	  		    catch( PDOException $e ) {
 
-	  		   		   throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+	  		   		   throw new PersistenceException( $e->getMessage(), $e->getCode() );
 	  		    }
 
-	  		    if( $message ) throw new AgilePHP_PersistenceException( $message, $code );
+	  		    if( $message ) throw new PersistenceException( $message, $code );
 	  	 }
 
 	  	 /**
@@ -263,12 +263,12 @@ abstract class BasePersistence {
 					  	  	if( $this->transactionInProgress )
 			  	 		    	$this->rollBack( $info[2], $info[1] );
 
-						  	throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+						  	throw new PersistenceException( $info[2], $info[1] );
 					    }
 				}
 				catch( PDOException $e ) {
 
-					   throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+					   throw new PersistenceException( $e->getMessage(), $e->getCode() );
 				}
 
 	  		    return $this->PDOStatement;
@@ -306,7 +306,7 @@ abstract class BasePersistence {
 					        if( $this->transactionInProgress )
 					  			$this->rollBack( $info[2], $info[1] );
 
-						  	throw new AgilePHP_PersistenceException( $info[2], $info[1] );
+						  	throw new PersistenceException( $info[2], $info[1] );
 					    }
 			  	}
 			  	catch( PDOException $e ) {
@@ -314,7 +314,7 @@ abstract class BasePersistence {
 			  		   if( $this->transactionInProgress )
 					  	   $this->rollBack();
 
-			  		   throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+			  		   throw new PersistenceException( $e->getMessage(), $e->getCode() );
 			  	}
 
 			    return $this->PDOStatement;
@@ -341,7 +341,7 @@ abstract class BasePersistence {
 	   	  * 
 	   	  * @param $sql The SQL statement to execute
 	   	  * @return The PDOStatement returned by PDO::query
-	   	  * @throws AgilePHP_PersistenceException
+	   	  * @throws PersistenceException
 	   	  * @see http://usphp.com/manual/en/function.PDO-query.php
 	   	  */
 	  	 public function query( $sql ) {
@@ -359,7 +359,7 @@ abstract class BasePersistence {
                     if( $this->transactionInProgress )
 			  			$this->rollBack( $info[2], $info[1] );
 
-	  	     	    throw new AgilePHP_PersistenceException( $info[2], $this->pdo->errorCode() );
+	  	     	    throw new PersistenceException( $info[2], $this->pdo->errorCode() );
 	  	        }
 
 	  	        return $stmt;
@@ -382,7 +382,7 @@ abstract class BasePersistence {
 	     * 
 	     * @param $model The domain model object to persist
 	     * @return PDOStatement
-	     * @throws AgilePHP_PersistenceException
+	     * @throws PersistenceException
 	     */
 	    public function persist( $model ) {
 
@@ -461,7 +461,7 @@ abstract class BasePersistence {
 	     * 
 	     * @param $model The model object to merge/update
 	     * @return PDOStatement
-	     * @throws AgilePHP_PersistenceException
+	     * @throws PersistenceException
 	     */
 	    public function merge( $model ) {
 
@@ -550,7 +550,7 @@ abstract class BasePersistence {
 	     * 
 	     * @param $model The domain model object to delete
 	     * @return PDOStatement
-	     * @throws AgilePHP_PersistenceException
+	     * @throws PersistenceException
 	     */
 	    public function delete( $model ) {
 
@@ -583,7 +583,7 @@ abstract class BasePersistence {
 	     * 
 	     * @param $model A domain model object
 	     * @return PDOStatement
-	     * @throws AgilePHP_PersistenceException
+	     * @throws PersistenceException
 	     */
 	    public function truncate( $model ) {
 
@@ -599,7 +599,7 @@ abstract class BasePersistence {
 	     * filter results.
 	     * 
 	     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
-	     * @throws AgilePHP_PersistenceException If any primary keys contain null values or any
+	     * @throws PersistenceException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
 	     */
 	    public function find( $model ) {
@@ -705,7 +705,7 @@ abstract class BasePersistence {
 	  		 }
 	  		 catch( Exception $e ) {
 
-	  		 		throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+	  		 		throw new PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
 	  }
 
@@ -797,7 +797,7 @@ abstract class BasePersistence {
 	  public function setRestrictionsLogicOperator( $operator ) {
 
 	   	     if( strtolower( $operator ) !== 'and' && strtolower( $operator ) !== 'or' )
-	     	     throw new AgilePHP_PersistenceException( 'Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.' );
+	     	     throw new PersistenceException( 'Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.' );
 
 	     	 $this->restrictionsLogic = $operator;
 	  }
@@ -811,7 +811,7 @@ abstract class BasePersistence {
 	  public function setComparisonLogicOperator( $operator ) {
 
 	  		 if( strtolower( $operator ) != 'like' && $operator !== '<' && $operator !== '>' && $operator !== '=' )
-	     	     throw new AgilePHP_PersistenceException( 'Comparison logic operator must be \'>\', \'<\', \'=\', or \'LIKE\'. Found \'' . $operator . '\'.' );
+	     	     throw new PersistenceException( 'Comparison logic operator must be \'>\', \'<\', \'=\', or \'LIKE\'. Found \'' . $operator . '\'.' );
 
 	     	 $this->comparisonLogic = $operator;
 	  }
@@ -856,7 +856,7 @@ abstract class BasePersistence {
 	  		 }
 	  		 catch( ReflectionException $re ) {
 
-	  		 		throw new AgilePHP_PersistenceException( 'BasePersistence::getTableByModel Could not get table because \'' . $re->getMessage() . '\'.' );
+	  		 		throw new PersistenceException( 'BasePersistence::getTableByModel Could not get table because \'' . $re->getMessage() . '\'.' );
 	  		 }
 
 			 foreach( $this->database->getTables() as $table ) {
@@ -865,7 +865,7 @@ abstract class BasePersistence {
 			 	  	      return $table;
 			 }
 
-			 throw new AgilePHP_PersistenceException( 'BasePersistence::getTableByModel Could not locate the requested model \'' . $class->getName() . '\' in persistence.xml' );
+			 throw new PersistenceException( 'BasePersistence::getTableByModel Could not locate the requested model \'' . $class->getName() . '\' in persistence.xml' );
 	  }
 
 	  /**
@@ -881,7 +881,7 @@ abstract class BasePersistence {
 			  	  	  if( $table->getModel() == $modelName )
 			 	  	      return $table;
 
-			 throw new AgilePHP_PersistenceException( 'BasePersistence::getTableByModelName Could not locate the requested model \'' . $modelName . '\' in persistence.xml' );
+			 throw new PersistenceException( 'BasePersistence::getTableByModelName Could not locate the requested model \'' . $modelName . '\' in persistence.xml' );
 	  }
 
 	  /**
@@ -896,7 +896,7 @@ abstract class BasePersistence {
 	  		 		  if( $table->getName() == $tableName )
 	  		 		  	  return $table;
 
-	  		 throw new AgilePHP_PersistenceException( 'BasePersistence::getTableByName Could not locate the requested table \'' . $tableName . '\' in persistence.xml' );
+	  		 throw new PersistenceException( 'BasePersistence::getTableByName Could not locate the requested table \'' . $tableName . '\' in persistence.xml' );
 	  }
 
 	  /**
@@ -952,7 +952,7 @@ abstract class BasePersistence {
 	 	  	      	  	   }
 	 	  	      	  	   
 	 	  	      	  	   if( !$getUsernameExists || !$getPasswordExists || !$getEmailExists )
-							   throw new AgilePHP_PersistenceException( 'BasePersistence::getIdentityModel Identity model must support methods \'getUsername\', \'getPassword\', and \'getEmail\' as enforced by the interface at ' . AgilePHP::getFrameworkRoot() . '/core/Identity.php.' );
+							   throw new PersistenceException( 'BasePersistence::getIdentityModel Identity model must support methods \'getUsername\', \'getPassword\', and \'getEmail\' as enforced by the interface at ' . AgilePHP::getFrameworkRoot() . '/core/Identity.php.' );
 
 	 	  	      	  	   return new $modelName();
 		 	  	      }
@@ -1310,7 +1310,7 @@ abstract class BasePersistence {
 
 			  	       	   	   $message = 'BasePersistence::validate Persistence validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Length defined in persistence.xml as \'' . $column->getLength() . '\' but the has a length of \'' . $dataLen . '\'.';
 			  	       	   	   Log::debug( $message );
-			  	       	   	   throw new AgilePHP_PersistenceException( $message );
+			  	       	   	   throw new PersistenceException( $message );
 			  	       	   }
 			  	       }
 
@@ -1319,7 +1319,7 @@ abstract class BasePersistence {
 			  		   	
 			  		   	   $message = 'BasePersistence::validate Persistence validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Required field contains null value.';
 			  		   	   Log::debug( $message );
-			  		       throw new AgilePHP_PersistenceException( $message );
+			  		       throw new PersistenceException( $message );
 			  		   }
 
 			  		   // Use specified validator to verify data integrity
@@ -1333,7 +1333,7 @@ abstract class BasePersistence {
 
 			  	       	   	   $message = 'BasePersistence::validate Persistence validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype( $this->model->$accessor() ) . '\' using validator \'' . $validator . '\'.';
 			  	       	   	   Log::debug( $message );
-			  	       	   	   throw new AgilePHP_PersistenceException( $message );
+			  	       	   	   throw new PersistenceException( $message );
 			  	       	   }			  	       	   	   
 			  	       }
 			  }

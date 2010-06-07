@@ -75,7 +75,7 @@ interface SQLDialect {
 	  	   * Begins a transaction
 	  	   * 
 	  	   * @return void
-	  	   * @throws AgilePHP_PersistenceException
+	  	   * @throws PersistenceException
 	  	   * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	   * @see http://usphp.com/manual/en/function.PDO-beginTransaction.php
 	  	   */
@@ -85,7 +85,7 @@ interface SQLDialect {
 	  	   * Commits an already started transaction.
 	  	   * 
 	  	   * @return void
-	  	   * @throws AgilePHP_PersistenceException
+	  	   * @throws PersistenceException
 	  	   * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	   * @see http://usphp.com/manual/en/function.PDO-commit.php
 	  	   */
@@ -97,7 +97,7 @@ interface SQLDialect {
 	  	   * @param $message Error/reason why the transaction was rolled back
 	  	   * @param $code An error/reason code
 	  	   * @return void
-	  	   * @throws AgilePHP_PersistenceException
+	  	   * @throws PersistenceException
 	  	   * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	   * @see http://usphp.com/manual/en/function.PDO-rollBack.php
 	  	   */
@@ -316,7 +316,7 @@ interface SQLDialect {
 		   * 
 		   * @param Table $table The table instance to create
 		   * @return void
-		   * @throws AgilePHP_PersistenceException
+		   * @throws PersistenceException
 		   */
 		  public function createTable( Table $table );
 
@@ -325,7 +325,7 @@ interface SQLDialect {
 	   	   * (defined in persistence.xml).
 	   	   * 
 	   	   * @return void
-	   	   * @throws AgilePHP_PersistenceException
+	   	   * @throws PersistenceException
 	   	   */
 	  	  public function drop();
 
@@ -335,7 +335,7 @@ interface SQLDialect {
 	   	   * 
 	   	   * @param Table $table The table to drop
 	   	   * @return void
-	   	   * @throws AgilePHP_PersistenceException
+	   	   * @throws PersistenceException
 	   	   */
 	  	  public function dropTable( Table $table );
 
@@ -344,7 +344,7 @@ interface SQLDialect {
 	   	  * 
 		  * @param $model The model object to persist
 		  * @return PDOStatement
-		  * @throws AgilePHP_PersistenceException
+		  * @throws PersistenceException
 		  */
   	     public function persist( $model );
 
@@ -353,7 +353,7 @@ interface SQLDialect {
 	   	  * 
 		  * @param $model The model object to merge/update
 		  * @return PDOStatement
-		  * @throws AgilePHP_PersistenceException
+		  * @throws PersistenceException
 		  */
 	  	 public function merge( $model );
 
@@ -362,7 +362,7 @@ interface SQLDialect {
 	   	  * 
 		  * @param $model The domain model object to delete
 		  * @return PDOStatement
-		  * @throws AgilePHP_PersistenceException
+		  * @throws PersistenceException
 		  */
 		 public function delete( $model );
 
@@ -371,7 +371,7 @@ interface SQLDialect {
 	   	  * 
 		  * @param $model A domain model object
 		  * @return PDOStatement
-		  * @throws AgilePHP_PersistenceException
+		  * @throws PersistenceException
 		  */
 		 public function truncate( $model );
 
@@ -381,7 +381,7 @@ interface SQLDialect {
 	   	  * @param Object $model A domain model object with its primary key field set
 	      * @return Returns the same model which was passed (populated with the
 	      * 		 database values) or null if a matching record could not be found.
-	      * @throws AgilePHP_PersistenceException
+	      * @throws PersistenceException
 	      */
 	  	 public function find( $model );
 

@@ -395,7 +395,7 @@ AgilePHP.Studio.FileExplorer = {
 						                					var dbManagerRemote = new DatabaseManagerRemote();
 					                							dbManagerRemote.setCallback( function( response ) {
 					                								
-					                								if( response._class == 'AgilePHP_RemotingException' ) {
+					                								if( response._class == 'RemotingException' ) {
 
 					                									AgilePHP.Studio.error( response.message )
 					                									return;
@@ -415,7 +415,7 @@ AgilePHP.Studio.FileExplorer = {
 							                				var dbManagerRemote = new DatabaseManagerRemote();
 				                								dbManagerRemote.setCallback( function( response ) {
 				                								
-				                								if( response._class == 'AgilePHP_RemotingException' ) {
+				                								if( response._class == 'RemotingException' ) {
 	
 				                									AgilePHP.Studio.error( response.message )
 				                									return;
@@ -435,7 +435,7 @@ AgilePHP.Studio.FileExplorer = {
 							                				var dbManagerRemote = new DatabaseManagerRemote();
 				                								dbManagerRemote.setCallback( function( response ) {
 				                								
-				                								if( response._class == 'AgilePHP_RemotingException' ) {
+				                								if( response._class == 'RemotingException' ) {
 		
 				                									AgilePHP.Studio.error( response.message )
 				                									return;

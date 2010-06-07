@@ -19,6 +19,7 @@
  * @package com.makeabyte.agilephp
  */
 
+require_once 'interception/InterceptionException.php';
 require_once 'interception/InterceptorFilter.php';
 require_once 'interception/InterceptorProxy.php';
 require_once 'interception/InvocationContext.php';
@@ -127,7 +128,7 @@ class Interception {
 		 	 	 }
 		 	 	 catch( AgilePHP_Exception $e ) {
 		 	 	 	
-		 	 	 		throw new AgilePHP_InterceptionException( $e->getMessage(), $e->getCode() );
+		 	 	 		throw new InterceptionException( $e->getMessage(), $e->getCode() );
 		 	 	 }
 		 	 }
 
@@ -137,7 +138,7 @@ class Interception {
 			 //Log::debug( 'Interception::createInterceptedTarget ' . PHP_EOL . $code );
 			 
 	  		 if( eval( $code ) === false )
-	  		 	 throw new AgilePHP_InterceptionException( 'Failed to create intercepted target' );
+	  		 	 throw new InterceptionException( 'Failed to create intercepted target' );
 	  }
 
 	  /**
@@ -145,7 +146,7 @@ class Interception {
 	   * on the class created by Interception::createInterceptedTarget().
 	   * 
 	   * @return void
-	   * @throws AgilePHP_InterceptionException if there was an issue creating the InterceptorProxy
+	   * @throws InterceptionException if there was an issue creating the InterceptorProxy
 	   */
 	  public function createInterceptorProxy() {
 
@@ -178,7 +179,7 @@ class Interception {
 	  	     }
 	  	     catch( AgilePHP_Exception $e ) {
 
-	  	     		throw new AgilePHP_InterceptionException( $e->getMessage(), $e->getCode() );
+	  	     		throw new InterceptionException( $e->getMessage(), $e->getCode() );
 	  	     }
 
 	  		 $code = preg_replace( '/InterceptorProxy/', $className, $code );
@@ -212,7 +213,7 @@ class Interception {
 	  		 //Log::debug( 'Interception::createInterceptorProxy ' . PHP_EOL . $code );
 
 	  		 if( eval( $code ) === false )
-	  		 	 throw new AgilePHP_InterceptionException( 'Failed to create interceptor proxy for \'' . $this->class . '\'.' );
+	  		 	 throw new InterceptionException( 'Failed to create interceptor proxy for \'' . $this->class . '\'.' );
 	  }
 
 	  /**

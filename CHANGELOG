@@ -1,3 +1,4 @@
-- Refactored FileLogger to change permissions on log file to 0777 when created.
-- checking in rest code that somehow got left out of last checkin
-- cleaned up build.xml to support new project structure
+- Reorg soap classes under webservice.soap.
+- Reorg remoting classes under webservice.remoting
+- Renamed all exception classes (got rid of AgilePHP_) and organized them into their respective packages.
+- Removing build directory from repo and adding svn:ignore property.

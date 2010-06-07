@@ -66,7 +66,7 @@ class MockInterceptionTarget {
 	   * 'admin' can invoke this method.
 	   * 
 	   * @return The string 'restrictedMethod'
-	   * @throws AgilePHP_AccessDeniedException
+	   * @throws AccessDeniedException
 	   */
 	  #@Restrict( role = 'admin' )
 	  public function restrictedMethod() {

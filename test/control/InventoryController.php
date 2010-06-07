@@ -76,7 +76,7 @@ class InventoryController extends BaseModelActionController {
 	  		 try {
 	  	 	 		$this->getPersistenceManager()->persist( $i );
 	  		 }
-	  		 catch( AgilePHP_PersistenceException $e ) {
+	  		 catch( PersistenceException $e ) {
 
 	  		 		if( file_exists( AgilePHP::getFramework()->getWebRoot() . $image ) )
 	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $image );
@@ -84,7 +84,7 @@ class InventoryController extends BaseModelActionController {
 	  		 		if( file_exists( AgilePHP::getFramework()->getWebRoot() . $video ) )
 	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $video );
 
-	  	     	    throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+	  	     	    throw new PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
 
 	  		 $this->clearModel();
@@ -146,7 +146,7 @@ class InventoryController extends BaseModelActionController {
 	  		 try {
 	  	 	 		$this->getPersistenceManager()->merge( $i );
 	  		 }
-	  		 catch( AgilePHP_PersistenceException $e ) {
+	  		 catch( PersistenceException $e ) {
 
 	  		 		if( $this->getModel()->getVideo() && file_exists( $this->getModel()->getImage() ) )
 	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getImage() );
@@ -154,7 +154,7 @@ class InventoryController extends BaseModelActionController {
 	  		 		if( $this->getModel()->getVideo() && file_exists( $this->getModel()->getVideo() ) )
 	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getVideo() );
 
-	  	     	    throw new AgilePHP_PersistenceException( $e->getMessage(), $e->getCode() );
+	  	     	    throw new PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
 
 	  		 $this->clearModel();

@@ -55,7 +55,7 @@ class DatabaseManagerRemote {
 	  		 }
 	  		 catch( Exception $e ) {
 
-	  		 	 throw new AgilePHP_RemotingException( $e );
+	  		 	 throw new RemotingException( $e );
 	  		 }
 	  }
 
@@ -84,7 +84,7 @@ class DatabaseManagerRemote {
 	  /**
 	   * Creates a new database from projects persistence.xml configuration
 	   * 
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  #@RemoteMethod
 	  public function create( $workspace, $projectName ) {
@@ -101,7 +101,7 @@ class DatabaseManagerRemote {
 	  /**
 	   * Drops a database from projects persistence.xml configuration
 	   * 
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  #@RemoteMethod
 	  public function drop( $workspace, $projectName ) {
@@ -118,7 +118,7 @@ class DatabaseManagerRemote {
 	  /**
 	   * Creates persistence.xml configuration by reverse engineering a database.
 	   * 
-	   * @throws AgilePHP_PersistenceException
+	   * @throws PersistenceException
 	   */
 	  #@RemoteMethod
 	  public function reverseEngineer( $workspace, $projectName ) {

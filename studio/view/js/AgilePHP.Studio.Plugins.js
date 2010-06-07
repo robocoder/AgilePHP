@@ -11,7 +11,7 @@ AgilePHP.Studio.Plugins = {
 
 	loadHandler: function( o ) {
 
-		if( typeof o == 'AgilePHP_RemotingException' ) {
+		if( typeof o == 'RemotingException' ) {
 
 			AgilePHP.Studio.error( o.message );
 			return false;

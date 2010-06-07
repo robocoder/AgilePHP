@@ -37,7 +37,7 @@ class AnnotatedProperty extends ReflectionProperty {
 	   * @param mixed type $class The name or instance of a class to inspect.
 	   * @param string $property The name of the property to inspect.
 	   * @return void
-	   * @throws AgilePHP_AnnotationException
+	   * @throws AnnotationException
 	   */
 	  public function __construct( $class, $property ) {
 
@@ -52,7 +52,7 @@ class AnnotatedProperty extends ReflectionProperty {
 	  		 }
 	  		 catch( ReflectionException $re ) {
 
-	  		 		throw new AgilePHP_AnnotationException( $re->getMessage(), $re->getCode() );
+	  		 		throw new AnnotationException( $re->getMessage(), $re->getCode() );
 	  		 }
 	  }
 

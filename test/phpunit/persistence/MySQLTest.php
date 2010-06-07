@@ -34,7 +34,7 @@ class MySQLTest extends BaseTest {
 	  		 try {
 	  		 	$this->persistence->query( 'desc ' . $this->getMockTable()->getName() . ';' );
 	  		 }
-	  		 catch( AgilePHP_PersistenceException $e ) {
+	  		 catch( PersistenceException $e ) {
 
 	  		 		if( preg_match( '/doesn\'t exist/', $e->getMessage() ) ) return;
 	  		 		PHPUnit_Framework_Assert::fail( $e->getMessage() );
@@ -177,7 +177,7 @@ class MySQLTest extends BaseTest {
 	  		 		$user = $this->getMockData();
 	  		 		$this->persistence->persist( $user );
 	  		 }
-	  		 catch( AgilePHP_PersistenceException $e ) {
+	  		 catch( PersistenceException $e ) {
 
 	  		 		if( preg_match( '/foreign key constraint fails/', $e->getMessage() ) ) return;
 	  		 		PHPUnit_Framework_Assert::fail( $e->getMessage() );
@@ -349,7 +349,7 @@ class MySQLTest extends BaseTest {
 	  		 try {
 	  		 	   $this->persistence->query( 'use ' . $this->persistence->getDatabase()->getName() . ';' );
 	  		 }
-	  		 catch( AgilePHP_PersistenceException $e ) {
+	  		 catch( PersistenceException $e ) {
 
 	  		 	    if( preg_match( '/Unknown database/', $e->getMessage() ) ) return;
 	  		 		PHPUnit_Framework_Assert::fail( $e->getMessage() );

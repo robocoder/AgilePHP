@@ -46,7 +46,7 @@ class FloatType {
 	  public function cast( InvocationContext $ic ) {
 
 	  		 if( !$ic->getParameters() )
-	  		 	 throw new AgilePHP_InterceptionException( '#@BigIntType::cast Requires a method which accepts at least one parameter.' );
+	  		 	 throw new InterceptionException( '#@BigIntType::cast Requires a method which accepts at least one parameter.' );
 
 		  	 // Dont process arguments being set by persistence classes
 	  		 $callee = $ic->getCallee();

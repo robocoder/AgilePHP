@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -16,27 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.webservice
+ * @package com.makeabyte.agilephp.identity
  */
 
 /**
- * Annotation which authorizes a method for use with the
- * AgilePHP Remoting component.
+ * Thrown when a user is not logged in and requests secure content
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.webservice
-  * <code>
- * class MyClassRemote {
- * 
- * #@RemoteMethod
- * public function remoteMethod() {
- * 
- * 		 // This code is being called from javascript with ease.
- * 		 // It may also be used as any standard PHP class within PHP.
- * }
- * }
- * </code>
+ * @package com.makeabyte.agilephp.identity
+ * @throws NotLoggedInException
  */
-class RemoteMethod { }
+class NotLoggedInException extends AgilePHP_Exception { }
 ?>

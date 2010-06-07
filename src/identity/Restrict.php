@@ -20,7 +20,7 @@
  */
 
 /**
- * AgilePHP interceptor responsible for throwing an AgilePHP_AccessDeniedException if
+ * AgilePHP interceptor responsible for throwing an AccessDeniedException if
  * the current logged in user (represented by the state of the Identity component)
  * does not contain the specified role.
  * 
@@ -87,7 +87,7 @@ class Restrict {
 	   * Restrict annotation optional argument containing the message to display
 	   * if the current identity does not contain any of the required roles.
 	   *  
-	   * @var String Optional message used in AgilePHP_AccessDeniedException error message
+	   * @var String Optional message used in AccessDeniedException error message
 	   */
 	  public $message;
 
@@ -122,7 +122,7 @@ class Restrict {
 
 	  		  Log::error( '#@Restrict::audit Access Denied ' . print_r( Identity::getInstance(), true ) );
 
-	  		  throw new AgilePHP_AccessDeniedException( $message );
+	  		  throw new AccessDeniedException( $message );
 	  }
 }
 ?>

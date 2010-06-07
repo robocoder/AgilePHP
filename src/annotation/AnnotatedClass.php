@@ -37,7 +37,7 @@ class AnnotatedClass extends ReflectionClass {
 	   * 
 	   * @param mixed $class The name or instance of the class to inspect
 	   * @return void
-	   * @throws AgilePHP_AnnotationException
+	   * @throws AnnotationException
 	   */
 	  public function __construct( $class ) {
 
@@ -51,7 +51,7 @@ class AnnotatedClass extends ReflectionClass {
 	  		 }
 	  		 catch( ReflectionException $re ) {
 
-	  		 		throw new AgilePHP_AnnotationException( $re->getMessage(), $re->getCode() );
+	  		 		throw new AnnotationException( $re->getMessage(), $re->getCode() );
 	  		 }
 	  }
 
