@@ -58,11 +58,11 @@ class GET {
 	  		 $return = ($parameters) ? call_user_func_array( array( $target, $method ), $parameters ):
 	  		  				call_user_func( array( $target, $method ) );
 
-	  		 $negotiation = MimeUtil::negotiate( $class, $ic->getMethod() );
+	  		 $negotiation = RestUtil::negotiate( $class, $ic->getMethod() );
 			 $ProduceMime = $negotiation['ProduceMime'];
 
 			 // Format the return value according to the negotiated mime type and exit the application.
-	  		 $out = MimeUtil::serverTransform( $return, $ProduceMime );
+	  		 $out = RestUtil::serverTransform( $return, $ProduceMime );
 	  		 header( 'HTTP/1.1 200 OK' );
 	  		 die( $out );
 	  }

@@ -20,13 +20,13 @@
  */
 
 /**
- * Utility class for handling Mime related operations.
+ * REST utility/helper class for handling mime negotiation and data transformations.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  */
-class MimeUtil {
+class RestUtil {
 
 	  /**
 	   * Responsible for negotiating a mime type used to send data from the server
@@ -144,9 +144,18 @@ class MimeUtil {
 	  		 	break;
 
 	  		 	case 'application/xhtml+xml':
-	  		 		  $renderer = new AJAXRenderer();
-	  		 		  header( 'content-type: application/xml' );
-	  		 		  return $renderer->toXML( $data );
+	  		 		  $ajax = new AJAXRenderer();
+	  		 		  $class = new ReflectionClass( (is_array( $data )) ? $data[0] : $data );
+	  		 		  // Perform XSLT transformation if a model xsl view exists
+	  		 		  if( file_exists( AgilePHP::getFramework()->getWebRoot() . '/view/' . $class->getName() . '.xsl' ) ) {
+	  		 		  	  $renderer = new XSLTRenderer();
+	  		 		  	  return $renderer->renderXsl( $class->getName(), $ajax->toXML( $data ) );
+	  		 		  }
+	  		 		  else {
+	  		 		  	  // Otherwise send the response as XML
+	  		 		  	  header( 'content-type: application/xml' );
+	  		 		  	  return $ajax->toXML( $data );
+	  		 		  }
 	  		 	break;
 
 	  		 	default:

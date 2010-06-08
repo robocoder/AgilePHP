@@ -54,7 +54,7 @@ class PUT {
 			 $class = $callee['class'];
 
 			 // Get the negotiated mime type thats used to format the response data 
-			 $negotiation = MimeUtil::negotiate( $class, $ic->getMethod() );
+			 $negotiation = RestUtil::negotiate( $class, $ic->getMethod() );
 			 $ProduceMime = $negotiation['ProduceMime'];
 			 $ConsumeMime = $negotiation['ConsumeMime'];
 
@@ -63,7 +63,7 @@ class PUT {
 
 	  		 // Transform data if the REST service resource has a #@ConsumeMime annotation
 	  		 if( $ConsumeMime )
-	  		 	 $data = MimeUtil::consumeTransform( $data, $ConsumeMime );
+	  		 	 $data = RestUtil::consumeTransform( $data, $ConsumeMime );
 
 	  		 // Add the data to the parameters passed into the intercepted REST resource action method
 	  		 $params = $ic->getParameters();
@@ -73,7 +73,7 @@ class PUT {
 	  		 $return = call_user_func_array( array( $ic->getTarget(), $ic->getMethod() ), $params ); 
 
 	  		 // Format the return value according to the negotiated mime type and exit the application.
-	  		 $out = MimeUtil::serverTransform( $return, $ProduceMime );
+	  		 $out = RestUtil::serverTransform( $return, $ProduceMime );
 	  		 header( 'HTTP/1.1 202 Accepted' );
 	  		 die( $out );
 	  }
