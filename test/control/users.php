@@ -74,24 +74,9 @@ class users extends BaseController {
 	  #@Path( resource = '/{username}' )
 	  #@ConsumeMime( type = 'application/xml' )
 	  #@ProduceMime( type = 'application/xml' )
-	  public function createUser( $username, $data ) {
+	  public function createUser( $username, User $user ) {
 
-	  		 $user = new User();
-	  		 $user->setUsername( $username );
-	  		 $user->setPassword( (string)$data->password );
-	  		 $user->setEmail( (string)$data->email );
-	  		 $user->setCreated( (string)$data->created );
-	  		 $user->setLastLogin( (string)$data->lastLogin );
-	  		 $user->setEnabled( (string)$data->enabled );
-
-	  		 $role = new Role();
-	  		 $role->setName( (string)$data->Role->name );
-
-	  		 $user->setRole( $role );
-
-	  		 $pm = PersistenceManager::getInstance();
-	  		 $pm->persist( $user );
-
+	  		 PersistenceManager::getInstance()->persist( $user );
 	  		 return $user;
 	  }
 
@@ -99,32 +84,27 @@ class users extends BaseController {
 	  #@Path( resource = '/{username}' )
 	  #@ConsumeMime( type = 'application/xml' )
 	  #@ProduceMime( type = 'application/xml' )
-	  public function updateUser( $username, $data ) {
+	  public function updateUser( $username, User $user ) {
 
-	  		 $user = new User();
-	  		 $user->setUsername( (string)$data->username );
-	  		 $user->setPassword( (string)$data->password );
-	  		 $user->setEmail( (string)$data->email );
-	  		 $user->setCreated( (string)$data->created );
-	  		 $user->setLastLogin( (string)$data->lastLogin );
-	  		 $user->setEnabled( (string)$data->enabled );
+	  		 PersistenceManager::getInstance()->merge( $user );
+	  		 return $user;
+	  }
 
-	  		 $role = new Role();
-	  		 $role->setName( (string)$data->Role->name );
+	  #@PUT
+	  #@Path( resource = '/{username}/json' )
+	  #@ConsumeMime( type = 'application/json' )
+	  #@ProduceMime( type = 'application/json' )
+	  public function updateUserJSON( $username, User $user ) {
 
-	  		 $user->setRole( $role );
+	  		 PersistenceManager::getInstance()->merge( $user );
+	  		 return $user;
+	  }
 
-	  		 if( $id = (string)$data->Session->id ) {
+	  #@PUT
+	  #@Path( resource = '/{username}/wildcard' )
+	  public function updateUserWildcard( $username, User $user ) {
 
-	  		 	$session = new Session();
-	  		 	$session->setId( (string)$data->Session->id );
-
-	  		 	$user->setSession( $session );	
-	  		 }
-
-	  		 $pm = PersistenceManager::getInstance();
-	  		 $pm->merge( $user );
-
+	  		 PersistenceManager::getInstance()->merge( $user );
 	  		 return $user;
 	  }
 

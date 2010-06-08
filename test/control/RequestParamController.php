@@ -35,7 +35,7 @@ class RequestParamController extends BaseController {
 	  #@RequestParam( name = 'comments', sanitize = false )
 	  public $comments;
 
-	  #@In( class = Logger )
+	  #@Logger
 	  public $logger;
 
 	  public function __construct() {

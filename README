@@ -72,6 +72,15 @@ To have Phing output apidocs, install phpDocumentor via PEAR.
 pear install phpDocumentor XML_Beautifier
 
 
+----------
+** YAML **
+----------
+To get YAML working on PHP 5.3 under ubuntu 10.04:
+
+sudo apt-get install libyaml-0-2 libyaml-dev
+sudo pecl install yaml
+
+
 ---------------------
 **    Debugging    **
 ---------------------

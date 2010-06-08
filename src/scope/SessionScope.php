@@ -144,8 +144,6 @@ class SessionScope {
 	  		 $store = unserialize( $this->session->getData() );
 	  		 if( isset( $store[$key] ) )
   	     	 	 return $store[$key];
-
-			 return;
 	  }
 
 	  /**

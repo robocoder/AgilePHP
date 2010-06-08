@@ -78,8 +78,9 @@ class MimeUtil {
 			  	  throw new RestServiceException( 406 );
 			  }
 
+			  // Store the consume and produce mime values if present. Assume application/xml if the client does not specify content type
 			  $response = array();
-			  $response['ConsumeMime'] = @$_SERVER['CONTENT_TYPE'];
+			  $response['ConsumeMime'] = (@$_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : 'application/xml';
 
 			  // Parse #@ProduceMime and #@ConsumeMime values from the REST service method if present
 	  		  $annotes = Annotation::getMethodsAsArray( $class );
@@ -174,20 +175,18 @@ class MimeUtil {
 			 switch( $mime ) {
 
 			 	case 'application/xml':
-			 		if( !$xml = @simplexml_load_string( $data ) ) {
-
-			 			Log::debug( 'MimeUtil::consumeTransform Malformed data could not be transformed to SimpleXMLElement.' );
-			 			throw new RestServiceException( 406 );
-			 		}
-			 		return $xml;
+			 		$t = new XMLTransformer();
+			 		return $t->transform( $data );
 			 	break;
 
 			 	case 'application/json':
-		 			return json_decode( $data );
+			 		$t = new JSONTransformer();
+			 		return $t->transform( $data );
 			 	break;
 
 			 	case 'application/x-yaml':
-			 		 return yaml_parse( $data );
+			 		 $t = new YAMLTransformer();
+			 		 return $t->transform( $data );
 			 	break;
 
 			 	case 'application/xhtml+xml':
@@ -195,12 +194,9 @@ class MimeUtil {
 		 		break;
 
 			 	default:
-			 		Log::debug( 'MimeUtil::consumeTransform Could not consume unsupported mime type \'' . $mime . '\'.' );
-			 		throw new RestServiceException( 406 );
+			 		Log::debug( 'MimeUtil::consumeTransform Could not transform consumed data type \'' . $mime . '\'. Using raw data as last resort.' );
+			 		return $data;
 			 }
 	  }
-
-	  // @todo Convert data between different mime types
-	  // public static function convert( $data, $consumeMime, $contentType ) { }
 }
 ?>

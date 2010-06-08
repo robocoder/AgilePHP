@@ -100,8 +100,6 @@ class RequestScope {
 
 	  	     if( isset( $this->store[$key] ) && !empty( $this->store[$key] ) )
 	  	     	 return (is_array( $this->store[$key] )) ? $this->store[$key] : urldecode( $this->store[$key] );
-
-	  	     return null;
 	  }
 
 	  /**
@@ -129,8 +127,6 @@ class RequestScope {
 
 	  		 	 return htmlspecialchars( addslashes( strip_tags( urldecode( $this->store[$key] ) ) ) );
 	  		 }
-
-	  		 return null;
 	  }
 
 	  /**

@@ -346,8 +346,6 @@ class MSSQLDialect extends BasePersistence implements SQLDialect {
 
 	  		 		throw new PersistenceException( $e->getMessage(), $e->getCode() );
 	  		 }
-
-	  		 return null;
 	  }
 
 	  public function reverseEngineer() {

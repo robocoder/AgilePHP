@@ -84,8 +84,6 @@ class ApplicationScope {
 
 	  	     if( isset( $this->store[$key] ) && !empty( $this->store[$key] ) )
 	  	     	 return $this->store[$key];
-
-	  	     return null;
 	  }
 
 	  /**

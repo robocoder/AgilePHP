@@ -186,7 +186,14 @@ class AJAXRenderer extends BaseRenderer {
 	  		  if( is_array( $data ) ) {
 
 	  		  	  $i=0;
-	  		  	  if( $name && $name != 'stdClass' ) $json .= $name . ' : ';
+	  		  	  if( $name && $name != 'stdClass' ) $json .= '"' . $name . '" : ';
+
+	  		  	  if( !isset( $data[0] ) ) {
+
+	  		  	  	  $json .= 'null';
+	  		  	  	  return $json;
+	  		  	  }
+	  		  	  
 	  		  	  $json .= '[ ';
 	  		  	  foreach( $data as $key => $value ) {
 
@@ -277,6 +284,8 @@ class AJAXRenderer extends BaseRenderer {
 	  		  $xml = ($isChild) ? '' : "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
 
 	  	      if( is_array( $data ) ) {
+
+	  	      	  if( !isset( $data[0] ) ) return '<' . $name . '/>';
 
   	 		  	  $xml .= '<' . $name . ((!$isChild) ? 's' : '') . '>';
   	 		  	  foreach( $data as $key => $val ) {
@@ -375,9 +384,9 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param $int $linebreak YAML_ANY_BREAK, YAML_CR_BREAK, YAML_LN_BREAK, YAML_CRLN_BREAK. Defaults to YAML_ANY_BREAK
 	   * @return $int string The YAML formatted data.
 	   */
-	  public function toYAML( $data, $encoding = YAML_ANY_ENCODING, $linebreak = YAML_ANY_BREAK ) {
+	  public function toYAML( $data, $encoding = null, $linebreak = null ) {
 
-	  		 return yaml_emit( $data, $encoding, $linebreak );
+	  		 return yaml_emit( $data );
 	  }
 }
 ?>

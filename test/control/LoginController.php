@@ -28,11 +28,6 @@
  */
 class LoginController extends BaseController {
 
-	  public function __construct() {
-
-	  	     parent::__construct();
-	  }
-
 	  /**
 	   * Renders the login page if there is no session present. If a session is present
 	   * the admin page is rendered instead.
@@ -41,10 +36,7 @@ class LoginController extends BaseController {
 	   */
 	  public function index() {
 
-	  	 	 if( Identity::getInstance()->isLoggedIn() )
-	  	     	 $this->showAdmin();
-	  	     else
-	  	     	$this->showLogin();
+	  	 	 Identity::getInstance()->isLoggedIn() ? $this->showAdmin() : $this->showLogin();
 	  }
 	  
 	  /**

@@ -39,11 +39,7 @@
 #@WebService( serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI' )
 class SoapDocumentLiteralTestAPI extends SOAPService {
 
-	  /**
-	   * The #@In interceptor performs Dependancy Injection. Will be a new
-	   * instance of MathTest at runtime.
-	   */
-	  public $MathTest;
+	  private $MathTest;
 
 	  public function __construct() {
 

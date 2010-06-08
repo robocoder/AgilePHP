@@ -53,14 +53,6 @@ class PUT {
 	  		 $callee = $ic->getCallee();
 			 $class = $callee['class'];
 
-			 // Require client specified content-type header for data transformations
-			 $contentType = @$_SERVER['CONTENT_TYPE'];
-			 if( !$contentType ) {
-
-			 	 Log::error( '#@PUT::process Missing Content-Type header.' );
-			 	 throw new RestServiceException( 406 );
-			 }
-
 			 // Get the negotiated mime type thats used to format the response data 
 			 $negotiation = MimeUtil::negotiate( $class, $ic->getMethod() );
 			 $ProduceMime = $negotiation['ProduceMime'];
