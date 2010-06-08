@@ -94,7 +94,15 @@
     <target name="test" description="Runs PHPUnit test suites">
         <delete dir="${phpunit.reports}" includeemptydirs="true" verbose="true"/>
         <mkdir dir="${phpunit.reports}"/>
-        <phpunit bootstrap="${test.dir}/phpunit/bootstrap.php" haltonfailure="true" haltonerror="true" printsummary="true">
+        <mkdir dir="${phpunit.reports}/tests"/>
+        <mkdir dir="${phpunit.reports}/coverage"/>
+        <coverage-setup database="${test.dir}/phpunit/coverage.db">
+      		<fileset dir="${project.basedir}/src">
+    			<include name="**/*.php"/>
+  			</fileset>
+    	</coverage-setup>
+        <phpunit bootstrap="${test.dir}/phpunit/bootstrap.php" codecoverage="true"
+        			 haltonfailure="true" haltonerror="true" printsummary="true">
             <formatter todir="${phpunit.reports}" type="xml"/>
             <batchtest>
                 <fileset dir="${test.dir}/phpunit">
@@ -106,10 +114,11 @@
                 </fileset>
             </batchtest>
         </phpunit>
-        <phpunitreport infile="${phpunit.reports}/testsuites.xml"
-         styledir="${phpunit.styles.dir}"
-         format="frames"
-         todir="${phpunit.reports}"/>
+        <phpunitreport infile="${phpunit.reports}/tests/testsuites.xml"
+         		styledir="${phpunit.styles.dir}" format="frames" todir="${phpunit.reports}"/>
+         <coverage-report outfile="coverage.xml">
+      		<report todir="${phpunit.reports}/coverage"/>
+    	</coverage-report>
     </target>
 
 	<target name="dist" depends="main,apidoc,archive"/>
