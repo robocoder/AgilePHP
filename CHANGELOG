@@ -1,10 +1,4 @@
-- Bug fix to test/control/RequestParamController.php logger injection
-- doc updates and more cleanup (removed a few "return null"s, etc)
-- Bug fix to AJAXRenderer::toXML. Now sets empty arrays as an empty XML element.
-- Created rest classes responsible for transforming data to domain model's / classes.
-	XMLTransformer
-	JSONTransformer
-	YAMLTransformer (requires PECL yaml package)
-  also supports transforming to and from different mime types based on annotations,
-  accept and content-type headers. Client can send data in one format and get it back in
-  another. Still need to work out aplication/xhtml+xml - xslt? :)
+- Refactored BasePersistence::validate from private to protected scope
+- added getComparisonLogicOperator and getRestrictionsLogicOperator to BasePersistence
+- PGSQLDialect is complete and working with accompanying unit test. still needs a little polishing
+- Refactored persistence.dtd to support new postgres data types - might be time to move to an xsd

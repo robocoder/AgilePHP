@@ -3,7 +3,8 @@
 <persistence>
 
 	<!-- AgilePHP Test Application -->
-	<database id="db1" name="agilephp_test" type="mysql" hostname="localhost" username="php" password="php007">
+	<!-- <database id="db1" name="agilephp_test" type="mysql" hostname="localhost" username="php" password="php007"> -->
+	<database id="db1" name="agilephp_test" type="pgsql" hostname="localhost" username="php" password="php007">
 
 		<table name="inventory" model="Inventory" display="Inventory" description="Product inventory">
 			<column name="id" visible="false" type="integer" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
@@ -15,7 +16,7 @@
 			<column name="video" type="blob" />
 		</table>
 		<table name="mailing" model="Mailing" display="Mailing List" description="People on your mailing list">
-			<column name="id" type="integer" visible="false" required="true" primaryKey="true" autoIncrement="true" description="Unique ID" validator="NumberValidator"/>
+			<column name="id" type="integer" visible="false" required="true" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
 			<column name="name" type="varchar" length="150" required="true" description="Name of recipient" validator="StringValidator"/>
 			<column name="email" type="varchar" length="150" required="true" description="Email address of recipient" validator="EmailValidator"/>
 			<column name="enabled" type="bit" description="Opt In/Out Flag" validator="BitValidator"/>
@@ -27,11 +28,11 @@
 			<column name="email" type="varchar" display="Email" length="255" required="true" validator="StringValidator"/>
 			<column name="created" type="datetime" required="true" validator="DateValidator"/>
 			<column name="last_login" property="lastLogin" display="Last Login" type="datetime" validator="DateValidator"/>
-			<column name="roleId" type="varchar" length="25" display="Role" validator="StringValidator">
+			<column name="roleId" type="varchar" length="25" display="Role" validator="StringValidator" sortable="false">
 				<foreignKey name="FK_UserRoles" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="roles" column="name" controller="RoleController" select="name"/>
 			</column>
-	  		<column name="sessionId" type="varchar" length="21" display="Session" validator="StringValidator">
+	  		<column name="sessionId" type="varchar" length="21" display="Session" validator="StringValidator" sortable="false">
 	  			<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="sessions" column="id" controller="SessionController"/>
 	  		</column>
@@ -313,8 +314,8 @@
 			<column name="username" type="varchar" length="150" primaryKey="true" required="true" validator="StringValidator"/>
 			<column name="password" type="varchar" length="255" required="true" validator="PasswordValidator"/>
 			<column name="email" type="varchar" display="Email" length="255" required="true" validator="EmailValidator"/>
-			<column name="created" type="datetime" required="true" validator="DateValidator"/>
-			<column name="last_login" property="lastLogin" display="Last Login" type="datetime" validator="DateValidator"/>
+			<column name="created" type="date" required="true" validator="DateValidator"/>
+			<column name="last_login" property="lastLogin" display="Last Login" type="date" validator="DateValidator"/>
 			<column name="roleId" type="varchar" length="25" display="Role" validator="StringValidator">
 				<foreignKey name="FK_UserRoles" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="roles" column="name" controller="RoleController" select="name"/>
@@ -336,30 +337,30 @@
 			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP" validator="DateValidator"/>
 		</table>
 		<table name="table1" model="Table1" description="">
-			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
+			<column name="id" type="serial" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
 			<column name="field1" type="varchar" length="255" required="true" validator="StringValidator"/>
 			<column name="field2" type="varchar" length="10" default="Foo" validator="StringValidator"/>
-			<column name="field3" type="int" length="10" validator="NumberValidator">
+			<column name="field3" type="int" validator="NumberValidator">
 				<foreignKey name="FK_Table1" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE" 
 					table="table2" column="id" controller="TestComponent" select="name"/>
 			</column>
 		</table>
 		<table name="table2" model="Table2" description="">
-			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
+			<column name="id" type="serial" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
 			<column name="name" type="varchar" length="100" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
 		</table>
 		<table name="table3" model="TestComponent\model\Table1" description="">
-			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
+			<column name="id" type="serial" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
 			<column name="field1" type="varchar" length="255" required="true" validator="StringValidator"/>
 			<column name="field2" type="varchar" length="10" default="Foo" validator="StringValidator"/>
-			<column name="field3" type="int" length="10"  validator="NumberValidator">
+			<column name="field3" type="int" validator="NumberValidator">
 				<foreignKey name="FK_Table1_2" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE" 
 					table="table4" column="id" controller="TestComponent" select="name"/>
 			</column>
 		</table>
 		<table name="table4" model="TestComponent\model\Table2" description="">
-			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
+			<column name="id" type="serial" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
 			<column name="name" type="varchar" length="100" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
 		</table>

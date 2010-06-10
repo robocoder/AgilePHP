@@ -96,7 +96,7 @@
         <mkdir dir="${phpunit.reports}"/>
         <mkdir dir="${phpunit.reports}/tests"/>
         <mkdir dir="${phpunit.reports}/coverage"/>
-        <coverage-setup database="${test.dir}/phpunit/coverage.db">
+        <coverage-setup database="${phpunit.reports}/coverage/db">
       		<fileset dir="${project.basedir}/src">
     			<include name="**/*.php"/>
   			</fileset>
@@ -106,8 +106,8 @@
             <formatter todir="${phpunit.reports}" type="xml"/>
             <batchtest>
                 <fileset dir="${test.dir}/phpunit">
+                	<exclude name="persistence/MySQLTest.php"/>
                 	<exclude name="persistence/MSSQLTest.php"/>
-					<exclude name="persistence/PGSQLTest.php"/>
 					<exclude name="persistence/SQLiteTest.php"/>
 					<exclude name="persistence/SQLSRVTest.php"/>
                     <include name="**/*Test.php" />
@@ -116,7 +116,7 @@
         </phpunit>
         <phpunitreport infile="${phpunit.reports}/tests/testsuites.xml"
          		styledir="${phpunit.styles.dir}" format="frames" todir="${phpunit.reports}"/>
-         <coverage-report outfile="coverage.xml">
+         <coverage-report outfile="${phpunit.reports}/coverage/coverage.xml">
       		<report todir="${phpunit.reports}/coverage"/>
     	</coverage-report>
     </target>

@@ -803,6 +803,26 @@ abstract class BasePersistence {
 	  }
 
 	  /**
+	   * Returns restriction logic operator used to filter SELECT / find operations.
+	   * 
+	   * @return string Retrictions logic operator (AND|OR)
+	   */
+	  protected function getRestrictionsLogicOperator() {
+
+	  			return $this->restrictionsLogic;
+	  }
+
+	  /**
+	   * Returns the comparison logic operator.
+	   * 
+	   * @return string Comparison logic operator (LIKE|<|>|?|=)
+	   */
+	  protected function getComparisonLogicOperator() {
+
+				return $this->comparisonLogic;
+	  }
+
+	  /**
 	   * Sets the comparison operator (<|>|=|LIKE) used in SQL WHERE clause.
 	   * 
 	   * @param $operator The logical comparison operator used is SQL where clauses. Default is '='.
@@ -1290,12 +1310,12 @@ abstract class BasePersistence {
 	   * @param $isInsert True if validating a persist operation
 	   * @return void
 	   */
-	  private function validate( Table $table, $isPersist = false ) {
+	  protected function validate( Table $table, $isPersist = false ) {
 
-	  	      if( $table->getValidate() == false )
-	  	          return;
+	  	        if( $table->getValidate() == false )
+	  	            return;
 
-			  foreach( $table->getColumns() as $column ) {
+			    foreach( $table->getColumns() as $column ) {
 
 			  	       $accessor = 'get' . ucfirst( $column->getModelPropertyName() );
 

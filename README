@@ -45,11 +45,34 @@ line 59      if (!is_array($options)) {
 line 60                $options = $options->getOptions();
 line 61        }
 
+Bug fix to phing/Phing.php 
+line 1016    $pieces = explode( DIRECTORY_SEPARATOR, $path );
+line 1017    $class = preg_replace( '/\.php/', '', array_pop( $pieces ) );
+line 1018    if( class_exists( $class, false ) ) return;
+
 Apply note to Phing.php - on line 1270, comment the following line to use php.ini memory_limit -1
 ini_set('memory_limit', '32M'); // nore: this may need to be higher for many projects
 
 Install JSlint on Ubuntu:
 http://ioconnor.wordpress.com/2009/05/02/javascriptlint-vim-and-ubuntu/
+
+
+---------------------
+** AgilePHP Studio **
+---------------------
+AgilePHP Studio is still under heavy development. It's somewhat functional at the moment :) Heres what works:
+
+1) Create Projects
+2) Manipulate file system under the "workspace"
+3) Upload files into the workspace (should probably add an unzip option, huh)
+4) Code editor w/ save ability using CTRL + S (NOTE: Code mirror seems buggy. Need to find a new editor?)
+5) Reverse engineer persistence.xml to create database
+6) Reverse engineer database to create persistence.xml
+7) Create controllers (basic, model controller, custom template)
+8) Create views (basic, custom template)
+9) Download components from appstore.makeabyte.com
+10) Manage component configuration once downloaded and installed.
+11) Integration with PEAR and PECL (in progress, but does show current installed extensions)
 
 
 ---------------------
@@ -77,8 +100,8 @@ pear install phpDocumentor XML_Beautifier
 ----------
 To get YAML working on PHP 5.3 under ubuntu 10.04:
 
-sudo apt-get install libyaml-0-2 libyaml-dev
-sudo pecl install yaml
+apt-get install libyaml-0-2 libyaml-dev
+pecl install yaml
 
 
 ---------------------
