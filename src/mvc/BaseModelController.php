@@ -30,42 +30,45 @@
  */
 abstract class BaseModelController extends BaseController {
 
-	     private $persistence = null;			// PersistenceManager
+		 protected $page;
+		 protected $count;
+		 protected $pageCount;
+		 protected $resultCount;
+		 protected $resultList;
+		 protected $sql;
 
-	     /**
-	      * Initalizes parent and executes a default SELECT query for the first 25 records.
+         /**
+	      * Sets the domain model the ORM is to manipulate.
+	      * 
+	      * @param Object $model The domain model the ORM is to manipulate
+	      * @return void
 	      */
-	     public function __construct() {
+	     protected function setModel( $model ) {
 
-	     	       parent::__construct();
-
-	     	       if( !$this->getModel() )
-	     	       		return;
-
-	     	       $this->persistence = new PersistenceManager();
-	     	       $this->persistence->setModel( $this->getModel() );
+	    	    $this->model = $model;
 	     }
 
 		 /**
-	      * Returns an instance of PersistenceManager
+	      * Returns the table name for the model defined in the extension class
 	      * 
-	      * @return PersistenceManager
-	      * @throws AgilePHP_Exception if the instance of PersistenceManager is null
+	      * @return The database table name
 	      */
-	     protected function getPersistenceManager() {
+	     protected function getTableName() {
+ 
+	     	       if( !$this->getModelName() )
+	     	           throw new FrameworkException( 'Property \'model\' must be defined in ORM ' . $this->getModelName() );
 
-	     		   return $this->persistence;
+	     	       return ORM::getTableByModelName( $this->getModelName() )->getName();
 	     }
 
-	     /**
+         /**
 	      * Returns the total number of records in the current result list.
 	      * 
 	      * @return The number of records in the current result list
 	      */
 	     protected function getResultCount() {
 
-	     	       $count = $this->getPersistenceManager()->getResultCount();
-	     	       return ($count > 0) ? $count : 0;
+	     	       return $this->resultCount;
 	     }
 
 	     /**
@@ -76,39 +79,50 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getResultList() {
 
-	     	  	   return $this->getPersistenceManager()->getResultList();
+	     	       return $this->resultList;
 	     }
 
 	     /**
-		  * Sets the maximum number of records to return in a result list
-		  * 
-		  * @param Integer $count Maximum number of records to return
-		  * @return void
-	      */
-	     protected function setMaxResults( $count ) {
-
-	     	       $this->getPersistenceManager()->setMaxResults( $count );
-	     }
-
-	     /**
-	      * Returns the maximum number of results to retrieve. This translates
-	      * to an SQL LIMIT clause during SELECT operations.
+	      * Returns the maximum number of records a result set will return
 	      * 
-	      * @return The maximum number of results to retrieve during SELECT operations.
+	      * @return Integer The max number of records per result set
 	      */
 	     protected function getMaxResults() {
-	     	
-	     		   return $this->getPersistenceManager()->getMaxResults();
-	     }
+
+	     		   return ORM::getMaxResults();
+	     } 
 
 	     /**
-	  	  * Sets the SQL statement to use when calling executeQuery.
-	  	  * 
-	  	  * @param String $sql A valid SQL statement
+	      * Sets the SQL statement to use when calling executeQuery.
+	      * 
+	      * @param $sql A valid SQL statement
 	      */
 	     protected function createQuery( $sql ) {
 
-	     		   $this->getPersistenceManager()->createQuery( $sql );
+	     	       $this->sql = $sql;
+	     }
+
+	     /**
+	      * Executes the current sql query as set by createQuery.
+	      * 
+	      * @return PDOStatement The query result.
+	      */
+	     protected function executeQuery() {
+
+	               Log::debug( 'BaseModelController::executeQuery ' . $this->sql );
+	     	       return ORM::query( $this->sql );
+	     }
+
+	     /**
+	      * Executes an SQL count query for total number of records in the database. 
+	      * Initialize 'pageCount' and 'count' properties. 
+	      * 
+	      * @return void
+	      */
+	     protected function executeCountQuery() {
+
+	     	       $this->count = ORM::count( $this->getModel() );
+  			 	   $this->pageCount = ceil( $this->count / ORM::getMaxResults() );
 	     }
 
 	     /**
@@ -118,22 +132,118 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getQuery() {
 
-	     		   return $this->getPersistenceManager()->getQuery();
+	     		   return $this->sql;
 	     }
 
 	     /**
 		  * Sets the pagination page number and performs an SQL query to populate the 'resultList'
 		  * and 'resultCount' properties with their appropriate values for the specified page.
 		  * 
-		  * @param Integer $pageNumber The page number. Default is 1.
+		  * @param $pageNumber The page number
 		  * @return void
 	      */
-	     protected function setPage( $pageNumber = 1 ) {
+	     protected function setPage( $pageNumber ) {
 
-	     		   if( !$this->getPersistenceManager() )
-	     		   	   throw new AgilePHP_Exception( 'PersistenceManager is null in setPage. A valid model is required in the extension class to perform this operation.' );
+	     	    if( !is_numeric( $pageNumber ) || !$pageNumber )
+	     	        $pageNumber = 1;
 
-	     	       $this->getPersistenceManager()->setPage( $pageNumber );
+	     	    $this->page = $pageNumber;
+				$this->executeCountQuery();
+
+				if( $this->page > $this->pageCount )
+				    $pageNumber = $this->pageCount;
+
+				$offset = ($this->getPage() - 1) * ORM::getMaxResults();
+	     	    if( $offset < 0 ) $offset = 0;
+
+  	 	     	ORM::setOffset( $offset );
+				$result = ORM::find( $this->getModel() );
+
+				if( !$result ) return false;
+
+				$this->resultList = $result;
+				$this->resultCount = count( $result );
+
+				ORM::setGroupBy( null );
+	  		 	ORM::setOrderBy( null, 'ASC' );
+	  		 	ORM::setRestrictions( array() );
+	  		 	ORM::setRestrictionsLogicOperator( 'AND' );
+	  		 	ORM::setComparisonLogicOperator( '=' );
+
+				Log::debug( 'BaseModelController::setPage ' . $this->page );
+	     }
+
+	     /**
+	      * Returns the total number of records in the database table
+	      * 
+	      * @return Total number of records
+	      */
+	     protected function getCount() {
+
+	     	       return $this->count;
+	     }
+
+	     /**
+	      * Returns the current page number
+	      * 
+	      * @return The current page number
+	      */
+	     protected function getPage() {
+
+	     		   return ($this->page > 0) ? $this->page : 0;
+	     }
+
+	     /**
+	      * Returns the total number of pages. This is calculated by dividing the total
+	      * number of records by 'maxResults'.
+	      * 
+	      * @return The total number of pages
+	      */
+	     protected function getPageCount() {
+
+	     	       return ($this->pageCount > 0) ? $this->pageCount : 0;
+	     }
+
+	     /**
+	      * Returns boolean result based on whether or not a 'next page' result is available during
+	      * a pagination request.
+	      * 
+	      * @return True if there is a next page, false if this is the last page
+	      */
+	     protected function nextExists() {
+
+	     	       return $this->page < $this->pageCount;
+	     }
+
+	     /**
+	      * Returns boolean result based on whether or not a 'previous page' result is available during
+	      * a pagination request.
+	      * 
+	      * @return True if there is a previous page, false if this is the first page
+	      */
+	     protected function previousExists() {
+
+	     		   return $this->page != 0 && $this->page != 1;
+	     }
+
+	     /**
+	      * Sets the result list up with a 'next page' of a pagination request
+	      * 
+	      * @return void
+	      */
+	     protected function getNextResultList() {
+
+	     	       $this->setPage( $this->page + 1 );
+	     }
+
+	     /**
+	      * Sets the result list up with a 'previous page' of a pagination request
+	      * 
+	      * @return void
+	      */
+	     protected function getPreviousResultList() {
+
+	     	       $this->setPage( $this->page - 1 );
 	     }
 
 	     /**
@@ -144,7 +254,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function setRestrictions( array $restrictions ) {
 
-	     		   $this->getPersistenceManager()->setRestrictions( $restrictions );
+	     		   ORM::setRestrictions( $restrictions );
 	     }
 
 	     /**
@@ -155,7 +265,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function setRestrictionsLogicOperator( $operator ) {
 
-				   $this->getPersistenceManager()->setRestrictionsLogicOperator( $operator );
+				   ORM::setRestrictionsLogicOperator( $operator );
 	     }
 	     
 		 /**
@@ -166,7 +276,7 @@ abstract class BaseModelController extends BaseController {
 		  */
 	     protected function setComparisonLogicOperator( $operator ) {
 
-	     	       $this->getPersistenceManager()->setComparisonLogicOperator( $operator );
+	     	       ORM::setComparisonLogicOperator( $operator );
 	     }
 
 	     /**
@@ -177,7 +287,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function setGroupBy( $column ) {
 
-	     		   $this->getPersistenceManager()->setGroupBy( $column );
+	     		   ORM::setGroupBy( $column );
 	     }
 
 	     /**
@@ -189,7 +299,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function setOrderBy( $column, $direction ) {
 
-	     		   $this->getPersistenceManager()->setOrderBy( $column, $direction );
+	     		   ORM::setOrderBy( $column, $direction );
 	     }
 
 	     /**
@@ -201,114 +311,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getOrderBy() {
 
-	     		   return $this->getPersistenceManager()->getOrderBy();
-	     }
-
-	     /**
-	      * Returns the total number of records in the database table
-	      * 
-	      * @return Integer Total number of records
-	      */
-	     protected function getCount() {
-
-	     		   $count = $this->getPersistenceManager()->getCount();
-	     		   return ($count > 0) ? $count : 0;
-	     }
-	     
-	     /**
-	      * Returns the current page number
-	      * 
-	      * @return Integer The current page number
-	      */
-	     protected function getPage() {
-
-	     		   $page = $this->getPersistenceManager()->getPage();
-	     		   return ($page > 0) ? $page : 0;
-	     }
-
-	     /**
-	      * Returns the total number of pages. This is calculated by dividing the total
-	      * number of records by 'maxResults'.
-	      * 
-	      * @return Integer The total number of pages
-	      */
-	     protected function getPageCount() {
-
-	     		   $count = $this->getPersistenceManager()->getPageCount();
-	     		   return ($count > 0) ? $count : 0;
-	     }
-
-	     /**
-	      * Returns boolean result based on whether or not a 'next page' result is available during
-	      * a pagination request.
-	      * 
-	      * @return bool True if there is a next page, false if this is the last page
-	      */
-	     protected function nextExists() {
-
-	     	       return $this->getPersistenceManager()->nextExists();
-	     }
-
-	     /**
-	      * Returns boolean result based on whether or not a 'previous page' result is available during
-	      * a pagination request.
-	      * 
-	      * @return bool True if there is a previous page, false if this is the first page
-	      */
-	     protected function previousExists() {
-
-	     		   return $this->getPersistenceManager()->previousExists();
-	     }
-
-	     /**
-	      * Sets the result list up with a 'next page' of a pagination request
-	      * 
-	      * @return Causes a 'next page' to load when using the AgilePHP MVC framework
-	      */
-	     protected function getNextResultList() {
-
-	     	       return $this->getPersistenceManager()->getNextResultList();
-	     }
-
-	     /**
-	      * Sets the result list up with a 'previous page' of a pagination request
-	      * 
-	      * @return Causes a 'previous page' to load when using the AgilePHP MVC framework
-	      */
-	     protected function getPreviousResultList() {
-
-	     	       return $this->getPersistenceManager()->getPreviousResultList();
-	     }
-
-	     /**
-	      * Executes an SQL count query for total number of records in the database. 
-	      * Initalizes 'pageCount' and 'count' properties. 
-	      * 
-	      * @return void
-	      */
-	     protected function executeCountQuery() {
-
-	     	       $this->getPersistenceManager()->executeCountQuery();
-	     }
-
-	     /**
-	      * Executes the current SQL statement as defined in 'sql'.
-	      * 
-	      * @return void
-	      */
-	     protected function executeQuery() {
-
-	     	       $this->getPersistenceManager()->executeQuery();
-	     }
-
-	     /**
-	      * Returns the table name for the model defined in the extension class
-	      * 
-	      * @return The database table name
-	      */
-	     protected function getTableName() {
-
-	     	       return $this->getPersistenceManager()->getTableName();
+	     		   return ORM::getOrderBy();
 	     }
 
 		 /**
@@ -323,22 +326,18 @@ abstract class BaseModelController extends BaseController {
 	     		   		 $class = new ReflectionClass( $this->getModel() );
 	     		   		 return $class->getName();
 	     		   }
-	     		   catch( ReflectionException $re ) {
-
-	     		   		  return null;
-	     		   }
+	     		   catch( ReflectionException $re ) { }
 	     }
 
 	     /**
 	      * Search for an ActiveRecord for the model defined in the extension class.
 	      * 
-	      * @return mixed A new instance of the model with all of its properties filled out
-	      * 		according to the persisted ActiveRecord.
+	      * @return Model $model Optional model instance to search on according to ActiveRecord state.
 	      */
 	     protected function find( $model = null ) {
 
 	     		   $m = ($model == null) ? $this->getModel() : $model;
-	     		   $this->resultList = $this->getPersistenceManager()->find( $m );
+	     		   $this->resultList = ORM::find( $m );
 				   $this->resultCount = count( $this->resultList );
 
 	     		   return $this->resultList;
@@ -351,7 +350,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function persist() {
 
-	     		   $this->getPersistenceManager()->persist( $this->getModel() );
+	     		   ORM::persist( $this->getModel() );
 	     }
 
 	     /**
@@ -362,7 +361,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function merge() {
 
-	     		   $this->getPersistenceManager()->merge( $this->getModel() );
+	     		   ORM::merge( $this->getModel() );
 	     }
 
 	     /**
@@ -373,7 +372,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function delete() {
 
-	     		   $this->getPersistenceManager()->delete( $this->getModel() );
+	     		   ORM::delete( $this->getModel() );
 	     }
 
 		 /**
@@ -383,7 +382,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function clear() {
 
-	  	           $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	  	           $table = ORM::getTableByModel( $this->getModel() );
 	  	           $columns = $table->getColumns();
 
   			       for( $i=0; $i<count( $columns ); $i++ ) {
@@ -405,7 +404,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function toAccessor( $property ) {
 
-	     		   return $this->getPersistenceManager()->toAccessor( $property );
+	     		   return 'get' . ucfirst( $property );
 	     }
 
 	     /**
@@ -418,7 +417,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function toMutator( $property ) {
 
-	     		   return $this->getPersistenceManager()->toMutator( $property );
+	     		   return 'set' . ucfirst( $property );
 	     }
 
 	     abstract protected function getModel();

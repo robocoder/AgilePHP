@@ -161,7 +161,7 @@ interface IdentityManager {
 		   * within the domain object model the IdentityManager is managing.
 		   * 
 		   * @return void
-		   * @throws AgilePHP_Exception If there was an error sending the forgotten password email.
+		   * @throws FrameworkException If there was an error sending the forgotten password email.
 		   */
 		  public function forgotPassword();
 
@@ -181,7 +181,7 @@ interface IdentityManager {
 		   * to allow the user to enable the account.
 		   *
 		   * @return void
-		   * @throws AgilePHP_Exception IF there was an error sending the registration email.
+		   * @throws FrameworkException IF there was an error sending the registration email.
 		   */
 		  public function register();
 
@@ -191,7 +191,7 @@ interface IdentityManager {
 		   * @param String $token The confirmation token
 		   * @param String $sessionId The session id used to register
 		   * @return void
-		   * @throws AgilePHP_Exception If token is invalid
+		   * @throws FrameworkException If token is invalid
 		   */
 		  public function confirm( $token, $sessionId );
 

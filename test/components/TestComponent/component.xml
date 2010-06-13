@@ -9,7 +9,7 @@
 		<param name="config3" type="boolean" value="false"/>
 		<param name="config4" type="int" value="123"/>
 
-		<persistence>
+		<orm>
 			<table name="table1" model="TestComponent\model\Table1" description="">
 				<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false"/>
 				<column name="field1" type="varchar" length="255" required="true"/>
@@ -24,7 +24,7 @@
 				<column name="name" type="varchar" length="100" required="true"/>
 				<column name="description" type="text"/>
 			</table>
-		</persistence>
+		</orm>
 
 	</component>
 

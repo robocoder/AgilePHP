@@ -47,7 +47,7 @@ class Stateful {
 	   * 
 	   * @param InvocationContext $ic The context of the intercepted call
 	   * @return InvocationContext if the authentication was successful.
-	   * @throws AgilePHP_Exception
+	   * @throws FrameworkException
 	   */
 	  #@AroundInvoke
 	  public function restore( InvocationContext $ic ) {

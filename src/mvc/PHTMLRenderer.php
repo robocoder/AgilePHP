@@ -41,7 +41,7 @@ class PHTMLRenderer extends BaseRenderer {
       	 	 $path = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . $view . '.phtml';
 
       	 	 if( !file_exists( $path ) )
-      	 	      throw new AgilePHP_Exception( 'Error rendering application view. Path does not exist ' . $path );
+      	 	      throw new FrameworkException( 'Error rendering application view. Path does not exist ' . $path );
   
       	 	 foreach( $this->getStore() as $key => $value )
 	                  $$key = $value;

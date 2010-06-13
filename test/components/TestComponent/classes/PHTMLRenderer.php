@@ -40,7 +40,7 @@ class PHTMLRenderer extends \BaseRenderer {
 	     $path = 'components/TestComponent/view/' . $view . '.phtml';
 
  	     if( !file_exists( $path ) )
-      	 	 throw new \AgilePHP_Exception( 'Error rendering component view. Path does not exist ' . $path );
+      	 	 throw new \FrameworkException( 'Error rendering component view. Path does not exist ' . $path );
   
  	     foreach( $this->getStore() as $key => $value )
 	              $$key = $value;

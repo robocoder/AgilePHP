@@ -301,7 +301,7 @@ abstract class Remoting extends BaseController {
 		   * @param String $errfile The name of the file that caused the error
 		   * @param Integer $errline The line number that caused the error
 		   * @return false
-		   * @throws AgilePHP_Exception
+		   * @throws FrameworkException
 		   */
 	 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
 	

@@ -53,13 +53,13 @@ class LoginController extends BaseController {
 	  		 $request = Scope::getRequestScope();
 
 	  		 if( !$username = $request->get( 'username' ) )
-	  		 	 throw new AgilePHP_Exception( 'Username required' );
+	  		 	 throw new FrameworkException( 'Username required' );
 
 	  		 if( !$password = $request->get( 'password' ) )
-	  		 	 throw new AgilePHP_Exception( 'Password required' );
+	  		 	 throw new FrameworkException( 'Password required' );
 	  		 	 
 	  		 if( !$email = $request->get( 'email' ) )
-	  		 	 throw new AgilePHP_Exception( 'Email required' );
+	  		 	 throw new FrameworkException( 'Email required' );
 
 	  		 $role = new Role( 'test' );
 
@@ -229,7 +229,7 @@ class LoginController extends BaseController {
 	  		 try {
 	  		 	   Identity::getInstance()->forgotPassword();
 	  		 }
-	  		 catch( AgilePHP_Exception $e ) {
+	  		 catch( FrameworkException $e ) {
 
 	  		 		$this->getRenderer()->set( 'error', $e->getMessage() );
 	  		 		$this->showForgotPassword();

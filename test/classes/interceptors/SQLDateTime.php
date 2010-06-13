@@ -43,12 +43,12 @@ class SQLDateTime {
 	  		 if( !$ic->getParameters() )
 	  		 	 throw new InterceptionException( '#@SQLDateTime::encrypt Requires a method which accepts at least one parameter.' );
 
-		  	 // Dont process arguments being set by persistence classes
+		  	 // Dont process arguments being set by ORM classes
 	  		 $callee = $ic->getCallee();
 	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file'] );
 	  		 $className = str_replace( '.php', '', array_pop( $pieces ) );
 
-	  		 if( $className == 'BasePersistence' || $className == 'PersistenceManager' || preg_match( '/dialect$/i', $className ) )
+	  		 if( $className == 'setDateTime' || preg_match( '/dialect$/i', $className ) )
 	  		 	 return $ic->proceed();
 
 	  		 $params = $ic->getParameters();

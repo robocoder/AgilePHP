@@ -215,7 +215,7 @@ class Form {
 	   */
 	  public function getHTML() {
 
-	  		 if( !is_object( $this->getModel() ) ) throw new AgilePHP_Exception( 'Valid domain model required' );
+	  		 if( !is_object( $this->getModel() ) ) throw new FrameworkException( 'Valid domain model required' );
 
 	  	     $id = $this->id == null ? '' : ' id="' . $this->id . '" ';
 	  	     $name = $this->name == null ? '' : ' name="' . $this->name . '" ';
@@ -225,15 +225,14 @@ class Form {
 	  		 $html = '<form ' . $id . $name . $action . $enctype . ' method="post">';
 	  		 $html .= '<table class="agilephpGeneratedTable" border="0">';
 
-	  		 $pm = new PersistenceManager();
-	  		 $table = $pm->getTableByModel( $this->model );
+	  		 $table = ORM::getTableByModel( $this->model );
 	  		 foreach( $table->getColumns() as $column ) {
 
 	  		 		  if( !$column->isVisible() ) continue;
 
 			  		  $name = $column->getModelPropertyName();
 			  		  $displayName = $column->getViewDisplayName();
-			  		  $accessor = $pm->toAccessor( $name );
+			  		  $accessor = 'get' . ucfirst( $name );
 			  		  $value = $this->getModel()->$accessor();
 
 			  		  $html .= '<tr>';
@@ -324,7 +323,7 @@ class Form {
 						<td>';
 	  		 $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
         							 : '<input type="submit" value="Update"/>
-									   <input type="button" value="Delete" onclick="javascript:AgilePHP.Persistence.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
+									   <input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
         							   '\', \'' . $pkeyValues . '\', \'' . $this->getPage() . '\', \'delete\' )"/>
         							   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';
 
@@ -348,8 +347,6 @@ class Form {
 	   */
 	  public function getForeignKeySelection( ForeignKey $foreignKey ) {
 
-	  		 $pm = PersistenceManager::getInstance();
-
 	  		 $selectedColumn = $foreignKey->getSelectedColumnInstance();
 	  		 $selectedProperty = $foreignKey->getSelectedColumnInstance()->getModelPropertyName();
 
@@ -357,7 +354,7 @@ class Form {
    			 $foreignInstance = $foreignKey->getReferencedTableInstance()->getModelInstance();
 
    			 // Find all foreign models by distinct parent column name
-          	 $foreignModels = $pm->find( $foreignInstance );
+          	 $foreignModels = ORM::find( $foreignInstance );
 
           	 // The actual foreign key property name in the child table
           	 $property = $foreignKey->getColumnInstance()->getModelPropertyName();
@@ -369,13 +366,13 @@ class Form {
           	 // selected foreign model property value, the item is shown as the default.
           	 foreach( $foreignModels as $fModel ) {
 
-          	 		  $fAccessor = $pm->toAccessor( $selectedProperty );
+          	 		  $fAccessor = 'get' . ucfirst( $selectedProperty );
 
           	 		  // php namespace support
      	   	   		  $namespace = explode( '\\', $foreignKey->getReferencedTableInstance()->getModel() );
      	   	   		  $model = $namespace[count($namespace)-1];
 
-          	 		  $fkInstanceAccessor = $pm->toAccessor( $model );
+          	 		  $fkInstanceAccessor = 'get' . ucfirst( $model );
 
           	 		  if( is_object( $this->getModel()->$fkInstanceAccessor() ) && 
           	 		  			$this->getModel()->$fkInstanceAccessor()->$fAccessor() == $fModel->$fAccessor() ) {
@@ -435,8 +432,7 @@ class Form {
 	  		 		 		<form ' . $id . $name . $action . $enctype . ' method="post">
 	  		 		 			<table class="agilephpGeneratedTable" border="0">';
 
-						  		 $pm = new PersistenceManager();
-						  		 $table = $pm->getTableByModel( $this->model );
+						  		 $table = ORM::getTableByModel( $this->model );
 
 						  		 $namespace = explode( '\\', $table->getModel() );
      		   	   				 $model = array_pop( $namespace );
@@ -445,7 +441,7 @@ class Form {
 
 								  		  $name = $column->getModelPropertyName();
 								  		  $displayName = $column->getViewDisplayName();
-								  		  $accessor = $pm->toAccessor( $name );
+								  		  $accessor = 'get' . ucfirst( $name );
 			  		  					  $value = $this->getModel()->$accessor();
 
 								  		  $xsl .= '<tr>';
@@ -557,7 +553,7 @@ class Form {
 						  <td>';
         	              $xsl .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
         				        						 : '<input type="submit" value="Update"/>
-															<input type="button" value="Delete" onclick="javascript:AgilePHP.Persistence.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
+															<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
         													   '\', \'' . $pkeyValues . '\', \'' . $page . 
         													   '\', \'{/Form/controller}\', \'delete\' )"/>
         													   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';

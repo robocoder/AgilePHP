@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 
 /**
- * Represents a data table in the AgilePHP persistence component.
+ * Represents a data table in the AgilePHP orm component.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 class Table {
 
@@ -173,7 +173,7 @@ class Table {
 	  /**
 	   * Sets the boolean field used to identify an AgilePHP Identity table.
 	   *  
-	   * @param bool $boolean True if the table is responsible for AgilePHP Identity persistence.
+	   * @param bool $boolean True if the table is responsible for AgilePHP Identity orm.
 	   * @return void
 	   */
 	  public function setIsIdentity( $boolean ) {
@@ -194,7 +194,7 @@ class Table {
 	  /**
 	   * Sets the boolean field used to identity an AgilePHP Session table.
 	   * 
-	   * @param bool $boolean True if the table is responsible for AgilePHP Session persistence.
+	   * @param bool $boolean True if the table is responsible for AgilePHP Session orm.
 	   * @return void
 	   */
 	  public function setIsSession( $boolean ) {
@@ -301,7 +301,7 @@ class Table {
 	  }
 
 	  /**
-	   * Returns columns which have 'selectable' attributes configured in persistence.xml
+	   * Returns columns which have 'selectable' attributes configured in orm.xml
 	   * 
 	   * @return array Columns which are selectable
 	   */
@@ -334,7 +334,7 @@ class Table {
 	  }
 
 	  /**
-	   * Looks up a 'Column' name by its persistence.xml 'property' attribute.
+	   * Looks up a 'Column' name by its orm.xml 'property' attribute.
 	   * 
 	   * @param $property The name of a domain model property to return its corresponding column name
 	   * @return mixed Column name or null if the column name could not be found
@@ -357,7 +357,7 @@ class Table {
 	  }
 
 	  /**
-	   * Returns the 'display' attribute value as configured in persistence.xml for
+	   * Returns the 'display' attribute value as configured in orm.xml for
 	   * the specified 'property' value.
 	   * 
 	   * @param String $property The name of the domain model property to retrieve the display name for
@@ -375,7 +375,7 @@ class Table {
 	  }
 
 	  /**
-	   * Returns boolean response based on the 'visible' attribute in persistence.xml for the
+	   * Returns boolean response based on the 'visible' attribute in orm.xml for the
 	   * column which contains the specified $property.
 	   * 
 	   * @param String $property The domain object model's property name
@@ -392,7 +392,7 @@ class Table {
 
 	  /**
 	   * Returns boolean response based on the presence of a column which is
-	   * configured in persistence.xml as a blob data type.
+	   * configured in orm.xml as a blob data type.
 	   * 
 	   * @return bool True if the table contains any blob columns or false if no
 	   * 		 	  blob columns exist.
@@ -408,7 +408,7 @@ class Table {
 	  
 	  /**
 	   * Returns boolean response based on the presence of a column which is
-	   * configured in persistence.xml as a foreign key.
+	   * configured in orm.xml as a foreign key.
 	   * 
 	   * @return bool True if the table contains any foriegn key columns or false if no
 	   * 		 	  foreign keys exist.
@@ -431,8 +431,8 @@ class Table {
 	   */
 	  public function hasForeignKeyReferences() {
 
-	  		 $pm = PersistenceManager::getInstance();
-	  		 foreach( $pm->getSelectedDatabase()->getTables() as $table )
+	  		 $orm = ORMFactory::getDialect();
+	  		 foreach( $orm->getDatabase()->getTables() as $table )
 	  		 		  foreach( $table->getColumns() as $column )
 	  		 		  		   if( $column->isForeignKey() )
 	  		 		  		   	   if( $column->getForeignKey()->getReferencedTable() == $this->getName() )
@@ -440,11 +440,11 @@ class Table {
 
 	  		 return false;
 	  }
-	  
+
 	  /**
-	   * Returns an instance of the model as configured in persistence.xml for this 'Table'.
+	   * Returns an instance of the model as configured in orm.xml for this 'Table'.
 	   * 
-	   * @return Object An instance of the model responsible for the table's persistence.
+	   * @return Object An instance of the model responsible for the table's orm.
 	   */
 	  public function getModelInstance() {
 
@@ -454,7 +454,7 @@ class Table {
 
 	  /**
 	   * Returns a name suitable for display to end users. If a friendly name has been configured
-	   * for this table (by providing a display attribute value in persistence.xml for the Column),
+	   * for this table (by providing a display attribute value in orm.xml for the Column),
 	   * then this value is returned, otherwise the table name attribute value is returned instead.
 	   * 
 	   * @return String The name of the table which gets displayed to end users

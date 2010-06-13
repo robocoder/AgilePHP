@@ -27,5 +27,5 @@
  * @package com.makeabyte.agilephp.annotation
  * @throws AnnotationException
  */
-class AnnotationException extends AgilePHP_Exception { }
+class AnnotationException extends FrameworkException { }
 ?>

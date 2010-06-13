@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence.dialect
+ * @package com.makeabyte.agilephp.orm.dialect
  */
 
 /**
@@ -25,9 +25,9 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.persistence.dialect
+ * @package com.makeabyte.agilephp.orm.dialect
  */
-class SQLSRVDialect extends BasePersistence implements SQLDialect {
+final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 
 	  private $conn;
 	  private $stmt;
@@ -37,13 +37,13 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  /**
 	   *  Initalize SQLSRVDialect.
 	   *  
-	   * @param Database $db The Database object representing persistence.xml
+	   * @param Database $db The Database object representing orm.xml
 	   * @return void
 	   */
 	   public function __construct( Database $db ) {
 
 	   		  if( !function_exists( 'sqlsrv_connect' ) )
-	   		  	  throw new PersistenceException( 'Microsoft SQL Server Driver for PHP is not installed on the server.' );
+	   		  	  throw new ORMException( 'Microsoft SQL Server Driver for PHP is not installed on the server.' );
 
 	   		  $params = array( 'Database' => $db->getName(), 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
 	   		  $noDbParams = array( 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
@@ -54,7 +54,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 			 	  if( !$this->conn = sqlsrv_connect( $db->getHostname(), $noDbParams ) ) { // Create statement needs to bind to server
 
 			 	  	  $this->connectFlag = -1;
-			 	  	  throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
+			 	  	  throw new ORMException( print_r( sqlsrv_errors(), true ) );
 			 	  }
 	  	      }
 
@@ -64,7 +64,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#isConnected()
+	   * @see src/orm/dialect/SQLDialect#isConnected()
 	   */
 	  public function isConnected() {
 
@@ -73,7 +73,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#create()
+	   * @see src/orm/dialect/SQLDialect#create()
 	   */
 	  public function create() {
 
@@ -83,7 +83,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 $this->close();
 	  		 $params = array( 'Database' => $this->database->getName(), 'UID' => $this->database->getUsername(), 'PWD' => $this->database->getPassword() );
 	  		 if( !$this->conn = sqlsrv_connect( $this->database->getHostname(), $params ) )
-	  		 	 throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
+	  		 	 throw new ORMException( print_r( sqlsrv_errors(), true ) );
 
 			 $constraintFails = array();
 
@@ -94,8 +94,8 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
                                           $error = sqlsrv_errors();
 
-                                          // This saves the create operation from blowing up if persistence.xml defines a table
-                                          // that references a table further down the persistence.xml file that has not been
+                                          // This saves the create operation from blowing up if orm.xml defines a table
+                                          // that references a table further down the orm.xml file that has not been
                                           // created yet. Is there a cleaner way - like disabling constraint checks?
                                           if( stristr( $error[0]['message'], 'references invalid table' ) ) {
 
@@ -103,7 +103,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
                                                   continue;
                                           }
 
-                                          throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
+                                          throw new ORMException( print_r( sqlsrv_errors(), true ) );
                                   }
 	  		 }
 
@@ -111,12 +111,12 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 if( count( $constraintFails ) )
 	  		 	 foreach( $constraintFails as $sql )
 	  		 	 		if( !$this->query( $sql ) )
-		  		 	 		throw new PersistenceException( print_r( sqlsrv_errors(), true ) ); 		 
+		  		 	 		throw new ORMException( print_r( sqlsrv_errors(), true ) ); 		 
 	  }
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#createTable(Table $table)
+	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
 	   */
       public function createTable( Table $table ) {
 
@@ -125,7 +125,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
       /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#dropTable(Table $table)
+	   * @see src/orm/dialect/SQLDialect#dropTable(Table $table)
 	   */
       public function dropTable( Table $table ) {
 
@@ -220,7 +220,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/AgilePHP/persistence/BasePersistence#beginTransaction()
+	   * @see src/AgilePHP/orm/BaseDialect#beginTransaction()
 	   */
 	  public function beginTransaction() {
 	  	
@@ -229,7 +229,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/AgilePHP/persistence/BasePersistence#commit()
+	   * @see src/AgilePHP/orm/BaseDialect#commit()
 	   */
 	  public function commit() {
 
@@ -240,7 +240,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/AgilePHP/persistence/BasePersistence#rollBack($message, $code)
+	   * @see src/AgilePHP/orm/BaseDialect#rollBack($message, $code)
 	   */
 	  public function rollBack( $message = null, $code = 0 ) {
 
@@ -249,7 +249,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 $this->transactionInProgress = false;
 	  		 sqlsrv_rollback( $this->conn );
 
-	  		 if( $message ) throw new PersistenceException( $message, $code );
+	  		 if( $message ) throw new ORMException( $message, $code );
 	  }
 
 	  /**
@@ -258,11 +258,11 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   * @param String $sql The SQL statement to execute
 	   * @param array $params Optional array of values that correspond to parameters in a parameterized query.
 	   * @return A statement resource. If the statement cannot be created and/or executed, false is returned.
-	   * @see src/AgilePHP/persistence/BasePersistence#query($sql)
+	   * @see src/AgilePHP/orm/BaseDialect#query($sql)
 	   */
 	  public function query( $sql, $params = array() ) {
 
-	  		 Log::debug( 'BasePersistence::query Executing' .
+	  		 Log::debug( 'SQLSRVDialect::query Executing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'raw PDO::query ' . $sql . 'with $params ' . print_r( $params, true ) );
 
@@ -271,7 +271,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/BasePersistence#prepare($statement)
+	   * @see src/orm/BaseDialect#prepare($statement)
 	   */
 	  public function prepare( $statement ) {
 
@@ -284,7 +284,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/BasePersistence#execute($inputParameters)
+	   * @see src/orm/BaseDialect#execute($inputParameters)
 	   */
 	  public function execute( array $inputParameters = array() ) {
 
@@ -298,15 +298,15 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 	 $params[$i] = &$inputParameters[$i];
 
 	  		 if( !$this->stmt = sqlsrv_prepare( $this->conn, $this->statement, $params ) )
-	  		 	 throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
+	  		 	 throw new ORMException( print_r( sqlsrv_errors(), true ) );
 
 	  		 if( !sqlsrv_execute( $this->stmt ) )
-	  		 	 throw new PersistenceException( print_r( sqlsrv_errors(), true ) );
+	  		 	 throw new ORMException( print_r( sqlsrv_errors(), true ) );
 	  }
 	  
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/BasePersistence#truncate($model)
+	   * @see src/orm/BaseDialect#truncate($model)
 	   */
 	  public function truncate( $model ) {
 
@@ -316,7 +316,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#drop()
+	   * @see src/orm/dialect/SQLDialect#drop()
 	   */
 	  public function drop() {
 
@@ -327,7 +327,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	   * Overrides parent find method to provide MSSQL specific syntax.
 	   * 
 	   * @param $model A domain model object. Any fields which are set in the object are used to filter results.
-	   * @throws PersistenceException If any primary keys contain null values or any
+	   * @throws ORMException If any primary keys contain null values or any
 	   * 		   errors are encountered executing queries
 	   */
 	  public function find( $model ) {
@@ -344,8 +344,8 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
 	    	   	        $sql = 'SELECT';
 
-	    	   	        if( $this->getDistinct() != null )	    	   	        	
-	    	   	        	$sql .= ' DISTINCT ' . $this->getDistinct();
+	    	   	        if( $this->isDistinct() != null )	    	   	        	
+	    	   	        	$sql .= ' DISTINCT ' . $this->isDistinct();
 	    	   	        else 
 	    	   	        		$sql .= ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() . ' *' : '');
 
@@ -437,13 +437,13 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 	  		 }
 	  		 catch( Exception $e ) {
 
-	  		 		throw new PersistenceException( $e->getMessage(), $e->getCode() );
+	  		 		throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		 }
 	  }
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/AgilePHP/persistence/BasePersistence#close()
+	   * @see src/AgilePHP/orm/BaseDialect#close()
 	   */
 	  public function close() {
 
@@ -453,7 +453,7 @@ class SQLSRVDialect extends BasePersistence implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#reverseEngineer()
+	   * @see src/orm/dialect/SQLDialect#reverseEngineer()
 	   */
 	  public function reverseEngineer() {
 

@@ -34,15 +34,23 @@ class User implements IdentityModel {
 	  private $email;
 	  private $created;
 	  private $lastLogin;
-	  private $roleId;
-	  private $sessionId;
 	  private $enabled;
-
-	  private $Session;
 	  private $Role;
 	  private $Roles;
+	  private $Session;
 
-	  public function __construct() { }
+	  public function __construct( $username = null, $password = null, $email = null,
+	  			 $created = null, $lastLogin = null, $enabled = null, Role $Role = null, Session $Session = null ) {
+
+	  		 $this->username = $username;
+	  		 $this->password = $password;
+	  		 $this->email = $email;
+	  		 $this->created = $created;
+	  		 $this->lastLogin = $lastLogin;
+	  		 $this->enabled = $enabled;
+	  		 $this->Role = $Role;
+	  		 $this->Session = $Session;			 	
+	  }
 
 	  /**
 	   * (non-PHPdoc)
@@ -138,24 +146,6 @@ class User implements IdentityModel {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/identity/IdentityModel#setRoleId($roleId)
-	   */
-	  public function setRoleId( $roleId ) {
-
-	  	     $this->roleId = $roleId;
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityModel#getRoleId()
-	   */
-	  public function getRoleId() {
-
-	  		 return $this->roleId;
-	  }
-
-	  /**
-	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setRole($role)
 	   */
 	  public function setRole( Role $role = null ) {
@@ -169,47 +159,47 @@ class User implements IdentityModel {
 	   */
 	  public function getRole() {
 
-	  	     //return ($this->Role instanceof Role) ? $this->Role : new Role();
 	  	     return $this->Role;
 	  }
-
+	  
 	  /**
-	   * Sets an array of roles of which the user belongs.
-	   * 
-	   * @param array $roles The array of Role instances belonging to the user
-	   * @return void
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#setRoles($roles)
 	   */
-	  public function setRoles( $roles = array() ) {
+	  public function setRoles( array $roles = null ) {
 
-	  		 $this->Roles = $roles;
+	  	     $this->Roles = $roles;
 	  }
 
 	  /**
-	   * Gets an array of roles belonging to the user.
-	   * 
-	   * @return Array Roles belonging to the user
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityModel#getRoles()
 	   */
 	  public function getRoles() {
 
-	  		 return $this->Roles;
+	  	     return $this->Roles;
 	  }
-
+	
 	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityModel#setSessionId($sessionId)
+	   * Sets the AgilePHP Session object belonging to the user.
+	   * 
+	   * @param Session $session AgilePHP Session instance following the user.
+	   * @return void
 	   */
-	  public function setSessionId( $sessionId ) {
+	  public function setSession( Session $session = null ) {
 
-	  		 $this->sessionId = $sessionId;
+	  		 $this->Session = $session;
 	  }
-
+	  
 	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityModel#getSessionId()
+	   * Returns the AgilePHP Session instance belonging to the user.
+	   * 
+	   * @return Session AgilePHP Session object following the user
 	   */
-	  public function getSessionId() {
+	  public function getSession() {
 
-	  		return $this->sessionId;
+	  		 //return ($this->Session instanceof Session) ? $this->Session : new Session();
+	  		 return $this->Session;
 	  }
 
 	  /**
@@ -234,28 +224,6 @@ class User implements IdentityModel {
 	  public function getEnabled() {
 
 	  		 return $this->enabled;
-	  }
-
-	  /**
-	   * Sets the AgilePHP Session object belonging to the user.
-	   * 
-	   * @param Session $session AgilePHP Session instance following the user.
-	   * @return void
-	   */
-	  public function setSession( Session $session = null ) {
-
-	  		 $this->Session = $session;
-	  }
-
-	  /**
-	   * Returns the AgilePHP Session instance belonging to the user.
-	   * 
-	   * @return Session AgilePHP Session object following the user
-	   */
-	  public function getSession() {
-
-	  		 //return ($this->Session instanceof Session) ? $this->Session : new Session();
-	  		 return $this->Session;
 	  }
 }
 ?>

@@ -292,11 +292,11 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 	      		        triggerAction: 'all',
 	      		        allowBlank: false
 	  	            }), {
-	  	            	id: id  + '-form-persistence',
+	  	            	id: id  + '-form-orm',
 	  	            	xtype: 'checkbox',
-	  	            	name: 'persistence',
+	  	            	name: 'orm',
 	  	            	inputValue: true,
-	  	            	boxLabel: 'Update persistence.xml',
+	  	            	boxLabel: 'Update orm.xml',
 	  	            	checked: true
 	  	            }, {
 	  	            	id: id  + '-form-createtable',
@@ -409,24 +409,27 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 			 				AgilePHP.Studio.FileExplorer.workspace,
 			 				AgilePHP.Studio.FileExplorer.getSelectedProject(),
 			 				properties,
-			 				Ext.getCmp( id + '-form-persistence' ).getValue(),
+			 				Ext.getCmp( id + '-form-orm' ).getValue(),
 			 				createTableFlag );
 
       	    	Ext.getCmp( 'fe-new-model' ).hide();
       	    }
-      	}]);
+    }]);
 
+	var workspace = AgilePHP.Studio.FileExplorer.workspace;
+		workspace = (workspace.indexOf( '|' ) === 0) ? workspace.replace( /\|/g, '/' ) : workspace.replace( /\|/g, '\\' );
+	
 	newModelRemote.setCallback( function( tables ) {
 
 		Ext.getCmp( id + '-form-database-table' ).getStore().loadData( tables );
 	});
-	newModelRemote.getDatabaseTables();
+	newModelRemote.getDatabaseTables( workspace, AgilePHP.Studio.FileExplorer.getSelectedProject() );
 
 	newModelRemote.setCallback( function( types ) {
 	
 		Ext.getCmp( id + '-editorgridpanel-type-combo' ).getStore().loadData( types );
 	});
-	newModelRemote.getSQLDataTypes()
+	newModelRemote.getSQLDataTypes();
 
 	return wizard;
 };

@@ -16,10 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!ELEMENT persistence (database+)>
+<!ELEMENT orm (database+)>
 
 <!ELEMENT database (table*)>
-<!ATTLIST database id ID #REQUIRED>
 <!ATTLIST database name CDATA #REQUIRED>
 <!ATTLIST database type ( mysql | mssql | pgsql | sqlite | firebird | informix | oracle | dblib | ibm ) "mysql">
 <!ATTLIST database hostname CDATA #REQUIRED>
@@ -55,6 +54,7 @@
 <!ATTLIST column selectable CDATA #FIXED "true">
 <!ATTLIST column sanitize CDATA #FIXED "false">
 <!ATTLIST column validator CDATA #IMPLIED>
+<!ATTLIST column lazy CDATA #FIXED "true">
 
 <!ELEMENT foreignKey (#PCDATA)>
 <!ATTLIST foreignKey type ( one-to-one | one-to-many | many-to-one | many-to-many ) #REQUIRED>

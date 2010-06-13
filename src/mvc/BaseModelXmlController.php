@@ -59,25 +59,33 @@ abstract class BaseModelXmlController extends BaseModelController {
   			 	   			<' . $modelName . '>';
 
   			 	   $fieldCount = 0;
-  			 	   $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+  			 	   $table = ORM::getTableByModel( $this->getModel() );
   			 	   
   			 	   if( $this->getModelPersistenceAction() == 'merge' ) {
 
-  			 	   	   $models = $this->getPersistenceManager()->find( $this->getModel() );
+  			 	   	   $models = ORM::find( $this->getModel() );
   			 	   	   if( !isset( $models[0] ) )
-  			 	   	   	   throw new AgilePHP_Exception( 'The specified model \'' . $this->getModelName() . '\' could not be found.' );
+  			 	   	   	   throw new FrameworkException( 'The ActiveRecord state for model \'' . $this->getModelName() . '\' could not be found.' );
 
   			 	   	   foreach( $table->getColumns() as $column ) {
 
   			 	   	   			$accessor = $this->toAccessor( $column->getModelPropertyName() );
 
   			 	   	   			$fieldCount++;
-  			 	   	   	     	if( is_object( $models[0]->$accessor() ) ) continue;
-  			 	   	   	     	$xml .= '<' . $column->getModelPropertyName() . '>' . htmlentities( htmlspecialchars_decode( $models[0]->$accessor() ) ) . '</' . $column->getModelPropertyName() . '>';  			 	   	   			
+  			 	   	   	     	if( is_object( $models[0]->$accessor() ) ) {
+
+  			 	   	   	     		$refAccessor = $this->toAccessor( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+  			 	   	   	     		$val = $models[0]->$accessor()->$refAccessor();
+  			 	   	   	     	}
+  			 	   	   	     	else {
+
+  			 	   	   	     		$val = htmlentities( htmlspecialchars_decode( $models[0]->$accessor() ) );
+  			 	   	   	     	}
+  			 	   	   	     	$xml .= '<' . $column->getModelPropertyName() . '>' . $val . '</' . $column->getModelPropertyName() . '>';  			 	   	   			
   			 	   	   }
   			 	   }
   			 	   else {
-  			 	   	
+
   			 	   	   $modelRefl = new ReflectionClass( $this->getModelName() );
   			 	   	   $properties = $modelRefl->getProperties();
   			 	   	   foreach( $properties as $property ) {
@@ -116,14 +124,14 @@ abstract class BaseModelXmlController extends BaseModelController {
 	      */
 	     protected function getResultListAsXML() {
 
-	     		   $table = $this->getPersistenceManager()->getTableByModelName( $this->getModelName() );
+	     		   $table = ORM::getTableByModelName( $this->getModelName() );
 
 	  	     	   $doc = new DomDocument( '1.0' );
       	     	   $xml = $doc->createElement( 'ResultList' );
              	   $xml = $doc->appendChild( $xml );
 
              	   if( !$this->getResultList() )
-             	   	   throw new AgilePHP_Exception( 'BaseModelXmlController::getResultListAsXml() requires a valid result set to transform to XML.' );
+             	   	   throw new FrameworkException( 'BaseModelXmlController::getResultListAsXml() requires a valid result set to transform to XML.' );
 
 	     		 	foreach( $this->getResultList() as $model ) {
 
@@ -166,6 +174,12 @@ abstract class BaseModelXmlController extends BaseModelController {
 								       	       		  		   $val = $model->$accessor();
 								       	       		 	  	   if( $prop->getName() == $relatedKeys[$j]->getColumnInstance()->getName() ) {
 								
+								       	       		 	  	       if( is_object( $val ) ) {
+
+								       	       		  		   	       $refAccessor = $this->toAccessor( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
+								       	       		  		   	       $val = $model->$accessor()->$refAccessor();
+								       	       		  		       }
+
 								     	  	       		   	 	   $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
 													  			   $child = $foreignModel->appendChild( $child );
 											                  	   $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
@@ -185,6 +199,12 @@ abstract class BaseModelXmlController extends BaseModelController {
 								       	       		  		    $val = $model->$accessor();
 								       	       		 	  	    if( $prop->getName() == $relatedKeys[$j]->getColumnInstance()->getName() ) {
 								
+								       	       		 	  	        if( is_object( $val ) ) {
+
+								       	       		  		   	        $refAccessor = $this->toAccessor( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
+								       	       		  		   	        $val = $model->$accessor()->$refAccessor();
+								       	       		  		        }
+
 								     	  	       		   	 	    $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
 													  			    $child = $foreignModel->appendChild( $child );
 											                  	    $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
@@ -284,13 +304,13 @@ abstract class BaseModelXmlController extends BaseModelController {
 	     protected function getResultListAsPagedXML( $controller = null, $action = null, $params = null ) {
 
 	     		   $c = (!$controller) ? new ReflectionClass( $this ) : new ReflectionClass( $controller );
-	     		   
+
 	     		   // php namespace support
-     		   	   $namespace = explode( '\\', $c );
-     		   	   $c = $namespace[0];
-	     		   
-   		   		   $a = (!$action) ? 'search' : $action;
-   		   		   $table = $this->getPersistenceManager()->getTableByModelName( $this->getModelName() );
+     		   	   $namespace = explode( '\\', $c->getName() );
+     		   	   $c = array_pop( $namespace );
+
+   		   		   $a = (!$action) ? 'index' : $action;
+   		   		   $table = ORM::getTableByModelName( $this->getModelName() );
 
    		   		   $fkeyColumns = $table->getForeignKeyColumns();
    		   		   $hasFkeyColumns = count( $fkeyColumns ) > 0 ? true : false;
@@ -345,11 +365,18 @@ abstract class BaseModelXmlController extends BaseModelController {
 									  		 		  $class = new ReflectionClass( $model->getInterceptedInstance() );
 									  		 		  $props = $class->getProperties();
 								       	       		  foreach( $props as $prop ) {
-					
+		
 								       	       		  		   $accessor = $this->toAccessor( $prop->getName() );
 								       	       		  		   $val = $model->$accessor();
-								       	       		 	  	   if( $prop->getName() == $relatedKeys[$j]->getColumnInstance()->getName() ) {
-								
+
+								       	       		  		   if( $prop->getName() == $relatedKeys[$j]->getColumnInstance()->getModelPropertyName() ) {
+
+								       	       		 	  	   	   if( is_object( $val ) ) {
+
+								       	       		  		   	       $refAccessor = $this->toAccessor( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
+								       	       		  		   	       $val = $model->$accessor()->$refAccessor();
+								       	       		  		       }
+
 								     	  	       		   	 	   $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
 													  			   $child = $foreignModel->appendChild( $child );
 											                  	   $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
@@ -368,7 +395,13 @@ abstract class BaseModelXmlController extends BaseModelController {
 								       	       		  		    $accessor = $this->toAccessor( $prop->getName() );
 								       	       		  		    $val = $model->$accessor();
 								       	       		 	  	    if( $prop->getName() == $relatedKeys[$j]->getColumnInstance()->getName() ) {
-								
+
+								       	       		 	  	        if( is_object( $val ) ) {
+
+								       	       		  		   	        $refAccessor = $this->toAccessor( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
+								       	       		  		   	        $val = $model->$accessor()->$refAccessor();
+								       	       		  		        }
+
 								     	  	       		   	 	    $child = $doc->createElement( $relatedKeys[$j]->getReferencedColumnInstance()->getModelPropertyName() );
 													  			    $child = $foreignModel->appendChild( $child );
 											                  	    $fieldvalue = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
@@ -464,7 +497,7 @@ abstract class BaseModelXmlController extends BaseModelController {
 			 	   $recordEnd = $doc->createElement( 'recordEnd', $end );
 			 	   $pagination->appendChild( $recordEnd );
 
-			 	   $controller = $doc->createElement( 'controller', $controller );
+			 	   $controller = $doc->createElement( 'controller', $c );
 			 	   $pagination->appendChild( $controller );
 
 			 	   $action = $doc->createElement( 'action', $a );
@@ -478,6 +511,8 @@ abstract class BaseModelXmlController extends BaseModelController {
 
 	  			   $xml = $doc->saveXML();
 
+	  			   Log::debug( 'BaseModelXmlController::getResultListAsPagedXML Returning ' . $xml );
+   
 	  			   return $xml;
 	     }
 
@@ -492,7 +527,7 @@ abstract class BaseModelXmlController extends BaseModelController {
 	      */
 	     protected function getModelPersistenceAction() {
 
-	     		   $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	     		   $table = ORM::getTableByModel( $this->getModel() );
 	     		   $pkeyColumns = $table->getPrimaryKeyColumns();
   			 	   foreach( $pkeyColumns as $column ) {
 

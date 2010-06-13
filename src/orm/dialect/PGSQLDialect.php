@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence.dialect
+ * @package com.makeabyte.agilephp.orm.dialect
  */
 
 /**
@@ -24,21 +24,23 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
- * @package com.makeabyte.agilephp.persistence.dialect
+ * @package com.makeabyte.agilephp.orm.dialect
  */
-class PGSQLDialect extends BasePersistence implements SQLDialect {
+final class PGSQLDialect extends BaseDialect implements SQLDialect {
 
 	  private $connectFlag = -1;
 
 	  /**
 	   * Initalize PostgreSQLDialect
 	   * 
-	   * @param Database $db The Database object representing persistence.xml
+	   * @param Database $db The Database object representing orm.xml
 	   * @return void
 	   */
 	  public function __construct( Database $db ) {
 
 	  	     try {
+	  	     		$this->database = $db;
+
 	  	     		$conn = 'pgsql:' .
 	  	     				(($db->getName()) ? 'dbname=' . $db->getName() . ';': '' ) .
 	  	  					(($db->getHostname()) ? 'host=' . $db->getHostname() . ';': '' ) .
@@ -67,7 +69,7 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 	  	     	    else {
 
 	  	     	    	$this->connectFlag = -1;
-	  	     	    	throw new PersistenceException( 'Failed to create PostgreSQLDialect instance. ' . $pdoe->getMessage() );
+	  	     	    	throw new ORMException( 'Failed to create PostgreSQLDialect instance. ' . $pdoe->getMessage() );
 	  	     	    }
 	  	     }
 
@@ -76,16 +78,16 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#isConnected()
+	   * @see src/orm/dialect/SQLDialect#isConnected()
 	   */
 	  public function isConnected() {
 
-	  		 return $this->connectFlag == true;
+	  		 return $this->connectFlag;
 	  }
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#create()
+	   * @see src/orm/dialect/SQLDialect#create()
 	   */
 	  public function create() {
 
@@ -102,12 +104,12 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 	  		 		  	    $sql = $this->toCreateTableSQL( $table );
 			   		  		$this->query( $sql );
 	  		 		  }
-	  		 		  catch( PersistenceException $e ) {
+	  		 		  catch( ORMException $e ) {
 
 	  		 		  		 if( preg_match( '/does not exist/', $e->getMessage() ) ) {
 
 	  		 		  		 	 array_push( $constraintFails, $sql );
-	  		 		  		 	 Log::warn( 'PGSQLDialect::create Failed to create table \'' . $table->getName() . '\'. Will retry after processing all tables in case this is a foreign key constraint issue due to a table listed further down in persistence.xml' );
+	  		 		  		 	 Log::warn( 'PGSQLDialect::create Failed to create table \'' . $table->getName() . '\'. Will retry after processing all tables in case this is a foreign key constraint issue due to a table listed further down in orm.xml' );
 	  		 		  		 	 continue;
 	  		 		  		 }
 
@@ -119,7 +121,7 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 	  		 if( count( $constraintFails ) )
 	  		 	 foreach( $constraintFails as $sql )
 	  		 	 		if( !$this->query( $sql ) )
-		  		 	 		throw new PersistenceException( print_r( $e, true ) );
+		  		 	 		throw new ORMException( print_r( $e, true ) );
 	  }
 
 	  /**
@@ -194,180 +196,13 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 	  		 $this->query( 'DROP TABLE ' . $table->getName() );
 	  }
 
-	    public function persist( $model ) {
-
-	    	   $this->model = $model;
-
-	   		   $values = array();
-			   $table = $this->getTableByModel( $model );
-
-			   Log::debug( 'BasePersistence::persist Performing persist on model \'' . $table->getModel() . '\'.' );
-
-	   		   $this->validate( $table, true );
-
-			   $sql = 'INSERT INTO ' . $table->getName() . '( ';
-
-			   $columns = $table->getColumns();
-			   for( $i=0; $i<count( $columns ); $i++ ) {
-
-			   		if( $columns[$i]->isAutoIncrement() )
-			   			continue;
-
-			   		$sql .= $columns[$i]->getName();
-
-			   		if( ($i + 1) < count( $columns ) )
-			   			$sql .= ', ';
-			   }
-			   $sql .= ' ) VALUES ( ';
-			   for( $i=0; $i<count( $columns ); $i++ ) {
-
-			   		if( $columns[$i]->isAutoIncrement() )
-			   				continue;
-
-			   		$sql .= '?';
-			   	    $method = $this->toAccessor( $columns[$i]->getModelPropertyName() );
-
-			   	    if( $columns[$i]->isForeignKey() ) {
-
-			   	    	// php namespace support - extract the class name from the fully qualified class path
-  		  		   	    $foreignModelPieces = explode( '\\', $columns[$i]->getForeignKey()->getReferencedTableInstance()->getModel() );
-  		  		   	    $foreignModelName = array_pop( $foreignModelPieces );
-
-  		  		   	    // Create accessor names for both the foreign model instance and the foreign model's instance accessor
-						$instanceAccessor = $this->toAccessor( $foreignModelName );
-			   	    	$accessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-
-			   	    	if( is_object( $model->$instanceAccessor() ) ) {
-
-			   	    		// Get foreign key value from the referenced field/instance accessor
-			   	    		if( $model->$instanceAccessor()->$accessor() != null ) {
-			   	    			array_push( $values, $model->$instanceAccessor()->$accessor() );
-			   	    		}
-			   	    		else {
-			   	    			// Persist the referenced model instance and use its new id as the foreign key value
-				   	    		$this->persist( $model->$instanceAccessor() );
-				   	    		$this->prepare( 'SELECT currval(?) AS lastInsertId;' );
-				   	    		$stmt = $this->execute( array( $columns[$i]->getForeignKey()->getReferencedTableInstance()->getName() . '_id_seq' ) );
-				   	    		$lastInsertId = $stmt->fetch();
-				   	    		array_push( $values, $lastInsertId[0] );
-			   	    		}
-			   	    	}
-			   	    	else {
-			   	    		// @todo Extract using the foreign key property (is this bad or should we stick to objects only?)
-			   	        	array_push( $values, ($model->$method() == '') ? NULL : $model->$method() );
-			   	        }
-			   	    }
-			   	    else // No foreign key
-			   	    	array_push( $values, (($model->$method() == '') ? NULL : $model->$method()) );
-
-			   		if( ($i + 1) < count( $columns ) )
-				   		$sql .= ', ';
-			   }
-			   $sql .= ' );';
-
-	   		   $this->prepare( $sql );
-	  		   return $this->execute( $values );
-	    }
-
-	    /**
-	     * Merges/updates a persisted domain model object
-	     * 
-	     * @param $model The model object to merge/update
-	     * @return PDOStatement
-	     * @throws PersistenceException
-	     */
-	    public function merge( $model ) {
-
-	    	   $this->model = $model;
-	    	   $table = $this->getTableByModel( $model );
-
-	    	   Log::debug( 'BasePersistence::merge Performing merge on model \'' . $table->getModel() . '\'.' );
-
-	    	   $this->model = $model;
-	  	       $values = array();
-	  	       $cols = array();
-			   $this->validate( $table );
-
-			   $sql = 'UPDATE ' . $table->getName() . ' SET ';
-
-	  		   $columns = $table->getColumns();
-	  		   $naCount = 0;
-			   for( $i=0; $i<count( $columns ); $i++ ) {
-
-			   	    if( $columns[$i]->isPrimaryKey() || $columns[$i]->isAutoIncrement() )
-			   			continue;
-
-			   		$accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
-
-			   		// Extract foreign key value from the referenced column
-			   	    if( $columns[$i]->isForeignKey() ) {
-
-			   	    	// php namespace support - extract the class name from the fully qualified class path
-  		  		   	    $foreignModelPieces = explode( '\\', $columns[$i]->getForeignKey()->getReferencedTableInstance()->getModel() );
-  		  		   	    $foreignModelName = array_pop( $foreignModelPieces );
-
-  		  		   	    // Create accessor name for the foreign model instance
-						$instanceAccessor = $this->toAccessor( $foreignModelName );
-
-			   	    	if( is_object( $model->$instanceAccessor() ) ) {
-
-			   	    		// Create name for the foreign model's instance accessor
-			   	    		$accessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-
-			   	    		// Get foreign key value from the referenced instance
-			   	    		if( $model->$instanceAccessor()->$accessor() != null ) {
-
-			   	    			array_push( $values, $model->$instanceAccessor()->$accessor() );
-			   	    			// @todo Need a way to check if the model is dirty so we dont waste database calls updating data that already exists.
-			   	    			//		 Possibly #@Column interceptor and move away from xml altogether? Getting rid of xml will speed up apps with a
-			   	    			//		 large database since a large persistence.xml file will have to be parsed with each page hit... 
-			   	    			$this->merge( $model->$instanceAccessor() );
-			   	    		}
-			   	    		else {
-			   	    			// Persist the referenced model instance, and use its new id as the foreign key value
-				   	    		$this->persist( $model->$instanceAccessor() );
-				   	    		$this->prepare( 'SELECT currval(?) AS lastInsertId;' );
-				   	    		$stmt = $this->execute( array( $columns[$i]->getForeignKey()->getReferencedTableInstance()->getName() . '_id_seq' ) );
-				   	    		$lastInsertId = $stmt->fetch();
-				   	    		array_push( $values, $lastInsertId[0] );
-			   	    		}
-			   	    	}
-			   	    	else {
-			   	    		// @todo Extract using the foreign key property (is this bad or should we stick to objects only?)
-			   	        	array_push( $values, ($model->$accessor() == '') ? NULL : $model->$accessor() );
-			   	        }
-			   	    }
-			   	    else // not a foreign key
-			   	    	array_push( $values, $model->$accessor() );
-
-			   	    array_push( $cols, $columns[$i]->getName() );
-			   }
-
-			   $sql .= implode( $cols, '=?, ' ) . '=? WHERE ';
-
-			   $pkeyColumns = $table->getPrimaryKeyColumns();
-			   for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
-
-			  	    $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
-			  		$sql .= $columns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
-
-			  		if( ($i+1) < count( $pkeyColumns ) )
-			  		    $sql .= ' AND ';
-			   }
-
-			   $sql .= ';';
-
-		       $this->prepare( $sql );
-	  	       return $this->execute( $values );
-	    }
-	    
 		/**
 	     * Attempts to locate the specified model by values. Any fields set in the object are used
 	     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
 	     * filter results.
 	     * 
 	     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
-	     * @throws PersistenceException If any primary keys contain null values or any
+	     * @throws ORMException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
 	     */
 	    public function find( $model ) {
@@ -376,12 +211,12 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 			   $newModel = $table->getModelInstance();
 			   $values = array();
 
-			   Log::debug( 'PGSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
+			   Log::debug( 'BaseDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		   try {
 	  		   		 if( $this->isEmpty( $model ) ) {
 
-	    	   	         $sql = 'SELECT ' . (($this->getDistinct() == null) ? '*' : 'DISTINCT ' . $this->getDistinct()) . ' FROM ' . $table->getName();
+	    	   	         $sql = 'SELECT ' . (($this->isDistinct() == null) ? '*' : 'DISTINCT ' . $this->isDistinct()) . ' FROM ' . $table->getName();
 
 	    	   	         $order = $this->getOrderBy();
 	    	   	         $offset = $this->getOffset();
@@ -406,11 +241,20 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 	    	   		 		$columns = $table->getColumns();
 							for( $i=0; $i<count( $columns ); $i++ ) {
 
+							 	 if( $columns[$i]->isLazy() ) continue;
+
 							 	 $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
 						     	 if( $model->$accessor() == null ) continue;
 
 						     	 $where .= (count($values) ? ' ' . $this->getRestrictionsLogicOperator() . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->getComparisonLogicOperator() . ' ?';
-				     	 	     array_push( $values, $model->$accessor() );
+
+						     	 if( is_object( $model->$accessor() ) ) {
+						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+						     	 	 array_push( $values, $model->$accessor()->$refAccessor() );
+						     	 }
+						     	 else {
+				     	 	     	 array_push( $values, $model->$accessor() );
+						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 						    $sql .= ' LIMIT ' . $this->getMaxResults() . ';';
@@ -422,11 +266,11 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 
 					 if( !count( $result ) ) {
 
-					 	 Log::debug( 'PGSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	 Log::debug( 'BaseDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	 return null;
 					 }
 
-				 	 $count = 0;
+				 	 $index = 0;
 				 	 $models = array();
 					 foreach( $result as $stdClass  ) {
 
@@ -434,12 +278,15 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 					 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
 
 					 	   	  		   if( !$value ) continue;
-					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
+					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name, false );
 
 							 	   	   // Create foreign model instances from foreign values
 						 	 		   foreach( $table->getColumns() as $column ) {
 
-						 	 		  		    if( $column->isForeignKey() && strtolower( $column->getName() ) == $name ) {
+						 	 		   		    if( strtolower( $column->getName() ) != $name ) continue;
+						 	 		   		    if( $column->isLazy() ) continue;
+
+						 	 		  		    if( $column->isForeignKey() ) {
 
 						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
 						 	 		  		   	    $foreignInstance = new $foreignModel();
@@ -465,21 +312,21 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 					 	   	  }
 
 					 	   	  array_push( $models, $m );
-					 	   	  $count++;
-					 	   	  if( $count == $this->getMaxResults() )  break;
+					 	   	  $index++;
+					 	   	  if( $index == $this->getMaxResults() )  break;
 				     }
 
 				     return $models;
 	  		 }
 	  		 catch( Exception $e ) {
 
-	  		 		throw new PersistenceException( $e->getMessage(), $e->getCode() );
+	  		 		throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		 }
-	  }
+	    }
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#drop()
+	   * @see src/orm/dialect/SQLDialect#drop()
 	   */
 	  public function drop() {
 
@@ -490,16 +337,59 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 	  	  					(($this->database->getUsername()) ? 'user=' . $this->database->getUsername() . ';': '' ) .
 	  	  					(($this->database->getPassword()) ? 'password=' . $this->database->getPassword() . ';' : '' );
 
-	  	     $pdo = new PDO( $conn );
-  	 	 	 $pdo->query( 'DROP DATABASE ' . $this->database->getName() . ';' );
-  	 	 	 $pdo = null;
+	  	     $p = new PDO( $conn );
+  	 	 	 $p->query( 'DROP DATABASE ' . $this->database->getName() . ';' );
+  	 	 	 $p = null;
+	  }
+
+	  /**
+	   * Returns the total number of records in the specified model.
+	   * 
+	   * @param Object $model The domain object to get the count for.
+	   * @return Integer The total number of records in the table.
+	   */
+	  public function count( $model ) {
+
+	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel( $model )->getName();
+			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
+			 $sql .= ';';
+
+	     	 $stmt = $this->query( $sql );
+  			 $stmt->setFetchMode( PDO::FETCH_OBJ );
+  			 $result = $stmt->fetchAll();
+
+  			 return ($result == null) ? 0 : $result[0]->count;
 	  }
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#reverseEngineer()
+	   * @see src/orm/dialect/SQLDialect#reverseEngineer()
 	   */
 	  public function reverseEngineer() {
+
+	  		 /**
+	  		  * Organizes table lookup query result set. Result set contains one large
+	  		  * array with all tables and column names. This function creates a new
+	  		  * associative array with the table name as the key which contains all
+	  		  * of its columns underneath.
+	  		  * 
+	  		  * @param array $tables Array of stdClass table objects returned from $tstmt
+	  		  * @return array 
+	  		  */
+ 	         function organizeTables( $tables ) {
+
+      	     		  $t = array();
+
+      	     		  foreach( $tables as $table ) {
+
+      	     		  		if( array_key_exists( $table->table_name, $t ) )
+      	     		  			array_push( $t[$table->table_name], $table );
+      	     		  		else
+      	     		  			$t[$table->table_name] = array( $table );
+      	     		  }
+
+      	     		  return $t;
+      	     }
 
 	  		 $Database = new Database();
 	  		 $Database->setId( $this->database->getId() );
@@ -509,54 +399,105 @@ class PGSQLDialect extends BasePersistence implements SQLDialect {
 	  		 $Database->setUsername( $this->database->getUsername() );
 	  		 $Database->setPassword( $this->database->getPassword() );
 
-	  		 $stmt = $pm->prepare( 'SHOW TABLES' );
-      	     $stmt->execute();
-      	     $stmt->setFetchMode( PDO::FETCH_OBJ );
-      	     $tables = $stmt->fetchAll();
+	  		 // Get all primary keys
+	  		 $pstmt = $this->query( 'SELECT
+										tc.table_name,
+										cu.column_name
+									 FROM
+										information_schema.key_column_usage cu,
+										information_schema.table_constraints tc
+									 WHERE cu.constraint_name = tc.constraint_name
+									 AND cu.table_name = tc.table_name
+									 AND tc.constraint_type = \'PRIMARY KEY\'
+									 AND tc.table_catalog = \'' . $Database->getName() . '\'
+									 AND tc.table_schema = \'public\';' );
+	  		 $pstmt->setFetchMode( PDO::FETCH_OBJ );
+	  		 $pkeys = $pstmt->fetchAll();
 
-      	     $tblIndex = 'Tables_in_' . $pm->getDatabase()->getName();
+	  		 // Get all relationships
+	  		 $rstmt = $this->query( 'SELECT
+	  		 							rc.constraint_name,
+										tc.table_name,
+										kcu.column_name,
+										ccu.table_name as referenced_table,
+										ccu.column_name as referenced_column,
+										rc.update_rule,
+										rc.delete_rule
+									FROM
+										information_schema.key_column_usage kcu,
+										information_schema.table_constraints tc,
+										information_schema.referential_constraints as rc,
+										information_schema.constraint_column_usage as ccu
+									WHERE kcu.constraint_name = tc.constraint_name
+									AND ccu.constraint_name = kcu.constraint_name
+									AND rc.constraint_name = kcu.constraint_name
+									AND kcu.table_name = tc.table_name
+									AND tc.constraint_type = \'FOREIGN KEY\'
+									AND tc.table_catalog = \'' . $Database->getName() . '\'
+									AND tc.table_schema = \'public\';' );
 
-      	     foreach( $tables as $sqlTable ) {
+	  		 $rstmt->setFetchMode( PDO::FETCH_OBJ );
+	  		 $relationships = $rstmt->fetchAll();
+
+	  		 // Get all tables
+	  		 $tstmt = $this->query( 'SELECT
+	  		 							table_name,
+	  		 							column_name,
+	  		 							is_nullable,
+	  		 							udt_name as type,
+	  		 							character_maximum_length as length
+	  		 						FROM information_schema.columns
+	  		 						WHERE table_schema = \'public\'
+	  		 						AND table_catalog = \'' . $Database->getName() . '\'
+	  		 						ORDER BY table_name, ordinal_position;' );
+      	     $tstmt->execute();
+      	     $tstmt->setFetchMode( PDO::FETCH_OBJ );
+      	     $tables = $tstmt->fetchAll();
+      	     $tables = organizeTables( $tables );
+
+      	     foreach( $tables as $name => $columns ) {
 
       	     		  $Table = new Table();
-      	     		  $Table->setName( str_replace( ' ', '_', $sqlTable->$tblIndex ) );
-      	     		  $Table->setModel( ucfirst( $Table->getName() ) );
+      	     		  $Table->setName( str_replace( ' ', '_', $name ) );
+      	     		  $Table->setModel( ucfirst( $name ) );
 
-      	      		  $stmt = $pm->query( 'DESC ' . $sqlTable->$tblIndex );
-      	      		  $stmt->setFetchMode( PDO::FETCH_OBJ );
-      	      		  $descriptions = $stmt->fetchAll();
-      	      		   
-      	      		  foreach( $descriptions as $desc ) {
+      	      		  foreach( $columns as $column ) {
 
-      	      		   	   $type = $desc->Type;
-	      	      		   $length = null;
-	      	      		   $pos = strpos( $desc->Type, '(' );
-	
-	      	      		   if( $pos !== false ) {
-	      	      		   	 
-	      	      		   	   $type = preg_match_all( '/^(.*)\((.*)\)$/i', $desc->Type, $matches );
-	      	      		   	   
-	      	      		   	   $type = $matches[1][0];
-	      	      		   	   $length = $matches[2][0];
-	      	      		   }
+      	      		  	   $type = ($column->type == 'int4') ? 'serial' : $column->type;
 
 	      	      		   $Column = new Column( null, $Table->getName() );
-						   $Column->setName( $desc->Field );
+						   $Column->setName( $column->column_name );
 						   $Column->setType( $type );
-						   $Column->setLength( $length );
+						   $Column->setLength( $column->length );
 
-						   if( $desc->Default )
-						   	    $Column->setDefault( $desc->Default );
+						   if( $column->is_nullable == 'YES' ) $Column->setRequired( true );
+						   
+						   foreach( $pkeys as $pkey )
+						   		if( $pkey->table_name == $name && $pkey->column_name == $column->column_name )
+						   			$Column->setPrimaryKey( true );
 
-						   if( $desc->NULL == 'NO' )
-						   	   $Column->setRequired( true );
-
-						   if( $desc->KEY == 'PRI' )
-						   	   $Column->setPrimaryKey( true );
-
-						   if( $desc->Extra == 'auto_increment' )
+						   if( $type == 'serial' || $type == 'bigserial' )
 						   	   $Column->setAutoIncrement( true );
-      	      		   
+
+      	      		  	   foreach( $relationships as $fkey ) {
+
+									if( $fkey->table_name == $Table->getName() &&
+										$fkey->column_name == $Column->getName() ) {
+
+											$ForeignKey = new ForeignKey( null, $fkey->table_name, $fkey->column_name );
+											$ForeignKey->setName( $fkey->constraint_name );
+											$ForeignKey->setType( 'one-to-many' );
+											$ForeignKey->setReferencedTable( $fkey->referenced_table );
+											$ForeignKey->setReferencedColumn( $fkey->referenced_column );
+											$ForeignKey->setReferencedController( ucfirst( $fkey->referenced_table ) . 'Controller' );
+											$ForeignKey->setOnDelete( $fkey->delete_rule );
+											$ForeignKey->setOnUpdate( $fkey->update_rule );
+
+											$Column->setForeignKey( $ForeignKey );
+											$Column->setProperty( ucfirst( $fkey->referenced_table ) );
+										}
+	      	      		   }
+
       	      		  	   $Table->addColumn( $Column );
       	      		   }
 

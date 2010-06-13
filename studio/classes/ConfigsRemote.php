@@ -47,10 +47,9 @@ class ConfigsRemote {
 
  	  		 $results = array();
 
- 	  		 $pm = new PersistenceManager();
- 	  		 $pm->setMaxResults( 50 );
+ 	  		 ORM::setMaxResults( 50 );
 
- 	  		 $configs = $pm->find( new Config() );
+ 	  		 $configs = ORM::find( new Config() );
 
  	  		 foreach( $configs as $config ) {
  	  		 	

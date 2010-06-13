@@ -35,7 +35,7 @@ abstract class BaseExtController extends BaseController {
 		 }
 
 		 /**
-		  * Custom PHP error handling function which throws an AgilePHP_Exception instead of reporting
+		  * Custom PHP error handling function which throws an FrameworkException instead of reporting
 		  * a PHP warning.
 		  * 
 		  * @param Integer $errno Error number
@@ -43,11 +43,11 @@ abstract class BaseExtController extends BaseController {
 		  * @param String $errfile The name of the file that caused the error
 		  * @param Integer $errline The line number that caused the error
 		  * @return void
-		  * @throws AgilePHP_Exception
+		  * @throws FrameworkException
 		  */
 	 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
 
-	    	     throw new AgilePHP_Exception( $errmsg, $errno );
+	    	     throw new FrameworkException( $errmsg, $errno );
 		  }
 }
 ?>

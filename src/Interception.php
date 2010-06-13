@@ -126,7 +126,7 @@ class Interception {
 		 	 	 try {
 	  		 	 	   $code = AgilePHP::getSource( $this->class );
 		 	 	 }
-		 	 	 catch( AgilePHP_Exception $e ) {
+		 	 	 catch( FrameworkException $e ) {
 		 	 	 	
 		 	 	 		throw new InterceptionException( $e->getMessage(), $e->getCode() );
 		 	 	 }
@@ -177,7 +177,7 @@ class Interception {
 	  	     try {
 	  		 		$code .= AgilePHP::getSource( 'InterceptorProxy' );
 	  	     }
-	  	     catch( AgilePHP_Exception $e ) {
+	  	     catch( FrameworkException $e ) {
 
 	  	     		throw new InterceptionException( $e->getMessage(), $e->getCode() );
 	  	     }

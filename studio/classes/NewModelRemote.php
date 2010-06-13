@@ -36,12 +36,17 @@ class NewModelRemote {
 	   * @param stdClass $database A stdClass instance containing client side parameters
 	   */
 	  #@RemoteMethod
-	  public function getDatabaseTables() {
+	  public function getDatabaseTables( $workspace, $projectName ) {
+
+	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
+
+	  		 $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
+
+	  		 $orm = ORMFactory::createDialect( $ormXml );
 
 	  		 $tables = array();
 
-	  		 $pm = new PersistenceManager();
-	  		 $Database = $pm->reverseEngineer();
+	  		 $Database = $orm->reverseEngineer();
 
 	  		 foreach( $Database->getTables() as $table ) {
 
@@ -59,8 +64,7 @@ class NewModelRemote {
 
 	  		 $columns = array();
 
-	  		 $pm = new PersistenceManager();
-	  		 $Database = $pm->reverseEngineer();
+	  		 $Database = ORM::reverseEngineer();
 
 	  		 foreach( $Database->getTables() as $table ) {
 
@@ -84,8 +88,7 @@ class NewModelRemote {
 
 	  		 $data = array();
 
-	  		 $pm = new PersistenceManager();
-	  		 $Database = $pm->reverseEngineer();
+	  		 $Database = ORM::reverseEngineer();
 
 	  		 foreach( $Database->getTables() as $table ) {
 
@@ -120,12 +123,13 @@ class NewModelRemote {
 	  }
 
 	  #@RemoteMethod
+	  /** @todo Pass in workspace and project to look at orm.xml database type and only display the data types for the database being manipulated */ 
 	  public function getSQLDataTypes() {
 
 	  		 $types = array();
-	  		 $values = array( 'boolean', 'integer', 'int', 'bigint', 'double', 'decimal', 'varchar', 'float', 'bit', 'date', 'datetime', 'timestamp',
-	                          'blob', 'text', 'password', 'smallint', 'tinyint', 'money', 'char', 'varbinary', 'nvarchar', 'image', 'uniqueidentifier',
-	                          'smalldatetime', 'ntext' );
+	  		 $values = array( 'boolean', 'integer', 'int', 'bigint', 'double', 'decimal', 'varchar', 'float', 'bit', 'date', 'datetime', 'timestamp',  // mysql, sqlite
+	  		 				  'serial', 'bigserial', 'real', 'numeric', 'box', 'bytea', 'cidr', 'circle', 'inet', 'interval', 'line', 'lseg', 'macaddr', 'path', 'point', 'polygon', 'uuid', 'xml', // pgsql
+	                          'blob', 'text', 'password', 'smallint', 'tinyint', 'money', 'char', 'varbinary', 'nvarchar', 'image', 'uniqueidentifier', 'smalldatetime', 'ntext' ); // mssql
 
 	  		 foreach( $values as $type ) {
 
@@ -140,7 +144,7 @@ class NewModelRemote {
 	  }
 
 	  #@RemoteMethod
-	  public function create( $tableName, $workspace, $projectName, $properties, $updatePersistenceDotXml, $createTable ) {
+	  public function create( $tableName, $workspace, $projectName, $properties, $updateOrmDotXml, $createTable ) {
 
 
 	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
@@ -167,7 +171,7 @@ class NewModelRemote {
 
              		  $property = preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $value[0] );
 
-             		  // Add built-in agilephp persistence interceptors
+             		  // Add built-in agilephp ORM interceptors
              		  switch( $property ) {
 
              		  		case 'id':
@@ -191,19 +195,19 @@ class NewModelRemote {
       	     fwrite( $h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL . $class . PHP_EOL . '?>' );
       	     fclose( $h );
 
-      	     // Update persistence.xml
-      	     if( $updatePersistenceDotXml ) {
+      	     // Update orm.xml
+      	     if( $updateOrmDotXml ) {
 
-      	     	 $persistence_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'persistence.xml';
-		  		 if( !file_exists( $persistence_xml ) )
-		  		 	 throw new AgilePHP_Exception( 'Could not update persistence.xml. File does not exist at \'' . $persistence_xml . '\'' );
+      	     	 $orm_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
+		  		 if( !file_exists( $orm_xml ) )
+		  		 	 throw new FrameworkException( 'Could not update orm.xml. File does not exist at \'' . $orm_xml . '\'' );
 
-		  	     $xml = simplexml_load_file( $persistence_xml );
+		  	     $xml = simplexml_load_file( $orm_xml );
 
 	      	     foreach( $xml->database->table as $tableXml ) {
 
 	      		  		  if( (string)$tableXml->attributes()->model == $modelName )
-	      		  		   	   throw new AgilePHP_Exception( 'Failed to update persistence.xml. Table element already exists.' );
+	      		  		   	   throw new FrameworkException( 'Failed to update orm.xml. Table element already exists.' );
 	      		 }
 
 	      		 $xml = "\t<table name=\"" . $tableName . "\" model=\"" . $modelName . "\">" . PHP_EOL;
@@ -245,22 +249,18 @@ class NewModelRemote {
 
       		     $xml .= "\t\t</table>" . PHP_EOL . "\t</database>" . PHP_EOL;
 
-      		     $h = fopen( $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'persistence.xml', 'r' );
+      		     $h = fopen( $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml', 'r' );
       		     $data = '';
       		     while( !feof( $h ) )
       		  		 $data .= fgets( $h, 4096 );
       		     fclose( $h );
 
-      		     $h = fopen( $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR  . 'persistence.xml', 'w' );
+      		     $h = fopen( $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR  . 'orm.xml', 'w' );
       		     fwrite( $h, str_replace( '</database>' . PHP_EOL, $xml, $data ) );
       		     fclose( $h );
       	     }
 
-      	     if( $createTable ) {
-
-      	     	 $pm = new PersistenceManager();
-      	     	 $pm->createTable( $Table );
-      	     }
+      	     if( $createTable ) ORM::createTable( $Table );
 
       	     return true;
 	  }

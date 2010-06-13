@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 
 /**
- * Represents a foreign key in the AgilePHP persistence component.
+ * Represents a foreign key in the AgilePHP ORM component.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 class ForeignKey {
 
@@ -287,8 +287,7 @@ class ForeignKey {
 	   */
 	  public function getReferencedTableInstance() {
 
-	  		 $pm = PersistenceManager::getInstance();
-	  		 return $pm->getTableByName( $this->getReferencedTable() );
+	  		 return ORM::getTableByName( $this->getReferencedTable() );
 	  }
 
 	  /**
@@ -298,8 +297,7 @@ class ForeignKey {
 	   */
 	  public function getReferencedColumnInstance() {
 
-	  		 $pm = PersistenceManager::getInstance();
-	  		 $table = $pm->getTableByName( $this->getReferencedTable() );
+	  		 $table = ORM::getTableByName( $this->getReferencedTable() );
 
 	  		 foreach( $table->getColumns() as $column )
 	  		 		  if( $column->getName() == $this->getReferencedColumn() )
@@ -315,8 +313,7 @@ class ForeignKey {
 	   */
 	  public function getColumnInstance() {
 
-	  		 $pm = PersistenceManager::getInstance();
-	  		 $table = $pm->getTableByName( $this->getFkTable() );
+	  		 $table = ORM::getTableByName( $this->getFkTable() );
 
 	  		 foreach( $table->getColumns() as $column )
 	  		 		  if( $column->getName() == $this->getFkColumn() )
@@ -327,7 +324,7 @@ class ForeignKey {
 
 	  /**
 	   * Returns the foreign (parent) column instance which contains a
-	   * select="true" configuration in persistence.xml. If a column is
+	   * select="true" configuration in orm.xml. If a column is
 	   * not explicitly set, the referenced column instance is returned.
 	   *  
 	   * @return Column The column instance to use to display values in an HTML select

@@ -66,8 +66,8 @@ AgilePHP Studio is still under heavy development. It's somewhat functional at th
 2) Manipulate file system under the "workspace"
 3) Upload files into the workspace (should probably add an unzip option, huh)
 4) Code editor w/ save ability using CTRL + S (NOTE: Code mirror seems buggy. Need to find a new editor?)
-5) Reverse engineer persistence.xml to create database
-6) Reverse engineer database to create persistence.xml
+5) Reverse engineer  to create database
+6) Reverse engineer database to create 
 7) Create controllers (basic, model controller, custom template)
 8) Create views (basic, custom template)
 9) Download components from appstore.makeabyte.com
@@ -120,20 +120,8 @@ Visit the WIKI at http://www.makeabyte.com/agilephp/wiki for details on installa
 
 
  --------------------------
- **      Known Bugs      **
+ **      Known Issues      **
  --------------------------
-Issue: [Microsoft][ODBC Driver Manager] Function sequence error
-Reason: This happens when using ODBC driver on SQL Server 2000 to insert/update datetime fields.
-Resolution: Upgrade SQL Server to newer version
-Resolution: If running on a windows server, specify 'SQLSRV' as the MSSQL driver and the persistence framework will
-            use the SQLSRVDialect class to perform persistence operations. This requires the "Microsoft SQL Server Driver for PHP 1.1"
-See: http://www.microsoft.com/sqlserver/2005/en/us/PHP-Driver.aspx.
-See: http://bugs.php.net/bug.php?id=40452
-
-Issue: Clicking on sortable column headers rendered by mvc/XSLTRenderer breaks in some cases when using MSSQLDialect class.
-Reason: The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator.
-Resolution: Need to update MSSQLDialect class to use LIKE clause for column types listed above.
-
 Issue: Phing dist target fails with the following error:
 	   PHP Fatal error:  SOAP-ERROR: Parsing WSDL: Couldn't load from 'http://localhost/test/index.php/SoapRpcLiteralTestAPI/wsdl' : Extra content at the end of the document
  in /home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php on line 28

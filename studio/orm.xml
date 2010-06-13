@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE persistence SYSTEM "../src/persistence/persistence.dtd">
-<persistence>
-
-	<database id="db1" name="agilephp_studio" type="mysql" hostname="localhost" username="php" password="php007">
+<!DOCTYPE orm SYSTEM "../src/orm/orm.dtd">
+<orm>
+	<database name="agilephp_studio" type="mysql" hostname="localhost" username="php" password="php007">
 	<!--<database id="db1" name="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/ide/agilephp_ide" type="sqlite" hostname="" username="" password="">-->
 
 		<!-- AgilePHP Identity -->
-		<table name="users" isIdentity="true" display="Users" model="User" description="Actors in the application">
-			<column name="username" type="varchar" length="150" primaryKey="true" required="true"/>
-			<column name="password" type="varchar" length="255" required="true"/>
-			<column name="email" type="varchar" length="255" required="true"/>
-			<column name="created" type="datetime" required="true"/>
-			<column name="last_login" property="lastLogin" display="Last Login" type="datetime"/>
-			<column name="roleId" type="varchar" length="25">
-				<foreignKey name="FK_UserRoles" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE"
-					table="roles" column="name" controller="RoleController" select="name"/>
+		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
+			<column name="username" type="varchar" length="150" primaryKey="true" required="true" validator="StringValidator"/>
+			<column name="password" type="varchar" length="255" required="true" validator="PasswordValidator"/>
+			<column name="email" type="varchar" display="Email" length="255" required="true" validator="StringValidator"/>
+			<column name="created" type="datetime" required="true" validator="DateValidator"/>
+			<column name="last_login" property="lastLogin" display="Last Login" type="datetime" validator="DateValidator"/>
+			<column name="roleId" property="Role" type="varchar" length="25" sortable="false">
+				<foreignKey name="FK_UserRoles" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
+	  							 table="roles" column="name" controller="RoleController" select="name"/>
 			</column>
-			<column name="sessionId" type="varchar" length="21">
-				<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
-					table="sessions" column="id" controller="SessionController"/>
-			</column>
-		</table>
-
-		<table name="roles" display="Roles" model="Role" description="Roles used in the application">
-			<column name="name" type="varchar" length="25" primaryKey="true" required="true"/>
-			<column name="description" type="text"/>
-		</table>
-
+	  		<column name="sessionId" property="Session" type="varchar" length="21" display="Session" sortable="false">
+	  			<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
+	  							 table="sessions" column="id" controller="SessionController"/>
+	  		</column>
+	  		<column name="enabled" type="bit" validator="BitValidator"/>
+	 	</table>
+	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
+			<column name="name" type="varchar" length="25" primaryKey="true" required="true" validator="StringValidator"/>
+			<column name="description" type="text" validator="StringValidator"/>
+	 	</table>
 		<!-- AgilePHP Session -->
 		<table name="sessions" display="Session" isSession="true" model="Session" description="User sessions">
-			<column name="id" type="varchar" length="21" primaryKey="true" description="Unique ID"/>
-			<column name="data" type="text" description="Name of recipient"/>
-			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP"/>
+			<column name="id" type="varchar" length="21" primaryKey="true" description="Unique ID" validator="StringValidator"/>
+			<column name="data" type="text" description="Name of recipient" validator="StringValidator"/>
+			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP" validator="DateValidator"/>
 		</table>
 
 		<table name="server" model="Server" description="Stores all servers used by the application">
@@ -74,4 +72,4 @@
 
 	</database>
 
-</persistence>
+</orm>

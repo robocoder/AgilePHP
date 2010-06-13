@@ -371,8 +371,8 @@ AgilePHP.Studio.FileExplorer = {
 			                		paste.disabled = true;
 			                	}
 
-			                	// Conditionally show database menu for persistence.xml
-			                	if( node.id.match( /\|persistence.xml$/i ) ) {
+			                	// Conditionally show database menu for orm.xml
+			                	if( node.id.match( /\|orm.xml$/i ) ) {
 
 			                		if( !Ext.get( 'file-explorer-contextmenu-database' ) ) {
 
@@ -441,7 +441,7 @@ AgilePHP.Studio.FileExplorer = {
 				                									return;
 				                								}
 
-				                								AgilePHP.Studio.info( 'persistence.xml successfully configured' );
+				                								AgilePHP.Studio.info( 'orm.xml successfully configured' );
 				                							});
 				                							dbManagerRemote.reverseEngineer( AgilePHP.Studio.FileExplorer.getWorkspace(), AgilePHP.Studio.FileExplorer.getSelectedProject() );
 						                				}

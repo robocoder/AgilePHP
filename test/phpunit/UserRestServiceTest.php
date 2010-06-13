@@ -61,7 +61,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 				'Content-Type: application/xml',
 			 ));
 
-			 $pm = PersistenceManager::getInstance( 'agilephp_test' );
+			 $orm = ORM::getDialect();
 
 			 $username = 'phpunit';
 			 $password = 'test';
@@ -76,7 +76,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setCreated( $created );
 			 $user->setEmail( $email );
 
-			 $pm->persist( $user );
+			 $orm->persist( $user );
 
 			 // Load the test user
 			 $user = new User();
@@ -99,7 +99,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $response = $client->put( $data );
 
 			 // clean up after unit test
-			 $pm->delete( $user );
+			 $orm->delete( $user );
 
 			 $xml = simplexml_load_string( $response );
 	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
@@ -123,7 +123,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 				'Content-Type: application/json',
 			 ));
 
-			 $pm = PersistenceManager::getInstance( 'agilephp_test' );
+			 $orm = ORM::getDialect();
 
 			 $username = 'phpunit-json';
 			 $password = 'test';
@@ -138,7 +138,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setCreated( $created );
 			 $user->setEmail( $email );
 
-			 $pm->persist( $user );
+			 $orm->persist( $user );
 
 			 // Load the test user
 			 $user = new User();
@@ -161,7 +161,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $response = $client->put( $data );
 
 			 // clean up after unit test
-			 $pm->delete( $user );
+			 $orm->delete( $user );
 
 			 $json = json_decode( $response );
 			 PHPUnit_Framework_Assert::assertType( 'stdClass', $json, 'Failed to decode JSON data' );
@@ -185,7 +185,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 				'Content-Type: application/json',
 			 ));
 
-			 $pm = PersistenceManager::getInstance( 'agilephp_test' );
+			 $orm = ORM::getDialect();
 
 			 $username = 'phpunit-json2';
 			 $password = 'test';
@@ -200,7 +200,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setCreated( $created );
 			 $user->setEmail( $email );
 
-			 $pm->persist( $user );
+			 $orm->persist( $user );
 
 			 // Load the test user
 			 $user = new User();
@@ -223,7 +223,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $response = $client->put( $data );
 
 			 // clean up after unit test
-			 $pm->delete( $user );
+			 $orm->delete( $user );
 
 			 $xml = simplexml_load_string( $response );
 	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
@@ -251,7 +251,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 				'Content-Type: application/json',
 			 ));
 
-			 $pm = PersistenceManager::getInstance( 'agilephp_test' );
+			 $orm = ORM::getDialect();
 
 			 $username = 'phpunit-json2';
 			 $password = 'test';
@@ -266,7 +266,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setCreated( $created );
 			 $user->setEmail( $email );
 
-			 $pm->persist( $user );
+			 $orm->persist( $user );
 
 			 // Load the test user
 			 $user = new User();
@@ -289,7 +289,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $response = $client->put( $data );
 
 			 // clean up after unit test
-			 $pm->delete( $user );
+			 $orm->delete( $user );
 
 			 $yaml = yaml_parse( $response );
 	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
@@ -315,7 +315,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 				'Content-Type: application/x-yaml',
 			 ));
 
-			 $pm = PersistenceManager::getInstance( 'agilephp_test' );
+			 $orm = ORM::getDialect();
 
 			 $username = 'phpunit-json2';
 			 $password = 'test';
@@ -330,7 +330,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setCreated( $created );
 			 $user->setEmail( $email );
 
-			 $pm->persist( $user );
+			 $orm->persist( $user );
 
 			 // Load the test user
 			 $user = new User();
@@ -353,7 +353,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $response = $client->put( $data );
 
 			 // clean up after unit test
-			 $pm->delete( $user );
+			 $orm->delete( $user );
 
 			 $xml = simplexml_load_string( $response );
 	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
@@ -377,14 +377,13 @@ class RestTests extends PHPUnit_Framework_TestCase {
 				'Content-Type: application/xml',
 			 ));
 
-			 $pm = PersistenceManager::getInstance( 'agilephp_test' );
+			 $orm = ORM::getDialect();
 
 			 $user = new User();
 			 $user->setUsername( 'phpunit2' );
 			 $user->setPassword( 'test' );
 			 $user->setCreated( 'now' );
 			 $user->setEmail( 'root@localhost' );
-			 $user->setRoleId( 'test' );
 			 $user->setEnabled( false );
 
 			 // Create new role
@@ -402,7 +401,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 
 			 // clean up after unit test
 			 $user->setUsername( 'phpunit2' );
-			 $pm->delete( $user );
+			 $orm->delete( $user );
 
 			 $xml = simplexml_load_string( $response );
 	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
@@ -419,7 +418,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function deleteXMLgetXML() {
 
-	  	     $pm = PersistenceManager::getInstance( 'agilephp_test' );
+	  	     $orm = ORM::getDialect();
 
 	  		 $user = new User();
 	  		 $user->setUsername( 'phpunit3' );
@@ -431,7 +430,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  		 $role->setName( 'test' );
 
 	  		 $user->setRole( $role );
-			 $pm->persist( $user );
+			 $orm->persist( $user );
 
 	  	     $client = new RestClient( $this->endpoint . '/phpunit3' );
 	  	     $client->authenticate( 'admin', 'test' );
@@ -445,7 +444,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function transformXML() {
 
-	  		 $data = '<?xml version="1.0" encoding="UTF-8" ?><User><username>admin</username><password>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</password><email>root@localhost</email><created>2009-09-06 15:27:44</created><lastLogin>1969-12-31 19:00:00</lastLogin><roleId>admin</roleId><sessionId>WL10Dc97YUI53v0qT92a0</sessionId><enabled>1</enabled><Session><id>WL10Dc97YUI53v0qT92a0</id><data>a:2:{s:17:"IDENTITY_LOGGEDIN";b:1;s:17:"IDENTITY_USERNAME";s:5:"admin";}</data><created>2010-06-07 19:13:10</created></Session><Role><name>admin</name><description>This is an administrator account</description></Role></User>';
+	  		 $data = '<User><username>admin</username><password>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</password><email>root@localhost</email><created>2009-09-06 15:27:44</created><lastLogin>1969-12-31 19:00:00</lastLogin><enabled>1</enabled><Role><name>admin</name><description>This is an administrator account</description></Role><Roles></Roles><Session><id>0I14Hz5229h6z070G6E6q</id><data>a:2:{s:17:"IDENTITY_LOGGEDIN";b:1;s:17:"IDENTITY_USERNAME";s:5:"admin";}</data><created>2010-06-13 01:31:25</created></Session></User>';
 
 	  		 $t = new XMLTransformer();
 			 $o = $t->transform( $data );
@@ -457,9 +456,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   * @test
 	   */
 	  public function transformJSON() {
-	  	
-	  		 $data = '{ "User" : { "username" : "admin", "password" : "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "email" : "root@localhost", "created" : "2009-09-06 15:27:44", "lastLogin" : "1969-12-31 19:00:00", "roleId" : "admin", "sessionId" : "178Pgrib43Zw0Awlz7qj5", "enabled" : "1", "Session" : { "id" : "178Pgrib43Zw0Awlz7qj5", "data" : "a:2:{s:17:\"IDENTITY_LOGGEDIN\";b:1;s:17:\"IDENTITY_USERNAME\";s:5:\"admin\";}", "created" : "2010-06-07 19:14:00"} , "Role" : { "name" : "admin", "description" : "This is an administrator account"} , "Roles" : null } }';
-	  		 
+
+	  		 $data = ' { "User" : { "username" : "admin", "password" : "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "email" : "root@localhost", "created" : "2009-09-06 15:27:44", "lastLogin" : "1969-12-31 19:00:00", "enabled" : "1", "Role" : { "name" : "admin", "description" : "This is an administrator account"}  , "Roles" : null, "Session" : { "id" : "o4YHYXtqhl9VFq8b09D87", "data" : "a:2:{s:17:\"IDENTITY_LOGGEDIN\";b:1;s:17:\"IDENTITY_USERNAME\";s:5:\"admin\";}", "created" : "2010-06-13 01:26:06"}   } }';
+
 	  		 $t = new JSONTransformer();
 	  		 $o = $t->transform( $data );
 

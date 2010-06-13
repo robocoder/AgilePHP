@@ -16,28 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence.dialect
+ * @package com.makeabyte.agilephp.orm.dialect
  */
 
 /**
- * Defines contract used by AgilePHP ORM framework to implement vendor
- * specific SQL dialect/syntax.
+ * Defines contract for vendor specific SQL dialect implementations
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.persistence.dialect
+ * @package com.makeabyte.agilephp.orm.dialect
  */
 interface SQLDialect {
-
-		  /**
-	       * Checks the two defined model parameters to see if they are equal. The class name,
-	       * property name, type and value.
-	       *  
-	       * @param Object $modelA The first domain model object
-	       * @param Object $modelB The second domain model object
-	       * @return True if the comparison was successful, false if they differ.
-	       */
-	      public function compare( $modelA, $modelB );
 
 	      /**
 		   * Adds an SQL distinct clause to 'find' operation.
@@ -53,7 +42,7 @@ interface SQLDialect {
 		   * 
 		   * @return The DISTINCT column name or null if a column name has not been defined. 
 		   */
-	  	  public function getDistinct();
+	  	  public function isDistinct();
 
 	      /**
 		   * Sets the maximum number of records to return in a result list. Defaults to 25.
@@ -75,7 +64,7 @@ interface SQLDialect {
 	  	   * Begins a transaction
 	  	   * 
 	  	   * @return void
-	  	   * @throws PersistenceException
+	  	   * @throws ORMException
 	  	   * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	   * @see http://usphp.com/manual/en/function.PDO-beginTransaction.php
 	  	   */
@@ -85,7 +74,7 @@ interface SQLDialect {
 	  	   * Commits an already started transaction.
 	  	   * 
 	  	   * @return void
-	  	   * @throws PersistenceException
+	  	   * @throws ORMException
 	  	   * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	   * @see http://usphp.com/manual/en/function.PDO-commit.php
 	  	   */
@@ -97,7 +86,7 @@ interface SQLDialect {
 	  	   * @param $message Error/reason why the transaction was rolled back
 	  	   * @param $code An error/reason code
 	  	   * @return void
-	  	   * @throws PersistenceException
+	  	   * @throws ORMException
 	  	   * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	   * @see http://usphp.com/manual/en/function.PDO-rollBack.php
 	  	   */
@@ -201,80 +190,20 @@ interface SQLDialect {
 	       * Returns the 'Table' object which is mapped to the specified $model.
 	       * 
 	       * @param $model The domain model object to retrieve the table element for. Defaults to the model
-	       * 			   currently being managed by the 'PersistenceManager'.
-	       * @return The 'Table' object responsible for the model's persistence or null if a table
+	       * 			   currently being managed by the 'ORM'.
+	       * @return The 'Table' object responsible for the model's ORM or null if a table
 	       * 		 could not be located for the specified $model.
 	       */
 	      public function getTableByModel( $model = null );
 
 	      /**
-	       * Returns a 'Table' object representing the table configured in persistence.xml as
+	       * Returns a 'Table' object representing the table configured in orm.xml as
 	       * the AgilePHP 'Identity' table.
 	       * 
 	       * @return The 'Table' object which represents the AgilePHP 'Identity' table, or null
 	       * 		 if an 'Identity' table has not been configured.
 	       */
 	      public function getTableByModelName( $modelName );
-
-	  	  /**
-	  	   * Returns a 'Table' object by its name as configured in persistence.xml
-	  	   * 
-	  	   * @param $tableName The value of the table's 'name' attribute
-	  	   * @return The 'Table' object or null if the table was not found
-	  	   */
-	  	  public function getTableByName( $tableName );
-
-	  	  /**
-	   	   * Returns a SimpleXMLElement representing the table configured in persistence.xml as
-	   	   * an AgilePHP 'Identity' table.
-		   * 
-	       * @return The SimpleXMLElement instance containing the 'Identity' table, or null
-	       * 		   if an 'Identity' table has not been configured.
-	       */
-	      public function getIdentityTable();
-
-	      /**
-	       * Returns the domain object model responsible for 'Identity' persistence.
-	       * 
-	       * @return The domain object model responsible for 'Identity' persistence.
-	       */
-	      public function getIdentityModel();
-
-	      /**
-	       * Returns a SimpleXMLElement representing the table configured in persistence.xml as
-	       * an AgilePHP 'SessionScope' session table.
-	       * 
-	       * @return The SimpleXMLElement instance containing the 'SessionScope' session table
-	       * 		 or null if a session table has not been configured.
-	       */
-	      public function getSessionTable();
-
-	  	  /**
-	       * Returns the domain model object responsible for 'SessionScope' sessions.
-	       * 
-	       * @return void
-	       */
-	  	  public function getSessionModel();
-
-		  /**
-		   * Returns the column 'name' attribute value configured in persistence.xml for the specified
-		   * column 'property' attribute.
-		   * 
-		   * @param $table The 'Table' object to search
-		   * @param $property The property attributes value
-		   * @return The column name or null if the $property could not be found in the table
-		   */
-		  public function getColumnNameForProperty( $table, $property );
-
-		  /**
-		   * Returns the 'property' name configured in persistence.xml for the specified
-		   * column 'name' attribute.
-		   * 
-		   * @param $table The 'Table' object to search
-		   * @param $columnName The column name to search
-		   * @return The column name or null if the $property could not be found in the table
-		   */
-		  public function getPropertyNameForColumn( $table, $columnName );
 
 		  /**
 	       * Creates an accessor method from the $property parameter. The $property
@@ -295,17 +224,10 @@ interface SQLDialect {
 	       * @return The mutator string
 	       */
 	      public function toMutator( $property );
-
-	      /**
-	       * Returns the specified number as a 'bigint' 64-bit number.
-	       * 
-	       * @return void
-	       */
-	      public function toBigInt( $number );
 	     
 		  /**
 		   * Creates the active database in use by the ORM framework
-		   * (defined in persistence.xml).
+		   * (defined in orm.xml).
 		   * 
 		   * @return void
 		   */
@@ -316,26 +238,26 @@ interface SQLDialect {
 		   * 
 		   * @param Table $table The table instance to create
 		   * @return void
-		   * @throws PersistenceException
+		   * @throws ORMException
 		   */
 		  public function createTable( Table $table );
 
 		  /**
 	   	   * Drops the active database in use by the ORM framework
-	   	   * (defined in persistence.xml).
+	   	   * (defined in orm.xml).
 	   	   * 
 	   	   * @return void
-	   	   * @throws PersistenceException
+	   	   * @throws ORMException
 	   	   */
 	  	  public function drop();
 
 	  	  /**
 	   	   * Drops the specified table from the active database in use
-	   	   * by the ORM framework (defined in persistence.xml).
+	   	   * by the ORM framework (defined in orm.xml).
 	   	   * 
 	   	   * @param Table $table The table to drop
 	   	   * @return void
-	   	   * @throws PersistenceException
+	   	   * @throws ORMException
 	   	   */
 	  	  public function dropTable( Table $table );
 
@@ -344,7 +266,7 @@ interface SQLDialect {
 	   	  * 
 		  * @param $model The model object to persist
 		  * @return PDOStatement
-		  * @throws PersistenceException
+		  * @throws ORMException
 		  */
   	     public function persist( $model );
 
@@ -353,7 +275,7 @@ interface SQLDialect {
 	   	  * 
 		  * @param $model The model object to merge/update
 		  * @return PDOStatement
-		  * @throws PersistenceException
+		  * @throws ORMException
 		  */
 	  	 public function merge( $model );
 
@@ -362,7 +284,7 @@ interface SQLDialect {
 	   	  * 
 		  * @param $model The domain model object to delete
 		  * @return PDOStatement
-		  * @throws PersistenceException
+		  * @throws ORMException
 		  */
 		 public function delete( $model );
 
@@ -371,7 +293,7 @@ interface SQLDialect {
 	   	  * 
 		  * @param $model A domain model object
 		  * @return PDOStatement
-		  * @throws PersistenceException
+		  * @throws ORMException
 		  */
 		 public function truncate( $model );
 
@@ -381,7 +303,7 @@ interface SQLDialect {
 	   	  * @param Object $model A domain model object with its primary key field set
 	      * @return Returns the same model which was passed (populated with the
 	      * 		 database values) or null if a matching record could not be found.
-	      * @throws PersistenceException
+	      * @throws ORMException
 	      */
 	  	 public function find( $model );
 
@@ -393,13 +315,6 @@ interface SQLDialect {
 		  */
 	  	 public function reverseEngineer();
 
-	     /**
-	      * Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.
-	      * 
-	      * @return The formatted SQL string
-	      */
-	     public function createRestrictSQL();
-	     
 	     /**
 		  * Returns boolean response based on whether or not a connection to the database exists.
 		  *  

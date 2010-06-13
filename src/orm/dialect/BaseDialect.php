@@ -16,26 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm.dialect
  */
 
 /**
- * Includes all persistence package dependancies
- */
-require_once 'Database.php';
-require_once 'Table.php';
-require_once 'Column.php';
-require_once 'ForeignKey.php';
-
-/**
- * Base persistence class responsible for all database/ORM actions
+ * Base ORM class which assists with common dialect tasks.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm.dialect
  * @abstract
  */
-abstract class BasePersistence {
+abstract class BaseDialect {
 
 		 protected $PDOStatement;			 // Internally used PDO::Statement
 		 private $maxResults = 25;			 // Used during a call to 'find'
@@ -56,29 +48,19 @@ abstract class BasePersistence {
 		 protected function __construct() { }
 
 		 /**
-		  * Returns the PDO instance in use by the persistence framework.
+		  * Returns the PDO instance in use by the ORM framework.
 		  * 
 		  * @return The PDO instance in use by the framework.
 		  */
-		 public function getPDOInstance() {
+		 public function getPDO() {
 
 		 		return $this->pdo;
 		 }
 
 		 /**
-		  * Returns a list of drivers available to PDO.
+		  * Returns the 'Database' object being used by the ORM framework.
 		  * 
-		  * @return void
-		  */
-		 public function getAvailableDrivers() {
-
-		 		return PDO::getAvailableDrivers();
-		 }
-
-		 /**
-		  * Returns the 'Database' object being used by the persistence framework.
-		  * 
-		  * @return The 'Database' object in use by the persistence framework.
+		  * @return The 'Database' object in use by the ORM framework.
 		  */
 		 public function getDatabase() {
 
@@ -102,7 +84,7 @@ abstract class BasePersistence {
 		  * 
 		  * @return The DISTINCT column name or null if a column name has not been defined. 
 		  */
-		 public function getDistinct() {
+		 public function isDistinct() {
 
 		 		return $this->distinct;
 		 }
@@ -176,13 +158,13 @@ abstract class BasePersistence {
 	  	  * Begins a transaction
 	  	  * 
 	  	  * @return void
-	  	  * @throws PersistenceException
+	  	  * @throws ORMException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-beginTransaction.php
 	  	  */
 	  	 public function beginTransaction() {
 
-	  		    Log::debug( 'BasePersistence::beginTransaction Beginning transaction' );
+	  		    Log::debug( 'BaseDialect::beginTransaction Beginning transaction' );
 
 	  		    try {
 	  		   	 	  $this->pdo->beginTransaction();
@@ -190,7 +172,7 @@ abstract class BasePersistence {
 	  		    }
 	  		    catch( PDOException $e ) {
 
-	  		   		   throw new PersistenceException( $e->getMessage(), $e->getCode() );
+	  		   		   throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		    }
 	  	 }
 
@@ -198,13 +180,13 @@ abstract class BasePersistence {
 	  	  * Commits an already started transaction.
 	  	  * 
 	  	  * @return void
-	  	  * @throws PersistenceException
+	  	  * @throws ORMException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-commit.php
 	  	  */
 	  	 public function commit() {
 
-	  		    Log::debug( 'BasePersistence::commit Transaction successfully committed' );
+	  		    Log::debug( 'BaseDialect::commit Transaction successfully committed' );
 
 	  		    try {
 	  		   		  $this->pdo->commit();
@@ -212,7 +194,7 @@ abstract class BasePersistence {
 	  		    }
 	  		    catch( PDOException $e ) {
 
-	  		   		   throw new PersistenceException( $e->getMessage(), $e->getCode() );
+	  		   		   throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		    }
 	  	 }
 
@@ -222,13 +204,13 @@ abstract class BasePersistence {
 	  	  * @param $message Error/reason why the transaction was rolled back
 	  	  * @param $code An error/reason code
 	  	  * @return void
-	  	  * @throws PersistenceException
+	  	  * @throws ORMException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-rollBack.php
 	  	  */
 	  	 public function rollBack( $message = null, $code = 0 ) {
 
-	  		    Log::debug( 'BasePersistence::rollBack' . (($message == null) ? '' : ' ' . $message ));
+	  		    Log::debug( 'BaseDialect::rollBack' . (($message == null) ? '' : ' ' . $message ));
 
 	  		    try {
 	  		    	  $this->pdo->rollBack();
@@ -236,10 +218,10 @@ abstract class BasePersistence {
 	  		    }
 	  		    catch( PDOException $e ) {
 
-	  		   		   throw new PersistenceException( $e->getMessage(), $e->getCode() );
+	  		   		   throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		    }
 
-	  		    if( $message ) throw new PersistenceException( $message, $code );
+	  		    if( $message ) throw new ORMException( $message, $code );
 	  	 }
 
 	  	 /**
@@ -251,7 +233,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function prepare( $statement ) {
 
-	  		    Log::debug( 'BasePersistence::prepare Preparing' . 
+	  		    Log::debug( 'BaseDialect::prepare Preparing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'statement ' . $statement );
 
@@ -263,12 +245,12 @@ abstract class BasePersistence {
 					  	  	if( $this->transactionInProgress )
 			  	 		    	$this->rollBack( $info[2], $info[1] );
 
-						  	throw new PersistenceException( $info[2], $info[1] );
+						  	throw new ORMException( $info[2], $info[1] );
 					    }
 				}
 				catch( PDOException $e ) {
 
-					   throw new PersistenceException( $e->getMessage(), $e->getCode() );
+					   throw new ORMException( $e->getMessage(), $e->getCode() );
 				}
 
 	  		    return $this->PDOStatement;
@@ -283,7 +265,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function execute( array $inputParameters = array() ) {
 
-	  		    Log::debug( 'BasePersistence::execute Executing' . 
+	  		    Log::debug( 'BaseDialect::execute Executing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
@@ -306,7 +288,7 @@ abstract class BasePersistence {
 					        if( $this->transactionInProgress )
 					  			$this->rollBack( $info[2], $info[1] );
 
-						  	throw new PersistenceException( $info[2], $info[1] );
+						  	throw new ORMException( $info[2], $info[1] );
 					    }
 			  	}
 			  	catch( PDOException $e ) {
@@ -314,7 +296,7 @@ abstract class BasePersistence {
 			  		   if( $this->transactionInProgress )
 					  	   $this->rollBack();
 
-			  		   throw new PersistenceException( $e->getMessage(), $e->getCode() );
+			  		   throw new ORMException( $e->getMessage(), $e->getCode() );
 			  	}
 
 			    return $this->PDOStatement;
@@ -329,7 +311,7 @@ abstract class BasePersistence {
 	  	  */
 	  	 public function exec( $statement ) {
 
-	  		    Log::debug( 'BasePersistence::exec Executing raw' . 
+	  		    Log::debug( 'BaseDialect::exec Executing raw' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'PDO::exec query ' . $sql );
 
@@ -341,12 +323,12 @@ abstract class BasePersistence {
 	   	  * 
 	   	  * @param $sql The SQL statement to execute
 	   	  * @return The PDOStatement returned by PDO::query
-	   	  * @throws PersistenceException
+	   	  * @throws ORMException
 	   	  * @see http://usphp.com/manual/en/function.PDO-query.php
 	   	  */
 	  	 public function query( $sql ) {
 
-	  		    Log::debug( 'BasePersistence::query Executing' . 
+	  		    Log::debug( 'BaseDialect::query Executing' . 
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'raw PDO::query ' . $sql );
 
@@ -359,7 +341,7 @@ abstract class BasePersistence {
                     if( $this->transactionInProgress )
 			  			$this->rollBack( $info[2], $info[1] );
 
-	  	     	    throw new PersistenceException( $info[2], $this->pdo->errorCode() );
+	  	     	    throw new ORMException( $info[2], $this->pdo->errorCode() );
 	  	        }
 
 	  	        return $stmt;
@@ -382,7 +364,7 @@ abstract class BasePersistence {
 	     * 
 	     * @param $model The domain model object to persist
 	     * @return PDOStatement
-	     * @throws PersistenceException
+	     * @throws ORMException
 	     */
 	    public function persist( $model ) {
 
@@ -391,7 +373,7 @@ abstract class BasePersistence {
 	   		   $values = array();
 			   $table = $this->getTableByModel( $model );
 
-			   Log::debug( 'BasePersistence::persist Performing persist on model \'' . $table->getModel() . '\'.' );
+			   Log::debug( 'BaseDialect::persist Performing persist on model \'' . $table->getModel() . '\'.' );
 
 	   		   $this->validate( $table, true );
 
@@ -400,8 +382,8 @@ abstract class BasePersistence {
 			   $columns = $table->getColumns();
 			   for( $i=0; $i<count( $columns ); $i++ ) {
 
-			   		if( $columns[$i]->isAutoIncrement() )
-			   			continue;
+			   		if( $columns[$i]->isAutoIncrement() ) continue;
+			   		if( $columns[$i]->isLazy() ) continue;
 
 			   		$sql .= $columns[$i]->getName();
 
@@ -411,41 +393,43 @@ abstract class BasePersistence {
 			   $sql .= ' ) VALUES ( ';
 			   for( $i=0; $i<count( $columns ); $i++ ) {
 
-			   		if( $columns[$i]->isAutoIncrement() )
-			   				continue;
+			   		if( $columns[$i]->isAutoIncrement() ) continue;
+			   		if( $columns[$i]->isLazy() ) continue;
 
 			   		$sql .= '?';
-			   	    $method = $this->toAccessor( $columns[$i]->getModelPropertyName() );
 
+			   	    $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
 			   	    if( $columns[$i]->isForeignKey() ) {
 
-			   	    	// php namespace support - extract the class name from the fully qualified class path
-  		  		   	    $foreignModelPieces = explode( '\\', $columns[$i]->getForeignKey()->getReferencedTableInstance()->getModel() );
-  		  		   	    $foreignModelName = array_pop( $foreignModelPieces );
+			   	    	if( is_object( $model->$accessor() ) ) {
 
-  		  		   	    // Create accessor names for both the foreign model instance and the foreign model's instance accessor
-						$instanceAccessor = $this->toAccessor( $foreignModelName );
-			   	    	$accessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-
-			   	    	if( is_object( $model->$instanceAccessor() ) ) {
-
+			   	    		$refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
 			   	    		// Get foreign key value from the referenced field/instance accessor
-			   	    		if( $model->$instanceAccessor()->$accessor() != null ) {
-			   	    			array_push( $values, $model->$instanceAccessor()->$accessor() );
-			   	    		}
-			   	    		else {
-			   	    			// Persist the referenced model instance and use its new id as the foreign key value
-				   	    		$this->persist( $model->$instanceAccessor() );
-				   	    		array_push( $values, $this->pdo->lastInsertId() );
+			   	    		if( $model->$accessor()->$refAccessor() != null ) {
+
+			   	    			try {
+			   	    				  // Try to persist the referenced entity first
+					   	    		  $this->persist( $model->$accessor() );
+					   	    		  array_push( $values, $model->$accessor()->$refAccessor() );
+			   	    			}
+			   	    			catch( Exception $e ) {
+
+			   	    				   // The referenced entity doesnt exist yet, persist it
+			   	    				   if( preg_match( '/duplicate/i', $e->getMessage() ) ) {
+
+			   	    				   	   $this->merge( $model->$accessor() );
+			   	    				   	   array_push( $values, $model->$accessor()->$refAccessor() );
+			   	    				   }
+			   	    			}
 			   	    		}
 			   	    	}
 			   	    	else {
-			   	    		// @todo Extract using the foreign key property (is this bad or should we stick to objects only?)
-			   	        	array_push( $values, ($model->$method() == '') ? NULL : $model->$method() );
-			   	        }
+
+			   	    		array_push( $values, null );
+			   	    	}
 			   	    }
 			   	    else // No foreign key
-			   	    	array_push( $values, (($model->$method() == '') ? NULL : $model->$method()) );
+			   	    	array_push( $values, (($model->$accessor() == '') ? NULL : $model->$accessor()) );
 
 			   		if( ($i + 1) < count( $columns ) )
 				   		$sql .= ', ';
@@ -461,14 +445,14 @@ abstract class BasePersistence {
 	     * 
 	     * @param $model The model object to merge/update
 	     * @return PDOStatement
-	     * @throws PersistenceException
+	     * @throws ORMException
 	     */
 	    public function merge( $model ) {
 
 	    	   $this->model = $model;
 	    	   $table = $this->getTableByModel( $model );
 
-	    	   Log::debug( 'BasePersistence::merge Performing merge on model \'' . $table->getModel() . '\'.' );
+	    	   Log::debug( 'BaseDialect::merge Performing merge on model \'' . $table->getModel() . '\'.' );
 
 	    	   $this->model = $model;
 	  	       $values = array();
@@ -481,44 +465,33 @@ abstract class BasePersistence {
 	  		   $naCount = 0;
 			   for( $i=0; $i<count( $columns ); $i++ ) {
 
-			   	    if( $columns[$i]->isPrimaryKey() || $columns[$i]->isAutoIncrement() )
-			   			continue;
+			   	    if( $columns[$i]->isPrimaryKey() || $columns[$i]->isAutoIncrement() ) continue;
+			   		if( $columns[$i]->isLazy() ) continue;
 
 			   		$accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
-
 			   		// Extract foreign key value from the referenced column
 			   	    if( $columns[$i]->isForeignKey() ) {
 
-			   	    	// php namespace support - extract the class name from the fully qualified class path
-  		  		   	    $foreignModelPieces = explode( '\\', $columns[$i]->getForeignKey()->getReferencedTableInstance()->getModel() );
-  		  		   	    $foreignModelName = array_pop( $foreignModelPieces );
-
-  		  		   	    // Create accessor name for the foreign model instance
-						$instanceAccessor = $this->toAccessor( $foreignModelName );
-
-			   	    	if( is_object( $model->$instanceAccessor() ) ) {
+			   	    	if( is_object( $model->$accessor() ) ) {
 
 			   	    		// Create name for the foreign model's instance accessor
-			   	    		$accessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+			   	    		$refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
 
 			   	    		// Get foreign key value from the referenced instance
-			   	    		if( $model->$instanceAccessor()->$accessor() != null ) {
+			   	    		if( $model->$accessor()->$refAccessor() != null ) {
 
-			   	    			array_push( $values, $model->$instanceAccessor()->$accessor() );
-			   	    			// @todo Need a way to check if the model is dirty so we dont waste database calls updating data that already exists.
-			   	    			//		 Possibly #@Column interceptor and move away from xml altogether? Getting rid of xml will speed up apps with a
-			   	    			//		 large database since a large persistence.xml file will have to be parsed with each page hit... 
-			   	    			$this->merge( $model->$instanceAccessor() );
+		   	    			    $this->merge( $model->$accessor() );
+				   	    		array_push( $values, $model->$accessor()->$refAccessor() );
 			   	    		}
 			   	    		else {
 			   	    			// Persist the referenced model instance, and use its new id as the foreign key value
-				   	    		$this->persist( $model->$instanceAccessor() );
+				   	    		$this->persist( $model->$accessor() );
 				   	    		array_push( $values, $this->pdo->lastInsertId() );
 			   	    		}
 			   	    	}
 			   	    	else {
-			   	    		// @todo Extract using the foreign key property (is this bad or should we stick to objects only?)
-			   	        	array_push( $values, ($model->$accessor() == '') ? NULL : $model->$accessor() );
+
+			   	        	array_push( $values, null );
 			   	        }
 			   	    }
 			   	    else // not a foreign key
@@ -550,13 +523,13 @@ abstract class BasePersistence {
 	     * 
 	     * @param $model The domain model object to delete
 	     * @return PDOStatement
-	     * @throws PersistenceException
+	     * @throws ORMException
 	     */
 	    public function delete( $model ) {
 
 	      	   $table = $this->getTableByModel( $model );
 
-	      	   Log::debug( 'BasePersistence::delete Performing delete on model \'' . $table->getModel() . '\'.' );
+	      	   Log::debug( 'BaseDialect::delete Performing delete on model \'' . $table->getModel() . '\'.' );
 
 	    	   $values = array();
 		       $columns = $table->getPrimaryKeyColumns();
@@ -583,7 +556,7 @@ abstract class BasePersistence {
 	     * 
 	     * @param $model A domain model object
 	     * @return PDOStatement
-	     * @throws PersistenceException
+	     * @throws ORMException
 	     */
 	    public function truncate( $model ) {
 
@@ -599,7 +572,7 @@ abstract class BasePersistence {
 	     * filter results.
 	     * 
 	     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
-	     * @throws PersistenceException If any primary keys contain null values or any
+	     * @throws ORMException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
 	     */
 	    public function find( $model ) {
@@ -608,12 +581,12 @@ abstract class BasePersistence {
 			   $newModel = $table->getModelInstance();
 			   $values = array();
 
-			   Log::debug( 'BasePersistence::find Performing find on model \'' . $table->getModel() . '\'.' );
+			   Log::debug( 'BaseDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		   try {
 	  		   		 if( $this->isEmpty( $model ) ) {
 
-	    	   	         $sql = 'SELECT ' . (($this->getDistinct() == null) ? '*' : 'DISTINCT ' . $this->getDistinct()) . ' FROM ' . $table->getName();
+	    	   	         $sql = 'SELECT ' . (($this->isDistinct() == null) ? '*' : 'DISTINCT ' . $this->isDistinct()) . ' FROM ' . $table->getName();
 
 	    	   	         $order = $this->getOrderBy();
 	    	   	         $offset = $this->getOffset();
@@ -638,11 +611,20 @@ abstract class BasePersistence {
 	    	   		 		$columns = $table->getColumns();
 							for( $i=0; $i<count( $columns ); $i++ ) {
 
+							 	 if( $columns[$i]->isLazy() ) continue;
+
 							 	 $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
 						     	 if( $model->$accessor() == null ) continue;
 
 						     	 $where .= (count($values) ? ' ' . $this->restrictionsLogic . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->comparisonLogic . ' ?';
-				     	 	     array_push( $values, $model->$accessor() );
+
+						     	 if( is_object( $model->$accessor() ) ) {
+						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+						     	 	 array_push( $values, $model->$accessor()->$refAccessor() );
+						     	 }
+						     	 else {
+				     	 	     	 array_push( $values, $model->$accessor() );
+						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 						    $sql .= ' LIMIT ' . $this->getMaxResults() . ';';
@@ -654,7 +636,7 @@ abstract class BasePersistence {
 
 					 if( !count( $result ) ) {
 
-					 	 Log::debug( 'BasePersistence::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	 Log::debug( 'BaseDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	 return null;
 					 }
 
@@ -667,11 +649,14 @@ abstract class BasePersistence {
 
 					 	   	  		   if( !$value ) continue;
 					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
-					 	   	  		   
+
 							 	   	   // Create foreign model instances from foreign values
 						 	 		   foreach( $table->getColumns() as $column ) {
 
-						 	 		  		    if( $column->isForeignKey() && $column->getName() == $name ) {
+						 	 		   		    if( $column->getName() != $name ) continue;
+						 	 		   		    if( $column->isLazy() ) continue;
+
+						 	 		  		    if( $column->isForeignKey() ) {
 
 						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
 						 	 		  		   	    $foreignInstance = new $foreignModel();
@@ -705,7 +690,7 @@ abstract class BasePersistence {
 	  		 }
 	  		 catch( Exception $e ) {
 
-	  		 		throw new PersistenceException( $e->getMessage(), $e->getCode() );
+	  		 		throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		 }
 	  }
 
@@ -721,8 +706,7 @@ abstract class BasePersistence {
 			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
 			 $sql .= ';';
 
-	     	 $stmt = $this->prepare( $sql );
-	     	 $stmt->execute( array( $this->getTableByModel( $model )->getName() ) );
+	     	 $stmt = $this->query( $sql );
   			 $stmt->setFetchMode( PDO::FETCH_OBJ );
   			 $result = $stmt->fetchAll();
 
@@ -797,7 +781,7 @@ abstract class BasePersistence {
 	  public function setRestrictionsLogicOperator( $operator ) {
 
 	   	     if( strtolower( $operator ) !== 'and' && strtolower( $operator ) !== 'or' )
-	     	     throw new PersistenceException( 'Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.' );
+	     	     throw new ORMException( 'Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.' );
 
 	     	 $this->restrictionsLogic = $operator;
 	  }
@@ -807,7 +791,7 @@ abstract class BasePersistence {
 	   * 
 	   * @return string Retrictions logic operator (AND|OR)
 	   */
-	  protected function getRestrictionsLogicOperator() {
+	  public function getRestrictionsLogicOperator() {
 
 	  			return $this->restrictionsLogic;
 	  }
@@ -817,7 +801,7 @@ abstract class BasePersistence {
 	   * 
 	   * @return string Comparison logic operator (LIKE|<|>|?|=)
 	   */
-	  protected function getComparisonLogicOperator() {
+	  public function getComparisonLogicOperator() {
 
 				return $this->comparisonLogic;
 	  }
@@ -831,7 +815,7 @@ abstract class BasePersistence {
 	  public function setComparisonLogicOperator( $operator ) {
 
 	  		 if( strtolower( $operator ) != 'like' && $operator !== '<' && $operator !== '>' && $operator !== '=' )
-	     	     throw new PersistenceException( 'Comparison logic operator must be \'>\', \'<\', \'=\', or \'LIKE\'. Found \'' . $operator . '\'.' );
+	     	     throw new ORMException( 'Comparison logic operator must be \'>\', \'<\', \'=\', or \'LIKE\'. Found \'' . $operator . '\'.' );
 
 	     	 $this->comparisonLogic = $operator;
 	  }
@@ -851,7 +835,7 @@ abstract class BasePersistence {
 				 foreach( $this->restrictions as $key => $val ) {
 
 				   		  $index++;
-				   		  $restricts .= $key . ' ' . $this->comparisonLogic . ' \'' . $val . '\'';
+				   		  $restricts .= $key . ' ' . $this->comparisonLogic . ' \'' . addslashes( $val ) . '\'';
 
 				   		  if( $index < count( $this->restrictions ) )
 				   			  $restricts .= ' ' . $this->restrictionsLogic . ' ';
@@ -865,8 +849,8 @@ abstract class BasePersistence {
 	   * Returns the 'Table' object which is mapped to the specified 'Model'.
 	   * 
 	   * @param $model The domain model object to retrieve the table element for. Defaults to the model
-	   * 			   currently being managed by the 'PersistenceManager'.
-	   * @return The 'Table' object responsible for the model's persistence or null if a table
+	   * 			   currently being managed by the 'ORM'.
+	   * @return The 'Table' object responsible for the model's ORM or null if a table
 	   * 		 could not be located for the specified $model.
 	   */
 	  public function getTableByModel( $model = null ) {
@@ -876,7 +860,7 @@ abstract class BasePersistence {
 	  		 }
 	  		 catch( ReflectionException $re ) {
 
-	  		 		throw new PersistenceException( 'BasePersistence::getTableByModel Could not get table because \'' . $re->getMessage() . '\'.' );
+	  		 		throw new ORMException( 'BaseDialect::getTableByModel Could not get table because \'' . $re->getMessage() . '\'.' );
 	  		 }
 
 			 foreach( $this->database->getTables() as $table ) {
@@ -885,7 +869,7 @@ abstract class BasePersistence {
 			 	  	      return $table;
 			 }
 
-			 throw new PersistenceException( 'BasePersistence::getTableByModel Could not locate the requested model \'' . $class->getName() . '\' in persistence.xml' );
+			 throw new ORMException( 'BaseDialect::getTableByModel Could not locate the requested model \'' . $class->getName() . '\' in orm.xml' );
 	  }
 
 	  /**
@@ -901,11 +885,11 @@ abstract class BasePersistence {
 			  	  	  if( $table->getModel() == $modelName )
 			 	  	      return $table;
 
-			 throw new PersistenceException( 'BasePersistence::getTableByModelName Could not locate the requested model \'' . $modelName . '\' in persistence.xml' );
+			 throw new ORMException( 'BaseDialect::getTableByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml' );
 	  }
 
 	  /**
-	   * Returns a 'Table' object by its name as configured in persistence.xml
+	   * Returns a 'Table' object by its name as configured in orm.xml
 	   * 
 	   * @param $tableName The value of the table's 'name' attribute
 	   * @return The 'Table' object or null if the table was not found
@@ -916,11 +900,11 @@ abstract class BasePersistence {
 	  		 		  if( $table->getName() == $tableName )
 	  		 		  	  return $table;
 
-	  		 throw new PersistenceException( 'BasePersistence::getTableByName Could not locate the requested table \'' . $tableName . '\' in persistence.xml' );
+	  		 throw new ORMException( 'BaseDialect::getTableByName Could not locate the requested table \'' . $tableName . '\' in orm.xml' );
 	  }
 
 	  /**
-	   * Returns a 'Table' object representing the table configured in persistence.xml as
+	   * Returns a 'Table' object representing the table configured in orm.xml as
 	   * the AgilePHP 'Identity' table.
 	   * 
 	   * @return The 'Table' object which represents the AgilePHP 'Identity' table, or null
@@ -939,10 +923,10 @@ abstract class BasePersistence {
 
 	  /**
 	   * Returns an instance of the domain model object responsible for AgilePHP 
-	   * 'Identity' persistence.
+	   * 'Identity' ORM.
 	   * 
 	   * @return An instance of the domain model object responsible for 'Identity'
-	   * 		 persistence.
+	   * 		 ORM.
 	   */
 	  public function getIdentityModel() {
 
@@ -972,7 +956,7 @@ abstract class BasePersistence {
 	 	  	      	  	   }
 	 	  	      	  	   
 	 	  	      	  	   if( !$getUsernameExists || !$getPasswordExists || !$getEmailExists )
-							   throw new PersistenceException( 'BasePersistence::getIdentityModel Identity model must support methods \'getUsername\', \'getPassword\', and \'getEmail\' as enforced by the interface at ' . AgilePHP::getFrameworkRoot() . '/core/Identity.php.' );
+							   throw new ORMException( 'BaseDialect::getIdentityModel Identity model must support methods \'getUsername\', \'getPassword\', and \'getEmail\' as enforced by the interface at ' . AgilePHP::getFrameworkRoot() . '/core/Identity.php.' );
 
 	 	  	      	  	   return new $modelName();
 		 	  	      }
@@ -982,7 +966,7 @@ abstract class BasePersistence {
 	  }
 
 	 /**
-	   * Returns the 'Table' object that represents the table configured in persistence.xml as
+	   * Returns the 'Table' object that represents the table configured in orm.xml as
 	   * an AgilePHP 'SessionScope' session table.
 	   * 
 	   * @return The 'Table' object instance containing the 'SessionScope' session table
@@ -1001,7 +985,7 @@ abstract class BasePersistence {
 
 	  /**
 	   * Returns an instance of the domain model object responsible for AgilePHP
-	   * 'SessionScope' session persistence.
+	   * 'SessionScope' session ORM.
 	   * 
 	   * @return An instance of the model responsible for AgilePHP 'SessionScope'
 	   * 	     sessions.
@@ -1021,7 +1005,7 @@ abstract class BasePersistence {
 	  }
 
 	  /**
-	   * Returns a custom display name as configured in persistence.xml 'display' attribute
+	   * Returns a custom display name as configured in orm.xml 'display' attribute
 	   * for the specified column name. If the 'Column' name can not be matched, it is then
 	   * compared against the 'Column' 'property' attribute value. If neither can be matched,
 	   * the $columnName is returned.
@@ -1052,18 +1036,19 @@ abstract class BasePersistence {
 	  }
 
 	  /**
-	   * Returns the value of the 'property' attribute configured in persistence.xml for the specified $columnName.
+	   * Returns the value of the 'property' attribute configured in orm.xml for the specified $columnName.
 	   * If the property attribute does not exist, the column name is returned instead.
 	   * 
 	   * @param $table The 'Table' object containing the 'Column' to search.
 	   * @param $columnName The name of the column to retrieve the property attribute value from
 	   * @return The property name. If the property does not exist, the $columnName is returned instead
 	   */
-	  public function getPropertyNameForColumn( $table, $columnName ) {
+	  public function getPropertyNameForColumn( $table, $columnName, $caseSensitive = true ) {
 
 	  		 foreach( $table->getColumns() as $column ) {
 
-	  		 	      if( $column->getName() == $columnName )
+	  		 		  $col = ($caseSensitive) ? $column->getName() : strtolower( $column->getName() );
+	  		 	      if( $col == $columnName )
 	  		 	      	  if( $column->getProperty() )
 	  		 	      	  	  return $column->getProperty();
 	  		 }
@@ -1072,7 +1057,7 @@ abstract class BasePersistence {
 	  }
 
 	  /**
-	   * Returns the value of the 'name' attribute configured in persistence.xml for the specified $propertyName.
+	   * Returns the value of the 'name' attribute configured in orm.xml for the specified $propertyName.
 	   * If the property attribute does not exist, a match is attempted against the column name. If the column
 	   * name matches the expected $propertyName, the column name is returned. If neither can be matched, null is
 	   * returned instead.
@@ -1116,17 +1101,7 @@ abstract class BasePersistence {
 	  }
 
 	  /**
-	   * Closes the connection to the database.
-	   * 
-	   * @return void
-	   */
-	  public function __destruct() {
-
-	  		 $this->close();
-	  }
-
-	  /**
-	   * Checks the model in use by the persistence framework for the presence
+	   * Checks the model in use by the ORM framework for the presence
 	   * of property values. If the model does not contain any values, it is
 	   * considered empty.
 	   * 
@@ -1206,7 +1181,7 @@ abstract class BasePersistence {
 	  		  }
 	  		  catch( Exception $e ) {
 
-	  		  		 Log::debug( 'BasePersistence::compare ' . $e->getMessage() );
+	  		  		 Log::debug( 'BaseDialect::compare ' . $e->getMessage() );
 	  		  		 return false;
 	  		  }
 
@@ -1304,16 +1279,15 @@ abstract class BasePersistence {
 	    }
 
 	  /**
-	   * Validates the domain model object's property values against persistence.xml table/column configuration
+	   * Validates the domain model object's property values against orm.xml table/column configuration
 	   * 
-	   * @param $table The Table object representing the table in persistence.xml configuration to validate.
+	   * @param $table The Table object representing the table in orm.xml configuration to validate.
 	   * @param $isInsert True if validating a persist operation
 	   * @return void
 	   */
 	  protected function validate( Table $table, $isPersist = false ) {
 
-	  	        if( $table->getValidate() == false )
-	  	            return;
+	  	        if( $table->getValidate() == false ) return;
 
 			    foreach( $table->getColumns() as $column ) {
 
@@ -1323,23 +1297,23 @@ abstract class BasePersistence {
 			  	       	   continue;
 
 			  	       // Verify length
-			  	       if( $length = $column->getLength() ) {
+			  	       if( $length = $column->getLength() && !is_object( $this->model->$accessor() ) ) {
 
 			  	       	   $dataLen = strlen( $this->model->$accessor() );
 			  	       	   if( $dataLen > $length ) {
 
-			  	       	   	   $message = 'BasePersistence::validate Persistence validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Length defined in persistence.xml as \'' . $column->getLength() . '\' but the has a length of \'' . $dataLen . '\'.';
+			  	       	   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Length defined in orm.xml as \'' . $column->getLength() . '\' but the has a length of \'' . $dataLen . '\'.';
 			  	       	   	   Log::debug( $message );
-			  	       	   	   throw new PersistenceException( $message );
+			  	       	   	   throw new ORMException( $message );
 			  	       	   }
 			  	       }
 
 			  	       // Verify required fields contain data
 			  		   if( $column->isRequired() && $this->model->$accessor() === null ) {
-			  		   	
-			  		   	   $message = 'BasePersistence::validate Persistence validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Required field contains null value.';
+
+			  		   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Required field contains null value.';
 			  		   	   Log::debug( $message );
-			  		       throw new PersistenceException( $message );
+			  		       throw new ORMException( $message );
 			  		   }
 
 			  		   // Use specified validator to verify data integrity
@@ -1351,12 +1325,22 @@ abstract class BasePersistence {
 			  	       	   $o = new $validator( $this->model->$accessor() );
 			  	       	   if( !$o->validate() ) {
 
-			  	       	   	   $message = 'BasePersistence::validate Persistence validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype( $this->model->$accessor() ) . '\' using validator \'' . $validator . '\'.';
+			  	       	   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype( $this->model->$accessor() ) . '\' using validator \'' . $validator . '\'.';
 			  	       	   	   Log::debug( $message );
-			  	       	   	   throw new PersistenceException( $message );
+			  	       	   	   throw new ORMException( $message );
 			  	       	   }			  	       	   	   
 			  	       }
 			  }
+	  }
+
+	  /**
+	   * Closes the connection to the database.
+	   * 
+	   * @return void
+	   */
+	  public function __destruct() {
+
+	  		 $this->close();
 	  }
 }
 ?>

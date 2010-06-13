@@ -27,10 +27,10 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  * @throws RestServiceException
- * @throws AgilePHP_Exception if the specified error code is not
+ * @throws FrameworkException if the specified error code is not
  * 		   a valid RFC 2616 status code.
  */
-class RestServiceException extends AgilePHP_Exception { 
+class RestServiceException extends FrameworkException { 
 
 	  protected $codes = array(
              100 => 'Continue',
@@ -86,7 +86,7 @@ class RestServiceException extends AgilePHP_Exception {
 	  public function __construct( $code = null ) {
 
 	  		 if( !array_key_exists( $code, $this->codes ) )
-	  		 	 throw new AgilePHP_Exception( 'Invalid HTTP Response code \'' . $code . '\'.' );
+	  		 	 throw new FrameworkException( 'Invalid HTTP Response code \'' . $code . '\'.' );
 
 	  		 $this->code = $code;
 	  		 $this->message = $code . ' ' . $this->codes[$code];

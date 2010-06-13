@@ -75,7 +75,7 @@ class Mailer {
         	 $headers .= 'X-mailer: AgilePHP Framework on PHP (' . phpversion() . ')' . "\n";
 
         	 if( !mail( $this->to, $this->subject, $this->body, $headers ) )
-        	 	 throw new AgilePHP_Exception( 'Error sending email' );
+        	 	 throw new FrameworkException( 'Error sending email' );
 	  }
 }
 ?>

@@ -28,7 +28,7 @@
  * @package com.makeabyte.agilephp.webservice.remoting
  * @throws RemotingException
  */
-class RemotingException extends AgilePHP_Exception { 
+class RemotingException extends FrameworkException { 
 
 	  /*
 	   * Public context fields reduce the chance that AJAXRenderer will

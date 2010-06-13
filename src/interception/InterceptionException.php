@@ -27,5 +27,5 @@
  * @package com.makeabyte.agilephp.interception
  * @throws InterceptionException
  */
-class InterceptionException extends AgilePHP_Exception { }
+class InterceptionException extends FrameworkException { }
 ?>

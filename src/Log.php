@@ -19,6 +19,10 @@
  * @package com.makeabyte.agilephp
  */
 
+require_once 'logger/LogProvider.php';
+require_once 'logger/LogFactory.php';
+require_once 'logger/FileLogger.php';
+
 /**
  * Performs application logging to #projectName#/logs/agilephp_MM-DD-YY.log 
  * 
@@ -26,7 +30,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  */
-class Log {
+final class Log {
 
 	  private function __construct() {}
 	  private function __clone() {}

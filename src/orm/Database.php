@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 
 /**
- * Represents a database in the AgilePHP persistence component.
+ * Represents a database in the AgilePHP ORM component.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 class Database {
 
@@ -63,7 +63,7 @@ class Database {
 
 	  /**
 	   * Sets the database id. This is used internally by AgilePHP to distinguish
-	   * between multiple data sources configured in persistence.xml
+	   * between multiple data sources configured in orm.xml
 	   * 
 	   * @param String $id The database identifier. This can be any legal XML value.
 	   * @return void

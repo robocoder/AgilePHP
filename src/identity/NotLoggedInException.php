@@ -27,5 +27,5 @@
  * @package com.makeabyte.agilephp.identity
  * @throws NotLoggedInException
  */
-class NotLoggedInException extends AgilePHP_Exception { }
+class NotLoggedInException extends FrameworkException { }
 ?>

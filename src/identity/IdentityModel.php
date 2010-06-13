@@ -104,21 +104,7 @@ interface IdentityModel {
 		  public function getLastLogin();
 		  
 		  /**
-		   * Sets the foreign key value for the role which this user belongs
-		   * @param String $roleId The foreign key value (primary key for the role) which this user belongs
-		   * @return void
-		   */
-		  public function setRoleId( $roleId );
-
-		  /**
-		   * Returns the primary key for the role which this user belongs
-		   * 
-		   * @return String The role id
-		   */
-		  public function getRoleId();
-
-		  /**
-		   * A role component instance to assign to the identity.
+		   * A role instance to assign to the identity.
 		   * 
 		   * @param Role $role The role instance to assign to the identity
 		   * @return void
@@ -131,21 +117,6 @@ interface IdentityModel {
 		   * @return Role The role instance assigned to the identity
 		   */
 		  public function getRole();
-
-		  /**
-		   * Sets the AgilePHP session id assigned to the identity.
-		   * 
-		   * @param String $sessionId An AgilePHP session id
-		   * @return void
-		   */
-		  public function setSessionId( $sessionId );
-
-		  /**
-		   * Returns the session id currently assigned to the identity.
-		   * 
-		   * @return String The session id belonging to the identity
-		   */
-		  public function getSessionId();
 
 		  /**
 		   * Enables or disabled the identity from login.

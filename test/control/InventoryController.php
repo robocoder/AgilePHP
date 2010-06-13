@@ -59,11 +59,11 @@ class InventoryController extends BaseModelActionController {
 	  	     $image = null;
 	  	     $video = null;
 
-	  	     if( $request->get( 'image' ) )
+	  	     if( $_FILES['image']['size'] )
 	  	     	 $image = $this->upload( 'image' );
 
-	  		 if( $request->get( 'video' ) )
-	  		 	 $video = $this->upload( 'video' );
+	  	     if( $_FILES['video']['size'] )
+	  	     	 $video = $this->upload( 'video' );
 
 	  		 $i = new Inventory();
 	  		 $i->setName( $request->get( 'name' ) );
@@ -74,9 +74,9 @@ class InventoryController extends BaseModelActionController {
 	  		 if( $video ) $i->setVideo( $video );
 
 	  		 try {
-	  	 	 		$this->getPersistenceManager()->persist( $i );
+	  	 	 		ORM::persist( $i );
 	  		 }
-	  		 catch( PersistenceException $e ) {
+	  		 catch( ORMException $e ) {
 
 	  		 		if( file_exists( AgilePHP::getFramework()->getWebRoot() . $image ) )
 	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $image );
@@ -84,11 +84,11 @@ class InventoryController extends BaseModelActionController {
 	  		 		if( file_exists( AgilePHP::getFramework()->getWebRoot() . $video ) )
 	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $video );
 
-	  	     	    throw new PersistenceException( $e->getMessage(), $e->getCode() );
+	  	     	    throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		 }
 
-	  		 $this->clearModel();
-	  	 	 parent::modelList( $this->getPage() );
+	  		 $this->clear();
+	  	 	 parent::index( $this->getPage() );
 	  }
 
 	  /**
@@ -96,44 +96,35 @@ class InventoryController extends BaseModelActionController {
 	   * 
 	   * @return void
 	   */
-	  public function merge() {
-
-		  	 // If php.ini post_max_size is set to a size less than the data being posted,
-		  	 // the PHP $_POST array will be empty (regardless if POST data is present.
-			 $maxSize = (integer)ini_get( 'post_max_size' ) * 1024 * 1024; 
-			 $contentLength = (integer)$_SERVER['CONTENT_LENGTH'];
-			 if( $contentLength > $maxSize )
-			 	 throw new AgilePHP_Exception( 'HTTP Content-Length greater than PHP configuration directive \'post_max_size\' (results in empty $_POST array). Content-Length = \'' . $contentLength . '\', post_max_size = \'' . $maxSize . '\'' );
+	  public function merge( $id, $page = 1 ) {
 
 	  		 $request = Scope::getRequestScope();
 
-			 foreach( $_FILES as $key => $upload )
-			          $this->upload( $key );
-
-			 if( $_FILES['image']['tmp_name'] )
+			 if( $_FILES['image']['size'] )
 			 	 $image = $this->upload( 'image' );
 
-			 if($_FILES['video']['tmp_name'] )
+			 if( $_FILES['video']['size'] )
 			 	$video = $this->upload( 'video' );
 
+			 $this->getModel()->setId( $id );
 			 $i = new Inventory();
-			 $i->setId( $request->getSanitized( 'id' ) );
+			 $i->setId( $id );
 
-	  		 if( isset( $image ) && $image != $this->getModel()->getImage() ) {
+	  		 if( isset( $image ) && $image != $i->getImage() ) {
 
-	  		 	 if( file_exists( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getImage() ) )
-	  		 	 	 @unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getImage() );
+	  		 	 $img = realpath( '../' . $i->getImage() );
+	  		 	 if( file_exists( $img ) ) unlink( $img );
 
   		 	 	 $i->setImage( $image );
 	  		 }
 
-	  		 if( isset( $image ) && $image == $this->getModel()->getImage() || !isset( $image ) && $this->getModel()->getImage() )
-	  		 	 $i->setImage( $this->getModel()->getImage() );
+	  		 //if( isset( $image ) && $image == $i->getImage() || !isset( $image ) && $i->getImage() )
+	  		 	// $i->setImage( $i->getImage() );
 
-	  		 if( isset( $video ) && $video != $this->getModel()->getVideo() ) {
+	  		 if( isset( $video ) && $video != $i->getVideo() ) {
 
-	  		 	 if( file_exists( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getVideo() ) )
-	  		 	 	 @unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getVideo() );
+	  		 	 $vid = realpath( '../' . $i->getVideo() );
+	  		 	 if( file_exists( $vid ) ) unlink( $vid );
 
 	  		 	 $i->setVideo( $video );
 	  		 }
@@ -144,21 +135,21 @@ class InventoryController extends BaseModelActionController {
 	  		 $i->setPrice( floatval( $request->get( 'price' ) ) );
 
 	  		 try {
-	  	 	 		$this->getPersistenceManager()->merge( $i );
+	  	 	 		ORM::merge( $i );
 	  		 }
-	  		 catch( PersistenceException $e ) {
+	  		 catch( ORMException $e ) {
 
-	  		 		if( $this->getModel()->getVideo() && file_exists( $this->getModel()->getImage() ) )
-	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getImage() );
+	  		 		$img = realpath( '../' . $i->getImage() );
+	  		 		$vid = realpath( '../' . $i->geVideo() );
 
-	  		 		if( $this->getModel()->getVideo() && file_exists( $this->getModel()->getVideo() ) )
-	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $this->getModel()->getVideo() );
+	  		 		if( $i->getImage() && file_exists( $mg ) ) unlink( $img );
+	  		 		if( $i->getVideo() && file_exists( $vid ) ) unlink( $vid );
 
-	  	     	    throw new PersistenceException( $e->getMessage(), $e->getCode() );
+	  	     	    throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		 }
 
-	  		 $this->clearModel();
-	  	 	 parent::modelList( $this->getPage() );
+	  		 $this->clear();
+	  	 	 parent::index( $this->getPage() );
 	  }
 
 	  /**
@@ -167,21 +158,20 @@ class InventoryController extends BaseModelActionController {
 	   * @param $id The id of the inventory item to delete
 	   * @return void
 	   */
-	  public function delete() {
+	  public function delete( $id ) {
 
-	 		 $i = $this->getModel();
+	 		 $this->getModel()->setId( $id );
 
-	  	     if( $i->getImage() && file_exists( AgilePHP::getFramework()->getWebRoot() . $i->getImage() ) )
-	  	     	 unlink( AgilePHP::getFramework()->getWebRoot() . $i->getImage() );
+	 		 $img = realpath( '../' . $this->getModel()->getImage() );
+	 		 $vid = realpath( '../' . $this->getModel()->getVideo() );
 
-	  	     if( $i->getVideo() && file_exists( AgilePHP::getFramework()->getWebRoot() . $i->getVideo() ) )
-	  	     	 unlink( AgilePHP::getFramework()->getWebRoot() . $i->getVideo() );
+	  	     if( $this->getModel()->getImage() && file_exists( $img ) ) unlink( $img );
+	  	     if( $this->getModel()->getVideo() && file_exists( $vid ) ) unlink( $vid );
 
-	  		 $this->getPersistenceManager()->delete( $i );
+	  		 ORM::delete( $this->getModel() );
 
-	  		 $this->clearModel();
-
-  		     parent::modelList( $this->getPage() );
+	  		 $this->clear();
+  		     parent::index( $this->getPage() );
 	  }
 
 	  /**
@@ -193,6 +183,13 @@ class InventoryController extends BaseModelActionController {
 	   */
 	  public function upload( $type ) {
 
+	  	     // If php.ini post_max_size is set to a size less than the data being posted,
+		  	 // the PHP $_POST array will be empty (regardless if POST data is present.
+			 $maxSize = (integer)ini_get( 'post_max_size' ) * 1024 * 1024; 
+			 $contentLength = (integer)$_SERVER['CONTENT_LENGTH'];
+			 if( $contentLength > $maxSize )
+			 	 throw new FrameworkException( 'HTTP Content-Length greater than PHP configuration directive \'post_max_size\' (results in empty $_POST array). Content-Length = \'' . $contentLength . '\', post_max_size = \'' . $maxSize . '\'' );
+
 			 $target = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR
 			 		  . $type . DIRECTORY_SEPARATOR . $_FILES[$type]['name'];
 
@@ -200,7 +197,7 @@ class InventoryController extends BaseModelActionController {
 			 $upload->setName( $type );
 			 $upload->setDirectory( AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' .
 			 						DIRECTORY_SEPARATOR . $type );
-			 $upload->save();			 
+			 $upload->save();
 
 			 return str_replace( AgilePHP::getFramework()->getWebRoot(), AgilePHP::getFramework()->getDocumentRoot(), $target );
 	  }

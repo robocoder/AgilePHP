@@ -41,7 +41,7 @@ class AJAXRenderer extends BaseRenderer {
 	  public function render( $data, $name = null ) {
 
 	  		 if( !$this->output )
-	  		 	 throw new AgilePHP_Exception( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
+	  		 	 throw new FrameworkException( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
 
 	  		 if( $this->output == 'json' ) {
 
@@ -78,7 +78,7 @@ class AJAXRenderer extends BaseRenderer {
 	  public function renderNoHeader( $data ) {
 
 	 		 if( !$this->output )
-	  		 	 throw new AgilePHP_Exception( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
+	  		 	 throw new FrameworkException( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
 
 	  		 if( $this->output == 'json' ) {
 
@@ -112,7 +112,7 @@ class AJAXRenderer extends BaseRenderer {
 	  public function renderNoFormat( $data ) {
 
 	  	     if( !$this->output )
-	  		 	 throw new AgilePHP_Exception( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
+	  		 	 throw new FrameworkException( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
 
 	  		 switch( $this->output ) {
 
@@ -149,7 +149,7 @@ class AJAXRenderer extends BaseRenderer {
 	   * 
 	   * @param String $type The data formatting to use during output. (XML|JSON)
 	   * @return void
-	   * @throws AgilePHP_Exception if invalid formatting type is specified
+	   * @throws FrameworkException if invalid formatting type is specified
 	   */
 	  public function setOutput( $type ) {
 
@@ -165,7 +165,7 @@ class AJAXRenderer extends BaseRenderer {
 	  		 		 	$this->output = 'xml';
 	  		 		 	break;
 
-	  		 		 throw new AgilePHP_Exception( 'Unsupported output type \'' . $type . '\'.' );
+	  		 		 throw new FrameworkException( 'Unsupported output type \'' . $type . '\'.' );
 	  		 }
 	  }
 

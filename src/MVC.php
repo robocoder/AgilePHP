@@ -21,6 +21,10 @@
 
 require_once 'mvc/BaseController.php';
 require_once 'mvc/BaseRenderer.php';
+require_once 'mvc/BaseModelController.php';
+require_once 'mvc/BaseModelXmlController.php';
+require_once 'mvc/BaseModelXslController.php';
+require_once 'mvc/BaseModelActionController.php';
 
 /**
  * Model-View-Control (MVC) component
@@ -244,13 +248,13 @@ class MVC {
 					  	if( method_exists( $this->controller, 'getInterceptedInstance' ) ) {
 
 					  		if( !method_exists( $oController->getInterceptedInstance(), $action ) )
-					  			throw new AgilePHP_Exception( 'The specified action \'' . $action . '\' does not exist.', 101 );
+					  			throw new FrameworkException( 'The specified action \'' . $action . '\' does not exist.', 101 );
 					  	}
 					  	else {
 
 					  		// This is a standard PHP class that hasnt been intercepted
 						  	if( !method_exists( $this->controller, $action ) )
-						  		throw new AgilePHP_Exception( 'The specified action \'' . $action . '\' does not exist.', 102 );
+						  		throw new FrameworkException( 'The specified action \'' . $action . '\' does not exist.', 102 );
 					  	} 
 
 					  	Log::debug( 'MVC::dispatch Invoking controller \'' . $this->controller . 
@@ -268,7 +272,7 @@ class MVC {
 	  	     //}
 	  	     //catch( Exception $e ) {
 
-	  	     		//throw new AgilePHP_Exception( $e->getMessage(), $e->getCode() );
+	  	     		//throw new FrameworkException( $e->getMessage(), $e->getCode() );
 	  	     //}
 	  }
 
@@ -284,7 +288,7 @@ class MVC {
 	  	     Log::debug( 'MVC::createDefaultRenderer loading renderer: ' . $this->getDefaultRenderer() );
 
 	  	     if( !file_exists( $path ) )
-	  	     	 throw new AgilePHP_Exception( 'Default framework renderer could not be loaded from: ' . $path, 103 );
+	  	     	 throw new FrameworkException( 'Default framework renderer could not be loaded from: ' . $path, 103 );
 
 	  	     require_once $path;
 
@@ -304,7 +308,7 @@ class MVC {
 	  	     Log::debug( 'MVC::createRenderer loading renderer: ' . $renderer );
 
 	  		 if( !file_exists( $path ) )
-	  	     	 throw new AgilePHP_Exception( 'Framework renderer could not be loaded from: ' . $path, 104 );
+	  	     	 throw new FrameworkException( 'Framework renderer could not be loaded from: ' . $path, 104 );
 
 			 require_once $path; 	  		 
 	  		 return new $renderer;
@@ -325,7 +329,7 @@ class MVC {
 	  	     Log::debug( 'MVC::createDefaultRenderer loading custom renderer: ' . $renderer );
 
 	  	     if( !file_exists( $path ) )
-	  	     	 throw new AgilePHP_Exception( 'Custom renderer could not be loaded from: ' . $path, 105 );
+	  	     	 throw new FrameworkException( 'Custom renderer could not be loaded from: ' . $path, 105 );
 
 	  	     require_once $path;
 	  	     return new $renderer;
@@ -336,7 +340,7 @@ class MVC {
 	   * 
 	   * @param String $controller The name of the controller to load.
 	   * @return void
-	   * @throws AgilePHP_Exception if the requested controller could not be found.
+	   * @throws FrameworkException if the requested controller could not be found.
 	   */
 	  private function loadController( $controller ) {
 
@@ -367,7 +371,7 @@ class MVC {
 				       }
 			  }
 
-	  		  throw new AgilePHP_Exception( 'The requested controller \'' . $controller . '\' could not be found.', 106 );
+	  		  throw new FrameworkException( 'The requested controller \'' . $controller . '\' could not be found.', 106 );
 	  }
 }
 ?>

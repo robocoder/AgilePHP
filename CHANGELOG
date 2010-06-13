@@ -1,4 +1,24 @@
-- Refactored BasePersistence::validate from private to protected scope
-- added getComparisonLogicOperator and getRestrictionsLogicOperator to BasePersistence
-- PGSQLDialect is complete and working with accompanying unit test. still needs a little polishing
-- Refactored persistence.dtd to support new postgres data types - might be time to move to an xsd
+- Refactored Log class to final.
+- require_once on many framework components so they dont incur processing overhead going through the autoload
+- Fixed pgsql find bug in regards to pagination (limit and offset)
+- Renamed persistence package to orm and began on overhaul process:
+	- broke sqlite and mssql dialect :(
+	- mysql and postgres dialects working :)
+	- Columns support "lazy" configuration in orm.xml
+	- ORMFactory provides a consistent connection to a "main" application via singleton and can also create
+	  additional dialect instances. This allows multiple database servers / connections to be used within a
+	  single application.
+	- Removed support for multiple databases per "persistence.xml"
+	- persistence.xml is now orm.xml
+	- "orm.xml" path can be explicitly defined now, allowing multiple database configurations to be isolated.
+	  this also helps in terms of scalability since an application can break apart large databases into multiple
+	  files so each page hit does not require reading in a massive file before processing starts.
+	- Persist/merge operations now happen recursively unless lazy="true" is set on the column in orm.xml
+	- Foreign key columns now map directly to referenced models
+- Updated all core framework, test, and studio references in regards to persistence package to now point to ORM
+- User and Role models now allow constructor arguments. This provides a way to set values without causing
+  an interception to happen when calling setUsername and setName. This should be made a convention to handle all
+  objects of this nature.
+- FileLogger now logs the remote users ip instead of the app name
+- updated mvc package to use new ORM
+- Renamed AgilePHP_Exception to FrameworkException

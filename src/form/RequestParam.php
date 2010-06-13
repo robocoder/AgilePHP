@@ -96,7 +96,7 @@ class RequestParam {
 	  		 		$name = ($this->name) ? $ic->getInterceptor()->name : $ic->getField();
 
 	  		 		if( $this->required && !$request->get( $name ) )
-	  		 			throw new AgilePHP_Exception( $name . ' is required' );
+	  		 			throw new FrameworkException( $name . ' is required' );
 
 	  		 		return ($ic->getInterceptor()->sanitize) ? $request->getSanitized( $name ) : $request->get( $name );
 	  		 }

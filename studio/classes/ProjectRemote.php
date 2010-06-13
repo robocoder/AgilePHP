@@ -38,7 +38,7 @@ class ProjectRemote {
 	   * 
 	   * @param array $configs An array of project configuration values
 	   * @return boolean True if the project was created successfully
-	   * @throws AgilePHP_Exception
+	   * @throws FrameworkException
 	   */
 	  #@RemoteMethod
  	  public function create( $configs ) {
@@ -54,59 +54,59 @@ class ProjectRemote {
  		 	 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 
  	  		 if( !isset( $workspace ) )
- 	  		 	 throw new AgilePHP_Exception( 'Missing workspace value' );
+ 	  		 	 throw new FrameworkException( 'Missing workspace value' );
 
  	  		 if( !isset( $projectName ) || !$this->projectName = $projectName )
- 	  		 	 throw new AgilePHP_Exception( 'Missing project name' );
+ 	  		 	 throw new FrameworkException( 'Missing project name' );
 
  	  		 if( !file_exists( $workspace ) )
-  		 	 	 throw new AgilePHP_Exception( 'Workspace does not exist' );
+  		 	 	 throw new FrameworkException( 'Workspace does not exist' );
 
   		 	 $this->root = $workspace . DIRECTORY_SEPARATOR . $projectName;
 
  	  		 if( file_exists( $this->root ) )
- 	  		 	 throw new AgilePHP_Exception( 'Project already exists' );
+ 	  		 	 throw new FrameworkException( 'Project already exists' );
 
  	  		 if( !mkdir( $this->root ) )
- 	  		 	 throw new AgilePHP_Exception( 'Failed to create project at ' . $this->root );
+ 	  		 	 throw new FrameworkException( 'Failed to create project at ' . $this->root );
 
   		 	 try {
 		 	  		 $model = $this->root . DIRECTORY_SEPARATOR . 'model';
 			  		 if( !mkdir( $model ) )
-			  		 	 throw new AgilePHP_Exception( 'Failed to create project models directory at \'' . $model . '\'.' );
+			  		 	 throw new FrameworkException( 'Failed to create project models directory at \'' . $model . '\'.' );
 			  		 	 
 			  		 $view = $this->root . DIRECTORY_SEPARATOR . 'view';
 			  		 if( !mkdir( $view ) )
-			  		 	 throw new AgilePHP_Exception( 'Failed to create project view directory at \'' . $view . '\'.' );
+			  		 	 throw new FrameworkException( 'Failed to create project view directory at \'' . $view . '\'.' );
 		
 			  		 $css = $this->root . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . 'css';
 			  		 if( !mkdir( $css ) )
-			  		 	 throw new AgilePHP_Exception( 'Failed to create project css directory at \'' . $css . '\'.' );
+			  		 	 throw new FrameworkException( 'Failed to create project css directory at \'' . $css . '\'.' );
 		
 			  		 $control = $this->root . DIRECTORY_SEPARATOR . 'control';
 			  		 if( !mkdir( $control ) )
-			  		 	 throw new AgilePHP_Exception( 'Failed to create project controllers directory at \'' . $control . '\'.' );
+			  		 	 throw new FrameworkException( 'Failed to create project controllers directory at \'' . $control . '\'.' );
 		
 			  		 $logs = $this->root . DIRECTORY_SEPARATOR . 'logs';
 			  		 if( !mkdir( $logs ) )
-			  		 	 throw new AgilePHP_Exception( 'Failed to create project logging directory at \'' . $logs . '\'.' );
+			  		 	 throw new FrameworkException( 'Failed to create project logging directory at \'' . $logs . '\'.' );
 		
 			  		 if( !chmod( $logs, 0777 ) )
-			  		 	 throw new AgilePHP_Exception( 'Failed to change permissions to 077 on project logging directory \'' . $logs . '\'.' );
+			  		 	 throw new FrameworkException( 'Failed to change permissions to 077 on project logging directory \'' . $logs . '\'.' );
 		
 			  		 $components = $this->root . DIRECTORY_SEPARATOR . 'components';
 			  		 if( !mkdir( $components ) )
-			  		 	 throw new AgilePHP_Exception( 'Failed to create project components directory at \'' . $components . '\'.' );
+			  		 	 throw new FrameworkException( 'Failed to create project components directory at \'' . $components . '\'.' );
 		
 			  		 $classes = $this->root . DIRECTORY_SEPARATOR . 'classes';
 			  		 if( !mkdir( $classes ) )
-			  		 	 throw new AgilePHP_Exception( 'Failed to create project classes directory at \'' . $classes . '\'.' );
+			  		 	 throw new FrameworkException( 'Failed to create project classes directory at \'' . $classes . '\'.' );
 
 			  		 $agilephp = $this->root . DIRECTORY_SEPARATOR . 'AgilePHP';
 			  		 FileUtils::copy( '..' . DIRECTORY_SEPARATOR . 'src', $agilephp );
 
 			  		 if( $databaseEnable )
-				  		 $this->createPersistenceXML( $identityEnable, $sessionEnable, $databaseName, $databaseType,
+				  		 $this->createORMXML( $identityEnable, $sessionEnable, $databaseName, $databaseType,
 				  		 			$databaseHostname, $databaseUsername, $databasePassword, $databaseType /* instead of driver - maybe driver should be passed as hidden */ );
 
 			  		 $this->createAgilePhpXML( $logEnable, $identityEnable, $cryptoEnable, $logLevel );
@@ -130,12 +130,12 @@ class ProjectRemote {
 
 			  		 return true;
   		 	 }
-  		 	 catch( AgilePHP_Exception $e ) {
+  		 	 catch( FrameworkException $e ) {
 
   		 	 		if( file_exists( $this->root ) )
   		 	 			FileUtils::delete( $this->root );
 
-  		 	 		throw new AgilePHP_Exception( $e->getMessage() );
+  		 	 		throw new FrameworkException( $e->getMessage() );
   		 	 }
 	  }
 
@@ -163,12 +163,12 @@ class ProjectRemote {
 	  		  }
 	  }
 
-	  private function createPersistenceXML( $identity, $session, $name, $type, $hostname, $username, $password, $driver ) {
+	  private function createORMXML( $identity, $session, $name, $type, $hostname, $username, $password, $driver ) {
 
 	  		  $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-			  $data .= '<!DOCTYPE persistence SYSTEM "AgilePHP/persistence/persistence.dtd">' . PHP_EOL;
-			  $data .= '<persistence>' . PHP_EOL;
-			  $data .= "\t<database id=\"db1\" name=\"" . ($type == 'sqlite' ? $this->root . '/' . $name . '.sqlite' : $name) . "\"" .
+			  $data .= '<!DOCTYPE orm SYSTEM "AgilePHP/orm/orm.dtd">' . PHP_EOL;
+			  $data .= '<orm>' . PHP_EOL;
+			  $data .= "\t<database name=\"" . ($type == 'sqlite' ? $this->root . '/' . $name . '.sqlite' : $name) . "\"" .
 			  				($type == 'mssql' ? ' driver="' . $db->getDriver() .'"' : '') . PHP_EOL . "\t\t\ttype=\"" . $type . "\" hostname=\"" . $hostname .
 	  		  				"\" username=\"" . $username . "\" password=\"" . $password . "\">" . PHP_EOL . PHP_EOL;
 
@@ -181,11 +181,11 @@ class ProjectRemote {
 				  $data .= "\t\t\t<column name=\"email\" type=\"varchar\" length=\"255\" required=\"true\"/>" . PHP_EOL;
 				  $data .= "\t\t\t<column name=\"created\" type=\"datetime\" required=\"true\"/>" . PHP_EOL;
 				  $data .= "\t\t\t<column name=\"last_login\" property=\"lastLogin\" display=\"Last Login\" type=\"datetime\"/>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"roleId\" type=\"varchar\" length=\"25\">" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"roleId\" property=\"Role\" type=\"varchar\" length=\"25\">" . PHP_EOL;
 				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserRoles\" type=\"one-to-many\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
 							  		 "\t\t\t\t\ttable=\"roles\" column=\"name\" controller=\"RoleController\" select=\"name\"/>" . PHP_EOL;
 				  $data .= "\t\t\t</column>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"sessionId\" type=\"varchar\" length=\"21\">" . PHP_EOL;
+				  $data .= "\t\t\t<column name=\"sessionId\" property=\"Session\" type=\"varchar\" length=\"21\">" . PHP_EOL;
 				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserSessions\" type=\"one-to-one\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
 							  		 "\t\t\t\t\ttable=\"sessions\" column=\"id\" controller=\"SessionController\"/>" . PHP_EOL;
 				  $data .= "\t\t\t</column>" . PHP_EOL;
@@ -208,14 +208,14 @@ class ProjectRemote {
 			  }
 
 			  $data .= "\t</database>" . PHP_EOL;
-			  $data .= '</persistence>';
+			  $data .= '</orm>';
 
-	  		  $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'persistence.xml', 'w' );
+	  		  $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'orm.xml', 'w' );
 	  		  fwrite( $h, $data );
 	  		  fclose( $h );
 
-	  		  if( !file_exists( $this->root . DIRECTORY_SEPARATOR . 'persistence.xml' ) )
-	  		  	  throw new AgilePHP_Exception( 'Could not create default persistence.xml file' );
+	  		  if( !file_exists( $this->root . DIRECTORY_SEPARATOR . 'orm.xml' ) )
+	  		  	  throw new FrameworkException( 'Could not create default orm.xml file' );
 	  }
 
 	  private function createAgilePhpXML( $logger, $identity, $crypto, $logLevel ) {
@@ -240,19 +240,19 @@ class ProjectRemote {
 	  		  fclose( $h );
 
 	  		  if( !file_exists( $this->root . DIRECTORY_SEPARATOR . 'agilephp.xml' ) )
-	  		 	  throw new AgilePHP_Exception( 'Could not create default agilephp.xml file' );
+	  		 	  throw new FrameworkException( 'Could not create default agilephp.xml file' );
 	  }
 
 	  private function createAccessFile( $sqlite = false, $dbname = false ) {
 
 	  		  if( $sqlite && !$dbname )
-	  		  	  throw new AgilePHP_Exception( 'dbname parameter required when passing \'sqlite\'.' );
+	  		  	  throw new FrameworkException( 'dbname parameter required when passing \'sqlite\'.' );
 
 	  		  $data = '<Files .htaccess>' . PHP_EOL;
 	  		  $data .= "\torder deny,allow" . PHP_EOL;
 			  $data .= "\tdeny from all" . PHP_EOL;
 			  $data .= "</Files>" . PHP_EOL;
-			  $data .= "<Files persistence.xml>" . PHP_EOL;
+			  $data .= "<Files orm.xml>" . PHP_EOL;
 			  $data .= "\torder deny,allow" . PHP_EOL;
 			  $data .= "\tdeny from all" . PHP_EOL;
 			  $data .= "</Files>" . PHP_EOL;
@@ -492,7 +492,7 @@ a {
 	  		 $nbproject = $this->root . '/nbproject';
 
 	  		 if( !mkdir( $nbproject ) )
-	  		 	 throw new AgilePHP_Exception( 'Could not create netbeans project directory \'' . $nbproject . '\'.' );
+	  		 	 throw new FrameworkException( 'Could not create netbeans project directory \'' . $nbproject . '\'.' );
 	  		 
 	  		 $projectDotXml = '<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://www.netbeans.org/ns/project/1">
@@ -526,7 +526,7 @@ run.as=LOCAL
 url=http://localhost/index.php';
 
 	  		 if( !mkdir( $nbproject . '/private' ) )
-	  		 	 throw new AgilePHP_Exception( 'Could not create netbeans project private directory \'' . $nbproject . '/private\'.' );
+	  		 	 throw new FrameworkException( 'Could not create netbeans project private directory \'' . $nbproject . '/private\'.' );
 
 	  		 $h = fopen( $nbproject . '/private/private.properties', 'w' );
 	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $privateDotProperties ) );

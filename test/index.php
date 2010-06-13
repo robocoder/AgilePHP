@@ -16,7 +16,7 @@
 
   		MVC::getInstance()->dispatch();
  }
- catch( AgilePHP_Exception $e ) {
+ catch( FrameworkException $e ) {
 
   	     require_once '../src/mvc/PHTMLRenderer.php';
 

@@ -29,11 +29,6 @@
  */
 class IndexController extends BaseController {
 
-	  public function __construct() {
-
-	  		 parent::__construct();
-	  }
-
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/mvc/BaseModelController#getModel()
@@ -108,7 +103,7 @@ class IndexController extends BaseController {
 	  	     	    $mailer->setBody( $body );
 	  	     	    $mailer->send();
   	     	  }
-  	     	  catch( AgilePHP_Exception $e ) {
+  	     	  catch( FrameworkException $e ) {
 
   	     	  		 array_push( $failed, $model->getEmail() );
   	     	  }

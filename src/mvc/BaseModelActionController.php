@@ -74,18 +74,17 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
 	      */
-	     public function index( $page = 1, $view = 'admin') {
+	     public function index( $page = 1, $view = null) {
 
-	     		if( !$view ) $view = 'admin';
+	     	    if( !$view ) $view = 'admin';
 
 	     		// Defaults sorting by the first primary key column
 	     		// 
-	     		//$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	     		//$table = ORM::getTableByModel( $this->getModel() );
 	  	        //$pkeyColumns = $table->getPrimaryKeyColumns();
 	  	        //if( $pkeyColumns ) $this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
 
 	  		    $this->setPage( $page );
-
 	  		    $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
 
 	  	        $this->getRenderer()->set( 'content', $content );
@@ -109,7 +108,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     /**
 	      * Displays an 'edit' form for the model defined in the extension class.
 	      * 
-	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in persistence.xml
+	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in orm.xml
 	      * @param int $page The page number to display.
 	      * @param string $view The view to render. Defaults to 'admin'.
 	      * @return void
@@ -125,7 +124,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     /**
 	      * Displays a read only text table for the model defined in the extension class.
 	      * 
-	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in persistence.xml
+	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in orm.xml
 	      * @param string $view The view to render. Defaults to 'admin'.
 	      * @return void
 	      */
@@ -146,10 +145,16 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param int $page The page number to display.
 	      * @return void
 	      */
-	     public function search( $field, $keyword = null, $view = 'admin', $page = 1 ) {
+	     public function search( $page = 1, $view = 'admin', $field = null, $keyword = null ) {
 
-	     		$table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	     		$table = ORM::getTableByModel( $this->getModel() );
 	     		$columns = $table->getColumns();
+
+	     		if( !$field ) {
+
+	     			$columns = $table->getPrimaryKeyColumns();
+	     			$field = $columns[0]->getName();
+	     		}
 
 				foreach( $columns as $column ) {
 
@@ -160,8 +165,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
      			$this->setComparisonLogicOperator( 'LIKE' );
      			$this->setPage( $page );
 
-     			$params = $field . '/' . $keyword . '/' . $view;
-     			$content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML( false, false, $params ) );
+     			$params = $view . '/' . $field . '/' . $keyword;
+     			$content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML( false, 'search', $params ) );
 
   	         	$this->getRenderer()->set( 'content', $content );
 	  	        $this->getRenderer()->render( $view );
@@ -209,13 +214,13 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * 
 	      * @return void
 	      */
-	     public function merge( $id, $page = 1 ) {
+	     public function merge() {
 
 	  		    $this->setModelValues();
 
 	  	 	    parent::merge( $this->getModel() );
 	  	 	    $this->__construct();
-	  	 	    $this->index( $page );
+	  	 	    $this->index( $this->page );
 	     }
 
 	     /**
@@ -225,14 +230,14 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * 
 	      * @return void
 	      */
-	     public function delete( $ids, $page = 1 ) {
+	     public function delete( $ids = null, $page = 1 ) {
 
 	     		$this->setPrimaryKeys( $ids );
 	  		    $this->setModelValues();
 
 	  		    parent::delete( $this->getModel() );
 	  		    $this->__construct();
-	  		    $this->index( $page );
+	  		    $this->index( $this->page );
 	     }
 
 	     /**
@@ -247,7 +252,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	  		       if( $ids == null ) return;
 
-	  	           $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	  	           $table = ORM::getTableByModel( $this->getModel() );
 	  	           $pkeyColumns = $table->getPrimaryKeyColumns();
 	  	           
 	  	           if( !$pkeyColumns ) return;  // This is bad SQL programming but causes an error here when no primary key is set!
@@ -280,7 +285,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 		 protected function setModelValues() {
 
 	  		       $request = Scope::getRequestScope();
-	     	       $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	     	       $table = ORM::getTableByModel( $this->getModel() );
 
 	  		       if( !$request->getParameters() )
 	  		  	       return;
@@ -321,26 +326,20 @@ abstract class BaseModelActionController extends BaseModelXslController {
 								continue;
 			  		     	}
 
-			  		     	// Dont sanitize the value if the column has sanitize="false" set in persistence.xml
+			  		     	// Dont sanitize the value if the column has sanitize="false" set in orm.xml
 		  		     		$value = ($column->getSanitize() === true) ? 
 	   	  	        		 				urldecode( stripslashes( stripslashes( $request->sanitize( $value ) ) ) ) :
 	   	  	        		 				urldecode( stripslashes( stripslashes( $value ) ) );
 
-	   	  	        		if( $column->isForeignKey() ) {
+  	 	  	       			if( $column->isForeignKey() ) {
+
+  	 	  	       				if( !$value || $value == 'NULL' ) continue;
 
   	 	  	        			$fmodelName = $column->getForeignKey()->getReferencedTableInstance()->getModel();
   	 	  	        			$fModel = new $fmodelName();
-
- 						     	$this->getModel()->$mutator( $value );
-
-  	 	  	        			// php namespace support
-	     		   				$namespace = explode( '\\', $fmodelName );
-  	 	  	        			$className = array_pop( $namespace );
-
-						        $instanceMutator = $this->toMutator( $className );
-						        $accessor = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-						        $fModel->$accessor( $value );
- 				     			$this->getModel()->$instanceMutator( (($value) ? $fModel : NULL) );
+						        $refMutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+						        $fModel->$refMutator( $value );
+ 				     			$this->getModel()->$mutator( $fModel );
 
 						     	continue;
 				     		}

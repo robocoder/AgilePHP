@@ -9,8 +9,7 @@ class Table1 {
   private $id;
   private $field1;
   private $field2;
-  private $field3;
-  
+   
   private $Table2;
 
   #@Id
@@ -44,16 +43,6 @@ class Table1 {
      return $this->field2;
   }
 
-  public function setField3( $value ) {
-  	
-  		$this->field3 = $value;
-  }
-  
-  public function getField3() {
-  	
-  		return $this->field3;
-  }
-  
   public function setTable2( Table2 $value = null ) {
 
      $this->Table2 = $value;

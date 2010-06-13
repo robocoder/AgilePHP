@@ -36,7 +36,7 @@ class users extends BaseController {
 	  #@GET
 	  public function index() {
 
-	  		 return PersistenceManager::getInstance()->find( new User() );
+	  		 return ORM::find( new User() );
 	  }
 
 	  #@GET
@@ -76,7 +76,7 @@ class users extends BaseController {
 	  #@ProduceMime( type = 'application/xml' )
 	  public function createUser( $username, User $user ) {
 
-	  		 PersistenceManager::getInstance()->persist( $user );
+	  		 ORM::persist( $user );
 	  		 return $user;
 	  }
 
@@ -86,7 +86,7 @@ class users extends BaseController {
 	  #@ProduceMime( type = 'application/xml' )
 	  public function updateUser( $username, User $user ) {
 
-	  		 PersistenceManager::getInstance()->merge( $user );
+	  		 ORM::merge( $user );
 	  		 return $user;
 	  }
 
@@ -96,7 +96,7 @@ class users extends BaseController {
 	  #@ProduceMime( type = 'application/json' )
 	  public function updateUserJSON( $username, User $user ) {
 
-	  		 PersistenceManager::getInstance()->merge( $user );
+	  		 ORM::merge( $user );
 	  		 return $user;
 	  }
 
@@ -104,7 +104,7 @@ class users extends BaseController {
 	  #@Path( resource = '/{username}/wildcard' )
 	  public function updateUserWildcard( $username, User $user ) {
 
-	  		 PersistenceManager::getInstance()->merge( $user );
+	  		 ORM::merge( $user );
 	  		 return $user;
 	  }
 
@@ -115,7 +115,7 @@ class users extends BaseController {
 	  		 $user = new User();
 	  		 $user->setUsername( $username );
 
-	  		 PersistenceManager::getInstance()->delete( $user );
+	  		 ORM::delete( $user );
 	  }
 }
 ?>

@@ -41,16 +41,16 @@ class FileLogger implements LogProvider {
 
 	  	     if( !file_exists( $logDirectory ) )  	      	
 	  	      	 if( !mkdir( $logDirectory ) )
-	  	      	   	 throw new AgilePHP_Exception( 'Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.' );
+	  	      	   	 throw new FrameworkException( 'Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.' );
 
 	  	     if( !is_writable( $logDirectory ) )
-	  	     	 throw new AgilePHP_Exception( 'Logging directory is not writable. The PHP process requires write access to this directory.' );
+	  	     	 throw new FrameworkException( 'Logging directory is not writable. The PHP process requires write access to this directory.' );
 
 	  	     $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date( "m-d-y" ) . '.log';
 	  	     if( !file_exists( $filename ) ) {
 
 	  	     	 if( !touch( $filename ) )
-	  	     	 	 throw new AgilePHP_Exception( 'Unable to create log file at \'' . $filename . '\'.' );
+	  	     	 	 throw new FrameworkException( 'Unable to create log file at \'' . $filename . '\'.' );
 
 	  	     	 @chmod( $filename, 0777 );
 	  	     }
@@ -112,8 +112,9 @@ class FileLogger implements LogProvider {
 	   */
 	  private function write( $message, $level ) {
 
+	  		  $host = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : AgilePHP::getFramework()->getAppName();
 	  		  $requestURI = (isset( $_SERVER['REQUEST_URI' ] ) ? $_SERVER['REQUEST_URI'] : '/' );
-	  	      $header = '[' . $level . ']  ' . AgilePHP::getFramework()->getAppName() . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) . '  ' . $requestURI;
+	  	      $header = '[' . $level . ']  ' . $host . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) . '  ' . $requestURI;
 
 	  		  if( is_object( $message ) || is_array( $message ) )
 	  	      	  $message = print_r( $message, true );

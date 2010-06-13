@@ -40,7 +40,7 @@ class FileExplorerController extends BaseExtController {
 
 		 public function index() { 
 
-		 		throw new AgilePHP_Exception( 'Invalid request' );
+		 		throw new FrameworkException( 'Invalid request' );
 		 }
 
 	     /**
@@ -52,7 +52,7 @@ class FileExplorerController extends BaseExtController {
 	     private function getContents( $file ) {
 
 	     		 if( !file_exists( $file ) )
-		 		     throw new AgilePHP_Exception( 'Error loading file \'' . $file . '\'. File does not exist.' );
+		 		     throw new FrameworkException( 'Error loading file \'' . $file . '\'. File does not exist.' );
 	 		    
 		 		 $content = '';
 		 		 $h = fopen( $file, 'r' );
@@ -124,7 +124,7 @@ class FileExplorerController extends BaseExtController {
 		 		fclose( $h );
 
 		 		if( $result === false )
-		 		    throw new AgilePHP_Exception( 'Failed to save code' );
+		 		    throw new FrameworkException( 'Failed to save code' );
 
 		 		$o = new stdClass;
 		 		$o->success = true;
@@ -353,7 +353,7 @@ class FileExplorerController extends BaseExtController {
 		  	    	   $upload->setDirectory( $path );
 		  	    	   $path = $upload->save( $filename );
 	  		   }
-	  		   catch( AgilePHP_Exception $e ) {
+	  		   catch( FrameworkException $e ) {
 
 	  		   		  Log::debug( 'FileExplorerController::upload Failed to upload file. Error code: ' . $e->getCode() . ', Message: ' . $e->getMessage() );
 	  		   		  
@@ -536,7 +536,7 @@ class FileExplorerController extends BaseExtController {
 	  	 * 
 	  	 * @param String $projectName The name of the project in the workspace to create the controller for
 	  	 * @return void
-	  	 * @throws AgilePHP_Exception
+	  	 * @throws FrameworkException
 	  	 */
 	  	public function createController( $projectName ) {
 
@@ -586,7 +586,7 @@ class FileExplorerController extends BaseExtController {
 	  		   			break;
 
 	  		   		default:
-	  		   			throw new AgilePHP_Exception( 'Unsupported controller type \'' . $type . '\'.' );
+	  		   			throw new FrameworkException( 'Unsupported controller type \'' . $type . '\'.' );
 	  		   }
 
 	  		   $o = new stdClass;
@@ -601,7 +601,7 @@ class FileExplorerController extends BaseExtController {
 	  	 * 
 	  	 * @param String $projectName The name of the project in the workspace to create the view for
 	  	 * @return void
-	  	 * @throws AgilePHP_Exception
+	  	 * @throws FrameworkException
 	  	 */
 		public function createView( $projectName ) {
 
@@ -648,7 +648,7 @@ class FileExplorerController extends BaseExtController {
 	  		   			break;
 
 	  		   		default:
-	  		   			throw new AgilePHP_Exception( 'Unsupported controller type \'' . $type . '\'.' );
+	  		   			throw new FrameworkException( 'Unsupported controller type \'' . $type . '\'.' );
 	  		   }
 
 	  		   $o = new stdClass;
@@ -681,7 +681,7 @@ class FileExplorerController extends BaseExtController {
 			 			$dom->Load( $componentXml );
 						if( !$dom->schemaValidate( AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR . 'component.dtd' ) );
 						//if( !$dom->validate() );
-						 	throw new PersistenceException( 'component.xml Document Object Model validation failed.' );
+						 	throw new ORMException( 'component.xml Document Object Model validation failed.' );
 						*/
 
 		 				$properties = array();
@@ -705,7 +705,7 @@ class FileExplorerController extends BaseExtController {
 		 	   $path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 		 	   $path .= DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'components';
 
-		 	   if( !file_exists( $path ) ) throw new AgilePHP_Exception( 'Path doesnt exist at \'' . $path . '\'.' );
+		 	   if( !file_exists( $path ) ) throw new FrameworkException( 'Path doesnt exist at \'' . $path . '\'.' );
 
 		 	   $components = array();
 

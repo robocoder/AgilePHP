@@ -72,7 +72,7 @@ class MailingController extends BaseModelActionController {
 
 				  	     	    $recipientCount++;
 			  	     	  }
-			  	     	  catch( AgilePHP_Exception $e ) {
+			  	     	  catch( FrameworkException $e ) {
 
 			  	     	  		 array_push( $failed, $model->getEmail() );
 			  	     	  }

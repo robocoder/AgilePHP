@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 
 /**
- * Exceptions thrown by the Persistence/ORM framework
+ * Exceptions thrown by the ORM framework
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.persistence
- * @throws PersistenceException
+ * @package com.makeabyte.agilephp.orm
+ * @throws ORMException
  */
-class PersistenceException extends AgilePHP_Exception { }
+class ORMException extends FrameworkException {}
 ?>

@@ -34,15 +34,16 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	      * with getResultListAsPagedXML() to perform an XSLT transformation.
 	      *
 	      * @param String $pkeyFields Optional name of the model property to send as the 'id' field to the action when an action
-	      * 			  		      button is clicked. Defaults to the primary key(s) of the model as defined in persistence.xml.
+	      * 			  		      button is clicked. Defaults to the primary key(s) of the model as defined in orm.xml.
 	      * 						  Defaults to null.
 	      * @param String $controller Optional name of the controller to use when an action button is clicked. Defaults
-	      * 				   		  to the name of the controller which invoked this method. Defaults to the extension controller. 
+	      * 				   		  to the name of the controller which invoked this method. Defaults to the extension controller.
+	      * @param string $view Optional name of a PHTML view to render. Defaults to 'admin'. 
 	      * @return XSL stylesheet for BaseModelXmlController
 	      */
-	     protected function getModelListXSL( $pkeyFields = null, $controller = null ) {
+	     protected function getModelListXSL( $pkeyFields = null, $controller = null, $view = 'admin' ) {
 
-	     		   $table = $this->getPersistenceManager()->getTableByModelName( $this->getModelName() );
+	     		   $table = ORM::getTableByModelName( $this->getModelName() );
 
 	     	       $c = (!$controller) ? new ReflectionClass( $this ) : new ReflectionClass( $controller );
 
@@ -72,9 +73,9 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 												
 											if( $table->getDescription() )
 											    $xsl .= $table->getDescription();
-										    
+
 										$xsl .= '</div>
-										
+
 										<div class="agilephpSearchBar">
 											 Search
 											 <input type="text" id="agilephpSearchText" name="agilephpSearchText"/>
@@ -83,7 +84,9 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 													if( $column->isVisible() )
 														$xsl .= '<option value="' . $column->getName() . '">' . $column->getViewDisplayName() . '</option>';
 										$xsl .= '</select>
-											 <input type="button" value="Search" onclick="javascript:AgilePHP.Persistence.search()"/>										 
+											 <input type="hidden" value="' . $this->page . '" id="page"/>
+											 <input type="hidden" value="' . $view . '" id="view"/>
+											 <input type="button" value="Search" onclick="javascript:AgilePHP.ORM.search()"/>										 
 										</div>
 
 										<table class="agilephpTable" border="0" width="100%">';
@@ -143,14 +146,14 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 										
 											<xsl:when test="(position() mod 2 = 1)">
 												<xsl:attribute name="class">agilephpRow1</xsl:attribute>
-												<xsl:attribute name="onmouseover">AgilePHP.Persistence.setStyle( this, \'agilephpHighlight\' );</xsl:attribute>
-												<xsl:attribute name="onmouseout">AgilePHP.Persistence.setStyle( this, \'agilephpRow1\' );</xsl:attribute>
+												<xsl:attribute name="onmouseover">AgilePHP.ORM.setStyle( this, \'agilephpHighlight\' );</xsl:attribute>
+												<xsl:attribute name="onmouseout">AgilePHP.ORM.setStyle( this, \'agilephpRow1\' );</xsl:attribute>
 											</xsl:when>
 											
 											<xsl:otherwise>
 												<xsl:attribute name="class">agilephpRow2</xsl:attribute>
-												<xsl:attribute name="onmouseover">AgilePHP.Persistence.setStyle( this, \'agilephpHighlight\' );</xsl:attribute>
-												<xsl:attribute name="onmouseout">AgilePHP.Persistence.setStyle( this, \'agilephpRow2\' );</xsl:attribute>
+												<xsl:attribute name="onmouseover">AgilePHP.ORM.setStyle( this, \'agilephpHighlight\' );</xsl:attribute>
+												<xsl:attribute name="onmouseout">AgilePHP.ORM.setStyle( this, \'agilephpRow2\' );</xsl:attribute>
 											</xsl:otherwise>
 
 										</xsl:choose>';
@@ -184,18 +187,18 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 						 	   	   			      			     case 'one-to-many':
 						 	   	   			      			     case 'many-to-one':
-						 	   	   			      			     	
+
 						 	   	   			      			     	  $xsl .= '<td>
 						 	   	   			      			     	   			<xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
 						 	   	   			      			     	 				<a href="' . AgilePHP::getFramework()->getRequestBase() . '/' . $fkey->getReferencedController() . 
-						 	   	   			      			     	 						'/search/{' . $fModelName . '/' . $fkey->getReferencedColumn() . '}">' .
+						 	   	   			      			     	 						'/read/{' . $fModelName . '/' . $fkey->getReferencedColumnInstance()->getModelPropertyName() . '}">' .
 						 	   	   			      			     	 						$fkey->getReferencedTableInstance()->getViewDisplayName() . '</a>
 						 	   	   			      			     	 			</xsl:if>
 						 	   	   			      			     	 		  </td>';
 						 	   	   			      			     	  break;
 
 				 	   	   			      			     	 	 default:
-				 	   	   			      			     	 	 	throw new AgilePHP_Exception( 'Unsupported relationship type \'' . $fkey->getType() . '\'.' );
+				 	   	   			      			     	 	 	throw new FrameworkException( 'Unsupported relationship type \'' . $fkey->getType() . '\'.' );
 			 	   	   			      			     	 }
 
 					 	   	   			      			 continue;
@@ -209,7 +212,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 												<a href="' . AgilePHP::getFramework()->getRequestBase() . '/' . $controller . '/edit/' . $pkeyFieldsXSL . '/' . $this->getPage() . '">Edit</a>
 											</td>
 											<td>
-												<a href="JavaScript:AgilePHP.Persistence.confirmDelete(  \'' . AgilePHP::getFramework()->getRequestBase() . '\', \'' . $pkeyFieldsXSL . '\', \'' . $this->getPage() . '\', \'' . $controller . '\', \'delete\' );">Delete</a>
+												<a href="JavaScript:AgilePHP.ORM.confirmDelete(  \'' . AgilePHP::getFramework()->getRequestBase() . '\', \'' . $pkeyFieldsXSL . '\', \'' . $this->getPage() . '\', \'' . $controller . '\', \'delete\' );">Delete</a>
 											</td>
 										</tr>
 									</xsl:template>
@@ -227,7 +230,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	      */
 	     protected function getModelFormXSL() {
 
-	     	       $table = $this->getPersistenceManager()->getTableByModel( $this->getModel() );
+	     	       $table = ORM::getTableByModel( $this->getModel() );
 	     	       $pkeyValues = $this->getSerializedPrimaryKeyValues( $table );
 
 	     	       $action = AgilePHP::getFramework()->getRequestBase() . '/{/Form/controller}/{/Form/action}/' . $pkeyValues . '/' . $this->getPage();
@@ -256,7 +259,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     protected function getModelAsReadOnlyXSL() {
 
 	     	       $action = null;
-	     	       $table = $this->getPersistenceManager()->getTableByModelName( $this->getModelName() );
+	     	       $table = ORM::getTableByModelName( $this->getModelName() );
 	     	       $pkeyFields = $this->getSerializedPrimaryKeyColumns( $table );
 	     	       $pkeyValues = $this->getSerializedPrimaryKeyValues( $table );
 	     	       $pkeyFieldsXSL = $this->getSerializedPrimaryKeyColumnsAsXSL( $pkeyFields );
@@ -290,9 +293,9 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	  			 	   	  						$xsl .= ( ($action == 'persist') ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
   			 	   	  													 : '<input type="button" value="Edit" onclick="javascript:location.href=\'' . AgilePHP::getFramework()->getRequestBase() .
   			 	   	  													   '/' . MVC::getInstance()->getController() . '/edit/' . $pkeyValues . '\';"/>
-																			<input type="button" value="Delete" onclick="javascript:AgilePHP.Persistence.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
-  			 	   	  													   '\', \'' . $this->getModelName() . '\', \'' . $pkeyValues . '\', \'' . $this->getPage() . 
-  			 	   	  													   '\', \'{/Form/controller}\', \'{/Form/action}\' )"/>
+																			<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
+  			 	   	  													   '\', \'' . $pkeyValues . '\', \'' . $this->getPage() . 
+  			 	   	  													   '\', \'{/Form/controller}\', \'delete\' )"/>
   			 	   	  													   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' );
 												$xsl .= '</td>
 														</tr>';
@@ -300,6 +303,8 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 				  	  		</xsl:template>
 						</xsl:stylesheet>';
 
+				Log::debug( 'BaseModelXslController::getModelAsReadOnlyXSL Returning ' . $xsl );
+				
 	     	    return $xsl;
 	     }
 
@@ -317,7 +322,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 									<tr class="agilephpPaginationHeader">
 									
 								    			    <xsl:if test="previousExists = 1">
-								 						<td><a href="' . AgilePHP::getFramework()->getRequestBase() . '/{controller}/{action}/{params}/{page - 1}">Previous</a></td>
+								 						<td><a href="' . AgilePHP::getFramework()->getRequestBase() . '/{controller}/{action}/{page - 1}/{params}">Previous</a></td>
 													</xsl:if>
 								
 													<xsl:call-template name="pageNumberGenerator">
@@ -329,7 +334,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 											  		</xsl:call-template>
 								
 											       	<xsl:if test="nextExists = 1">
-											    		<td><a href="' . AgilePHP::getFramework()->getRequestBase() . '/{controller}/{action}/{params}/{page + 1}">Next</a></td>
+											    		<td><a href="' . AgilePHP::getFramework()->getRequestBase() . '/{controller}/{action}/{page + 1}/{params}">Next</a></td>
 											  		</xsl:if>
 								
 											  	</tr>
@@ -415,9 +420,9 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	  	  * uses the AgilePHP 'Scope' component (RequestScope) to pull in the values
 	  	  * as they were submitted by the form (rendered by getModelFormXSL).
 	  	  * 
-	  	  * @param Table $table The AgilePHP persistence 'Table' object to get the
+	  	  * @param Table $table The AgilePHP ORM 'Table' object to get the
 	  	  * 					primary key columns for.
-	  	  * @return An array of AgilePHP persistence 'Column' objects configured for
+	  	  * @return An array of AgilePHP ORM 'Column' objects configured for
 	  	  * 		the specified 'Table'.
 	  	  */
 		 private function getSerializedPrimaryKeyValues( Table $table ) {

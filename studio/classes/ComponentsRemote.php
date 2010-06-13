@@ -72,7 +72,7 @@ class ComponentsRemote {
 	  		 $file = $this->download( $projectRoot, $id, $appId );
 
 			 if( !$this->unzip( $projectRoot, $file ) )
-	             throw new AgilePHP_Exception( 'Could not extract downloaded component \'' . $file . '\'.' );
+	             throw new FrameworkException( 'Could not extract downloaded component \'' . $file . '\'.' );
 
 	         $this->copyController( $projectRoot, $appId );
 
@@ -80,16 +80,15 @@ class ComponentsRemote {
 	         $component_xml = $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'component.xml';
 	         if( file_exists( $component_xml ) ) {
 	
-	         	 $persistence_xml = $projectRoot . DIRECTORY_SEPARATOR . 'persistence.xml';
+	         	 $orm_xml = $projectRoot . DIRECTORY_SEPARATOR . 'orm.xml';
 		  		 $xml = simplexml_load_file( $component_xml );
 	
-		  		 if( isset( $xml->component->persistence ) ) {
+		  		 if( isset( $xml->component->orm ) ) {
 
-		  		 	 $pm = new PersistenceManager( null, $persistence_xml );
-			  		 foreach( $xml->component->persistence->table as $table ) {
+		  		 	 foreach( $xml->component->orm->table as $table ) {
 
 				  		 	  $Table = new Table( $table );
-				  		 	  $pm->createTable( $table );
+				  		 	  ORM::getDialect()->createTable( $table );
 			  		 }
 		  		 }
 	         }
@@ -102,7 +101,7 @@ class ComponentsRemote {
 
 	  		 $path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $componentId );
 	  		 if( !file_exists( $path ) )
-	  		 	 throw new AgilePHP_Exception( 'Component path not found \'' . $path . '\'.' );
+	  		 	 throw new FrameworkException( 'Component path not found \'' . $path . '\'.' );
 
 	  		 $file = $path . DIRECTORY_SEPARATOR . 'component.xml';
 
@@ -162,7 +161,7 @@ class ComponentsRemote {
 	   * @param string $projectRoot The full file path to the project
 	   * @param string $appId The appId of the component as it lives in the appstore.
 	   * @return void
-	   * @throws AgilePHP_Exception
+	   * @throws FrameworkException
 	   */
 	  private function copyController( $projectRoot, $appId ) {
 
@@ -175,16 +174,16 @@ class ComponentsRemote {
 				 		   if( $thisFile == $appId . '.phar' ) {
 
 				 		   		if( !copy( $file, $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.phar' ) )
-				 		   			 throw new AgilePHP_Exception( 'Failed to copy phar component to project controller directory.' );
+				 		   			 throw new FrameworkException( 'Failed to copy phar component to project controller directory.' );
 
-				 		   		if( !unlink( $file ) ) throw new AgilePHP_Exception( 'Failed to clean up downloaded component.' );
+				 		   		if( !unlink( $file ) ) throw new FrameworkException( 'Failed to clean up downloaded component.' );
 				 		   }
 		   	      	   	   else if( $thisFile == $appId . '.php' ) {
 
 				 		   		if( !copy( $file, $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.php' ) )
-				 		   			 throw new AgilePHP_Exception( 'Failed to copy component controller to project controller directory.' );
+				 		   			 throw new FrameworkException( 'Failed to copy component controller to project controller directory.' );
 
-				 		   		if( !unlink( $file ) ) throw new AgilePHP_Exception( 'Failed to clean up downloaded component.' );
+				 		   		if( !unlink( $file ) ) throw new FrameworkException( 'Failed to clean up downloaded component.' );
 				 		   }
 		   	      	   }
 		 	  }

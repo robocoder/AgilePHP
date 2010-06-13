@@ -33,7 +33,7 @@ class FileUtils {
 	   * 
 	   * @param $src The source path to delete
 	   * @return void
-	   * @throws AgilePHP_Exception
+	   * @throws FrameworkException
 	   */
 	  public static function delete( $src ) {
 
@@ -42,7 +42,7 @@ class FileUtils {
 	  		 if( is_file( $src ) ) {
 
 	  		 	 if( !unlink( $src ) )
-			         throw new AgilePHP_Exception( 'Failed to delete file ' . $src );
+			         throw new FrameworkException( 'Failed to delete file ' . $src );
 
 			     return true;
 	  		 }
@@ -56,12 +56,12 @@ class FileUtils {
 			                FileUtils::delete( $src . DIRECTORY_SEPARATOR . $file );
 			            else
 			            	if( !unlink( $src . DIRECTORY_SEPARATOR . $file ) )
-			                	throw new AgilePHP_Exception( 'Failed to delete file ' . $src . DIRECTORY_SEPARATOR . $file );
+			                	throw new FrameworkException( 'Failed to delete file ' . $src . DIRECTORY_SEPARATOR . $file );
 			        }
 			 }
 			 closedir( $dir );
 			 if( !rmdir( $src ) )
-			 	 throw new AgilePHP_Exception( 'Failed to delete directory ' . $src . DIRECTORY_SEPARATOR . $file );
+			 	 throw new FrameworkException( 'Failed to delete directory ' . $src . DIRECTORY_SEPARATOR . $file );
 
 			 return true;
 	  }
@@ -80,7 +80,7 @@ class FileUtils {
 	  		 if( is_file( $src ) ) {
 
 	  		 	 if( !copy( $src, $dst ) )
-	  		 	 	 throw new AgilePHP_Exception( 'Failed to copy ' . $src . ' to ' . $dst );
+	  		 	 	 throw new FrameworkException( 'Failed to copy ' . $src . ' to ' . $dst );
 
 	  		 	 return true;
 	  		 }
@@ -88,7 +88,7 @@ class FileUtils {
 		     $dir = opendir( $src );
 
 			 if( !mkdir( $dst ) )
-			 	 throw new AgilePHP_Exception( 'Failed to create directory ' . $dst );
+			 	 throw new FrameworkException( 'Failed to create directory ' . $dst );
 
 			 while( false !== ( $file = readdir( $dir ) ) ) {
 
@@ -97,7 +97,7 @@ class FileUtils {
 			             	FileUtils::copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
 			            else
 			             	if( !copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file ) )			             		
-			                	throw new AgilePHP_Exception( 'Failed to copy ' . $src . ' to ' . $dst );
+			                	throw new FrameworkException( 'Failed to copy ' . $src . ' to ' . $dst );
 			 }
 			 closedir( $dir );
 

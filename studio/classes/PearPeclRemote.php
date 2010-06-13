@@ -46,7 +46,7 @@ class PearPeclRemote {
 	  #@Restrict( role = 'admin' )
 	  public function uninstall( $type, $package ) {
 
-	  		 if( !isset( $this->$type ) ) throw new AgilePHP_Exception( 'Invalid extension type. Either PEAR or PECL.' );
+	  		 if( !isset( $this->$type ) ) throw new FrameworkException( 'Invalid extension type. Either PEAR or PECL.' );
 
 	  		 $cmd = $this->$type . ' uninstall ' . $package;
 
@@ -58,7 +58,7 @@ class PearPeclRemote {
 			 ob_end_clean();
 
 			 if( preg_match( '/permission denied/', $data ) )
-			 	 throw new AgilePHP_Exception( 'Permission denied. Make sure your php process has permission to execute a ' . $type . ' uninstall task.' );
+			 	 throw new FrameworkException( 'Permission denied. Make sure your php process has permission to execute a ' . $type . ' uninstall task.' );
 
 			 return true;
 	  }
@@ -66,7 +66,7 @@ class PearPeclRemote {
 	  #@RemoteMethod
 	  public function getInstalledExtensions( $type ) {
 
-	  		 if( !isset( $this->$type ) ) throw new AgilePHP_Exception( 'Invalid extension type. Either PEAR or PECL.' );
+	  		 if( !isset( $this->$type ) ) throw new FrameworkException( 'Invalid extension type. Either PEAR or PECL.' );
 
 	  		 $cmd = $this->$type . ' l';
 

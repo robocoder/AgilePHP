@@ -65,12 +65,12 @@ class Password {
 	  		 if( !$ic->getParameters() )
 	  		 	 throw new InterceptionException( '#@Password::encrypt Requires a method which accepts at least one parameter.' );
 
-		  	 // Dont encrypt passwords coming from persistence 'find' operation.
+		  	 // Dont encrypt passwords coming from ORM 'find' operation.
 	  		 $callee = $ic->getCallee();
 	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file'] );
 	  		 $className = str_replace( '.php', '', array_pop( $pieces ) );
 
-	  		 if( $className == 'BasePersistence' || $className == 'PersistenceManager' || preg_match( '/dialect$/i', $className ) )
+	  		 if( preg_match( '/^(orm.*)|(.*dialect)$/i', $className ) )
 	  		 	 return $ic->proceed();
 
 	  		 // Hash the parameter

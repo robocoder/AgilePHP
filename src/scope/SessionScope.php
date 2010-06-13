@@ -58,8 +58,7 @@ class SessionScope {
 	  	      	  $this->session->setId( $_COOKIE['AGILEPHP_SESSION_ID'] );
 	  	      	  $this->oldSession->setId( $_COOKIE['AGILEPHP_SESSION_ID'] );
 
-	  	      	  $pm = new PersistenceManager();
-  		 	 	  $persisted = $pm->find( $this->session );
+  		 	 	  $persisted = ORM::find( $this->session );
   		 	 	  if( !isset( $persisted[0] ) ) return;
 
   		 	 	  $this->persisted = true;
@@ -122,8 +121,7 @@ class SessionScope {
 	  		 setcookie( 'AGILEPHP_SESSION_ID', $id, time()+3600*24*30, '/' ); // 30 days
 	  		 Log::debug( 'SessionScope::setSessionId Initalizing session from specified session id and dropping a new session cookie' );
 
-	  		 $pm = new PersistenceManager();
-	  		 if( $persistedSession = $pm->find( $this->getSession() ) ) {
+	  		 if( $persistedSession = ORM::find( $this->getSession() ) ) {
 
   		 	 	 $this->session->setData( $persistedSession[0]->getData() );
   		 	 	 $this->oldSession->setData( $persistedSession[0]->getData() );
@@ -167,8 +165,7 @@ class SessionScope {
 	   */
 	  public function refresh() {
 
-		     $pm = new PersistenceManager();
-  	 	 	 $persisted = $pm->find( $this->session );
+  	 	 	 $persisted = ORM::find( $this->session );
 
   	 	 	 if( $persisted ) {
 
@@ -205,8 +202,7 @@ class SessionScope {
 	   */
 	  public function destroy() {
 
-	  		 $pm = new PersistenceManager();
-  		 	 $pm->delete( $this->getSession() );
+  		 	 ORM::delete( $this->getSession() );
 
   		 	 $this->clear();
 	  }
@@ -251,19 +247,17 @@ class SessionScope {
 
 	  	     if( !$this->getSession()->getData() ) return;
 
-	  	     $pm = new PersistenceManager();
-
 	 	     if( !$this->isPersisted() ) {
 
 	 	     	 $this->getSession()->setCreated( 'now' );
-			 	 $pm->persist( $this->getSession() );
+			 	 ORM::persist( $this->getSession() );
 			 	 $this->oldSession->setData( $this->session->getData() );
 			 	 return;
 			 }
 
 	  		 if( $this->oldSession->getData() != $this->session->getData() ) {
 
-			     $pm->merge( $this->getSession() );
+			     ORM::merge( $this->getSession() );
 			     return;
 	  		 }
 

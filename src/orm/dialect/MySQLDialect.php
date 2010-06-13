@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence.dialect
+ * @package com.makeabyte.agilephp.orm.dialect
  */
 
 /**
@@ -24,16 +24,16 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
- * @package com.makeabyte.agilephp.persistence.dialect
+ * @package com.makeabyte.agilephp.orm.dialect
  */
-class MySQLDialect extends BasePersistence implements SQLDialect {
+final class MySQLDialect extends BaseDialect implements SQLDialect {
 
 	  private $connectFlag = -1;
 
 	  /**
 	   * Initalize MySQLDialect
 	   * 
-	   * @param Database $db The Database object representing persistence.xml
+	   * @param Database $db The Database object representing orm.xml
 	   * @return void
 	   */
 	  public function __construct( Database $db ) {
@@ -56,7 +56,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	  	     	    else {
 
 	  	     	    	$this->connectFlag = -1;
-	  	     	    	throw new AgilePHP_Exception( 'Failed to create MySQLDialect instance. ' . $pdoe->getMessage() );
+	  	     	    	throw new ORMException( 'Failed to create MySQLDialect instance. ' . $pdoe->getMessage() );
 	  	     	    }
 	  	     }
 
@@ -65,7 +65,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#isConnected()
+	   * @see src/orm/dialect/SQLDialect#isConnected()
 	   */
 	  public function isConnected() {
 
@@ -74,9 +74,9 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#create()
+	   * @see src/orm/dialect/SQLDialect#create()
 	   * 
-	   * @todo Add engine and charset attributes to persistence.xml 'table' element
+	   * @todo Add engine and charset attributes to orm.xml 'table' element
 	   * 	   and assign values from xml definitions. Also need support for dynamic
 	   * 	   setting of unique key, fulltext, key, index, etc...
 	   */
@@ -99,7 +99,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 	  /**
 	   * (non-PHPdoc)
 	   * 
-	   * @see src/persistence/dialect/SQLDialect#createTable(Table $table)
+	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
 	   */
 	  public function createTable( Table $table ) {
 
@@ -201,7 +201,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#dropTable(Table $table)
+	   * @see src/orm/dialect/SQLDialect#dropTable(Table $table)
 	   */
 	  public function dropTable( Table $table ) {
 
@@ -210,7 +210,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#drop()
+	   * @see src/orm/dialect/SQLDialect#drop()
 	   */
 	  public function drop() {
 
@@ -219,7 +219,7 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/persistence/dialect/SQLDialect#reverseEngineer()
+	   * @see src/orm/dialect/SQLDialect#reverseEngineer()
 	   */
 	  public function reverseEngineer() {
 
@@ -311,11 +311,12 @@ class MySQLDialect extends BasePersistence implements SQLDialect {
 											$ForeignKey->setReferencedController( ucfirst( $fkey->referenced_table ) . 'Controller' );
 											$ForeignKey->setOnDelete( $fkey->delete_rule );
 											$ForeignKey->setOnUpdate( $fkey->update_rule );
-	
+
 											$Column->setForeignKey( $ForeignKey );
+											$Column->setProperty( ucfirst( $fkey->referenced_table ) );
 										}
 	      	      		   }
-						   	   
+
       	      		  	   $Table->addColumn( $Column );
       	      		   }
 

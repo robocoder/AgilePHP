@@ -126,10 +126,10 @@ class FileLoggerTest extends BaseTest {
 
 	  	     if( !file_exists( $logDirectory ) )  	      	
 	  	      	 if( !mkdir( $logDirectory ) )
-	  	      	   	 throw new AgilePHP_Exception( 'Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.' );
+	  	      	   	 throw new FrameworkException( 'Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.' );
 
 	  	     if( !is_writable( $logDirectory ) )
-	  	     	 throw new AgilePHP_Exception( 'Logging directory is not writable. The PHP process requires write access to this directory.' );
+	  	     	 throw new FrameworkException( 'Logging directory is not writable. The PHP process requires write access to this directory.' );
 
 	  	     $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date( "m-d-y" ) . '.log';
 	  		 $data = file_get_contents( $filename );

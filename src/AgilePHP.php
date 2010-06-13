@@ -236,7 +236,7 @@ final class AgilePHP {
 	   * 
 	   * @param String $classpath The dot notation classpath (my.package.ClassName)
 	   * @return void
-	   * @throws AgilePHP_Exception If an error occurred loading the specified classpath
+	   * @throws FrameworkException If an error occurred loading the specified classpath
 	   */
 	  public static function import( $classpath ) {
 
@@ -251,7 +251,7 @@ final class AgilePHP {
 	  		 	 require_once( 'components' . DIRECTORY_SEPARATOR . $file . '.php' );
 
 	  		 else
-  		 	 	throw new AgilePHP_Exception( 'Failed to import source from \'' . $classpath . '\'.' );
+  		 	 	throw new FrameworkException( 'Failed to import source from \'' . $classpath . '\'.' );
 	  }
 
 	  /**
@@ -342,12 +342,12 @@ final class AgilePHP {
 	  		 $agilephp_xml = ($agilephpDotXml) ? $agilephpDotXml : $this->getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
 
 	  		 if( !file_exists( $agilephp_xml ) )
-	  		  	  throw new AgilePHP_Exception( 'agilephp.xml file not found at \'' . $agilephp_xml . '\'.' );
+	  		  	  throw new FrameworkException( 'agilephp.xml file not found at \'' . $agilephp_xml . '\'.' );
 
 	  		  $dom = new DOMDocument();
  			  $dom->Load( $agilephp_xml );			 
 			  if( !$dom->validate() )
-			 	  throw new AgilePHP_Exception( 'agilephp.xml Document Object Model validation failed. Validate your document using AgilePHP/agilephp.dtd' );
+			 	  throw new FrameworkException( 'agilephp.xml Document Object Model validation failed. Validate your document using AgilePHP/agilephp.dtd' );
 
   	      	 return simplexml_load_file( $agilephp_xml );
 	  }
@@ -417,7 +417,7 @@ final class AgilePHP {
 	   * @param String $errfile The name of the file that caused the error
 	   * @param Integer $errline The line number that caused the error
 	   * @return false
-	   * @throws AgilePHP_Exception
+	   * @throws FrameworkException
 	   */
  	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
 
@@ -474,7 +474,7 @@ final class AgilePHP {
 	   * 
 	   * @param String $class The class name
 	   * @return String The raw PHP source code for the specified class
-	   * @throws AgilePHP_Exception if the requested class could not be found
+	   * @throws FrameworkException if the requested class could not be found
 	   */
 	  public static function getSource( $class ) {
 
@@ -536,7 +536,7 @@ final class AgilePHP {
 				      }
 			 }
 
-			 throw new AgilePHP_Exception( 'Failed to retrieve source code for class \'' . $class . '\'.' );
+			 throw new FrameworkException( 'Failed to retrieve source code for class \'' . $class . '\'.' );
 	  }
 
 	  /**
@@ -625,7 +625,7 @@ final class AgilePHP {
 					  }
 			 }
 
-			 throw new AgilePHP_Exception( 'The requested class \'' . $class . '\' could not be auto loaded.' );
+			 throw new FrameworkException( 'The requested class \'' . $class . '\' could not be auto loaded.' );
 		}
 }
 
@@ -636,12 +636,12 @@ final class AgilePHP {
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  * @version 0.1a
- * @throws AgilePHP_Exception
+ * @throws FrameworkException
  */
-class AgilePHP_Exception extends Exception {
+class FrameworkException extends Exception {
 
 	  /**
-	   * Creates a new instance of AgilePHP_Exception.
+	   * Creates a new instance of FrameworkException.
 	   * 
 	   * @param String $message The exception message
 	   * @param Integer $code Optional error code.

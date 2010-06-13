@@ -119,7 +119,7 @@ class AppstoreAPI extends SoapClient {
 	   * @param string $path The directory to store the downloaded application
 	   * @return boolean The file path to the download if successful, false otherwise
 	   * @throws SoapFault
-	   * @throws AgilePHP_Exception
+	   * @throws FrameworkException
 	   */
 	  public function download( $id, $appId, $path ) {
 
@@ -141,10 +141,10 @@ class AppstoreAPI extends SoapClient {
 	  		 }
 	  		 catch( SoapFault $e ) {
 	  		 	
-	  		 		throw new AgilePHP_Exception( $e->getMessage() );
+	  		 		throw new FrameworkException( $e->getMessage() );
 	  		 }
 
-	  		 throw new AgilePHP_Exception( 'Failed to download your component from the Appstore' );
+	  		 throw new FrameworkException( 'Failed to download your component from the Appstore' );
 	  }
 }
 

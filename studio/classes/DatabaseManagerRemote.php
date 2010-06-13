@@ -36,8 +36,7 @@ class DatabaseManagerRemote {
 	  		 $boxes = array();
 
 	  		 try {
-		  		   $pm = new PersistenceManager();
-		  		   $servers = $pm->find( new Server() );
+		  		   $servers = ORM::find( new Server() );
 
 		  		   foreach( $servers as $server ) {
 
@@ -75,65 +74,73 @@ class DatabaseManagerRemote {
 	  		 $Database->setUsername( $database->username );
 	  		 $Database->setPassword( $database->password );
 
-	  		 $pm = new PersistenceManager();
-	  		 $pm->connect( $Database );
-
-	  		 return $pm->isConnected();
+	  		 try {
+	  		 		$db = ORM::connect( $Database );
+	  		 		return $db->isConnected();
+	  		 }
+	  		 catch( ORMException $e ) {
+	  		 	
+	  		 		return -1;
+	  		 }
 	  }
 
 	  /**
-	   * Creates a new database from projects persistence.xml configuration
+	   * Creates a new database from projects orm.xml configuration
 	   * 
-	   * @throws PersistenceException
+	   * @throws ORMException
 	   */
 	  #@RemoteMethod
 	  public function create( $workspace, $projectName ) {
 
 	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
-	  		 $persistence_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'persistence.xml';
+	  		 $orm_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $pm = new PersistenceManager( false, $persistence_xml );
-	  		 $pm->create();
+	  		 $dialect = ORMFactory::loadDialect( $orm_xml );
+	  		 $dialect->create();
 
 	  		 return true;
 	  }
 
 	  /**
-	   * Drops a database from projects persistence.xml configuration
+	   * Drops a database from projects orm.xml configuration
 	   * 
-	   * @throws PersistenceException
+	   * @throws ORMException
 	   */
 	  #@RemoteMethod
 	  public function drop( $workspace, $projectName ) {
 
 	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
-	  		 $persistence_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'persistence.xml';
+	  		 $orm_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $pm = new PersistenceManager( false, $persistence_xml );
-	  		 $pm->drop();
+	  		 $dialect = ORMFactory::loadDialect( $orm_xml );
+	  		 $dialect->drop();
 
 	  		 return true;
 	  }
 
 	  /**
-	   * Creates persistence.xml configuration by reverse engineering a database.
+	   * Creates orm.xml configuration by reverse engineering a database.
 	   * 
-	   * @throws PersistenceException
+	   * @return bool True if the reverse engineer process was successful
+	   * @throws ORMException
 	   */
 	  #@RemoteMethod
 	  public function reverseEngineer( $workspace, $projectName ) {
 
 	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 	  		 $projectPath = $workspace . DIRECTORY_SEPARATOR . $projectName;
-	  		 $persistence_xml =  $projectPath . DIRECTORY_SEPARATOR . 'persistence.xml';
+	  		 $orm_xml =  $projectPath . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $pm = new PersistenceManager( false, $persistence_xml );
-	  		 $Database = $pm->reverseEngineer();
+	  		 $dialect = ORMFactory::loadDialect( $orm_xml );
+	  		 $Database = $dialect->reverseEngineer();
 
 	  		 $data = $this->format( $Database );
 
+	  		 Log::debug( $Database );
+	  		 Log::debug( $data );
+
 	  		 $this->createModels( $projectPath, $data['models'] );
-      	     $this->writePersistenceXml( $projectPath, $data['xml'] );
+      	     $this->writeOrmXml( $projectPath, $data['xml'] );
       	     $this->createControllers( $projectPath, $data['models'] );
       	     $this->updateNavigation( $projectPath, $data['models'] );
 
@@ -145,8 +152,8 @@ class DatabaseManagerRemote {
 	  /**
        * Formats the Database structure for use by this script.
        * 
-       * @param $db
-       * @return unknown_type
+       * @param Database $db The database object to reverse engineer.
+       * @return array Associative array containing both models and orm.xml configuration
        */
       private function format( Database $db ) {
 
@@ -164,6 +171,7 @@ class DatabaseManagerRemote {
 
 	      	      		   $columnXml = "\t\t\t";
 	      	      		   $columnXml .= '<column name="' . $column->getName() . '" type="' . $column->getType() . '"';
+	      	      		   $columnXml .= ($column->getProperty()) ? ' property="' . $column->getProperty() . '"' : '';
 	      	      		   $columnXml .= ($column->getLength()) ? ' length="' . $column->getLength() . '"' : '';
 	      	      		   $columnXml .= ($column->isPrimaryKey()) ? ' primaryKey="true"' : '';
 	      	      		   $columnXml .= ($column->isAutoIncrement()) ? ' autoIncrement="true"' : '';
@@ -186,15 +194,17 @@ class DatabaseManagerRemote {
 
 	      	      		   $tableXml .= $columnXml;
 
-	      	      		   // Add interceptor persistence annotations to applicable data types
+	      	      		   $name = ($column->getProperty()) ? $column->getProperty() : $column->getName();
+
+	      	      		   // Add interceptor ORM annotations to applicable data types
 	      	      		   if( $column->isPrimaryKey() )
-								array_push( $properties, array( 'name' => $column->getName(), 'interceptor' => '#@Id' ) );
+								array_push( $properties, array( 'name' => $name, 'interceptor' => '#@Id' ) );
 
 							else if( strtolower( $column->getName() ) == 'password' )
-      	      		   	   	   array_push( $properties, array( 'name' => $column->getName(), 'interceptor' => '#@Password' ) );
+      	      		   	   	   array_push( $properties, array( 'name' => $name, 'interceptor' => '#@Password' ) );
 
       	      		   	    else
-      	      		   	   	   array_push( $properties, array( 'name' => $column->getName(), 'interceptor' => null ) );
+      	      		   	   	   array_push( $properties, array( 'name' => $name, 'interceptor' => null ) );
 	      	      }
 
 	      	      $tableXml .= "\t\t</table>" . PHP_EOL;
@@ -211,49 +221,48 @@ class DatabaseManagerRemote {
        */
       private function createModels( $projectPath, $models ) {
 
-      	foreach( $models as $model ) {
-      		
-      			foreach( $model as $name => $properties ) {
-
-      				  $class = "class $name {" . PHP_EOL . PHP_EOL;
-		              foreach( $properties as $values ) {
-
-	                           $class .= "\tprivate \$" . $values['name'] . ';' . PHP_EOL;
-		              }
-		              $class .= PHP_EOL . "\tpublic function __construct() { }" . PHP_EOL . PHP_EOL;
-		              foreach( $properties as $values ) {
-		
-		              		   if( $values['interceptor'] !== null )
-		              			   $class .= "\t" . $values['interceptor'] . PHP_EOL;
-
-		              		   $class .= "\tpublic function set" . ucfirst( $values['name'] ) . "( \$value ) {" . PHP_EOL . PHP_EOL . "\t\t \$this->" . $values['name'] . " = \$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
-		              }
-		              foreach( $properties as $key => $values ) {
-
-		              		   $class .= "\tpublic function get" . ucfirst( $values['name'] ) . "() {" . PHP_EOL . PHP_EOL . "\t\t return \$this->" . $values['name'] . ";" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
-					  }
-		      	      $class .= "}";
-
-		      	      $file = $projectPath . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . ucfirst( $name ) . '.php';
-		      	      $h = fopen( $file, 'w' );
-		      	      fwrite( $h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL . $class . PHP_EOL . '?>' );
-		      	      fclose( $h );
-
-		      	      if( !file_exists( $file ) )
-		      	     	  throw new AgilePHP_Exception( 'Failed to create domain model \'' . ucfirst( $name ) . '\'.' );
-      			}
-      	}
+	      	foreach( $models as $model ) {
+	      		
+	      			foreach( $model as $name => $properties ) {
+	
+	      				  $class = "class $name {" . PHP_EOL . PHP_EOL;
+			              foreach( $properties as $values ) {
+	
+		                           $class .= "\tprivate \$" . $values['name'] . ';' . PHP_EOL;
+			              }
+			              $class .= PHP_EOL . "\tpublic function __construct() { }" . PHP_EOL . PHP_EOL;
+			              foreach( $properties as $values ) {
+			
+			              		   if( $values['interceptor'] !== null )
+			              			   $class .= "\t" . $values['interceptor'] . PHP_EOL;
+	
+			              		   $class .= "\tpublic function set" . ucfirst( $values['name'] ) . "( \$value ) {" . PHP_EOL . PHP_EOL . "\t\t \$this->" . $values['name'] . " = \$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
+			              }
+			              foreach( $properties as $key => $values ) {
+	
+			              		   $class .= "\tpublic function get" . ucfirst( $values['name'] ) . "() {" . PHP_EOL . PHP_EOL . "\t\t return \$this->" . $values['name'] . ";" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
+						  }
+			      	      $class .= "}";
+	
+			      	      $file = $projectPath . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . ucfirst( $name ) . '.php';
+			      	      $h = fopen( $file, 'w' );
+			      	      fwrite( $h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL . $class . PHP_EOL . '?>' );
+			      	      fclose( $h );
+	
+			      	      if( !file_exists( $file ) )
+			      	     	  throw new FrameworkException( 'Failed to create domain model \'' . ucfirst( $name ) . '\'.' );
+	      			}
+	      	}
       }
 
       /**
-       * Update persistence.xml file if desired.
+       * Update orm.xml file if desired.
        * 
        * @return void
        */
-      private function writePersistenceXml( $projectPath, $tableXml ) {
+      private function writeOrmXml( $projectPath, $tableXml ) {
 
-      		  $file = $projectPath . DIRECTORY_SEPARATOR . 'persistence.xml';
-      		  $pm = new PersistenceManager();
+      		  $file = $projectPath . DIRECTORY_SEPARATOR . 'orm.xml';
 
       		  $h = fopen( $file, 'r' );
       		  $data = '';
@@ -261,12 +270,12 @@ class DatabaseManagerRemote {
       		  	  $data .= fgets( $h, 4096 );
       		  fclose( $h );
 
-      		  $tableXml .= PHP_EOL . "\t</database>" . PHP_EOL . PHP_EOL . '</persistence>';
+      		  $tableXml .= PHP_EOL . "\t</database>" . PHP_EOL . PHP_EOL . '</orm>';
 
       		  $data = str_replace( '</database>', '', $data );
 
       		  $h = fopen( $file, 'w' );
-      		  fwrite( $h, str_replace( '</persistence>', $tableXml, $data ) );
+      		  fwrite( $h, str_replace( '</orm>', $tableXml, $data ) );
       		  fclose( $h );
       }
 
@@ -294,7 +303,7 @@ class DatabaseManagerRemote {
 			              $class .= "\t * (non-PHPdoc)" . PHP_EOL;
 			              $class .= "\t * @see AgilePHP/mvc/BaseController#index()" . PHP_EOL;
 			              $class .= "\t */" . PHP_EOL;
-			              $class .= "\tpublic function index() { " . PHP_EOL . PHP_EOL . "\t\tparent::modelList();" . PHP_EOL . "\t}" . PHP_EOL;
+			              $class .= "\tpublic function index() { " . PHP_EOL . PHP_EOL . "\t\tparent::index();" . PHP_EOL . "\t}" . PHP_EOL;
 			      	      $class .= "}";
 
 			      	 	  $file = $projectPath . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $name . 'Controller.php';
@@ -303,7 +312,7 @@ class DatabaseManagerRemote {
 			      	      fclose( $h );
 
 			      	      if( !file_exists( $file ) )
-			      	          throw new AgilePHP_Exception( 'Failed to create new controller' );     
+			      	          throw new FrameworkException( 'Failed to create new controller' );     
 	      			}
 	      	  }
        }
@@ -311,6 +320,9 @@ class DatabaseManagerRemote {
        private function updateNavigation( $projectPath, $models ) {
 
        		   $file = $projectPath . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . 'admin_navigation.phtml';
+
+       		   if( !file_exists( $file ) ) return;
+
        		   $h = fopen( $file, 'r' );
       		   $data = '';
       		   while( !feof( $h ) )
@@ -334,7 +346,7 @@ class DatabaseManagerRemote {
 			  fclose( $h );
 
 			  if( !file_exists( $file ) )
-			      throw new AgilePHP_Exception( 'Failed to update admin_navigation' );
+			      throw new FrameworkException( 'Failed to update admin_navigation' );
        }
 }
 ?>

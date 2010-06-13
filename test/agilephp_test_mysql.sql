@@ -14,7 +14,7 @@ MySQL - 5.1.37-1ubuntu5 : Database - agilephp_test
 
 CREATE DATABASE /*!32312 IF NOT EXISTS*/`agilephp_test` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-USE `agilephp_test`;
+USE `agilephp_test_mysql`;
 
 /*Table structure for table `inventory` */
 

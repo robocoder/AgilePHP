@@ -23,7 +23,7 @@
  * NOTE: PDO objects can *NOT* be serialized. Since this component
  * 		 is stored in the HTTP session (serialized), this class
  * 		 can not extend any of the base MVC controllers that store
- * 		 an instance of PDO, nor can it store the PersistenceManager
+ * 		 an instance of PDO, nor can it store the ORM
  * 		 itself!
  * 
  * Includes all identity package dependancies
@@ -34,7 +34,7 @@ require_once 'identity/IdentityModel.php';
 /**
  * Provides a means for tracking a users identity throughout the
  * web application. The Identity component automatically handles
- * creating sessions, persistence, and sending emails to deal with
+ * creating sessions, ORM, and sending emails to deal with
  * password resets.
  * 
  * @author Jeremy Hahn
@@ -60,7 +60,7 @@ class Identity implements IdentityManager {
 	  		  $xml = simplexml_load_file( $agilephp_xml );
 
 	  		  if( !$xml->identity )
-	  		  	  throw new AgilePHP_Exception( 'Identity component requires a valid component configuration entry in agilephp.xml' );
+	  		  	  throw new FrameworkException( 'Identity component requires a valid component configuration entry in agilephp.xml' );
 
 	  	      if( $model = (string)$xml->identity->attributes()->model ) {
 
@@ -316,34 +316,33 @@ class Identity implements IdentityManager {
 	  public function forgotPassword() {
 
 	  		 if( !$this->getPasswordResetUrl() )
-	  		 	 throw new AgilePHP_Exception( 'Identity::forgotPassword requires a valid passwordResetUrl property value.' );
+	  		 	 throw new FrameworkException( 'Identity::forgotPassword requires a valid passwordResetUrl property value.' );
 
   		 	 if( !$this->getModel()->getUsername() )
-	  		 	 throw new AgilePHP_Exception( 'Identity::forgotPassword requires a valid username property value for model \'' . $this->getModelName() . '\'.' );
+	  		 	 throw new FrameworkException( 'Identity::forgotPassword requires a valid username property value for model \'' . $this->getModelName() . '\'.' );
 
 	  		 if( !$this->getModel()->getEmail() )
-	  		 	 throw new AgilePHP_Exception( 'Identity::forgotPassword requires a valid email property value for model \'' . $this->getModelName() . '\'.' );
+	  		 	 throw new FrameworkException( 'Identity::forgotPassword requires a valid email property value for model \'' . $this->getModelName() . '\'.' );
 
 	  		 $token = $this->createToken();
 	  		 $this->session->set( 'resetPasswordToken', $token );
 	  		 $this->session->set( 'username', $this->getUsername() );
 
 	  		 // Make sure email exists!
-	  		 $pm = new PersistenceManager();
-	  		 $table = $table = $pm->getTableByModelName( $this->getModelName() );
+	  		 $table = ORM::getTableByModelName( $this->getModelName() );
 	  		 $emailColumn = $table->getColumnNameByProperty( 'email' );
-	  		 $pm->prepare( 'SELECT ' . $emailColumn . ' FROM ' . $table->getName() . ' WHERE ' . $emailColumn . '=? AND username=?;' );
+	  		 ORM::prepare( 'SELECT ' . $emailColumn . ' FROM ' . $table->getName() . ' WHERE ' . $emailColumn . '=? AND username=?;' );
 	  		 $params = array( $this->getEmail(),
 	  		 				  $this->getUsername() );
-	  		 if( !$pm->execute( $params )->fetch() )
-	  		 	 throw new AgilePHP_Exception( 'The information provided does not match our records.' );
+	  		 if( !ORM::execute( $params )->fetch() )
+	  		 	 throw new FrameworkException( 'The information provided does not match our records.' );
 
 	  		 // Send email
 	  		 $subject = AgilePHP::getFramework()->getAppName() . ' :: Forgotten Password';
 	  		 $body = 'Click on the following link to reset your password: ' . $this->getPasswordResetUrl() . '/' . $token . '/' . $this->session->getSessionId();
 
 	  		 if( !mail( $this->getModel()->getEmail(), $subject, $body, $this->getMailHeaders() ) )
-	  		 	 throw new AgilePHP_Exception( 'Error sending forgot password email.' );
+	  		 	 throw new FrameworkException( 'Error sending forgot password email.' );
 	  }
 
 	  /**
@@ -355,7 +354,7 @@ class Identity implements IdentityManager {
 	  		 $this->session->setSessionId( $sessionId );
 
 	  		 if( $token !== $this->session->get( 'resetPasswordToken' ) )
-	  		 	 throw new AgilePHP_Exception( 'Invalid token: ' . $token );
+	  		 	 throw new FrameworkException( 'Invalid token: ' . $token );
 
 	  		 $newPassword = $this->createToken();
 	  		 $subject = AgilePHP::getFramework()->getAppName() . ' :: New Password';
@@ -366,7 +365,7 @@ class Identity implements IdentityManager {
 	  		 $this->merge();
 
 	  		 if( !mail( $this->getEmail(), $subject, $body, $this->getMailHeaders() ) )
-	  		 	 throw new AgilePHP_Exception( 'Error sending reset password email.' );
+	  		 	 throw new FrameworkException( 'Error sending reset password email.' );
 
 	  		 $this->session->destroy();
 	  }
@@ -394,7 +393,7 @@ class Identity implements IdentityManager {
 	  		 		 $token . '/' . $this->session->getSessionId();
 
 	  		 if( !mail( $this->getEmail(), $subject, $body, $this->getMailHeaders() ) )
-	  		 	 throw new AgilePHP_Exception( 'Error sending registration email.' );
+	  		 	 throw new FrameworkException( 'Error sending registration email.' );
 	  }
 
 	  /**
@@ -406,13 +405,13 @@ class Identity implements IdentityManager {
 	  		 $this->session->setSessionId( $sessionId );
 
 	  		 if( $token !== $this->session->get( 'activationToken' ) )
-	  		 	 throw new AgilePHP_Exception( 'Invalid token: ' . $token );
+	  		 	 throw new FrameworkException( 'Invalid token: ' . $token );
 
 	  		 $user = new User();
 	  		 $user->setUsername( $this->session->get( 'username' ) ); // #@Id interceptor performs lookup
 
 	  		 if( !$user->getPassword() )
-	  		 	 throw new AgilePHP_Exception( 'User not found' );
+	  		 	 throw new FrameworkException( 'User not found' );
 
 	  		 $this->setModel( $user );
 	  		 $this->setEnabled( 1 );
@@ -428,7 +427,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function login( $username, $password ) {
 
-	  		 if( !$this->getModel() ) throw new AgilePHP_Exception( 'Identity::login Valid user domain model required' );
+	  		 if( !$this->getModel() ) throw new FrameworkException( 'Identity::login Valid user domain model required' );
 
 	  	     Log::debug( 'Identity::login Authenticating username \'' . $username . '\' with password \'' . $password . '\'.' );
 	  	     
@@ -495,8 +494,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function persist() {
 
-	  		 $pm = new PersistenceManager();
-	  		 $pm->persist( $this->getModel() );
+	  		 ORM::persist( $this->getModel() );
 	  }
 
 	  /**
@@ -505,8 +503,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function merge() {
 
-	  		 $pm = new PersistenceManager();
-	  		 $pm->merge( $this->getModel() );
+	  		 ORM::merge( $this->getModel() );
 	  }
 
 	  /**
@@ -515,8 +512,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function delete() {
 
-	  	     $pm = new PersistenceManager();
-	  	     $pm->delete( $this->getModel() );
+	  	     ORM::delete( $this->getModel() );
 	  }
 
 	  /**
@@ -525,8 +521,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function refresh() {
 
-	  		 $pm = new PersistenceManager();
-	  		 $results = $pm->find( $this->getModel() );
+	  		 $results = ORM::find( $this->getModel() );
 	  		 if( isset( $results[0] ) )
 	  		 	 $this->setModel( $results[0] );
 	  }

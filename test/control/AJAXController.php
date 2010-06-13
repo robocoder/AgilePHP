@@ -76,8 +76,7 @@ class AJAXController extends BaseController {
 	   */
 	  public function jqueryExample() {
 
-	  		 $pm = new PersistenceManager();
-	  		 $models = $pm->find( new User(), true );
+	  		 $models = ORM::find( new User(), true );
 
 	  		 $this->getRenderer()->renderNoHeader( $models );
 	  }

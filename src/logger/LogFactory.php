@@ -73,7 +73,7 @@ abstract class LogFactory {
 	      * @param string $logger The name of the LogProvider implementation to create
 	      * @return LogProvider A new instance of the requested LogProvider
 	      */
-	     public static function createLogger( string $logger ) {
+	     public static function createLogger( $logger ) {
 
 				return new $logger;
 	     }

@@ -76,7 +76,7 @@ class Crypto {
 	   * 					      NOTE: getSupportedHashAlgorithms() will return a list of
 	   * 						        algorithms available on the server.
 	   * @return void
-	   * @throws AgilePHP_Exception If passed a hashing name not available in
+	   * @throws FrameworkException If passed a hashing name not available in
 	   * 							getSupportedHashAlgorithms().
 	   */
 	  public function setAlgorithm( $algorithm ) {
@@ -85,7 +85,7 @@ class Crypto {
 	  		 	 $this->algorithm = $algorithm;
 
 	  		 if( !$this->algorithm )
-	  		 	 throw new AgilePHP_Exception( 'Unsupported hashing algorithm \'' . $algorithm . '\'.' );
+	  		 	 throw new FrameworkException( 'Unsupported hashing algorithm \'' . $algorithm . '\'.' );
 	  }
 
 	  /**

@@ -473,7 +473,7 @@ class AnnotationParser {
 		  		    $class = preg_replace( '/_Intercepted/', '', self::$class );
 		  		    return AgilePHP::getSource( $class );
 	  		  }
-	  		  catch( AgilePHP_Exception $e ) {
+	  		  catch( FrameworkException $e ) {
 
 	  		 		 throw new AnnotationException( $e->getMessage(), $e->getCode() );
 	  		  }

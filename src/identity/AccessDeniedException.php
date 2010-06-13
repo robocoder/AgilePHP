@@ -28,5 +28,5 @@
  * @package com.makeabyte.agilephp.identity
  * @throws AccessDeniedException
  */
-class AccessDeniedException extends AgilePHP_Exception { }
+class AccessDeniedException extends FrameworkException { }
 ?>

@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 
 /**
- * Represents a database table column in the AgilePHP persistence component.
+ * Represents a database table column in the AgilePHP ORM component.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 class Column {
 
@@ -44,6 +44,7 @@ class Column {
 	  private $autoIncrement = false;
 	  private $sanitize = true;
 	  private $validator;
+	  private $lazy = false;
 
 	  private $foreignKey;
 
@@ -67,6 +68,7 @@ class Column {
 		  		 $this->autoIncrement = ($column->attributes()->autoIncrement == 'true') ? true : false;
 		  		 $this->sanitize = ($column->attributes()->sanitize == 'false') ? false : true;
 		  		 $this->validator = (string)$column->attributes()->validator;
+		  		 $this->lazy = ($column->attributes()->lazy == 'true') ? true : false;
 
 		  		 if( $column->foreignKey )
 		  		 	 $this->foreignKey = new ForeignKey( $column->foreignKey, $tableName, $this->name );
@@ -470,7 +472,7 @@ class Column {
 	  /**
 	   * Returns boolean flag indicating whether or not this column should have its data sanitized by default.
 	   * 
-	   * @return boolean False if persistence.xml contains a sanitize="false" for this column, true otherwise.
+	   * @return boolean False if orm.xml contains a sanitize="false" for this column, true otherwise.
 	   */
 	  public function getSanitize() {
 
@@ -478,11 +480,33 @@ class Column {
 	  }
 
 	  /**
+	   * If enabled, referenced objects are not fetched, persisted, merged, or deleted with child operations.
+	   * 
+	   * @param bool $bool True to enable lazy loading, false otherwise. Defaults to true.
+	   * @return void
+	   */
+	  public function setLazy( $bool = true ) {
+
+	  		 $this->lazy = $bool;
+	  }
+
+	  /**
+	   * Returns flag indicating whether or not referenced objects are not fetched, persisted, merged, or deleted with child operations.
+	   * 
+	   * @return bool True if lazy loading is enabled for this column, false otherwise.
+	   * @return void
+	   */
+	  public function isLazy() {
+
+	  		 return $this->lazy;
+	  }
+	  
+	  /**
 	   * Returns the name which is used to access/mutate model properties/fields. If a property
-	   * attribute has been configured in persistence.xml for the column, the property value is
+	   * attribute has been configured in orm.xml for the column, the property value is
 	   * returned, otherwise the column name is returned instead.
 	   * 
-	   * @return String Property attribute value in persistence.xml for the column if it exists, else
+	   * @return String Property attribute value in orm.xml for the column if it exists, else
 	   * 		 the column name attribute value is returned instead.
 	   */
 	  public function getModelPropertyName() {
@@ -491,10 +515,10 @@ class Column {
 	  }
 
 	  /**
-	   * If persistence.xml contains a valid 'display' attribute, this value is
+	   * If orm.xml contains a valid 'display' attribute, this value is
 	   * returned, otherwise, the column name is returned.
 	   *   
-	   * @return String The persistence.xml 'display' attribute value if it exists, otherwise the column name
+	   * @return String The orm.xml 'display' attribute value if it exists, otherwise the column name
 	   */
 	  public function getViewDisplayName() {
 

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  */
 
 /**
@@ -26,7 +26,7 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.persistence
+ * @package com.makeabyte.agilephp.orm
  * <code>
  * #@Id
  * public function setId( $id ) {
@@ -51,8 +51,8 @@ class Id {
 	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file'] );
 	  		 $className = str_replace( '.php', '', array_pop( $pieces ) );
 
- 		 	 // Dont populate calls made from persistence package.
-	  		 if( $className == 'BasePersistence' || $className == 'Id' || preg_match( '/dialect$/i', $className ) )
+ 		 	 // Dont populate calls made from ORM
+	  		 if( $className == 'Id' || preg_match( '/dialect$/i', $className ) )
 	  		 	 return $ic->proceed();
 
 	  	     $class = $callee['class'];
@@ -64,8 +64,7 @@ class Id {
 	  	     $model = new $class;
 	  	     $model->$mutator( $params[0] );
 
-	  	     $pm = PersistenceManager::getInstance();
-	 		 $activeRecord = $pm->find( $model );
+	 		 $activeRecord = ORM::find( $model );
 
 	 		 return (count( $activeRecord )) ?
 	 		 	 $this->copy( $activeRecord[0]->getInterceptedInstance(), $ic->getTarget() ) :

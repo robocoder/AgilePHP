@@ -37,7 +37,11 @@ class Role {
 	   * @param String $name An optional user friendly name of the role. 
 	   * @return void
 	   */
-	  public function __construct() {}
+	  public function __construct( $name = null, $description = null ) {
+
+	  		 $this->name = $name;
+	  		 $this->description = $description;
+	  }
 
 	  /**
 	   * Sets the name of the role

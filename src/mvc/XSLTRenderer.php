@@ -118,7 +118,7 @@ class XSLTRenderer extends BaseRenderer {
 			 try {
 			 		$doc->loadXML( $xml );
 			 }
-			 catch( AgilePHP_Exception $e ) {
+			 catch( FrameworkException $e ) {
 			 	
 			 	    $doc->loadXML( addslashes( $xml ) );
 			 }
@@ -132,7 +132,7 @@ class XSLTRenderer extends BaseRenderer {
 
 	  /**
 	   * loadXml reports an error instead of throwing an exception when the xml is not well formed. This
-	   * is a custom PHP error handling function which throws an AgilePHP_Exception instead of reporting
+	   * is a custom PHP error handling function which throws an FrameworkException instead of reporting
 	   * a PHP error.
 	   * 
 	   * @param Integer $errno Error number
@@ -140,12 +140,12 @@ class XSLTRenderer extends BaseRenderer {
 	   * @param String $errfile The name of the file that caused the error
 	   * @param Integer $errline The line number that caused the error
 	   * @return false
-	   * @throws AgilePHP_Exception
+	   * @throws FrameworkException
 	   */
  	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
 
  	  	     if( $errno == E_WARNING && (substr_count( $errmsg, "DOMDocument::loadXML()" ) > 0 ) )
-	    	     throw new AgilePHP_Exception( $errmsg );
+	    	     throw new FrameworkException( $errmsg );
 
 	         return false;
 	  }

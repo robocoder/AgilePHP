@@ -49,7 +49,7 @@ abstract class Component extends BaseController {
 	  		 $class = get_class( $this );
 	  		 $componentXml = 'components' . DIRECTORY_SEPARATOR . $class . DIRECTORY_SEPARATOR . 'component.xml';
  			 if( !file_exists( $componentXml ) )
- 				 throw new AgilePHP_Exception( $componentXml . ' does not exist' );
+ 				 throw new FrameworkException( $componentXml . ' does not exist' );
 
  			 $xml = simplexml_load_file( $componentXml );
  			 /**
@@ -58,7 +58,7 @@ abstract class Component extends BaseController {
  			  * $dom = new DOMDocument();
  			  * $dom->Load( $componentXml );
 			  * if( !$dom->validate() );
-			  *	   throw new PersistenceException( 'component.xml Document Object Model validation failed.' );
+			  *	   throw new ORMException( 'component.xml Document Object Model validation failed.' );
 			  */
  			 $properties = array();
  			 $types = array();
@@ -196,10 +196,17 @@ abstract class Component extends BaseController {
 				       	 }
 			  	}
 
-	  		  	throw new AgilePHP_Exception( 'The requested component controller \'' . $controllerName . '\' could not be found.' );
+	  		  	throw new FrameworkException( 'The requested component controller \'' . $controllerName . '\' could not be found.' );
 	  }
 }
 
+/**
+ * Provides model for component.xml <param> element
+ * 
+ * @author Jeremy Hahn
+ * @copyright Make A Byte, inc.
+ * @package com.makeabyte.agilephp
+ */
 class ComponentParam {
 
 	  private $name;

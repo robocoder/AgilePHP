@@ -135,6 +135,9 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
 	        projectRemote.create( params );
 	};
 
+	var workspace = AgilePHP.Studio.FileExplorer.workspace;
+		workspace = (workspace.indexOf( '|' ) === 0) ? workspace.replace( /\|/g, '/' ) : workspace.replace( /\|/g, '\\' );
+
 	/**
 	 * Return the new project wizard
 	 */
@@ -163,7 +166,7 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
 	              	   	        fieldLabel: 'Workspace',
 	              	   	        readOnly: true,
 	              	   	        allowBlank: false,
-	              	   	        value: AgilePHP.Studio.FileExplorer.workspace
+	              	   	        value: workspace
 	              	       	}, {
 	              	       		id: id + '-form-name',
 	              	   	        xtype: 'textfield',

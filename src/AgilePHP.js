@@ -140,9 +140,9 @@ var AgilePHP = {
 		},
 
 		/**
-		 * Handles client side JavaScript events in regards to Persistence framework
+		 * Handles client side JavaScript events in regards to ORM framework
 		 */
-		Persistence : {
+		ORM : {
 
 			    /**
 			     * This is fired when a user clicks a delete action link on a database record
@@ -171,7 +171,9 @@ var AgilePHP = {
 					 var controller = mvcArgs[0];
 					 var keyword = document.getElementById( 'agilephpSearchText' ).value;
 					 var field = document.getElementById( 'agilephpSearchField' ).value;
-					 var url = location.protocol + '//' + location.host + AgilePHP.getRequestBase() + '/' + controller + '/search/' + field + '/' + keyword;
+					 var view = document.getElementById( 'view' ).value;
+					 var page = document.getElementById( 'page' ).value;
+					 var url = location.protocol + '//' + location.host + AgilePHP.getRequestBase() + '/' + controller + '/search/' + page + '/' + view + '/' + field + '/' + keyword;
 					 location.href = url;
 				}
 		},
