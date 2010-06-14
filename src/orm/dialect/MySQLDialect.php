@@ -272,11 +272,11 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
       	      		   	   $type = $desc->Type;
 	      	      		   $length = null;
 	      	      		   $pos = strpos( $desc->Type, '(' );
-	
+
 	      	      		   if( $pos !== false ) {
 	      	      		   	 
-	      	      		   	   $type = preg_match_all( '/^(.*)\((.*)\)$/i', $desc->Type, $matches );
-	      	      		   	   
+	      	      		   	   $type = preg_match_all( '/^(.*)\((.*)\).*$/i', $desc->Type, $matches );
+Log::debug( $desc );
 	      	      		   	   $type = $matches[1][0];
 	      	      		   	   $length = $matches[2][0];
 	      	      		   }

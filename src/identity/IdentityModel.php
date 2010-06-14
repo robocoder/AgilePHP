@@ -109,7 +109,7 @@ interface IdentityModel {
 		   * @param Role $role The role instance to assign to the identity
 		   * @return void
 		   */
-		  public function setRole( Role $role );
+		  public function setRole( Role $role = null );
 
 		  /**
 		   * Returns the AgilePHP Role instance assigned to the identity.

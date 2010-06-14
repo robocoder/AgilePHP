@@ -136,8 +136,8 @@ class DatabaseManagerRemote {
 
 	  		 $data = $this->format( $Database );
 
-	  		 Log::debug( $Database );
-	  		 Log::debug( $data );
+	  		 //Log::debug( $Database );
+	  		 //Log::debug( $data );
 
 	  		 $this->createModels( $projectPath, $data['models'] );
       	     $this->writeOrmXml( $projectPath, $data['xml'] );
