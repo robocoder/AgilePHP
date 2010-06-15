@@ -70,7 +70,9 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 
 	  		 return $this->connectFlag;
 	  }
-	  
+
+	  public function call( $model ) { }
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#create()

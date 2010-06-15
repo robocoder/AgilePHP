@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE orm SYSTEM "../src/orm/orm.dtd">
 <orm>
-	<database name="agilephp_test_pgsql" type="pgsql" hostname="localhost" username="php" password="php007">
+	<database name="agilephp_test_sqlite" type="sqlite" hostname="" username="" password="">
 		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
 			<column name="username" type="varchar" length="150" primaryKey="true" required="true" validator="StringValidator"/>
 			<column name="password" type="varchar" length="255" required="true" validator="PasswordValidator"/>
-			<column name="email" type="varchar" display="Email" length="255" required="true"/>
-			<column name="created" type="date" required="true" validator="DateValidator"/>
-			<column name="last_login" property="lastLogin" display="Last Login" type="date" validator="DateValidator"/>
-			<column name="roleId" property="Role" type="varchar" length="25" display="Role">
+			<column name="email" type="varchar" display="Email" length="255" required="true" validator="StringValidator"/>
+			<column name="created" type="datetime" required="true" validator="DateValidator"/>
+			<column name="last_login" property="lastLogin" display="Last Login" type="datetime" validator="DateValidator"/>
+			<column name="roleId" property="Role" type="varchar" length="25" sortable="false">
 				<foreignKey name="FK_UserRoles" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="roles" column="name" controller="RoleController" select="name"/>
 			</column>
-	  		<column name="sessionId" property="Session" type="varchar" length="21" display="Session">
+	  		<column name="sessionId" property="Session" type="varchar" length="21" display="Session" sortable="false">
 	  			<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="sessions" column="id" controller="SessionController"/>
 	  		</column>
@@ -22,40 +22,41 @@
 			<column name="name" type="varchar" length="25" primaryKey="true" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
 	 	</table>
+		<!-- AgilePHP Session -->
 		<table name="sessions" display="Session" isSession="true" model="Session" description="User sessions">
 			<column name="id" type="varchar" length="21" primaryKey="true" description="Unique ID" validator="StringValidator"/>
 			<column name="data" type="text" description="Name of recipient" validator="StringValidator"/>
 			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP" validator="DateValidator"/>
 		</table>
 		<table name="table1" model="Table1" description="">
-			<column name="id" type="serial" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
+			<column name="id" type="integer" length="10" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
 			<column name="field1" type="varchar" length="255" required="true" validator="StringValidator"/>
 			<column name="field2" type="varchar" length="10" default="Foo" validator="StringValidator"/>
-			<column name="field3" type="int" validator="NumberValidator">
+			<column name="field3" type="int" length="10" validator="NumberValidator">
 				<foreignKey name="FK_Table1" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE" 
 					table="table2" column="id" controller="TestComponent" select="name"/>
 			</column>
 		</table>
 		<table name="table2" model="Table2" description="">
-			<column name="id" type="serial" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
+			<column name="id" type="integer" length="10" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
 			<column name="name" type="varchar" length="100" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
 		</table>
 		<table name="table3" model="TestComponent\model\Table1" description="">
-			<column name="id" type="serial" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
+			<column name="id" type="integer" length="10" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
 			<column name="field1" type="varchar" length="255" required="true" validator="StringValidator"/>
 			<column name="field2" type="varchar" length="10" default="Foo" validator="StringValidator"/>
-			<column name="field3" type="int" validator="NumberValidator">
+			<column name="field3" type="int" length="10"  validator="NumberValidator">
 				<foreignKey name="FK_Table1_2" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE" 
 					table="table4" column="id" controller="TestComponent" select="name"/>
 			</column>
 		</table>
 		<table name="table4" model="TestComponent\model\Table2" description="">
-			<column name="id" type="serial" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
+			<column name="id" type="integer" length="10" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
 			<column name="name" type="varchar" length="100" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
 		</table>
-		<procedure name="authenticate" model="SPauthenticate" description="Stored procedure responsible for authentication">
+				<procedure name="authenticate" model="SPauthenticate" description="Stored procedure responsible for authentication">
 			<parameter name="userid" property="userId" mode="IN"/>
 			<parameter name="passwd" mode="IN"/>
 			<parameter name="authenticate" property="result" mode="OUT"/>
@@ -66,8 +67,8 @@
 			<parameter name="email" mode="OUT"/>
 			<parameter name="created" mode="OUT"/>
 			<parameter name="last_login" property="lastLogin" mode="OUT"/>
-			<parameter name="roleid" property="roleId" mode="OUT"/>
-			<parameter name="sessionid" property="sessionId" mode="OUT"/>
+			<parameter name="roleId" mode="OUT"/>
+			<parameter name="sessionId" mode="OUT"/>
 			<parameter name="enabled" mode="OUT"/>
 		</procedure>
 	</database>

@@ -13,7 +13,7 @@
     oracle
     dblib
     ibm
-> Fix mssql and sqlite dialect classes since orm revamp. Trash MSSQLDialect and rename SQLSRVDialect to MSSQLDialect.
+> Fix mssql dialect class since orm revamp.
 > Finish unit tests in ORM package
 > Finish Form::toJSON method (this should probably use AJAXRenderer)
 > Finish creating unit tests for all framework components (naughty, naughty - TDD!)

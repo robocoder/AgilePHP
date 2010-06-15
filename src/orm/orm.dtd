@@ -18,7 +18,7 @@
 -->
 <!ELEMENT orm (database+)>
 
-<!ELEMENT database (table*)>
+<!ELEMENT database (table*, procedure*)>
 <!ATTLIST database name CDATA #REQUIRED>
 <!ATTLIST database type ( mysql | mssql | pgsql | sqlite | firebird | informix | oracle | dblib | ibm ) "mysql">
 <!ATTLIST database hostname CDATA #REQUIRED>
@@ -34,6 +34,17 @@
 <!ATTLIST table description CDATA #IMPLIED>
 <!ATTLIST table isIdentity CDATA #FIXED "true">
 <!ATTLIST table isSession CDATA #FIXED "true">
+
+<!ELEMENT procedure (parameter*)>
+<!ATTLIST procedure name CDATA #REQUIRED>
+<!ATTLIST procedure model CDATA #REQUIRED>
+<!ATTLIST procedure display CDATA #IMPLIED>
+<!ATTLIST procedure description CDATA #IMPLIED>
+
+<!ELEMENT parameter (#PCDATA)>
+<!ATTLIST parameter name CDATA #REQUIRED>
+<!ATTLIST parameter property CDATA #IMPLIED>
+<!ATTLIST parameter mode CDATA #REQUIRED>
 
 <!ELEMENT column (foreignKey*)>
 <!ATTLIST column name CDATA #REQUIRED>

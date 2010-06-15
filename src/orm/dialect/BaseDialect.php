@@ -843,7 +843,43 @@ abstract class BaseDialect {
 			 }
 
 			 return $restricts;
-	     }
+	  }
+
+	  /**
+	   * Returns the 'Table' object which is mapped to the specified 'Model'.
+	   * 
+	   * @param $model The domain model object to retrieve the table element for. Defaults to the model
+	   * 			   currently being managed by the 'ORM'.
+	   * @return The 'Table' object responsible for the model's ORM or null if a table
+	   * 		 could not be located for the specified $model.
+	   */
+	  public function getProcedureByModel( $model ) {
+
+	  		 $class = get_class( $model );
+
+			 foreach( $this->database->getProcedures() as $proc ) {
+
+			 	  	  if( $proc->getModel() == $class )
+			 	  	      return $proc;
+			 }
+
+			 throw new ORMException( 'BaseDialect::getProcedureByModel Could not locate the requested model \'' . $class . '\' in orm.xml' );
+	  }
+	  
+	  /**
+	   * Returns the Procedure responsible for the specified model
+	   * 
+	   * @param string $modelName The name of the model class
+	   * @return Procedure The procedure which maps to the specified model name
+	   */
+	  public function getProcedureByModelName( $modelName ) {
+
+			 foreach( $this->database->getProcedures() as $proc )
+			  	  	  if( $proc->getModel() == $modelName )
+			 	  	      return $proc;
+
+			 throw new ORMException( 'BaseDialect::getProcedureByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml' );
+	  }
 
 	  /**
 	   * Returns the 'Table' object which is mapped to the specified 'Model'.

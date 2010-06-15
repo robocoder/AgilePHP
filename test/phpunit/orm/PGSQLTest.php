@@ -7,7 +7,7 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 	  /**
 	   * @test
 	   */
-	  public function createPersistMergeFindDeleteReverseengineerDrop() {
+	  public function coreTests() {
 
 	  		 $orm = ORMFactory::loadDialect( AgilePHP::getFramework()->getWebRoot() . '/orm_pgsql_test.xml' );
 
@@ -100,6 +100,32 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 	  	     	foreach( $table->getColumns() as $column )
 	  	     		PHPUnit_Framework_Assert::assertNotNull( $column->getName(), 'Failed to reverse engineer database column name' );
 	  	     }
+	  	     
+	  	     $orm->query( 'CREATE LANGUAGE PLPGSQL;' );
+	  	     $orm->query( 'CREATE FUNCTION getusers() RETURNS SETOF users as $$ SELECT * FROM users; $$ language SQL;' );
+	  	     $orm->query( 'CREATE FUNCTION authenticate( userid varchar, passwd varchar) RETURNS bool AS $$ DECLARE result bool; BEGIN SELECT count(*) INTO result FROM users where username = userid AND password = passwd; RETURN result; END; $$ language plpgsql;' );
+
+	  	     // test stored procedures / functions
+	  	     $user1 = new User( 'sproc', $digest, 'sproc@pgsql', '04/13/10' );
+	  	     $user2 = new User( 'sproc2', $digest, 'sproc@pgsql', '04/13/10' );
+	  	     $orm->persist( $user1 );
+	  	     $orm->persist( $user2 );
+
+	  		 $authenticate = new SPauthenticate();
+	  		 $authenticate->setUserId( 'sproc' );
+	  		 $authenticate->setPasswd( $digest );
+
+	  		 $auth = $orm->call( $authenticate );
+
+	  		 PHPUnit_Framework_Assert::assertEquals( true, $auth->getResult(), 'Failed to get expected \'authenticate\' stored procedure result.' );
+
+			 $getusers = new SPusers();
+	  		 $users = $orm->call( $getusers );
+
+	  		 PHPUnit_Framework_Assert::assertType( 'array', $users, 'Failed to get expected \'getusers\' stored procedure result.' );
+	  		 PHPUnit_Framework_Assert::assertEquals( 2, count( $users ), 'Failed to get expected \'getusers\' stored procedure result count.' );
+	  		 PHPUnit_Framework_Assert::assertEquals( 'sproc', $users[0]->getUsername(), 'Failed to get expected \'getusers\' sproc username.' );
+	  		 PHPUnit_Framework_Assert::assertEquals( 'sproc2', $users[1]->getUsername(), 'Failed to get expected \'authenticate\' sproc2 username.' );
 
 	  	     // @todo Need to figure out how to drop postgres database!
 
@@ -126,7 +152,7 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 	  		 PHPUnit_Framework_Assert::assertNotNull( $table, 'getTableByModelName returned null' );
 	  		 PHPUnit_Framework_Assert::assertEquals( 'users', $table->getName(), 'Failed to getTableByModelName' );
 	  }
-	  
+
 	  public function testGetTableByName() {
 
 	  		 $table = ORM::getTableByName( 'roles' );

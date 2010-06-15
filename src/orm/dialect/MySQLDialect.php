@@ -74,6 +74,74 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
+	   * @see src/orm/dialect/SQLDialect#call($model)
+	   */
+	  public function call( $model ) {
+
+	  	     $values = array();
+	  		 $outs = array();
+	  		 $params = array();
+	  		 $class = get_class( $model );
+	  		 $proc = $this->getProcedureByModel( $model );
+
+	  		 foreach( $proc->getParameters() as $param ) {
+
+	  		 		  if( $param->getMode() == 'IN' || $param->getMode() == 'INOUT' ) {
+
+	  		 			  $accessor = $this->toAccessor( $param->getModelPropertyName() );
+	  		 			  array_push( $params, $model->$accessor() );
+	  		 		  }
+
+	  		 		  if( $param->getMode() == 'OUT' || $param->getMode() == 'INOUT' )
+	  		 			  $outs[$param->getName()] = $param->getModelPropertyName();
+	  		 }
+
+	  		 $query = 'call ' . $proc->getName() . '( ';
+	  		 for( $i=0; $i<count( $params ); $i++ ) {
+
+	  		 		$values[$i] = $params[$i];
+	  		 		$query .= '?' . (($i+1) == count($query) ? ', ': '' );
+	  		 }
+	  		 $query .= ' );';
+
+	  		 $this->prepare( $query );
+	  		 $stmt = $this->execute( $values );
+	  		 $stmt->setFetchMode( PDO::FETCH_ASSOC );
+	  		 $results = $stmt->fetchAll();
+
+	  		 if( !$results ) return true;
+
+	  		 if( count( $results ) > 1 ) {
+
+		  		 $models = array();
+		 		 foreach( $results as $record ) {
+
+		 		 		  $m = new $class;
+		 		 		  foreach( $record as $column => $value ) {
+	
+		 		 		  		   $mutator = $this->toMutator( $outs[$column] );
+		  		 		  		   $m->$mutator( $value );
+		 		 		  }
+		 		 		  array_push( $models, $m );
+	 		 	 }
+
+	 		 	 return $models;
+	  		 }
+
+	  		 foreach( $results as $record ) {
+
+	  		 		  $m = new $class;
+		 		 	  foreach( $record as $column => $value ) {
+	
+		 		 		  	   $mutator = $this->toMutator( $outs[$column] );
+		  		 		  	   $m->$mutator( $value );
+		 		      }
+		 		 	  return $m;
+	  		 }
+	  }
+
+	  /**
+	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#create()
 	   * 
 	   * @todo Add engine and charset attributes to orm.xml 'table' element
@@ -224,7 +292,6 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	  public function reverseEngineer() {
 
 	  		 $Database = new Database();
-	  		 $Database->setId( $this->database->getId() );
 	  		 $Database->setName( $this->database->getName() );
 	  		 $Database->setType( $this->database->getType() );
 	  		 $Database->setHostname( $this->database->getHostname() );
@@ -276,7 +343,7 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	      	      		   if( $pos !== false ) {
 	      	      		   	 
 	      	      		   	   $type = preg_match_all( '/^(.*)\((.*)\).*$/i', $desc->Type, $matches );
-Log::debug( $desc );
+
 	      	      		   	   $type = $matches[1][0];
 	      	      		   	   $length = $matches[2][0];
 	      	      		   }

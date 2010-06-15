@@ -109,6 +109,9 @@
 					<include name="*Test.php" />
                 </fileset>
 				<fileset dir="${test.dir}/phpunit">
+					<include name="orm/SQLiteTest.php" />
+                </fileset>
+				<fileset dir="${test.dir}/phpunit">
 					<include name="orm/MySQLTest.php" />
                 </fileset>
 				<fileset dir="${test.dir}/phpunit">

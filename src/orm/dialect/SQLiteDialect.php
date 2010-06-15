@@ -66,6 +66,8 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	  		 		$this->createTriggers( $table );
 	  }
 
+	  public function call( $model ) { }
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
@@ -241,7 +243,6 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	  public function reverseEngineer() {
 
 	  		 $Database = new Database();
-	  		 $Database->setId( $this->database->getId() );
 	  		 $Database->setName( $this->database->getName() );
 	  		 $Database->setType( $this->database->getType() );
 	  		 $Database->setHostname( $this->database->getHostname() );

@@ -2,21 +2,6 @@
 <!DOCTYPE orm SYSTEM "../src/orm/orm.dtd">
 <orm>
 	<database name="agilephp_test_mysql" type="mysql" hostname="localhost" username="php" password="php007">
-		<table name="inventory" model="Inventory" display="Inventory" description="Product inventory">
-			<column name="id" visible="false" type="integer" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
-			<column name="name" type="varchar" length="255" required="true" validator="StringValidator"/>
-			<column name="description" type="varchar" length="255" required="true" validator="StringValidator"/>
-			<column name="price" type="float" required="true" validator="FloatValidator"/>
-			<column name="category" type="varchar" length="255" required="true" validator="StringValidator"/>
-			<column name="image" type="blob" required="true"/>
-			<column name="video" type="blob" />
-		</table>
-		<table name="mailing" model="Mailing" display="Mailing List" description="People on your mailing list">
-			<column name="id" type="integer" visible="false" required="true" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
-			<column name="name" type="varchar" length="150" required="true" description="Name of recipient" validator="StringValidator"/>
-			<column name="email" type="varchar" length="150" required="true" description="Email address of recipient" validator="EmailValidator"/>
-			<column name="enabled" type="bit" description="Opt In/Out Flag" validator="BitValidator"/>
-		</table>
 		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
 			<column name="username" type="varchar" length="150" primaryKey="true" required="true" validator="StringValidator"/>
 			<column name="password" type="varchar" length="255" required="true" validator="PasswordValidator"/>
@@ -71,5 +56,20 @@
 			<column name="name" type="varchar" length="100" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
 		</table>
+				<procedure name="authenticate" model="SPauthenticate" description="Stored procedure responsible for authentication">
+			<parameter name="userid" property="userId" mode="IN"/>
+			<parameter name="passwd" mode="IN"/>
+			<parameter name="authenticate" property="result" mode="OUT"/>
+		</procedure>
+		<procedure name="getusers" model="SPusers" description="Stored procedure responsible for getting all users">
+			<parameter name="username" mode="OUT"/>
+			<parameter name="password" mode="OUT"/>
+			<parameter name="email" mode="OUT"/>
+			<parameter name="created" mode="OUT"/>
+			<parameter name="last_login" property="lastLogin" mode="OUT"/>
+			<parameter name="roleId" mode="OUT"/>
+			<parameter name="sessionId" mode="OUT"/>
+			<parameter name="enabled" mode="OUT"/>
+		</procedure>
 	</database>
 </orm>

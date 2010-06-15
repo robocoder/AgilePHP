@@ -43,33 +43,5 @@
 			<column name="data" type="text" description="Name of recipient" validator="StringValidator"/>
 			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP" validator="DateValidator"/>
 		</table>
-		<table name="table1" model="Table1" description="">
-			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
-			<column name="field1" type="varchar" length="255" required="true" validator="StringValidator"/>
-			<column name="field2" type="varchar" length="10" default="Foo" validator="StringValidator"/>
-			<column name="field3" type="int" length="10" validator="NumberValidator">
-				<foreignKey name="FK_Table1" type="one-to-many" onDelete="SET_NULL" onUpdate="CASCADE" 
-					table="table2" column="id" controller="TestComponent" select="name"/>
-			</column>
-		</table>
-		<table name="table2" model="Table2" description="">
-			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
-			<column name="name" type="varchar" length="100" required="true" validator="StringValidator"/>
-			<column name="description" type="text" validator="StringValidator"/>
-		</table>
-		<table name="table3" model="TestComponent\model\Table1" description="">
-			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
-			<column name="field1" type="varchar" length="255" required="true" validator="StringValidator"/>
-			<column name="field2" type="varchar" length="10" default="Foo" validator="StringValidator"/>
-			<column name="field3" type="int" length="10"  validator="NumberValidator">
-				<foreignKey name="FK_Table1_2" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE" 
-					table="table4" column="id" controller="TestComponent" select="name"/>
-			</column>
-		</table>
-		<table name="table4" model="TestComponent\model\Table2" description="">
-			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false" validator="NumberValidator"/>
-			<column name="name" type="varchar" length="100" required="true" validator="StringValidator"/>
-			<column name="description" type="text" validator="StringValidator"/>
-		</table>
 	</database>
 </orm>

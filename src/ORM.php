@@ -220,7 +220,7 @@ final class ORM {
 	   */
 	  public static function quote( $data ) {
 
-	  		 ORMFactory::getDialect()->quote( $data );
+	  		 return ORMFactory::getDialect()->quote( $data );
 	  }
 
 	  /**
@@ -550,6 +550,14 @@ final class ORM {
      public static function createRestrictSQL() {
 
      		return ORMFactory::getDialect()->createRestrictSQL();
+     }
+
+     /**
+      * Calls a stored procedure
+      */
+     public static function call( $model ) {
+
+     		return ORMFactory::getDialect()->call( $model );
      }
 }
 ?>

@@ -56,3 +56,16 @@ CREATE TABLE users (
 
 INSERT INTO roles(name,description) values ('admin','This is an administrator account'),('test','This is a test account');
 INSERT INTO users(username,password,email,created,last_login,roleId,sessionId,enabled) values ('admin','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','root@localhost','2009-09-06 15:27:44','2010-01-26 22:27:02','admin',NULL,'1'),('test','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','test','2010-01-22 19:01:00','2010-01-24 16:26:22','test',NULL,NULL);
+
+CREATE FUNCTION getusers() RETURNS SETOF users as $$
+ SELECT * FROM users;
+$$ language SQL;
+
+CREATE FUNCTION authenticate( userid varchar, passwd varchar) RETURNS bool AS $$
+DECLARE
+ result bool;
+BEGIN
+ SELECT count(*) INTO result FROM users where username = userid AND password = passwd;
+RETURN result;
+END;
+$$ language plpgsql;

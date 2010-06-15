@@ -2,14 +2,14 @@
 /**
  * @package com.makeabyte.agilephp.test.orm
  */
-class MySQLTest extends PHPUnit_Framework_TestCase {
+class SQLiteTest extends PHPUnit_Framework_TestCase {
 
 	  /**
 	   * @test
 	   */
 	  public function coreTests() {
 
-	  		 $orm = ORMFactory::loadDialect( AgilePHP::getFramework()->getWebRoot() . '/orm_mysql_test.xml' );
+	  		 $orm = ORMFactory::loadDialect( AgilePHP::getFramework()->getWebRoot() . '/orm_sqlite_test.xml' );
 
 	  		 $orm->create();	// create the unit testing database agilephp_test_mysql
 
@@ -88,10 +88,8 @@ class MySQLTest extends PHPUnit_Framework_TestCase {
 	  	     // test reverse engineer
 	  	     $Database = $orm->reverseEngineer();
 	  	     $tables = $Database->getTables();
-	  	     PHPUnit_Framework_Assert::assertEquals( 'agilephp_test_mysql', $Database->getName(), 'Failed to reverse engineer database name' );
-	  	     PHPUnit_Framework_Assert::assertEquals( 'php', $Database->getUsername(), 'Failed to reverse engineer database username' );
-	  	     PHPUnit_Framework_Assert::assertEquals( 'php007', $Database->getPassword(), 'Failed to reverse engineer database password' );
-	  	     PHPUnit_Framework_Assert::assertEquals( 'mysql', $Database->getType(), 'Failed to reverse engineer database type' );
+	  	     PHPUnit_Framework_Assert::assertEquals( 'agilephp_test_sqlite', $Database->getName(), 'Failed to reverse engineer database name' );
+	  	     PHPUnit_Framework_Assert::assertEquals( 'sqlite', $Database->getType(), 'Failed to reverse engineer database type' );
 	  	     PHPUnit_Framework_Assert::assertType( 'array', $tables, 'Failed to reverse engineer database tables' );
 	  	     foreach( $tables as $table ) {
 
@@ -100,34 +98,6 @@ class MySQLTest extends PHPUnit_Framework_TestCase {
 	  	     	foreach( $table->getColumns() as $column )
 	  	     		PHPUnit_Framework_Assert::assertNotNull( $column->getName(), 'Failed to reverse engineer database column name' );
 	  	     }
-
-	  	     $orm->query( 'CREATE PROCEDURE authenticate( IN userid VARCHAR(150), IN passwd VARCHAR(255) ) SELECT enabled AS authenticate FROM users WHERE username = userid AND PASSWORD = passwd;' );
-	  	     $orm->query( 'CREATE PROCEDURE getusers() SELECT * FROM users;' );
-
-	  	     // test stored procedures / functions
-	  	     $user1 = new User( 'sproc', $digest, 'sproc@mysql', '04/13/10', false, 1 );
-	  	     $user2 = new User( 'sproc2', $digest, 'sproc@mysql', '04/13/10', false, 1 );
-	  	     $orm->persist( $user1 );
-	  	     $orm->persist( $user2 );
-
-	  		 $authenticate = new SPauthenticate();
-	  		 $authenticate->setUserId( 'sproc' );
-	  		 $authenticate->setPasswd( $digest );
-
-	  		 $auth = $orm->call( $authenticate );
-
-	  		 PHPUnit_Framework_Assert::assertEquals( 1, ord($auth->getResult()), 'Failed to get expected \'authenticate\' stored procedure result.' );
-
-			 $getusers = new SPusers();
-	  		 $users = $orm->call( $getusers );
-
-	  		 PHPUnit_Framework_Assert::assertType( 'array', $users, 'Failed to get expected \'getusers\' stored procedure result.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 2, count( $users ), 'Failed to get expected \'getusers\' stored procedure result count.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'sproc', $users[0]->getUsername(), 'Failed to get expected \'getusers\' sproc username.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'sproc2', $users[1]->getUsername(), 'Failed to get expected \'authenticate\' sproc2 username.' );
-
-	  		 $orm->query( 'DROP PROCEDURE authenticate;' );
-	  		 $orm->query( 'DROP PROCEDURE getusers;' );
 
 	  	     // destroy agilephp_test_mysql database
 	  	     $orm->drop();

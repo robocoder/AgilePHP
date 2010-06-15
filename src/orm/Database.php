@@ -28,7 +28,6 @@
  */
 class Database {
 
-	  private $id;
 	  private $name;
 	  private $type;
 	  private $hostname;
@@ -37,6 +36,7 @@ class Database {
 	  private $driver;
 
 	  private $tables = array();
+	  private $procedures = array();
 
 	  /**
 	   * Creates a new Database instance with optional database assignment.
@@ -48,7 +48,6 @@ class Database {
 
 	  		 if( $database !== null ) {
 
-	  		 	 $this->id = (string)$database->attributes()->id;
 		  		 $this->name = (string)$database->attributes()->name;
 		  		 $this->type = (string)$database->attributes()->type;
 		  		 $this->hostname = (string)$database->attributes()->hostname;
@@ -58,29 +57,10 @@ class Database {
 
 		  		 foreach( $database->table as $table )
 		  		     	  array_push( $this->tables, new Table( $table ) );
+
+		  		 foreach( $database->procedure as $procedure )
+		  		     	  array_push( $this->procedures, new Procedure( $procedure ) );
 	  		 }
-	  }
-
-	  /**
-	   * Sets the database id. This is used internally by AgilePHP to distinguish
-	   * between multiple data sources configured in orm.xml
-	   * 
-	   * @param String $id The database identifier. This can be any legal XML value.
-	   * @return void
-	   */
-	  public function setId( $id ) {
-
-	  		 $this->id = $id;
-	  }
-
-	  /**
-	   * Returns the unique database identifier.
-	   * 
-	   * @return String The database id
-	   */
-	  public function getId() {
-
-	  		 return $this->id;
 	  }
 
 	  /**
@@ -254,6 +234,11 @@ class Database {
 	  public function getTables() {
 
 	  		 return $this->tables;
+	  }
+
+	  public function getProcedures() {
+
+	  		 return $this->procedures;
 	  }
 }
 ?>

@@ -308,6 +308,14 @@ interface SQLDialect {
 	  	 public function find( $model );
 
 	  	 /**
+	  	  * Calls a stored procedure.
+	  	  * 
+	  	  * @param $model ActiveRecord model state representing the stored procedure
+	  	  * @return mixed The stored procedure return value or null if the stored procedure does not return
+	  	  */
+	  	 public function call( $model );
+
+	  	 /**
 		  * Reverse engineers the active database and returns a Database object that represents
 		  * the physical database.
 		  * 

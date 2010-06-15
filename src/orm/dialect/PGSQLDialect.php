@@ -157,11 +157,6 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
    						   $sql .= ', ';
    				  }
    				  $sql .= ' )';
-
-   				  /*
-   				  if( count( $pkeyColumns ) > 1 )
-   				  	  $sql .= ', UNIQUE KEY `' . $pkeyColumns[0]->getName() . '` (`' . $pkeyColumns[0]->getName() . '`)';
-   				  */
    			  }
 
 	   		  if( $table->hasForeignKey() ) {
@@ -186,11 +181,19 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	   		  return $sql;
 	  }
 
+	   /**
+	   * (non-PHPdoc)
+	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
+	   */
 	  public function createTable( Table $table ) {
 
 	  		 $this->query( $this->toCreateTableSQL( $table ) );
 	  }
 
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/orm/dialect/SQLDialect#dropTable(Table $table)
+	   */
 	  public function dropTable( Table $table ) {
 	  	
 	  		 $this->query( 'DROP TABLE ' . $table->getName() );
@@ -343,6 +346,73 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	  }
 
 	  /**
+	   * (non-PHPdoc)
+	   * @see src/orm/dialect/SQLDialect#call($model)
+	   */
+	  public function call( $model ) {
+
+	  		 $outs = array();
+	  		 $params = array();
+	  		 $class = get_class( $model );
+	  		 $proc = $this->getProcedureByModel( $model );
+
+	  		 foreach( $proc->getParameters() as $param ) {
+
+	  		 		  if( $param->getMode() == 'IN' || $param->getMode() == 'INOUT' ) {
+
+	  		 			  $accessor = $this->toAccessor( $param->getModelPropertyName() );
+	  		 			  array_push( $params, $model->$accessor() );
+	  		 		  }
+
+	  		 		  if( $param->getMode() == 'OUT' || $param->getMode() == 'INOUT' )
+	  		 			  $outs[$param->getName()] = $param->getModelPropertyName();
+	  		 }
+
+	  		 $values = array();
+	  		 $query = 'SELECT * FROM ' . $proc->getName() . '( ';
+	  		 for( $i=0; $i<count( $params ); $i++ ) {
+
+	  		 		$values[$i] = $params[$i];
+	  		 		$query .= '?' . (($i+1) == count($query) ? ', ': '' );
+	  		 }
+	  		 $query .= ' );';
+
+	  		 $this->prepare( $query );
+	  		 $stmt = $this->execute( $values );
+	  		 $stmt->setFetchMode( PDO::FETCH_ASSOC );
+	  		 $results = $stmt->fetchAll();
+
+	  		 if( !$results ) return true;
+
+	  		 if( count( $results ) > 1 ) {
+
+		  		 $models = array();
+		 		 foreach( $results as $record ) {
+
+		 		 		  $m = new $class;
+		 		 		  foreach( $record as $column => $value ) {
+	
+		 		 		  		   $mutator = $this->toMutator( $outs[$column] );
+		  		 		  		   $m->$mutator( $value );
+		 		 		  }
+		 		 		  array_push( $models, $m );
+	 		 	 }
+	 		 	 return $models;
+	  		 }
+
+	  		 foreach( $results as $record ) {
+
+	  		 		  $m = new $class;
+		 		 	  foreach( $record as $column => $value ) {
+	
+		 		 		  	   $mutator = $this->toMutator( $outs[$column] );
+		  		 		  	   $m->$mutator( $value );
+		 		      }
+		 		 	  return $m;
+	  		 }
+	  }
+
+	  /**
 	   * Returns the total number of records in the specified model.
 	   * 
 	   * @param Object $model The domain object to get the count for.
@@ -376,7 +446,7 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	  		  * @param array $tables Array of stdClass table objects returned from $tstmt
 	  		  * @return array 
 	  		  */
- 	         function organizeTables( $tables ) {
+ 	         function organizeTables( array $tables ) {
 
       	     		  $t = array();
 
@@ -392,7 +462,6 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
       	     }
 
 	  		 $Database = new Database();
-	  		 $Database->setId( $this->database->getId() );
 	  		 $Database->setName( $this->database->getName() );
 	  		 $Database->setType( $this->database->getType() );
 	  		 $Database->setHostname( $this->database->getHostname() );
