@@ -27,7 +27,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.orm.dialect
  */
-final class SQLSRVDialect extends BaseDialect implements SQLDialect {
+final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 	  private $conn;
 	  private $stmt;
@@ -35,7 +35,7 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	  private $connectFlag = -1;
 
 	  /**
-	   *  Initalize SQLSRVDialect.
+	   *  Initalize MSSQLDialect.
 	   *  
 	   * @param Database $db The Database object representing orm.xml
 	   * @return void
@@ -71,7 +71,56 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	  		 return $this->connectFlag;
 	  }
 
-	  public function call( $model ) { }
+	  public function call( $model ) {
+
+	  		 $values = array();
+	  		 $outs = array();
+	  		 $params = array();
+	  		 $class = get_class( $model );
+	  		 $proc = $this->getProcedureByModel( $model );
+
+	  		 foreach( $proc->getParameters() as $param ) {
+
+	  		 		  if( $param->getMode() == 'IN' || $param->getMode() == 'INOUT' ) {
+
+	  		 			  $accessor = $this->toAccessor( $param->getModelPropertyName() );
+	  		 			  array_push( $params, $model->$accessor() );
+	  		 		  }
+
+	  		 		  if( $param->getMode() == 'OUT' || $param->getMode() == 'INOUT' )
+	  		 			  $outs[$param->getName()] = $param->getModelPropertyName();
+	  		 }
+
+	  		 $query = '{call ' . $proc->getName() . ' ( ';
+	  		 for( $i=0; $i<count( $params ); $i++ ) {
+
+	  		 		$values[$i] = $params[$i];
+	  		 		$query .= '?' . (($i+1) == count($query) ? ', ' : '' );
+	  		 }
+	  		 $query .= ' ) }';
+
+	  		 $models = array();
+	  		 $params = array_merge( $params, $outs );
+
+	  		 Log::debug( 'MSSQLDialect::call ' . $query . ' with params ' . print_r( $params, true ) );
+
+			 $stmt = sqlsrv_query( $this->conn, $query, array_merge( $params, $outs ) );
+			 while( $record = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC ) ) {
+
+			 		$m = new $class;
+		 		 	foreach( $record as $column => $value ) {
+
+		 		 			 if( $value instanceof DateTime )
+		 		 			 	 $value = $value->date;
+
+		 		 	 		 $mutator = $this->toMutator( $outs[$column] );
+		  		 		  	 $m->$mutator( $value );
+		 		    }
+		 		 	array_push( $models, $m );
+			 }
+			 
+			 return (count( $models ) == 1) ? $models[0] : $models;
+	  }
 
 	  /**
 	   * (non-PHPdoc)
@@ -226,7 +275,7 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function beginTransaction() {
 	  	
-	  		 Log::debug( 'SQLSRVDialect::beginTransaction Beginning transaction' );
+	  		 Log::debug( 'MSSQLDialect::beginTransaction Beginning transaction' );
 	  }
 	  
 	  /**
@@ -237,7 +286,7 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 
 	  		 sqlsrv_commit( $this->conn );
 
-	  		 Log::debug( 'SQLSRVDialect::commit Transaction successfully committed.' );
+	  		 Log::debug( 'MSSQLDialect::commit Transaction successfully committed.' );
 	  }
 	  
 	  /**
@@ -246,7 +295,7 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function rollBack( $message = null, $code = 0 ) {
 
-	  		 Log::debug( 'SQLSRVDialect::rollBack ' . (($message == null) ? '' : ' ' . $message ) );
+	  		 Log::debug( 'MSSQLDialect::rollBack ' . (($message == null) ? '' : ' ' . $message ) );
 
 	  		 $this->transactionInProgress = false;
 	  		 sqlsrv_rollback( $this->conn );
@@ -264,7 +313,7 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function query( $sql, $params = array() ) {
 
-	  		 Log::debug( 'SQLSRVDialect::query Executing' .
+	  		 Log::debug( 'MSSQLDialect::query Executing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'raw PDO::query ' . $sql . 'with $params ' . print_r( $params, true ) );
 
@@ -277,7 +326,7 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function prepare( $statement ) {
 
-	  		 Log::debug( 'SQLSRVDialect::prepare Preparing' .
+	  		 Log::debug( 'MSSQLDialect::prepare Preparing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'statement ' . $statement );
 	  	
@@ -290,9 +339,9 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function execute( array $inputParameters = array() ) {
 
-	  		 Log::debug( 'SQLSRVDialect::execute Executing' .
+	  		 Log::debug( 'MSSQLDialect::execute Executing' .
 			  	     		(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
-			  	     		'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
+			  	     		'prepared statement with inputParameters ' . print_r( $inputParameters, true ) );
 
 	  		 // SQLSRV driver requires parameters passed to prepare be passed by reference
 	  		 $params = array();
@@ -325,6 +374,92 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
   	 	 	 $this->query( 'DROP DATABASE ' . $this->getDatabase()->getName() );
 	  }
 
+	  	/**
+	   	 * Persists a domain model object
+	     * 
+	     * @param $model The domain model object to persist
+	     * @return PDOStatement
+	     * @throws ORMException
+	     */
+	    public function persist( $model ) {
+
+	    	   $this->model = $model;
+
+	   		   $values = array();
+			   $table = $this->getTableByModel( $model );
+
+			   Log::debug( 'MSSQLDialect::persist Performing persist on model \'' . $table->getModel() . '\'.' );
+
+	   		   $this->validate( $table, true );
+
+			   $sql = 'INSERT INTO ' . $table->getName() . '( ';
+
+			   $cols = $table->getColumns();
+
+			   $columns = array();
+			   foreach( $cols as $column ) {
+
+			   		if( $column->getType() == 'timestamp' ) continue;
+			   		if( $column->isAutoIncrement() ) continue;
+			   		if( $column->isLazy() ) continue;
+
+			   		array_push( $columns, $column );
+			   }
+
+			   for( $i=0; $i<count( $columns ); $i++ ) {
+
+			   		$sql .= $columns[$i]->getName();
+
+			   		if( ($i + 1) < count( $columns ) )
+			   			$sql .= ', ';
+			   }
+			   $sql .= ' ) VALUES ( ';
+			   for( $i=0; $i<count( $columns ); $i++ ) {
+
+			   		$sql .= '?';
+
+			   	    $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
+			   	    if( $columns[$i]->isForeignKey() ) {
+
+			   	    	if( is_object( $model->$accessor() ) ) {
+
+			   	    		$refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+			   	    		// Get foreign key value from the referenced field/instance accessor
+			   	    		if( $model->$accessor()->$refAccessor() != null ) {
+
+			   	    			try {
+			   	    				  // Try to persist the referenced entity first
+					   	    		  $this->persist( $model->$accessor() );
+					   	    		  array_push( $values, $model->$accessor()->$refAccessor() );
+			   	    			}
+			   	    			catch( Exception $e ) {
+
+			   	    				   // The referenced entity doesnt exist yet, persist it
+			   	    				   if( preg_match( '/duplicate/i', $e->getMessage() ) ) {
+
+			   	    				   	   $this->merge( $model->$accessor() );
+			   	    				   	   array_push( $values, $model->$accessor()->$refAccessor() );
+			   	    				   }
+			   	    			}
+			   	    		}
+			   	    	}
+			   	    	else {
+
+			   	    		array_push( $values, null );
+			   	    	}
+			   	    }
+			   	    else // No foreign key
+			   	    	array_push( $values, (($model->$accessor() == '') ? NULL : $model->$accessor()) );
+
+			   		if( ($i + 1) < count( $columns ) )
+				   		$sql .= ', ';
+			   }
+			   $sql .= ' );';
+
+	   		   $this->prepare( $sql );
+	  		   return $this->execute( $values );
+	    }
+	  
 	  /**
 	   * Overrides parent find method to provide MSSQL specific syntax.
 	   * 
@@ -338,7 +473,7 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 			 $newModel = $table->getModelInstance();
 			 $values = array();
 
-			 Log::debug( 'SQLSRVDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
+			 Log::debug( 'MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
 
 	  		 try {
 	  		  	    $pkeyColumns = $table->getPrimaryKeyColumns();
@@ -374,21 +509,31 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	    	   		 		$columns = $table->getColumns();
 							for( $i=0; $i<count( $columns ); $i++ ) {
 
+								 if( $columns[$i]->isLazy() ) continue;
+
 							 	 $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
 						     	 if( $model->$accessor() == null ) continue;
 
 						     	 $where .= (count($values) ? ' AND ' : ' ') . $columns[$i]->getName() . '=?';
-								 array_push( $values, $model->$accessor() );
+						     	 
+								 if( is_object( $model->$accessor() ) ) {
+						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+						     	 	 array_push( $values, $model->$accessor()->$refAccessor() );
+						     	 }
+						     	 else {
+				     	 	     	 array_push( $values, $model->$accessor() );
+						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
-	    	   		 }
+						    
+					 }
 
 					 $this->prepare( $sql );
 					 $this->execute( $values );
 
 					 if( !sqlsrv_has_rows( $this->stmt ) ) { 
 
-					 	Log::debug( 'SQLSRVDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	Log::debug( 'MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	return array();
 					 }
 
@@ -409,6 +554,9 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 							 	   	   // Create foreign model instances from foreign values
 						 	 		   foreach( $table->getColumns() as $column ) {
 
+						 	 		   			if( $column->getName() != $name ) continue;
+						 	 		   		    if( $column->isLazy() ) continue;
+
 						 	 		  		    if( $column->isForeignKey() && $column->getName() == $name ) {
 
 						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
@@ -418,6 +566,10 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 						 	 		  		   	    $foreignInstance->$foreignMutator( $value );
 
 						 	 		  		   	    $persisted = $this->find( $foreignInstance );
+						 	 		  		   	    
+						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
+							 	 		  		   	$foreignModelPieces = explode( '\\', $foreignModel );
+							 	 		  		   	$foreignClassName = array_pop( $foreignModelPieces );
 
 						 	 		  		   	    $instanceMutator = $this->toMutator( $foreignModel );
 						 	 		  		   	    $m->$instanceMutator( $persisted[0] );
@@ -427,7 +579,7 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 						 	 		  		   		$mutator = $this->toMutator( $modelProperty );
 					 	   	   		  				$m->$mutator( $value );
 						 	 		  		    }
-						 	 		   }
+						 	 		   }						 	 		   
 					 	   	  }
 
 					 	   	  array_push( $models, $m );
@@ -442,7 +594,7 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	  		 		throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		 }
 	  }
-
+	  
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/AgilePHP/orm/BaseDialect#close()
@@ -462,7 +614,6 @@ final class SQLSRVDialect extends BaseDialect implements SQLDialect {
 	  		 $lengthables = array( 'binary', 'char', 'decimal', 'nchar', 'numeric', 'nvarchar', 'varbinary', 'varchar' );
 
 	  		 $Database = new Database();
-	  		 $Database->setId( $this->database->getId() );
 	  		 $Database->setName( $this->database->getName() );
 	  		 $Database->setType( $this->database->getType() );
 	  		 $Database->setHostname( $this->database->getHostname() );

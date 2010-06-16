@@ -24,6 +24,7 @@ require_once 'orm/Database.php';
 require_once 'orm/Table.php';
 require_once 'orm/Column.php';
 require_once 'orm/ForeignKey.php';
+require_once 'orm/dialect/SQLDialect.php';
 require_once 'orm/dialect/BaseDialect.php';
 
 /**

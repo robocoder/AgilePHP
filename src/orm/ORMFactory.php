@@ -19,8 +19,6 @@
  * @package com.makeabyte.agilephp.orm
  */
 
-require_once 'orm/dialect/SQLDialect.php';
-
 /**
  * Factory responsible for returning a SQLDialect implementation
  * 

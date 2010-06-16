@@ -8,6 +8,7 @@ require_once $src . DIRECTORY_SEPARATOR . 'AgilePHP.php';
 $agilephp = AgilePHP::getFramework( $test . DIRECTORY_SEPARATOR . 'agilephp.xml' );
 $agilephp->setWebRoot( $test );
 $agilephp->setFrameworkRoot( $src );
+$agilephp->setDefaultTimezone( 'America/New_York' );
 $agilephp->handleErrors();
 
 require_once $test . '/phpunit/BaseTest.php';

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE orm SYSTEM "../src/orm/orm.dtd">
+<orm>
+	<database name="agilephp_test_mssql" type="mssql" hostname="localhost" username="php" password="php007">
+		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
+			<column name="username" type="varchar" length="150" primaryKey="true" required="true" validator="StringValidator"/>
+			<column name="password" type="varchar" length="255" required="true" validator="PasswordValidator"/>
+			<column name="email" type="varchar" display="Email" length="255" required="true" validator="StringValidator"/>
+			<column name="created" type="datetime" required="true" validator="DateValidator"/>
+			<column name="last_login" property="lastLogin" display="Last Login" type="datetime" validator="DateValidator"/>
+			<column name="roleId" property="Role" type="varchar" length="25" sortable="false">
+				<foreignKey name="FK_UserRoles" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
+	  							 table="roles" column="name" controller="RoleController" select="name"/>
+			</column>
+	  		<column name="sessionId" property="Session" type="varchar" length="21" display="Session" sortable="false">
+	  			<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
+	  							 table="sessions" column="id" controller="SessionController"/>
+	  		</column>
+	  		<column name="enabled" type="bit" validator="BitValidator"/>
+	 	</table>
+	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
+			<column name="name" type="varchar" length="25" primaryKey="true" required="true" validator="StringValidator"/>
+			<column name="description" type="text" validator="StringValidator"/>
+	 	</table>
+		<!-- AgilePHP Session -->
+		<table name="sessions" display="Session" isSession="true" model="Session" description="User sessions">
+			<column name="id" type="varchar" length="21" primaryKey="true" description="Unique ID" validator="StringValidator"/>
+			<column name="data" type="text" description="Name of recipient" validator="StringValidator"/>
+			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP" validator="DateValidator"/>
+		</table>
+		<procedure name="authenticate" model="SPauthenticate" description="Stored procedure responsible for authentication">
+			<parameter name="userid" property="userId" mode="IN"/>
+			<parameter name="passwd" mode="IN"/>
+			<parameter name="authenticate" property="result" mode="OUT"/>
+		</procedure>
+		<procedure name="getusers" model="SPusers" description="Stored procedure responsible for getting all users">
+			<parameter name="username" mode="OUT"/>
+			<parameter name="password" mode="OUT"/>
+			<parameter name="email" mode="OUT"/>
+			<parameter name="created" mode="OUT"/>
+			<parameter name="last_login" property="lastLogin" mode="OUT"/>
+			<parameter name="roleId" mode="OUT"/>
+			<parameter name="sessionId" mode="OUT"/>
+			<parameter name="enabled" mode="OUT"/>
+		</procedure>
+	</database>
+</orm>
