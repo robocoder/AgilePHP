@@ -2,7 +2,6 @@
 <!DOCTYPE orm SYSTEM "../src/orm/orm.dtd">
 <orm>
 	<database name="agilephp_studio" type="mysql" hostname="localhost" username="php" password="php007">
-	<!--<database id="db1" name="/home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/ide/agilephp_ide" type="sqlite" hostname="" username="" password="">-->
 
 		<!-- AgilePHP Identity -->
 		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
@@ -34,7 +33,7 @@
 
 		<table name="server" model="Server" description="Stores all servers used by the application">
 			<column name="id" type="int" length="255" primaryKey="true" autoIncrement="true"/>
-			<column name="type" type="int" length="255">
+			<column name="type" property="ServerType">
 				<foreignKey name="FK_server" column="id" type="one-to-one" table="server_type"
 						onDelete="SET_NULL" onUpdate="CASCADE" controller="ServerController" select="name"/>
 			</column>

@@ -10,6 +10,9 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
 	var win = new AgilePHP.Studio.Window( id, 'btn-new-model', 'New Model', false, 330 );
 
+	var workspace = AgilePHP.Studio.FileExplorer.workspace;
+		workspace = (workspace.indexOf( '|' ) === 0) ? workspace.replace( /\|/g, '/' ) : workspace.replace( /\|/g, '\\' );
+	
 	var store = new Ext.data.Store({
 	        proxy: new Ext.data.MemoryProxy( [] ),
 	        reader: new Ext.data.ArrayReader({}, [
@@ -90,32 +93,34 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
 		id: id + '-editorgridpanel',
 	    store: store,
-	    width: 350,
-	    height: 175,
+	    autoHeight: true,
 	    stripeRows: true,
-	    tbar: [{
-            iconCls: 'btn-list-add',
-            handler : function() {
-                var mapping = grid.getStore().recordType;
-                var m = new mapping({});
-                grid.stopEditing();
-                store.insert( grid.getStore().getModifiedRecords().length, m );
-                grid.startEditing( grid.getStore().getModifiedRecords().length, 0 );
-            }
-	    }, {
-            iconCls: 'btn-list-remove',
-            handler : function() {
-                grid.getStore().removeAt( gridSelectedIndex );
-        	}
-        }, {
-        	iconCls: 'btn-refresh',
-        	handler: function() {
-
-        		var data = newModelRemote.getTableColumnsMeta( selectedTable );
-		  	  	store.removeAll();
-		  	  	store.loadData( data );
-        	}
-        }],
+	    tbar: new Ext.Toolbar({
+	    	width: '100%',
+	    	items:[{
+		            iconCls: 'btn-list-add',
+		            handler : function() {
+		                var mapping = grid.getStore().recordType;
+		                var m = new mapping({});
+		                grid.stopEditing();
+		                store.insert( grid.getStore().getModifiedRecords().length, m );
+		                grid.startEditing( grid.getStore().getModifiedRecords().length, 0 );
+		            }
+			    }, {
+		            iconCls: 'btn-list-remove',
+		            handler : function() {
+		                grid.getStore().removeAt( gridSelectedIndex );
+		        	}
+		        }, {
+		        	iconCls: 'btn-refresh',
+		        	handler: function() {
+		
+		        		var data = newModelRemote.getTableColumnsMeta( workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable );
+				  	  	store.removeAll();
+				  	  	store.loadData( data );
+		        	}
+		        }]
+	    }),
 	    stateId: 'grid',
 	    plugins: [visibleColumn, requiredColumn, indexColumn, pkeyColumn, autoIncrementColumn, sortableColumn, selectableColumn, sanitizeColumn],
 	    columns: [{
@@ -319,31 +324,32 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
 	  	    		newModelRemote.setCallback( function( response ) {
 
-	  	    			if( response._class == 'RemotingException' ) {
+	  	    			if( response.RemotingException._class == 'RemotingException' ) {
 
-			  	  			AgilePHP.Studio.error( response.message );
+			  	  			AgilePHP.Studio.error( response.RemotingException.message );
 			  	  			return false;
 			  	  		}
 
 	  	    			store.removeAll();
 				  	  	store.loadData( response );
 	  	    		});
-	  	    		newModelRemote.getTableColumnsMeta( selectedTable );
+	  	    		newModelRemote.getTableColumnsMeta( workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable );
 
 			  	  	newModelRemote.setCallback( function( response ) {
+
+				  	  	if( response.RemotingException._class == 'RemotingException' ) {
+	
+			  	  			AgilePHP.Studio.error( response.RemotingException.message );
+			  	  			return false;
+			  	  		}
 
 			  	  		if( response ) {
 
 			  	  			Ext.getCmp( id + '-editorgridpanel-column-combo' ).getStore().loadData( response );
 			  	  			return true;
 			  	  		}
-			  	  		if( response._class == 'RemotingException' ) {
-
-			  	  			AgilePHP.Studio.error( response.message );
-			  	  			return false;
-			  	  		}
 			  	  	});
-			  	  	newModelRemote.getTableColumns( selectedTable );
+			  	  	newModelRemote.getTableColumns( workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable );
 	  	    	}
 
             	return true;
@@ -396,9 +402,9 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
       	    	newModelRemote.setCallback( function( response ) {
 
-      	    		if( response._class == 'RemotingException' ) {
+      	    		if( response.RemotingException._class == 'RemotingException' ) {
 
-		  	  			AgilePHP.Studio.error( response.message );
+		  	  			AgilePHP.Studio.error( response.RemotingException.message );
 		  	  			win.show();
 		  	  			return false;
 		  	  		}
@@ -415,9 +421,6 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
       	    	Ext.getCmp( 'fe-new-model' ).hide();
       	    }
     }]);
-
-	var workspace = AgilePHP.Studio.FileExplorer.workspace;
-		workspace = (workspace.indexOf( '|' ) === 0) ? workspace.replace( /\|/g, '/' ) : workspace.replace( /\|/g, '\\' );
 	
 	newModelRemote.setCallback( function( tables ) {
 

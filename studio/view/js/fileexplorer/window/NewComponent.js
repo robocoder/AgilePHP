@@ -7,9 +7,9 @@ AgilePHP.Studio.FileExplorer.NewComponent = function() {
 	var componentsRemote = new ComponentsRemote();
 		componentsRemote.setCallback( function( response ) {
 
-			if( response._class == 'RemotingException' ) {
+			if( response.RemotingException._class == 'RemotingException' ) {
 
-				AgilePHP.Studio.error( response.message );
+				AgilePHP.Studio.error( response.RemotingException.message );
 				return false;
 			}
 
@@ -111,7 +111,7 @@ AgilePHP.Studio.FileExplorer.NewComponent = function() {
 							return false;
 						}
 
-						if( response._class == 'RemotingException' ) {
+						if( response.RemotingException._class == 'RemotingException' ) {
 
 							AgilePHP.Studio.error( response.message );
 							return false;

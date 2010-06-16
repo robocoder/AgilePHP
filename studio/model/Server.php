@@ -29,11 +29,9 @@
 class Server {
 
 	private $id;
-	private $type;
 	private $ip;
 	private $hostname;
 	private $profile;
-	
 	private $ServerType;
 
 	public function __construct() { }
@@ -41,11 +39,6 @@ class Server {
 	public function setId( $value ) {
 
 		 $this->id = $value;
-	}
-
-	public function setType( $value ) {
-
-		 $this->type = $value;
 	}
 
 	public function setIp( $value ) {
@@ -66,11 +59,6 @@ class Server {
 	public function getId() {
 
 		 return $this->id;
-	}
-
-	public function getType() {
-
-		 return $this->type;
 	}
 
 	public function getIp() {

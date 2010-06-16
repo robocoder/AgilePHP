@@ -118,9 +118,9 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
 		    	//Ext.getCmp( id + '-card-prev' ).setDisabled( true );
 		    	Ext.getCmp( id + '-card-next' ).setDisabled( false );
 
-	    		if( response._class == 'RemotingException' ) {
+	    		if( response.RemotingException._class == 'RemotingException' ) {
 
-	    			var errHtml = '<div class="wizard-header"><h1>Failed to create project.</h1></div><p style="padding-top: 15px;">' + response.message + '</p>';
+	    			var errHtml = '<div class="wizard-header"><h1>Failed to create project.</h1></div><p style="padding-top: 15px;">' + response.RemotingException.message + '</p>';
 	    			if( AgilePHP.Studio.debug ) errHtml += '<p><pre>' + response.trace + '</pre></p>';
 
 	    			Ext.getCmp( id + 'step-8-message' ).el.dom.innerHTML = errHtml; 
@@ -368,8 +368,7 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               			        data: [ ['mysql', 'MySQL'],
               			                ['sqlite', 'SQLite'],
               			                ['pgsql', 'PostgreSQL'],
-              			                ['mssql', 'MSSQL (PDO ODBC Driver)'],
-              			                ['sqlsrv', 'MSSQL (SQLSRV Driver)']
+              			                ['mssql', 'MSSQL (SQLSRV Driver)']
               			        ],
               			    }),
               			    valueField: 'id',
@@ -493,10 +492,10 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               	       					dbManagerRemote.setCallback( function( response ) {
 
               	       						button.setDisabled( false );
-              	       						if( response._class == 'RemotingException' ) {
+              	       						if( response.RemotingException == 'RemotingException' ) {
 
               	       							var errHtml = '<p>' + response.message + '</p>';
-              	       							if( AgilePHP.Studio.debug ) errHtml += '<p><pre>' + response.trace + '</pre></p>';
+              	       							if( AgilePHP.Studio.debug ) errHtml += '<p><pre>' + response.RemotingException.trace + '</pre></p>';
               	       							AgilePHP.Studio.error( errHtml );
               	       							return false;
               	       						}

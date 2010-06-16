@@ -298,12 +298,7 @@ class DatabaseManagerRemote {
 			              $class .= "\t * (non-PHPdoc)" . PHP_EOL;
 			              $class .= "\t * @see AgilePHP/mvc/BaseModelController#getModel()" . PHP_EOL;
 			              $class .= "\t */" . PHP_EOL;
-			              $class .= "\tpublic function getModel() { " . PHP_EOL . PHP_EOL . "\t\treturn " . '$this->model;' . PHP_EOL . "\t}" . PHP_EOL;
-			              $class .= PHP_EOL . "\t/**" . PHP_EOL;
-			              $class .= "\t * (non-PHPdoc)" . PHP_EOL;
-			              $class .= "\t * @see AgilePHP/mvc/BaseController#index()" . PHP_EOL;
-			              $class .= "\t */" . PHP_EOL;
-			              $class .= "\tpublic function index() { " . PHP_EOL . PHP_EOL . "\t\tparent::index();" . PHP_EOL . "\t}" . PHP_EOL;
+			              $class .= "\tpublic function getModel() { " . PHP_EOL . PHP_EOL . "\t\treturn " . '$this->model;' . PHP_EOL . "\t}" . PHP_EOL;          
 			      	      $class .= "}";
 
 			      	 	  $file = $projectPath . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $name . 'Controller.php';
