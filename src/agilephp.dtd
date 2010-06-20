@@ -26,7 +26,6 @@
 
 <!ELEMENT identity (#PCDATA)>
 <!ATTLIST identity model CDATA #IMPLIED>
-<!ATTLIST identity isCustomModel CDATA #IMPLIED>
 <!ATTLIST identity resetPasswordUrl CDATA #REQUIRED>
 <!ATTLIST identity confirmationUrl CDATA #REQUIRED>
 

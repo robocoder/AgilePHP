@@ -160,10 +160,12 @@ interface IdentityManager {
 		   * model being managed by IdentityManager. Uses the state of the 'email' field
 		   * within the domain object model the IdentityManager is managing.
 		   * 
+		   * @param String $subject Optional email subject line
+		   * @param String $body Optional email body
 		   * @return void
 		   * @throws FrameworkException If there was an error sending the forgotten password email.
 		   */
-		  public function forgotPassword();
+		  public function forgotPassword( $subject = null, $body = null );
 
 		  /**
 		   * Resets the password to a hashed random string. This operation uses the AgilePHP
@@ -171,19 +173,23 @@ interface IdentityManager {
 		   * 
 		   * @param String $token A randomly generated token required to reset the password
 		   * @param String $sessionId The sessionId of the user who requested the new password
+		   * @param String $subject Optional email subject line
+		   * @param String $body Optional email body
 		   * @return void
 		   */
-		  public function resetPassword( $token, $sessionId );
+		  public function resetPassword( $token, $sessionId, $subject = null, $body = null );
 
 		  /**
 		   * Registers a new user account by creating a disabled user and sending
 		   * an activation email to the new user. The activation email calls activate
 		   * to allow the user to enable the account.
 		   *
+		   * @param string $subject Optional email subject line
+		   * @param string $body Optional email body
 		   * @return void
 		   * @throws FrameworkException IF there was an error sending the registration email.
 		   */
-		  public function register();
+		  public function register( $subject = null, $body = null );
 
 		  /**
 		   * Confirms/activates a pending registration

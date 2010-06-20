@@ -48,7 +48,6 @@ class Identity implements IdentityManager {
 	  private $model;
 	  private $modelName;
 
-	  private $isCustomModel;
 	  private $resetPasswordUrl;
 	  private $confirmationUrl;
 
@@ -311,9 +310,9 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#forgotPassword()
+	   * @see src/identity/IdentityManager#forgotPassword($subject=null,$body=null)
 	   */
-	  public function forgotPassword() {
+	  public function forgotPassword( $subject = null, $body = null ) {
 
 	  		 if( !$this->getPasswordResetUrl() )
 	  		 	 throw new FrameworkException( 'Identity::forgotPassword requires a valid passwordResetUrl property value.' );
@@ -338,8 +337,8 @@ class Identity implements IdentityManager {
 	  		 	 throw new FrameworkException( 'The information provided does not match our records.' );
 
 	  		 // Send email
-	  		 $subject = AgilePHP::getFramework()->getAppName() . ' :: Forgotten Password';
-	  		 $body = 'Click on the following link to reset your password: ' . $this->getPasswordResetUrl() . '/' . $token . '/' . $this->session->getSessionId();
+	  		 if( !$subject ) $subject = AgilePHP::getFramework()->getAppName() . ' :: Forgotten Password';
+	  		 if( !$body ) $body = 'Click on the following link to reset your password: ' . $this->getPasswordResetUrl() . '/' . $token . '/' . $this->session->getSessionId();
 
 	  		 if( !mail( $this->getModel()->getEmail(), $subject, $body, $this->getMailHeaders() ) )
 	  		 	 throw new FrameworkException( 'Error sending forgot password email.' );
@@ -347,9 +346,9 @@ class Identity implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#resetPassword($token, $sessionId)
+	   * @see src/identity/IdentityManager#resetPassword($token,$sessionId,$subject=null,$body=null)
 	   */
-	  public function resetPassword( $token, $sessionId ) {
+	  public function resetPassword( $token, $sessionId, $subject = null, $body = null ) {
 
 	  		 $this->session->setSessionId( $sessionId );
 
@@ -357,8 +356,9 @@ class Identity implements IdentityManager {
 	  		 	 throw new FrameworkException( 'Invalid token: ' . $token );
 
 	  		 $newPassword = $this->createToken();
-	  		 $subject = AgilePHP::getFramework()->getAppName() . ' :: New Password';
-	  		 $body = 'Your new password is: ' . $newPassword;
+
+	  		 if( !$subject ) $subject = AgilePHP::getFramework()->getAppName() . ' :: New Password';
+	  		 if( !$body ) $body = 'Your new password is: ' . $newPassword;
 
 	  		 $this->setUsername( $this->session->get( 'username' ) );
 	  		 $this->setPassword( $newPassword );
@@ -374,7 +374,7 @@ class Identity implements IdentityManager {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#register()
 	   */
-	  public function register() {
+	  public function register( $subject = null, $body = null ) {
 
 	  		 $token = $this->createToken();
 
@@ -384,13 +384,15 @@ class Identity implements IdentityManager {
 
 	  		 $this->setCreated( strtotime( 'now' ) );
 	  		 $this->setEnabled( 0 );
-	  		 $this->getModel()->setSessionId( $this->session->getSessionId() );
+	  		 $this->getModel()->setSession( $this->session->getSession() );
 	  		 $this->persist();
 
-	  		 // Send email
-	  		 $subject = AgilePHP::getFramework()->getAppName() . ' :: Registration Confirmation';
-	  		 $body = 'Click on the following link to confirm your registration: ' . $this->getConfirmationUrl() . '/' .
-	  		 		 $token . '/' . $this->session->getSessionId();
+	  		 if( !$subject )
+	  		 	 $subject = AgilePHP::getFramework()->getAppName() . ' :: Registration Confirmation';
+
+	  		 if( !$body )
+	  		 	 $body = 'Click on the following link to confirm your registration: ' . $this->getConfirmationUrl() . '/' .
+	  		 				 $token . '/' . $this->session->getSessionId();
 
 	  		 if( !mail( $this->getEmail(), $subject, $body, $this->getMailHeaders() ) )
 	  		 	 throw new FrameworkException( 'Error sending registration email.' );

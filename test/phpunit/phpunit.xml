@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="test/phpunit/bootstrap.php"
+         colors="true"
+         stopOnFailure="true"
+         syntaxCheck="true"
+		 testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader">
+
+	<logging>
+		<log type="junit" target="build/reports/phpunit/tests/junit.xml" logIncompleteSkipped="true"/>
+		<log type="coverage-clover" target="build/reports/phpunit/coverage/clover.xml"/>
+	</logging>
+
+	<testsuites>
+	
+		<testsuite name="FileLoggerTest">
+		 	<file>test/phpunit/FileLoggerTest.php</file>
+		</testsuite>
+
+		<testsuite name="SysLoggerTest">
+		 	<file>test/phpunit/SysLoggerTest.php</file>
+		</testsuite>
+
+	    <testsuite name="Annotations">
+		 	<file>test/phpunit/AnnotationTest.php</file>
+		</testsuite>
+		
+		<testsuite name="Interceptors">
+		 	<file>test/phpunit/InterceptorTest.php</file>
+		</testsuite>
+		
+		<testsuite name="Renderers">
+		 	<file>test/phpunit/RenderersTest.php</file>
+		</testsuite>
+
+		<testsuite name="SOAP Web Services">
+			<file>test/phpunit/SoapRpcEncodedTest.php</file>
+		 	<file>test/phpunit/SoapRpcLiteralTest.php</file>
+		 	<file>test/phpunit/SoapDocumentLiteralTest.php</file>
+		</testsuite>
+
+  		<testsuite name="REST Web Services">
+		 	<file>test/phpunit/UserRestServiceTest.php</file>
+		</testsuite>
+
+	    <testsuite name="MySQL">
+		 	<file>test/phpunit/orm/MySQLTest.php</file>
+		</testsuite>
+		
+		<testsuite name="PostgreSQL">
+		 	<file>test/phpunit/orm/PGSQLTest.php</file>
+		</testsuite>
+		
+		<testsuite name="SQLite">
+		 	<file>test/phpunit/orm/SQLiteTest.php</file>
+		</testsuite>
+
+	</testsuites>
+
+</phpunit>

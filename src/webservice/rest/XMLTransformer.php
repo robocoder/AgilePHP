@@ -34,11 +34,12 @@ class XMLTransformer implements Transformer {
 	   * @param string $data The string data which represents the domain model
 	   * 					 and state to create.
 	   * @return Object The domain model specified in the string $data
+	   * @throws RestServiceException 400 Bad Request if the data could not be unmarshalled
 	   */
 	  public function transform( $data ) {
 
 	  		 if( !$xml= @simplexml_load_string( $data ) )
-	  		 	 throw new RestServiceException( 406 );
+	  		 	 throw new RestServiceException( 400 );
 
 	  		 return $this->convert( $xml );
 	  }

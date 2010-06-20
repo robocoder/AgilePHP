@@ -36,7 +36,7 @@ class AnnotatedClass extends ReflectionClass {
 	   * AgilePHP annotations.
 	   * 
 	   * @param mixed $class The name or instance of the class to inspect
-	   * @return void
+	   * @return AnnotatedClass
 	   * @throws AnnotationException
 	   */
 	  public function __construct( $class ) {

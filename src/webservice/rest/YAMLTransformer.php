@@ -34,11 +34,12 @@ class YAMLTransformer implements Transformer {
 	   * @param string $data The string data which represents the domain model
 	   * 					 and state to create.
 	   * @return Object The domain model specified in the string $data
+	   * @throws RestServiceException 400 Bad Request if the data could not be parsed
 	   */
 	  public function transform( $data ) {
 
 	  		 $o = yaml_parse( $data );
-	  		 if( $o == null ) throw new RestServiceException( 406 );
+	  		 if( $o == null ) throw new RestServiceException( 400 );
 
 	  		 return $o;
 	  }

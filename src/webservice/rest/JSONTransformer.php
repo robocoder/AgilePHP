@@ -34,6 +34,7 @@ class JSONTransformer implements Transformer {
 	   * @param string $data The string data which represents the domain model
 	   * 					 and state to create.
 	   * @return Object The domain model specified in the string $data
+	   * @throws RestServiceException 400 if the data could not be decoded
 	   */
 	  public function transform( $data ) {
 
@@ -42,7 +43,7 @@ class JSONTransformer implements Transformer {
 	  		 if( !is_object( $o ) ) {
 
 	  		 	 Log::debug( 'JSONTransformer::transform Received malformed data ' . $data );
-	  		 	 throw new RestServiceException( 406 );
+	  		 	 throw new RestServiceException( 400 );
 	  		 }
 
 	  		 $vars = get_object_vars( $o );

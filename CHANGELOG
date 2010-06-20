@@ -1,15 +1,5 @@
-- Created agilephp_test_mssql.sql
-- Added AgilePHP::setDefaultTimezone to test/phpunit/bootstrap.php
-- Added MSSQLDialect (formerly SQLSRVDialect)
-- Dropped support for MSSQL access via PDO MSSQL or PDO ODBC
-- Added MSSQL stored procedure support to ORM
-- Moved SQLDialect require_once to ORM from ORMFactory
-- Added test/phpunit/MSSQLTest which will require being on windows to execute.
-
-C:\Inetpub\wwwroot\AgilePHP>phpunit --bootstrap test\phpunit\bootstrap.php test\
-phpunit\orm\MSSQLTest.php
-PHPUnit 3.4.9 by Sebastian Bergmann.
-
-........
-
-Time: 7 seconds, Memory: 7.75Mb
+- Added $subject and $email to Identity::forgotPassword, Identity::resetPassword, and Identity::register
+- phpDoc comment fixes
+- removed unused isCustomModel flag from identity element in agilephp.dtd.
+- Added phpunit clover coverage reports
+- Added phpunit junit logging format for integration with atlassian products (but not working for some reason)
