@@ -109,8 +109,8 @@ AgilePHP.Studio.Properties = function() {
 				    					AgilePHP.Studio.error( 'Error saving configuration. The server did not reply' );
 				    					return false;
 				    				}
-				    				if( response._class == 'RemotingException' )
-				    					AgilePHP.Studio.error( response.message );
+				    				if( response.RemotingException )
+				    					AgilePHP.Studio.error( response.RemotingException );
 				    			});
 				    			componentsRemote.setProperty( selectedComponent, e.record.data.name, e.record.data.value );
 				    	}

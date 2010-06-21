@@ -48,7 +48,7 @@
 
 <!ELEMENT column (foreignKey*)>
 <!ATTLIST column name CDATA #REQUIRED>
-<!ATTLIST column type ( boolean | integer | int | bigint | double | decimal | varchar | float | bit | date | datetime | timestamp | blob | text | password |
+<!ATTLIST column type ( boolean | integer | int | bigint | double | decimal | varchar | float | bit | date | datetime | timestamp | blob | text | longtext | password |
 						smallint | tinyint | money | char | varbinary | nvarchar | image | uniqueidentifier | smalldatetime | ntext |
 						serial | bigserial | real | numeric | box | bytea | cidr | circle | inet | interval | line | lseg | macaddr | path | point | polygon | uuid | xml ) "varchar">
 <!ATTLIST column length CDATA #IMPLIED>

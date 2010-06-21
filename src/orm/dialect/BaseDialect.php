@@ -607,6 +607,9 @@ abstract class BaseDialect {
 	    	   		 }
 	    	   		 else {
 	    	   		 		$where = '';
+	    	   		 		$order = $this->getOrderBy();
+	    	   	         	$offset = $this->getOffset();
+	    	   	         	$groupBy = $this->getGroupBy();
 
 	    	   		 		$columns = $table->getColumns();
 							for( $i=0; $i<count( $columns ); $i++ ) {
@@ -627,7 +630,12 @@ abstract class BaseDialect {
 						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
-						    $sql .= ' LIMIT ' . $this->getMaxResults() . ';';
+
+					 	    $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
+					 	 	$sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
+					 	 	$sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
+					 	 	$sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
+    	   	         	 	$sql .= ';';
 	    	   		 }
 
 					 $this->prepare( $sql );

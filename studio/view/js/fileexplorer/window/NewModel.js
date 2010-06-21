@@ -324,7 +324,7 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
 	  	    		newModelRemote.setCallback( function( response ) {
 
-	  	    			if( response.RemotingException._class == 'RemotingException' ) {
+	  	    			if( response.RemotingException ) {
 
 			  	  			AgilePHP.Studio.error( response.RemotingException.message );
 			  	  			return false;
@@ -337,7 +337,7 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
 			  	  	newModelRemote.setCallback( function( response ) {
 
-				  	  	if( response.RemotingException._class == 'RemotingException' ) {
+				  	  	if( response.RemotingException ) {
 	
 			  	  			AgilePHP.Studio.error( response.RemotingException.message );
 			  	  			return false;
@@ -402,7 +402,7 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
       	    	newModelRemote.setCallback( function( response ) {
 
-      	    		if( response.RemotingException._class == 'RemotingException' ) {
+      	    		if( response.RemotingException ) {
 
 		  	  			AgilePHP.Studio.error( response.RemotingException.message );
 		  	  			win.show();

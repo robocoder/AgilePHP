@@ -60,6 +60,8 @@ class Cache {
 	  // Cache file
 	  private $file;
 
+	  private $mode;
+	  
 	  /**
 	   * Handles serving up cached content vs real time content.
 	   * 
@@ -95,7 +97,7 @@ class Cache {
 	  		 			return $this->serveFromCache();
 	  		 }
 
-	  		 $this->serveAndCache( $ic );
+	  		 return $this->serveAndCache( $ic );
 	  }
 
 	  /**
@@ -112,13 +114,23 @@ class Cache {
 
         	  $class = new ReflectionClass( $o );
         	  $m = $class->getMethod( $ic->getMethod() );
-        	  $ic->getParameters() ? $m->invokeArgs( $o, $ic->getParameters() ) : $m->invoke( $o );
+        	  $return = $ic->getParameters() ? $m->invokeArgs( $o, $ic->getParameters() ) : $m->invoke( $o );
 
-       		  $h = fopen( $this->file, 'w' );
-        	  fwrite( $h, ob_get_contents() );
-    	      fclose( $h );
+        	  if( $return ) {
 
-	   	      ob_end_flush();
+        	  	  $this->mode = 1; // return
+        	  	  $data = $return;
+        	  }
+        	  else {
+        	     $data = ob_get_contents();
+        	  	 ob_end_flush();
+        	  }
+
+        	  $h = fopen( $this->file, 'w' );
+        	  fwrite( $h, $data );
+			  fclose( $h );
+
+			  return $data;
 
 	   	      Log::debug( '#@Cache::serveAndCache Cached ' . $this->file );
 	  }
@@ -130,8 +142,10 @@ class Cache {
 	   */
 	  private function serveFromCache() {
 
-	  		 echo '<!-- Cached ' . date( 'c', filemtime( $this->file ) ) . "-->\n";
-	  		 include $this->file;
+	  		 $data = '<!-- Cached ' . date( 'c', filemtime( $this->file ) ) . "-->\n";
+	  		 $data .= file_get_contents( $this->file );
+
+	  		 return $data;
 	  }
 }
 ?>

@@ -1,5 +1,4 @@
-- Added $subject and $email to Identity::forgotPassword, Identity::resetPassword, and Identity::register
-- phpDoc comment fixes
-- removed unused isCustomModel flag from identity element in agilephp.dtd.
-- Added phpunit clover coverage reports
-- Added phpunit junit logging format for integration with atlassian products (but not working for some reason)
+- added longtext to orm.dtd
+- Bug fix to BaseDialect::find when using setOrderBy or setGroupBy.
+- studio RemotingException bug fixes
+- added support to #@Cache interceptor for methods that return

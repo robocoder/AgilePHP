@@ -163,6 +163,50 @@ class NewModelRemote {
 	  		 $modelName = ucfirst( preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $tableName ) );
 	  		 $path = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model';
 
+	  		 $Table = new Table();
+	  		 $Table->setName( $tableName );
+	  		 $Table->setModel( $modelName );
+
+	  		 $class = "class " . $modelName . ' {' . PHP_EOL;
+	  		 $class .= PHP_EOL . "\tpublic function __construct() { }" . PHP_EOL . PHP_EOL;
+
+	  	 	 for( $i=0; $i<count( $properties ); $i++ ) {
+
+	  		 		  $property = preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $properties[$i][0] );
+      	    		  $default = $properties[$i][5];
+      	    		  $class .= (isset( $default) && $default != '(null)') ? "\tprivate \$$property = \"$default\";" . PHP_EOL : "\tprivate \$$property;" . PHP_EOL;
+	  		 }
+
+	  		 $class .= PHP_EOL;
+
+             foreach( $properties as $key => $value ) {
+
+             		  $property = preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $value[0] );
+
+             		  // Add built-in agilephp ORM interceptors
+             		  switch( $property ) {
+
+             		  		case 'id':
+             		  			$class .= "\t#@Id" . PHP_EOL;
+             		  			break;
+
+             		  		case 'password':
+             		  			$class .= "\t#@Password" . PHP_EOL;
+             		  			break;
+             		  }
+
+             		  $class .= "\tpublic function set" . ucfirst( $property ) . "( \$value ) {" . PHP_EOL . PHP_EOL . "\t\t \$this->$property = \$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
+             		  $class .= "\tpublic function get" . ucfirst( $property ) . "() {" . PHP_EOL . PHP_EOL . "\t\t return \$this->$property;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
+             }
+
+      	     $class .= '}';
+
+      	     $file = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model' .
+      	     			 DIRECTORY_SEPARATOR . ucfirst( $modelName ) . '.php';
+      	     $h = fopen( $file, 'w' );
+      	     fwrite( $h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL . $class . PHP_EOL . '?>' );
+      	     fclose( $h );
+
       	     // Update orm.xml
       	     if( $updateOrmDotXml ) {
 
@@ -230,51 +274,6 @@ class NewModelRemote {
 
       	     if( $createTable ) ORM::createTable( $Table );
 
-      	     // Create model
-      	     $Table = new Table();
-	  		 $Table->setName( $tableName );
-	  		 $Table->setModel( $modelName );
-
-	  		 $class = "class " . $modelName . ' {' . PHP_EOL;
-	  		 $class .= PHP_EOL . "\tpublic function __construct() { }" . PHP_EOL . PHP_EOL;
-
-	  	 	 for( $i=0; $i<count( $properties ); $i++ ) {
-
-	  		 		  $property = preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $properties[$i][0] );
-      	    		  $default = $properties[$i][5];
-      	    		  $class .= (isset( $default) && $default != '(null)') ? "\tprivate \$$property = \"$default\";" . PHP_EOL : "\tprivate \$$property;" . PHP_EOL;
-	  		 }
-
-	  		 $class .= PHP_EOL;
-
-             foreach( $properties as $key => $value ) {
-
-             		  $property = preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $value[0] );
-
-             		  // Add built-in agilephp ORM interceptors
-             		  switch( $property ) {
-
-             		  		case 'id':
-             		  			$class .= "\t#@Id" . PHP_EOL;
-             		  			break;
-
-             		  		case 'password':
-             		  			$class .= "\t#@Password" . PHP_EOL;
-             		  			break;
-             		  }
-
-             		  $class .= "\tpublic function set" . ucfirst( $property ) . "( \$value ) {" . PHP_EOL . PHP_EOL . "\t\t \$this->$property = \$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
-             		  $class .= "\tpublic function get" . ucfirst( $property ) . "() {" . PHP_EOL . PHP_EOL . "\t\t return \$this->$property;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
-             }
-
-      	     $class .= '}';
-
-      	     $file = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model' .
-      	     			 DIRECTORY_SEPARATOR . ucfirst( $modelName ) . '.php';
-      	     $h = fopen( $file, 'w' );
-      	     fwrite( $h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL . $class . PHP_EOL . '?>' );
-      	     fclose( $h );
-      	     
       	     return true;
 	  }
 }

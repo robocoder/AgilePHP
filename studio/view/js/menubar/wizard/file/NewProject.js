@@ -118,7 +118,7 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
 		    	//Ext.getCmp( id + '-card-prev' ).setDisabled( true );
 		    	Ext.getCmp( id + '-card-next' ).setDisabled( false );
 
-	    		if( response.RemotingException._class == 'RemotingException' ) {
+	    		if( response.RemotingException ) {
 
 	    			var errHtml = '<div class="wizard-header"><h1>Failed to create project.</h1></div><p style="padding-top: 15px;">' + response.RemotingException.message + '</p>';
 	    			if( AgilePHP.Studio.debug ) errHtml += '<p><pre>' + response.trace + '</pre></p>';
@@ -492,7 +492,7 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               	       					dbManagerRemote.setCallback( function( response ) {
 
               	       						button.setDisabled( false );
-              	       						if( response.RemotingException == 'RemotingException' ) {
+              	       						if( response.RemotingException ) {
 
               	       							var errHtml = '<p>' + response.message + '</p>';
               	       							if( AgilePHP.Studio.debug ) errHtml += '<p><pre>' + response.RemotingException.trace + '</pre></p>';

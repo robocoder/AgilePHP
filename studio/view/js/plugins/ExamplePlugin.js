@@ -19,7 +19,7 @@ function ExamplePlugin() {
 			text: 'Example Plugin',
 			menu: [{
 				   text: 'ExamplePlugin.testMethod()',
-				   iconCls: 'cdsLogo',
+				   iconCls: 'appIcon',
 				   handler: function() { 
 						ExamplePlugin.testMethod();
 				   }
