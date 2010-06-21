@@ -31,13 +31,13 @@ class CacheController {
 	  public function testExpires() {
 
 	  		 $c = new MockCacher();
-	  		 $c->expires();
+	  		 echo $c->expires();
 	  }
 	  
 	  public function testNeverExpires() {
 
 	  		 $c = new MockCacher();
-	  		 $c->neverExpires();
+	  		 echo $c->neverExpires();
 	  }
 }
 ?>

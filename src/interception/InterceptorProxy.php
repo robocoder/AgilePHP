@@ -248,8 +248,11 @@ class InterceptorProxy {
 									  	    $invocationCtx->setReturn( $return );
 									  	    $invoked = true;
 						                }
-						                else
+						                else {
+
+						                	if( $invocationCtx !== null ) return $invocationCtx; // not InvocationContext, but rather a return value from the interceptor
 						               	    unset( $invocationCtx );
+						                }
 	     		 	 	 		    }
 
 	     		 	 	 		    // Execute #@AfterInvoke interceptor methods passing in the InvocationContext as it

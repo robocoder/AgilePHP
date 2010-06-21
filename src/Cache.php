@@ -61,7 +61,7 @@ class Cache {
 	  private $file;
 
 	  private $mode;
-	  
+
 	  /**
 	   * Handles serving up cached content vs real time content.
 	   * 
