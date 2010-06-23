@@ -458,6 +458,7 @@ class FileExplorerController extends BaseExtController {
 	  	 */
 	    public function getViewTemplates( $projectName ) {
 
+	    	   $supportedViews = array( 'phtml', 'html', 'js' );
 	    	   $views = array();
 
 	  		   $i=0;
@@ -470,10 +471,9 @@ class FileExplorerController extends BaseExtController {
 			   	      	    $file = str_replace( '.' . DIRECTORY_SEPARATOR . 'templates' .
 			   	      	  			  DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR, '', $file );
 
-			   	      	  	if( substr( $file, -6 ) != '.phtml' ) continue;
-				 		    if( substr( $file, 0, 4 ) == '.svn' ) continue;
-
-				 		    $file = str_replace( '.phtml', '', $file );
+			   	      	  	$pieces = explode( '.', $file );
+			   	      	  	$extension = array_pop( $pieces );
+			   	      	  	if( !in_array( $extension, $supportedViews ) ) continue;
 
 				 		    $i++;
 
@@ -630,20 +630,12 @@ class FileExplorerController extends BaseExtController {
 	  		   		case 'custom':
 
 	  		   			$viewRoot = '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR;
-	  		   			$view = $request->getSanitized( 'view' ) . '.phtml';
+	  		   			$view = $request->getSanitized( 'view' );
 
 	  		   			if( file_exists( $viewRoot . $view ) ) {
 
 	  		   				copy( $viewRoot . $view, $viewDir . DIRECTORY_SEPARATOR . $view );
 	  		   				$this->fixLineBreaks( $viewDir . DIRECTORY_SEPARATOR . $view );
-	  		   			}
-	  		   			else {
-	  		   				$view = $request->getSanitized( 'view' ) . '.html';
-	  		   				if( file_exists( $viewRoot . $view ) ) {
-
-	  		   					copy( $viewRoot . $view, $viewDir . DIRECTORY_SEPARATOR . $view );
-	  		   					$this->fixLineBreaks( $viewDir . DIRECTORY_SEPARATOR . $view );
-	  		   				}
 	  		   			}
 	  		   			break;
 

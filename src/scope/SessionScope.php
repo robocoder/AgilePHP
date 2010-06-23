@@ -23,7 +23,7 @@
  * Maintains persistent session data that lives over multiple page requests. This
  * data is stored in the database to allow greater flexibility and easier clustering
  * compared to the native local file system approach PHP uses.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
@@ -43,7 +43,7 @@ class SessionScope {
 	   * AGILEPHP_SESSION_ID is present, the session id from the cookie is used
 	   * to retrieve a previously persisted Session, otherwise a new session is
 	   * created and a new cookie is given to the client.
-	   * 
+	   *
 	   * @return void
 	   */
 	  private function __construct() {
@@ -76,7 +76,7 @@ class SessionScope {
 
 	  /**
 	   * Returns a singleton instance of SessionScope
-	   * 
+	   *
 	   * @return SessionScope Singleton instance of SessionScope
 	   * @static
 	   */
@@ -91,7 +91,7 @@ class SessionScope {
 	  /**
 	   * Returns the session domain model object which maintains the id and data for
 	   * the current Session's ActiveRecord.
-	   *  
+	   *
 	   * @return Session The current Session instance
 	   */
 	  public function getSession() {
@@ -101,7 +101,7 @@ class SessionScope {
 
 	  /**
 	   * Returns the session id for the current Session.
-	   * 
+	   *
 	   * @return String The session id
 	   */
 	  public function getSessionId() {
@@ -110,8 +110,8 @@ class SessionScope {
 	  }
 
 	  /**
-	   * Sets the session id and restores a previously persisted Session if one exists. 
-	   * 
+	   * Sets the session id and restores a previously persisted Session if one exists.
+	   *
 	   * @return void
 	   */
 	  public function setSessionId( $id ) {
@@ -130,7 +130,7 @@ class SessionScope {
 
 	  /**
 	   * Returns the value corresponding to the specified key stored in the current Session.
-	   * 
+	   *
 	   * @param String $key The variable's key/name
 	   * @return The value if present, otherwise null.
 	   */
@@ -146,7 +146,7 @@ class SessionScope {
 
 	  /**
 	   * Sets a new Session variable.
-	   * 
+	   *
 	   * @param String $key The variable name
 	   * @param String $value The variable value
 	   * @return void
@@ -160,7 +160,7 @@ class SessionScope {
 
 	  /**
 	   * Refreshes the session by loading a fresh version from the database
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function refresh() {
@@ -173,7 +173,7 @@ class SessionScope {
   	 	 	  	 $this->oldSession->setData( $persisted->getData() );
   	 	 	 }
   	 	 	 else {
-  	 	 	 	
+
   	 	 	 	 $this->session->setData( array() );
   	 	 	  	 $this->oldSession->setData( array() );
   	 	 	 }
@@ -181,7 +181,7 @@ class SessionScope {
 
 	  /**
 	   * Clears the current Session.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function clear() {
@@ -197,7 +197,7 @@ class SessionScope {
 	  /**
 	   * Clears the SessionScope store and deletes the Session ActiveRecord from the
 	   * database.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function destroy() {
@@ -210,7 +210,7 @@ class SessionScope {
 	  /**
 	   * Returns boolean flag indicating whether or not the current session
 	   * data is persisted.
-	   *  
+	   *
 	   * @return bool True if the session data is persisted, false otherwise
 	   */
 	  public function isPersisted() {
@@ -221,7 +221,7 @@ class SessionScope {
 	  /**
 	   * Persist the Session data state to database just before the object
 	   * is destroyed.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function __destruct() {
@@ -238,7 +238,7 @@ class SessionScope {
 
 	  /**
 	   * Persists a serialized instance of the current Session.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function persist() {
@@ -252,6 +252,7 @@ class SessionScope {
 	 	     	 $this->getSession()->setCreated( 'now' );
 			 	 ORM::persist( $this->getSession() );
 			 	 $this->oldSession->setData( $this->session->getData() );
+			 	 $this->persisted = true;
 			 	 return;
 			 }
 
@@ -267,7 +268,7 @@ class SessionScope {
 
 	  /**
 	   * Generates a 21 character session id
-	   * 
+	   *
 	   * @return String The generated session id
 	   */
 	  private function createSessionId() {
@@ -288,7 +289,7 @@ class SessionScope {
 
 			  	   	   $nRand = rand( 0, 9 );
 			  	   	   $id .= $numbers[$nRand];
-			  	   }			  	     
+			  	   }
 			  }
 
 	  		  $this->session->setId( $id );

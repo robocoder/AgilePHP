@@ -19,16 +19,21 @@
  * @package com.makeabyte.agilephp.webservice.soap
  */
 
+require_once 'webservice/soap/SOAPBinding.php';
+require_once 'webservice/soap/SOAPService.php';
+require_once 'webservice/soap/WebMethod.php';
+require_once 'webservice/soap/WSDL.php';
+
 /**
  * Annotation responsible for exposing standard PHP classes via SOAP.
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.soap
  * <code>
  * #@WebService( serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI' )
  * class MyAPI {
- * 
+ *
  * }
  * </code>
  */

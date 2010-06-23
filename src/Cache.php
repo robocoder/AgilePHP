@@ -21,25 +21,25 @@
 
 /**
  * Allows caching dynamic data that doesn't require real-time rendering.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  * <code>
  * class MyClass {
- * 
+ *
  * #@Cache
  * public function index() {
- * 
+ *
  * 		  // A call that might perform some process intensive operation
  * 		  // or a database call thats only needed once (like building
  * 		  // a CMS that looks up form input types to build a contact page, etc,
  * 		  // and once the site is live they dont change)
  * }
- * 
+ *
  * #@Cache( minutes = 5 )
  * public function index() {
- * 
+ *
  * 		  // A call that might perform some processing intensive action
  * 		  // or a database call thats not really needed for every page request
  * }
@@ -52,7 +52,7 @@ class Cache {
 	  /**
 	   * Cache annotation argument containing the number of minutes to cache the intercepted content.
 	   * Defaults to 0 (never expires).
-	   *  
+	   *
 	   * @var String The number of minutes to store the cached content
 	   */
 	  public $minutes = 0;
@@ -60,11 +60,10 @@ class Cache {
 	  // Cache file
 	  private $file;
 
-	  private $mode;
-
 	  /**
-	   * Handles serving up cached content vs real time content.
-	   * 
+	   * Performs decisions on whether to return cached content or carry out
+	   * real time processing invocation.
+	   *
 	   * @param InvocationContext $ic The invocation context instance responsible for the interception
 	   * @return void
 	   */
@@ -73,7 +72,11 @@ class Cache {
 
 	  		 // Build directory and create it if it doesn't exist
 	  		 $dir = '.cache';
-	  		 if( !file_exists( $dir ) ) mkdir( $dir );
+	  		 if( !file_exists( $dir ) ) {
+
+	  		     mkdir( $dir );
+	  		     chown( $dir, 0760 );
+	  		 }
 
 	  		 // Build file path
 	  		 $name = get_class( $ic->getTarget() );
@@ -102,32 +105,20 @@ class Cache {
 
 	  /**
 	   * Renders a real-time request and caches the output.
-	   * 
+	   *
 	   * @return void
 	   */
 	  private function serveAndCache( InvocationContext $ic ) {
-
-        	  ob_start();
 
         	  $clsName = get_class( $ic->getTarget() );
         	  $o = new $clsName();
 
         	  $class = new ReflectionClass( $o );
         	  $m = $class->getMethod( $ic->getMethod() );
-        	  $return = $ic->getParameters() ? $m->invokeArgs( $o, $ic->getParameters() ) : $m->invoke( $o );
-
-        	  if( $return ) {
-
-        	  	  $this->mode = 1; // return
-        	  	  $data = $return;
-        	  }
-        	  else {
-        	     $data = ob_get_contents();
-        	  	 ob_end_flush();
-        	  }
+        	  $data = $ic->getParameters() ? $m->invokeArgs( $o, $ic->getParameters() ) : $m->invoke( $o );
 
         	  $h = fopen( $this->file, 'w' );
-        	  fwrite( $h, $data );
+        	  fwrite( $h, serialize( $data ) );
 			  fclose( $h );
 
 			  return $data;
@@ -137,13 +128,13 @@ class Cache {
 
 	  /**
 	   * Serves up cached content with a prefixed HTML comment indicating when the file was cached.
-	   * 
+	   *
 	   * @return void
 	   */
 	  private function serveFromCache() {
 
 	  		 $data = '<!-- Cached ' . date( 'c', filemtime( $this->file ) ) . "-->\n";
-	  		 $data .= file_get_contents( $this->file );
+	  		 $data .= unserialize( file_get_contents( $this->file ) );
 
 	  		 return $data;
 	  }

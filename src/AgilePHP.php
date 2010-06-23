@@ -20,6 +20,8 @@
  */
 
 require_once 'Annotation.php';
+require_once 'interception/InterceptorFilter.php';
+require_once 'interception/Interceptor.php';
 require_once 'Interception.php';
 require_once 'logger/LogFactory.php';
 require_once 'Log.php';
@@ -28,7 +30,7 @@ spl_autoload_register( 'AgilePHP::autoload' );
 
 /**
  * AgilePHP core framework Class
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
@@ -59,7 +61,7 @@ final class AgilePHP {
 	   * $requestBase = name of the script that instantiated the framework
 	   * $frameworkRoot = $webroot/AgilePHP
 	   * $appName = The HTTP HOST header value
-	   * 
+	   *
 	   * @return void
 	   */
 	  private function __construct( $agilephpDotXml ) {
@@ -84,7 +86,7 @@ final class AgilePHP {
 	  /**
 	   * Factory method which is used to instantiate a singleton
 	   * instance of the AgilePHP framework.
-	   * 
+	   *
 	   * @param string $agilephpDotXml Optional file path to agilephp.xml configuration file
 	   * @return AgilePHP A Singleton instance of the AgilePHP Framework
 	   * @static
@@ -100,11 +102,11 @@ final class AgilePHP {
 	  /**
 	   * Accessor method for Model-View-Control component. The MVC component this method returns is
 	   * created as follows:
-	   * 
+	   *
 	   * 1) If an agilephp.xml file is present in the web app root and contains a valid 'mvc'
 	   * 	configuration, the MVC component is created using the specified values when AgilePHP
 	   * 	framework is instantiated by a call to 'getFramework'.
-	   * 
+	   *
 	   * 2) No agilephp.xml file is present. This method will return a singleton instance.
 	   */
 	  public function getMVC() {
@@ -115,7 +117,7 @@ final class AgilePHP {
 	  /**
 	   * Sets the fully qualified path to the base directory of
 	   * the web application.
-	   * 
+	   *
 	   * @param $path The fully qualified path to the web application
 	   */
 	  public function setWebRoot( $path ) {
@@ -126,7 +128,7 @@ final class AgilePHP {
 	  /**
 	   * Returns the fully qualified path to the base directory of
 	   * the web application.
-	   * 
+	   *
 	   * @return The fully qualified path to the web application
 	   */
 	  public function getWebRoot() {
@@ -137,9 +139,9 @@ final class AgilePHP {
 	  /**
 	   * Sets the full system path to the location of the AgilePHP framework. The given path is
 	   * appended to the current php.ini include_path configuration.
-	   * 
+	   *
 	   * @param $path The full system path to the location where AgilePHP framework resides.
-   	   * @return void 
+   	   * @return void
 	   */
 	  public function setFrameworkRoot( $path ) {
 
@@ -155,7 +157,7 @@ final class AgilePHP {
 
 	  /**
 	   * Gets the full system path to the location where AgilePHP resides.
-	   * 
+	   *
 	   * @return The full system path to the location of the AgilePHP framework.
 	   */
 	  public function getFrameworkRoot() {
@@ -165,7 +167,7 @@ final class AgilePHP {
 
 	  /**
 	   * Sets the relative path to the web application from the server's document root.
-	   * 
+	   *
 	   * @param String $path The document root path
 	   * @return void
 	   */
@@ -176,7 +178,7 @@ final class AgilePHP {
 
 	  /**
 	   * Returns the relative path to the web application from the server's document root.
-	   * 
+	   *
 	   * @return The web applications relative path from the server's document root
 	   */
 	  public function getDocumentRoot() {
@@ -198,7 +200,7 @@ final class AgilePHP {
 
 	  /**
 	   * Sets the base action url used to communicate with the AgilePHP MVC component.
-	   * 
+	   *
 	   * @param $url The base url to be used to communicate with the AgilePHP MVC component.
 	   */
 	  public function setRequestBase( $url ) {
@@ -208,18 +210,18 @@ final class AgilePHP {
 
 	  /**
 	   * Sets the name of the AgilePHP web application.
-	   * 
+	   *
 	   * @param String $name The name of the AgilePHP application
 	   * @return void
 	   */
 	  public function setAppName( $name ) {
-	  	
+
 	  		 $this->appName = $name;
 	  }
 
 	  /**
 	   * Returns the name of the AgilePHP web application.
-	   * 
+	   *
 	   * @return AgilePHP web application name
 	   */
 	  public function getAppName() {
@@ -233,7 +235,7 @@ final class AgilePHP {
 	  /**
 	   * Loads a class from the web application 'classes' or 'components' directory using a
 	   * package dot type notation. First the classes directory is searched, then components.
-	   * 
+	   *
 	   * @param String $classpath The dot notation classpath (my.package.ClassName)
 	   * @return void
 	   * @throws FrameworkException If an error occurred loading the specified classpath
@@ -257,7 +259,7 @@ final class AgilePHP {
 	  /**
 	   * By default PHP hides errors on production servers. Setting this to true enables PHP
 	   * 'display_errors', sets 'error_reporting' to 'E_ALL'.
-	   * 
+	   *
 	   * @param bool $bool True to turn on error reporting on (E_ALL)
 	   * @return void
 	   */
@@ -274,7 +276,7 @@ final class AgilePHP {
 
 	  /**
 	   * Enables or disables AgilePHP framework debug mode.
-	   * 
+	   *
 	   * @param bool $boolean True for debug mode, false for production mode. Default is production.
 	   */
 	  public function setDebugMode( $boolean ) {
@@ -285,7 +287,7 @@ final class AgilePHP {
 
 	  /**
 	   * Whether or not AgilePHP framework is running in debug mode.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function isInDebugMode() {
@@ -295,7 +297,7 @@ final class AgilePHP {
 
 	  /**
 	   * Calls PHP date_default_timezone_set function to set the current timezone.
-	   * 
+	   *
 	   * @param String $timezone The timezone to use as default.
 	   * @return void
 	   * <code>
@@ -309,7 +311,7 @@ final class AgilePHP {
 
 	  /**
 	   * Adds an Interception to the interceptions stack
-	   * 
+	   *
 	   * @param Interception $interception The interception instance to add to the stack
 	   * @return void
 	   */
@@ -322,7 +324,7 @@ final class AgilePHP {
 
 	  /**
 	   * Returns an array of Interceptions which have been loaded into the framework
-	   * 
+	   *
 	   * @return Array of Interception instances
 	   */
 	  public function getInterceptions() {
@@ -332,7 +334,7 @@ final class AgilePHP {
 
 	  /**
 	   * Returns the agilephp.xml file as a SimpleXMLElement.
-	   * 
+	   *
 	   * @param string $agilephpDotXml Optional file path to agilephp.xml configuration file. Defaults to
 	   * 							   $webRoot/agilephp.xml
 	   * @return SimpleXMLElement agilephp.xml configuration
@@ -345,7 +347,7 @@ final class AgilePHP {
 	  		  	  throw new FrameworkException( 'agilephp.xml file not found at \'' . $agilephp_xml . '\'.' );
 
 	  		  $dom = new DOMDocument();
- 			  $dom->Load( $agilephp_xml );			 
+ 			  $dom->Load( $agilephp_xml );
 			  if( !$dom->validate() )
 			 	  throw new FrameworkException( 'agilephp.xml Document Object Model validation failed. Validate your document using AgilePHP/agilephp.dtd' );
 
@@ -355,7 +357,7 @@ final class AgilePHP {
 	  /**
 	   * Parses AgilePHP configuration file (agilephp.xml) and initalizes the
 	   * framework according to the specified configuration.
-	   * 
+	   *
 	   * @param string $agilephpDotXml Optional file path to agilephp.xml configuration file
 	   * @return void
 	   */
@@ -379,7 +381,7 @@ final class AgilePHP {
 	  /**
 	   * Starts a timer. Useful for measuring how long a particular
 	   * operation takes.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function startClock() {
@@ -392,7 +394,7 @@ final class AgilePHP {
 
 	  /**
 	   * Defines the error handler responsible for handling framework and application wide errors.
-	   * 
+	   *
 	   * @param mixed $function A standard PHP function or static method responsible for error handling
 	   * @return void
 	   */
@@ -411,7 +413,7 @@ final class AgilePHP {
 
 	  /**
 	   * Custom PHP error handling function which writes error to log instead of echoing it out.
-	   * 
+	   *
 	   * @param Integer $errno Error number
 	   * @param String $errmsg Error message
 	   * @param String $errfile The name of the file that caused the error
@@ -421,7 +423,7 @@ final class AgilePHP {
 	   */
  	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
 
- 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg . 
+ 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg .
  	  		 		  PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
 
  	  		 switch( $errno ) {
@@ -434,7 +436,7 @@ final class AgilePHP {
 
  	  		 	case E_WARNING:
  	  		 	case E_USER_WARNING:
- 	  		 		
+
  	  		 		Log::warn( $entry );
  	  		 		break;
 
@@ -448,13 +450,13 @@ final class AgilePHP {
  	  		 	default:
  	  		 		Log::debug( $entry );
  	  		 }
-    	      
+
 	  }
 
 	  /**
 	   * Stops the timer and returns the elapsed time between startClock()
 	   * and stopClock().
-	   * 
+	   *
 	   * @return Time elapsed time between startClock() and endClock()
 	   */
 	  public function stopClock() {
@@ -465,13 +467,13 @@ final class AgilePHP {
    			 $endtime = $mtime;
    			 $difference = ($endtime - $this->startTime);
 
-   			 return $difference; 
+   			 return $difference;
 	  }
 
 	  /**
 	   * Retrieves the raw PHP source code for the specified class. The search
 	   * algorithm assumes the file is named after the class.
-	   * 
+	   *
 	   * @param String $class The class name
 	   * @return String The raw PHP source code for the specified class
 	   * @throws FrameworkException if the requested class could not be found
@@ -524,13 +526,13 @@ final class AgilePHP {
 	  	     // Not found in the usual places - perform deep scan
 		  	 $it = new RecursiveDirectoryIterator( AgilePHP::getFramework()->getWebRoot() );
 			 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
-	
+
 			   	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..'  &&
 			   	      	  substr( $file, -4 ) != 'view' ) {
-	
+
 			   	      	  $pieces = explode( DIRECTORY_SEPARATOR, $file );
 				 		  if( array_pop( $pieces ) == $class . '.php' ) {
-	
+
 			     	 		  return file_get_contents( $file );
 				 		  }
 				      }
@@ -542,7 +544,7 @@ final class AgilePHP {
 	  /**
 	   * Lazy loads standard framework and web application classes. Parses each class
 	   * source file for the presense of AgilePHP interceptors.
-	   *  
+	   *
 	   * @param String $class The name of the class being loaded by __autoload
 	   * @return void
 	   */
@@ -563,18 +565,18 @@ final class AgilePHP {
 			 // Load framework classes
 			 $path = AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
 			 if( file_exists( $path ) ) {
-		
+
 			     require_once $path;
 			     return;
 			 }
 			 $it = new RecursiveDirectoryIterator( AgilePHP::getFramework()->getFrameworkRoot() );
 			 foreach( new RecursiveIteratorIterator( $it ) as $file ) {
-		
+
 			  	      if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
-		
+
 				   	      $array = explode( DIRECTORY_SEPARATOR, $file );
 					 	  if( array_pop( $array ) == $class . '.php' ) {
-		
+
 				     	 	  require_once $file;
 					 		  return;
 					 	  }
@@ -631,7 +633,7 @@ final class AgilePHP {
 
 /**
  * Base AgilePHP exception class
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
@@ -642,7 +644,7 @@ class FrameworkException extends Exception {
 
 	  /**
 	   * Creates a new instance of FrameworkException.
-	   * 
+	   *
 	   * @param String $message The exception message
 	   * @param Integer $code Optional error code.
 	   * @param String $file Optional file path to the exception

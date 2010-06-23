@@ -42,7 +42,7 @@ class MockCacher {
 	  #@Cache( minutes = 1 )
 	  public function expires() {
 
-	  		 echo $this->getMarkup();
+	  		 return $this->getMarkup();
 	  }
 
 	  /**
@@ -51,7 +51,7 @@ class MockCacher {
 	  #@Cache
 	  public function neverExpires() {
 
-	  		 echo $this->getMarkup();
+	  		 return $this->getMarkup();
 	  }
 
 	  /**
