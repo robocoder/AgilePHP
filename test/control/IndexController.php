@@ -44,8 +44,12 @@ class IndexController extends BaseController {
 	   */
 	  public function index() {
 
+	  	     i18n::getInstance(); // initalizes itself based on http language header
+	   		 // i18n::getInstance()->setLocale( 'es_ES' );   language can also be specified manually
+	   		 $welcome = i18n::translate( 'Welcome to the demo application' );
+
 	  	     $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Home' );
-	  	     $this->getRenderer()->set( 'content', 'Welcome to the demo application. This is the default PHTML renderer.' );
+	  	     $this->getRenderer()->set( 'content', $welcome . '. This is the default PHTML renderer.' );
 	  	     $this->getRenderer()->render( 'index' );
 	  }
 
