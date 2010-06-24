@@ -1,0 +1,2031 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" TYPE="text/css" TITLE="Style" href="../../../../../stylesheet.css">
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td class="bannercell" rowspan="2"><a href="http://phing.info/"><img src="http://phing.info/images/phing.gif" alt="http://phing.info/" align="left" border="0"></a></td>
+<td style="text-align:right"><h2>Source Code Coverage</h2></td>
+</tr>
+<tr><td style="text-align:right">Designed for use with <a href="http://pear.php.net/package/PHPUnit2">PHPUnit2</a>, <a href="http://www.xdebug.org/">Xdebug</a> and <a href="http://phing.info/">Phing</a>.</td></tr>
+</table>
+<hr size="1">
+<table class="log" cellpadding="5" cellspacing="0" width="100%"><tr class="a">
+<td class="small">Methods: 9</td>
+<td class="small">LOC: 396</td>
+<td class="small">Statements: 188</td>
+</tr></table>
+<table class="log" cellpadding="5" cellspacing="0" width="100%"><tbody><tr>
+<td class="legendItem" width="0%">Legend:</td>
+<td class="legendValue" width="100%">
+<span class="legendCovered">executed</span><span class="legendUncovered">not executed</span><span class="legendDeadCode">dead code</span>
+</td>
+</tr></tbody></table>
+<table class="log" cellpadding="5" cellspacing="0" width="100%">
+<tr>
+<th width="100%">Source file</th>
+<th>Statements</th>
+<th>Methods</th>
+<th width="250" colspan="2" nowrap>Total coverage</th>
+</tr>
+<tr class="a">
+<td>MySQLDialect.php</td>
+<td>97.9%</td>
+<td>55.6%</td>
+<td>95.9%</td>
+<td><table cellspacing="0" cellpadding="0" border="0" width="100%" style="display: inline"><tr>
+<td class="covered" width="192" height="12"> </td>
+<td class="uncovered" width="8" height="12"> </td>
+</tr></table></td>
+</tr>
+</table>
+<table cellspacing="0" cellpadding="0" width="100%">
+<tr>
+<td class="lineCount">1</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">&lt;?php</pre></td>
+</tr>
+<tr>
+<td class="lineCount">2</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">/**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">3</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * AgilePHP Framework :: The Rapid "for developers" PHP5 framework</pre></td>
+</tr>
+<tr>
+<td class="lineCount">4</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * Copyright (C) 2009-2010 Make A Byte, inc</pre></td>
+</tr>
+<tr>
+<td class="lineCount">5</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">6</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * This program is free software: you can redistribute it and/or modify</pre></td>
+</tr>
+<tr>
+<td class="lineCount">7</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * it under the terms of the GNU General Public License as published by</pre></td>
+</tr>
+<tr>
+<td class="lineCount">8</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * the Free Software Foundation, either version 3 of the License, or</pre></td>
+</tr>
+<tr>
+<td class="lineCount">9</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * (at your option) any later version.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">10</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">11</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * This program is distributed in the hope that it will be useful,</pre></td>
+</tr>
+<tr>
+<td class="lineCount">12</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</pre></td>
+</tr>
+<tr>
+<td class="lineCount">13</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</pre></td>
+</tr>
+<tr>
+<td class="lineCount">14</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * GNU General Public License for more details.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">15</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">16</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * You should have received a copy of the GNU General Public License</pre></td>
+</tr>
+<tr>
+<td class="lineCount">17</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">18</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">19</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * @package com.makeabyte.agilephp.orm.dialect</pre></td>
+</tr>
+<tr>
+<td class="lineCount">20</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">21</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">22</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">/**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">23</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * Handles MySQL specific queries</pre></td>
+</tr>
+<tr>
+<td class="lineCount">24</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">25</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * @author Jeremy Hahn</pre></td>
+</tr>
+<tr>
+<td class="lineCount">26</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * @copyright Make A Byte, inc.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">27</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * @package com.makeabyte.agilephp.orm.dialect</pre></td>
+</tr>
+<tr>
+<td class="lineCount">28</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">29</td>
+<td class="coverageCount"></td>
+<td class="srcLineClassStart"><pre class="srcLine">final class MySQLDialect extends BaseDialect implements SQLDialect {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">30</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">31</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  private $connectFlag = -1;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">32</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">33</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">34</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * Initalize MySQLDialect</pre></td>
+</tr>
+<tr>
+<td class="lineCount">35</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">36</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @param Database $db The Database object representing orm.xml</pre></td>
+</tr>
+<tr>
+<td class="lineCount">37</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @return void</pre></td>
+</tr>
+<tr>
+<td class="lineCount">38</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">39</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function __construct( Database $db ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">40</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">41</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  	     try {</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">42</td>
+<td class="lineCountCovered">2</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  	  			$this-&gt;pdo = new PDO( 'mysql:host=' . $db-&gt;getHostname() . ';dbname=' . $db-&gt;getName(), $db-&gt;getUsername(), $db-&gt;getPassword() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">43</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  	  			$this-&gt;connectFlag = 1;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">44</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  	     }</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">45</td>
+<td class="lineCountCovered">2</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  	     catch( PDOException $pdoe ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">46</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">47</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  	     	    Log::debug( 'MySQLDialect::__construct Warning about \'' . $pdoe-&gt;getMessage() . '\'.' );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">48</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">49</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to</pre></td>
+</tr>
+<tr>
+<td class="lineCount">50</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  	     		// be invoked to create the database schema.</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">51</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  	     	    if( strpos( $pdoe-&gt;getMessage(), 'Unknown database' ) ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">52</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">53</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  	     	    	$this-&gt;pdo = new PDO( 'mysql:host=' . $db-&gt;getHostname() . ';', $db-&gt;getUsername(), $db-&gt;getPassword() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">54</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  	     	    	$this-&gt;connectFlag = 0;</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">55</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  	     	    }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">56</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  	     	    else {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">57</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountDeadCode">58</td>
+<td class="coverageCountDeadCode"></td>
+<td class="srcLineDeadCode"><pre class="srcLineDeadCode">	  	     	    	$this-&gt;connectFlag = -1;</pre></td>
+</tr>
+<tr>
+<td class="lineCountDeadCode">59</td>
+<td class="coverageCountDeadCode"></td>
+<td class="srcLineDeadCode"><pre class="srcLineDeadCode">	  	     	    	throw new ORMException( 'Failed to create MySQLDialect instance. ' . $pdoe-&gt;getMessage() );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">60</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  	     	    }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">61</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  	     }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">62</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">63</td>
+<td class="lineCountCovered">2</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	 	     $this-&gt;database = $db;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">64</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">65</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">66</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">67</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * (non-PHPdoc)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">68</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @see src/orm/dialect/SQLDialect#isConnected()</pre></td>
+</tr>
+<tr>
+<td class="lineCount">69</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">70</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function isConnected() {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">71</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">72</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 return $this-&gt;connectFlag;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">73</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">74</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">75</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">76</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * (non-PHPdoc)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">77</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @see src/orm/dialect/SQLDialect#call($model)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">78</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">79</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function call( $model ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">80</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">81</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  	     $values = array();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">82</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $outs = array();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">83</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $params = array();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">84</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $class = get_class( $model );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">85</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $proc = $this-&gt;getProcedureByModel( $model );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">86</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">87</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 foreach( $proc-&gt;getParameters() as $param ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">88</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">89</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 		  if( $param-&gt;getMode() == 'IN' || $param-&gt;getMode() == 'INOUT' ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">90</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">91</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 			  $accessor = $this-&gt;toAccessor( $param-&gt;getModelPropertyName() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">92</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 			  array_push( $params, $model-&gt;$accessor() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">93</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 		  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">94</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">95</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 		  if( $param-&gt;getMode() == 'OUT' || $param-&gt;getMode() == 'INOUT' )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">96</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 			  $outs[$param-&gt;getName()] = $param-&gt;getModelPropertyName();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">97</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">98</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">99</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $query = 'call ' . $proc-&gt;getName() . '( ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">100</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 for( $i=0; $i&lt;count( $params ); $i++ ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">101</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">102</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 		$values[$i] = $params[$i];</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">103</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 		$query .= '?' . (($i+1) == count($query) ? ', ': '' );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">104</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">105</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $query .= ' );';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">106</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">107</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $this-&gt;prepare( $query );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">108</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $stmt = $this-&gt;execute( $values );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">109</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $stmt-&gt;setFetchMode( PDO::FETCH_ASSOC );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">110</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $results = $stmt-&gt;fetchAll();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">111</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">112</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 if( !$results ) return true;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">113</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">114</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 if( count( $results ) &gt; 1 ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">115</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">116</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		  		 $models = array();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">117</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		 foreach( $results as $record ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">118</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">119</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		 		  $m = new $class;</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">120</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		 		  foreach( $record as $column =&gt; $value ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">121</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">122</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		 		  		   $mutator = $this-&gt;toMutator( $outs[$column] );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">123</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		  		 		  		   $m-&gt;$mutator( $value );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">124</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		 		  }</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">125</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		 		  array_push( $models, $m );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">126</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	 		 	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">127</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">128</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	 		 	 return $models;</pre></td>
+</tr>
+<tr>
+<td class="lineCountDeadCode">129</td>
+<td class="coverageCountDeadCode"></td>
+<td class="srcLineDeadCode"><pre class="srcLineDeadCode">	  		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">130</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">131</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 foreach( $results as $record ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">132</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">133</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 		  $m = new $class;</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">134</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		 	  foreach( $record as $column =&gt; $value ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">135</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">136</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		 		  	   $mutator = $this-&gt;toMutator( $outs[$column] );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">137</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		  		 		  	   $m-&gt;$mutator( $value );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">138</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		      }</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">139</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">		 		 	  return $m;</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">140</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">141</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">142</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">143</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">144</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * (non-PHPdoc)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">145</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @see src/orm/dialect/SQLDialect#create()</pre></td>
+</tr>
+<tr>
+<td class="lineCount">146</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">147</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @todo Add engine and charset attributes to orm.xml 'table' element</pre></td>
+</tr>
+<tr>
+<td class="lineCount">148</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * 	   and assign values from xml definitions. Also need support for dynamic</pre></td>
+</tr>
+<tr>
+<td class="lineCount">149</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * 	   setting of unique key, fulltext, key, index, etc...</pre></td>
+</tr>
+<tr>
+<td class="lineCount">150</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">151</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function create() {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">152</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">153</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $this-&gt;query( 'CREATE DATABASE ' . $this-&gt;database-&gt;getName() . ';' );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">154</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">155</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 // Now that the database is present, connect directly to the database.</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">156</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $this-&gt;pdo = new PDO( 'mysql:host=' . $this-&gt;database-&gt;getHostname() . ';dbname=' . $this-&gt;database-&gt;getName(),</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">157</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 						 $this-&gt;database-&gt;getUsername(), $this-&gt;database-&gt;getPassword() );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">158</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">159</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">			 $this-&gt;query( 'SET foreign_key_checks = 0;' );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">160</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">161</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 foreach( $this-&gt;database-&gt;getTables() as $table )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">162</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">			   		  $this-&gt;query( $this-&gt;toCreateTableSQL( $table ) );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">163</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">164</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $this-&gt;query( 'SET foreign_key_checks = 1;' );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">165</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">166</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">167</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">168</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * (non-PHPdoc)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">169</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">170</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">171</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">172</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function createTable( Table $table ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">173</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">174</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">      	     $this-&gt;query( $this-&gt;toCreateTableSQL( $table ) );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">175</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">176</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">177</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">178</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * Generates SQL CREATE TABLE for the specified table.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">179</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">180</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @param Table $table The table to generate the CREATE TABLE code for</pre></td>
+</tr>
+<tr>
+<td class="lineCount">181</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @return string The SQL CREATE TABLE code</pre></td>
+</tr>
+<tr>
+<td class="lineCount">182</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">183</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  private function toCreateTableSQL( Table $table ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">184</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">185</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		  $defaultKeywords = array( 'CURRENT_TIMESTAMP' );  // Default values that get passed unquoted</pre></td>
+</tr>
+<tr>
+<td class="lineCount">186</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">187</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 		  $sql = 'CREATE TABLE `' . $table-&gt;getName() . '` ( ';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">188</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">189</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 		  foreach( $table-&gt;getColumns() as $column ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">190</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">191</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 				   $sql .= '`' . $column-&gt;getName() . '` ' . $column-&gt;getType() .</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">192</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 						   (($column-&gt;getLength()) ? '(' . $column-&gt;getLength() . ')' : '') .</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">193</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 						   (($column-&gt;isRequired() == true) ? ' NOT NULL' : '') .</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">194</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 						   (($column-&gt;isAutoIncrement() === true) ? ' AUTO_INCREMENT' : '') .</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">195</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 						   (($column-&gt;getDefault()) ? ' DEFAULT ' . (in_array($column-&gt;getDefault(),$defaultKeywords) ? $column-&gt;getDefault() : '\'' . $column-&gt;getDefault() . '\'') . '': '') .</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">196</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 						   ((!$column-&gt;getDefault() &amp;&amp; !$column-&gt;isRequired()) ? ' DEFAULT NULL' : '') . ', ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">197</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 		  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">198</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">199</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   			  $pkeyColumns = $table-&gt;getPrimaryKeyColumns();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">200</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   			  if( count( $pkeyColumns ) ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">201</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">202</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   			  	  $sql .= ' PRIMARY KEY ( ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">203</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   				  for( $i=0; $i&lt;count( $pkeyColumns ); $i++ ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">204</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">205</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   					   $sql .= '`' . $pkeyColumns[$i]-&gt;getName() . '`';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">206</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">207</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   						   if( ($i+1) &lt; count( $pkeyColumns ) )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">208</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   						   	   $sql .= ', ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">209</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   				  }</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">210</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   				  $sql .= ' )';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">211</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">212</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">   				  /*</pre></td>
+</tr>
+<tr>
+<td class="lineCount">213</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">   				  if( count( $pkeyColumns ) &gt; 1 )</pre></td>
+</tr>
+<tr>
+<td class="lineCount">214</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">   				  	  $sql .= ', UNIQUE KEY `' . $pkeyColumns[0]-&gt;getName() . '` (`' . $pkeyColumns[0]-&gt;getName() . '`)';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">215</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">   				  */</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">216</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   			  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">217</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">218</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	   		  if( $table-&gt;hasForeignKey() ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">219</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">220</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      		  $bProcessedKeys = array();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">221</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	   		  	  $foreignKeyColumns = $table-&gt;getForeignKeyColumns();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">222</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	   		  	  for( $h=0; $h&lt;count( $foreignKeyColumns ); $h++ ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">223</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">224</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	   		  	  		   $fk = $foreignKeyColumns[$h]-&gt;getForeignKey();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">225</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">226</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   		  	  		       if( in_array( $fk-&gt;getName(), $bProcessedKeys ) )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">227</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	   		  	  		       continue;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">228</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">229</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">   	  	  	       		   // Get foreign keys which are part of the same relationship</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">230</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   $relatedKeys = $table-&gt;getForeignKeyColumnsByKey( $fk-&gt;getName() );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">231</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">232</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   $sql .= ', KEY `' . $fk-&gt;getName() . '` ( ';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">233</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">234</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   for( $j=0; $j&lt;count( $relatedKeys ); $j++ ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">235</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">236</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   		array_push( $bProcessedKeys, $relatedKeys[$j]-&gt;getName() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">237</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   		$sql .= '`' . $relatedKeys[$j]-&gt;getColumnInstance()-&gt;getName() . '`';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">238</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   		if( ($j+1) &lt; count( $relatedKeys ) )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">239</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   		    $sql .= ', ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">240</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   }</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">241</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   $sql .= ' ), CONSTRAINT `' . $fk-&gt;getName() . '`';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">242</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">       	       		   	 	   $sql .= ' FOREIGN KEY ( ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">243</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  		    	   for( $j=0; $j&lt;count( $relatedKeys ); $j++ ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">244</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">245</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   	 	$sql .= '`' . $relatedKeys[$j]-&gt;getColumnInstance()-&gt;getName() . '`';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">246</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   		if( ($j+1) &lt; count( $relatedKeys ) )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">247</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   		    $sql .= ', ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">248</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   }</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">249</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   $sql .= ' ) REFERENCES `' . $fk-&gt;getReferencedTable() . '` ( ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">250</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  		    	   for( $j=0; $j&lt;count( $relatedKeys ); $j++ ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">251</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">252</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">       	       		   		 	    $sql .= '`' . $relatedKeys[$j]-&gt;getReferencedColumn() . '`';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">253</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   	    if( ($j+1) &lt; count( $relatedKeys ) )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">254</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   		     $sql .= ', ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">255</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  		    	   }</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">256</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   	  	  	       		   $sql .= ' ) ';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">257</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">     	  		   			   $sql .= (($fk-&gt;getOnUpdate()) ? ' ON UPDATE ' . $fk-&gt;getOnUpdate() : '' );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">258</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">     	  		   			   $sql .= (($fk-&gt;getOnDelete()) ? ' ON DELETE ' . $fk-&gt;getOnDelete() : '' );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">259</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">260</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	   		  	  		   array_push( $bProcessedKeys, $fk-&gt;getName() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">261</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	   		  	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">262</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	   		  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">263</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">264</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">   			  $engineType = ($table-&gt;hasForeignKey() || $table-&gt;hasForeignKeyReferences()) ? 'INNODB' : 'MYISAM';</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">265</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">			  $sql .= ') ENGINE=' . $engineType . ' DEFAULT CHARSET=latin1;';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">266</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">267</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	   		  return $sql;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">268</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">269</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">270</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">271</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * (non-PHPdoc)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">272</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @see src/orm/dialect/SQLDialect#dropTable(Table $table)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">273</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">274</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function dropTable( Table $table ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">275</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">276</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  	 	 	 $this-&gt;query( 'DROP TABLE ' . $table-&gt;getName() . ';' );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">277</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">278</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">279</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">280</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * (non-PHPdoc)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">281</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @see src/orm/dialect/SQLDialect#drop()</pre></td>
+</tr>
+<tr>
+<td class="lineCount">282</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">283</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function drop() {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">284</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">285</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">  	 	 	 $this-&gt;query( 'DROP DATABASE ' . $this-&gt;database-&gt;getName() . ';' );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">286</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">287</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">288</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">289</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * (non-PHPdoc)</pre></td>
+</tr>
+<tr>
+<td class="lineCount">290</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @see src/orm/dialect/SQLDialect#reverseEngineer()</pre></td>
+</tr>
+<tr>
+<td class="lineCount">291</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">292</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function reverseEngineer() {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">293</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">294</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $Database = new Database();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">295</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $Database-&gt;setName( $this-&gt;database-&gt;getName() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">296</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $Database-&gt;setType( $this-&gt;database-&gt;getType() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">297</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $Database-&gt;setHostname( $this-&gt;database-&gt;getHostname() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">298</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $Database-&gt;setUsername( $this-&gt;database-&gt;getUsername() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">299</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $Database-&gt;setPassword( $this-&gt;database-&gt;getPassword() );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">300</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">301</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	  		 $stmt = $this-&gt;prepare( 'SHOW TABLES' );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">302</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     $stmt-&gt;execute();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">303</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     $stmt-&gt;setFetchMode( PDO::FETCH_OBJ );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">304</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     $tables = $stmt-&gt;fetchAll();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">305</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">306</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     $tblIndex = 'Tables_in_' . $this-&gt;getDatabase()-&gt;getName();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">307</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">308</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">      	     $fkeyQuery  = 'SELECT</pre></td>
+</tr>
+<tr>
+<td class="lineCount">309</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">								kcu.CONSTRAINT_NAME AS \'constraint\',</pre></td>
+</tr>
+<tr>
+<td class="lineCount">310</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">								kcu.TABLE_NAME AS \'table\',</pre></td>
+</tr>
+<tr>
+<td class="lineCount">311</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">								kcu.COLUMN_NAME AS \'column\',</pre></td>
+</tr>
+<tr>
+<td class="lineCount">312</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">								kcu.REFERENCED_TABLE_NAME AS \'referenced_table\',</pre></td>
+</tr>
+<tr>
+<td class="lineCount">313</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">								kcu.REFERENCED_COLUMN_NAME AS \'referenced_column\',</pre></td>
+</tr>
+<tr>
+<td class="lineCount">314</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">								rc.UPDATE_RULE AS \'update_rule\',</pre></td>
+</tr>
+<tr>
+<td class="lineCount">315</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">								rc.DELETE_RULE AS \'delete_rule\'</pre></td>
+</tr>
+<tr>
+<td class="lineCount">316</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">							FROM information_schema.key_column_usage AS kcu</pre></td>
+</tr>
+<tr>
+<td class="lineCount">317</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">							INNER JOIN information_schema.REFERENTIAL_CONSTRAINTS AS rc</pre></td>
+</tr>
+<tr>
+<td class="lineCount">318</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">							WHERE kcu.TABLE_SCHEMA = rc.CONSTRAINT_SCHEMA</pre></td>
+</tr>
+<tr>
+<td class="lineCount">319</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">							  AND kcu.CONSTRAINT_NAME = rc.CONSTRAINT_NAME</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">320</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">							  AND rc.CONSTRAINT_SCHEMA = \'' . $Database-&gt;getName() . '\'</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">321</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">							  AND kcu.REFERENCED_TABLE_NAME IS NOT NULL';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">322</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">323</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     $stmt = $this-&gt;query( $fkeyQuery );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">324</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     $stmt-&gt;setFetchMode( PDO::FETCH_OBJ );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">325</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">			 $foreignKeys = $stmt-&gt;fetchAll();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">326</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">327</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     foreach( $tables as $sqlTable ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">328</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">329</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     		  $Table = new Table();</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">330</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     		  $Table-&gt;setName( str_replace( ' ', '_', $sqlTable-&gt;$tblIndex ) );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">331</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	     		  $Table-&gt;setModel( ucfirst( $Table-&gt;getName() ) );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">332</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">333</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      		  $stmt = $this-&gt;query( 'DESC ' . $sqlTable-&gt;$tblIndex );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">334</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      		  $stmt-&gt;setFetchMode( PDO::FETCH_OBJ );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">335</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      		  $descriptions = $stmt-&gt;fetchAll();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">336</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">337</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      		  foreach( $descriptions as $desc ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">338</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">339</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      		   	   $type = $desc-&gt;Type;</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">340</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   $length = null;</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">341</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   $pos = strpos( $desc-&gt;Type, '(' );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">342</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">343</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   if( $pos !== false ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">344</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">345</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   	   $type = preg_match_all( '/^(.*)\((.*)\).*$/i', $desc-&gt;Type, $matches );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">346</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">347</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   	   $type = $matches[1][0];</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">348</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   	   $length = $matches[2][0];</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">349</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">350</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">351</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   $Column = new Column( null, $Table-&gt;getName() );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">352</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   $Column-&gt;setName( $desc-&gt;Field );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">353</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   $Column-&gt;setType( $type );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">354</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   $Column-&gt;setLength( $length );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">355</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">356</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   if( isset( $desc-&gt;Default ) &amp;&amp; $desc-&gt;Default )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">357</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   	    $Column-&gt;setDefault( $desc-&gt;Default );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">358</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">359</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   if( isset( $desc-&gt;Null ) &amp;&amp; $desc-&gt;Null == 'NO' )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">360</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   	   $Column-&gt;setRequired( true );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">361</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">362</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   if( isset( $desc-&gt;Key ) &amp;&amp; $desc-&gt;Key == 'PRI' )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">363</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   	   $Column-&gt;setPrimaryKey( true );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">364</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">365</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   if( isset( $desc-&gt;Extra ) &amp;&amp; $desc-&gt;Extra == 'auto_increment' )</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">366</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">						   	   $Column-&gt;setAutoIncrement( true );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">367</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">368</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   foreach( $foreignKeys as $fkey ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">369</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">370</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">									if( $fkey-&gt;table == $Table-&gt;getName() &amp;&amp;</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">371</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">										$fkey-&gt;column == $Column-&gt;getName() ) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">372</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">373</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$ForeignKey = new ForeignKey( null, $fkey-&gt;table, $fkey-&gt;column );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">374</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$ForeignKey-&gt;setName( $fkey-&gt;constraint );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">375</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$ForeignKey-&gt;setType( 'one-to-many' );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">376</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$ForeignKey-&gt;setReferencedTable( $fkey-&gt;referenced_table );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">377</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$ForeignKey-&gt;setReferencedColumn( $fkey-&gt;referenced_column );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">378</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$ForeignKey-&gt;setReferencedController( ucfirst( $fkey-&gt;referenced_table ) . 'Controller' );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">379</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$ForeignKey-&gt;setOnDelete( $fkey-&gt;delete_rule );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">380</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$ForeignKey-&gt;setOnUpdate( $fkey-&gt;update_rule );</pre></td>
+</tr>
+<tr>
+<td class="lineCount">381</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">382</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$Column-&gt;setForeignKey( $ForeignKey );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">383</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">											$Column-&gt;setProperty( ucfirst( $fkey-&gt;referenced_table ) );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">384</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">										}</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">385</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">	      	      		   }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">386</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">387</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      		  	   $Table-&gt;addColumn( $Column );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">388</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      		   }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">389</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">390</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      		   $Database-&gt;addTable( $Table );</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">391</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">392</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">393</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">      	      return $Database;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">394</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">395</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">}</pre></td>
+</tr>
+<tr>
+<td class="lineCountCovered">396</td>
+<td class="lineCountCovered">1</td>
+<td class="srcLineCovered"><pre class="srcLineCovered">?&gt;</pre></td>
+</tr>
+</table>
+<br><table width="100%">
+<tr><td><hr noshade size="1"></td></tr>
+<tr><td class="small">Report generated at 2010-06-24T17:36:36-04:00</td></tr>
+</table>
+</body>
+</html>

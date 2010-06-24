@@ -21,14 +21,25 @@
 
 /**
  * Factory responsible for returning a LogProvider implementation
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.logger
  */
 abstract class LogFactory {
 
+         private static $level;
 		 private static $logger;
+
+		 /**
+		  * Logging level accessor
+		  *
+		  * @return string The logging level
+		  */
+		 public static function getLevel() {
+
+		        return self::$level;
+		 }
 
 		 /**
 		  * Returns a LogProvider singleton instance
@@ -41,22 +52,22 @@ abstract class LogFactory {
 			     	if( $xml->logger ) {
 
 			     		$level = (string)$xml->logger->attributes()->level;
-			     		$level = ($level) ? $level : 'info';
+			     		self::$level = ($level) ? $level : 'info';
 
 			     		$provider = (string)$xml->logger->attributes()->provider;
 			     		$provider = ($provider) ? $provider : 'FileLogger';
 
 			     		// Try to load the specified Logger from the framework/logger directory
-			     		$path = AgilePHP::getFramework()->getFrameworkRoot() . 
+			     		$path = AgilePHP::getFramework()->getFrameworkRoot() .
 				  						DIRECTORY_SEPARATOR . 'logger' . DIRECTORY_SEPARATOR . 'FileLogger.php';
 			     		if( file_exists( $path ) ) require_once $path;
 			     	}
 			     	else {
 
-			     		$level = 'info';
+			     		self::$level = 'info';
 			     		$provider = 'FileLogger';
 
-				  		require_once AgilePHP::getFramework()->getFrameworkRoot() . 
+				  		require_once AgilePHP::getFramework()->getFrameworkRoot() .
 				  						DIRECTORY_SEPARATOR . 'logger' . DIRECTORY_SEPARATOR . 'FileLogger.php';
 			     	}
 
@@ -69,7 +80,7 @@ abstract class LogFactory {
 
 	     /**
 	      * Returns a new LogProvider with each call
-	      * 
+	      *
 	      * @param string $logger The name of the LogProvider implementation to create
 	      * @return LogProvider A new instance of the requested LogProvider
 	      */

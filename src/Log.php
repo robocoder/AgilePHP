@@ -24,8 +24,8 @@ require_once 'logger/LogFactory.php';
 require_once 'logger/FileLogger.php';
 
 /**
- * Performs application logging to #projectName#/logs/agilephp_MM-DD-YY.log 
- * 
+ * Performs application logging to #projectName#/logs/agilephp_MM-DD-YY.log
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
@@ -37,50 +37,54 @@ final class Log {
 
 	  /**
 	   * Writes a 'debug' log level entry.
-	   * 
+	   *
 	   * @param String $message The debug message to log
 	   * @return void
 	   * @static
 	   */
 	  public static function debug( $message ) {
 
-  		 	 LogFactory::getLogger()->debug( $message );
+	         if( LogFactory::getLevel() == 'debug' )
+  		 	     LogFactory::getLogger()->debug( $message );
 	  }
 
 	  /**
 	   * Writes a 'warn' log level entry.
-	   * 
+	   *
 	   * @param String $message The warning message to log
 	   * @return void
 	   * @static
 	   */
 	  public static function warn( $message ) {
 
-	  		 LogFactory::getLogger()->warn( $message );
+	         if( LogFactory::getLevel() == 'warn' || LogFactory::getLevel() == 'error' )
+	  		     LogFactory::getLogger()->warn( $message );
 	  }
 
 	  /**
 	   * Writes an 'info' log level entry.
-	   * 
+	   *
 	   * @param String $message The informative message to log
 	   * @return void
 	   * @static
 	   */
 	  public static function info( $message ) {
 
-	  		 LogFactory::getLogger()->info( $message );
+	         if( LogFactory::getLevel() == 'info' || LogFactory::getLevel() == 'debug' )
+	  		     LogFactory::getLogger()->info( $message );
 	  }
 
 	  /**
 	   * Writes an 'error' log level entry.
-	   * 
+	   *
 	   * @param String $message The error message to log.
 	   * @return void
 	   * @static
 	   */
 	  public static function error( $message ) {
 
-	  		 LogFactory::getLogger()->error( $message );
+	         if( LogFactory::getLevel() == 'error' )
+	  		     LogFactory::getLogger()->error( $message );
 	  }
 }
 ?>
