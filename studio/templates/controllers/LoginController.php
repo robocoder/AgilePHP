@@ -2,15 +2,10 @@
 
 class LoginController extends BaseController {
 
-	  public function __construct() {
-
-	  	     parent::__construct();
-	  }
-
 	  /**
 	   * Renders the login page if there is no session present. If a session is present
 	   * the admin page is rendered instead.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function index() {
@@ -20,10 +15,10 @@ class LoginController extends BaseController {
 	  	     else
 	  	     	$this->showLogin();
 	  }
-	  
+
 	  /**
 	   * Registers a new user account.
-	   * 
+	   *
 	   * @param $username The username to register
 	   * @param $email The email address of the user
 	   * @param $password The password to authenticate the user
@@ -39,7 +34,7 @@ class LoginController extends BaseController {
 
 	  		 if( !$password = $request->get( 'password' ) )
 	  		 	 throw new FrameworkException( 'Password required' );
-	  		 	 
+
 	  		 if( !$email = $request->get( 'email' ) )
 	  		 	 throw new FrameworkException( 'Email required' );
 
@@ -59,7 +54,7 @@ class LoginController extends BaseController {
 
 	  /**
 	   * Confirms a registration
-	   * 
+	   *
 	   * @param $token Random registration token
 	   * @param $sessionId The session id corresponding to the user that registered
 	   * @return void
@@ -79,7 +74,7 @@ class LoginController extends BaseController {
 	   * Authenticates a user account using AgilePHP Identity and Scope components.
 	   * If the login fails the user is taken back to the login page, otherwise
 	   * the admin page is rendered.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function login() {
@@ -87,13 +82,13 @@ class LoginController extends BaseController {
 	  		 $request = Scope::getRequestScope();
 
 	  		 if( !$username = $request->getSanitized( 'username' ) ) {
-	  		 	
+
 	  		 	$this->getRenderer()->set( 'error', 'Username required' );
 	  		 	$this->showLogin();
 	  		 	return;
 	  		 }
 	  		 if( !$password = $request->getSanitized( 'password' ) ) {
-	  		 	
+
 	  		 	$this->getRenderer()->set( 'error', 'Password required' );
 	  		 	$this->showLogin();
 	  		 	return;
@@ -112,7 +107,7 @@ class LoginController extends BaseController {
 
 	  /**
 	   * Destorys the session which was created by login() and renders the login page.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function logout() {
@@ -123,18 +118,18 @@ class LoginController extends BaseController {
 
 	  /**
 	   * Displays the forgot password form :)
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function oops() {
 
-	  		 $this->showForgotPassword(); 
+	  		 $this->showForgotPassword();
 	  }
 
 	  /**
 	   * Uses the AgilePHP Identity component to send the user a link
 	   * to click which resets their password when clicked.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function forgotPassword() {
@@ -150,7 +145,7 @@ class LoginController extends BaseController {
 	  		 	return;
 	  		 }
 	  		 if( !$email = $request->getSanitized( 'email' ) ) {
-	  		 	
+
 	  		 	$this->getRenderer()->set( 'error', 'Email required' );
 	  		 	$this->showForgotPassword();
 	  		 	return;
@@ -174,7 +169,7 @@ class LoginController extends BaseController {
 
 	  /**
 	   * Uses the AgilePHP Identity component to reset the users password.
-	   * 
+	   *
 	   * @param $token The password reset token sent by AgilePHP Identity component
 	   * @param $sessionId The session id which created the initial forgot password request
 	   * @return void
@@ -197,18 +192,18 @@ class LoginController extends BaseController {
 
 	  /**
 	   * Renders the admin view.
-	   * 
+	   *
 	   * @return void
 	   */
 	  private function showAdmin() {
 
 	  	      $this->getRenderer()->set( 'title', 'Administration :: Home' );
-	  	      $this->getRenderer()->render( 'admin' ); 
+	  	      $this->getRenderer()->render( 'admin' );
 	  }
 
 	  /**
 	   * Renders the register view.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function showRegister() {
@@ -220,7 +215,7 @@ class LoginController extends BaseController {
 
 	  /**
 	   * Renders the login view.
-	   * 
+	   *
 	   * @return void
 	   */
 	  private function showLogin() {
@@ -232,7 +227,7 @@ class LoginController extends BaseController {
 
 	  /**
 	   * Renders the forgot password view.
-	   * 
+	   *
 	   * @return void
 	   */
 	  private function showForgotPassword() {

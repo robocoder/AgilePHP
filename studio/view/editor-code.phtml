@@ -38,17 +38,17 @@
 
 		  				 if( !response || !response.success ) {
 
-		  					 alert( 'Error saving document' );
+		  					 window.parent.AgilePHP.Studio.error( response.errors.reason );
 		  					 return false;
 		  				 }
 
-		  				 if( response._class == 'RemotingException' ) {
+		  				 if( response.RemotingException ) {
 
-			  				 alert( response.message );
+		  					 window.parent.AgilePHP.Studio.error( response.RemotingException.message );
 			  				 return false;
 		  				 }
 
-		  				 alert( 'Document saved' );
+		  				window.parent.AgilePHP.Studio.info( 'Document saved' );
 		  			});
 	      		}
 	      });

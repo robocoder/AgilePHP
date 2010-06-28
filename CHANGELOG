@@ -1,4 +1,6 @@
-- added longtext to orm.dtd
-- Bug fix to BaseDialect::find when using setOrderBy or setGroupBy.
-- studio RemotingException bug fixes
-- added support to #@Cache interceptor for methods that return
+- Bug fix to Studio editor-code.phtml view in regards to RemotingException handling
+- Cleanup on studio templates
+- Bug fix to Log class. level was being read before it was set by getLogger
+- Cleanup to AgilePHP.js remoting object around new WebSocket transport
+- Cleaned up generated CSS file by studio. Removed line-height references.
+- Added support to #@BasicAuthenticator::authenticator to allow specifying static authenticator

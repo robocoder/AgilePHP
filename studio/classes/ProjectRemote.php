@@ -21,7 +21,7 @@
 
 /**
  * Remoting class responsible for server side processing of agilephp projects.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.classes
@@ -35,7 +35,7 @@ class ProjectRemote {
 
 	  /**
 	   * Creates a new project
-	   * 
+	   *
 	   * @param array $configs An array of project configuration values
 	   * @return boolean True if the project was created successfully
 	   * @throws FrameworkException
@@ -74,30 +74,30 @@ class ProjectRemote {
 		 	  		 $model = $this->root . DIRECTORY_SEPARATOR . 'model';
 			  		 if( !mkdir( $model ) )
 			  		 	 throw new FrameworkException( 'Failed to create project models directory at \'' . $model . '\'.' );
-			  		 	 
+
 			  		 $view = $this->root . DIRECTORY_SEPARATOR . 'view';
 			  		 if( !mkdir( $view ) )
 			  		 	 throw new FrameworkException( 'Failed to create project view directory at \'' . $view . '\'.' );
-		
+
 			  		 $css = $this->root . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . 'css';
 			  		 if( !mkdir( $css ) )
 			  		 	 throw new FrameworkException( 'Failed to create project css directory at \'' . $css . '\'.' );
-		
+
 			  		 $control = $this->root . DIRECTORY_SEPARATOR . 'control';
 			  		 if( !mkdir( $control ) )
 			  		 	 throw new FrameworkException( 'Failed to create project controllers directory at \'' . $control . '\'.' );
-		
+
 			  		 $logs = $this->root . DIRECTORY_SEPARATOR . 'logs';
 			  		 if( !mkdir( $logs ) )
 			  		 	 throw new FrameworkException( 'Failed to create project logging directory at \'' . $logs . '\'.' );
-		
+
 			  		 if( !chmod( $logs, 0777 ) )
 			  		 	 throw new FrameworkException( 'Failed to change permissions to 077 on project logging directory \'' . $logs . '\'.' );
-		
+
 			  		 $components = $this->root . DIRECTORY_SEPARATOR . 'components';
 			  		 if( !mkdir( $components ) )
 			  		 	 throw new FrameworkException( 'Failed to create project components directory at \'' . $components . '\'.' );
-		
+
 			  		 $classes = $this->root . DIRECTORY_SEPARATOR . 'classes';
 			  		 if( !mkdir( $classes ) )
 			  		 	 throw new FrameworkException( 'Failed to create project classes directory at \'' . $classes . '\'.' );
@@ -141,7 +141,7 @@ class ProjectRemote {
 
 	  /**
 	   * Utility method to replace *nix line breaks with windows line breaks if building on windows.
-	   * 
+	   *
 	   * @param String $file The fully qualified file path
 	   * @return void
 	   */
@@ -279,12 +279,12 @@ class ProjectRemote {
 	  }
 
 	  private function createIndexDotPHP() {
-	  	
+
 	  	      $code = '<?php
 /**
  * AgilePHP Generated Index Page
  * ' . $this->projectName . '
- * 
+ *
  * @package ' . $this->projectName . '
  */
 
@@ -293,7 +293,7 @@ class ProjectRemote {
  * Here, we load the core AgilePHP framework and call upon the Model-View-Control
  * component to parse and handle the current request. All calls are wrapped in a
  * try/catch which redirects the website visitor to the view/error.phtml page on error.
- * 
+ *
  * @author AgilePHP Generator
  * @version 0.1
  */
@@ -314,23 +314,23 @@ class ProjectRemote {
 		 $renderer->set( \'title\', \'' . $this->projectName . ' :: Error Page\' );
 		 $renderer->set( \'error\', $e->getMessage() . ($agilephp->isInDebugMode() ? \'<pre>\' . $e->getTraceAsString() . \'</pre>\' : \'\' ) );
 		 $renderer->render( \'error\' );
- } 
+ }
 ?>';
 	  	 	  $h = fopen( $this->root . '/index.php', 'w' );
 	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $code ) );
-	  		  fclose( $h );    
+	  		  fclose( $h );
 	  }
-	  
+
 	  private function createStyleSheet() {
-	  	
+
 	  		  $style = '@CHARSET "UTF-8";
 
 a {
 
-	text-decoration: none;	
+	text-decoration: none;
 }
 
-	  		  
+
 /** AgilePHP Styles */
 
 .info {
@@ -344,107 +344,97 @@ a {
 .error {
 
 	font-family:tahoma;
-	line-height:14px;
 	font-size: 18px;
 	color: #FF0000;
 }
 
 .agilephpSearchBar {
-	
+
 	text-align: center;
 	font-size: 12px;
 	padding-bottom: 25px;
 }
 
 .agilephpSearchBar input, .agilephpSearchBar select {
-	
+
 	font-size: 12px;
 }
 
 .agilephpTableDescription {
 
 	color: #000000;
-	font-family:tahoma;
+	font-family: tahoma;
 	font-size: 16px;
 	font-weight: bolder;
-	line-height: 14px;
 	text-align: center;
 	padding-bottom: 20px;
 	padding-top: 25px;
 }
 
 .agilephpTable {
-	
-	color:#636363;
-	font-family:tahoma;
+
+	color: #636363;
+	font-family: tahoma;
 	font-size: 16px;
-	line-height:14px;
-	border-collapse : collapse;
+	border-collapse: collapse;
 }
 
 .agilephpHeader {
 
-	color:#636363;
-	font-family:tahoma;
-	font-size:11px;
-	line-height:14px;
+	color: #636363;
+	font-family: tahoma;
+	font-size: 11px;
 	text-decoration: none;
 }
 
 .agilephpHighlight {
 
-	color:#636363;
-	font-family:tahoma;
-	font-size:10px;
-	line-height:14px;
+	color: #636363;
+	font-family: tahoma;
+	font-size: 10px;
 	background-color: #C9C9C9;
 }
 
 .agilephpRow1 {
 
-	color:#636363;
-	font-family:tahoma;
-	font-size:10px;
-	line-height:14px;
+	color: #636363;
+	font-family: tahoma;
+	font-size: 10px;
 	background-color: #FFFFFF;
 }
 
 .agilephpRow2 {
 
-	color:#636363;
-	font-family:tahoma;
-	font-size:10px;
-	line-height:14px;
+	color: #636363;
+	font-family: tahoma;
+	font-size: 10px;
 	background-color: #F9F9F9;
 }
 
 .agilephpPaginationTable {
 
-	color:#636363;
-	font-family:tahoma;
-	font-size:10px;
-	line-height:14px;
+	color: #636363;
+	font-family: tahoma;
+	font-size: 10px;
 }
 
 .agilephpPaginationHeader {
-	
-	color:#636363;
-	font-family:tahoma;
-	font-size:12px;
-	line-height:14px;
+
+	color: #636363;
+	font-family: tahoma;
+	font-size: 12px;
 }
 
 .agilephpPaginationRecordCount {
-	
-	color:#636363;
-	font-family:tahoma;
-	font-size:12px;
-	line-height:14px;
+
+	color: #636363;
+	font-family: tahoma;
+	font-size: 12px;
 }';
 	  		  $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'view' .
 	  		  			DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'style.css', 'w' );
 	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $style ) );
-	  		  fclose( $h );    
+	  		  fclose( $h );
 	  }
 
 	  public function createEclipse() {
@@ -481,7 +471,7 @@ a {
 	<buildpathentry kind="src" path=""/>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
 </buildpath>';
-	  		  
+
 	  		  $h = fopen( $this->root . '/.buildpath', 'w' );
 	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $dotBuildpath ) );
 	  		  fclose( $h );
@@ -493,7 +483,7 @@ a {
 
 	  		 if( !mkdir( $nbproject ) )
 	  		 	 throw new FrameworkException( 'Could not create netbeans project directory \'' . $nbproject . '\'.' );
-	  		 
+
 	  		 $projectDotXml = '<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.php.project</type>
@@ -507,7 +497,7 @@ a {
 	  		 $h = fopen( $nbproject . '/project.xml', 'w' );
 	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $projectDotXml ) );
 	  		 fclose( $h );
-	  		  
+
 	  		 $projectDotProperties = 'include.path=${php.global.include.path}
 source.encoding=UTF-8
 src.dir=.

@@ -44,8 +44,10 @@ final class Log {
 	   */
 	  public static function debug( $message ) {
 
+	         $logger = LogFactory::getLogger();
+
 	         if( LogFactory::getLevel() == 'debug' )
-  		 	     LogFactory::getLogger()->debug( $message );
+  		 	      $logger->debug( $message );
 	  }
 
 	  /**
@@ -57,8 +59,10 @@ final class Log {
 	   */
 	  public static function warn( $message ) {
 
+	         $logger = LogFactory::getLogger();
+
 	         if( LogFactory::getLevel() == 'warn' || LogFactory::getLevel() == 'error' )
-	  		     LogFactory::getLogger()->warn( $message );
+	  		     $logger->warn( $message );
 	  }
 
 	  /**
@@ -70,8 +74,10 @@ final class Log {
 	   */
 	  public static function info( $message ) {
 
+	         $logger = LogFactory::getLogger();
+
 	         if( LogFactory::getLevel() == 'info' || LogFactory::getLevel() == 'debug' )
-	  		     LogFactory::getLogger()->info( $message );
+	  		     $logger->info( $message );
 	  }
 
 	  /**
@@ -83,8 +89,10 @@ final class Log {
 	   */
 	  public static function error( $message ) {
 
+	         $logger = LogFactory::getLogger();
+
 	         if( LogFactory::getLevel() == 'error' )
-	  		     LogFactory::getLogger()->error( $message );
+	  		     $logger->error( $message );
 	  }
 }
 ?>

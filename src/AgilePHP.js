@@ -595,7 +595,7 @@ var AgilePHP = {
 
 			classes: [],
 			controller : null,
-			transport: 'http',
+			transport: 'xhr',
 			endpoint: 'localhost:4020/agilephp',
 
 			/**
@@ -686,8 +686,8 @@ var AgilePHP = {
 			 */
 			_send: function( data, callback ) {
 
-				// WebSocket
-				if( AgilePHP.Remoting.transport.toLowerCase() == 'websocket' ) {
+				// WebSocket Transport
+				if( AgilePHP.Remoting.getTransport() == 'websocket' ) {
 
 					if( !'WebSocket' in window ) {
 
@@ -715,8 +715,9 @@ var AgilePHP = {
 		             return;
 				}
 
-				// XHR
-				var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invoke';
+				// XHR Transport
+				var url = (AgilePHP.Remoting.controller == null) ? AgilePHP.Remoting.endpoint : 
+								AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invoke';
 
 				if( callback == undefined ) {
 
