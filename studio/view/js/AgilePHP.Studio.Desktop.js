@@ -6,7 +6,7 @@ AgilePHP.Studio.Desktop = {
 		tabPanel: null,
 		properties: null,
 		taskbar: null,
-		debugger: null,
+		_debugger: null,
 
 		load: function() {
 
@@ -15,7 +15,7 @@ AgilePHP.Studio.Desktop = {
 			AgilePHP.Studio.Desktop.tabPanel = new AgilePHP.Studio.TabPanel();
 			AgilePHP.Studio.Desktop.properties = new AgilePHP.Studio.Properties();
 			AgilePHP.Studio.Desktop.taskbar = new AgilePHP.Studio.Taskbar();
-			AgilePHP.Studio.Desktop.debugger = new AgilePHP.Studio.Debugger();
+			AgilePHP.Studio.Desktop._debugger = new AgilePHP.Studio.Debugger();
 
 		    var viewport = new Ext.Viewport({
 
@@ -27,7 +27,7 @@ AgilePHP.Studio.Desktop = {
 				          AgilePHP.Studio.Desktop.explorer,
 				          AgilePHP.Studio.Desktop.tabPanel,
 				          AgilePHP.Studio.Desktop.properties,
-				          AgilePHP.Studio.Desktop.debugger
+				          AgilePHP.Studio.Desktop._debugger
 				 ]
 			});
 

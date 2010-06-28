@@ -264,7 +264,7 @@ AgilePHP.Studio.Window.prototype.wizard = function( steps ) {
 				id: this.id + '-deck',
 				xtype: 'panel',
 				layout: 'card',
-				//flex: 1,
+				flex: 1,
 				activeItem: 0,
 			    items: steps,
 			    padding: '10',

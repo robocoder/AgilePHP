@@ -31,8 +31,10 @@
 				     document.getElementById( 'submit' ).disabled = true;
 			}
 
-			/** AgilePHP Remoting */
+			/** AgilePHP Remoting Using XMLHTTPRequest */
 			function doVariousRMITests() {
+
+				    AgilePHP.Remoting.setTransport( 'XHR' );
 
 					// Instantiate the remote PHP object and invoke a few #@RemoteMethod's
 					var rmi = new RMITest('test1', 'test2', 'test3');
@@ -58,6 +60,19 @@
 					});
 					rmi2.testme('arg3', 'arg4');
 					rmi2.testme2('arg3', 'arg4');
+			}
+
+			/** AgilePHP Remoting Using "HTML 5" WebSocket */
+			function doWebSocketTests() {
+
+				AgilePHP.Remoting.setTransport( 'WebSocket' );
+
+					var rmi2 = new RMITest2();
+						rmi2.setCallback( function mySecondCallback( response ) {
+
+							 AgilePHP.debug( response );
+					});
+					rmi2.testme( 'web', 'socket' );
 			}
 		</script>
 	</head>
@@ -110,7 +125,7 @@
 					<td><textarea name="myTextArea"></textarea></td>
 				</tr>
 				<tr>
-					<td><input id="submit" type="submit" name="Submit"></input></td>
+					<td><input id="submit" type="submit" name="Submit"/></td>
 				</tr>
 			</table>
 			<!-- 
@@ -119,7 +134,10 @@
 		</form>
 		<div id="formSubmitResponse"></div>
 		<div id="variousTests" style="padding-top: 25px;">
-			<input type="button" onclick="javascript:doVariousRMITests()" value="Various Other RMI Tests"/> (watch firebug)
+			<input type="button" onclick="javascript:doVariousRMITests()" value="Various Other RMI Tests"/> (watch JavaScript debugger)
+		</div>
+		<div id="websocketTests" style="padding-top: 25px;">
+			<input type="button" onclick="javascript:doWebSocketTests()" value="WebSocket Transport RMI Tests"/> (watch JavaScript debugger)
 		</div>
 	</body>
 </html>

@@ -307,7 +307,7 @@ AgilePHP.Studio.FileExplorer = {
 			                        		if( btn == 'yes' ) {
 			                        			
 			                        			AgilePHP.Studio.FileExplorer.selectedNode = item.parentMenu.contextNode;
-			                        			AgilePHP.Studio.FileExplorer.delete();
+			                        			AgilePHP.Studio.FileExplorer._delete();
 			                        		}
 			                        	});
 			                            break;
@@ -658,7 +658,7 @@ AgilePHP.Studio.FileExplorer = {
 		/**
 		 * Performs AJAX request to delete the selected node.
 		 */
-		delete : function() {
+		_delete : function() {
 
 			if( this.selectedNode ) {
 

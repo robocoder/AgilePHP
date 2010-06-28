@@ -595,6 +595,8 @@ var AgilePHP = {
 
 			classes: [],
 			controller : null,
+			transport: 'http',
+			endpoint: 'localhost:4020/agilephp',
 
 			/**
 			 * Sets the name of the remoting controller
@@ -618,11 +620,33 @@ var AgilePHP = {
 			},
 
 			/**
+			 * Sets the transport used to communicate with the Remote service
+			 * 
+			 * @param {String} transport The transport mechanism used for communication (XHR|WebSocket)
+			 * @return void
+			 */
+			setTransport: function( transport ) {
+
+				AgilePHP.Remoting.transport = transport.toLowerCase();
+			},
+
+			/**
+			 * Gets the transport mechanism used for communication
+			 * 
+			 * @return {String} The transport mechanism used for communication (xhr|websocket)
+			 */
+			getTransport: function() {
+
+				return AgilePHP.Remoting.transport.toLowerCase();
+			},
+
+			/**
 			 * Invokes a server side PHP object.
 			 * 
 			 * @param stub {object} The client side Stub instance respresenting a remote PHP object.
 			 * @param method {string} The name of the remote method to invoke
 			 * @param parameters {array} An array containing the arguments/parameters to pass into
+			 * @return mixed Void if asynchronous (call will be executed), otherwise the eval'd response from the service
 			 */
 			invoke: function( stub, method, parameters ) {
 
@@ -637,7 +661,6 @@ var AgilePHP = {
 				 delete stub._class;
 				 delete stub._callback;
 
-				 var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invoke';
 				 var data = 'class=' + clazz + '&method=' + method + '&constructorArgs=' + JSON.stringify( stub );
 
 				 if( parameters != undefined ) {
@@ -649,7 +672,53 @@ var AgilePHP = {
 					 data += '&parameters=' + JSON.stringify( o );
 				 }
 
-				 if( callback == undefined ) {
+				 return AgilePHP.Remoting._send( data, callback );
+			},
+
+			/**
+			 * Sends the remoting request to the server using one of the following supported transports:
+			 * 1) XHR - XMLHTTPRequest
+			 * 2) WebSocket - "HTML 5" WebSocket API
+			 * 
+			 * @param {String} data JSON serializes data to submit to the server
+			 * @param {function} callback Response callback handler
+			 * @return mixed Void if asynchronous (call will be executed), otherwise the eval'd response from the service
+			 */
+			_send: function( data, callback ) {
+
+				// WebSocket
+				if( AgilePHP.Remoting.transport.toLowerCase() == 'websocket' ) {
+
+					if( !'WebSocket' in window ) {
+
+						alert( 'WebSocket API not supported!' );
+						return false;
+					}
+					if( callback == undefined ) {
+
+						alert( 'AgilePHP.Remoting._send [ERROR]: WebSocket transport requires callback' );
+						return false;
+					}
+					var ws = new WebSocket( 'ws://' + AgilePHP.Remoting.endpoint );
+		                ws.onopen = function() {
+
+			                ws.send( data ); 
+			            };
+		                ws.onmessage = function( evt ) {
+
+		                        callback( evt.data ); 
+		                };
+		                ws.onclose = function() {
+
+		                	AgilePHP.debug( 'WebSocket Closed' );
+		                };
+		             return;
+				}
+
+				// XHR
+				var url = AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invoke';
+
+				if( callback == undefined ) {
 
 					 var xhr = new AgilePHP.XHR();
 					 	 xhr.setSynchronous( true );

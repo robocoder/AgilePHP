@@ -158,7 +158,6 @@ class NewModelRemote {
 	  #@RemoteMethod
 	  public function create( $tableName, $workspace, $projectName, $properties, $updateOrmDotXml, $createTable ) {
 
-
 	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 	  		 $modelName = ucfirst( preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $tableName ) );
 	  		 $path = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model';
