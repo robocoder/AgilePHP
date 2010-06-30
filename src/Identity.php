@@ -20,406 +20,188 @@
  */
 
 /**
- * NOTE: PDO objects can *NOT* be serialized. Since this component
- * 		 is stored in the HTTP session (serialized), this class
- * 		 can not extend any of the base MVC controllers that store
- * 		 an instance of PDO, nor can it store the ORM
- * 		 itself!
  * 
- * Includes all identity package dependancies
+ * Includes all identity package dependencies
  */
-require_once 'identity/IdentityManager.php';
 require_once 'identity/IdentityModel.php';
+require_once 'identity/IdentityManager.php';
+require_once 'identity/IdentityManagerImpl.php';
+require_once 'identity/IdentityManagerFactory.php';
 
 /**
  * Provides a means for tracking a users identity throughout the
- * web application. The Identity component automatically handles
- * creating sessions, ORM, and sending emails to deal with
- * password resets.
+ * web application. The Identity component is responsible for
+ * persistence, authentication, roles, sessions, password management
+ * and email tasks.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  */
-class Identity implements IdentityManager {
-
-  	  private static $instance;
-
-	  private $model;
-	  private $modelName;
-
-	  private $resetPasswordUrl;
-	  private $confirmationUrl;
-
-	  private $session;
-
-	  private function __construct() {
-
-	  		  $agilephp_xml = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
-	  		  $xml = simplexml_load_file( $agilephp_xml );
-
-	  		  if( !$xml->identity )
-	  		  	  throw new FrameworkException( 'Identity component requires a valid component configuration entry in agilephp.xml' );
-
-	  	      if( $model = (string)$xml->identity->attributes()->model ) {
-
-	  	      	  $this->model = new $model();
-		  		  $this->modelName = $model;
-		  		  Log::debug( 'Identity::__construct Initalizing domain model object \'' . $this->getModelName() . '\'.' );
-	  	      }
-	  	      else {
-
-	  	      	  $this->model = new User();
-	  	      	  $this->modelName = 'User';
-	  	      	  Log::debug( 'Identity::__construct Initalizing with framework \'User\' domain model object.' );
-	  	      }
-
-	  		  $passwordResetUrl = (string)$xml->identity->attributes()->resetPasswordUrl;
-	  		  if( $passwordResetUrl )
-	  		      $this->resetPasswordUrl = $passwordResetUrl;
-	  		      
-	  		  $confirmUrl = (string)$xml->identity->attributes()->confirmationUrl;
-	  		  if( $confirmUrl )
-	  		      $this->confirmationUrl = $confirmUrl;
-	  		      
-	  		  $this->session = Scope::getSessionScope();
-
-	  		  // Initalize Identity from previous session if one exits
-      		  if( $username = $this->session->get( 'IDENTITY_USERNAME' ) ) {
-
-	  		  	  $this->model->setUsername( $username );
-	 		  	  if( $this->model->getRoles() ) {
-
-	      		  	  foreach( $this->model->getRoles() as $Role ) {
-	
-		  		 		  if( $this->getModel()->getRoleId() == $Role->getName() ) {
-	
-		  		 		  	  $this->setRole( $Role );
-		  		 		  	  break;
-		  		 		  }
-		  		 	 }
-	 		  	  }
-	 		  	  $this->getModel()->setSession( $this->session->getSession() );
-      		  }
-	  }
-
-	  /**
-	   * Returns a singleton instance of the 'Identity' component.
-	   *  
-	   * @return void
-	   */
-	  public static function getInstance() {
-
-			 if( self::$instance == null )
-		 	 	 self::$instance = new self;
-
-	  	     return self::$instance;
-	  }
+class Identity {
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#setModel($model)
 	   */
-	  public function setModel( $model ) {
+	  public static function setModel($model) {
 
-	  		 $this->model = $model;
+	  		 IdentityManagerFactory::getManager()->setModel($model);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#getModel()
 	   */
-	  public function getModel() {
+	  public static function getModel() {
 
-	  		 return $this->model;
+	  		 return IdentityManagerFactory::getManager()->getModel();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#setUsername($username)
 	   */
-	  public function setUsername( $username ) {
+	  public static function setUsername($username) {
 
-	  		 $this->getModel()->setUsername( $username );
+	  		 IdentityManagerFactory::getManager()->setUsername($username);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see  src/identity/IdentityManager#setPassword($password)
 	   */
-	  public function setPassword( $password ) {
+	  public static function setPassword($password) {
 
-	  		 $this->getModel()->setPassword( $password );
+	  		 IdentityManagerFactory::getManager()->setPassword($password);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#getUsername()
 	   */
-	  public function getUsername() {
+	  public static function getUsername() {
 
-	  		 return $this->getModel()->getUsername();
+	  		 return IdentityManagerFactory::getManager()->getUsername();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#getPassword()
 	   */
-	  public function getPassword() {
+	  public static function getPassword() {
 
-	  		 return $this->getModel()->getPassword();
+	  		 return IdentityManagerFactory::getManager()->getPassword();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#setEmail($email)
 	   */
-	  public function setEmail( $email ) {
+	  public static function setEmail($email) {
 
-	  		 $this->getModel()->setEmail( $email );
+	  		 IdentityManagerFactory::getManager()->setEmail($email);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#getEmail()
 	   */
-	  public function getEmail() {
+	  public static function getEmail() {
 
-	  		 return $this->getModel()->getEmail();
+	  		 return IdentityManagerFactory::getManager()->getEmail();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#setCreated($dateTime)
 	   */
-	  public function setCreated( $dateTime ) {
+	  public static function setCreated($dateTime) {
 
-	  		 $this->getModel()->setCreated( $dateTime );
+	  		 IdentityManagerFactory::getManager()->setCreated($dateTime);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#getCreated()
 	   */
-	  public function getCreated() {
+	  public static function getCreated() {
 	  	
-	  		 return $this->getModel()->getCreated();
+	  		 return IdentityManagerFactory::getManager()->getCreated();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#setLastLogin($dateTime)
 	   */
-	  public function setLastLogin( $dateTime ) {
+	  public static function setLastLogin($dateTime) {
 	  	
-	  		 $this->getModel()->setLastLogin( $dateTime );
+	  		 IdentityManagerFactory::getManager()->setLastLogin($dateTime);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#getLastLogin()
 	   */
-	  public function getLastLogin() {
+	  public static function getLastLogin() {
 
-	  		 return $this->getModel()->getLastLogin();
+	  		 return IdentityManagerFactory::getManager()->getLastLogin();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#setEnabled($value)
 	   */
-	  public function setEnabled( $value ) {
+	  public static function setEnabled($value) {
 
-	  		 $this->getModel()->setEnabled( $value );
+	  		 IdentityManagerFactory::getManager()->setEnabled($value);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#getEnabled()
 	   */
-	  public function getEnabled() {
+	  public static function getEnabled() {
 
-	  		 return $this->getModel()->getEnabled();
+	  		 return IdentityManagerFactory::getManager()->getEnabled();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setRole($role)
+	   * @see src/identity/IdentityManager#setRole(Role $role)
 	   */
-	  public function setRole( Role $role ) {
+	  public static function setRole(Role $role) {
 
-	  		 $this->getModel()->setRole( $role );
+	  		 IdentityManagerFactory::getManager()->setRole($role);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#getRole()
 	   */
-	  public function getRole() {
+	  public static function getRole() {
 
-	  		 return $this->getModel()->getRole();
+	  		 return IdentityManagerFactory::getManager()->getRole();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#hasRole($role)
 	   */
-	  public function hasRole( $role ) {
+	  public static function hasRole($role) {
 
-	  		 if( isset( $this->model ) && $this->model->getRole() )
-	  		 	 return $this->getModel()->getRole()->getName() == $role;
-
-	  		 return false;
+	  		 return (IdentityManagerFactory::getManager()->getModel() &&
+	  		 		 IdentityManagerFactory::getManager()->getModel()->getRole()) ?
+	  		 			IdentityManagerFactory::getManager()->getModel()->getRole()->getName() == $role : false;
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#revokeRole()
 	   */
-	  public function revokeRole() {
+	  public static function revokeRole() {
 
-	  		 $this->setRole( null );
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setPasswordResetUrl($url)
-	   */
-	  public function setPasswordResetUrl( $url ) {
-	  	
-	  		 $this->resetPasswordUrl = $url;
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getPasswordResetUrl()
-	   */
-	  public function getPasswordResetUrl()  {
-
-	  		 return $this->resetPasswordUrl;
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getConfirmationUrl()
-	   */
-	  public function getConfirmationUrl() {
-
-	  		 return $this->confirmationUrl;
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#forgotPassword($subject=null,$body=null)
-	   */
-	  public function forgotPassword( $subject = null, $body = null ) {
-
-	  		 if( !$this->getPasswordResetUrl() )
-	  		 	 throw new FrameworkException( 'Identity::forgotPassword requires a valid passwordResetUrl property value.' );
-
-  		 	 if( !$this->getModel()->getUsername() )
-	  		 	 throw new FrameworkException( 'Identity::forgotPassword requires a valid username property value for model \'' . $this->getModelName() . '\'.' );
-
-	  		 if( !$this->getModel()->getEmail() )
-	  		 	 throw new FrameworkException( 'Identity::forgotPassword requires a valid email property value for model \'' . $this->getModelName() . '\'.' );
-
-	  		 $token = $this->createToken();
-	  		 $this->session->set( 'resetPasswordToken', $token );
-	  		 $this->session->set( 'username', $this->getUsername() );
-
-	  		 // Make sure email exists!
-	  		 $table = ORM::getTableByModelName( $this->getModelName() );
-	  		 $emailColumn = $table->getColumnNameByProperty( 'email' );
-	  		 ORM::prepare( 'SELECT ' . $emailColumn . ' FROM ' . $table->getName() . ' WHERE ' . $emailColumn . '=? AND username=?;' );
-	  		 $params = array( $this->getEmail(),
-	  		 				  $this->getUsername() );
-	  		 if( !ORM::execute( $params )->fetch() )
-	  		 	 throw new FrameworkException( 'The information provided does not match our records.' );
-
-	  		 // Send email
-	  		 if( !$subject ) $subject = AgilePHP::getFramework()->getAppName() . ' :: Forgotten Password';
-	  		 if( !$body ) $body = 'Click on the following link to reset your password: ' . $this->getPasswordResetUrl() . '/' . $token . '/' . $this->session->getSessionId();
-
-	  		 if( !mail( $this->getModel()->getEmail(), $subject, $body, $this->getMailHeaders() ) )
-	  		 	 throw new FrameworkException( 'Error sending forgot password email.' );
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#resetPassword($token,$sessionId,$subject=null,$body=null)
-	   */
-	  public function resetPassword( $token, $sessionId, $subject = null, $body = null ) {
-
-	  		 $this->session->setSessionId( $sessionId );
-
-	  		 if( $token !== $this->session->get( 'resetPasswordToken' ) )
-	  		 	 throw new FrameworkException( 'Invalid token: ' . $token );
-
-	  		 $newPassword = $this->createToken();
-
-	  		 if( !$subject ) $subject = AgilePHP::getFramework()->getAppName() . ' :: New Password';
-	  		 if( !$body ) $body = 'Your new password is: ' . $newPassword;
-
-	  		 $this->setUsername( $this->session->get( 'username' ) );
-	  		 $this->setPassword( $newPassword );
-	  		 $this->merge();
-
-	  		 if( !mail( $this->getEmail(), $subject, $body, $this->getMailHeaders() ) )
-	  		 	 throw new FrameworkException( 'Error sending reset password email.' );
-
-	  		 $this->session->destroy();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#register()
-	   */
-	  public function register( $subject = null, $body = null ) {
-
-	  		 $token = $this->createToken();
-
-	  		 $this->session->set( 'activationToken', $token );
-	  		 $this->session->set( 'username', $this->getUsername() );
-	  		 $this->session->persist();
-
-	  		 $this->setCreated( strtotime( 'now' ) );
-	  		 $this->setEnabled( 0 );
-	  		 $this->getModel()->setSession( $this->session->getSession() );
-	  		 $this->persist();
-
-	  		 if( !$subject )
-	  		 	 $subject = AgilePHP::getFramework()->getAppName() . ' :: Registration Confirmation';
-
-	  		 if( !$body )
-	  		 	 $body = 'Click on the following link to confirm your registration: ' . $this->getConfirmationUrl() . '/' .
-	  		 				 $token . '/' . $this->session->getSessionId();
-
-	  		 if( !mail( $this->getEmail(), $subject, $body, $this->getMailHeaders() ) )
-	  		 	 throw new FrameworkException( 'Error sending registration email.' );
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#confirm($token, $sessionId)
-	   */
-	  public function confirm( $token, $sessionId ) {
-
-	  		 $this->session->setSessionId( $sessionId );
-
-	  		 if( $token !== $this->session->get( 'activationToken' ) )
-	  		 	 throw new FrameworkException( 'Invalid token: ' . $token );
-
-	  		 $user = new User();
-	  		 $user->setUsername( $this->session->get( 'username' ) ); // #@Id interceptor performs lookup
-
-	  		 if( !$user->getPassword() )
-	  		 	 throw new FrameworkException( 'User not found' );
-
-	  		 $this->setModel( $user );
-	  		 $this->setEnabled( 1 );
-	  		 $this->merge();
-
-	  		 $this->session->destroy();
+	  		 IdentityManagerFactory::getManager()->setRole( null );
 	  }
 
 	  /**
@@ -427,164 +209,100 @@ class Identity implements IdentityManager {
 	   * @see src/identity/IdentityManager#login($username, $password)
 	   * @throws AccessDeniedException
 	   */
-	  public function login( $username, $password ) {
+	  public static function login($username, $password) {
 
-	  		 if( !$this->getModel() ) throw new FrameworkException( 'Identity::login Valid user domain model required' );
+	  		 return IdentityManagerFactory::getManager()->login($username, $password);
+	  }
 
-	  	     Log::debug( 'Identity::login Authenticating username \'' . $username . '\' with password \'' . $password . '\'.' );
-	  	     
-	  		 $this->getModel()->setUsername( $username );
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#resetPassword($token, $sessionId)
+	   */
+	  public static function resetPassword( $token, $sessionId) {
 
-	  		 if( !$this->getModel() ) return false;
+	  	     IdentityManagerFactory::getManager()->resetPassword($token, $sessionId);
+	  }
+	  
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#forgotPassword()
+	   */
+	  public static function forgotPassword() {
 
-	  		 $crypto = new Crypto();
-	  		 $hashed = $crypto->getDigest( $password );
+	  	     IdentityManagerFactory::getManager()->forgotPassword();
+	  }
 
-			 if( !preg_match( '/' . $hashed . '/', $this->getPassword() ) )
-				 return false;
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#register()
+	   */
+	  public static function register() {
 
-	  		 if( $this->getModel()->getRoles() ) {
+	  		 IdentityManagerFactory::getManager()->register();
+	  }
 
-	  		 	 foreach( $this->getModel()->getRoles() as $Role ) {
-	
-		  		 		  if( $this->getModel()->getRoleId() == $Role->getName() ) {
+      /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#confirm($token, $sessionId)
+	   */
+	  public static function confirm($token, $sessionId) {
 
-		  		 		  	  $this->setRole( $Role );
-		  		 		  	  break;
-		  		 		  }
-		  		 }
-	  		 }
-
-	  		 if( !$this->getModel()->getEnabled() )
-	  		 	 throw new AccessDeniedException( 'Your account has been disabled.' );
-
-	  		 // The session needs to be persisted first to avoid primary key constraint violation
-  	  		 $this->session->set( 'IDENTITY_LOGGEDIN', true );
-	  		 $this->session->set( 'IDENTITY_USERNAME', $this->getUsername() );
-
-	  		 if( !$this->session->isPersisted() )
-	  		 	 $this->session->persist();
-
-	  		 $this->getModel()->setLastLogin( strtotime( 'now' ) );
-	  		 $this->getModel()->setSession( $this->session->getSession() );
-	  		 $this->merge();
-			 return true;
+	  		 IdentityManagerFactory::getManager()->confirm($token, $sessionId);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#logout()
 	   */
-	  public function logout() {
+	  public static function logout() {
 
-	  		 Log::debug( 'Identity::logout' );
-	  		 if( isset( $this->session ) ) $this->session->destroy();
+	  		 Log::debug('Identity::logout');
+	  		 if( Scope::getSessionScope()->getSession()->getData() ) Scope::getSessionScope()->destroy();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#isLoggedIn()
 	   */
-	  public function isLoggedIn() {
+	  public static function isLoggedIn() {
 
-	  		 return (isset( $this->session ) && $this->session->get( 'IDENTITY_LOGGEDIN' ) ) ? true : false;
+	  		 return (Scope::getSessionScope()->get('IDENTITY_LOGGEDIN')) ? true : false;
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#persist()
 	   */
-	  public function persist() {
+	  public static function persist() {
 
-	  		 ORM::persist( $this->getModel() );
+	  		 IdentityManagerFactory::getManager()->persist();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#merge()
 	   */
-	  public function merge() {
+	  public static function merge() {
 
-	  		 ORM::merge( $this->getModel() );
+	  		 IdentityManagerFactory::getManager()->merge();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#delete()
 	   */
-	  public function delete() {
+	  public static function delete() {
 
-	  	     ORM::delete( $this->getModel() );
+	  	     IdentityManagerFactory::getManager()->delete();
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#refresh()
 	   */
-	  public function refresh() {
+	  public static function refresh() {
 
-	  		 $results = ORM::find( $this->getModel() );
-	  		 if( isset( $results[0] ) )
-	  		 	 $this->setModel( $results[0] );
-	  }
-
-	  /**
-	   * Returns the name of the model the IdentityManager is currently managing.
-	   *  
-	   * @return String A string representing the name of the domain object model which the
-	   * 		 		IdentityManager is currently managing.
-	   */
-	  private function getModelName() {
-
-	  		  return $this->modelName;
-	  }
-
-	  /**
-	   * Generates a variable length character token used to sign requests.
-	   * 
-	   * @return String Variable length token that must be present in the reset password
-	   * 	     		url in order to successfully complete the process.
-	   */
-	  private function createToken() {
-
-			  $numbers = '1234567890';
-			  $lcase = 'abcdefghijklmnopqrstuvwzyz';
-			  $ucase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-			  $length = rand( 1, 20 );
-
-			  $token = null;
-			  for( $i=0; $i<$length; $i++ ) {
-
-			  	   if( rand( 0, 1 ) ) {
-
-			  	   	   $cRand = rand( 0, 25 );
-			  	   	   $token .= (rand( 0, 1) ) ? $lcase[$cRand] : $ucase[$cRand];
-			  	   }
-			  	   else {
-
-			  	   	   $nRand = rand( 0, 9 );
-			  	   	   $token .= $numbers[$nRand];
-			  	   }			  	     
-			  }
-
-	  		  return $token;
-	  }
-
-	  /**
-	   * Mail headers to use when performing forgot password and reset password operations.
-	   * 
-	   * @return String Mail headers to use in the sent messsage.
-	   */
-	  private function getMailHeaders() {
-
-	  		  $headers = 'From: ' . AgilePHP::getFramework()->getAppName() . ' <no-reply@' . AgilePHP::getFramework()->getAppName() . '>' . "\n";
-	  		  $headers .= 'To: ' . $this->getModel()->getUsername() . ' <' . $this->getModel()->getEmail() . '>' . "\n";
-        	  $headers .= 'Reply-To: ' . $this->getModel()->getEmail() . "\n";
-          	  $headers .= 'Return-Path: ' . $this->getModel()->getEmail() . "\n";
-        	  $headers .= 'X-mailer: AgilePHP Framework on PHP (' . phpversion() . ')' . "\n";
-
-        	  return $headers;
+	  		 IdentityManagerFactory::getManager()->refresh();
 	  }
 
 	  /**
@@ -594,7 +312,7 @@ class Identity implements IdentityManager {
 	   */
 	  public function __destruct() {
 
-	  		 Log::debug( 'Identity::__destruct Instance destroyed' );
+	  		 Log::debug('Identity::__destruct Instance destroyed');
 	  }
 }
 ?>

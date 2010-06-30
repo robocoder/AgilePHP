@@ -9,7 +9,7 @@ class SQLiteTest extends PHPUnit_Framework_TestCase {
 	   */
 	  public function coreTests() {
 
-	  		 $orm = ORMFactory::loadDialect( AgilePHP::getFramework()->getWebRoot() . '/orm_sqlite_test.xml' );
+	  		 $orm = ORMFactory::load( AgilePHP::getFramework()->getWebRoot() . '/orm_sqlite_test.xml' );
 
 	  		 $orm->create();	// create the unit testing database agilephp_test_mysql
 

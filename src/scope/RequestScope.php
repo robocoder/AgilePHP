@@ -34,7 +34,7 @@ class RequestScope {
 	  private $store;
 
 	  /**
-	   * Initalize RequestScope by storing all HTTP POST variables.
+	   * Initialize RequestScope by storing all HTTP POST variables.
 	   * 
 	   * $_GET variables are not used in AgilePHP for two reasons: 
 	   * 1) 255 character limit
@@ -44,22 +44,22 @@ class RequestScope {
 	   */
 	  private function __construct() {
 
-	  	 	  foreach( $_POST as $key => $value )
-	  	      	       $this->store[$key] = $_POST[$key];
+	  	 	  foreach($_POST as $key => $value)
+	  	      	      $this->store[$key] = $_POST[$key];
 
-	  	      if( isset( $_COOKIE['AGILEPHP_REQUEST_TOKEN'] ) && $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+	  	      if(isset($_COOKIE['AGILEPHP_REQUEST_TOKEN']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
 
-	  	      	  if( !isset( $this->store['AGILEPHP_REQUEST_TOKEN'] ) || 
-	  	      	  			$this->store['AGILEPHP_REQUEST_TOKEN'] != $_COOKIE['AGILEPHP_REQUEST_TOKEN'] ) {
+	  	      	  if(!isset($this->store['AGILEPHP_REQUEST_TOKEN']) || 
+	  	      	  			$this->store['AGILEPHP_REQUEST_TOKEN'] != $_COOKIE['AGILEPHP_REQUEST_TOKEN']) {
 
-	  	      	  	  $rt = (!isset( $this->store['AGILEPHP_REQUEST_TOKEN'] ) ) ? null : $this->store['AGILEPHP_REQUEST_TOKEN'];
+	  	      	  	  $rt = (!isset($this->store['AGILEPHP_REQUEST_TOKEN'] ) ) ? null : $this->store['AGILEPHP_REQUEST_TOKEN'];
 
-	  	      	  	  Log::debug( 'RequestScope::__construct Found invalid request token \'' . $rt . '\', expected \'' . $_COOKIE['AGILEPHP_REQUEST_TOKEN'] . '\'.' );
-	  	      	  	  throw new FrameworkException( 'Invalid request token \'' . $rt . '\'. Possible Cross-Site Forgery Request (CSFR) attempt.' );
+	  	      	  	  Log::debug('RequestScope::__construct Found invalid request token \'' . $rt . '\', expected \'' . $_COOKIE['AGILEPHP_REQUEST_TOKEN'] . '\'.');
+	  	      	  	  throw new FrameworkException('Invalid request token \'' . $rt . '\'. Possible Cross-Site Forgery Request (CSFR) attempt.');
 	  	      	  }
 	  	      	  else {
 
-	  	      	  	$this->invalidate();
+	  	      	  	  $this->invalidate();
 	  	      	  }
 	  	      }
 	  }
@@ -98,8 +98,8 @@ class RequestScope {
 	   */
 	  public function get( $key ) {
 
-	  	     if( isset( $this->store[$key] ) && !empty( $this->store[$key] ) )
-	  	     	 return (is_array( $this->store[$key] )) ? $this->store[$key] : urldecode( $this->store[$key] );
+	  	     if(isset($this->store[$key]) && !empty($this->store[$key]))
+	  	     	 return (is_array($this->store[$key])) ? $this->store[$key] : urldecode($this->store[$key]);
 	  }
 
 	  /**
@@ -112,20 +112,19 @@ class RequestScope {
 	   * @return String The sanitized value
 	   * @see http://en.wikipedia.org/wiki/Cross-site_scripting
 	   */
-	  public function getSanitized( $key ) {
+	  public function getSanitized($key) {
 
-	  		 if( isset( $this->store[$key] ) && !empty( $this->store[$key] ) ) {
+	  		 if(isset($this->store[$key]) && !empty($this->store[$key])) {
 
-	  		 	 if( is_array( $this->store[$key] ) ) {
+	  		 	 if(is_array($this->store[$key])) {
 
-	  		 	 	 for( $i=0; $i<count($this->store[$key]); $i++ ) {
+	  		 	 	 for($i=0; $i<count($this->store[$key]); $i++)
+	  		 	 	 	 $this->store[$key][$i] = htmlspecialchars(addslashes(strip_tags(urldecode($this->store[$key][$i]))));
 
-	  		 	 	 	$this->store[$key][$i] = htmlspecialchars( addslashes( strip_tags( urldecode( $this->store[$key][$i] ) ) ) );
-	  		 	 	 }
 	  		 	 	 return $this->store[$key];
 	  		 	 }
 
-	  		 	 return htmlspecialchars( addslashes( strip_tags( urldecode( $this->store[$key] ) ) ) );
+	  		 	 return htmlspecialchars(addslashes(strip_tags(urldecode($this->store[$key]))));
 	  		 }
 	  }
 
@@ -152,21 +151,21 @@ class RequestScope {
 			 $ucase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 			 $token = null;
-			 for( $i=0; $i<21; $i++ ) {
+			 for($i=0; $i<21; $i++) {
 
-			  	  if( rand( 0, 1 ) ) {
+			  	  if(rand(0, 1)) {
 
-			  	  	  $cRand = rand( 0, 25 );
-			  	   	  $token .= (rand( 0, 1) ) ? $lcase[$cRand] : $ucase[$cRand];
+			  	  	  $cRand = rand(0, 25);
+			  	   	  $token .= (rand(0, 1)) ? $lcase[$cRand] : $ucase[$cRand];
 			  	  }
 			  	  else {
 
-			  	   	  $nRand = rand( 0, 9 );
+			  	   	  $nRand = rand(0, 9);
 			  	   	  $token .= $numbers[$nRand];
 			  	  }			  	     
 			 }
 
-		 	 setcookie( 'AGILEPHP_REQUEST_TOKEN', $token, time()+3600, '/' ); // 1 hour - AJAX-push friendly
+		 	 setcookie('AGILEPHP_REQUEST_TOKEN', $token, time()+3600, '/'); // 1 hour
 
 	  		 return $token;
 	  }
@@ -178,7 +177,7 @@ class RequestScope {
 	   */
 	  public function invalidate() {
 
- 		 	 setcookie( 'AGILEPHP_REQUEST_TOKEN', '', time()-3600, '/' );
+ 		 	 setcookie('AGILEPHP_REQUEST_TOKEN', '', time()-3600, '/');
 	  }
 
 	  /**
@@ -188,9 +187,9 @@ class RequestScope {
 	   * @param String $data The data to sanitize
 	   * @return The sanitized data
 	   */
-	  public function sanitize( $data ) {
+	  public function sanitize($data) {
 
-	  		 return htmlspecialchars( addslashes( strip_tags( $data ) ) );
+	  		 return htmlspecialchars(addslashes(strip_tags($data)));
 	  }
 }
 ?>

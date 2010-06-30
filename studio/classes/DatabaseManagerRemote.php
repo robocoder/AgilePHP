@@ -95,7 +95,7 @@ class DatabaseManagerRemote {
 	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 	  		 $orm_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $dialect = ORMFactory::loadDialect( $orm_xml );
+	  		 $dialect = ORMFactory::load( $orm_xml );
 	  		 $dialect->create();
 
 	  		 return true;
@@ -112,7 +112,7 @@ class DatabaseManagerRemote {
 	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 	  		 $orm_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $dialect = ORMFactory::loadDialect( $orm_xml );
+	  		 $dialect = ORMFactory::load( $orm_xml );
 	  		 $dialect->drop();
 
 	  		 return true;
@@ -131,7 +131,7 @@ class DatabaseManagerRemote {
 	  		 $projectPath = $workspace . DIRECTORY_SEPARATOR . $projectName;
 	  		 $orm_xml =  $projectPath . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $dialect = ORMFactory::loadDialect( $orm_xml );
+	  		 $dialect = ORMFactory::load( $orm_xml );
 	  		 $Database = $dialect->reverseEngineer();
 
 	  		 $data = $this->format( $Database );

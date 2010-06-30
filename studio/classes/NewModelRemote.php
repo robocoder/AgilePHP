@@ -42,7 +42,7 @@ class NewModelRemote {
 
 	  		 $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $orm = ORMFactory::loadDialect( $ormXml );
+	  		 $orm = ORMFactory::load( $ormXml );
 
 	  		 $tables = array();
 
@@ -68,7 +68,7 @@ class NewModelRemote {
 
 	  		 $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $orm = ORMFactory::loadDialect( $ormXml );
+	  		 $orm = ORMFactory::load( $ormXml );
 	  		 
 	  		 $Database = $orm->reverseEngineer();
 
@@ -98,7 +98,7 @@ class NewModelRemote {
 
 	  		 $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $orm = ORMFactory::loadDialect( $ormXml );
+	  		 $orm = ORMFactory::load( $ormXml );
 	  		 
 	  		 $Database = $orm->reverseEngineer();
 

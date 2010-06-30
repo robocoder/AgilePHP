@@ -44,10 +44,10 @@ abstract class Remoting extends BaseController {
 	  	  */
 	  	 public function __construct() {
 
-	  		    $this->createRenderer( 'AJAXRenderer' );
+	  		    $this->createRenderer('AJAXRenderer');
 
-				set_error_handler( 'Remoting::ErrorHandler' );
-				ob_start( array( $this, 'captureErrors' ) );
+				set_error_handler('Remoting::ErrorHandler');
+				ob_start(array($this, 'captureErrors'));
 	  	 }
 
 		 /**
@@ -59,11 +59,11 @@ abstract class Remoting extends BaseController {
 	   	  * @return void
 	   	  * @throws RemotingException
 	   	  */
-	  	 public function index( $class = null ) {
+	  	 public function index($class = null) {
 
 	  	 		$clazz = ($class) ? $class : $this;
 
-	  	 		$c = new ReflectionClass( $clazz );
+	  	 		$c = new ReflectionClass($clazz);
 	  	 		$this->class = $c->getName();
 
 	  	 		$this->createStub();
@@ -75,7 +75,7 @@ abstract class Remoting extends BaseController {
 	  	  * @param String $class The class name to remote
 	  	  * @return void
 	  	  */
-	  	 protected function setClass( $class ) {
+	  	 protected function setClass($class) {
 
 	  	 		   $this->class = $class;
 	  	 }
@@ -100,7 +100,7 @@ abstract class Remoting extends BaseController {
 
 	  		   $sessionId = Scope::getSessionScope()->getSessionId();
 
-	  		   Log::debug( 'Remoting::getSessionId Returning session id \'' . $sessionId . '\'.' );
+	  		   Log::debug('Remoting::getSessionId Returning session id \'' . $sessionId . '\'.');
 
 	  		   return $sessionId;
 	  	 }
@@ -111,38 +111,38 @@ abstract class Remoting extends BaseController {
 	   	  * @param String $sessionId The id of the session to destroy
 	      * @return void
 	      */
-	     public function destroySession( $sessionId ) {
+	     public function destroySession($sessionId) {
 
-	  		    $session = Scope::getSessionScope()->setSessionId( $sessionId );
+	  		    $session = Scope::getSessionScope()->setSessionId($sessionId);
 	  		    $session->destroy(); 
 	     }
-	      
+
 		 /**
-		  * Creates a dynamic javascript proxy stub/interface used for remoting standard PHP classes
+		  * Creates a dynamic javascript proxy stub/interface used for remoting standard PHP classes.
+		  * The generated code is output to the client in JSON format, intended for consumption from
+		  * an HTML script src tag.
 		  * 
-		  * @param bool $stateful True to configure the remoting stub to invoke stateful server side calls. The
-		  * 				 	  remoted object is kept in the SessionScope.
 	  	  * @return void
 	  	  * @throws RemotingException
 		  */
 		 protected function createStub() { 
 
 		  		   try {
-		  		 		  $clazz = new AnnotatedClass( $this->class );
+		  		 		  $clazz = new AnnotatedClass($this->class);
 	
 		  		 		  // Create javascript object w/ matching constructor parameters
 		  		 		  $constructor = $clazz->getConstructor();
 		  		 		  if( $constructor ) {
 	
-		  		 			  $js = 'function ' . $this->class . '( ';
+		  		 			  $js = 'function ' . $this->class . '(';
 		  		 			  $params = $constructor->getParameters();
-		  		 			  for( $i=0; $i<count( $params ); $i++ ) {
+		  		 			  for($i=0; $i<count($params); $i++) {
 		  		 				
 		  		 				   $js .= $params[$i]->getName();
-		  		 				   $js .= ( $i+1 < count( $params ) ) ? ', ' : '';
+		  		 				   $js .= ($i+1 < count($params)) ? ', ' : '';
 		  		 			  }
-		  		 			  $js .= " ) {\n";
-		  		 			  for( $i=0; $i<count( $params ); $i++ )
+		  		 			  $js .= ") {\n";
+		  		 			  for($i=0; $i<count($params); $i++)
 		  		 				   $js .= 'this.' . $params[$i]->getName() . ' = ' . $params[$i]->getName() . ";\n";
 	
 		  		 			  $js .= "}\n\n";
@@ -152,18 +152,18 @@ abstract class Remoting extends BaseController {
 
 		  		 		  // create methods
 		  		 		  $methods = $clazz->getMethods();
-		  		 		  for( $i=0; $i<count( $methods ); $i++ ) {
+		  		 		  for( $i=0; $i<count($methods); $i++ ) {
 	
-	  		 				   if( $methods[$i]->isAnnotated() && $methods[$i]->hasAnnotation( 'RemoteMethod' ) ) {
+	  		 				   if($methods[$i]->isAnnotated() && $methods[$i]->hasAnnotation('RemoteMethod')) {
 
 	  		 				   	   // Make sure the remote class does not define a setCallback method
-	  		 				   	   if( $methods[$i]->getName() == 'setCallback' )
-	  		 				   	   	   throw new RemotingException( 'Invalid #@RemoteMethod setCallback defined in class \'' . $this->class . '\'.' );
+	  		 				   	   if($methods[$i]->getName() == 'setCallback')
+	  		 				   	   	   throw new RemotingException('#@RemoteMethod setCallback is a reserved method and not allowed in class \'' . $this->class . '\'.');
 
 	  		 				   	   // create function
-		  		 				   $js .= $this->class . '.prototype.' . $methods[$i]->getName() . ' = function( ';
+		  		 				   $js .= $this->class . '.prototype.' . $methods[$i]->getName() . ' = function(';
 		  		 				   $params = $methods[$i]->getParameters();
-		  		 				   for( $j=0; $j<count( $params ); $j++ ) {
+		  		 				   for($j=0; $j<count($params); $j++) {
 
 		  		 				 	 	$js .= $params[$j]->getName();
 		  		 				 	 	$js .= ( ($j+1) < count( $params ) ) ? ', ' : '';
@@ -257,7 +257,7 @@ abstract class Remoting extends BaseController {
 		   * Decodes JSON formatted POST variables into a PHP object.
 		   * 
 		   * @param String $data The client side JSON object to parse
-		   * @return Object The JSON decoded object
+		   * @return stdClass The JSON decoded stdClass object
 		   * @throws RemotingException if the received data does not unmarshall into a PHP object
 		   */
 		  private function decode( $data ) {
@@ -267,8 +267,7 @@ abstract class Remoting extends BaseController {
 		  		  Log::debug( 'Remoting::decode ' . $data );
 
 		  		  $o = json_decode( htmlspecialchars_decode( stripslashes( urldecode( $data ) ) ) );
-		  		  if( !is_object( $o ) )
-		  		  	  throw new RemotingException( 'Malformed data' );
+		  		  if( !is_object( $o ) ) throw new RemotingException( 'Malformed data' );
 
 		  		  return $o;
 		  }

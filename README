@@ -25,11 +25,11 @@ PHP 5.3+
 ** Required Extensions By Components **
 ---------------------------------------
 --with-apxs2                (Dynamic apache support)
---with-pdo-<database type>    (required for each database you want to use)
---enable-mbstring            (XML/XSLT controllers use this to convert data to entities)
---with-gettext                (i18n Internationalization)
---with-xsl                    (Controllers involved with XSLT)
---with-mcrypt                (Crypto encrypt/decrypt methods)
+--with-pdo-<database type>  (required for each database you want to use)
+--enable-mbstring           (XML/XSLT controllers use this to convert data to entities)
+--with-gettext              (i18n Internationalization)
+--with-xsl                  (Controllers involved with XSLT)
+--with-mcrypt               (Crypto encrypt/decrypt methods)
 
 
 --------------
@@ -104,19 +104,22 @@ apt-get install libyaml-0-2 libyaml-dev
 pecl install yaml
 
 
----------------------
-**    Debugging    **
----------------------
-Debug using FirePHP:
-
-pear channel-discover pear.firephp.org
-pear install firephp/FirePHPCore
-
-
 ----------
 ** WIKI **
 ----------
-Visit the WIKI at http://www.makeabyte.com/agilephp/wiki for details on installation, configuration, and tutorials.
+Visit the WIKI at http://confluence.makeabyte.com for details on installation, configuration, and tutorials.
+
+
+----------------
+** Repository **
+----------------
+Visit the FishEye at http://fisheye.makeabyte.com
+
+
+------------------
+** Bug Tracking **
+------------------
+Visit Jira at http://jira.makeabyte.com. Thanks for helping make AgilePHP better!
 
 
  --------------------------

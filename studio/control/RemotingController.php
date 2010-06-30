@@ -38,7 +38,7 @@ class RemotingController extends Remoting {
 	  public function invoke() {
 
 	  		 // Require authentication for all remote invocations
-	  	     if( !Identity::getInstance()->isLoggedIn() )
+	  	     if( !Identity::isLoggedIn() )
 	  		 	 throw new AccessDeniedException( 'You must be logged in to view the requested content.' );
 
 	  		 parent::invoke();

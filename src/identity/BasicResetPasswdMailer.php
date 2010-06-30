@@ -16,35 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.test.control
+ * @package com.makeabyte.agilephp.identity
  */
 
 /**
- * Responsible for processing all business logic and view rendering for the
- * backend application user module.
+ * Sends plain text emails which contain newly reset passwords
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.test.control
+ * @package com.makeabyte.agilephp.identity
  */
-class UserController extends BaseModelActionController {
+class BasicResetPasswdMailer extends Mailer {
 
-	  private $model;
+	  public function __construct($username, $password, $email) {
 
-	  public function __construct() {
-
-	  		 $this->model = new User();
-
-	  		 parent::__construct();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/mvc/BaseModelController#getModel()
-	   */
-	  public function getModel() {
-
-	  	     return $this->model;
+	  	     $this->setTo($email);
+	  		 $this->setToName($username);
+	  		 $this->setFrom('no-reply@' . AgilePHP::getFramework()->getAppName());
+	  		 $this->setFromName(AgilePHP::getFramework()->getAppName());
+	  		 $this->setSubject(AgilePHP::getFramework()->getAppName() . ' :: New Password');
+	  		 $this->setBody('Your new password is: ' . $password);
 	  }
 }
 ?>

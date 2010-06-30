@@ -20,58 +20,40 @@
  */
 
 /**
- * Maintains persistent session data that lives over multiple page requests. This
- * data is stored in the database to allow greater flexibility and easier clustering
- * compared to the native local file system approach PHP uses.
+ * Factory responsible for maintaining persistent session data that
+ * lives over multiple page requests.
  *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
  */
-class SessionScope {
+class SessionScope implements SessionProvider {
 
 	  private static $instance;
-
-	  private $oldSession;
-	  private $session;
-	  private $persisted = false;
+	  private $provider;
 
 	  private function __clone() { }
 
 	  /**
-	   * Initalizes the 'SessionScope' object with a default sessionId. If an
-	   * AGILEPHP_SESSION_ID is present, the session id from the cookie is used
-	   * to retrieve a previously persisted Session, otherwise a new session is
-	   * created and a new cookie is given to the client.
+	   * Initializes a new SessionScope instance using agilephp.xml configuration
+	   * if present, otherwise PhpSessionProvider is used as the default provider.
 	   *
 	   * @return void
 	   */
 	  private function __construct() {
 
-	  		  $this->oldSession = new Session();
-	  	      $this->session = new Session();
+	          $xml = AgilePHP::getFramework()->getConfiguration();
+              for($i=0; $i<count((array)$xml->scope); $i++ ) {
 
-	  	      if( isset( $_COOKIE['AGILEPHP_SESSION_ID'] ) ) {
+                  if((string)$xml->scope[$i]->attributes()->type == 'session') {
 
-	  	      	  Log::debug( 'SessionScope::__construct Initalizing session from previous cookie.' );
+                      $provider = (string)$xml->scope[$i]->attributes()->provider;
+                      $this->provider = $provider ? new $provider : new PhpSessionProvider();
+                      return;
+                  }
+              }
 
-	  	      	  $this->session->setId( $_COOKIE['AGILEPHP_SESSION_ID'] );
-	  	      	  $this->oldSession->setId( $_COOKIE['AGILEPHP_SESSION_ID'] );
-
-  		 	 	  $persisted = ORM::find( $this->session );
-  		 	 	  if( !isset( $persisted[0] ) ) return;
-
-  		 	 	  $this->persisted = true;
-  		 	 	  $this->session->setData( $persisted[0]->getData() );
-  		 	 	  $this->oldSession->setData( $persisted[0]->getData() );
-	  	      }
-	  	      else {
-
-	  	      	  Log::debug( 'SessionScope::__construct Initalizing session with a new cookie.' );
-
-		  	      $this->createSessionId();
-		  	      setcookie( 'AGILEPHP_SESSION_ID', $this->session->getId(), (time()+3600*24*30), '/' ); // 30 days
-	  	      }
+              $this->provider = new PhpSessionProvider();
 	  }
 
 	  /**
@@ -89,6 +71,16 @@ class SessionScope {
 	  }
 
 	  /**
+	   * Returns the SessionProvider responsible for session persistence
+	   * 
+	   * @return SessionProvider The session persistence provider
+	   */
+	  public function getProvider() {
+
+	         return $this->provider;
+	  }
+
+	  /**
 	   * Returns the session domain model object which maintains the id and data for
 	   * the current Session's ActiveRecord.
 	   *
@@ -96,7 +88,7 @@ class SessionScope {
 	   */
 	  public function getSession() {
 
-	  		 return $this->session;
+	  		 return $this->provider->getSession();
 	  }
 
 	  /**
@@ -106,7 +98,7 @@ class SessionScope {
 	   */
 	  public function getSessionId() {
 
-	  		 return $this->session->getId();
+	  		 return $this->provider->getSessionId();
 	  }
 
 	  /**
@@ -114,18 +106,9 @@ class SessionScope {
 	   *
 	   * @return void
 	   */
-	  public function setSessionId( $id ) {
+	  public function setSessionId($id) {
 
-	  		 $this->session->setId( $id );
-
-	  		 setcookie( 'AGILEPHP_SESSION_ID', $id, time()+3600*24*30, '/' ); // 30 days
-	  		 Log::debug( 'SessionScope::setSessionId Initalizing session from specified session id and dropping a new session cookie' );
-
-	  		 if( $persistedSession = ORM::find( $this->getSession() ) ) {
-
-  		 	 	 $this->session->setData( $persistedSession[0]->getData() );
-  		 	 	 $this->oldSession->setData( $persistedSession[0]->getData() );
-	  		 }
+	  		 $this->provider->setSessionId($id);
 	  }
 
 	  /**
@@ -134,14 +117,9 @@ class SessionScope {
 	   * @param String $key The variable's key/name
 	   * @return The value if present, otherwise null.
 	   */
-	  public function get( $key ) {
+	  public function get($key) {
 
-	  		 if( !$this->session->getData() )
-	  		 	 return;
-
-	  		 $store = unserialize( $this->session->getData() );
-	  		 if( isset( $store[$key] ) )
-  	     	 	 return $store[$key];
+	  		 return $this->provider->get($key);
 	  }
 
 	  /**
@@ -151,11 +129,9 @@ class SessionScope {
 	   * @param String $value The variable value
 	   * @return void
 	   */
-	  public function set( $key, $value ) {
+	  public function set($key, $value) {
 
-	  		 $store = unserialize( $this->getSession()->getData() );
-	  		 $store[$key] = $value;
-	  		 $this->getSession()->setData( serialize( $store ) );
+	  		 $this->provider->set($key, $value);
 	  }
 
 	  /**
@@ -165,18 +141,8 @@ class SessionScope {
 	   */
 	  public function refresh() {
 
-  	 	 	 $persisted = ORM::find( $this->session );
-
-  	 	 	 if( $persisted ) {
-
-  	 	 	  	 $this->session->setData( $persisted->getData() );
-  	 	 	  	 $this->oldSession->setData( $persisted->getData() );
-  	 	 	 }
-  	 	 	 else {
-
-  	 	 	 	 $this->session->setData( array() );
-  	 	 	  	 $this->oldSession->setData( array() );
-  	 	 	 }
+	          $this->provider->refresh();
+	          Log::debug( 'SessionScope::clear Session refreshed' );
 	  }
 
 	  /**
@@ -186,11 +152,7 @@ class SessionScope {
 	   */
 	  public function clear() {
 
-	  		 setcookie( 'AGILEPHP_SESSION_ID', '', time()-3600, '/' );
-
-	  		 $this->session->setData( array() );
-	  		 $this->oldSession->setData( array() );
-
+	  		 $this->provider->clear();
 	  		 Log::debug( 'SessionScope::clear Session cleared' );
 	  }
 
@@ -202,38 +164,8 @@ class SessionScope {
 	   */
 	  public function destroy() {
 
-  		 	 ORM::delete( $this->getSession() );
-
-  		 	 $this->clear();
-	  }
-
-	  /**
-	   * Returns boolean flag indicating whether or not the current session
-	   * data is persisted.
-	   *
-	   * @return bool True if the session data is persisted, false otherwise
-	   */
-	  public function isPersisted() {
-
-	  		 return $this->persisted == true;
-	  }
-
-	  /**
-	   * Persist the Session data state to database just before the object
-	   * is destroyed.
-	   *
-	   * @return void
-	   */
-	  public function __destruct() {
-
-		  	 try {
-		  		   $this->persist();
-		  	 }
-		  	 catch( Exception $e ) {
-
-		  	 	    $message = 'SessionScope::__destruct ' . $e->getMessage();
-		  		    Log::error( $message );
-		  	}
+  		 	 $this->provider->destroy();
+  		 	 Log::debug( 'SessionScope::destroy Session destroyed' );
 	  }
 
 	  /**
@@ -243,56 +175,8 @@ class SessionScope {
 	   */
 	  public function persist() {
 
-	  		 Log::debug( 'SessionScope::persist Persisting session' );
-
-	  	     if( !$this->getSession()->getData() ) return;
-
-	 	     if( !$this->isPersisted() ) {
-
-	 	     	 $this->getSession()->setCreated( 'now' );
-			 	 ORM::persist( $this->getSession() );
-			 	 $this->oldSession->setData( $this->session->getData() );
-			 	 $this->persisted = true;
-			 	 return;
-			 }
-
-	  		 if( $this->oldSession->getData() != $this->session->getData() ) {
-
-			     ORM::merge( $this->getSession() );
-			     return;
-	  		 }
-
-			 if( !$this->getSession()->getData() && $this->oldSession )
-			 	 $this->destroy();
-	  }
-
-	  /**
-	   * Generates a 21 character session id
-	   *
-	   * @return String The generated session id
-	   */
-	  private function createSessionId() {
-
-			  $numbers = '1234567890';
-			  $lcase = 'abcdefghijklmnopqrstuvwzyz';
-			  $ucase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-			  $id = null;
-			  for( $i=0; $i<21; $i++ ) {
-
-			  	   if( rand( 0, 1 ) ) {
-
-			  	   	   $cRand = rand( 0, 25 );
-			  	   	   $id .= (rand( 0, 1) ) ? $lcase[$cRand] : $ucase[$cRand];
-			  	   }
-			  	   else {
-
-			  	   	   $nRand = rand( 0, 9 );
-			  	   	   $id .= $numbers[$nRand];
-			  	   }
-			  }
-
-	  		  $this->session->setId( $id );
+	  	     $this->provider->persist();
+	  	     Log::debug( 'SessionScope::persist Session persisted' );
 	  }
 }
 ?>

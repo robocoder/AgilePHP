@@ -179,18 +179,20 @@ class User implements IdentityModel {
 
 	  	     return $this->Roles;
 	  }
-	
+
 	  /**
-	   * Sets the AgilePHP Session object belonging to the user.
+	   * Sets the AgilePHP Session object belonging to the user. The Session model
+	   * is only applied if SessionScope is using SqlSessionProvider.
 	   * 
 	   * @param Session $session AgilePHP Session instance following the user.
 	   * @return void
 	   */
 	  public function setSession( Session $session = null ) {
 
-	  		 $this->Session = $session;
+	         if(Scope::getSessionScope()->getProvider() instanceof SqlSessionProvider)
+  		        $this->Session = $session;
 	  }
-	  
+
 	  /**
 	   * Returns the AgilePHP Session instance belonging to the user.
 	   * 
@@ -198,7 +200,6 @@ class User implements IdentityModel {
 	   */
 	  public function getSession() {
 
-	  		 //return ($this->Session instanceof Session) ? $this->Session : new Session();
 	  		 return $this->Session;
 	  }
 

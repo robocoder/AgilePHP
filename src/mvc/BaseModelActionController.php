@@ -31,7 +31,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 		 private $xsltRenderer;
 
-		 /**
+		 /**z
 		  * Base constructor which allows configuration options in extended classes. 
 		  * 
 		  * @param bool $requireLogon True to require the user to be logged in, false to allow calls
@@ -43,10 +43,10 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     	       if( $requireLogon ) {
 
-		     		   if( !Identity::getInstance()->isLoggedIn() )
+		     		   if( !Identity::isLoggedIn() )
 		  	     		   throw new NotLoggedInException( 'Login Required' );
 
-			  	       if( !Identity::getInstance()->hasRole( $requiredRole ) )
+			  	       if( !Identity::hasRole( $requiredRole ) )
 			  	     	   throw new AccessDeniedException( 'Access Denied. This area is reserved for ' . $requiredRole );
 	     		   }
 
@@ -298,34 +298,33 @@ abstract class BaseModelActionController extends BaseModelXslController {
 		  	 	  	       	$accessor = $this->toAccessor( $name );
 		  	 	  	       	$mutator = $this->toMutator( $name );
 
-  	 	  	       			// Set model values to null if they are not present in the POST array
-		  	 	  	       	if( !$request->get( $column->getModelPropertyName() ) ) {
-
-	  		 	  	            $this->getModel()->$mutator( null );
-	  		 	  	        	continue;
-		  	 	  	       	}
-
 		  	 	  	       	// Password fields usually have a confirm box that needs to verify the integrity
 		  	 	  	       	// of the password. This logic will make sure 'password1' and 'password2' fields match.
 		  	 	  	       	// The password present in the database at the time the form is loaded is expected to be
 		  	 	  	       	// present in the POST array named 'oldPassword'.
-  	 	  	       			if( $name == 'password1' || $name == 'password2' ) {
+  	 	  	       			if( $name == 'password' ) {
 
-			  		     		if( $name == 'password2' ) continue;
-
-			  		     		if( $request->getSanitized( 'password1' ) !== $request->getSanitized( 'password2' ) ) {
+  	 	  	       				if( $request->getSanitized( 'password1' ) !== $request->getSanitized( 'password2' ) ) {
 
 			  		     		    $this->getRenderer()->set( 'error', 'Passwords don\'t match' );
 			  		     		    $this->getRenderer()->render( 'error' );
 			  		     		    exit;
 			  		     		}
 
-			  		     		if( $request->getSanitized( 'oldPassword' ) != $value )
-									$this->getModel()->setPassword( $value );
+			  		     		$password = $request->getSanitized( 'password1' );
+			  		     		if( $request->getSanitized( 'oldPassword' ) != $password )
+									$this->getModel()->setPassword( $password );
 
 								continue;
 			  		     	}
 
+			  		     	// Set model values to null if they are not present in the POST array
+		  	 	  	       	if( !$request->get( $name ) ) {
+
+	  		 	  	            $this->getModel()->$mutator( null );
+	  		 	  	        	continue;
+		  	 	  	       	}
+			  		     	
 			  		     	// Dont sanitize the value if the column has sanitize="false" set in orm.xml
 		  		     		$value = ($column->getSanitize() === true) ? 
 	   	  	        		 				urldecode( stripslashes( stripslashes( $request->sanitize( $value ) ) ) ) :

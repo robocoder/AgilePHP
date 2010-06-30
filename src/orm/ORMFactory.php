@@ -25,6 +25,7 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.orm
+ * @abstract
  */
 abstract class ORMFactory {
 
@@ -58,7 +59,7 @@ abstract class ORMFactory {
 	      * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
 	      * @return SQLDialect
 	      */
-	     public static function loadDialect( $ormXml = null ) {
+	     public static function load( $ormXml = null ) {
 
 	    		 $xml = self::getXml( $ormXml );
 

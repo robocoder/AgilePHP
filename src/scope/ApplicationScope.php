@@ -64,9 +64,7 @@ class ApplicationScope {
 	   * @return An instance of ApplicationScope which contains the state for the specified application
 	   * @static
 	   */
-	  public static function getInstance( $appName = null ) {
-
-	  		 self::$appName = ($appName == null) ? $_SERVER['HTTP_HOST'] : $name;
+	  public static function getInstance() {
 
 	  	     if( self::$instance == null )
 	  	         self::$instance = new self;
@@ -117,7 +115,8 @@ class ApplicationScope {
 	  public function destroy() {
 
 	  		 $this->clear();
-	  		 unlink( self::getAppTempFile() );
+	  		 if(file_exists(self::getAppTempFile()))
+	  		    unlink( self::getAppTempFile() );
 	  }
 
 	  /**
@@ -156,9 +155,10 @@ class ApplicationScope {
 	   */
 	  private static function getAppTempFile() {
 
-	  	 	  $tmp = tempnam( 'agilephp', 'agilephp-' );
- 			  $path = dirname( $tmp ) . '/agilephp-' . self::$appName;
- 			  unlink( $tmp );
+	  	 	  $tmp = tempnam('agilephp', 'agilephp-');
+ 			  $path = dirname($tmp) . '/agilephp-' . AgilePHP::getFramework()->getAppName();
+
+ 			  if(file_exists($tmp)) unlink($tmp);
 
  			  return $path;
 	  }

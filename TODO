@@ -1,19 +1,20 @@
-----------
-** TODO **
-----------
+-----------------------------
+** TODO BEFORE BETA LAUNCH **
+-----------------------------
 > Iron out RequestScope CSFR issues in regards to destroying session and making requests from client side javascript.
 > ORM framework needs to support many-to-many relationships
 > Need to revisit ORM renderer and make an easy way to
-   allow different client side rendering libraries like jquery, dojo, extjs, etc (adapter?)
+      allow different client side rendering libraries like jquery, dojo, extjs, etc (adapter?)
 > Add calendar, spinner, date picker, and other widgets to ORM rendering
-> Start looking into  "HTML 5" WebSocket API for two-way communication between client and server
-> Create dialect classes for the following database servers:
-    firebird
-    informix
-    oracle
-    dblib
-    ibm
-> Fix mssql dialect class since orm revamp.
-> Finish unit tests in ORM package
+> Create Oracle dialect class
 > Finish Form::toJSON method (this should probably use AJAXRenderer)
 > Finish creating unit tests for all framework components (naughty, naughty - TDD!)
+> Create ActiveDirectoryAuthenticator, OpenLdapAuthenticator, OpenIdAuthenticator to Identity package
+> Create MemcacheSessionProvider, ApcSessionProvider classes.
+> Abstract out #@Cache interceptor to support configurable providers (MemcacheCacheProvider, FilesystemCacheProvider, etc)
+> Move all core framework packages into PHP namespaces (still have some backward compatibility to maintain w/ 5.2)
+> Refactor all classes into alignment with PEAR coding standard
+> Add code sniffer and copy/paste detector to build.xml
+> Integrate PHPUnit and Bamboo
+> Integrate PHPUnit and Clover
+> Add HTML and attachments to Mailer component

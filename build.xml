@@ -118,6 +118,11 @@
 					<include name="orm/PGSQLTest.php" />
                 </fileset>
             </batchtest>
+			<batchtest>
+            	<fileset dir="${test.dir}/phpunit">
+					<include name="ScopeTests.php" />
+                </fileset>
+			</batchtest>
         </phpunit>
         <phpunitreport infile="${phpunit.reports}/testsuites.xml"  styledir="${phpunit.styles.dir}"
          					format="frames" todir="${phpunit.reports}/tests"/>
@@ -237,13 +242,6 @@
          command="pear channel-discover pear.phpunit.de"/>
         <exec dir="${project.basedir}" logoutput="true"
          command="pear install phpunit/PHPUnit"/>
-    </target>
-
-    <target name="install-firephp" description="Installs FirePHP via PEAR">
-        <exec dir="${project.basedir}" logoutput="true"
-         command="pear channel-discover pear.firephp.org"/>
-        <exec dir="${project.basedir}" logoutput="true"
-         command="pear install firephp/FirePHPCore"/>
     </target>
 
 </project>

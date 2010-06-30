@@ -45,8 +45,6 @@ abstract class BaseDialect {
 		 protected $database;				 // Database object
 		 protected $transactionInProgress;	 // True when a transaction is in progress
 
-		 protected function __construct() { }
-
 		 /**
 		  * Returns the PDO instance in use by the ORM framework.
 		  * 
@@ -1385,6 +1383,7 @@ abstract class BaseDialect {
 	  public function __destruct() {
 
 	  		 $this->close();
+	  		 Log::debug('BaseDialect::__destruct');
 	  }
 }
 ?>

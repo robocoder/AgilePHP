@@ -113,7 +113,7 @@ class BasicAuthentication {
 		  	     	 throw new AccessDeniedException( 'Invalid username/password' );
 	  		 	 }
 
-	  		 	 if( Identity::getInstance()->login( $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] ) )
+	  		 	 if( Identity::login( $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] ) )
 	  		 	 	 return $ic->proceed();
 
 	  		 	 header( 'HTTP/1.0 401 Unauthorized' );

@@ -9,7 +9,7 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 	   */
 	  public function coreTests() {
 
-	  		 $orm = ORMFactory::loadDialect( AgilePHP::getFramework()->getWebRoot() . '/orm_pgsql_test.xml' );
+	  		 $orm = ORMFactory::load( AgilePHP::getFramework()->getWebRoot() . '/orm_pgsql_test.xml' );
 
 	  		 $orm->create();	// create the unit testing database agilephp_test_mysql
 

@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.test.components
+ * @package com.makeabyte.agilephp
  */
 
 /**
- * Sends a simple plain text email.
+ * Sends simple plain text emails.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.test.components
+ * @package com.makeabyte.agilephp
  */
-class Mailer {
+abstract class Mailer {
 
 	  private $to;
 	  private $toName;
@@ -35,38 +35,78 @@ class Mailer {
 	  private $subject;
 	  private $body;
 
-	  public function __construct() { }
-  
-	  public function setTo( $toEmail ) {
+	  /**
+	   * Sets the email address of the person receiving the email
+	   * 
+	   * @param string $email The recipients email address
+	   * @return void
+	   */
+	  public function setTo($email) {
 	  	
-	  		 $this->to = $toEmail;
+	  		 $this->to = $email;
 	  }
 
-	  public function setToName( $toName ) {
+	  /**
+	   * Sets the name of the person receiving the email
+	   * 
+	   * @param string $name The recipients name
+	   * @return void
+	   */
+	  public function setToName($name) {
 
-	  		 $this->toName = $toName;
+	  		 $this->name = $name;
 	  }
 
-	  public function setFrom( $fromEmail ) {
+	  /**
+	   * Sets the email of the person sending the email
+	   * 
+	   * @param string $email The senders email address
+	   * @return void
+	   */
+	  public function setFrom($email) {
 	  	
-	  		 $this->from = $fromEmail;
+	  		 $this->from = $email;
+	  }
+
+	  /**
+	   * Sets the name of the person sending the email
+	   * 
+	   * @param string $name The senders name
+	   * @return void
+	   */
+	  public function setFromName($name) {
+	  	
+	  		 $this->fromName = $name;
 	  }
 	  
-	  public function setFromName( $fromName ) {
-	  	
-	  		 $this->fromName = $fromName;
-	  }
-	  
+	  /**
+	   * Sets the subject line of the email
+	   * 
+	   * @param string $subject The text to display in the subject line
+	   * @return void
+	   */
 	  public function setSubject( $subject ) {
 	  	
 	  		 $this->subject = $subject;
 	  }
-	  
+
+	  /**
+	   * Sets the email message body
+	   * 
+	   * @param string $body The email message body
+	   * @return void
+	   */
 	  public function setBody( $body ) {
-	  	
+
 	  		 $this->body = $body;
 	  }
 
+	  /**
+	   * Sends the email
+	   * 
+	   * @return void
+	   * @throws FrameworkException if there was an error sending
+	   */
 	  public function send() {
 
 	  		 $headers = 'From: ' . $this->fromName . ' <' . $this->from . '>' . "\n";

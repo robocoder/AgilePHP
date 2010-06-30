@@ -28,11 +28,6 @@
  */
 class ExtLoginController extends BaseExtController {
 
-	  public function __construct() {
-
-	  	     parent::__construct();
-	  }
-
 	  /**
 	   * (non-PHPdoc)
 	   * @see AgilePHP/mvc/BaseController#index()
@@ -60,15 +55,15 @@ class ExtLoginController extends BaseExtController {
 	  		 	 $this->getRenderer()->render( false );
 	  		 }
 
-			 if( !Identity::getInstance()->login( $username, $password ) ) {
+			 if( !Identity::login( $username, $password ) ) {
 
 			 	 Scope::getRequestScope()->invalidate();
 			 	 $this->getRenderer()->setError( 'Invalid username/password' );
 	  		 	 $this->getRenderer()->render( false );
 			 }
 
-			 $this->getRenderer()->set( 'username', Identity::getInstance()->getUsername() );
-			 $this->getRenderer()->set( 'role', Identity::getInstance()->getRole()->getName() );
+			 $this->getRenderer()->set( 'username', Identity::getUsername() );
+			 $this->getRenderer()->set( 'role', Identity::getRole()->getName() );
 	  	     $this->getRenderer()->render( true );
 	  }
 
@@ -79,7 +74,7 @@ class ExtLoginController extends BaseExtController {
 	   */
 	  public function logout() {
 
-	  	     Identity::getInstance()->logout();
+	  	     Identity::logout();
 	  }
 }
 ?>

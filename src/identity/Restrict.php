@@ -97,14 +97,14 @@ class Restrict {
 	  		 $message = $ic->getInterceptor()->message ? $ic->getInterceptor()->message : 'Access Denied';
 
 	  		 $requiredRole = $ic->getInterceptor()->role;
-	  	     if( Identity::getInstance()->hasRole( $requiredRole ) )
+	  	     if( Identity::hasRole( $requiredRole ) )
 	  	     	 return $ic->proceed();
 
 	  	     $roles = $ic->getInterceptor()->roles;
 	  	     if( is_array( $roles ) ) {
 
 	  	     	 foreach( $roles as $role )
-	  	     	 	if( Identity::getInstance()->hasRole( $role ) )
+	  	     	 	if( Identity::hasRole( $role ) )
 	  	     	 		return $ic->proceed();
 	  	     }
 
@@ -120,8 +120,7 @@ class Restrict {
 	   */
 	  private function audit( $message, $ic ) {
 
-	  		  Log::error( '#@Restrict::audit Access Denied ' . print_r( Identity::getInstance(), true ) );
-
+	  		  Log::error( '#@Restrict::audit Access Denied ' . print_r( Identity::getModel(), true ) );
 	  		  throw new AccessDeniedException( $message );
 	  }
 }

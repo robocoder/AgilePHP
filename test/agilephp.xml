@@ -2,9 +2,13 @@
 <!DOCTYPE agilephp SYSTEM "../src/agilephp.dtd">
 
 <agilephp>
-	<!-- <mvc controller="IndexController" action="index" renderer="PHTMLRenderer"/> -->
+	<!--
+	Identity configuration example
+	<identity model="User" manager="IdentityManagerImpl" authenticator="DefaultAuthenticator"
+		forgotPasswdMailer="BasicForgotPasswdMailer" resetPasswdMailer="BasicResetPasswdMailer"
+		registrationMailer="BasicRegistrationMailer"/>
+	-->
 	<logger level="debug"/>
-	<identity resetPasswordUrl="http://localhost/test/index.php/LoginController/resetPassword"
-		 confirmationUrl="http://localhost/test/index.php/LoginController/confirm"/>
+	<scope type="session" provider="SqlSessionProvider"/>
 	<crypto algorithm="sha256" iv="1234567890" key="This is a secret key" />
 </agilephp>

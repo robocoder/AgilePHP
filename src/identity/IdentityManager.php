@@ -34,7 +34,7 @@ interface IdentityManager {
 		   * @param Object $model The domain object model for IdentityManager to manage
 		   * @return void
 		   */
-		  public function setModel( $model );
+		  public function setModel($model);
 
 		  /**
 		   * Returns the domain object model which the IdentityManager is managing.
@@ -44,12 +44,27 @@ interface IdentityManager {
 		  public function getModel();
 
 		  /**
+		   * Sets the name of the domain model which the IdentityManager is managing
+		   * 
+		   * @param string $name The domain model name
+		   * @return void
+		   */
+		  public function setModelName($name);
+
+		  /**
+		   * Gets the domain model name
+		   * 
+		   * @return string The name of the domain model which the IdentityManager is managing
+		   */
+		  public function getModelName();
+
+		  /**
 		   * Sets the username for the identity which IdentityManager is managing.
 		   *   
 		   * @param String $username The username of the identity.
 		   * @return void
 		   */
-		  public function setUsername( $username );
+		  public function setUsername($username);
 
 		  /**
 		   * Returns the username for the identity which IdentityManager is managing.
@@ -64,7 +79,7 @@ interface IdentityManager {
 		   * @param String $password The identity's password
 		   * @return void
 		   */
-		  public function setPassword( $password );
+		  public function setPassword($password);
 
 		  /**
 		   * Returns the password for the identity which IdentityManager is managing. Unless
@@ -80,7 +95,7 @@ interface IdentityManager {
 		   * @param String $email A valid email addresss containing for the idenity
 		   * @return void 
 		   */
-		  public function setEmail( $email );
+		  public function setEmail($email);
 
 		  /**
 		   * Returns the identity's email address
@@ -95,7 +110,7 @@ interface IdentityManager {
 		   * @param Date $dateTime The dateTime when this identity was created.
 		   * @return void
 		   */
-		  public function setCreated( $dateTime );
+		  public function setCreated($dateTime);
 
 		  /**
 		   * Returns the dateTime when the identity was created.
@@ -110,7 +125,7 @@ interface IdentityManager {
 		   * @param Date $dateTime The dateTime when the identity last logged in
 		   * @return void
 		   */
-		  public function setLastLogin( $dateTime );
+		  public function setLastLogin($dateTime);
 
 		  /**
 		   * Returns the dateTime the identity last logged in
@@ -125,7 +140,7 @@ interface IdentityManager {
 		   * @param bool True to enable the user account, false to disable. 
 		   * @return void
 		   */
-		  public function setEnabled( $value );
+		  public function setEnabled($value);
 
 		  /**
 		   * Gets the enabled status of the user 
@@ -134,38 +149,74 @@ interface IdentityManager {
 		  public function getEnabled();
 
 		  /**
-		   * Sets the url used to reset the identity's password.
+		   * Sets the name of the authenticator responsible for performing authentication.
 		   * 
-		   * @param String $url The url which should reset the users password when its clicked
+		   * @param string $authenticator The name of the authenticator responsible for Identity authentication
 		   * @return void
 		   */
-		  public function setPasswordResetUrl( $url );
+		  public function setAuthenticator($authenticator);
 
 		  /**
-		   * Returns the url which is sent to the identity that when clicked resets their password.
+		   * Gets the name of the authenticator responsible for performing authentication
 		   * 
-		   * @return String
+		   * @return string The name of the authenticator responsible for Identity authentication
 		   */
-		  public function getPasswordResetUrl();
+		  public function getAuthenticator();
+		  
+		  /**
+		   * Sets the Mailer responsible for sending forgot password emails
+		   * 
+		   * @param string $mailer The Mailer responsible for sending forgot password emails
+		   * @return void
+		   */
+		  public function setForgotPasswdMailer($mailer);
 
 		  /**
-		   * Returns the url which is sent to the identity that when clicked confirms/activates their account.
+		   * Gets the Mailer responsible for sending forgot password emails
 		   * 
-		   * @return String
+		   * @return string $mailer The Mailer responsible for sending forgot password emails
 		   */
-		  public function getConfirmationUrl();
+		  public function getForgotPasswdMailer();
+
+		  /**
+		   * Sets the Mailer responsible for sending emails for reset passwords
+		   * 
+		   * @param string $mailer The Mailer responsible for sending emails for reset passwords
+		   * @return void
+		   */
+		  public function setResetPasswdMailer($mailer);
+
+		  /**
+		   * Returns the Mailer responsible for sending emails for reset passwords
+		   * 
+		   * @return string The Mailer responsible for sending emails for reset passwords
+		   */
+		  public function getResetPasswdMailer();
+
+		  /**
+		   * Sets the Mailer used to send registration/confirmation emails
+		   * 
+		   * @param string $mailer The Mailer instance responsible for sending registration/confirmation emails. 
+		   * @return void
+		   */
+		  public function setRegistrationMailer($mailer);
+
+		  /**
+		   * Returns the Mailer instance responsible for sending registration/confirmation emails
+		   * 
+		   * @return string The registration/confirmation Mailer
+		   */
+		  public function getRegistrationMailer();
 
 		  /**
 		   * Sends the identity an email to the address stored in the stateful domain object
 		   * model being managed by IdentityManager. Uses the state of the 'email' field
 		   * within the domain object model the IdentityManager is managing.
 		   * 
-		   * @param String $subject Optional email subject line
-		   * @param String $body Optional email body
 		   * @return void
 		   * @throws FrameworkException If there was an error sending the forgotten password email.
 		   */
-		  public function forgotPassword( $subject = null, $body = null );
+		  public function forgotPassword();
 
 		  /**
 		   * Resets the password to a hashed random string. This operation uses the AgilePHP
@@ -173,23 +224,19 @@ interface IdentityManager {
 		   * 
 		   * @param String $token A randomly generated token required to reset the password
 		   * @param String $sessionId The sessionId of the user who requested the new password
-		   * @param String $subject Optional email subject line
-		   * @param String $body Optional email body
 		   * @return void
 		   */
-		  public function resetPassword( $token, $sessionId, $subject = null, $body = null );
+		  public function resetPassword($token, $sessionId);
 
 		  /**
 		   * Registers a new user account by creating a disabled user and sending
 		   * an activation email to the new user. The activation email calls activate
 		   * to allow the user to enable the account.
 		   *
-		   * @param string $subject Optional email subject line
-		   * @param string $body Optional email body
 		   * @return void
 		   * @throws FrameworkException IF there was an error sending the registration email.
 		   */
-		  public function register( $subject = null, $body = null );
+		  public function register();
 
 		  /**
 		   * Confirms/activates a pending registration
@@ -199,7 +246,7 @@ interface IdentityManager {
 		   * @return void
 		   * @throws FrameworkException If token is invalid
 		   */
-		  public function confirm( $token, $sessionId );
+		  public function confirm($token, $sessionId);
 
   		  /**
 		   * Sets the identity's role
@@ -207,7 +254,7 @@ interface IdentityManager {
 		   * @param Role $role A Role domain model object 
 		   * @return void
 		   */
-		  public function setRole( Role $role );
+		  public function setRole(Role $role);
 
 		  /**
 		   * Returns the Role object
@@ -222,7 +269,7 @@ interface IdentityManager {
 		   * @param String $role The name of a role
 		   * @return True if the identity has the specified role, false otherwise.
 		   */
-		  public function hasRole( $role );
+		  public function hasRole($role);
 
 		  /**
 		   * Revokes/removes a role from the identity.
@@ -238,7 +285,7 @@ interface IdentityManager {
 		   * @param String $password The password to authenticate
 		   * @return True if the username and password are valid, false otherwise.
 		   */
-		  public function login( $username, $password );
+		  public function login($username, $password);
 
 		  /**
 		   * Destroys the current SessionScope.

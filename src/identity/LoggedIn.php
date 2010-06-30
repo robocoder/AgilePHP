@@ -59,7 +59,7 @@ class LoggedIn {
 
 	  		 $message = ($this->message) ? $this->message : 'You must be logged in to view the requested content!';
 
-	  		 if( !Identity::getInstance()->isLoggedIn() )
+	  		 if( !Identity::isLoggedIn() )
 	  		 	 throw new NotLoggedInException( $message );
 	  }
 }
