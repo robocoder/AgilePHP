@@ -2,13 +2,7 @@
 <!DOCTYPE agilephp SYSTEM "../src/agilephp.dtd">
 
 <agilephp>
-	<!--
-	Identity configuration example
-	<identity model="User" manager="IdentityManagerImpl" authenticator="DefaultAuthenticator"
-		forgotPasswdMailer="BasicForgotPasswdMailer" resetPasswdMailer="BasicResetPasswdMailer"
-		registrationMailer="BasicRegistrationMailer"/>
-	-->
 	<logger level="debug"/>
-	<scope type="session" provider="SqlSessionProvider"/>
+	<scope type="session" provider="OrmSessionProvider"/>
 	<crypto algorithm="sha256" iv="1234567890" key="This is a secret key" />
 </agilephp>

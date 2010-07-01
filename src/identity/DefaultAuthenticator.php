@@ -31,7 +31,15 @@ class DefaultAuthenticator implements Authentication {
 	  public static function authenticate($username, $password) {
 
 	  		 $model = Identity::getModel();
-	  		 if(!$model) throw new FrameworkException('User domain model instance required');
+	  		 
+	  		 if(method_exists($model, 'getInterceptedInstance')) {
+
+	  		    if(!$model->getInterceptedInstance() instanceof IdentityModel)
+	  		       throw new FrameworkException('Model must implement IdentityModel interface');
+	  		 }
+	  		 else
+	  		    if(!$model instanceof IdentityModel)
+	  		       throw new FrameworkException('Model must implement IdentityModel interface');
 
 	  	     Log::debug('DefaultAuthenticator::authenticate Authenticating username \'' . $username . '\' with password \'' . $password . '\'.');
 
@@ -46,7 +54,7 @@ class DefaultAuthenticator implements Authentication {
 
 	  		 if(!$model->getEnabled()) throw new AccessDeniedException('Account Disabled');
 
-			 return true;
+			 return $model;
 	  }
 }
 ?>

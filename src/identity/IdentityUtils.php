@@ -59,21 +59,5 @@ class IdentityUtils {
 
 	  		 return $token;
 	  }
-
-	  /**
-	   * Mail headers to use when performing forgot password and reset password operations.
-	   * 
-	   * @return String Mail headers to use in the sent messsage.
-	   */
-	  public static function getMailHeaders() {
-
-	  		 $headers = 'From: ' . AgilePHP::getFramework()->getAppName() . ' <no-reply@' . AgilePHP::getFramework()->getAppName() . '>' . "\n";
-	  		 $headers .= 'To: ' . $this->getModel()->getUsername() . ' <' . $this->getModel()->getEmail() . '>' . "\n";
-        	 $headers .= 'Reply-To: ' . $this->getModel()->getEmail() . "\n";
-          	 $headers .= 'Return-Path: ' . $this->getModel()->getEmail() . "\n";
-        	 $headers .= 'X-mailer: AgilePHP Framework on PHP (' . phpversion() . ')' . "\n";
-
-        	 return $headers;
-	  }
 }
 ?>

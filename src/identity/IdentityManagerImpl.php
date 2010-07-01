@@ -402,19 +402,27 @@ class IdentityManagerImpl implements IdentityManager {
 	  public function login($username, $password) {
 
 	  		 $authenticator = new $this->authenticator;
-	  		 if($authenticator::authenticate($username, $password)) {
+	  		 if($model = $authenticator::authenticate($username, $password)) {
 
-	  		    $this->setUsername($username);
-	  		    $this->setLastLogin(strtotime('now'));
+	  		    if(method_exists($model, 'getInterceptedInstance')) {
+
+    	  		   if(!$model->getInterceptedInstance() instanceof IdentityModel)
+    	  		      throw new FrameworkException('Authenticator must return an instance of IdentityModel');
+    	  		}
+    	  		else
+    	  		   if(!$model instanceof IdentityModel)
+    	  		      throw new FrameworkException('Authenticator must return an instance of IdentityModel');
 
 	  		    $session = Scope::getSessionScope();
       	  		$session->set('IDENTITY_LOGGEDIN', true);
-    	  		$session->set('IDENTITY_USERNAME', $this->getUsername());
+    	  		$session->set('IDENTITY_MODEL', $model);
    	  		    $session->persist();
 
-   	  		    $this->getModel()->setSession($session->getSession());
+   	  		    $model->setLastLogin(strtotime('now'));
+   	  		    $model->setSession($session->getSession());
+   	  		    $this->setModel($model);
 
-    	  		$this->merge();
+   	  		    if(Scope::getSessionScope()->getProvider() instanceof OrmSessionProvider) $this->merge();
     	  		return true;
 	  		 }
 
@@ -445,7 +453,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   */
 	  public function persist() {
 
-	  		 ORM::persist($this->getModel());
+  		     ORM::persist($this->getModel());
 	  }
 
 	  /**
@@ -463,7 +471,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   */
 	  public function delete() {
 
-	  	     ORM::delete($this->getModel());
+  	         ORM::delete($this->getModel());
 	  }
 
 	  /**
@@ -472,7 +480,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   */
 	  public function refresh() {
 
-	  		 $results = ORM::find($this->getModel());
+             $results = ORM::find($this->getModel());
 	  		 if(isset($results[0])) $this->setModel($results[0]);
 	  }
 

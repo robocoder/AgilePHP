@@ -182,14 +182,14 @@ class User implements IdentityModel {
 
 	  /**
 	   * Sets the AgilePHP Session object belonging to the user. The Session model
-	   * is only applied if SessionScope is using SqlSessionProvider.
+	   * is only applied if SessionScope is using OrmSessionProvider.
 	   * 
 	   * @param Session $session AgilePHP Session instance following the user.
 	   * @return void
 	   */
 	  public function setSession( Session $session = null ) {
 
-	         if(Scope::getSessionScope()->getProvider() instanceof SqlSessionProvider)
+	         if(Scope::getSessionScope()->getProvider() instanceof OrmSessionProvider)
   		        $this->Session = $session;
 	  }
 

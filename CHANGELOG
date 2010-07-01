@@ -1,11 +1,5 @@
-- Refactored Identity package. Now allows for custom IdentityManager, email tasks, and authenticators.
-  Identity agilephp.xml configuration element and attributes are now optional
-- Refactored ORMFactory::loadDialect to ORMFactory::load
-- Comment fix to Remoting class.
-- Began aligning code with PEAR coding standards.
-- Created SessionProvider and abstracted persistence operations from the SessionScope component. Now
-  custom SessionProvider implementations can be created and configured using agilephp.xml. Identity
-  package re-integrated with SessionScope component.
-- Bug fix to ApplicationScope::destroy resulted in error if temp file has already been deleted
-- Created Mailer component
-- Removed FirePHP from build target since its not being used. Updated README and TODO
+- Deleted obsolete IdentityUtils::getMailHeaders. Replaced by Mailer.
+- Renamed SqlSessionProvider to OrmSessionProvider (allows polymorphism with future ORM data sources)
+- Identity model now stored in SessionScope instead of just username. Entire Identity state is restored
+  from SessionScope now rather than doing a lookup for the IdentityModel state with each request. Authenticator
+  is freed from managing sessions and focus is put on authentication and role assignments.

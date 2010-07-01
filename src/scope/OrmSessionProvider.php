@@ -28,7 +28,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
  */
-class SqlSessionProvider implements SessionProvider {
+class OrmSessionProvider implements SessionProvider {
 
 	  private static $instance;
 
@@ -272,7 +272,7 @@ class SqlSessionProvider implements SessionProvider {
 		  	 }
 		  	 catch( Exception $e ) {
 
-		  	 	    $message = 'SqlSessionProvider::__destruct ' . $e->getMessage();
+		  	 	    $message = 'OrmSessionProvider::__destruct ' . $e->getMessage();
 		  		    Log::error($message);
 		  	}
 	  }
