@@ -30,6 +30,13 @@ CREATE TABLE `configs` (
 /*Data for the table `configs` */
 
 insert  into `configs`(`name`,`value`) values ('workspace','/home/jhahn/Apps/eclipse-galileo/workspace');
+insert  into `configs`(`name`,`value`) values ('appstore_endpoint','http://appstore.makeabyte.com:8080/appstore/api?wsdl');
+insert  into `configs`(`name`,`value`) values ('appstore_platformId','2');
+insert  into `configs`(`name`,`value`) values ('appstore_username','');
+insert  into `configs`(`name`,`value`) values ('appstore_password','');
+insert  into `configs`(`name`,`value`) values ('appstore_apikey','');
+insert  into `configs`(`name`,`value`) values ('pear_bin','/usr/bin/pear');
+insert  into `configs`(`name`,`value`) values ('pecl_bin','/usr/bin/pecl');
 
 /*Table structure for table `roles` */
 
