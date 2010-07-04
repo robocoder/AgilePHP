@@ -37,10 +37,9 @@ class User implements IdentityModel {
 	  private $enabled;
 	  private $Role;
 	  private $Roles;
-	  private $Session;
 
-	  public function __construct( $username = null, $password = null, $email = null,
-	  			 $created = null, $lastLogin = null, $enabled = null, Role $Role = null, Session $Session = null ) {
+	  public function __construct($username = null, $password = null, $email = null,
+	  			 $created = null, $lastLogin = null, $enabled = null, Role $Role = null) {
 
 	  		 $this->username = $username;
 	  		 $this->password = $password;
@@ -49,7 +48,6 @@ class User implements IdentityModel {
 	  		 $this->lastLogin = $lastLogin;
 	  		 $this->enabled = $enabled;
 	  		 $this->Role = $Role;
-	  		 $this->Session = $Session;			 	
 	  }
 
 	  /**
@@ -57,7 +55,7 @@ class User implements IdentityModel {
 	   * @see src/identity/IdentityModel#setUsername($username)
 	   */
 	  #@Id
-	  public function setUsername( $username ) {
+	  public function setUsername($username) {
 
 	  	     $this->username = $username;
 	  }
@@ -76,7 +74,7 @@ class User implements IdentityModel {
 	   * @see src/identity/IdentityModel#setPassword($password)
 	   */
 	  #@Password
-	  public function setPassword( $password ) {
+	  public function setPassword($password) {
 
 	  	     $this->password = $password;
 	  }
@@ -94,7 +92,7 @@ class User implements IdentityModel {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setEmail($email)
 	   */
-	  public function setEmail( $email ) {
+	  public function setEmail($email) {
 
 	  		 $this->email = $email;
 	  }
@@ -112,9 +110,9 @@ class User implements IdentityModel {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setCreated($dateTime)
 	   */
-	  public function setCreated( $dateTime ) {
+	  public function setCreated($dateTime) {
 
-	  	     $this->created = date( 'Y-m-d H:i:s', strtotime( $dateTime ) );
+	  	     $this->created = date('Y-m-d H:i:s', strtotime($dateTime));
 	  }
 
 	  /**
@@ -130,9 +128,9 @@ class User implements IdentityModel {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setLastLogin($dateTime)
 	   */
-	  public function setLastLogin( $timestamp ) {
+	  public function setLastLogin($timestamp) {
 
-	  	     $this->lastLogin = date( 'Y-m-d H:i:s', strtotime( $timestamp ) );
+	  	     $this->lastLogin = date('Y-m-d H:i:s', strtotime($timestamp));
 	  }
 
 	  /**
@@ -148,7 +146,7 @@ class User implements IdentityModel {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setRole($role)
 	   */
-	  public function setRole( Role $role = null ) {
+	  public function setRole(Role $role = null) {
 
 	  	     $this->Role = $role;
 	  }
@@ -166,7 +164,7 @@ class User implements IdentityModel {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setRoles($roles)
 	   */
-	  public function setRoles( array $roles = null ) {
+	  public function setRoles(array $roles = null) {
 
 	  	     $this->Roles = $roles;
 	  }
@@ -181,35 +179,12 @@ class User implements IdentityModel {
 	  }
 
 	  /**
-	   * Sets the AgilePHP Session object belonging to the user. The Session model
-	   * is only applied if SessionScope is using OrmSessionProvider.
-	   * 
-	   * @param Session $session AgilePHP Session instance following the user.
-	   * @return void
-	   */
-	  public function setSession( Session $session = null ) {
-
-	         if(Scope::getSessionScope()->getProvider() instanceof OrmSessionProvider)
-  		        $this->Session = $session;
-	  }
-
-	  /**
-	   * Returns the AgilePHP Session instance belonging to the user.
-	   * 
-	   * @return Session AgilePHP Session object following the user
-	   */
-	  public function getSession() {
-
-	  		 return $this->Session;
-	  }
-
-	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setEnabled($value)
 	   */
-	  public function setEnabled( $value ) {
+	  public function setEnabled($value) {
 
-	  		 if( $value == '1' ) {
+	  		 if($value == '1') {
 
 	  		 	 $this->enabled = $value;
 	  		 	 return;

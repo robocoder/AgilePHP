@@ -149,7 +149,7 @@ class RestUtil {
 	  		 		  // Perform XSLT transformation if a model xsl view exists
 	  		 		  if( file_exists( AgilePHP::getFramework()->getWebRoot() . '/view/' . $class->getName() . '.xsl' ) ) {
 	  		 		  	  $renderer = new XSLTRenderer();
-	  		 		  	  return $renderer->renderXsl( $class->getName(), $ajax->toXML( $data ) );
+	  		 		  	  return $renderer->transformXsl( $class->getName(), $ajax->toXML( $data ) );
 	  		 		  }
 	  		 		  else {
 	  		 		  	  // Otherwise send the response as XML

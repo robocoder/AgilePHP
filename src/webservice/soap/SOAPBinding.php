@@ -20,8 +20,7 @@
  */
 
 /**
- * Annotation which authorizes a method for use with the
- * AgilePHP WebService component.
+ * Annotation that describes the SOAP web service binding style and usage.
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
@@ -31,7 +30,7 @@
  * #@SOAPBinding( style = SOAPStyle::RPC, use = SOAPStyle::ENCODED )
  * class MyAPI {
  * 
- * 		 // I am an RPC/Encoded SOAP web service and can be easily changed into
+ * 		 // I am a RPC/Encoded SOAP web service and can be easily changed into
  * 		 // RPC/Literal or Document Literal Wrapped by simply changing the #@SOAPBinding
  * 		 // values.
  * }
@@ -51,7 +50,7 @@ class SOAPBinding {
 }
 
 /**
- * SOAP binding constants class
+ * SOAP binding constants class that represents the SOAP web service style and usage.
  *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc

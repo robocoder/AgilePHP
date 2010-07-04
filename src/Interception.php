@@ -58,8 +58,8 @@ class Interception {
 	  		 $this->property = $property;
 	  		 $this->interceptor = $interceptor;
 
-	  		 $this->createInterceptedTarget();
-	  		 $this->createInterceptorProxy();
+	  		 $prototype = $this->createInterceptedTarget();
+	  		 $this->createInterceptorProxy($prototype);
 	  }
 
 	  /**
@@ -132,6 +132,8 @@ class Interception {
 		 	 	 }
 		 	 }
 
+		 	 preg_match( '/(class\s+.*){/', $code, $matches);
+
 	  		 $code = preg_replace( '/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code );
 			 $code = $this->clean( $code );
 
@@ -139,6 +141,8 @@ class Interception {
 			 
 	  		 if( eval( $code ) === false )
 	  		 	 throw new InterceptionException( 'Failed to create intercepted target' );
+
+	  		 return $matches[1];
 	  }
 
 	  /**
@@ -148,7 +152,7 @@ class Interception {
 	   * @return void
 	   * @throws InterceptionException if there was an issue creating the InterceptorProxy
 	   */
-	  public function createInterceptorProxy() {
+	  public function createInterceptorProxy($prototype) {
 
 	  		 // php namespace support
 			 $namespace = explode( '\\', $this->class );
@@ -182,8 +186,7 @@ class Interception {
 	  	     		throw new InterceptionException( $e->getMessage(), $e->getCode() );
 	  	     }
 
-	  		 $code = preg_replace( '/InterceptorProxy/', $className, $code );
-
+	  		 $code = preg_replace( '/class\s.*{/', $prototype . '{', $code );
 	  		 $stubs = $this->getMethodStubs();
 	  		 $proxyMethods = array( 'getInstance', 'getInterceptedInstance',
 	  		 						   '__get', '__set', '__isset', '__unset', '__call' );
@@ -206,7 +209,7 @@ class Interception {
 
 	  		 // Make sure the proxy constructor matches the intercepted class
 	  		 if( $constructor )
-	  		 	 $code = preg_replace( '/public\sfunction\s__construct.*\)/', $constructor, $code );
+	  		 	 $code = preg_replace( '/public\s+function\s+__construct.*\)/', $constructor, $code );
 
 	  		 $code = $this->clean( $code );
 
@@ -234,11 +237,15 @@ class Interception {
 	  		 	   return array();
 
 	  		  // Parameter names are gotten from the method signature
-	  		  foreach( $matches[3] as &$param ) {
+	  		  foreach( $matches[3] as &$params ) {
+
+	  		       // Remove type hinting
+	  		       preg_match_all('/\$[a-zA-Z0-9_]+/', $params, $args);
+	  		       $params = '(' . implode(', ', $args[0]) . ')';
 
 	  		  	  // Remove type hinting
-	  		 	  $param = preg_replace( '/[^\$a-zA-Z0-9][a-zA-Z0-9]+?\s/', ' ', $param );
-	  		 	  $param = preg_replace( '/=\s*\)/', ')', $param ); // @todo spend countless more hours trying to get everything into one regex
+	  		 	  //$param = preg_replace( '/[^\$a-zA-Z0-9][a-zA-Z0-9]+?\s/', ' ', $params );
+	  		 	  //$param = preg_replace( '/=\s*\)/', ')', $params ); // @todo spend countless more hours trying to get everything into one regex
 	  		  }
 
 	  		  $a['signatures'] = $matches[1]; 

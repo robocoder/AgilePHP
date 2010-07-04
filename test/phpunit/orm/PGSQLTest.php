@@ -30,7 +30,6 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 	  	     $session->set( 'phpunit', 'this is some test data being stored in the session' );
 
 	  	     $user->setRole( $role );
-	  	     $user->setSession( $session->getSession() );
 
 	  	     $o = $orm->persist( $user );
 
@@ -48,7 +47,7 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 	  	     PHPUnit_Framework_Assert::assertEquals( 'phpunit@localhost', $phpunit->getEmail(), 'Failed to find persisted email' );
 	  	     PHPUnit_Framework_Assert::assertEquals( false, $phpunit->getEnabled(), 'Failed to find persisted enabled flag' );
 	  	     PHPUnit_Framework_Assert::assertEquals( 'phpunit', $phpunit->getRole()->getName(), 'Failed to find persisted role' );
-	  	     PHPUnit_Framework_Assert::assertEquals( $sessionId, $phpunit->getSession()->getId(), 'Failed to find persisted session' );
+	  	     PHPUnit_Framework_Assert::assertEquals( $sessionId, Scope::getSessionScope()->getSession()->getId(), 'Failed to find persisted session' );
 
 	  	     // now update the users role and email address
 	  	     $user2 = new User( 'phpunit' );

@@ -64,10 +64,7 @@ class users extends BaseController {
 	  #@Path( resource = '/{username}/session' )
 	  public function getSession( $username ) {
 
-	  		 $user = new User();
-	  		 $user->setUsername( $username );
-
-	  		 return $user->getSession();
+	  		 return Scope::getSessionScope()->getSession();
 	  }
 
 	  #@POST

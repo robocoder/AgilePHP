@@ -43,11 +43,11 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     	       if( $requireLogon ) {
 
-		     		   if( !Identity::isLoggedIn() )
-		  	     		   throw new NotLoggedInException( 'Login Required' );
+		     		   if(!Identity::isLoggedIn())
+		  	     		  throw new NotLoggedInException( 'Login Required' );
 
-			  	       if( !Identity::hasRole( $requiredRole ) )
-			  	     	   throw new AccessDeniedException( 'Access Denied. This area is reserved for ' . $requiredRole );
+			  	       if(!Identity::hasRole(new Role($requiredRole)))
+			  	     	  throw new AccessDeniedException( 'Access Denied. This area is reserved for ' . $requiredRole );
 	     		   }
 
 	     		   parent::__construct();

@@ -1,5 +1,7 @@
-- Deleted obsolete IdentityUtils::getMailHeaders. Replaced by Mailer.
-- Renamed SqlSessionProvider to OrmSessionProvider (allows polymorphism with future ORM data sources)
-- Identity model now stored in SessionScope instead of just username. Entire Identity state is restored
-  from SessionScope now rather than doing a lookup for the IdentityModel state with each request. Authenticator
-  is freed from managing sessions and focus is put on authentication and role assignments.
+- Comment fixes and cleanup
+- Added XSLTRenderer::transformXsl. Same as renderXsl except HTML is returned rather than flushed to the browser.
+- RestUtil::serverTransform updated to use new transformXsl instead of renderXsl to avoid session header bug.
+- Identity component now stores whole session model instead of just username
+- Bug fixes and cleanup to OrmSessionProvider.
+- Decoupled session model from user model - updated all unit tests and studio package references. updated sql schemas and orm files.
+- Bug fix to Interception - was not preserving class level keywords (extends, implements, etc

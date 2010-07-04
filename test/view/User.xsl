@@ -14,18 +14,16 @@
       <th>Created</th>
       <th>Last Login</th>
       <th>Role</th>
-      <th>Session ID</th>
     </tr>
     <xsl:for-each select="User">
-    <tr>
-      <td><xsl:value-of select="username"/></td>
-      <td><xsl:value-of select="password"/></td>
-      <td><xsl:value-of select="email"/></td>
-      <td><xsl:value-of select="created"/></td>
-      <td><xsl:value-of select="lastLogin"/></td>
-      <td><xsl:value-of select="roleId"/></td>
-      <td><xsl:value-of select="sessionId"/></td>
-    </tr>
+	    <tr>
+	      <td><xsl:value-of select="username"/></td>
+	      <td><xsl:value-of select="password"/></td>
+	      <td><xsl:value-of select="email"/></td>
+	      <td><xsl:value-of select="created"/></td>
+	      <td><xsl:value-of select="lastLogin"/></td>
+	      <td><xsl:value-of select="Role/name"/></td>
+	    </tr>
     </xsl:for-each>
   </table>
   </body>

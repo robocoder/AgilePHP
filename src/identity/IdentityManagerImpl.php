@@ -200,23 +200,71 @@ class IdentityManagerImpl implements IdentityManager {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#hasRole($role)
+	   * @see src/identity/IdentityManager#setRoles(array $roles)
 	   */
-	  public function hasRole($role) {
+	  public function setRoles(array $roles) {
 
-	  		 if(isset($this->model) && $this->model->getRole())
-	  		 	 return $this->getModel()->getRole()->getName() == $role;
+	         $this->getModel()->setRoles($roles);
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#getRoles()
+	   */
+	  public function getRoles() {
+	      
+	         return $this->getModel()->getRoles();
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#addRole(Role $role))
+	   */
+	  public function addRole(Role $role) {
+
+	         if(!is_array($this->getModel()->getRoles()))
+	            $this->setRoles(array());
+
+	         $roles = $this->getRoles();
+	         array_push($roles, $role);
+	         $this->getModel()->setRoles($roles);
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#hasRole(Role $role)
+	   */
+	  public function hasRole(Role $role) {
+
+	  		 if($this->getModel()->getRole() instanceof Role &&
+	  		     $this->getModel()->getRole()->getName() == $role->getName())
+	  		 	     return true;
+
+	  		 $roles = $this->getModel()->getRoles();
+	  		 if(is_array($roles))
+	  		    for($i=0; $i<count($roles); $i++)
+	  		        if($roles[$i]->getName() == $role->getName())
+	  		           return true;
 
 	  		 return false;
 	  }
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#revokeRole()
+	   * @see src/identity/IdentityManager#revokeRole(Role $role)
 	   */
-	  public function revokeRole() {
+	  public function revokeRole(Role $role) {
 
-	  		 $this->setRole(null);
+	  		 if($this->getRole() instanceof Role && $this->getRole()->getName() == $role->getName())
+	  		    $this->setRole(null);
+
+	  		 $roles = $this->getModel()->getRoles();
+	  		 if(is_array($roles))
+	  		   for($i=0; $i<count($roles); $i++)
+	  		      if($roles[$i]->getName() == $role->getName())
+	  		         array_splice($roles, $i, 1);
+
+	  		 $this->getModel()->setRoles($roles);
 	  }
 
 	  /**
@@ -360,7 +408,6 @@ class IdentityManagerImpl implements IdentityManager {
 
 	  		 $this->setCreated(strtotime('now'));
 	  		 $this->setEnabled(0);
-	  		 $this->getModel()->setSession($session->getSession());
 	  		 $this->persist();
 
 	  		 $mailer = $this->getRegistrationMailer();
@@ -404,25 +451,16 @@ class IdentityManagerImpl implements IdentityManager {
 	  		 $authenticator = new $this->authenticator;
 	  		 if($model = $authenticator::authenticate($username, $password)) {
 
-	  		    if(method_exists($model, 'getInterceptedInstance')) {
-
-    	  		   if(!$model->getInterceptedInstance() instanceof IdentityModel)
-    	  		      throw new FrameworkException('Authenticator must return an instance of IdentityModel');
-    	  		}
-    	  		else
-    	  		   if(!$model instanceof IdentityModel)
-    	  		      throw new FrameworkException('Authenticator must return an instance of IdentityModel');
+   	  		    if(!$model instanceof IdentityModel)
+    	  		   throw new FrameworkException('Authenticator must return an instance of IdentityModel');
 
 	  		    $session = Scope::getSessionScope();
       	  		$session->set('IDENTITY_LOGGEDIN', true);
     	  		$session->set('IDENTITY_MODEL', $model);
-   	  		    $session->persist();
 
    	  		    $model->setLastLogin(strtotime('now'));
-   	  		    $model->setSession($session->getSession());
+   	  		    $this->merge();
    	  		    $this->setModel($model);
-
-   	  		    if(Scope::getSessionScope()->getProvider() instanceof OrmSessionProvider) $this->merge();
     	  		return true;
 	  		 }
 

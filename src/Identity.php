@@ -186,22 +186,47 @@ class Identity {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#hasRole($role)
+	   * @see src/identity/IdentityManager#setRoles()
 	   */
-	  public static function hasRole($role) {
+	  public function setRoles(array $roles) {
 
-	  		 return (IdentityManagerFactory::getManager()->getModel() &&
-	  		 		 IdentityManagerFactory::getManager()->getModel()->getRole()) ?
-	  		 			IdentityManagerFactory::getManager()->getModel()->getRole()->getName() == $role : false;
+	         IdentityManagerFactory::getManager()->setRoles($roles);
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#getRoles()
+	   */
+	  public static function getRoles() {
+
+	         return IdentityManagerFactory::getManager()->getRoles();
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#addRole(Role $role)
+	   */
+	  public function addRole(Role $role) {
+
+	         IdentityManagerFactory::getManager()->addRole($role);
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/identity/IdentityManager#hasRole(Role $role)
+	   */
+	  public static function hasRole(Role $role) {
+
+	  		 return IdentityManagerFactory::getManager()->hasRole($role);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#revokeRole()
 	   */
-	  public static function revokeRole() {
+	  public static function revokeRole(Role $role) {
 
-	  		 IdentityManagerFactory::getManager()->setRole( null );
+	  		 IdentityManagerFactory::getManager()->revokeRole($role);
 	  }
 
 	  /**
@@ -257,7 +282,7 @@ class Identity {
 	  public static function logout() {
 
 	  		 Log::debug('Identity::logout');
-	  		 if( Scope::getSessionScope()->getSession()->getData() ) Scope::getSessionScope()->destroy();
+	  		 Scope::getSessionScope()->destroy();
 	  }
 
 	  /**
@@ -266,7 +291,7 @@ class Identity {
 	   */
 	  public static function isLoggedIn() {
 
-	  		 return (Scope::getSessionScope()->get('IDENTITY_LOGGEDIN')) ? true : false;
+	  		 return IdentityManagerFactory::getManager()->isLoggedIn();
 	  }
 
 	  /**

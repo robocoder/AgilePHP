@@ -96,11 +96,8 @@ abstract class IdentityManagerFactory {
 
 		  		 // Initialize Identity from previous session if one exits
 		  		 $session = Scope::getSessionScope();
-	      		 if($model = $session->get('IDENTITY_MODEL')) {
-
-	      		     $model->setSession($session->getSession());
-		  		  	 self::$manager->setModel($model);
-	      		 }
+	      		 if($model = $session->get('IDENTITY_MODEL'))
+		  		  	self::$manager->setModel($model);
 	  		 }
 
 	  		 return self::$manager;

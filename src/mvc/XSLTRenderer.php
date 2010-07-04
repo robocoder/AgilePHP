@@ -131,6 +131,39 @@ class XSLTRenderer extends BaseRenderer {
 	  }
 
 	  /**
+	   * Performs an XSLT transformation using the specified XSL view.
+	   * 
+	   * @param String $xsl XSL document located in the web app view directory
+	   * @param String $xml XML document supplying the XSL data
+	   * @return string The transformed HTML
+       */
+      public function transformXsl( $xsl, $xml='' ) {
+
+             set_error_handler( 'XSLTRenderer::ErrorHandler' );
+
+      	 	 $dom = new DomDocument();
+			 $dom->load( AgilePHP::getFramework()->getWebRoot() . '/view/' . $xsl . '.xsl' );
+
+			 $xp = new XSLTProcessor();
+			 $xsl = $xp->importStylesheet( $dom );
+
+			 $doc = new DomDocument();
+             try {
+			 		$doc->loadXML( $xml );
+			 }
+			 catch( FrameworkException $e ) {
+
+			 	    $doc->loadXML(preg_replace( '/\0/', '', $xml)); // serialized objects contain C \0 line terminators
+			 }
+
+			 $xslt = $xp->transformToXml( $doc );
+
+			 restore_error_handler();
+
+			 return $xslt;
+	  }
+
+	  /**
 	   * loadXml reports an error instead of throwing an exception when the xml is not well formed. This
 	   * is a custom PHP error handling function which throws an FrameworkException instead of reporting
 	   * a PHP error.

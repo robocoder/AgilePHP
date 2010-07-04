@@ -16,7 +16,6 @@ a {
 .error {
 
 	font-family:tahoma;
-	line-height:14px;
 	font-size: 18px;
 	color: #FF0000;
 }
@@ -39,7 +38,6 @@ a {
 	font-family:tahoma;
 	font-size: 16px;
 	font-weight: bolder;
-	line-height: 14px;
 	text-align: center;
 	padding-bottom: 20px;
 	padding-top: 25px;
@@ -50,7 +48,6 @@ a {
 	color:#636363;
 	font-family:tahoma;
 	font-size: 16px;
-	line-height:14px;
 	border-collapse : collapse;
 }
 
@@ -59,7 +56,6 @@ a {
 	color:#636363;
 	font-family:tahoma;
 	font-size:11px;
-	line-height:14px;
 	text-decoration: none;
 }
 
@@ -68,7 +64,6 @@ a {
 	color:#636363;
 	font-family:tahoma;
 	font-size:10px;
-	line-height:14px;
 	background-color: #C9C9C9;
 }
 
@@ -77,16 +72,14 @@ a {
 	color:#636363;
 	font-family:tahoma;
 	font-size:10px;
-	line-height:14px;
 	background-color: #FFFFFF;
 }
 
 .agilephpRow2 {
 
-	color:#636363;
+	color: #636363;
 	font-family:tahoma;
 	font-size:10px;
-	line-height:14px;
 	background-color: #F9F9F9;
 }
 
@@ -95,7 +88,6 @@ a {
 	color:#636363;
 	font-family:tahoma;
 	font-size:10px;
-	line-height:14px;
 }
 
 .agilephpPaginationHeader {
@@ -103,7 +95,6 @@ a {
 	color:#636363;
 	font-family:tahoma;
 	font-size:12px;
-	line-height:14px;
 }
 
 .agilephpPaginationRecordCount {
@@ -111,5 +102,4 @@ a {
 	color:#636363;
 	font-family:tahoma;
 	font-size:12px;
-	line-height:14px;
 }

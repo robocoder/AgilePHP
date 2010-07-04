@@ -32,7 +32,6 @@ class OrmSessionProvider implements SessionProvider {
 
 	  private static $instance;
 
-	  private $oldSession;
 	  private $session;
 	  private $persisted = false;
 
@@ -46,32 +45,41 @@ class OrmSessionProvider implements SessionProvider {
 	   */
 	  public function __construct() {
 
-	  		  $this->oldSession = new Session();
 	  	      $this->session = new Session();
 
 	  	      if(isset($_COOKIE['AGILEPHP_SESSION_ID'])) {
 
-	  	      	  Log::debug('SessionScope::__construct Initalizing session from previous cookie.');
+	  	      	 Log::debug('OrmSessionProvider::__construct Initalizing session from previous cookie.');
 
-	  	      	  $this->session->setId($_COOKIE['AGILEPHP_SESSION_ID']);
-	  	      	  $this->oldSession->setId($_COOKIE['AGILEPHP_SESSION_ID']);
+	  	      	 $this->session->setId($_COOKIE['AGILEPHP_SESSION_ID']);
 
-  		 	 	  $persisted = ORM::find($this->session);
-  		 	 	  if(!isset($persisted[0])) return;
+  		 	 	 $persisted = ORM::find($this->session);
+  		 	 	 if(!isset($persisted[0])) return;
 
-  		 	 	  $this->persisted = true;
-  		 	 	  $this->session->setData($persisted[0]->getData());
-  		 	 	  $this->oldSession->setData($persisted[0]->getData());
+  		 	 	 $this->persisted = true;
+  		 	 	 $data = unserialize($persisted[0]->getData());
+  		 	 	 $this->session->setData($data);
 	  	      }
 	  	      else {
 
-	  	      	  Log::debug('SessionScope::__construct Initalizing session with a new cookie.');
+	  	      	 Log::debug('OrmSessionProvider::__construct Initalizing session with a new cookie.');
 
-		  	      $this->createSessionId();
-		  	      setcookie('AGILEPHP_SESSION_ID', $this->session->getId(), (time()+3600*24*30), '/'); // 30 days
+		  	     $this->createSessionId();
+		  	     setcookie('AGILEPHP_SESSION_ID', $this->session->getId(), (time()+3600*24*30), '/'); // 30 days
 	  	      }
 	  }
-	  
+
+	  /**
+	   * Sets the session model
+	   * 
+	   * @param SessionModel $session The session model
+	   * @return void
+	   */
+	  public function setSession(SessionModel $session) {
+
+	         $this->session = $session;
+	  }
+
 	  /**
 	   * Returns the session domain model object which maintains the id and data for
 	   * the current Session's ActiveRecord.
@@ -103,12 +111,13 @@ class OrmSessionProvider implements SessionProvider {
 	  		 $this->session->setId( $id );
 
 	  		 setcookie('AGILEPHP_SESSION_ID', $id, time()+3600*24*30, '/'); // 30 days
-	  		 Log::debug('SessionScope::setSessionId Initalizing session from specified session id and dropping a new session cookie');
+	  		 Log::debug('OrmSessionProvider::setSessionId Initalizing session from specified session id and dropping a new session cookie');
 
 	  		 if($persistedSession = ORM::find( $this->getSession())) {
 
-  		 	 	 $this->session->setData( $persistedSession[0]->getData());
-  		 	 	 $this->oldSession->setData( $persistedSession[0]->getData());
+	  		     $this->persisted = true;
+	  		     $data = unserialize($persisted[0]->getData());
+  		 	 	 $this->session->setData($data);
 	  		 }
 	  }
 
@@ -120,10 +129,8 @@ class OrmSessionProvider implements SessionProvider {
 	   */
 	  public function get($key) {
 
-	  		 if(!$this->session->getData()) return;
-
-	  		 $store = unserialize($this->session->getData());
-	  		 if(isset( $store[$key])) return $store[$key];
+	  		 if(!$store = $this->session->getData()) return;
+	  		 if(isset($store[$key])) return $store[$key];
 	  }
 
 	  /**
@@ -133,11 +140,11 @@ class OrmSessionProvider implements SessionProvider {
 	   * @param String $value The variable value
 	   * @return void
 	   */
-	  public function set( $key, $value ) {
+	  public function set($key, $value) {
 
-	  		 $store = unserialize($this->getSession()->getData());
+	  		 $store = $this->getSession()->getData();
 	  		 $store[$key] = $value;
-	  		 $this->getSession()->setData(serialize($store));
+	  		 $this->getSession()->setData($store);
 	  }
 
 	  /**
@@ -147,17 +154,17 @@ class OrmSessionProvider implements SessionProvider {
 	   */
 	  public function refresh() {
 
+	         $this->persisted = true;
   	 	 	 $persisted = ORM::find($this->session);
 
   	 	 	 if($persisted) {
 
-  	 	 	  	 $this->session->setData($persisted->getData());
-  	 	 	  	 $this->oldSession->setData($persisted->getData());
+  	 	 	    $data = unserialize($persisted->getData());
+  	 	 	  	$this->session->setData($data);
   	 	 	 }
   	 	 	 else {
 
-  	 	 	 	 $this->session->setData(array());
-  	 	 	  	 $this->oldSession->setData(array());
+  	 	 	 	$this->session->setData(array());
   	 	 	 }
 	  }
 
@@ -169,11 +176,8 @@ class OrmSessionProvider implements SessionProvider {
 	  public function clear() {
 
 	  		 setcookie('AGILEPHP_SESSION_ID', '', time()-3600, '/');
-
 	  		 $this->session->setData(array());
-	  		 $this->oldSession->setData(array());
-
-	  		 Log::debug('SessionScope::clear Session cleared');
+	  		 Log::debug('OrmSessionProvider::clear Session cleared');
 	  }
 
 	  /**
@@ -195,26 +199,29 @@ class OrmSessionProvider implements SessionProvider {
 	   */
 	  public function persist() {
 
-	  		 Log::debug('SessionScope::persist Persisting session');
+	  		 Log::debug('OrmSessionProvider::persist Persisting session');
 
-	  	     if(!$this->getSession()->getData()) return;
+	  	     if(!$store = $this->getSession()->getData()) {
 
-	 	     if(!$this->isPersisted()) {
+	  	        if($this->persisted) $this->destroy();
+	  	        return;
+	  	     }
 
-	 	     	 $this->getSession()->setCreated('now');
-			 	 ORM::persist($this->getSession());
-			 	 $this->oldSession->setData($this->session->getData());
-			 	 $this->persisted = true;
-			 	 return;
+	  	     if(is_array($this->getSession()->getData())) {
+
+  		 	 	$data = serialize($this->getSession()->getData());
+                $this->getSession()->setData($data);
+	  	     }
+
+	 	     if(!$this->persisted) {
+
+	 	     	$this->getSession()->setCreated('now');
+			 	ORM::persist($this->getSession());
+			 	$this->persisted = true;
+			 	return;
 			 }
 
-	  		 if($this->oldSession->getData() != $this->session->getData()) {
-
-			     ORM::merge($this->getSession());
-			     return;
-	  		 }
-
-			 if(!$this->getSession()->getData() && $this->oldSession) $this->destroy();
+		     ORM::merge($this->getSession());
 	  }
 
 	  /**
@@ -225,7 +232,7 @@ class OrmSessionProvider implements SessionProvider {
 	   */
 	  private function isPersisted() {
 
-	  		 return $this->persisted == true;
+	  		  return $this->persisted === true;
 	  }
 	  
 	  /**
@@ -268,7 +275,7 @@ class OrmSessionProvider implements SessionProvider {
 		  	       if(!ORMFactory::getDialect()->getPDO())
 		  	           ORMFactory::getDialect()->__construct(ORMFactory::getDialect()->getDatabase());
 
-		  		   $this->persist($this->getSession());
+		  	       if(!$this->persisted) $this->persist();
 		  	 }
 		  	 catch( Exception $e ) {
 

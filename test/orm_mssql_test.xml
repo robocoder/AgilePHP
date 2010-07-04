@@ -12,10 +12,6 @@
 				<foreignKey name="FK_UserRoles" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="roles" column="name" controller="RoleController" select="name"/>
 			</column>
-	  		<column name="sessionId" property="Session" type="varchar" length="21" display="Session" sortable="false">
-	  			<foreignKey name="FK_UserSessions" type="one-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
-	  							 table="sessions" column="id" controller="SessionController"/>
-	  		</column>
 	  		<column name="enabled" type="bit" validator="BitValidator"/>
 	 	</table>
 	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">

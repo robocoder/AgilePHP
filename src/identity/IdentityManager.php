@@ -264,19 +264,43 @@ interface IdentityManager {
 		  public function getRole();
 
 		  /**
+		   * Adds an array of Role instances to the identity
+		   * 
+		   * @param array $roles An array of Role instances to add
+		   * @return void
+		   */
+		  public function setRoles(array $roles);
+
+		  /**
+		   * Returns an array of Role instances which belong to the identity
+		   * 
+		   * @return mixed An array of Role instances which the current identity belongs
+		   *               or null if no roles exist
+		   */
+		  public function getRoles();
+
+		  /**
+		   * Adds a new role to the IdentityModel Roles array.
+		   * 
+		   * @param Role $role The new role to assign to the identity
+		   * @return void
+		   */
+		  public function addRole(Role $role);
+
+		  /**
 		   * Checks to see if the identity has the specified role.
 		   *  
 		   * @param String $role The name of a role
 		   * @return True if the identity has the specified role, false otherwise.
 		   */
-		  public function hasRole($role);
+		  public function hasRole(Role $role);
 
 		  /**
 		   * Revokes/removes a role from the identity.
 		   *  
 		   * @return void
 		   */
-		  public function revokeRole();
+		  public function revokeRole(Role $role);
 
 		  /**
 		   * Authenticates/logs in an identity and returns a boolean response.
@@ -288,7 +312,7 @@ interface IdentityManager {
 		  public function login($username, $password);
 
 		  /**
-		   * Destroys the current SessionScope.
+		   * Destroys the current session.
 		   * 
 		   * @return void
 		   */

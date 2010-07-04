@@ -444,7 +444,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function transformXML() {
 
-	  		 $data = '<User><username>admin</username><password>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</password><email>root@localhost</email><created>2009-09-06 15:27:44</created><lastLogin>1969-12-31 19:00:00</lastLogin><enabled>1</enabled><Role><name>admin</name><description>This is an administrator account</description></Role><Roles></Roles><Session><id>0I14Hz5229h6z070G6E6q</id><data>a:2:{s:17:"IDENTITY_LOGGEDIN";b:1;s:17:"IDENTITY_USERNAME";s:5:"admin";}</data><created>2010-06-13 01:31:25</created></Session></User>';
+	  		 $data = '<User><username>admin</username><password>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</password><email>root@localhost</email><created>2009-09-06 15:27:44</created><lastLogin>1969-12-31 19:00:00</lastLogin><enabled>1</enabled><Role><name>admin</name><description>This is an administrator account</description></Role><Roles></Roles></User>';
 
 	  		 $t = new XMLTransformer();
 			 $o = $t->transform( $data );
@@ -457,7 +457,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function transformJSON() {
 
-	  		 $data = ' { "User" : { "username" : "admin", "password" : "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "email" : "root@localhost", "created" : "2009-09-06 15:27:44", "lastLogin" : "1969-12-31 19:00:00", "enabled" : "1", "Role" : { "name" : "admin", "description" : "This is an administrator account"}  , "Roles" : null, "Session" : { "id" : "o4YHYXtqhl9VFq8b09D87", "data" : "a:2:{s:17:\"IDENTITY_LOGGEDIN\";b:1;s:17:\"IDENTITY_USERNAME\";s:5:\"admin\";}", "created" : "2010-06-13 01:26:06"}   } }';
+	  		 $data = ' { "User" : { "username" : "admin", "password" : "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "email" : "root@localhost", "created" : "2009-09-06 15:27:44", "lastLogin" : "1969-12-31 19:00:00", "enabled" : "1", "Role" : { "name" : "admin", "description" : "This is an administrator account"}  , "Roles" : null  } }';
 
 	  		 $t = new JSONTransformer();
 	  		 $o = $t->transform( $data );
@@ -470,11 +470,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function transformYAML() {
 	  	
-	  		 $data = '--- !php/object "O:4:\"User\":1:{s:12:\"\0User\0object\";O:16:\"User_Intercepted\":11:{s:26:\"\0User_Intercepted\0username\";s:5:\"admin\";s:26:\"\0User_Intercepted\0password\";s:64:\"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08\";s:23:\"\0User_Intercepted\0email\";s:14:\"root@localhost\";s:25:\"\0User_Intercepted\0created\";s:19:\"2009-09-06
-  15:27:44\";s:27:\"\0User_Intercepted\0lastLogin\";s:19:\"1969-12-31 19:00:00\";s:24:\"\0User_Intercepted\0roleId\";s:5:\"admin\";s:27:\"\0User_Intercepted\0sessionId\";s:21:\"178Pgrib43Zw0Awlz7qj5\";s:25:\"\0User_Intercepted\0enabled\";s:1:\"1\";s:25:\"\0User_Intercepted\0Session\";O:7:\"Session\":3:{s:11:\"\0Session\0id\";s:21:\"178Pgrib43Zw0Awlz7qj5\";s:13:\"\0Session\0data\";s:72:\"a:2:{s:17:\"IDENTITY_LOGGEDIN\";b:1;s:17:\"IDENTITY_USERNAME\";s:5:\"admin\";}\";s:16:\"\0Session\0created\";s:19:\"2010-06-07
-  19:14:00\";}s:22:\"\0User_Intercepted\0Role\";O:4:\"Role\":1:{s:12:\"\0Role\0object\";O:16:\"Role_Intercepted\":2:{s:22:\"\0Role_Intercepted\0name\";s:5:\"admin\";s:29:\"\0Role_Intercepted\0description\";s:32:\"This
-  is an administrator account\";}}s:23:\"\0User_Intercepted\0Roles\";N;}}"
-...';
+	  		 $data = '--- !php/object "O:4:\"User\":1:{s:12:\"\0User\0object\";O:16:\"User_Intercepted\":8:{s:26:\"\0User_Intercepted\0username\";s:5:\"admin\";s:26:\"\0User_Intercepted\0password\";s:64:\"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08\";s:23:\"\0User_Intercepted\0email\";s:14:\"root@localhost\";s:25:\"\0User_Intercepted\0created\";s:19:\"2009-09-06 15:27:44\";s:27:\"\0User_Intercepted\0lastLogin\";s:19:\"1969-12-31 19:00:00\";s:25:\"\0User_Intercepted\0enabled\";s:1:\"1\";s:22:\"\0User_Intercepted\0Role\";O:4:\"Role\":1:{s:12:\"\0Role\0object\";O:16:\"Role_Intercepted\":2:{s:22:\"\0Role_Intercepted\0name\";s:5:\"admin\";s:29:\"\0Role_Intercepted\0description\";s:32:\"This is an administrator account\";}}s:23:\"\0User_Intercepted\0Roles\";N;}}" ...';
 
 	  		  $t = new YAMLTransformer();
 	  		  $o = $t->transform( $data );
