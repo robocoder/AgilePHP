@@ -31,10 +31,10 @@ interface IdentityManager {
 		  /**
 		   * Sets the domain object model which the IdentityManager will manage.
 		   * 
-		   * @param Object $model The domain object model for IdentityManager to manage
+		   * @param IdentityModel $model The IdentityModel for IdentityManager to manage
 		   * @return void
 		   */
-		  public function setModel($model);
+		  public function setModel(IdentityModel $model);
 
 		  /**
 		   * Returns the domain object model which the IdentityManager is managing.

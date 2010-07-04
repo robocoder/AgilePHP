@@ -43,6 +43,7 @@ class ProjectRemote {
 	  #@RemoteMethod
  	  public function create( $configs ) {
 
+ 	         // Dynamically assign form names/values as php variable names/values
  		 	 foreach( $configs as $config ) {
 
  		 	 	  $name = $config->name;
@@ -106,10 +107,23 @@ class ProjectRemote {
 			  		 FileUtils::copy( '..' . DIRECTORY_SEPARATOR . 'src', $agilephp );
 
 			  		 if( $databaseEnable )
-				  		 $this->createORMXML( $identityEnable, $sessionEnable, $databaseName, $databaseType,
+				  		 $this->createORMXML( $identityEnable, $sessionProvider, $databaseName, $databaseType,
 				  		 			$databaseHostname, $databaseUsername, $databasePassword, $databaseType /* instead of driver - maybe driver should be passed as hidden */ );
 
-			  		 $this->createAgilePhpXML( $logEnable, $identityEnable, $cryptoEnable, $logLevel );
+				  	 // Create component configuration variables 
+				  	 $crypto = array('algorithm' => $cryptoAlgorithm);
+				  	 if(isset($cryptoIv) && $cryptoIv) $crypto['iv'] = $cryptoIv;
+				  	 if(isset($cryptoKey) && $cryptoKey) {
+				  	     
+				  	     if(!$cryptoKey == $cryptoKeyConfirm)
+				  	        throw new FrameworkException('Crypto keys don\'t match');
+
+				  	     $crypto['key'] = $cryptoKey;
+				  	 }
+				  	 $logLevel = isset($logEnable) ? strtolower($logLevel) : false;
+
+				  	 // Create project
+			  		 $this->createAgilePhpXML( $logLevel, $identityEnable, $crypto, $sessionProvider );
 			  		 $this->createAccessFile( ($databaseType) == 'sqlite' ? true : false, $databaseName );
 			  		 $this->createIndexDotPHP();
 			  		 $this->createStyleSheet();
@@ -137,6 +151,19 @@ class ProjectRemote {
 
   		 	 		throw new FrameworkException( $e->getMessage() );
   		 	 }
+	  }
+
+	  #@RemoteMethod
+	  public function getCryptoAlgorithms() {
+
+	         $algorithms = Crypto::getInstance()->getSupportedHashAlgorithms();
+	         $algos = array();
+
+	         foreach($algorithms as $algo)
+	             array_push($algos, array($algo, $algo));
+
+	         return $algos;
+	             
 	  }
 
 	  /**
@@ -185,10 +212,6 @@ class ProjectRemote {
 				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserRoles\" type=\"one-to-many\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
 							  		 "\t\t\t\t\ttable=\"roles\" column=\"name\" controller=\"RoleController\" select=\"name\"/>" . PHP_EOL;
 				  $data .= "\t\t\t</column>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"sessionId\" property=\"Session\" type=\"varchar\" length=\"21\">" . PHP_EOL;
-				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserSessions\" type=\"one-to-one\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
-							  		 "\t\t\t\t\ttable=\"sessions\" column=\"id\" controller=\"SessionController\"/>" . PHP_EOL;
-				  $data .= "\t\t\t</column>" . PHP_EOL;
 				  $data .= "\t\t\t<column name=\"enabled\" type=\"bit\" length=\"1\"/>" . PHP_EOL;
 				  $data .= "\t\t</table>" . PHP_EOL;
 				  $data .= "\t\t<table name=\"roles\" display=\"Roles\" model=\"Role\" description=\"Roles used in the application\">" . PHP_EOL;
@@ -197,7 +220,7 @@ class ProjectRemote {
 				  $data .= "\t\t</table>" . PHP_EOL;
 			  }
 
-			  if( $session ) {
+			  if( $session == 'ORM' ) {
 
 			  	  $data .= "\t\t<!-- AgilePHP Session -->" . PHP_EOL;
 			  	  $data .= "\t\t<table name=\"sessions\" display=\"Session\" isSession=\"true\" model=\"Session\" description=\"User sessions\">" . PHP_EOL;
@@ -218,20 +241,25 @@ class ProjectRemote {
 	  		  	  throw new FrameworkException( 'Could not create default orm.xml file' );
 	  }
 
-	  private function createAgilePhpXML( $logger, $identity, $crypto, $logLevel ) {
-
+	  private function createAgilePhpXML( $logLevel, $identity, $crypto, $sessionProvider ) {
+ 
 	  		  $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
 	  		  $data .= '<!DOCTYPE agilephp SYSTEM "AgilePHP/agilephp.dtd">' . PHP_EOL;
 	  		  $data .= '<agilephp>' . PHP_EOL;
 
-			  if( $logger )
+			  if( $logLevel )
 			 	  $data .= "\t<logger level=\"$logLevel\"/>" . PHP_EOL;
 
-			  if( $identity )
-			 	  $data .= "\t<identity resetPasswordUrl=\"http://localhost/index.php/LoginController/resetPassword\" confirmationUrl=\"http://localhost/index.php/LoginController/confirm\"/>" . PHP_EOL;
+			  if($sessionProvider == 'ORM')
+			      $data .= "\t<scope type=\"session\" provider=\"OrmSessionProvider\"/>" . PHP_EOL;
 
-			  if( $crypto )
-			 	  $data .= "\t<crypto algorithm=\"sha256\" />" . PHP_EOL;
+			  if( $crypto ) {
+
+			 	  $data .= "\t<crypto algorithm=\"" . $crypto['algorithm'] . "\"";
+			 	  $data .= (isset($crypto['iv'])) ? ' iv="' . $crypto['iv'] . '"' : '';
+			 	  $data .= (isset($crypto['key'])) ? ' key="' . $crypto['key'] . '"' : '';
+			 	  $data .= '/>' . PHP_EOL;
+			  }
 
 			  $data .= '</agilephp>';
 
@@ -301,8 +329,8 @@ class ProjectRemote {
 
  try {
 		$agilephp = AgilePHP::getFramework();
-		$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . \'/AgilePHP\' ) );
 		$agilephp->setDefaultTimezone( \'America/New_York\' );
+		$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . \'/AgilePHP\' ) );
 
 		MVC::getInstance()->dispatch();
  }

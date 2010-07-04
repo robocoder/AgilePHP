@@ -3,13 +3,14 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<title><?= $title; ?></title>
+		<title><?php echo $title; ?></title>
 		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
 	</head>
 
 	<body>
 		<?php require_once 'header.html'; ?>
 
+		<div class="info"><?php if( isset( $info ) ) echo $info; ?></div>
 		<form method="post" action="<?= AgilePHP::getFramework()->getRequestBase() ?>/LoginController/login">
 
 			<table border="0">
@@ -34,13 +35,12 @@
 					<td>
 						<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="<?= $request_token ?>"/>
 						<input type="submit" value="Login"/>
-						<a href="<?= AgilePHP::getFramework()->getRequestBase() ?>/LoginController/oops">Forgot Password</a>
+						<?php echo '<a href="' . AgilePHP::getFramework()->getRequestBase() . '/LoginController/oops">Forgot Password</a>'; ?>
 					</td>					
 				</tr>
 			</table>
 
-			<div style="padding-top: 25px;" >Not a member? <a href="/index.php/LoginController/showRegister">Register</a> now!</div>
-
+			<div style="padding-top: 25px;" >Not a member? <a href="<?= AgilePHP::getFramework()->getRequestBase() ?>/LoginController/showRegister">Register</a> now!</div>
 		</form>
 
 		<?php require_once 'footer.html'; ?>

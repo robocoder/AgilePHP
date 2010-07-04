@@ -1,7 +1,10 @@
-- Comment fixes and cleanup
-- Added XSLTRenderer::transformXsl. Same as renderXsl except HTML is returned rather than flushed to the browser.
-- RestUtil::serverTransform updated to use new transformXsl instead of renderXsl to avoid session header bug.
-- Identity component now stores whole session model instead of just username
-- Bug fixes and cleanup to OrmSessionProvider.
-- Decoupled session model from user model - updated all unit tests and studio package references. updated sql schemas and orm files.
-- Bug fix to Interception - was not preserving class level keywords (extends, implements, etc
+- Moved SPusers class to agilephp.test.model
+- Added IdentityModel type hint to Identity::setModel
+- build.xml configured for Bugfix versioning
+
+-- STUDIO UPDATES --
+
+- Bug fixes to studio package around new identity and scope functionality
+- Added additional Crypto and new SessionScope configuration parameters to new project wizard
+- Updated templates to work with new identity and scope management
+- Updated ProjectRemote to create projects using new configuration values

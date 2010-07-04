@@ -637,7 +637,6 @@ final class AgilePHP {
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
- * @version 0.1a
  * @throws FrameworkException
  */
 class FrameworkException extends Exception {

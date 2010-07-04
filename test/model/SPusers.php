@@ -24,7 +24,7 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.identity
+ * @package com.makeabyte.agilephp.test.model
  */
 class SPusers {
 
@@ -35,7 +35,6 @@ class SPusers {
 	  private $lastLogin;
 	  private $enabled;
 	  private $roleId;
-	  private $sessionId;
 
 	  /**
 	   * (non-PHPdoc)
@@ -143,27 +142,6 @@ class SPusers {
 	  public function getRoleId() {
 
 	  	     return $this->roleId;
-	  }
-	
-	  /**
-	   * Sets the AgilePHP Session object belonging to the user.
-	   * 
-	   * @param Session $session AgilePHP Session instance following the user.
-	   * @return void
-	   */
-	  public function setSessionId( $sessionId ) {
-
-	  		 $this->sessionId = $sessionId;
-	  }
-
-	  /**
-	   * Returns the AgilePHP Session instance belonging to the user.
-	   * 
-	   * @return Session AgilePHP Session object following the user
-	   */
-	  public function getSessionId() {
-
-	  		 return $this->sessionId;
 	  }
 
 	  /**

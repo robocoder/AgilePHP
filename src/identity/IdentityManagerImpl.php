@@ -40,7 +40,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#setModel($model)
 	   */
-	  public function setModel($model) {
+	  public function setModel(IdentityModel $model) {
 
 	  		 $this->model = $model;
 	  }

@@ -6,6 +6,8 @@ AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/menubar/window/tools/
 AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/menubar/window/help/About.js' );
 AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/menubar/wizard/file/NewProject.js' );
 
+AgilePHP.Remoting.load( 'ProjectRemote' );
+
 /**
  * Creates a toolbar / menubar for the workspace.
  * 

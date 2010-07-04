@@ -9,9 +9,9 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
 	   	    win.setVisible( true );
 	   	    return win.instance;
 	}
+
 	var window = new AgilePHP.Studio.Window( id, 'fileNewProject', 'New Project Wizard', 550, 350 );
 
-	AgilePHP.Remoting.load( 'ProjectRemote' );
 	AgilePHP.Remoting.load( 'DatabaseManagerRemote' );
 
 	var pbar = new Ext.ProgressBar({
@@ -123,7 +123,7 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
 	    			var errHtml = '<div class="wizard-header"><h1>Failed to create project.</h1></div><p style="padding-top: 15px;">' + response.RemotingException.message + '</p>';
 	    			if( AgilePHP.Studio.debug ) errHtml += '<p><pre>' + response.trace + '</pre></p>';
 
-	    			Ext.getCmp( id + 'step-8-message' ).el.dom.innerHTML = errHtml; 
+	    			Ext.getCmp( id + 'step-8-message' ).el.dom.innerHTML = errHtml;
 	    			window.setLabelStatus( 8, 3 );
 	    			return;
 	    		}
@@ -139,9 +139,9 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
 		workspace = (workspace.indexOf( '|' ) === 0) ? workspace.replace( /\|/g, '/' ) : workspace.replace( /\|/g, '\\' );
 
 	/**
-	 * Return the new project wizard
+	 * Create the new project wizard
 	 */
-	return window.wizard([{
+	var wizard = window.wizard([{
               		id: 'step-0',
               		xtype: 'form',
               		labelWidth: 75,
@@ -207,6 +207,7 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               	       		xtype: 'checkbox',
               	   	        name: 'logEnable',
               	   	        fieldLabel: 'Enable',
+              	   	        checked: true,
               	   	        listeners: {
               	           		check: function( checkbox, checked ) {
               	
@@ -233,7 +234,6 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               			    valueField: 'id',
               			    displayField: 'name',
               			    fieldLabel: 'Level',
-              			    disabled: true,
               			    typeAhead: true,
               		        forceSelection: true,
               		        triggerAction: 'all'
@@ -270,13 +270,13 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               	           title: 'Identity',
               	           defaultType: 'textfield',
               	           items: [{
-              	       		id: id + '-form-identity-enable',
-              	       		xtype: 'checkbox',
-              	   	        name: 'identityEnable',
-              	   	        fieldLabel: 'Enable',
-              	   	        checked: true
-              	           }]
-              	       }]
+              	       	   id: id + '-form-identity-enable',
+              	       	   xtype: 'checkbox',
+              	   	       name: 'identityEnable',
+              	   	       fieldLabel: 'Enable',
+              	   	       checked: true
+              	        }]
+              	    }]
               	}, {
               	    id: 'step-3',
               	    label: 'Encryption',
@@ -295,13 +295,72 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               	           title: 'Encryption',
               	           defaultType: 'textfield',
               	           items: [{
-              	       		id: id + '-form-crypto-enable',
-              	       		xtype: 'checkbox',
-              	   	        name: 'cryptoEnable',
-              	   	        fieldLabel: 'Enable',
-              	   	        checked: true
-              	           }]
-              	       }]
+	              	       		id: id + '-form-crypto-enable',
+	              	       		xtype: 'checkbox',
+	              	   	        name: 'cryptoEnable',
+	              	   	        fieldLabel: 'Enable',
+	              	   	        checked: true,
+	              	   	        listeners: {
+
+		              	        	 check: function( checkbox, checked ) {
+
+              	        	                Ext.getCmp(id + '-form-crypto-algorithm').setDisabled(checked == false);
+              	        	                Ext.getCmp(id + '-form-crypto-iv').setDisabled(checked == false);
+              	        	                Ext.getCmp(id + '-form-crypto-key').setDisabled(checked == false);
+              	        	                Ext.getCmp(id + '-form-crypto-key-confirm').setDisabled(checked == false);
+		         	           		 }
+              	            	}
+              	           }, new Ext.form.ComboBox({
+                 	       		id: id + '-form-crypto-algorithm',
+                  	       		name: 'cryptoAlgorithm',
+                  	       		mode: 'local',
+                  			    emptyText: '(Choose)',
+                  			    allowBlank: false,
+                  			    store: new Ext.data.ArrayStore({
+                  			        id: id + '-form-crypto-algorithm-store',
+                  			        fields: [
+                  			            {name: 'id'},
+                  			            {name: 'name'}
+                  			        ],
+                  			        data: [],
+                  			    }),
+                  			    valueField: 'id',
+                  			    displayField: 'name',
+                  			    fieldLabel: 'Algorithm',
+                  			    typeAhead: true,
+                  		        forceSelection: true,
+                  		        triggerAction: 'all'
+                  	       	}), {
+	              	       		id: id + '-form-crypto-iv',
+	              	   	        name: 'cryptoIv',
+	              	   	        fieldLabel: 'Salt',
+	              	        }, {
+	              	       		id: id + '-form-crypto-key',
+	              	   	        name: 'cryptoKey',
+	              	   	        inputType: 'password',
+	              	   	        fieldLabel: 'Key',
+	              	        }, {
+	              	       		id: id + '-form-crypto-key-confirm',
+	              	   	        name: 'cryptoKeyConfirm',
+	              	   	        inputType: 'password',
+	              	   	        fieldLabel: 'Confirm Key',
+	              	        }]
+              	       }],
+              	       handler: function() {
+
+              	    	    if(!Ext.getCmp(id + '-form-crypto-algorithm').getValue()) {
+              	    	    	
+              	    	    	AgilePHP.Studio.error('Algorithm required');
+              	    	    	return false;
+              	    	    }
+
+              	    		if(Ext.getCmp(id + '-form-crypto-key').getValue() != Ext.getCmp(id + '-form-crypto-key-confirm').getValue()) {
+              	    			
+              	    		   AgilePHP.Studio.error('Cryptography keys don\'t match');
+              	    		   return false;
+              	    		}
+              	    		return true;
+              	       }
               	}, {
               	    id: 'step-4',
               	    label: 'Sessions',
@@ -314,18 +373,45 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               	    },
               	    items: [{
               	   		xtype: 'label',
-              	   		html: '<div class="window-header">The AgilePHP SessionScope component uses database persisted sessions instead of the standard PHP filesystem based sessions. Would you like to use the SessionScope component?</p>'
+              	   		html: '<div class="window-header">The AgilePHP SessionScope allows flexible session management within your web applications. Would you like to use the SessionScope component?</p>'
               	   	}, {
               	           xtype: 'fieldset',
               	           title: 'Sessions',
               	           defaultType: 'textfield',
               	           items: [{
-              	       		id: id + '-form-session-enable',
-              	       		xtype: 'checkbox',
-              	   	        name: 'sessionEnable',
-              	   	        fieldLabel: 'Enable',
-              	   	        checked: true
-              	           }]
+              	       			id: id + '-form-session-enable',
+              	       			xtype: 'checkbox',
+              	       			name: 'sessionEnable',
+              	       			fieldLabel: 'Enable',
+              	       			checked: true,
+              	       			listeners: {
+              	        	   
+		              	        	 check: function( checkbox, checked ) {
+		         	           			Ext.getCmp(id + '-form-session-provider').setDisabled(checked == false);
+		         	           		 }
+              	            	}
+              	           }, new Ext.form.ComboBox({
+                 	       		id: id + '-form-session-provider',
+                  	       		name: 'sessionProvider',
+                  	       		mode: 'local',
+                  			    emptyText: '(Session Provider)',
+                  			    store: new Ext.data.ArrayStore({
+                  			        id: id + '-session-provider-store',
+                  			        fields: [
+                  			            {name: 'id'},
+                  			            {name: 'name'}
+                  			        ],
+                  			        data: [ ['PHP', 'PhpSessionProvider'],
+                  			                ['ORM', 'OrmSessionProvider']
+                  			        ],
+                  			    }),
+                  			    valueField: 'id',
+                  			    displayField: 'name',
+                  			    fieldLabel: 'Provider',
+                  			    typeAhead: true,
+                  		        forceSelection: true,
+                  		        triggerAction: 'all'
+                  	       	})]
               	       }]
               	}, {
               	    id: 'step-5',
@@ -380,7 +466,6 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               		        triggerAction: 'all',
               		        listeners: {
 
-              	           		//change: function( e, newValue, oldValue ) {
               	        	    select: function( el, record, index ) {
 
               	           			if( el.getValue() == 'sqlite' ) {
@@ -658,4 +743,18 @@ AgilePHP.Studio.Menubar.file.NewProject = function() {
               		}
               	}
       ]);
+
+	  var projectRemote = new ProjectRemote();
+	  	  projectRemote.setCallback(function(algorithms) {
+
+	  		  Ext.getCmp(id + '-form-crypto-algorithm').getStore().loadData(algorithms);
+	  	  });
+	  	  projectRemote.getCryptoAlgorithms();
+
+	  // Provide default values to comboboxes
+	  Ext.getCmp(id + '-form-log-level').setValue('DEBUG');
+	  Ext.getCmp(id + '-form-crypto-algorithm').setValue('sha256');
+	  Ext.getCmp(id + '-form-session-provider').setValue('PhpSessionProvider');
+
+	  return wizard;
 };
