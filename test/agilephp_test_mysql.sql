@@ -57,7 +57,6 @@ CREATE TABLE `users` (
   `enabled` bit(1) DEFAULT NULL,
   PRIMARY KEY (`username`),
   KEY `FK_UserRoles` (`roleId`),
-  KEY `FK_UserSessions` (`sessionId`),
   CONSTRAINT `FK_UserRoles` FOREIGN KEY (`roleId`) REFERENCES `roles` (`name`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

@@ -49,8 +49,7 @@ CREATE TABLE users (
   roleId varchar(25) DEFAULT NULL,
   enabled bit(1) DEFAULT NULL,
   PRIMARY KEY (username),
-  CONSTRAINT FK_UserRoles FOREIGN KEY (roleId) REFERENCES roles (name) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT FK_UserSessions FOREIGN KEY (sessionId) REFERENCES sessions (id) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT FK_UserRoles FOREIGN KEY (roleId) REFERENCES roles (name) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 INSERT INTO roles(name,description) values ('admin','This is an administrator account'),('test','This is a test account');
