@@ -1,10 +1,2 @@
-- Moved SPusers class to agilephp.test.model
-- Added IdentityModel type hint to Identity::setModel
-- build.xml configured for Bugfix versioning
-
--- STUDIO UPDATES --
-
-- Bug fixes to studio package around new identity and scope functionality
-- Added additional Crypto and new SessionScope configuration parameters to new project wizard
-- Updated templates to work with new identity and scope management
-- Updated ProjectRemote to create projects using new configuration values
+- Refactored SQLiteDialect; no longer appends .sqlite to dbname
+- Removed SessionController from studio/templates/view/admin_navigation.phtml

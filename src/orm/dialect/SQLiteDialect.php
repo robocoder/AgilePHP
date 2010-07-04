@@ -33,7 +33,7 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	  public function __construct( Database $db ) {
 
 	  		 try {
-			  	     $this->pdo = new PDO( 'sqlite:' . $db->getName() . '.sqlite' );
+			  	     $this->pdo = new PDO( 'sqlite:' . $db->getName());
 			 	     $this->database = $db;
 			 	     $this->connectFlag = 1;
 	  		 }
@@ -225,7 +225,7 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function drop() {
 
-  	 	 	 $dbfile = $this->database->getName() . '.sqlite';
+  	 	 	 $dbfile = $this->database->getName();
 
   	 	 	 if( !file_exists( $dbfile ) )
   	  	 	 	 throw new ORMException( 'Could not locate sqlite database: ' . $dbfile );
