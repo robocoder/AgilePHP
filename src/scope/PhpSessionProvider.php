@@ -43,6 +43,7 @@ class PhpSessionProvider implements SessionProvider {
 	  	      	 Log::debug('SessionScope::__construct Initalizing session from previous PHP session.');
 
 	  	      	 $this->session = unserialize($_SESSION['AGILEPHP_SESSION']);
+	  	      	 if(!$this->session) $this->session = new Session();
 	  	      	 $this->session->setId(session_id());
 	  	      }
 	  	      else {
