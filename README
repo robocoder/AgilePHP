@@ -35,26 +35,7 @@ PHP 5.3+
 --------------
 ** Building **
 --------------
-To execute build.xml targets, install Phing via PEAR.
-
-pear channel-discover pear.phing.info
-pear install phing/phing
-
-Bug fix to phing/tasks/ext/pearpackage/Fileset.php
-line 59      if (!is_array($options)) {
-line 60                $options = $options->getOptions();
-line 61        }
-
-Bug fix to phing/Phing.php 
-line 1016    $pieces = explode( DIRECTORY_SEPARATOR, $path );
-line 1017    $class = preg_replace( '/\.php/', '', array_pop( $pieces ) );
-line 1018    if( class_exists( $class, false ) ) return;
-
-Apply note to Phing.php - on line 1270, comment the following line to use php.ini memory_limit -1
-ini_set('memory_limit', '32M'); // nore: this may need to be higher for many projects
-
-Install JSlint on Ubuntu:
-http://ioconnor.wordpress.com/2009/05/02/javascriptlint-vim-and-ubuntu/
+http://agilephp.blogspot.com/2010/07/new-104-lts-dev-environment.html
 
 
 ---------------------
@@ -81,27 +62,7 @@ AgilePHP Studio is still under heavy development. It's somewhat functional at th
 To use the testing packages and TDD features install PHP Unit 3 via PEAR.
 
 pear channel-discover pear.phpunit.de
-pear install phpunit/PHPUnit
-
-Update AgilePHP/test/BaseTest.php to use your file system structure when executing unit tests.
-Update AgilePHP/test/index.php to use your file system structure when executing browser based tests.
-
-
--------------------
-** phpDocumentor **
--------------------
-To have Phing output apidocs, install phpDocumentor via PEAR.
-
-pear install phpDocumentor XML_Beautifier
-
-
-----------
-** YAML **
-----------
-To get YAML working on PHP 5.3 under ubuntu 10.04:
-
-apt-get install libyaml-0-2 libyaml-dev
-pecl install yaml
+pear install --alldeps phpunit/PHPUnit
 
 
 ----------
@@ -120,13 +81,3 @@ Visit the FishEye at http://fisheye.makeabyte.com
 ** Bug Tracking **
 ------------------
 Visit Jira at http://jira.makeabyte.com. Thanks for helping make AgilePHP better!
-
-
- --------------------------
- **      Known Issues      **
- --------------------------
-Issue: Phing dist target fails with the following error:
-	   PHP Fatal error:  SOAP-ERROR: Parsing WSDL: Couldn't load from 'http://localhost/test/index.php/SoapRpcLiteralTestAPI/wsdl' : Extra content at the end of the document
- in /home/jhahn/Apps/eclipse-galileo/workspace/AgilePHP/test/phpunit/SoapRpcLiteralTest.php on line 28
-Reason: test/logs is not writable or the URL being used to access the SOAP web services virtualhost does not exist
-Resolution: chmod -R 777 test/logs
