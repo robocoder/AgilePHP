@@ -1,2 +1,9 @@
-- Refactored SQLiteDialect; no longer appends .sqlite to dbname
-- Removed SessionController from studio/templates/view/admin_navigation.phtml
+- Bug fix to MySQLDialect::create resulting in malformed sql statement generation when table has no primary key
+- Bug fix to #@Restrict interceptor. Refactored to support new type hinted Identity::hasRole.
+- Optimization to MVC::dispatch - removed special handling of intercepted controllers
+
+
+-- Studio Updates --
+- Nasty bug fix to NewModel create process. ExtJS was causing 'handler' property to be executed twice.
+- Added Phing build file to new project creation process
+- Bug fix to NewModelRemote::create. Was updating studio orm.xml instead of selected project.

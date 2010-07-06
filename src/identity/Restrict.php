@@ -92,23 +92,23 @@ class Restrict {
 	  public $message;
 
 	  #@AroundInvoke
-	  public function requireRole( InvocationContext $ic ) {
+	  public function requireRole(InvocationContext $ic) {
 
 	  		 $message = $ic->getInterceptor()->message ? $ic->getInterceptor()->message : 'Access Denied';
 
 	  		 $requiredRole = $ic->getInterceptor()->role;
-	  	     if( Identity::hasRole( $requiredRole ) )
+	  	     if( Identity::hasRole(new Role($requiredRole)))
 	  	     	 return $ic->proceed();
 
 	  	     $roles = $ic->getInterceptor()->roles;
-	  	     if( is_array( $roles ) ) {
+	  	     if(is_array($roles)) {
 
-	  	     	 foreach( $roles as $role )
-	  	     	 	if( Identity::hasRole( $role ) )
+	  	     	 foreach($roles as $role)
+	  	     	 	if(Identity::hasRole(new Role($role)))
 	  	     	 		return $ic->proceed();
 	  	     }
 
-	  	     $this->audit( $message, $ic );
+	  	     $this->audit($message, $ic);
 	  }
 
 	  /**
@@ -118,10 +118,10 @@ class Restrict {
 	   * @param InvocationContext $ic The InvocationContext which contains the current call state
 	   * @return void
 	   */
-	  private function audit( $message, $ic ) {
+	  private function audit($message, $ic) {
 
-	  		  Log::error( '#@Restrict::audit Access Denied ' . print_r( Identity::getModel(), true ) );
-	  		  throw new AccessDeniedException( $message );
+	  		  Log::error('#@Restrict::audit Access Denied ' . print_r(Identity::getModel(), true));
+	  		  throw new AccessDeniedException($message);
 	  }
 }
 ?>

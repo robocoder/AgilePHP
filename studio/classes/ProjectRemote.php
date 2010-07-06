@@ -127,6 +127,7 @@ class ProjectRemote {
 			  		 $this->createAccessFile( ($databaseType) == 'sqlite' ? true : false, $databaseName );
 			  		 $this->createIndexDotPHP();
 			  		 $this->createStyleSheet();
+			  		 $this->createBuildXml();
 
 			  		 if( $ideEnable ) {
 
@@ -291,7 +292,7 @@ class ProjectRemote {
 
 			  if( $sqlite ) {
 
-			  	  $data .= PHP_EOL . "<Files " . $dbname . ".sqlite>" . PHP_EOL;
+			  	  $data .= PHP_EOL . "<Files " . $dbname . ">" . PHP_EOL;
 			  	  $data .= "\torder deny,allow" . PHP_EOL;
 			  	  $data .= "\tdeny from all" . PHP_EOL;
 			  	  $data .= "</Files>";
@@ -548,6 +549,153 @@ url=http://localhost/index.php';
 
 	  		 $h = fopen( $nbproject . '/private/private.properties', 'w' );
 	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $privateDotProperties ) );
+	  		 fclose( $h );
+	  }
+
+	  private function createBuildXml() {
+
+	          $xml = '<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="' . $this->projectName . '" basedir="." default="main">
+
+    <property file="${project.basedir}/build.properties"/>
+
+    <property name="package" value="${phing.project.name}"/>
+    <property name="build.dir" value="${project.basedir}/build"/>
+	<property name="apidoc.dir" value="${project.basedir}/build/apidoc"/>
+    <property name="log.dir" value="${project.basedir}/logs"/>
+    <property name="test.dir" value="${project.basedir}/tests"/>
+    <property name="phpunit.reports" value="${build.dir}/reports/phpunit"/>
+
+    <version releasetype="Minor" file="VERSION" property="build.version"/>
+
+    <fileset dir="${project.basedir}" id="distfiles">
+        <include name="**"/>
+		<exclude name="build.properties"/>
+		<exclude name="build.xml"/>
+		<exclude name="VERSION"/>
+    </fileset>
+
+    <tstamp>
+        <format property="buildtime" pattern="%a, %d %b %Y, %H:%M"/>
+    </tstamp>
+
+    <target name="main" description="Default target" depends="clean,test">
+
+        <phplint>
+            <fileset dir="${project.basedir}">
+                <include name="**/*.php"/>
+            </fileset>
+        </phplint>
+
+        <jsllint>
+            <fileset dir="${project.basedir}">
+                <include name="**/*.js"/>
+            </fileset>
+        </jsllint>
+
+        <copy todir="${build.dir}/${phing.project.name}">
+            <fileset refid="distfiles"/>
+        </copy>
+		
+		<delete dir="${build.dir}/${phing.project.name}/tests" includeemptydirs="true"/>
+		<delete dir="${build.dir}/${phing.project.name}/build" includeemptydirs="true"/>
+
+        <jsMin targetDir="${build.dir}/${phing.project.name}" failOnError="true">
+            <fileset dir="${build.dir}/${phing.project.name}">
+                <include name="**/*.js"/>
+            </fileset>
+        </jsMin>
+    </target>
+
+    <target name="apidoc" description="Generates apidoc using phpDocumentor">
+        <exec dir="${project.basedir}" logoutput="true"
+         command="phpdoc -d . -t build/apidoc -o HTML:frames:phpdoc.de -ti \'${phing.project.name}\' -ue on -s on"/>
+    </target>
+
+    <target name="archive" description="Creates a distributable gzip archive">
+        <zip destfile="${build.dir}/${phing.project.name}-${build.version}-src.zip">
+            <fileset dir=".">
+                <include name="**/**"/>
+            </fileset>
+        </zip>
+		<zip destfile="${build.dir}/${phing.project.name}-${build.version}-apidoc.zip">
+            <fileset dir="${apidoc.dir}">
+                <include name="**/**"/>
+            </fileset>
+        </zip>
+        <zip destfile="${build.dir}/${phing.project.name}-${build.version}-dist.zip">
+            <fileset refid="distfiles"/>
+        </zip>
+    </target>
+
+    <target name="test" description="Runs PHPUnit test suites">
+        <delete dir="${phpunit.reports}" includeemptydirs="true" verbose="true"/>
+        <mkdir dir="${phpunit.reports}"/>
+        <mkdir dir="${phpunit.reports}/tests"/>
+        <mkdir dir="${phpunit.reports}/coverage"/>
+        <coverage-setup database="${phpunit.reports}/coverage/db">
+      		<fileset dir="${project.basedir}">
+    			<include name="**/*.php"/>
+  			</fileset>
+    	</coverage-setup>
+        <phpunit bootstrap="${test.dir}/bootstrap.php" codecoverage="true"
+        			 haltonfailure="true" haltonerror="true" printsummary="true">
+            <formatter todir="${phpunit.reports}/tests" type="xml"/>
+            <batchtest>
+                <fileset dir="${test.dir}">
+					<include name="*Test.php" />
+                </fileset>
+            </batchtest>
+        </phpunit>
+        <phpunitreport infile="${phpunit.reports}/tests/testsuites.xml"  styledir="${phpunit.styles.dir}"
+         					format="frames" todir="${phpunit.reports}/tests"/>
+         <coverage-report outfile="${phpunit.reports}/coverage/coverage.xml">
+      		<report todir="${phpunit.reports}/coverage"/>
+    	</coverage-report>
+    </target>
+
+	<target name="dist" depends="main,apidoc,archive"/>
+
+    <target name="clean" description="Deletes build related artifacts" depends="delete-logs">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="delete-logs" description="Deletes log files from test and studio packages">
+        <delete dir="${log.dir}" includeemptydirs="true" verbose="true"/>
+		<mkdir dir="${log.dir}"/>
+		<chmod file="${log.dir}" mode="0777" verbose="true" />
+    </target>
+
+    <!-- Helper targets used to install build and test tools -->
+
+    <target name="install-phpdocumentor" description="Installs phpDocumentor via PEAR">
+        <exec dir="${project.basedir}" logoutput="true"
+         command="pear install phpDocumentor"/>
+    </target>
+
+    <target name="install-phpunit" description="Installs PHPUnit via PEAR">
+        <exec dir="${project.basedir}" logoutput="true"
+         command="pear channel-discover pear.phpunit.de"/>
+        <exec dir="${project.basedir}" logoutput="true"
+         command="pear install phpunit/PHPUnit"/>
+    </target>
+
+</project>';
+
+	         // Write build.xml
+	         $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'build.xml', 'w' );
+	  		 fwrite( $h, $xml );
+	  		 fclose( $h );
+
+	  		 // Write build.properties
+	  		 $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'build.properties', 'w' );
+	  		 fwrite( $h, 'phpunit.styles.dir=/usr/share/php/data/phing/etc' );
+	  		 fclose( $h );
+
+	  		 // Write VERSION
+	  		 $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'VERSION', 'w' );
+	  		 fwrite( $h, '0.0.0' );
 	  		 fclose( $h );
 	  }
 }

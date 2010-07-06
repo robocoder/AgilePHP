@@ -157,10 +157,13 @@ class NewModelRemote {
 
 	  #@RemoteMethod
 	  public function create( $tableName, $workspace, $projectName, $properties, $updateOrmDotXml, $createTable ) {
-
+  		 
 	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
 	  		 $modelName = ucfirst( preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $tableName ) );
 	  		 $path = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model';
+
+	  		 $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
+	  		 $orm = ORMFactory::load( $ormXml );
 
 	  		 $Table = new Table();
 	  		 $Table->setName( $tableName );
@@ -218,7 +221,7 @@ class NewModelRemote {
 	      	     foreach( $xml->database->table as $tableXml ) {
 
 	      		  		  if( (string)$tableXml->attributes()->model == $modelName )
-	      		  		   	   throw new FrameworkException( 'Failed to update orm.xml. Table element already exists.' );
+	      		  		   	   throw new FrameworkException( 'Failed to update orm.xml. Table element already exists for model \'' . $modelName . '\'.' );
 	      		 }
 
 	      		 $xml = "\t<table name=\"" . $tableName . "\" model=\"" . $modelName . "\">" . PHP_EOL;
@@ -271,7 +274,7 @@ class NewModelRemote {
       		     fclose( $h );
       	     }
 
-      	     if( $createTable ) ORM::createTable( $Table );
+      	     if( $createTable ) $orm->createTable( $Table );
 
       	     return true;
 	  }

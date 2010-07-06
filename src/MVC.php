@@ -243,19 +243,9 @@ class MVC {
 		  	     			foreach( $this->parameters as $key => $val )
 					  	     	 	 $this->parameters[$key] = $request->sanitize( $val );
 
-					  	// If this is a class thats been intercepted, check both the inner class and the interceptor for
-					  	// the presence of the requested method/action.
-					  	if( method_exists( $this->controller, 'getInterceptedInstance' ) ) {
-
-					  		if( !method_exists( $oController->getInterceptedInstance(), $action ) )
-					  			throw new FrameworkException( 'The specified action \'' . $action . '\' does not exist.', 101 );
-					  	}
-					  	else {
-
-					  		// This is a standard PHP class that hasnt been intercepted
-						  	if( !method_exists( $this->controller, $action ) )
-						  		throw new FrameworkException( 'The specified action \'' . $action . '\' does not exist.', 102 );
-					  	} 
+				  		// Make sure requested action method exists
+					  	if( !method_exists( $this->controller, $action ) )
+					  		throw new FrameworkException( 'The specified action \'' . $action . '\' does not exist.', 101 );
 
 					  	Log::debug( 'MVC::dispatch Invoking controller \'' . $this->controller . 
 					  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $this->parameters  ) . '\'.' );
@@ -267,6 +257,10 @@ class MVC {
 		  	     		Log::debug( 'MVC::dispatch Invoking controller \'' . $this->controller . 
 					  	     			'\', action \'' . $this->action . '\'.' );
 	
+		  	     		// Make sure requested action method exists
+					  	if( !method_exists( $this->controller, $action ) )
+					  		throw new FrameworkException( 'The specified action \'' . $action . '\' does not exist.', 102 );
+
 		  	     		$oController->$action();
 		  	     	}
 	  	     //}

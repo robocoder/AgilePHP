@@ -214,6 +214,8 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
    				  	  $sql .= ', UNIQUE KEY `' . $pkeyColumns[0]->getName() . '` (`' . $pkeyColumns[0]->getName() . '`)';
    				  */
    			  }
+   			  else
+   			      $sql = substr($sql, 0, -2); // chop off trailing comma due to missing primary key
 
 	   		  if( $table->hasForeignKey() ) {
 

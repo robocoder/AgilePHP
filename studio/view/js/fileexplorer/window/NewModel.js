@@ -371,6 +371,8 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
       	   	}, grid ],
       	   	handler: function() {
 
+      	    	if(this.initialConfig) return; // Prevents ExtJS "handler" event
+
       	    	var properties = [];
       	    	var tableName = (selectedTable) ? selectedTable : Ext.getCmp( id + '-form-name' ).getValue();
       	    	var createTableEl = Ext.getCmp( id  + '-form-createtable' );
@@ -411,6 +413,7 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
       	    		AgilePHP.Studio.FileExplorer.highlightedNode.reload();
       	    		win.close();
       	    	});
+
       	    	newModelRemote.create( tableName,
 			 				AgilePHP.Studio.FileExplorer.workspace,
 			 				AgilePHP.Studio.FileExplorer.getSelectedProject(),
@@ -421,13 +424,15 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
       	    	Ext.getCmp( 'fe-new-model' ).hide();
       	    }
     }]);
-	
+
+	// Load database tables according to the selected projects orm.xml configuration
 	newModelRemote.setCallback( function( tables ) {
 
 		Ext.getCmp( id + '-form-database-table' ).getStore().loadData( tables );
 	});
 	newModelRemote.getDatabaseTables( workspace, AgilePHP.Studio.FileExplorer.getSelectedProject() );
 
+	// Load data types according to the selected projects orm.xml configuration
 	newModelRemote.setCallback( function( types ) {
 	
 		Ext.getCmp( id + '-editorgridpanel-type-combo' ).getStore().loadData( types );

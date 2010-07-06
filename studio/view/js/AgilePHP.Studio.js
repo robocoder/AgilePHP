@@ -47,7 +47,7 @@ AgilePHP.Studio = {
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'components/ext/ux/grid/CheckColumn.js' );
 		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'components/ext/ux/PagingMemoryProxy.js' );
 		
-		AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/RemotingProxy.js' );
+		//AgilePHP.loadScript( AgilePHP.getDocumentRoot() + 'view/js/RemotingProxy.js' );
 	},
 
 	/**
