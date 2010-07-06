@@ -22,7 +22,7 @@
 /**
  * Default IdentityManager implementation. Manages user, role, session,
  * authentication, and basic email tasks.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
@@ -140,7 +140,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   * @see src/identity/IdentityManager#getCreated()
 	   */
 	  public function getCreated() {
-	  	
+
 	  		 return $this->getModel()->getCreated();
 	  }
 
@@ -149,7 +149,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   * @see src/identity/IdentityManager#setLastLogin($dateTime)
 	   */
 	  public function setLastLogin($dateTime) {
-	  	
+
 	  		 $this->getModel()->setLastLogin($dateTime);
 	  }
 
@@ -212,7 +212,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   * @see src/identity/IdentityManager#getRoles()
 	   */
 	  public function getRoles() {
-	      
+
 	         return $this->getModel()->getRoles();
 	  }
 
@@ -272,7 +272,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   * @see src/identity/IdentityManager#setForgotPasswdMailer($mailer)
 	   */
 	  public function setForgotPasswdMailer($mailer) {
-	  	
+
 	  		 $this->forgotPasswdMailer = $mailer;
 	  }
 
@@ -290,7 +290,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   * @see src/identity/IdentityManager#setResetPasswdMailer($mailer)
 	   */
 	  public function setResetPasswdMailer($mailer) {
-	  	
+
 	  		 $this->resetPasswdMailer = $mailer;
 	  }
 
@@ -329,7 +329,7 @@ class IdentityManagerImpl implements IdentityManager {
 
 	  		 $this->authenticator = $authenticator;
 	  }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#getAuthenticator()
@@ -338,7 +338,7 @@ class IdentityManagerImpl implements IdentityManager {
 
 	  		 return $this->authenticator;
 	  }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#forgotPassword()
@@ -354,7 +354,7 @@ class IdentityManagerImpl implements IdentityManager {
 	  		 $table = ORM::getTableByModelName($this->getModelName());
 	  		 $emailColumn = $table->getColumnNameByProperty('email');
 
-	  		 ORM::prepare('SELECT ' . $emailColumn . ' FROM ' . $table->getName() . 
+	  		 ORM::prepare('SELECT ' . $emailColumn . ' FROM ' . $table->getName() .
 	  		 			  ' WHERE ' . $emailColumn . '=? AND username=?;');
 	  		 $params = array($this->getEmail(), $this->getUsername());
 
@@ -459,8 +459,8 @@ class IdentityManagerImpl implements IdentityManager {
     	  		$session->set('IDENTITY_MODEL', $model);
 
    	  		    $model->setLastLogin(strtotime('now'));
-   	  		    $this->merge();
    	  		    $this->setModel($model);
+   	  		    $this->merge();
     	  		return true;
 	  		 }
 
@@ -524,7 +524,7 @@ class IdentityManagerImpl implements IdentityManager {
 
 	  /**
 	   * Destructor prints log debug entry notifying that the identity instance has been destroyed.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function __destruct() {
