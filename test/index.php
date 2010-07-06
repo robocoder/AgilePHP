@@ -7,12 +7,11 @@
 
 
  try {
- 		$agilephp = AgilePHP::getFramework();  	
+ 		$agilephp = AgilePHP::getFramework();
+ 		$agilephp->setDefaultTimezone( 'America/New_York' );
   	    $agilephp->setDisplayPhpErrors( true );
     	$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . '/../src' ) );
     	$agilephp->setAppName( 'AgilePHP Framework Tests' );
-    	
-  	    $agilephp->setDefaultTimezone( 'America/New_York' );
 
   		MVC::getInstance()->dispatch();
  }
