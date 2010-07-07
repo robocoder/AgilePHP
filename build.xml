@@ -129,12 +129,14 @@
          <coverage-report outfile="${phpunit.reports}/coverage/coverage.xml">
       		<report todir="${phpunit.reports}/coverage"/>
     	</coverage-report>
+    	<delete dir="${test.dir}/.cache"/>
     </target>
 
 	<target name="dist" depends="main,apidoc,archive"/>
 
     <target name="clean" description="Deletes build related artifacts" depends="delete-logs">
         <delete dir="${build.dir}"/>
+        <delete dir="${test.dir}/.cache"/>
     </target>
 
     <target name="delete-logs" description="Deletes log files from test and studio packages">

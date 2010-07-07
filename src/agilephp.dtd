@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!ELEMENT agilephp ( mvc?, logger?, identity*, scope*, crypto? )>
+<!ELEMENT agilephp ( mvc?, logger?, identity*, scope*, crypto?, cache? )>
 
 <!ELEMENT mvc (#PCDATA)>
 <!ATTLIST mvc controller CDATA #IMPLIED>
@@ -46,3 +46,6 @@
 <!ATTLIST crypto algorithm ( md5 | sha1 | sha256 | sha384 | sha512 | crc32 ) #REQUIRED>
 <!ATTLIST crypto iv CDATA #IMPLIED>
 <!ATTLIST crypto key CDATA #IMPLIED>
+
+<!ELEMENT cache (#PCDATA)>
+<!ATTLIST cache provider CDATA #REQUIRED>

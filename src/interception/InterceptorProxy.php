@@ -21,7 +21,7 @@
 
 /**
  * Proxy applied to intercepted classes
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.interception
@@ -35,7 +35,7 @@ class InterceptorProxy {
 	   * Initalizes the intercepted class by creating a new instance, passing in
 	   * any constructor arguments as required. Class level interceptors are invoked
 	   * here, as well as dependancy injections via #@In.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function __construct() {
@@ -92,7 +92,7 @@ class InterceptorProxy {
 
 			     		 	 	 	   	 $invocationCtx = new \InvocationContext( $this->object, null, null, $interception->getInterceptor(), $interception->getProperty() );
 								         $value = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
-								         $p->setValue( $this->object, $value );								               
+								         $p->setValue( $this->object, $value );
 			     		 	 	 	 }
      		 	 	 				 if( $interceptorMethod->hasAnnotation( 'AfterInvoke' ) ) {
 
@@ -106,7 +106,7 @@ class InterceptorProxy {
 
 	  /**
 	   * Returns a singleton instance of the intercepted class
-	   * 
+	   *
 	   * @return Singleton instance of the intercepted class
 	   * @static
 	   */
@@ -126,7 +126,7 @@ class InterceptorProxy {
 	  /**
 	   * Returns the instance of the intercepted class. This is the original class
 	   * that was requested, renamed to '<class_name>_Intercepted'.
-	   * 
+	   *
 	   * @return The intercepted class instance
 	   */
 	  public function getInterceptedInstance() {
@@ -136,7 +136,7 @@ class InterceptorProxy {
 
 	  /**
 	   * Magic PHP property accessor used to intercept calls to properties.
-	   * 
+	   *
 	   * @param String $property The property/field name being accessed
 	   * @return The property/field value
 	   * @throws InterceptionException
@@ -155,7 +155,7 @@ class InterceptorProxy {
 
   	  /**
   	   * Magic PHP property mutator used to intercept mutation calls.
-  	   * 
+  	   *
   	   * @param String $property The property/field name being set
   	   * @param mixed $value The value to set
   	   * @return void
@@ -175,7 +175,7 @@ class InterceptorProxy {
 
       /**
        * Magic PHP isset. Checks a property to see if its set
-       * 
+       *
        * @param $property The property/field being tested
        * @return True if the property/field is set, false otherwise
        * @throws InterceptionException
@@ -187,7 +187,7 @@ class InterceptorProxy {
 
   	  /**
   	   * Magic PHP unset function used to intercept unset calls.
-  	   * 
+  	   *
   	   * @param String $property The property/field being unset
   	   * @return void
   	   * @throws InterceptionException
@@ -199,7 +199,7 @@ class InterceptorProxy {
 
   	  /**
   	   * Magic PHP method executor used to intercept method calls.
-  	   * 
+  	   *
   	   * @param String $method The method being called
   	   * @param Array $args The arguments being passed
   	   * @return The result of the intercepted method invocation
@@ -261,18 +261,18 @@ class InterceptorProxy {
 	     		 	 	 		    foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
 
 					     		 	 	     if( $interceptorMethod->hasAnnotation( 'AfterInvoke' ) ) {
-	
+
 					     		 	 	   	     // If a method does not have an #@AroundInvoke method, InvocationContext::return
 					     		 	 	   	     // will be null. This will execute the intended call as desired and store the return
 					     		 	 	   	     // value in a new InvocationContext instance so it can be processed by #@AfterInvoke
 					     		 	 	   	     if( !isset( $invocationCtx ) ) {
-	
+
 					     		 	 	   	   	     $invocationCtx = new \InvocationContext( $this->object, $method, $args, $interception->getInterceptor() );
 					     		 	 	   	   	     $m = $class->getMethod( $method );
 					     		 	 	   	   	     $return = $args ? $m->invokeArgs( $this->object, $args ) : $m->invoke( $this->object );
 					     		 	 	   	   	     $invocationCtx->setReturn( $return );
 					     		 	 	   	     }
-	
+
 					     		 	 	   	     $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
 									             if( $ctx instanceof InvocationContext && $ctx->proceed )
 				     		 	 	 		   	     return $ctx->getReturn();
@@ -287,6 +287,9 @@ class InterceptorProxy {
 		     		   }
 		     }
 
+		     // Interceptor was invoked but returned null
+		     if(isset($invoked) && !$invoked) return;
+
 	  		 // No interceptors, invoke the intercepted method as it was called.
 		     $m = $class->getMethod( $method );
 		     return $args ? $m->invokeArgs( $this->object, $args ) : $m->invoke( $this->object, $args );
@@ -294,7 +297,7 @@ class InterceptorProxy {
 
 	  /**
 	   * Invokes class level interceptor #@AfterInvoke methods upon destruction.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function __destruct() {

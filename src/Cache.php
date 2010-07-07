@@ -19,6 +19,8 @@
  * @package com.makeabyte.agilephp
  */
 
+require_once 'cache/CacheProvider.php';
+
 /**
  * Allows caching dynamic data that doesn't require real-time rendering.
  *
@@ -57,8 +59,25 @@ class Cache {
 	   */
 	  public $minutes = 0;
 
-	  // Cache file
-	  private $file;
+	  /**
+	   * Boolean flag used to indicate whether or not output buffering should be used to capture HTML data.
+	   *
+	   * @var boolean True to cache data using output buffering, false to cache method return value. Default
+	   *              is to capture a method return value.
+	   */
+	  public $html = false;
+
+	  /**
+	   * Creates a new Cache instance and initalizes object state
+	   *
+	   * @return void
+	   */
+	  public function __construct() {
+
+	         $xml = AgilePHP::getFramework()->getConfiguration();
+	         $provider = (isset($xml->cache)) ? (string)$xml->cache->attributes()->provider : 'FileCacheProvider';
+	         $this->provider = new $provider();
+	  }
 
 	  /**
 	   * Performs decisions on whether to return cached content or carry out
@@ -68,75 +87,64 @@ class Cache {
 	   * @return void
 	   */
 	  #@AroundInvoke
-	  public function process( InvocationContext $ic ) {
+	  public function process(InvocationContext $ic) {
 
-	  		 // Build directory and create it if it doesn't exist
-	  		 $dir = '.cache';
-	  		 if( !file_exists( $dir ) ) {
+	  		 $key = get_class($ic->getTarget()) . '_' . $ic->getMethod();
 
-	  		     mkdir( $dir );
-	  		     chown( $dir, 0760 );
-	  		 }
+	  		 // Data not cached; process real-time, cache for next request, and return the data
+	  		 if(!$this->provider->get($key))
+	  		    return ($this->html) ? $this->cacheAndServeHtml($ic) : $this->cacheAndServe($ic);
 
-	  		 // Build file path
-	  		 $name = get_class( $ic->getTarget() );
-	  		 $this->file = $dir . DIRECTORY_SEPARATOR . $name. '_' . $ic->getMethod();
-
-	  		 // The requested content needs to be served real-time and cached
-	  		 if( !file_exists( $this->file ) )
-	  		 	 return $this->serveAndCache( $ic );
-
-	  		 if( !$this->minutes )
-
-  		 		 // Cache never expires
-		 		 return $this->serveFromCache();
-
-		 	 else if( $this->minutes > 0 ) { // Serve from cache if the file is less than $this->minutes old
-
-  		 			// Convert from seconds to minutes
-  		 			$this->minutes = $this->minutes * 60;
-
-  		 			if( time() - $this->minutes < filemtime( $this->file ) )
-	  		 			return $this->serveFromCache();
-	  		 }
-
-	  		 return $this->serveAndCache( $ic );
+	  		 // Return cached data
+	  		 if($this->html)
+	  		    echo $this->provider->get($key);
+	  		 else
+	  		    return $this->provider->get($key);
 	  }
 
 	  /**
-	   * Renders a real-time request and caches the output.
+	   * Executes the intercepted call, caches the return value and returns the result.
 	   *
+	   * @param InvocationContext $ic The intercepted InvocationContext
 	   * @return void
 	   */
-	  private function serveAndCache( InvocationContext $ic ) {
+	  private function cacheAndServe(InvocationContext $ic) {
 
-        	  $clsName = get_class( $ic->getTarget() );
+        	  $clsName = get_class($ic->getTarget());
         	  $o = new $clsName();
 
         	  $class = new ReflectionClass( $o );
-        	  $m = $class->getMethod( $ic->getMethod() );
-        	  $data = $ic->getParameters() ? $m->invokeArgs( $o, $ic->getParameters() ) : $m->invoke( $o );
+        	  $m = $class->getMethod($ic->getMethod());
+        	  $data = $ic->getParameters() ? $m->invokeArgs($o, $ic->getParameters()) : $m->invoke($o);
 
-        	  $h = fopen( $this->file, 'w' );
-        	  fwrite( $h, serialize( $data ) );
-			  fclose( $h );
+        	  $key = $clsName . '_' . $ic->getMethod();
+        	  $this->provider->set($key, $data, $this->minutes);
 
 			  return $data;
-
-	   	      Log::debug( '#@Cache::serveAndCache Cached ' . $this->file );
 	  }
 
 	  /**
-	   * Serves up cached content with a prefixed HTML comment indicating when the file was cached.
+	   * Executes the intercepted call using HTML buffering, caches the output, and flushes the buffer.
 	   *
+	   * @param InvocationContext $ic The intercepted InvocationContext
 	   * @return void
 	   */
-	  private function serveFromCache() {
+	  private function cacheAndServeHtml(InvocationContext $ic) {
 
-	  		 $data = '<!-- Cached ' . date( 'c', filemtime( $this->file ) ) . "-->\n";
-	  		 $data .= unserialize( file_get_contents( $this->file ) );
+	          ob_start();
 
-	  		 return $data;
+        	  $clsName = get_class($ic->getTarget());
+	          $o = new $clsName();
+
+        	  $class = new ReflectionClass( $o );
+        	  $m = $class->getMethod($ic->getMethod());
+        	  $data = $ic->getParameters() ? $m->invokeArgs($o, $ic->getParameters()) : $m->invoke($o);
+
+        	  $key = $clsName . '_' . $ic->getMethod();
+        	  $data = ob_get_flush();
+        	  $this->provider->set($key, $data, $this->minutes);
+
+        	  return $data;
 	  }
 }
 ?>

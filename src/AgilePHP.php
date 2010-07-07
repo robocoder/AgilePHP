@@ -19,6 +19,7 @@
  * @package com.makeabyte.agilephp
  */
 
+require_once 'FrameworkException.php';
 require_once 'Annotation.php';
 require_once 'interception/InterceptorFilter.php';
 require_once 'interception/Interceptor.php';
@@ -629,34 +630,5 @@ final class AgilePHP {
 
 			 throw new FrameworkException( 'The requested class \'' . $class . '\' could not be auto loaded.' );
 		}
-}
-
-/**
- * Base AgilePHP exception class
- *
- * @author Jeremy Hahn
- * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp
- * @throws FrameworkException
- */
-class FrameworkException extends Exception {
-
-	  /**
-	   * Creates a new instance of FrameworkException.
-	   *
-	   * @param String $message The exception message
-	   * @param Integer $code Optional error code.
-	   * @param String $file Optional file path to the exception
-	   * @param Integer $line The line number the exception / error occurred
-	   * @return void
-	   */
-	  public function __construct( $message, $code = null, $file = null, $line = null ) {
-
-			 $this->message = $message;
-	  		 if( $code ) $this->code = $code;
-	  		 $this->file = ($file == null) ? __FILE__ : $file;
-  		 	 $this->line = ($line == null ) ? __LINE__ : $line;
-	  		 $this->trace = debug_backtrace();
-	  }
 }
 ?>
