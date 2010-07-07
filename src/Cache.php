@@ -89,7 +89,7 @@ class Cache {
 	  #@AroundInvoke
 	  public function process(InvocationContext $ic) {
 
-	  		 $key = get_class($ic->getTarget()) . '_' . $ic->getMethod();
+	  		 $key = md5(serialize($ic));
 
 	  		 // Data not cached; process real-time, cache for next request, and return the data
 	  		 if(!$this->provider->get($key))
@@ -110,6 +110,8 @@ class Cache {
 	   */
 	  private function cacheAndServe(InvocationContext $ic) {
 
+	          $key = md5(serialize($ic));
+
         	  $clsName = get_class($ic->getTarget());
         	  $o = new $clsName();
 
@@ -117,7 +119,6 @@ class Cache {
         	  $m = $class->getMethod($ic->getMethod());
         	  $data = $ic->getParameters() ? $m->invokeArgs($o, $ic->getParameters()) : $m->invoke($o);
 
-        	  $key = $clsName . '_' . $ic->getMethod();
         	  $this->provider->set($key, $data, $this->minutes);
 
 			  return $data;
@@ -131,6 +132,8 @@ class Cache {
 	   */
 	  private function cacheAndServeHtml(InvocationContext $ic) {
 
+	          $key = md5(serialize($ic));
+
 	          ob_start();
 
         	  $clsName = get_class($ic->getTarget());
@@ -140,7 +143,6 @@ class Cache {
         	  $m = $class->getMethod($ic->getMethod());
         	  $data = $ic->getParameters() ? $m->invokeArgs($o, $ic->getParameters()) : $m->invoke($o);
 
-        	  $key = $clsName . '_' . $ic->getMethod();
         	  $data = ob_get_flush();
         	  $this->provider->set($key, $data, $this->minutes);
 
