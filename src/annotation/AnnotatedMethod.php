@@ -21,8 +21,8 @@
 
 /**
  * Extends the PHP ReflectioMethod to provide details about method level
- * AgilePHP annotations. 
- * 
+ * AgilePHP annotations.
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.annotation
@@ -33,7 +33,7 @@ class AnnotatedMethod extends ReflectionMethod {
 
 	  /**
 	   * Creates a new instance of AnnotatedMethod.
-	   * 
+	   *
 	   * @param mixed $class The name or instance of a class to inspect
 	   * @param String $method The name of the method to inspect.
 	   * @return void
@@ -42,23 +42,22 @@ class AnnotatedMethod extends ReflectionMethod {
 	  public function __construct( $class, $method ) {
 
 	  		 try {
-			        parent::__construct( $class, $method );
+			        parent::__construct($class, $method);
+			  		AnnotationParser::parse(parent::getDeclaringClass()->getName());
 
-			  		$parser = AnnotationParser::getInstance();
-			  		$parser->parse( parent::getDeclaringClass()->getName() );
-
-			  		$annotations = $parser->getMethodAnnotations( $this );
+			  		$annotations = AnnotationParser::getMethodAnnotations($this);
 			  		$this->annotations = count($annotations) ? $annotations : null;
 	  		 }
-	  		 catch( ReflectionException $re ) {
+	  		 catch(ReflectionException $e) {
 
-	  		 		throw new AnnotationException( $re->getMessage(), $re->getCode() );
+	  		 	   throw new AnnotationException($e->getMessage(), $e->getCode());
 	  		 }
+
 	  }
 
 	  /**
 	   * Returns boolean indicator based on the presence of any method level annotations.
-	   * 
+	   *
 	   * @return True if this method has any annotations, false otherwise.
 	   */
 	  public function isAnnotated() {
@@ -68,7 +67,7 @@ class AnnotatedMethod extends ReflectionMethod {
 
 	  /**
 	   * Checks the method for the presence of the specified annotation.
-	   * 
+	   *
 	   * @param String $annotation The name of the annotation.
 	   * @return True if the annotation is present, false otherwise.
 	   */
@@ -77,7 +76,7 @@ class AnnotatedMethod extends ReflectionMethod {
 	  	     if( $this->isAnnotated() ) {
 
 		  		 foreach( $this->annotations as $annote ) {
-	
+
 		  		 		  $class = new ReflectionClass( $annote );
 		  		 		  if( $class->getName() == $annotation )
 		  		 		  	  return true;
@@ -91,7 +90,7 @@ class AnnotatedMethod extends ReflectionMethod {
 	   * Returns all method annotations. If a name is specified
 	   * only annotations which match the specified name will be returned,
 	   * otherwise all annotations are returned.
-	   * 
+	   *
 	   * @param String $name Optional name of the annotation to filter on. Default is return
 	   * 					 all annotations.
 	   * @return An array of method level annotations or false of no annotations could
@@ -103,7 +102,7 @@ class AnnotatedMethod extends ReflectionMethod {
 
 	  		 	 $annotations = array();
 		  		 foreach( $this->annotations as $annote ) {
-	
+
 		  		 		  if( $annote instanceof $name )
 		  		 		  	  array_push( $annotations, $annote );
 		  		 }
@@ -119,7 +118,7 @@ class AnnotatedMethod extends ReflectionMethod {
 	  /**
 	   * Gets an annotation instance by name. If the named annotation is found more
 	   * than once, an array of annotations are returned.
-	   * 
+	   *
 	   * @param String $name The name of the annotation
 	   * @return The annotation instance or false if the annotation was not found
 	   */
@@ -141,7 +140,7 @@ class AnnotatedMethod extends ReflectionMethod {
 
 	  /**
 	   * Gets the parent class as an AnnotatedClass
-	   * 
+	   *
 	   * @return AnnotatedClass
 	   */
 	  public function getDeclaringClass() {

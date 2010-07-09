@@ -1,12 +1,13 @@
-- Bug fix to InterceptorProxy. Interceptors which return null were resulting in
-  an assumption that no interception took place. Now interceptors that return null
-  result in null being returned to the caller.
-- Abstracted #@Cache interceptor to allow configurable "CacheProvider" implementations.
-- CacheProvider interface along with FileCacheProvider, XCacheProvider, and ApcCacheProvider
-  implementations. #@Cache defaults to FileCacheProvider.
-- Added cache element with provider attribute to agilephp.dtd so #@Cache interceptor
-  can be pre-configured in agilephp.xml
-- Added delete .cache directory operation to build.xml test and clean targets since
-  chown/chmod bug was fixed with new caching abstraction layer.
-- Bug fix to AgilePHP; when running under xcache, FrameworkException was not being autoloaded.
-  FrameworkException has now been moved to its own class and is the first class included. 
+- Started introducing caching into the core framework. If agilephp.xml contains
+  a cache configuration element, the core framework will use the specified provider
+  to cache internal data.
+- Caching support added to AnnotationParser
+- Caching support added to InterceptorProxy
+- Cleaned up and optmizied InterceptorProxy::__call
+- Fixed bug where CacheException could not be autoloaded when running under xcache
+- Caching support added to AgilePHP::getSource
+- Caching support added to AgilePHP::autoload
+- Misc bug fixes in regards to new caching system
+- Added #@Id and #@Password interceptors to interceptors unit test
+
+Benchmarks show caching increases performace of interceptors ~150%

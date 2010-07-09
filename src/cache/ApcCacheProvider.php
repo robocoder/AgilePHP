@@ -46,7 +46,7 @@ class ApcCacheProvider implements CacheProvider {
 	   */
       public function set($key, $value, $minutes = 0) {
 
-             apc_add($key, $value, $minutes);
+             apc_add($key, serialize($value), $minutes);
       }
 
       /**
@@ -55,7 +55,7 @@ class ApcCacheProvider implements CacheProvider {
 	   */
       public function get($key) {
 
-             return apc_fetch($key);
+             return unserialize(apc_fetch($key));
       }
 
 	  /**

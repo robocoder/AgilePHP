@@ -29,7 +29,7 @@ require_once 'annotation/AnnotatedProperty.php';
 
 /**
  * Opens up the world of annotations to the PHP programming language :p
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
@@ -41,7 +41,7 @@ class Annotation {
 
 	  /**
 	   * Static factory method used to retrieve AnnotatedClass instances.
-	   * 
+	   *
 	   * @param mixed $class The class name or instance to inspect
 	   * @return void
 	   * @throws AnnotationException
@@ -51,10 +51,10 @@ class Annotation {
 
 	  		 return new AnnotatedClass( $class );
 	  }
-	  
+
 	  /**
 	   * Static factory method used to retrieve AnnotatedMethod instances.
-	   * 
+	   *
 	   * @param mixed $class The class name or instance to inspect.
 	   * @param String $name The method name
 	   * @return AnnotatedMethod
@@ -68,7 +68,7 @@ class Annotation {
 
 	  /**
 	   * Static factory method used to retrieve AnnotatedProperty instances.
-	   * 
+	   *
 	   * @param mixed $class The class name or instance to inspect
 	   * @param String $property The property name
 	   * @return AnnotatedProperty
@@ -83,7 +83,7 @@ class Annotation {
 	  /**
 	   * Returns true if the specified class contains and class, method, or
 	   * property level annotations.
-	   * 
+	   *
 	   * @param mixed $class The class name or instance to inspect
 	   * @return bool True if the class contains any class, method, or property
 	   * 		 	   level annotations.
@@ -109,7 +109,7 @@ class Annotation {
 	   * Returns an array of class level annotations for the specified class.
 	   * Tries to return a cached set of results first. If no annotations are
 	   * found the specified class is then parsed and the new result is returned.
-	   * 
+	   *
 	   * @param mixed $class The class name or instance to inspect.
 	   * @return array Array of class level annotations
 	   * @throws AnnotationException
@@ -117,18 +117,16 @@ class Annotation {
 	   */
 	  public static function getClassAsArray( $class ) {
 
-			 $parser = AnnotationParser::getInstance();
-			 $annotes = $parser->getClassAnnotationsAsArray( $class );
+			 $annotes = AnnotationParser::getClassAnnotationsAsArray($class);
+			 if($annotes) return $annotes;
 
-			 if( count( $annotes ) ) return $annotes;
-
-			 $parser->parse( $class );
-	  	     return $parser->getClassAnnotationsAsArray( $class );
+			 AnnotationParser::parse($class);
+	  	     return AnnotationParser::getClassAnnotationsAsArray($class);
 	  }
 
 	  /**
 	   * Returns an array of method level annotations for the specified class/method.
-	   * 
+	   *
 	   * @param mixed $class The class name or instance to inspect
 	   * @return array Array of method level annotations
 	   * @throws AnnotationException
@@ -136,36 +134,30 @@ class Annotation {
 	   */
 	  public static function getMethodsAsArray( $class ) {
 
-			 $parser = AnnotationParser::getInstance();
+	         $annotes = AnnotationParser::getMethodAnnotationsAsArray( $class );
+			 if($annotes) return $annotes;
 
-			 $annotes = $parser->getMethodAnnotationsAsArray( $class );
-			 if( count( $annotes ) ) return $annotes;
-
-			 $parser->parse( $class );
-	  	     return $parser->getMethodAnnotationsAsArray( $class );
+			 AnnotationParser::parse($class);
+	  	     return AnnotationParser::getMethodAnnotationsAsArray($class);
 	  }
 
 	  /**
 	   * Returns an array of property level annotations for the specified class/property.
 	   * Tries to return a caches set of annotations first. If no annotations are
 	   * found then the specified class is then parsed and the new result is returned.
-	   * 
+	   *
 	   * @param mixed $class The class name or instance to inspect
-	   * @param String $property The property/field name to inspect
 	   * @return Array of class level annotations
 	   * @throws AnnotationException
 	   * @static
 	   */
-	  public static function getPropertiesAsArray( $class ) {
+	  public static function getPropertiesAsArray($class) {
 
-			 $parser = AnnotationParser::getInstance();
+			 $annotes = AnnotationParser::getPropertyAnnotationsAsArray($class);
+			 if($annotes) return $annotes;
 
-			 $annotes = $parser->getPropertyAnnotationsAsArray( $class );
-			 
-			 if( count( $annotes ) ) return $annotes;
-
-			 $parser->parse( $class );
-	  	     return $parser->getPropertyAnnotationsAsArray( $class );
+			 AnnotationParser::parse($class);
+	  	     return AnnotationParser::getPropertyAnnotationsAsArray($class);
 	  }
 }
 ?>

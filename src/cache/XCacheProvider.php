@@ -46,7 +46,7 @@ class XCacheProvider implements CacheProvider {
 	   */
       public function set($key, $value, $minutes = 0) {
 
-             xcache_set($key, $value, $minutes);
+             xcache_set($key, serialize($value), $minutes);
       }
 
       /**
@@ -55,7 +55,7 @@ class XCacheProvider implements CacheProvider {
 	   */
       public function get($key) {
 
-             return xcache_get($key);
+             return unserialize(xcache_get($key));
       }
 
       /**

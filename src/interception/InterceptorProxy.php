@@ -198,6 +198,67 @@ class InterceptorProxy {
   	  }
 
   	  /**
+  	   * Returns a list of #@AroundInvoke and #@AfterInvoke interceptors that need to be executed for the specified method.
+  	   *
+  	   * @param string $class The name of the target/intercepted class
+  	   * @param string $method The name of the method to retrieve interceptors for
+  	   * @return array An associative array containing AroundInvoke and AfterInvoke interceptor methods to execute
+  	   */
+  	  private function getInterceptorsByMethod($class, $method) {
+
+  	          // Serve from cache if present
+	  		  $key = 'AGILEPHP_INTERCEPTION_' . $class . '_' . $method;
+		      if($cacher = AgilePHP::getCacher())
+		         if($cacher instanceof CacheProvider)
+		            if($cacher->exists($key))
+		              return $cacher->get($key);
+
+  	          $prehooks = array();
+	  		  $posthooks = array();
+	  		  $cacher = \AgilePHP::getCacher();
+
+  	          // Invoke interceptor if AgilePHP contains an Interception for this method call
+	  		  $interceptions = \AgilePHP::getFramework()->getInterceptions();
+		      for($i=0; $i<count($interceptions); $i++) {
+
+				  // Phar support
+				  if(strpos($interceptions[$i]->getClass(), 'phar://') !== false) {
+
+					 $className = preg_replace('/phar:\/\//', '', $interceptions[$i]->getClass());
+				     $nspieces = explode('/', $className);
+				     array_pop($nspieces);
+				     $namespace = implode('\\', $nspieces);
+
+			  		 $pieces = explode('/', $className);
+			  		 $className = array_pop($pieces);
+			  		 $fqcn = $namespace . '\\' . preg_replace('/\.php/', '', $className);
+				  }
+
+				  // Parse methods annotated with #@AroundInvoke and #@AfterInvoke
+		     	  if(($interceptions[$i]->getClass() == get_class($this) || isset($fqcn) && $fqcn == get_class($this))
+		     	  			 && $interceptions[$i]->getMethod() == $method) {
+
+	     			  $interceptorClass = new \AnnotatedClass($interceptions[$i]->getInterceptor());
+	     		 	  foreach($interceptorClass->getMethods() as $interceptorMethod) {
+
+	     		 	 	 	  if($interceptorMethod->hasAnnotation('AroundInvoke'))
+	     		 	 	 	     array_push($prehooks, array('method' => $interceptorMethod, 'interceptor' => $interceptions[$i]));
+
+	     		 	 	 	  if($interceptorMethod->hasAnnotation('AfterInvoke'))
+	     		 	 	 	     array_push($posthooks, array('method' => $interceptorMethod, 'interceptor' => $interceptions[$i]));
+	     		 	 	   }
+   		  			 }
+		     }
+
+		     $methods = array('AroundInvoke' => $prehooks, 'AfterInvoke' => $posthooks);
+
+		     if($cacher instanceof CacheProvider)
+		        $cacher->set($key, $methods);
+
+		     return $methods;
+  	  }
+
+  	  /**
   	   * Magic PHP method executor used to intercept method calls.
   	   *
   	   * @param String $method The method being called
@@ -205,94 +266,67 @@ class InterceptorProxy {
   	   * @return The result of the intercepted method invocation
   	   * @throws InterceptionException
   	   */
-	  public function __call( $method, $args ) {
+	  public function __call($method, $args) {
 
-	  		 $class = new \ReflectionClass( $this->object );
+	         $class = new \ReflectionClass($this->object);
 
-	  		 // Invoke interceptor if AgilePHP contains an Interception for this method call
-	  		 $interceptions = \AgilePHP::getFramework()->getInterceptions();
-		     foreach( $interceptions as $interception ) {
+	         $sharedContext = null; // Stores a global InvocationContext that is shared among chained interceptors
+	         $invoked = false;
 
-					  // Phar support
-					  if( strpos( $interception->getClass(), 'phar://' ) !== false ) {
+	  		 $interceptors = $this->getInterceptorsByMethod($class->getName(), $method);
+	  		 $aroundInvokes = $interceptors['AroundInvoke'];
+	  		 $afterInvokes = $interceptors['AfterInvoke'];
 
-					  	  $className = preg_replace( '/phar:\/\//', '', $interception->getClass() );
-				     	  $nspieces = explode( '/', $className );
-				     	  array_pop( $nspieces );
-				     	  $namespace = implode( '\\', $nspieces );
+	  		 // Execute #@AroundInvoke interceptor methods
+	  		 for($i=0; $i<count($aroundInvokes); $i++) {
 
-			  		 	  $pieces = explode( '/', $className );
-			  		 	  $className = array_pop( $pieces );
-			  		 	  $fqcn = $namespace . '\\' . preg_replace( '/\.php/', '', $className );
-					  }
+  		         $interceptorMethod = $aroundInvokes[$i]['method'];
+	  		     $sharedContext = new \InvocationContext($this->object, $method, $args, $aroundInvokes[$i]['interceptor']->getInterceptor());
+	  		     $sharedContext = $interceptorMethod->invoke($aroundInvokes[$i]['interceptor']->getInterceptor(), $sharedContext);
 
-		     		  if( ($interception->getClass() == get_class( $this ) || isset( $fqcn ) && $fqcn == get_class( $this ))
-		     		  			 && $interception->getMethod() == $method ) {
+		         // Only execute the intercepted target call if the InvocationContext has had its proceed() method invoked.
+		         if($sharedContext instanceof \InvocationContext && $sharedContext->proceed) {
 
-	     		  		   $interceptorClass = new \AnnotatedClass( $interception->getInterceptor() );
-	     		 	 	   foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
+				    $m = $class->getMethod($sharedContext->getMethod());
 
-	     		 	 	  		    $invoked = false;
-	     		 	 	 	 	    if( $interceptorMethod->hasAnnotation( 'AroundInvoke' ) ) {
+					// Capture the return value and InvocationContext
+					$return = $args ? $m->invokeArgs($this->object, $sharedContext->getParameters()) : $m->invoke($this->object);
+					$sharedContext->setReturn($return);
+		         }
+		         else {
 
-	     		 	 	 	 	   	    $invocationCtx = new \InvocationContext( $this->object, $method, $args, $interception->getInterceptor() );
-						                $invocationCtx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
+		            // Interceptors that return a non-null value get the return value returned to the caller.
+		          	if($sharedContext !== null) return $sharedContext;
 
-						                // Only execute the intercepted __call if the InvocationContext has had its proceed() method invoked.
-						                if( $invocationCtx instanceof \InvocationContext && $invocationCtx->proceed ) {
+		          	// Interceptors that return null cause the shared context between chained interceptors to be cleared
+		            $sharedContext = null;
+                }
+	  		 }
 
-										    $m = $class->getMethod( $invocationCtx->getMethod() );
+	  		 // Execute #@AfterInvoke interceptor methods
+	  		 for($i=0; $i<count($afterInvokes); $i++) {
 
-									   	    // Capture the return value and update the InvocationContext with the return value for #@AroundInvoke
-									  	    $return = $args ? $m->invokeArgs( $this->object, $invocationCtx->getParameters() ) : $m->invoke( $this->object );
-									  	    $invocationCtx->setReturn( $return );
-									  	    $invoked = true;
-						                }
-						                else {
+ 	 	   	     if(!$sharedContext) {
 
-						                	if( $invocationCtx !== null ) return $invocationCtx; // not InvocationContext, but rather a return value from the interceptor
-						               	    unset( $invocationCtx );
-						                }
-	     		 	 	 		    }
+     		 	 	$sharedContext = new \InvocationContext($this->object, $method, $args, $afterInvokes[$i]['interceptor']->getInterceptor());
+     		 	 	$m = $class->getMethod($method);
+     		 	 	$return = $args ? $m->invokeArgs($this->object, $args) : $m->invoke($this->object);
+     		 	 	$sharedContext->setReturn($return);
+     		 	 }
 
-	     		 	 	 		    // Execute #@AfterInvoke interceptor methods passing in the InvocationContext as it
-	     		 	 	 		    // was returned from the #@AroundInvoke operation if it exists. Otherwise the initial
-	     		 	 	 		    // call to #@AroundInvoke is passed into #@AfterInvoke.
-	     		 	 	 		    foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
+     		 	 $interceptorMethod = $afterInvokes[$i]['method'];
+     		 	 $sharedContext = $interceptorMethod->invoke($afterInvokes[$i]['interceptor']->getInterceptor(), $sharedContext );
+				 if($sharedContext instanceof InvocationContext && $sharedContext->proceed)
+ 		 	 	    return $sharedContext->getReturn();
 
-					     		 	 	     if( $interceptorMethod->hasAnnotation( 'AfterInvoke' ) ) {
+	  		 }
 
-					     		 	 	   	     // If a method does not have an #@AroundInvoke method, InvocationContext::return
-					     		 	 	   	     // will be null. This will execute the intended call as desired and store the return
-					     		 	 	   	     // value in a new InvocationContext instance so it can be processed by #@AfterInvoke
-					     		 	 	   	     if( !isset( $invocationCtx ) ) {
+	  		 if($sharedContext instanceof \InvocationContext)
+	  		    return $sharedContext->getReturn();
 
-					     		 	 	   	   	     $invocationCtx = new \InvocationContext( $this->object, $method, $args, $interception->getInterceptor() );
-					     		 	 	   	   	     $m = $class->getMethod( $method );
-					     		 	 	   	   	     $return = $args ? $m->invokeArgs( $this->object, $args ) : $m->invoke( $this->object );
-					     		 	 	   	   	     $invocationCtx->setReturn( $return );
-					     		 	 	   	     }
-
-					     		 	 	   	     $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
-									             if( $ctx instanceof InvocationContext && $ctx->proceed )
-				     		 	 	 		   	     return $ctx->getReturn();
-								             }
-	     		 	 	 		   }
-
-	     		 	 	 		   // If #@AroundInvoke was executed and has a return value but there werent
-	     		 	 	 		   // any #@AfterInvoke methods specified, we need to return the value from
-	     		 	 	 		   // the #@AroundInvoke invocation.
-	     		 	 	 		   if( $invoked ) return $return;
-	     		 	 	  }
-		     		   }
-		     }
-
-		     // Interceptor was invoked but returned null
-		     if(isset($invoked) && !$invoked) return;
-
-	  		 // No interceptors, invoke the intercepted method as it was called.
-		     $m = $class->getMethod( $method );
-		     return $args ? $m->invokeArgs( $this->object, $args ) : $m->invoke( $this->object, $args );
+	  		 // No interceptors present for this method, invoke as it was called.
+		     $m = $class->getMethod($method);
+		     return $args ? $m->invokeArgs($this->object, $args) : $m->invoke($this->object, $args);
 	  }
 
 	  /**

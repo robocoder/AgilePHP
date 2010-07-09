@@ -23,7 +23,7 @@
  * Simple interceptor demostrating how to create and use an
  * interceptor in AgilePHP that accepts simple and complex data type
  * arguments.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes.interceptors
@@ -39,9 +39,9 @@ class TestInterceptor2 {
 	  #@AroundInvoke
 	  public function audit( InvocationContext $ic ) {
 
-	  		 $class = new ReflectionClass( $ic->getTarget() );
+	  		 $class = new ReflectionClass($ic->getTarget());
 	  		 $message = 'TestInterceptor2::audit @AroundInvoke This is what the InvocationContext interceptor state looks like: ' . print_r( $ic->getInterceptor(), true );
- 	  		 Log::debug( $message );
+ 	  		 Log::debug($message);
 	  }
 
 	  /**
@@ -51,13 +51,13 @@ class TestInterceptor2 {
 	   * You would need to invoke this method yourself if you wanted to use it.
 	   * This shows that really interceptors are still PHP classes at the end
 	   * of the day, with just a little bit of magical seasoning :)
-	   *  
+	   *
 	   * @return TestInterceptor2 fields/properties
 	   */
 	  public function getParams() {
 
-	  		 echo "param1 = " . $this->param1 . 
-	  		 	  ", param2 = " . implode( ",", $this->param1 ) .
+	  		 echo "param1 = " . $this->param1 .
+	  		 	  ", param2 = " . implode(",", $this->param1) .
 	  		 	  ", param3 = " . $this->param3;
 	  }
 }

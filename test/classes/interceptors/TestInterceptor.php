@@ -22,7 +22,7 @@
 /**
  * Simple interceptor demostrating how to create and use a simple
  * interceptor in AgilePHP.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes.interceptors
@@ -39,14 +39,14 @@ class TestInterceptor {
 
 	  		 $method = $ic->getMethod();
 
-	  		 if( $method == 'setProperty1' ) {
+	  		 if($method == 'setProperty1') {
 
 	  		 	 // these are the original parameters passed into setProperty1
 	  		 	 $params = $ic->getParameters();
 
 	  		 	 // here we alter the parameter value and update InvocationContext
 	  		 	 $params[0] = 'intercepted value';
-	  		 	 $ic->setParameters( $params );
+	  		 	 $ic->setParameters($params);
 
 	  		 	 // return the InvocationContext to the proxied class for invocation
 	  		 	 return $ic->proceed();

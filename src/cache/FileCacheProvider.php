@@ -79,10 +79,10 @@ class FileCacheProvider implements CacheProvider {
                 $minutes = $minutes * 60;
 
                 if(time() - $minutes < filemtime($file))
-                   return '<!-- Cached ' . date('c', filemtime($file)) . "-->\n" . $CachedFile->getData();
+                   return $CachedFile->getData();
              }
 
-             return '<!-- Cached ' . date('c', filemtime($file)) . "-->\n" . $CachedFile->getData();
+             return $CachedFile->getData();
       }
 
 	  /**
