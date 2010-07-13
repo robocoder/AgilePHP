@@ -208,14 +208,12 @@ class InterceptorProxy {
 
   	          // Serve from cache if present
 	  		  $key = 'AGILEPHP_INTERCEPTION_' . $class . '_' . $method;
-		      if($cacher = AgilePHP::getCacher())
-		         if($cacher instanceof CacheProvider)
-		            if($cacher->exists($key))
-		              return $cacher->get($key);
+		      if($cacher = \AgilePHP::getCacher())
+	             if($cacher->exists($key))
+		            return $cacher->get($key);
 
   	          $prehooks = array();
 	  		  $posthooks = array();
-	  		  $cacher = \AgilePHP::getCacher();
 
   	          // Invoke interceptor if AgilePHP contains an Interception for this method call
 	  		  $interceptions = \AgilePHP::getFramework()->getInterceptions();
@@ -252,7 +250,7 @@ class InterceptorProxy {
 
 		     $methods = array('AroundInvoke' => $prehooks, 'AfterInvoke' => $posthooks);
 
-		     if($cacher instanceof CacheProvider)
+		     if(isset($cacher))
 		        $cacher->set($key, $methods);
 
 		     return $methods;
@@ -280,45 +278,41 @@ class InterceptorProxy {
 	  		 // Execute #@AroundInvoke interceptor methods
 	  		 for($i=0; $i<count($aroundInvokes); $i++) {
 
-  		         $interceptorMethod = $aroundInvokes[$i]['method'];
-	  		     $sharedContext = new \InvocationContext($this->object, $method, $args, $aroundInvokes[$i]['interceptor']->getInterceptor());
-	  		     $sharedContext = $interceptorMethod->invoke($aroundInvokes[$i]['interceptor']->getInterceptor(), $sharedContext);
+  		         if(!$sharedContext)
+  		            $sharedContext = new \InvocationContext($this->object, $method, $args, $aroundInvokes[$i]['interceptor']->getInterceptor());
+
+	  		     $sharedContext = $aroundInvokes[$i]['method']->invoke($aroundInvokes[$i]['interceptor']->getInterceptor(), $sharedContext);
 
 		         // Only execute the intercepted target call if the InvocationContext has had its proceed() method invoked.
 		         if($sharedContext instanceof \InvocationContext && $sharedContext->proceed) {
 
 				    $m = $class->getMethod($sharedContext->getMethod());
 
-					// Capture the return value and InvocationContext
-					$return = $args ? $m->invokeArgs($this->object, $sharedContext->getParameters()) : $m->invoke($this->object);
-					$sharedContext->setReturn($return);
+					// Invoke the intercepted call, capturing the return value
+					$sharedContext->setReturn($args ? 
+					        $m->invokeArgs($this->object, $sharedContext->getParameters()) : $m->invoke($this->object));
 		         }
 		         else {
 
 		            // Interceptors that return a non-null value get the return value returned to the caller.
 		          	if($sharedContext !== null) return $sharedContext;
-
-		          	// Interceptors that return null cause the shared context between chained interceptors to be cleared
-		            $sharedContext = null;
                 }
 	  		 }
 
 	  		 // Execute #@AfterInvoke interceptor methods
 	  		 for($i=0; $i<count($afterInvokes); $i++) {
 
+	  		     // If no #@AroundInvoke interceptions occurred, invoke the intercepted call, capturing the return value
  	 	   	     if(!$sharedContext) {
 
      		 	 	$sharedContext = new \InvocationContext($this->object, $method, $args, $afterInvokes[$i]['interceptor']->getInterceptor());
      		 	 	$m = $class->getMethod($method);
-     		 	 	$return = $args ? $m->invokeArgs($this->object, $args) : $m->invoke($this->object);
-     		 	 	$sharedContext->setReturn($return);
+     		 	 	$sharedContext->setReturn($args ? $m->invokeArgs($this->object, $args) : $m->invoke($this->object));     		 	 	
      		 	 }
 
-     		 	 $interceptorMethod = $afterInvokes[$i]['method'];
-     		 	 $sharedContext = $interceptorMethod->invoke($afterInvokes[$i]['interceptor']->getInterceptor(), $sharedContext );
+     		 	 $sharedContext = $afterInvokes[$i]['method']->invoke($afterInvokes[$i]['interceptor']->getInterceptor(), $sharedContext );
 				 if($sharedContext instanceof InvocationContext && $sharedContext->proceed)
  		 	 	    return $sharedContext->getReturn();
-
 	  		 }
 
 	  		 if($sharedContext instanceof \InvocationContext)

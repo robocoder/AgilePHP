@@ -44,7 +44,7 @@ class MockInterceptionTarget {
 	   * @return void
 	   */
 	  #@TestInterceptor
-	  #@TestInterceptor2( param1 = Crypto::getInstance()->setAlgorithm( 'md5' ), param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role() )
+	  #@TestInterceptor2( param1 = Crypto::getInstance(), param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role() )
 	  public function setProperty1( $value ) {
 
 	  		 Log::debug( 'MockInterceptionTarget::setProperty1 with value \'' . $value . '\'.' );
