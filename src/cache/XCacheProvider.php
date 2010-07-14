@@ -73,7 +73,7 @@ class XCacheProvider implements CacheProvider {
 	   */
       public function exists($key) {
 
-             xcache_isset($key);
+             return xcache_isset($key);
       }
 }
 ?>

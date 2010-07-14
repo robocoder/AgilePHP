@@ -20,7 +20,6 @@
  */
 
 require_once 'FrameworkException.php';
-require_once 'cache/CacheException.php';
 require_once 'Annotation.php';
 require_once 'interception/InterceptorFilter.php';
 require_once 'interception/Interceptor.php';
@@ -342,6 +341,8 @@ final class AgilePHP {
 	   */
 	  public function getConfiguration($agilephpDotXml = null) {
 
+	         if($this->xml) return $this->xml;
+
 	  		 $agilephp_xml = ($agilephpDotXml) ? $agilephpDotXml : $this->getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
 
 	  		 if(!file_exists($agilephp_xml))
@@ -352,7 +353,9 @@ final class AgilePHP {
 			  if(!$dom->validate())
 			 	 throw new FrameworkException('agilephp.xml Document Object Model validation failed. Validate your document using AgilePHP/agilephp.dtd');
 
-  	      	 return simplexml_load_file($agilephp_xml);
+  	      	 $this->xml = simplexml_load_file($agilephp_xml);
+
+  	      	 return $this->xml;
 	  }
 
 	  /**
@@ -398,6 +401,8 @@ final class AgilePHP {
   	      	  }
 
   	      	  if($xml->cache) {
+
+  	      	     require_once 'cache/CacheException.php';
 
   	      	     $provider = (string)$xml->cache->attributes()->provider;
   	      	     if($provider) self::$cacher = $provider;

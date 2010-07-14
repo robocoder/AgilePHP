@@ -73,7 +73,7 @@ class ApcCacheProvider implements CacheProvider {
 	   */
       public function exists($key) {
 
-             apc_exists($key);
+             return apc_exists($key);
       }
 }
 ?>

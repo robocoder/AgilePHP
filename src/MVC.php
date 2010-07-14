@@ -338,8 +338,8 @@ class MVC {
 	   */
 	  private function loadController( $controller ) {
 
-	  		  $f = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
-	  		  		DIRECTORY_SEPARATOR . $controller . '.php';
+	          $webroot = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR; 
+	  		  $f = $webroot . 'control' . DIRECTORY_SEPARATOR . $controller . '.php';
 
 	  		  if( file_exists( $f ) ) {
 
@@ -348,7 +348,7 @@ class MVC {
 	  		  }
 
 	  		  // Perform deeper scan of control directory
-	  		  $f = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'control';
+	  		  $f = $webroot . DIRECTORY_SEPARATOR . 'control';
 		  	  $it = new RecursiveDirectoryIterator( $f );
 			  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
 	
