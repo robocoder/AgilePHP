@@ -1,13 +1,4 @@
-- Lots of performance refactoring
-  - agilephp.xml is now optional
-  - annotation parsing is now optional (<annotations/> in agilephp.xml to enable - default is disabled)
-  - AgilePHP and MVC classes are completely static
-  - More tweaking to interceptors
-  - Updated unit tests, studio package and apidoc comments
-- Bug fix to AnnotatedMethod. Added magic __wakeup method to construct
-  the parent class to prevent "reflection object not found" error
-  when the class is unserialized.
-
-benchmarking broke into 3500 requests per second (non fcgi) for
-a total of ~2500% performance increase with caching enabled. The
-core framework without caching is seeing ~900% performance increase.
+- Squeezed ~200 more requests per second by changing require_once to require
+ in AgilePHP.php.
+- Removed framework autoloading and replaced with static classmap - still needs to be tested on windows
+- Altered version number and configured build.xml for Bugfix increments

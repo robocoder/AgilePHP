@@ -19,8 +19,8 @@
  * @package com.makeabyte.agilephp
  */
 
-require_once 'FrameworkException.php';
-require_once 'MVC.php';
+require 'FrameworkException.php';
+require 'MVC.php';
 
 /**
  * AgilePHP core framework
