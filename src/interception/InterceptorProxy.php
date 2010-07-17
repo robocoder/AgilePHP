@@ -54,7 +54,7 @@ class InterceptorProxy {
 
 	  	 	 $class = new \ReflectionClass( $this->object );
 
-	  		 foreach( \AgilePHP::getFramework()->getInterceptions() as $interception ) {
+	  		 foreach( \AgilePHP::getInterceptions() as $interception ) {
 
 	  		 		 // Invoke class level interceptors
 		     		 if( $interception->getClass() == $proxiedClass &&
@@ -216,7 +216,7 @@ class InterceptorProxy {
 	  		  $posthooks = array();
 
   	          // Invoke interceptor if AgilePHP contains an Interception for this method call
-	  		  $interceptions = \AgilePHP::getFramework()->getInterceptions();
+	  		  $interceptions = \AgilePHP::getInterceptions();
 		      for($i=0; $i<count($interceptions); $i++) {
 
 				  // Phar support
@@ -250,8 +250,7 @@ class InterceptorProxy {
 
 		     $methods = array('AroundInvoke' => $prehooks, 'AfterInvoke' => $posthooks);
 
-		     if(isset($cacher))
-		        $cacher->set($key, $methods);
+		     if($cacher) $cacher->set($key, $methods);
 
 		     return $methods;
   	  }
@@ -289,7 +288,7 @@ class InterceptorProxy {
 				    $m = $class->getMethod($sharedContext->getMethod());
 
 					// Invoke the intercepted call, capturing the return value
-					$sharedContext->setReturn($args ? 
+					$sharedContext->setReturn($args ?
 					        $m->invokeArgs($this->object, $sharedContext->getParameters()) : $m->invoke($this->object));
 		         }
 		         else {
@@ -307,7 +306,7 @@ class InterceptorProxy {
 
      		 	 	$sharedContext = new \InvocationContext($this->object, $method, $args, $afterInvokes[$i]['interceptor']->getInterceptor());
      		 	 	$m = $class->getMethod($method);
-     		 	 	$sharedContext->setReturn($args ? $m->invokeArgs($this->object, $args) : $m->invoke($this->object));     		 	 	
+     		 	 	$sharedContext->setReturn($args ? $m->invokeArgs($this->object, $args) : $m->invoke($this->object));
      		 	 }
 
      		 	 $sharedContext = $afterInvokes[$i]['method']->invoke($afterInvokes[$i]['interceptor']->getInterceptor(), $sharedContext );
@@ -331,7 +330,7 @@ class InterceptorProxy {
 	  public function __destruct() {
 
 	  		 $proxiedClass = get_class( $this );
-	  		 foreach( \AgilePHP::getFramework()->getInterceptions() as $interception ) {
+	  		 foreach( \AgilePHP::getInterceptions() as $interception ) {
 
 	  		 		  // Invoke class level interceptor #@AfterInvoke
 		     		  if( $interception->getClass() == $proxiedClass &&

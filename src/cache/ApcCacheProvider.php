@@ -36,7 +36,7 @@ class ApcCacheProvider implements CacheProvider {
        */
       public function __construct() {
 
-             if(!function_exists('apc_add'))
+             if(!function_exists('apc_store'))
                 throw new CacheException('Alternative PHP Cache (APC) is not installed on the server');
       }
 
@@ -46,7 +46,7 @@ class ApcCacheProvider implements CacheProvider {
 	   */
       public function set($key, $value, $minutes = 0) {
 
-             apc_add($key, serialize($value), $minutes);
+             apc_store($key, serialize($value), $minutes);
       }
 
       /**

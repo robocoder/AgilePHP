@@ -20,18 +20,10 @@
  */
 
 require_once 'FrameworkException.php';
-require_once 'Annotation.php';
-require_once 'interception/InterceptorFilter.php';
-require_once 'interception/Interceptor.php';
-require_once 'Interception.php';
-require_once 'logger/LogFactory.php';
-require_once 'Log.php';
 require_once 'MVC.php';
 
-spl_autoload_register( 'AgilePHP::autoload' );
-
 /**
- * AgilePHP core framework Class
+ * AgilePHP core framework
  *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
@@ -40,557 +32,536 @@ spl_autoload_register( 'AgilePHP::autoload' );
  */
 final class AgilePHP {
 
-	  private static $instance;
-	  private $displayPhpErrors = true;
-	  private $webroot;						// The full system path to the web application
-	  private $frameworkRoot;				// The full system path to the location of the AgilePHP framework
-	  private $documentRoot;				// The relative path to the web app from the server's document root.
-	  private $requestBase;					// The base request URL (used to communicate with MVC component)
-	  private $debugMode = false;			// Whether or not this component is running in debug mode
-	  private $xml;							// AgilePHP configuration - agilephp.xml
-	  private $appName;						// Name of the AgilePHP application
-	  private $interceptions = array();		// An array of interceptions which have occurred during __autoload
-	  private $startTime;					// Used with startClock and stopClock methods
-	  private static $cacher;               // Stores a CacheProvider instance if configured in agilephp.xml
-
-	  private function __clone() { }
-
-	  /**
-	   * Initalize the AgilePHP framework. Sets the following defaults \n
-	   * $webroot = current working directory (of the script that instantiated the framework)
-	   * $requestBase = name of the script that instantiated the framework
-	   * $frameworkRoot = $webroot/AgilePHP
-	   * $appName = The HTTP HOST header value
-	   *
-	   * @return void
-	   */
-	  private function __construct($agilephpDotXml) {
-
-	  	      $this->webroot = getcwd();
-	  	      $this->requestBase = $_SERVER['SCRIPT_NAME'];
-	  	      $this->frameworkRoot = $this->webroot . DIRECTORY_SEPARATOR . 'AgilePHP';
-	  	      $this->appName = (isset( $_SERVER['HTTP_HOST'] )) ? $_SERVER['HTTP_HOST'] : 'localhost';
-
-	  	      // Parse and set documentRoot
-	  	      $pieces = explode('.php', $_SERVER['SCRIPT_NAME']);
-	  	      array_pop($pieces);
-	  	      $docRootPieces = array();
-	  	      $newPieces = explode('/', implode('/', $pieces));
-	  	      for($i=0; $i<(count($newPieces) - 1); $i++)
-	  	      	   $docRootPieces[$i] = $newPieces[$i];
-	  	      $this->documentRoot = implode('/', $docRootPieces);
-
-	  	      $this->parseXml($agilephpDotXml);
-	  }
-
-	  /**
-	   * Factory method which is used to instantiate a singleton
-	   * instance of the AgilePHP framework.
-	   *
-	   * @param string $agilephpDotXml Optional file path to agilephp.xml configuration file
-	   * @return AgilePHP A Singleton instance of the AgilePHP Framework
-	   * @static
-	   */
-	  public static function getFramework($agilephpDotXml = null) {
-
-	  	     if(self::$instance == null)
-	  	        self::$instance = new self($agilephpDotXml);
-
-	  	     return self::$instance;
-	  }
-
-	  /**
-	   * Accessor method for Model-View-Control component. The MVC component this method returns is
-	   * created as follows:
-	   *
-	   * 1) If an agilephp.xml file is present in the web app root and contains a valid 'mvc'
-	   * 	configuration, the MVC component is created using the specified values when AgilePHP
-	   * 	framework is instantiated by a call to 'getFramework'.
-	   *
-	   * 2) No agilephp.xml file is present. This method will return a singleton instance.
-	   */
-	  public function getMVC() {
-
-	  		 return MVC::getInstance();
-	  }
-
-	  /**
-	   * Sets the fully qualified path to the base directory of
-	   * the web application.
-	   *
-	   * @param $path The fully qualified path to the web application
-	   */
-	  public function setWebRoot($path) {
-
-	  	     $this->webroot = $path;
-	  }
-
-	  /**
-	   * Returns the fully qualified path to the base directory of
-	   * the web application.
-	   *
-	   * @return The fully qualified path to the web application
-	   */
-	  public function getWebRoot() {
-
-	  	     return $this->webroot;
-	  }
-
-	  /**
-	   * Sets the full system path to the location of the AgilePHP framework. The given path is
-	   * appended to the current php.ini include_path configuration.
-	   *
-	   * @param $path The full system path to the location where AgilePHP framework resides.
-   	   * @return void
-	   */
-	  public function setFrameworkRoot($path) {
-
-	  	     $this->frameworkRoot = $path;
-
-	  	     $include_path = ini_get('include_path');
-
-	  	     if(strpos($include_path, ':' . $path) === false)
-	  	     	ini_set('include_path', $include_path . PATH_SEPARATOR . ':' . $path);
-
-	  	     Log::debug('Initalizing framework with php include_path: ' . ini_get('include_path'));
-	  }
-
-	  /**
-	   * Gets the full system path to the location where AgilePHP resides.
-	   *
-	   * @return The full system path to the location of the AgilePHP framework.
-	   */
-	  public function getFrameworkRoot() {
-
-	  		 return $this->frameworkRoot;
-	  }
-
-	  /**
-	   * Sets the relative path to the web application from the server's document root.
-	   *
-	   * @param String $path The document root path
-	   * @return void
-	   */
-	  public function setDocumentRoot($path) {
-
-	  		 $this->documentRoot = $path;
-	  }
-
-	  /**
-	   * Returns the relative path to the web application from the server's document root.
-	   *
-	   * @return The web applications relative path from the server's document root
-	   */
-	  public function getDocumentRoot() {
-
-	  		 return $this->documentRoot;
-	  }
-
-	  /**
-	   * Returns the base action url used to communicate with the
-	   * AgilePHP MVC component. Defaults to the name of the script
-	   * which initalizes the framework.
-	   *
-	   * @return The base action url used to communicate with the AgilePHP MVC component.
-	   */
-	  public function getRequestBase() {
-
-	  		 return $this->requestBase;
-	  }
-
-	  /**
-	   * Sets the base action url used to communicate with the AgilePHP MVC component.
-	   *
-	   * @param $url The base url to be used to communicate with the AgilePHP MVC component.
-	   */
-	  public function setRequestBase($url) {
-
-	  		 $this->requestBase = $url;
-	  }
-
-	  /**
-	   * Sets the name of the AgilePHP web application.
-	   *
-	   * @param String $name The name of the AgilePHP application
-	   * @return void
-	   */
-	  public function setAppName($name) {
-
-	  		 $this->appName = $name;
-	  }
-
-	  /**
-	   * Returns the name of the AgilePHP web application.
-	   *
-	   * @return AgilePHP web application name
-	   */
-	  public function getAppName() {
-
-	  		 if(!$this->appName)
-	  		 	$this->appName = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'localhost';
-
-	  		 return $this->appName;
-	  }
-
-	  /**
-	   * Loads a class from the web application 'classes' or 'components' directory using a
-	   * package dot type notation. First the classes directory is searched, then components.
-	   *
-	   * @param String $classpath The dot notation classpath (my.package.ClassName)
-	   * @return void
-	   * @throws FrameworkException If an error occurred loading the specified classpath
-	   */
-	  public static function import( $classpath ) {
-
-	  		 Log::debug('AgilePHP::import ' . $classpath);
-
-	  		 $file = preg_replace('/\./', DIRECTORY_SEPARATOR, $classpath);
-
-	  		 if( file_exists('classes' . DIRECTORY_SEPARATOR . $file . '.php') )
-	  		 	 require_once('classes' . DIRECTORY_SEPARATOR . $file . '.php');
-
-	  		 else if(file_exists('components' . DIRECTORY_SEPARATOR . $file . '.php'))
-	  		 	 require_once('components' . DIRECTORY_SEPARATOR . $file . '.php');
-
-	  		 else
-  		 	 	throw new FrameworkException('Failed to import source from \'' . $classpath . '\'.');
-	  }
-
-	  /**
-	   * By default PHP hides errors on production servers. Setting this to true enables PHP
-	   * 'display_errors', sets 'error_reporting' to 'E_ALL'.
-	   *
-	   * @param bool $bool True to turn on error reporting on (E_ALL)
-	   * @return void
-	   */
-	  public function setDisplayPhpErrors($bool) {
-
-	  	     $this->displayPhpErrors = ($bool == true);
-
-	  	     if($this->displayPhpErrors) {
-
-	  	      	 ini_set('display_errors', '1');
-	  	      	 error_reporting(E_ALL);
-	  	     }
-	  }
-
-	  /**
-	   * Enables or disables AgilePHP framework debug mode.
-	   *
-	   * @param bool $boolean True for debug mode, false for production mode. Default is production.
-	   */
-	  public function setDebugMode( $boolean ) {
-
-	  		 $this->debugMode = ($boolean === true) ? true : false;
-	  		 if($this->debugMode) $this->setDisplayPhpErrors(true);
-	  }
-
-	  /**
-	   * Whether or not AgilePHP framework is running in debug mode.
-	   *
-	   * @return void
-	   */
-	  public function isInDebugMode() {
-
-	  		 return $this->debugMode;
-	  }
-
-	  /**
-	   * Calls PHP date_default_timezone_set function to set the current timezone.
-	   *
-	   * @param String $timezone The timezone to use as default.
-	   * @return void
-	   * <code>
-	   * $agilephp->setDefaultTimezone( 'America/New_York' );
-	   * </code>
-	   */
-	  public function setDefaultTimezone($timezone) {
-
-	  		 date_default_timezone_set($timezone);
-	  }
-
-	  /**
-	   * Adds an Interception to the interceptions stack
-	   *
-	   * @param Interception $interception The interception instance to add to the stack
-	   * @return void
-	   */
-	  public function addInterception(Interception $interception) {
-
-	  		 Log::debug('AgilePHP::addInterception Adding interception for class \'' . $interception->getClass() . '\'.');
-
-	  		 array_push($this->interceptions, $interception);
-	  }
-
-	  /**
-	   * Returns an array of Interceptions which have been loaded into the framework
-	   *
-	   * @return Array of Interception instances
-	   */
-	  public function getInterceptions() {
-
-	  		 return $this->interceptions;
-	  }
-
-	  /**
-	   * Returns the agilephp.xml file as a SimpleXMLElement.
-	   *
-	   * @param string $agilephpDotXml Optional file path to agilephp.xml configuration file. Defaults to
-	   * 							   $webRoot/agilephp.xml
-	   * @return SimpleXMLElement agilephp.xml configuration
-	   */
-	  public function getConfiguration($agilephpDotXml = null) {
-
-	         if($this->xml) return $this->xml;
-
-	  		 $agilephp_xml = ($agilephpDotXml) ? $agilephpDotXml : $this->getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
-
-	  		 if(!file_exists($agilephp_xml))
-	  		  	throw new FrameworkException('agilephp.xml file not found at \'' . $agilephp_xml . '\'.');
-
-	  		  $dom = new DOMDocument();
- 			  $dom->Load($agilephp_xml);
-			  if(!$dom->validate())
-			 	 throw new FrameworkException('agilephp.xml Document Object Model validation failed. Validate your document using AgilePHP/agilephp.dtd');
-
-  	      	 $this->xml = simplexml_load_file($agilephp_xml);
-
-  	      	 return $this->xml;
-	  }
-
-	  /**
-	   * Returns a CacheProvider implementation if one has been configured in agilephp.xml
-	   *
-	   * @return CacheProvider A new CacheProvider implementation
-	   */
-	  public static function getCacher() {
-
-	         if(self::$cacher && !is_object(self::$cacher)) {
-
-	            if(!class_exists(self::$cacher, false))
-	               self::autoload(self::$cacher, true);
-
-	            self::$cacher = new self::$cacher;
-	         }
-
-	         if(self::$cacher instanceof CacheProvider)
-	            return self::$cacher;
-	  }
-
-	  /**
-	   * Parses AgilePHP configuration file (agilephp.xml) and initalizes the
-	   * framework according to the specified configuration.
-	   *
-	   * @param string $agilephpDotXml Optional file path to agilephp.xml configuration file
-	   * @return void
-	   */
-	  private function parseXml($agilephpDotXml = null) {
-
-	  	      $xml = $this->getConfiguration($agilephpDotXml);
-
-	  	      if($xml->mvc) {
-
-	  	      	 require_once 'MVC.php';
-
-	  	      	 $controller = (string)$xml->mvc->attributes()->controller;
-	  	      	 $action = (string)$xml->mvc->attributes()->action;
-	  	      	 $renderer = (string)$xml->mvc->attributes()->renderer;
-	  	      	 $sanitize = (string)$xml->mvc->attributes()->sanitize;
-
-	  	      	 MVC::getInstance()->setconfig($controller, $action, $renderer, $sanitize);
-  	      	  }
-
-  	      	  if($xml->cache) {
-
-  	      	     require_once 'cache/CacheException.php';
-
-  	      	     $provider = (string)$xml->cache->attributes()->provider;
-  	      	     if($provider) self::$cacher = $provider;
-  	      	  }
-	  }
-
-	  /**
-	   * Starts a timer. Useful for measuring how long a particular
-	   * operation takes.
-	   *
-	   * @return void
-	   */
-	  public function startClock() {
-
-		  	 $mtime = microtime();
-		     $mtime = explode(' ', $mtime);
-		     $mtime = $mtime[1] + $mtime[0];
-		     $this->startTime = $mtime;
-	  }
-
-	  /**
-	   * Defines the error handler responsible for handling framework and application wide errors.
-	   *
-	   * @param mixed $function A standard PHP function or static method responsible for error handling
-	   * @return void
-	   */
-	  public static function setErrorHandler($function) {
-
-	  		 set_error_handler($function);
-	  }
-
-	  /**
-	   * Handles PHP E_NOTICE, E_WARNING, E
-	   */
-	  public static function handleErrors() {
-
-	  		 set_error_handler('AgilePHP::ErrorHandler');
-	  }
-
-	  /**
-	   * Custom PHP error handling function which writes error to log instead of echoing it out.
-	   *
-	   * @param Integer $errno Error number
-	   * @param String $errmsg Error message
-	   * @param String $errfile The name of the file that caused the error
-	   * @param Integer $errline The line number that caused the error
-	   * @return false
-	   * @throws FrameworkException
-	   */
- 	  public static function ErrorHandler($errno, $errmsg, $errfile, $errline) {
-
- 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg .
- 	  		 		  PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
-
- 	  		 switch($errno) {
-
- 	  		 	case E_NOTICE:
- 	  		 	case E_USER_NOTICE:
-
- 	  		 		 Log::info($entry);
- 	  		 		 break;
-
- 	  		 	case E_WARNING:
- 	  		 	case E_USER_WARNING:
-
- 	  		 		 Log::warn($entry);
- 	  		 		 break;
-
- 	  		 	case E_ERROR:
- 	  		 	case E_USER_ERROR:
- 	  		 	case E_RECOVERABLE_ERROR:
-
- 	  		 		 Log::error($entry);
- 	  		 		 break;
-
- 	  		 	default:
- 	  		 		 Log::debug($entry);
- 	  		 }
-
-	  }
-
-	  /**
-	   * Stops the timer and returns the elapsed time between startClock()
-	   * and stopClock().
-	   *
-	   * @return Time elapsed time between startClock() and endClock()
-	   */
-	  public function stopClock() {
-
-	  		 $mtime = microtime();
-     		 $mtime = explode( ' ', $mtime );
-   		     $mtime = $mtime[1] + $mtime[0];
-   			 $endtime = $mtime;
-   			 $difference = ($endtime - $this->startTime);
-
-   			 return $difference;
-	  }
-
-	  /**
-	   * Retrieves the raw PHP source code for the specified class. The search
-	   * algorithm assumes the file is named after the class.
-	   *
-	   * @param String $class The class name
-	   * @return String The raw PHP source code for the specified class
-	   * @throws FrameworkException if the requested class could not be found
-	   */
-	  public static function getSource($class) {
-
-	         $key = 'AGILEPHP_SOURCE_' . $class;
-	         if($cacher = self::getCacher())
-	            if($source = $cacher->get($key))
-	               return $source;
-
-	  		 // PHP namespace support
-			 $namespace = explode('\\', $class);
-		 	 $class = array_pop($namespace);
-		 	 $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-		 	 $frameworkRoot = AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR;
-
-		 	 // PHAR support
-		 	 if(strpos($class, 'phar://') !== false) {
-
-		         $source = file_get_contents($class);
-				 if(isset($cacher)) $cacher->set($key, $source);
-			     return $source;
-		 	 }
-
-			 // Load framework classes
-			 $path =  $frameworkRoot . $namespace . $class . '.php';
-		     if(file_exists($path)) {
-
-		         $source = file_get_contents($path);
-				 if(isset($cacher)) $cacher->set($key, $source);
-			     return $source;
-		     }
-
-			 $it = new RecursiveDirectoryIterator($frameworkRoot);
-			 foreach(new RecursiveIteratorIterator($it) as $file) {
-
-			   	      if(substr($file, -1) != '.' && substr($file, -2) != '..') {
-
-			   	      	 $array = explode(DIRECTORY_SEPARATOR, $file);
-				 		 if(array_pop($array) == $class . '.php') {
-
-				 		    $source = file_get_contents($file);
-				 		    if(isset($cacher)) $cacher->set($key, $source);
-			     	 		return $source;
-				 		 }
-				      }
-			 }
-
-			 // Load web application classes
-			 $webRoot = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR;
-
-	  	     $path = $webRoot . 'control' . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-	         if(file_exists($path)) {
-
-		         $source = file_get_contents($path);
-				 if(isset($cacher)) $cacher->set($key, $source);
-			     return $source;
-		     }
-
-	  	     $path = $webRoot . 'model' . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-	         if(file_exists($path)) {
-
-		         $source = file_get_contents($path);
-				 if(isset($cacher)) $cacher->set($key, $source);
-			     return $source;
-		     }
-
-		     $path = $webRoot . 'classes' . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-	         if(file_exists($path)) {
-
-		         $source = file_get_contents($path);
-				 if(isset($cacher)) $cacher->set($key, $source);
-			     return $source;
-		     }
-
-			 $path =  $webRoot . 'components' . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-	         if(file_exists($path)) {
-
-		         $source = file_get_contents($path);
-				 if(isset($cacher)) $cacher->set($key, $source);
-			     return $source;
-		     }
-
-	  	     // Not found in the usual places - perform deep scan
-		  	 $it = new RecursiveDirectoryIterator($webRoot);
+      private static $instance;
+      private static $displayPhpErrors = true;
+      private static $webroot;                    // The full system path to the web application
+      private static $frameworkRoot;            // The full system path to the location of the AgilePHP framework
+      private static $documentRoot;                // The relative path to the web app from the server's document root.
+      private static $requestBase;                // The base request URL (used to communicate with MVC component)
+      private static $debugMode = false;        // Whether or not this component is running in debug mode
+      private static $xml;                        // AgilePHP configuration - agilephp.xml
+      private static $appName;                    // Name of the AgilePHP application
+      private static $interceptions = array();    // An array of interceptions which have occurred during __autoload
+      private static $startTime;                // Used with startClock and stopClock methods
+      private static $cacher;                   // Stores a CacheProvider instance if configured in agilephp.xml
+
+      private function __construct() { }
+      private function __clone() { }
+
+      /**
+       * Initalize the AgilePHP framework. Sets the following defaults \n
+       * $webroot = current working directory (of the script that instantiated the framework)
+       * $requestBase = name of the script that instantiated the framework
+       * $frameworkRoot = $webroot/AgilePHP
+       * $appName = The HTTP HOST header value
+       *
+       * @return void
+       * @static
+       */
+      public static function init($agilephpDotXml = null) {
+
+             self::$webroot = getcwd();
+             self::$requestBase = $_SERVER['SCRIPT_NAME'];
+             self::$frameworkRoot = self::$webroot . DIRECTORY_SEPARATOR . 'AgilePHP';
+
+             self::parseXml($agilephpDotXml);
+      }
+
+     /**
+       * Parses AgilePHP configuration file (agilephp.xml) and initalizes the
+       * framework according to the specified configuration.
+       *
+       * @param string $agilephpDotXml Optional file path to agilephp.xml configuration file
+       * @return void
+       * @static
+       */
+      private static function parseXml($agilephpDotXml = null) {
+
+              $agilephp_xml = ($agilephpDotXml) ? $agilephpDotXml : self::$webroot . DIRECTORY_SEPARATOR . 'agilephp.xml';
+              if(self::$cacher) {
+
+                 $key = 'AGILEPHP_CONFIG';
+                 if(self::$cacher->exists('AGILEPHP_CONFIG'))
+                    return self::$cacher->get('AGILEPHP_CONFIG');
+              }
+
+              if(!file_exists($agilephp_xml)) {
+
+                  spl_autoload_register('AgilePHP::autoloadNoAnnotations');
+                  return;
+              }
+
+              $dom = new DOMDocument();
+              $dom->Load($agilephp_xml);
+              if(!$dom->validate())
+                  throw new FrameworkException('agilephp.xml Document Object Model validation failed. Validate your document using AgilePHP/agilephp.dtd');
+
+              self::$xml = simplexml_load_file($agilephp_xml);
+              if(isset($key)) self::$cacher->set($key, self::$xml);
+
+              if(self::$xml->mvc) {
+
+                  MVC::init((string)self::$xml->mvc->attributes()->controller,
+                            (string)self::$xml->mvc->attributes()->action,
+                            (string)self::$xml->mvc->attributes()->renderer,
+                            (string)self::$xml->mvc->attributes()->sanitize,
+                            self::$xml->mvc->cache);
+              }
+
+              if(self::$xml->annotations) {
+
+                 require 'Annotation.php';
+                 require 'Interception.php';
+                 spl_autoload_register('AgilePHP::autoload');
+              }
+              else
+                 spl_autoload_register('AgilePHP::autoloadNoAnnotations');
+
+              if(self::$xml->caching) {
+
+                 require 'cache/CacheException.php';
+
+                 $provider = (string)self::$xml->caching->attributes()->provider;
+                 if($provider) self::$cacher = new $provider;
+              }
+      }
+
+      /**
+       * Returns a CacheProvider implementation if one has been configured in agilephp.xml
+       *
+       * @return CacheProvider A new CacheProvider implementation
+       * @static
+       */
+      public static function getCacher() {
+
+             return self::$cacher;
+      }
+
+      /**
+       * Sets the fully qualified path to the base directory of
+       * the web application.
+       *
+       * @param $path The fully qualified path to the web application
+       * @return void
+       * @static
+       */
+      public static function setWebRoot($path) {
+
+             self::$webroot = $path;
+      }
+
+      /**
+       * Returns the fully qualified path to the base directory of
+       * the web application.
+       *
+       * @return The fully qualified path to the web application
+       * @static
+       */
+      public static function getWebRoot() {
+
+             return self::$webroot;
+      }
+
+      /**
+       * Sets the full system path to the location of the AgilePHP framework. The given path is
+       * appended to the current php.ini include_path configuration.
+       *
+       * @param $path The full system path to the location where AgilePHP framework resides.
+       * @return void
+       * @static
+       */
+      public static function setFrameworkRoot($path) {
+
+             self::$frameworkRoot = $path;
+
+             $include_path = ini_get('include_path');
+
+             if(strpos($include_path, ':' . $path) === false)
+                ini_set('include_path', $include_path . PATH_SEPARATOR . ':' . $path);
+
+             Log::debug('Initalizing framework with php include_path: ' . ini_get('include_path'));
+      }
+
+      /**
+       * Gets the full system path to the location where AgilePHP resides.
+       *
+       * @return The full system path to the location of the AgilePHP framework.
+       * @static
+       */
+      public static function getFrameworkRoot() {
+
+             return self::$frameworkRoot;
+      }
+
+      /**
+       * Sets the relative path to the web application from the server's document root.
+       *
+       * @param String $path The document root path
+       * @return void
+       * @static
+       */
+      public static function setDocumentRoot($path) {
+
+              self::$documentRoot = $path;
+      }
+
+      /**
+       * Returns the relative path to the web application from the server's document root.
+       *
+       * @return The web applications relative path from the server's document root
+       * @static
+       */
+      public static function getDocumentRoot() {
+
+             if(!self::$documentRoot) {
+
+                $pieces = explode('.php', $_SERVER['SCRIPT_NAME']);
+                array_pop($pieces);
+                $docRootPieces = array();
+                $newPieces = explode('/', implode('/', $pieces));
+                for($i=0; $i<(count($newPieces) - 1); $i++)
+                    $docRootPieces[$i] = $newPieces[$i];
+
+                self::$documentRoot = implode('/', $docRootPieces);
+             }
+
+             return self::$documentRoot;
+      }
+
+      /**
+       * Returns the base action url used to communicate with the
+       * AgilePHP MVC component. Defaults to the name of the script
+       * which initalizes the framework.
+       *
+       * @return The base action url used to communicate with the AgilePHP MVC component.
+       * @static
+       */
+      public static function getRequestBase() {
+
+             return self::$requestBase;
+      }
+
+      /**
+       * Sets the base action url used to communicate with the AgilePHP MVC component.
+       *
+       * @param $url The base url to be used to communicate with the AgilePHP MVC component.
+       * @return void
+       * @static
+       */
+      public static function setRequestBase($url) {
+
+             self::$requestBase = $url;
+      }
+
+      /**
+       * Sets the name of the AgilePHP web application.
+       *
+       * @param String $name The name of the AgilePHP application
+       * @return void
+       * @static
+       */
+      public static function setAppName($name) {
+
+             self::$appName = $name;
+      }
+
+      /**
+       * Returns the name of the AgilePHP web application.
+       *
+       * @return AgilePHP web application name
+       * @static
+       */
+      public static function getAppName() {
+
+              if(!self::$appName)
+                  self::$appName = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'localhost';
+
+              return self::$appName;
+      }
+
+      /**
+       * Loads a class from the web application 'classes' or 'components' directory using a
+       * package dot type notation. First the classes directory is searched, then components.
+       *
+       * @param String $classpath The dot notation classpath (my.package.ClassName)
+       * @return void
+       * @throws FrameworkException If an error occurred loading the specified classpath
+       * @static
+       */
+      public static function import( $classpath ) {
+
+             Log::debug('AgilePHP::import ' . $classpath);
+
+             $file = preg_replace('/\./', DIRECTORY_SEPARATOR, $classpath);
+
+             if(file_exists('classes' . DIRECTORY_SEPARATOR . $file . '.php'))
+                require_once('classes' . DIRECTORY_SEPARATOR . $file . '.php');
+
+             else if(file_exists('components' . DIRECTORY_SEPARATOR . $file . '.php'))
+                require_once('components' . DIRECTORY_SEPARATOR . $file . '.php');
+
+             else
+                throw new FrameworkException('Failed to import source from \'' . $classpath . '\'.');
+      }
+
+      /**
+       * By default PHP hides errors on production servers. Setting this to true enables PHP
+       * 'display_errors', sets 'error_reporting' to 'E_ALL'.
+       *
+       * @param bool $bool True to turn on error reporting on (E_ALL)
+       * @return void
+       * @static
+       */
+      public static function setDisplayPhpErrors($bool = true) {
+
+             self::$displayPhpErrors = $bool;
+
+             if(self::$displayPhpErrors) {
+
+                ini_set('display_errors', '1');
+                error_reporting(E_ALL);
+             }
+      }
+
+      /**
+       * Enables or disables AgilePHP framework debug mode.
+       *
+       * @param bool $boolean True for debug mode, false for production mode. Default is production.
+       * @return void
+       * @static
+       */
+      public static function setDebugMode( $boolean ) {
+
+             self::$debugMode = ($boolean === true) ? true : false;
+             if(self::$debugMode) self::$setDisplayPhpErrors(true);
+      }
+
+      /**
+       * Whether or not AgilePHP framework is running in debug mode.
+       *
+       * @return void
+       * @static
+       */
+      public static function isInDebugMode() {
+
+             return self::$debugMode;
+      }
+
+      /**
+       * Calls PHP date_default_timezone_set function to set the current timezone.
+       *
+       * @param String $timezone The timezone to use as default.
+       * @return void
+       * @static
+       * <code>
+       * AgilePHP::setDefaultTimezone( 'America/New_York' );
+       * </code>
+       */
+      public static function setDefaultTimezone($timezone) {
+
+             date_default_timezone_set($timezone);
+      }
+
+      /**
+       * Adds an Interception to the interceptions stack
+       *
+       * @param Interception $interception The interception instance to add to the stack
+       * @return void
+       * @static
+       */
+      public static function addInterception(Interception $interception) {
+
+             Log::debug('AgilePHP::addInterception Adding interception for class \'' . $interception->getClass() . '\'.');
+
+             array_push(self::$interceptions, $interception);
+      }
+
+      /**
+       * Returns an array of Interceptions which have been loaded into the framework
+       *
+       * @return Array of Interception instances
+       * @static
+       */
+      public static function getInterceptions() {
+
+             return self::$interceptions;
+      }
+
+      /**
+       * Returns the agilephp.xml file as a SimpleXMLElement.
+       *
+       * @return SimpleXMLElement agilephp.xml configuration
+       * @static
+       */
+      public static function getConfiguration() {
+
+             return self::$xml;
+      }
+
+      /**
+       * Defines the error handler responsible for handling framework and application wide errors.
+       *
+       * @param mixed $function A standard PHP function or static method responsible for error handling
+       * @return void
+       * @static
+       */
+      public static function setErrorHandler($function) {
+
+             set_error_handler($function);
+      }
+
+      /**
+       * Handles PHP E_NOTICE, E_WARNING, E
+       * 
+       * @return void
+       * @static
+       */
+      public static function handleErrors() {
+
+             set_error_handler('AgilePHP::ErrorHandler');
+      }
+
+      /**
+       * Custom PHP error handling function which writes error to log instead of echoing it out.
+       *
+       * @param Integer $errno Error number
+       * @param String $errmsg Error message
+       * @param String $errfile The name of the file that caused the error
+       * @param Integer $errline The line number that caused the error
+       * @return false
+       * @throws FrameworkException
+       * @static
+       */
+       public static function ErrorHandler($errno, $errmsg, $errfile, $errline) {
+
+                $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg .
+                          PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
+
+                switch($errno) {
+
+                    case E_NOTICE:
+                    case E_USER_NOTICE:
+
+                         Log::info($entry);
+                         break;
+
+                    case E_WARNING:
+                    case E_USER_WARNING:
+
+                         Log::warn($entry);
+                         break;
+
+                    case E_ERROR:
+                    case E_USER_ERROR:
+                    case E_RECOVERABLE_ERROR:
+
+                         Log::error($entry);
+                         break;
+
+                    default:
+                         Log::debug($entry);
+                }
+
+      }
+
+      /**
+       * Starts a timer. Useful for measuring how long a particular
+       * operation takes.
+       *
+       * @return void
+       * @static
+       */
+      public static function startClock() {
+
+             $mtime = microtime();
+             $mtime = explode(' ', $mtime);
+             $mtime = $mtime[1] + $mtime[0];
+             self::$startTime = $mtime;
+      }
+
+      /**
+       * Stops the timer and returns the elapsed time between startClock()
+       * and stopClock().
+       *
+       * @return Time elapsed time between startClock() and endClock()
+       * @static
+       */
+      public static function stopClock() {
+
+             $mtime = microtime();
+             $mtime = explode( ' ', $mtime );
+             $mtime = $mtime[1] + $mtime[0];
+             $endtime = $mtime;
+             $difference = ($endtime - self::$startTime);
+
+             return $difference;
+      }
+
+      /**
+       * Retrieves the raw PHP source code for the specified class. The search
+       * algorithm assumes the file is named after the class.
+       *
+       * @param String $class The class name
+       * @return String The raw PHP source code for the specified class
+       * @throws FrameworkException if the requested class could not be found
+       * @static
+       */
+      public static function getSource($class) {
+
+             $key = 'AGILEPHP_SOURCE_' . $class;
+             if(self::$cacher && ($source = self::$cacher->get($key)))
+                return $source;
+
+               // PHP namespace support
+             $namespace = explode('\\', $class);
+             $class = array_pop($namespace);
+             $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+             $frameworkRoot = self::$frameworkRoot . DIRECTORY_SEPARATOR;
+
+             // Search classmap
+             if(isset(self::$classmap[$class])) {
+
+                $source = file_get_contents(self::$frameworkRoot . self::$classmap[$class]);
+                if(self::$cacher) self::$cacher->set($key, $source);
+                return $source;
+             }
+
+             // PHAR support
+             if(strpos($class, 'phar://') !== false) {
+
+                $source = file_get_contents($class);
+                if(self::$cacher) $cacher->set($key, $source);
+                return $source;
+             }
+
+             // Search framework (one level)
+             $directories = glob(self::$frameworkRoot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+             foreach($directories as $directory) {
+
+                 $path = $directory . $namespace . $class . '.php';
+                 if(file_exists($path)) {
+
+                    $source = file_get_contents($path);
+                    if(self::$cacher) self::$cacher->set($key, $source);
+                    return $source;
+                 }
+             }
+
+             // Search web application (one level)
+             $directories = glob(self::$webroot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+             foreach($directories as $directory) {
+
+                 $path = $directory . $namespace . $class . '.php';
+                 if(file_exists($path)) {
+
+                    $source = file_get_contents($path);
+                    if(self::$cacher) self::$cacher->set($key, $source);
+                    return $source;
+                 }
+             }
+
+             // Search web application (recursively)
+		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
 			 foreach( new RecursiveIteratorIterator($it) as $file) {
 
 			   	      if(substr($file, -1  != '.' && substr($file, -2) != '..' &&
@@ -600,137 +571,257 @@ final class AgilePHP {
 				 		  if(array_pop($pieces) == $class . '.php') {
 
 			     	 		  $source = file_get_contents($file);
-				 		      if(isset($cacher)) $cacher->set($key, $source);
+				 		      if(self::$cacher) $cacher->set($key, $source);
 			     	 		  return $source;
 				 		  }
 				      }
 			 }
 
-			 throw new FrameworkException('Failed to retrieve source code for class \'' . $class . '\'.');
-	  }
+             throw new FrameworkException('Failed to retrieve source code for class \'' . $class . '\'.');
+      }
 
-	  /**
-	   * Lazy loads standard framework and web application classes. Parses each class
-	   * source file for the presense of AgilePHP interceptors.
-	   *
-	   * @param String $class The name of the class being loaded by __autoload
-	   * @param boolean $bypassInterceptors Flag used to enable/disable InterceptorFilter logic
-	   * @return void
-	   */
-	  public static function autoload($class, $bypassInterceptors = false) {
+      /**
+       * Lazy loads standard framework and web application classes. Parses each class
+       * source file for the presense of AgilePHP interceptors.
+       *
+       * @param String $class The name of the class being loaded by __autoload
+       * @param boolean $bypassInterceptors Flag used to enable/disable InterceptorFilter logic
+       * @return void
+       * @static
+       */
+      public static function autoload($class, $bypassInterceptors = false) {
 
-	  		 Log::debug('AgilePHP::autoload Loading \'' . $class . '\'.');
+             // Use caching if enabled
+             if(self::$cacher) {
 
-	  		 // Use caching if enabled
-	  		 $key = 'AGILEPHP_AUTOLOAD_' . $class;
-	  		 if(self::$cacher instanceof CacheProvider) {
-	  		    if($clazz = self::$cacher->get($key)) {
+                $key = 'AGILEPHP_AUTOLOAD_' . $class;
+                if($clazz = self::$cacher->get($key)) {
 
-	  		       require_once $clazz;
-	               return;
-	  		    }
-	  		 }
+                   require $clazz;
+                   return;
+                }
+             }
 
-	  		 if(!$bypassInterceptors) {
+             // Parse class for AgilePHP interceptors if enabled
+             if(!$bypassInterceptors) {
 
-    	  		// Parse class for AgilePHP interceptors
-    	  		new InterceptorFilter($class);
+                new InterceptorFilter($class);
 
-    			// Intercepted classes are loaded upon interception
-    	  		if(class_exists($class, false)) return;
-	  		 }
+                // Intercepted classes are loaded by the filter
+                if(class_exists($class, false)) return;
+             }
 
-			 $namespace = explode('\\', $class);
-			 $class = array_pop($namespace);
-			 $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-			 $frameworkRoot = self::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR;
+             // Search static classmap
+             if(isset(self::$classmap[$class])) {
 
-			 // Load framework classes
-			 $path = $frameworkRoot . $namespace . $class . '.php';
-			 if(file_exists($path)) {
+                require self::$frameworkRoot . self::$classmap[$class];
+                return;
+             }
+             
+             // PHP namespace support
+             $namespace = explode('\\', $class);
+             $class = array_pop($namespace);
+             $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
 
-			    if(self::$cacher instanceof CacheProvider)
-			       self::$cacher->set($key, $path);
+             if(isset(self::$classmap[$class])) {
 
-			    require_once $path;
-			    return;
+                require self::$frameworkRoot . self::$classmap[$class];
+                return;
+             }
+
+             // Search framework (one level)
+             $directories = glob(self::$frameworkRoot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+             foreach($directories as $directory) {
+
+                 $path = $directory . $namespace . $class . '.php';
+                 if(file_exists($path)) {
+
+                    if(self::$cacher) self::$cacher->set($key, $path);
+                    require $path;
+                    return;
+                 }
+             }
+
+             // Search web application (one level)
+             $directories = glob(self::$webroot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
+             foreach($directories as $directory) {
+
+                 $path = $directory . $namespace . $class . '.php';
+                 if(file_exists($path)) {
+
+                    if(self::$cacher) self::$cacher->set($key, $path);
+                    require $path;
+                    return;
+                 }
+             }
+
+             // Search web application (recursively)
+		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
+			 foreach( new RecursiveIteratorIterator($it) as $file) {
+
+			   	      if(substr($file, -1  != '.' && substr($file, -2) != '..' &&
+			   	         substr($file, -4) != 'view')) {
+
+			   	      	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
+				 		  if(array_pop($pieces) == $class . '.php') {
+
+				 		      if(self::$cacher) $cacher->set($key, $file->getPathname());
+			     	 		  require $file;
+			     	 		  return;
+				 		  }
+				      }
 			 }
 
-			 $it = new RecursiveDirectoryIterator($frameworkRoot);
-			 foreach(new RecursiveIteratorIterator( $it ) as $file ) {
+             throw new FrameworkException('The requested class \'' . $class . '\' could not be auto loaded.');
+      }
 
-			  	      if(substr($file, -1) != '.' && substr($file, -2) != '..') {
+      /**
+       * Lazy loads standard framework and web application classes.
+       *
+       * @param String $class The name of the class being loaded by __autoload
+       * @return void
+       * @static
+       */
+      public static function autoloadNoAnnotations($class) {
 
-				   	      $array = explode(DIRECTORY_SEPARATOR, $file);
-					 	  if(array_pop($array) == $class . '.php') {
+             self::autoload($class, true);
+      }
 
-					 	     if(self::$cacher instanceof CacheProvider)
-					 	        self::$cacher->set($key, $path);
-
-				     	 	 require_once $file;
-					 		 return;
-					 	  }
-					  }
-			 }
-
-			 // Load web application classes
-			 $webRoot = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR;
-
-		  	 $path = $webRoot . 'control' . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-		  	 if(file_exists($path)) {
-
-		  	    if(self::$cacher instanceof CacheProvider)
-			       self::$cacher->set($key, $path);
-
-			    require_once $path;
-		  	    return;
-		  	 }
-		  	 $path = $webRoot . 'model' . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-			 if(file_exists($path)) {
-
-			    if(self::$cacher instanceof CacheProvider)
-			       self::$cacher->set($key, $path);
-
-				require_once $path;
-		  	    return;
-			 }
-			 $path = $webRoot . 'classes' . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-		  	 if(file_exists($path)) {
-
-		  	    if(self::$cacher instanceof CacheProvider)
-			       self::$cacher->set($key, $path);
-
-				require_once $path;
-		  	    return;
-		  	 }
-			 $path = $webRoot . 'components' . DIRECTORY_SEPARATOR . $namespace . $class . '.php';
-			 if(file_exists($path)) {
-
-			    if(self::$cacher instanceof CacheProvider)
-			       self::$cacher->set($key, $path);
-
-				require_once $path;
-			    return;
-			 }
-		  	 // Not found in the top level application directories - perform deep scan
-			 $it = new RecursiveDirectoryIterator($webRoot);
-			 foreach(new RecursiveIteratorIterator($it) as $file) {
-
-				   	  if(substr($file, -1) != '.' && substr($file, -2) != '..'  && substr($file, -4) != 'view') {
-
-				   	     $pieces = explode(DIRECTORY_SEPARATOR, $file);
-					 	 if(array_pop($pieces) == $class . '.php') {
-
-					 	    if(self::$cacher instanceof CacheProvider)
-					 	       self::$cacher->set($key, $path);
-
-				     	 	require_once $file;
-					 		return;
-					 	 }
-					  }
-			 }
-
-			 throw new FrameworkException('The requested class \'' . $class . '\' could not be auto loaded.');
-		}
+      /**
+       * Static classmap responsible for storing relationships between classes
+       * and their physical location on disk.
+       * 
+       * @var array An associative array of class name keys with their physical disk location as the value.
+       * @static
+       */
+      public static $classmap = array(
+          'Annotation' => '/Annotation.php',
+          'Cache' => '/Cache.php',
+          'Component' => '/Component.php',
+          'Crypto' => '/Crypto.php',
+          'Form' => '/Form.php',
+          'FrameworkException' => '/FrameworkException.php',
+          'i18n' => '/i18n.php',
+          'Identity' => '/Identity.php',
+          'Interception' => '/Interception.php',
+          'Log' => '/Log.php',
+          'Mailer' => '/Mailer.php',
+          'MVC' => '/MVC.php',
+          'ORM' => '/ORM.php',
+          'Remoting' => '/Remoting.php',
+          'Scope' => '/Scope.php',
+          'Upload' => '/Upload.php',
+          'Validator' => '/Validator.php',
+          'AnnotatedClass' => '/annotation/AnnotatedClass.php',
+          'AnnotatedMethod' => '/annotation/AnnotatedMethod.php',
+          'AnnotatedProperty' => '/annotation/AnnotatedProperty.php',
+          'AnnotationException' => '/annotation/AnnotationException.php',
+          'AnnotationParser' => '/annotation/AnnotationParser.php',
+          'ApcCacheProvider' => '/cache/ApcCacheProvider.php',
+          'FileCacheProvider' => '/cache/FileCacheProvider.php',
+          'XCacheProvider' => '/cache/XCacheProvider.php',
+          'RequestParam' => '/form/RequestParam.php',
+          'AccessDeniedException' => '/identity/AccessDeniedException.php',
+          'Authentication' => '/identity/Authentication.php',
+          'BasicAuthentication' => '/identity/BasicAuthentication.php',
+          'BasicForgotPasswdMailer' => '/identity/BasicForgotPasswdMailer.php',
+          'BasicRegistrationMailer' => '/identity/BasicRegistrationMailer.php',
+          'BasicResetPasswdMailer' => '/identity/BasicResetPasswdMailer.php',
+          'DefaultAuthenticator' => '/identity/DefaultAuthenticator.php',
+          'IdentityManager' => '/identity/IdentityManager.php',
+          'IdentityManagerFactory' => '/identity/IdentityManagerFactory.php',
+          'IdentityManagerImpl' => '/identity/IdentityManagerImpl.php',
+          'IdentityModel' => '/identity/IdentityModel.php',
+          'IdentityUtils' => '/identity/IdentityUtils.php',
+          'LoggedIn' => '/identity/LoggedIn.php',
+          'NotLoggedInException' => '/identity/NotLoggedInException.php',
+          'Password' => '/identity/Password.php',
+          'Restrict' => '/identity/Restrict.php',
+          'Role' => '/identity/Role.php',
+          'User' => '/identity/User.php',
+          'AfterInvoke' => '/interception/AfterInvoke.php',
+          'AroundInvoke' => '/interception/AroundInvoke.php',
+          'In' => '/interception/In.php',
+          'InterceptionException', '/interception/InterceptionException.php',
+          'Interceptor' => '/interception/Interceptor.php',
+          'InterceptorFilter' => '/interception/InterceptorFilter.php',
+          'InterceptorProxy' => '/interception/InterceptorProxy.php',
+          'InvocationContext' => '/interception/InvocationContext.php',
+          'Audit' => '/logger/Audit.php',
+          'FileLogger' => '/logger/FileLogger.php',
+          'LogFactory' => '/logger/LogFactory.php',
+          'Logger' => '/logger/Logger.php',
+          'LogProvider' => '/logger/LogProvider.php',
+          'SysLogger' => '/logger/SysLogger.php',
+          'AJAXRenderer' => '/mvc/AJAXRenderer.php',
+          'BaseController' => '/mvc/BaseController.php',
+          'BaseModelActionController' => '/mvc/BaseModelActionController.php',
+          'BaseModelController' => '/mvc/BaseModelController.php',
+          'BaseModelXmlController' => '/mvc/BaseModelXmlController.php',
+          'BaseModelXslController' => '/mvc/BaseModelXslController.php',
+          'BaseRenderer' => '/mvc/BaseRenderer.php',
+          'ExtFormRenderer' => '/mvc/ExtFormRenderer.php',
+          'PHTMLRenderer' => '/mvc/PHTMLRenderer.php',
+          'XSLTRenderer' => '/mvc/XSLTRenderer.php',
+          'BaseDialect' => '/orm/dialect/BaseDialect.php',
+          'MSSQLDialect' => '/orm/dialect/MSSQLDialect.php',
+          'MySQLDialect' => '/orm/dialect/MySQLDialect.php',
+          'PGSQLDialect' => '/orm/dialect/PGSQLDialect.php',
+          'SQLDialect' => '/orm/dialect/SQLDialect.php',
+          'SQLiteDialect' => '/orm/dialect/SQLiteDialect.php',
+          'Column' => '/orm/Column.php',
+          'Database' => '/orm/Database.php',
+          'ForeignKey' => '/orm/ForeignKey.php',
+          'Id' => '/orm/Id.php',
+          'ORMException' => '/orm/ORMException.php',
+          'ORMFactory' => '/orm/ORMFactory.php',
+          'Procedure' => '/orm/Procedure.php',
+          'ProcedureParam' =>'/orm/ProcedureParam.php',
+          'Table' => '/orm/Table.php',
+          'ApplicationScope' => '/scope/ApplicationScope.php',
+          'OrmSessionProvider' => '/scope/OrmSessionProvider.php',
+          'PhpSessionProvider' => '/scope/PhpSessionProvider.php',
+          'RequestScope' => '/scope/RequestScope.php',
+          'Session' => '/scope/Session.php',
+          'SessionProvider' => '/scope/SessionProvider.php',
+          'SessionScope' => '/scope/SessionScope.php',
+          'Stateful' => '/scope/Stateful.php',
+          'ArrayValidator' => '/validator/ArrayValidator.php',
+          'BitValidator' => '/validator/BitValidator.php',
+          'BooleanValidator' => '/validator/BooleanValidator.php',
+          'DateValidator' => '/validator/DateValidator.php',
+          'EmailValidator' => '/validator/EmailValidator.php',
+          'FloatValidator' => '/validator/FloatValidator.php',
+          'IPv4Validator' => '/validator/IPv4Validator.php',
+          'LengthValidator' => '/validator/LengthValidator.php',
+          'NumberValidator' => '/validator/NumberValidator.php',
+          'ObjectValidator' => '/validator/ObjectValidator.php',
+          'PasswordValidator' => '/validator/PasswordValidator.php',
+          'StringValidator' => '/validator/StringValidator.php',
+          'StrongPasswordValidator' => '/validator/StrongPasswordValidator.php',
+          'RemoteMethod' => '/webservice/remoting/RemoteMethod.php',
+          'RemotingException' => '/webservice/remoting/RemotingException.php',
+          'ConsumeMime' => '/webservice/rest/ConsumeMime.php',
+          'DELETE' => '/webservice/rest/DELETE.php',
+          'GET' => '/webservice/rest/GET.php',
+          'JSONTransformer' => '/webservice/rest/JSONTransformer.php',
+          'Path' => '/webservice/rest/Path.php',
+          'POST' => '/webservice/rest/POST.php',
+          'ProduceMime' => '/webservice/rest/ProduceMime.php',
+          'PUT' => '/webservice/rest/PUT.php',
+          'RestClient' => '/webservice/rest/RestClient.php',
+          'RestClientException' => '/webservice/rest/RestClientException.php',
+          'RestService' => '/webservice/rest/RestService.php',
+          'RestServiceException' => '/webservice/rest/RestServiceException.php',
+          'RestUtil' => '/webservice/rest/RestUtil.php',
+          'Transformer' => '/webservice/rest/Transformer.php',
+          'XMLTransformer' => '/webservice/rest/XMLTransformer.php',
+          'YAMLTransformer' => '/webservice/rest/YAMLTransformer.php',
+          'SOAPBinding' => '/webservice/soap/SOAPBinding.php',
+          'SOAPService' => '/webservice/soap/SOAPService.php',
+          'WebMethod' => '/webservice/soap/WebMethod.php',
+          'WebService' => '/webservice/soap/WebService.php',
+          'WSDL' => '/webservice/soap/WSDL.php'
+     );
 }
 ?>

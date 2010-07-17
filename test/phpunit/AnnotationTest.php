@@ -3,7 +3,7 @@
 /**
  * @package com.makeabyte.agilephp.test.annotation
  */
-class AnnotationTest extends BaseTest {
+class AnnotationTest extends PHPUnit_Framework_TestCase {
 
 	  /**
 	   * @test

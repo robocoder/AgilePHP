@@ -63,7 +63,7 @@ class XSLTRenderer extends BaseRenderer {
       public function renderXsl( $xsl, $xml='' ) {
 
       	 	 $dom = new DomDocument();
-			 $dom->load( AgilePHP::getFramework()->getWebRoot() . '/view/' . $xsl . '.xsl' );
+			 $dom->load( AgilePHP::getWebRoot() . '/view/' . $xsl . '.xsl' );
 
 			 $xp = new XSLTProcessor();
 			 $xsl = $xp->importStylesheet( $dom );
@@ -142,7 +142,7 @@ class XSLTRenderer extends BaseRenderer {
              set_error_handler( 'XSLTRenderer::ErrorHandler' );
 
       	 	 $dom = new DomDocument();
-			 $dom->load( AgilePHP::getFramework()->getWebRoot() . '/view/' . $xsl . '.xsl' );
+			 $dom->load( AgilePHP::getWebRoot() . '/view/' . $xsl . '.xsl' );
 
 			 $xp = new XSLTProcessor();
 			 $xsl = $xp->importStylesheet( $dom );

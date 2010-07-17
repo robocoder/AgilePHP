@@ -2,7 +2,7 @@
 /**
  * @package com.makeabyte.agilephp.test.interception
  */
-class InterceptorTest extends BaseTest {
+class InterceptorTest extends PHPUnit_Framework_TestCase {
 
 	  /**
 	   * This test case illustrates intercepting a method call and changing

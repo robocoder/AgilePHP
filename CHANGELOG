@@ -1,13 +1,13 @@
-- Started introducing caching into the core framework. If agilephp.xml contains
-  a cache configuration element, the core framework will use the specified provider
-  to cache internal data.
-- Caching support added to AnnotationParser
-- Caching support added to InterceptorProxy
-- Cleaned up and optmizied InterceptorProxy::__call
-- Fixed bug where CacheException could not be autoloaded when running under xcache
-- Caching support added to AgilePHP::getSource
-- Caching support added to AgilePHP::autoload
-- Misc bug fixes in regards to new caching system
-- Added #@Id and #@Password interceptors to interceptors unit test
+- Lots of performance refactoring
+  - agilephp.xml is now optional
+  - annotation parsing is now optional (<annotations/> in agilephp.xml to enable - default is disabled)
+  - AgilePHP and MVC classes are completely static
+  - More tweaking to interceptors
+  - Updated unit tests, studio package and apidoc comments
+- Bug fix to AnnotatedMethod. Added magic __wakeup method to construct
+  the parent class to prevent "reflection object not found" error
+  when the class is unserialized.
 
-Benchmarks show caching increases performace of interceptors ~150%
+benchmarking broke into 3500 requests per second (non fcgi) for
+a total of ~2500% performance increase with caching enabled. The
+core framework without caching is seeing ~900% performance increase.

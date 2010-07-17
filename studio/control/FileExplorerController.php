@@ -344,7 +344,7 @@ class FileExplorerController extends BaseExtController {
 			   $filename = ($name) ? $name : null;
 
 			   $path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treePath );
-			   $renderer = MVC::getInstance()->createRenderer( 'AJAXRenderer' );
+			   $renderer = MVC::createRenderer( 'AJAXRenderer' );
 			   $o = new stdClass();
 
 	  		   try {
@@ -671,7 +671,7 @@ class FileExplorerController extends BaseExtController {
 		 				/*
 		 				$dom = new DOMDocument();
 			 			$dom->Load( $componentXml );
-						if( !$dom->schemaValidate( AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR . 'component.dtd' ) );
+						if( !$dom->schemaValidate( AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'component.dtd' ) );
 						//if( !$dom->validate() );
 						 	throw new ORMException( 'component.xml Document Object Model validation failed.' );
 						*/

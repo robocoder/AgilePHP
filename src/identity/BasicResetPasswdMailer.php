@@ -30,11 +30,13 @@ class BasicResetPasswdMailer extends Mailer {
 
 	  public function __construct($username, $password, $email) {
 
+	         $appName = AgilePHP::getAppName();
+
 	  	     $this->setTo($email);
 	  		 $this->setToName($username);
-	  		 $this->setFrom('no-reply@' . AgilePHP::getFramework()->getAppName());
-	  		 $this->setFromName(AgilePHP::getFramework()->getAppName());
-	  		 $this->setSubject(AgilePHP::getFramework()->getAppName() . ' :: New Password');
+	  		 $this->setFrom('no-reply@' . $appName);
+	  		 $this->setFromName($appName);
+	  		 $this->setSubject($appName . ' :: New Password');
 	  		 $this->setBody('Your new password is: ' . $password);
 	  }
 }

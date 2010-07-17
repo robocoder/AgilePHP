@@ -332,7 +332,7 @@ class DatabaseManagerRemote {
 	      			foreach( $model as $name => $properties ) {
 
 	      				  $nav .= '<td style="padding-left: 10px;">' . PHP_EOL . "\t\t\t";
-	      				  $nav .= '<a href="<?php echo AgilePHP::getFramework()->getRequestBase() ?>/' . $name . 'Controller">' . $name . '</a>' . PHP_EOL . "\t\t";
+	      				  $nav .= '<a href="<?php echo AgilePHP::getRequestBase() ?>/' . $name . 'Controller">' . $name . '</a>' . PHP_EOL . "\t\t";
 	      				  $nav .= '</td>' . PHP_EOL . PHP_EOL . "\t\t";
 			      	}
 	      	  }

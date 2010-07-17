@@ -95,7 +95,7 @@ abstract class ORMFactory {
 	      */
 	     public static function connect( Database $db ) {
 
-	     		$root = AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR . 'orm' .
+	     		$root = AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'orm' .
 	     		 				 DIRECTORY_SEPARATOR . 'dialect' . DIRECTORY_SEPARATOR;
 
 	     		     switch( $db->getType() ) {
@@ -141,7 +141,7 @@ abstract class ORMFactory {
 	      */
 		 private static function getXml( $ormXml ) {
 
-		 		 $orm_xml = ($ormXml) ? $ormXml : AgilePHP::getFramework()->getWebRoot() . '/orm.xml';
+		 		 $orm_xml = ($ormXml) ? $ormXml : AgilePHP::getWebRoot() . '/orm.xml';
 
                  if( !file_exists( $orm_xml ) )
                      throw new ORMException( 'Failed to load orm.xml at \'' . $orm_xml . '\'.' );

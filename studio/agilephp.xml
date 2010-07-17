@@ -3,4 +3,5 @@
 <agilephp>
 	<logger level="debug"/>
 	<crypto algorithm="sha256" />
+	<annotations/>
 </agilephp>

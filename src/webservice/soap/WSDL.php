@@ -66,7 +66,7 @@ class WSDL {
 
 	  		 // Supply default web service configuration values
 	  		 $this->serviceName = $this->class . 'Service';
-	 		 $this->targetNamespace = 'http://' . $_SERVER['HTTP_HOST'] . AgilePHP::getFramework()->getRequestBase() . '/' . MVC::getInstance()->getController();
+	 		 $this->targetNamespace = 'http://' . $_SERVER['HTTP_HOST'] . AgilePHP::getRequestBase() . '/' . MVC::getController();
 
 	  		 $annotations = Annotation::getClassAsArray( $this->class );
 

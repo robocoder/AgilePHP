@@ -9,7 +9,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase {
 	   */
 	  public function coreTests() {
 
-	  		 $orm = ORMFactory::load( AgilePHP::getFramework()->getWebRoot() . '/orm_mysql_test.xml' );
+	  		 $orm = ORMFactory::load( AgilePHP::getWebRoot() . '/orm_mysql_test.xml' );
 
 	  		 $orm->create();	// create the unit testing database agilephp_test_mysql
 

@@ -8,7 +8,7 @@
  * 
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
-class SoapDocumentLiteralTest extends BaseTest {
+class SoapDocumentLiteralTest extends PHPUnit_Framework_TestCase {
 
 	  
  	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI', 

@@ -4,14 +4,14 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title><?= $title ?></title>
-		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
+		<link href="<?= AgilePHP::getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
 	</head>
 
 	<body>
 		<?php require_once 'header.html'; ?>
 
 		<div>
-			<form name="frmContact" method="post" action="<?= AgilePHP::getFramework()->getRequestBase() ?>/IndexController/contactSubmit">
+			<form name="frmContact" method="post" action="<?= AgilePHP::getRequestBase() ?>/IndexController/contactSubmit">
 				<?php if( isset( $formResult ) ) echo '<div style="padding-top: 20px;">' . $formResult . '</div>'; ?>
 				<table border="0" style="padding-top: 25px">
 					<tr>

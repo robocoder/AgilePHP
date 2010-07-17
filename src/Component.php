@@ -178,7 +178,7 @@ abstract class Component extends BaseController {
 	  			}
 
 	  			// This is a non-phar component
-	  		  	$f = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $component . DIRECTORY_SEPARATOR . 'control';
+	  		  	$f = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $component . DIRECTORY_SEPARATOR . 'control';
 		  	  	$it = new RecursiveDirectoryIterator( $f );
 			  	foreach( new RecursiveIteratorIterator( $it ) as $file ) {
 

@@ -2,7 +2,7 @@
 /**
  * @package com.makeabyte.agilephp.test.logger
  */
-class FileLoggerTest extends BaseTest {
+class FileLoggerTest extends PHPUnit_Framework_TestCase {
 
 	  private $timestamp;
 
@@ -122,7 +122,7 @@ class FileLoggerTest extends BaseTest {
 	   */
 	  private function exists( $text ) {
 
-	  		 $logDirectory = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
+	  		 $logDirectory = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
 
 	  	     if( !file_exists( $logDirectory ) )  	      	
 	  	      	 if( !mkdir( $logDirectory ) )

@@ -23,7 +23,7 @@
  * Filters the specified class for interceptor annotations. If any interceptor
  * annotations are found, an InterceptorProxy instance is created for the specified
  * class and each interceptor is loaded in the order they were implemented.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception
@@ -43,7 +43,7 @@ class InterceptorFilter {
 
 				   	   	  	  $interceptor = $annote->getName();
 				   	   	  	  $interception = new Interception( $class, null, null, $annotation );
-				   	   	  	  AgilePHP::getFramework()->addInterception( $interception );
+				   	   	  	  AgilePHP::addInterception( $interception );
 				   	   	  }
 				 }
 	  	     }
@@ -61,14 +61,14 @@ class InterceptorFilter {
 
 					   	   	  	  $interceptor = $annote->getName();
 					   	   	  	  $interception = new Interception( $class, $methodName, null, $annotation );
-					   	   	  	  AgilePHP::getFramework()->addInterception( $interception );
+					   	   	  	  AgilePHP::addInterception( $interception );
 					   	   	  }
 					 }
 				 }
 	  	     }
 
 	  	     // Proces property/field level annotations
-	  	     $annotatedProperties = Annotation::getPropertiesAsArray( $class );	  	     
+	  	     $annotatedProperties = Annotation::getPropertiesAsArray( $class );
 		 	 if( count( $annotatedProperties ) ) {
 
 				 foreach( $annotatedProperties as $fieldName => $fieldAnnotation ) {
@@ -80,7 +80,7 @@ class InterceptorFilter {
 
 					   	   	  	  $interceptor = $annote->getName();
 					   	   	  	  $interception = new Interception( $class, null, $fieldName, $annotation );
-					   	   	  	  AgilePHP::getFramework()->addInterception( $interception );
+					   	   	  	  AgilePHP::addInterception( $interception );
 					   	   	  }
 					 }
 				 }

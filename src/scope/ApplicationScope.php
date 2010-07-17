@@ -156,7 +156,7 @@ class ApplicationScope {
 	  private static function getAppTempFile() {
 
 	  	 	  $tmp = tempnam('agilephp', 'agilephp-');
- 			  $path = dirname($tmp) . '/agilephp-' . AgilePHP::getFramework()->getAppName();
+ 			  $path = dirname($tmp) . '/agilephp-' . AgilePHP::getAppName();
 
  			  if(file_exists($tmp)) unlink($tmp);
 

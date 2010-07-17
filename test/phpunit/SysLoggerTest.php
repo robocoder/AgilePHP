@@ -2,7 +2,7 @@
 /**
  * @package com.makeabyte.agilephp.test.logger
  */
-class SysLoggerTest extends BaseTest {
+class SysLoggerTest extends PHPUnit_Framework_TestCase {
 
 	  private $timestamp;
 

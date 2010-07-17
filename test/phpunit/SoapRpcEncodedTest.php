@@ -2,7 +2,7 @@
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
-class SoapRpcEncodedTest extends BaseTest {
+class SoapRpcEncodedTest extends PHPUnit_Framework_TestCase {
 
  	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapRpcEncodedTestAPI', 
 				  'soapaction' => '',

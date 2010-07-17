@@ -56,6 +56,16 @@ class AnnotatedMethod extends ReflectionMethod {
 	  }
 
 	  /**
+	   * Prevents "Failed to retrieve the reflection object" when unserialized
+	   *
+	   * @return void
+	   */
+	  public function __wakeup() {
+
+	         parent::__construct($this->class, $this->name);
+	  }
+
+	  /**
 	   * Returns boolean indicator based on the presence of any method level annotations.
 	   *
 	   * @return True if this method has any annotations, false otherwise.

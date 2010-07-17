@@ -1,15 +1,13 @@
 <?php
 
-$test = realpath( dirname( __FILE__ ) . '/../' );
-$src = realpath( dirname( __FILE__ ) . '/../../src' );
+$test = realpath(dirname(__FILE__) . '/../');
+$src = realpath(dirname(__FILE__) . '/../../src');
 
 require_once $src . DIRECTORY_SEPARATOR . 'AgilePHP.php';
 
-$agilephp = AgilePHP::getFramework( $test . DIRECTORY_SEPARATOR . 'agilephp.xml' );
-$agilephp->setWebRoot( $test );
-$agilephp->setFrameworkRoot( $src );
-$agilephp->setDefaultTimezone( 'America/New_York' );
-$agilephp->handleErrors();
-
-require_once $test . '/phpunit/BaseTest.php';
+AgilePHP::init($test . DIRECTORY_SEPARATOR . 'agilephp.xml');
+AgilePHP::setWebRoot($test);
+AgilePHP::setFrameworkRoot($src);
+AgilePHP::setDefaultTimezone('America/New_York');
+AgilePHP::handleErrors();
 ?>

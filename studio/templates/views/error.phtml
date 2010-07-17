@@ -4,12 +4,12 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/xhtml; charset=utf-8"/>
 		<title><?= $title; ?></title>
-		<link href="<?= AgilePHP::getFramework()->getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
+		<link href="<?= AgilePHP::getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
 	</head>
 
 	<body>
 		<?php require_once 'header.html'; ?>
-		<div class="error"><?php if( isset( $error ) ) echo $error; ?></div>
+		<div class="error"><?php if(isset($error)) echo $error; ?></div>
 		<?php require_once 'footer.html'; ?>
 	</body>
 </html>

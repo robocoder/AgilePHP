@@ -147,7 +147,7 @@ class RestUtil {
 	  		 		  $ajax = new AJAXRenderer();
 	  		 		  $class = new ReflectionClass( (is_array( $data )) ? $data[0] : $data );
 	  		 		  // Perform XSLT transformation if a model xsl view exists
-	  		 		  if( file_exists( AgilePHP::getFramework()->getWebRoot() . '/view/' . $class->getName() . '.xsl' ) ) {
+	  		 		  if( file_exists( AgilePHP::getWebRoot() . '/view/' . $class->getName() . '.xsl' ) ) {
 	  		 		  	  $renderer = new XSLTRenderer();
 	  		 		  	  return $renderer->transformXsl( $class->getName(), $ajax->toXML( $data ) );
 	  		 		  }

@@ -41,7 +41,7 @@ abstract class IdentityManagerFactory {
 
 	  		 if(self::$manager == null) {
 
-	  		     $agilephp_xml = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
+	  		     $agilephp_xml = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
 		  		 $xml = simplexml_load_file($agilephp_xml);
 
 		  		 // No Identity configuration present - provide working default configuration

@@ -4,8 +4,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title><?php echo $title; ?></title>
-		<script src="<?php echo AgilePHP::getFramework()->getDocumentRoot(); ?>/../src/AgilePHP.js"></script>
-		<link href="<?php echo AgilePHP::getFramework()->getDocumentRoot(); ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
+		<script src="<?php echo AgilePHP::getDocumentRoot(); ?>/../src/AgilePHP.js"></script>
+		<link href="<?php echo AgilePHP::getDocumentRoot(); ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
 	</head>
 
 	<body>
@@ -14,10 +14,8 @@
 		<?php require_once 'admin_navigation.phtml'; ?>
 
 		<?php
-			  if( !isset( $content ) )
-			  	  echo 'Welcome to the admin area!';
-			  else
-			  	  echo $content
+			  if(!isset($content)) echo 'Welcome to the admin area!';
+			  else echo $content
 		 ?>
 
 		<?php require_once 'footer.html'; ?>

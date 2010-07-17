@@ -40,7 +40,7 @@ class FileCacheProvider implements CacheProvider {
        */
       public function __construct() {
 
-             $this->cache = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . '.cache';
+             $this->cache = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . '.cache';
              if(!file_exists($this->cache)) {
 
                 if(!mkdir($this->cache))

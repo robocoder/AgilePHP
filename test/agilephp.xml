@@ -5,4 +5,5 @@
 	<logger level="debug"/>
 	<scope type="session" provider="OrmSessionProvider"/>
 	<crypto algorithm="sha256" iv="1234567890" key="This is a secret key" />
+	<annotations/>
 </agilephp>

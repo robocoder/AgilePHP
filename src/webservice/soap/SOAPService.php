@@ -44,7 +44,7 @@ abstract class SOAPService extends BaseController {
 		 		$class = new AnnotatedClass( $this );
 
 		 		// Provide default targetNamespace in case #@WebService annotation is missing
-		 		$targetNamespace = 'http://' . $_SERVER['HTTP_HOST'] . AgilePHP::getFramework()->getRequestBase() . '/' . MVC::getInstance()->getController();
+		 		$targetNamespace = 'http://' . $_SERVER['HTTP_HOST'] . AgilePHP::getRequestBase() . '/' . MVC::getController();
 	  		    $annotations = Annotation::getClassAsArray( $class->getName() );
 
 		  		// Initalize web service configuration from #@WebService annotation if present
@@ -80,7 +80,7 @@ abstract class SOAPService extends BaseController {
 	  		 		}
 	  		 	}
 
-		 		if( AgilePHP::getFramework()->isInDebugMode() )
+		 		if( AgilePHP::isInDebugMode() )
 					ini_set( 'soap.wsdl_cache_enabled', '0' );
 
 				$server = new SoapServer( $targetNamespace . '/' . $wsdlMethod );

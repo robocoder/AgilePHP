@@ -323,7 +323,7 @@ class Form {
 						<td>';
 	  		 $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
         							 : '<input type="submit" value="Update"/>
-									   <input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
+									   <input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getRequestBase() .
         							   '\', \'' . $pkeyValues . '\', \'' . $this->getPage() . '\', \'delete\' )"/>
         							   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';
 
@@ -553,7 +553,7 @@ class Form {
 						  <td>';
         	              $xsl .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
         				        						 : '<input type="submit" value="Update"/>
-															<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getFramework()->getRequestBase() .
+															<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getRequestBase() .
         													   '\', \'' . $pkeyValues . '\', \'' . $page . 
         													   '\', \'{/Form/controller}\', \'delete\' )"/>
         													   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';

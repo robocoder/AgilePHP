@@ -32,13 +32,15 @@ class BasicForgotPasswdMailer extends Mailer {
 
 	  		 $url = (@$_SERVER['HTTPS'] != null) ? 'https://' : 'http://';
 	  	     $url .= (@$_SERVER['HTTP_HOST'] != null) ? $_SERVER['HTTP_HOST'] : 'localhost';
-	  		 $url .= AgilePHP::getFramework()->getRequestBase() . '/LoginController/resetPassword/';
+	  		 $url .= AgilePHP::getRequestBase() . '/LoginController/resetPassword/';
+
+	  		 $appName = AgilePHP::getAppName();
 
 	  	     $this->setTo($email);
 	  		 $this->setToName($username);
-	  		 $this->setFrom('no-reply@' . AgilePHP::getFramework()->getAppName());
-	  		 $this->setFromName(AgilePHP::getFramework()->getAppName());
-	  		 $this->setSubject(AgilePHP::getFramework()->getAppName() . ' :: Reset Password');
+	  		 $this->setFrom('no-reply@' . $appName);
+	  		 $this->setFromName($appName);
+	  		 $this->setSubject($appName . ' :: Reset Password');
 	  		 $this->setBody('Click on the following link to reset your password: ' . PHP_EOL . $url .
 	  		 				 	$token . '/' . Scope::getSessionScope()->getSessionId());
 	  }

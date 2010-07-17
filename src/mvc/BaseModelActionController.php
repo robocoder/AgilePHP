@@ -51,7 +51,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     		   }
 
 	     		   parent::__construct();
-	     		   $this->xsltRenderer = MVC::getInstance()->createRenderer( 'XSLTRenderer' );
+	     		   $this->xsltRenderer = MVC::createRenderer( 'XSLTRenderer' );
 	     		   $this->getRenderer()->set( 'title', 'Administration :: ' . $this->getModelName() );
 	     }
 

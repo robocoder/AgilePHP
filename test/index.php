@@ -5,26 +5,25 @@
 
  require_once '../src/AgilePHP.php';
 
-
  try {
- 		$agilephp = AgilePHP::getFramework();
- 		$agilephp->setDefaultTimezone( 'America/New_York' );
-  	    $agilephp->setDisplayPhpErrors( true );
-    	$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . '/../src' ) );
-    	$agilephp->setAppName( 'AgilePHP Framework Tests' );
+ 		AgilePHP::init();
+        AgilePHP::setDefaultTimezone('America/New_York');
+  	    AgilePHP::setDisplayPhpErrors(true);
+    	AgilePHP::setFrameworkRoot(realpath(dirname(__FILE__) . '/../src' ));
+    	AgilePHP::setAppName('AgilePHP Framework Tests');
 
-  		MVC::getInstance()->dispatch();
+    	MVC::dispatch();
  }
  catch( FrameworkException $e ) {
 
   	     require_once '../src/mvc/PHTMLRenderer.php';
 
-  	     Log::error( $e->getMessage() );
+  	     Log::error($e->getMessage());
 
   	     $renderer = new PHTMLRenderer();
-  	     $renderer->set( 'title', 'AgilePHP Framework :: Error Page' );
-	  	 $renderer->set( 'error', $e->getCode() . '   ' . $e->getMessage() . ($agilephp->isInDebugMode() ? '<br><pre>' . $e->getTraceAsString() . '</pre>' : '' ) );
-	  	 $renderer->render( 'error' );
+  	     $renderer->set('title', 'AgilePHP Framework :: Error Page');
+	  	 $renderer->set('error', $e->getCode() . '   ' . $e->getMessage() . (AgilePHP::isInDebugMode() ? '<br><pre>' . $e->getTraceAsString() . '</pre>' : ''));
+	  	 $renderer->render('error');
  }
 
 ?>

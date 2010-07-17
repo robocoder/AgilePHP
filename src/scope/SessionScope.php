@@ -42,7 +42,7 @@ class SessionScope implements SessionProvider {
 	   */
 	  private function __construct() {
 
-	          $xml = AgilePHP::getFramework()->getConfiguration();
+	          $xml = AgilePHP::getConfiguration();
               for($i=0; $i<count((array)$xml->scope); $i++ ) {
 
                   if((string)$xml->scope[$i]->attributes()->type == 'session') {

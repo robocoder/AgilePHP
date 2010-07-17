@@ -65,6 +65,12 @@ pear channel-discover pear.phpunit.de
 pear install --alldeps phpunit/PHPUnit
 
 
+------------
+** APIDOC **
+------------
+View the online apidoc at http://makeabyte.com/agilephp/apidoc.
+
+
 ----------
 ** WIKI **
 ----------

@@ -37,7 +37,7 @@ class FileLogger implements LogProvider {
 	   */
 	  public function __construct() {
 
-	  		 $logDirectory = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
+	  		 $logDirectory = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
 
 	  	     if( !file_exists( $logDirectory ) )  	      	
 	  	      	 if( !mkdir( $logDirectory ) )
@@ -112,7 +112,7 @@ class FileLogger implements LogProvider {
 	   */
 	  private function write( $message, $level ) {
 
-	  		  $host = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : AgilePHP::getFramework()->getAppName();
+	  		  $host = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : AgilePHP::getAppName();
 	  		  $requestURI = (isset( $_SERVER['REQUEST_URI' ] ) ? $_SERVER['REQUEST_URI'] : '/' );
 	  	      $header = '[' . $level . ']  ' . $host . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) . '  ' . $requestURI;
 

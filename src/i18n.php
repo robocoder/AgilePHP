@@ -47,7 +47,7 @@ class i18n {
 	  		 	  $dirty = (count( $pieces ) > 0) ? substr( $pieces[0], 0, 5 ) : null;
 	  		 	  $locale = str_replace( '-', '_', $dirty );
 
-	  		 	  if( file_exists( AgilePHP::getFramework()->getWebRoot() . 
+	  		 	  if( file_exists( AgilePHP::getWebRoot() . 
 	  		 	  			DIRECTORY_SEPARATOR . 'locale' . $this->getLocale() ) ) {
 
 	  		 	  	  $this->setLocale( $locale );
@@ -80,7 +80,7 @@ class i18n {
 
 	  		 $this->domain = $domain;
 
-	  		 bindtextdomain( $domain, AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'locale' );
+	  		 bindtextdomain( $domain, AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'locale' );
 			 textdomain( $domain );
 	  }
 

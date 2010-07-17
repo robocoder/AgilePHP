@@ -78,11 +78,11 @@ class InventoryController extends BaseModelActionController {
 	  		 }
 	  		 catch( ORMException $e ) {
 
-	  		 		if( file_exists( AgilePHP::getFramework()->getWebRoot() . $image ) )
-	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $image );
+	  		 		if( file_exists( AgilePHP::getWebRoot() . $image ) )
+	  		 			@unlink( AgilePHP::getWebRoot() . $image );
 
-	  		 		if( file_exists( AgilePHP::getFramework()->getWebRoot() . $video ) )
-	  		 			@unlink( AgilePHP::getFramework()->getWebRoot() . $video );
+	  		 		if( file_exists( AgilePHP::getWebRoot() . $video ) )
+	  		 			@unlink( AgilePHP::getWebRoot() . $video );
 
 	  	     	    throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		 }
@@ -190,15 +190,15 @@ class InventoryController extends BaseModelActionController {
 			 if( $contentLength > $maxSize )
 			 	 throw new FrameworkException( 'HTTP Content-Length greater than PHP configuration directive \'post_max_size\' (results in empty $_POST array). Content-Length = \'' . $contentLength . '\', post_max_size = \'' . $maxSize . '\'' );
 
-			 $target = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR
+			 $target = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR
 			 		  . $type . DIRECTORY_SEPARATOR . $_FILES[$type]['name'];
 
 			 $upload = new Upload();
 			 $upload->setName( $type );
-			 $upload->setDirectory( AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' .
+			 $upload->setDirectory( AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' .
 			 						DIRECTORY_SEPARATOR . $type );
 			 $upload->save();
 
-			 return str_replace( AgilePHP::getFramework()->getWebRoot(), AgilePHP::getFramework()->getDocumentRoot(), $target );
+			 return str_replace( AgilePHP::getWebRoot(), AgilePHP::getDocumentRoot(), $target );
 	  }
 }

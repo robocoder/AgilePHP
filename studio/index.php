@@ -13,22 +13,22 @@
  * @version 0.1
  * @see http://www.extjs.com
  */
- require_once '../src/AgilePHP.php';
+require_once '../src/AgilePHP.php';
 
- try {
-		$agilephp = AgilePHP::getFramework();
-		$agilephp->setDefaultTimezone( 'America/New_York' );
-		$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . '/../src' ) );
-		AgilePHP::handleErrors();
+try {
+      AgilePHP::init();
+	  AgilePHP::setDefaultTimezone('America/New_York');
+	  AgilePHP::setFrameworkRoot(realpath(dirname(__FILE__) . '/../src'));
+	  AgilePHP::handleErrors();
 
-		MVC::getInstance()->dispatch();
- }
- catch( Exception $e ) {
+	  MVC::dispatch();
+}
+catch(Exception $e) {
 
-  	     Log::error( $e->getMessage() . DIRECTORY_SEPARATOR . $e->getTraceAsString() );
+  	   Log::error($e->getMessage() . DIRECTORY_SEPARATOR . $e->getTraceAsString());
 
-		 $renderer = new ExtFormRenderer();
-		 $renderer->setError( $e->getMessage() );
-		 $renderer->render( false );
- }
+	   $renderer = new ExtFormRenderer();
+	   $renderer->setError($e->getMessage());
+	   $renderer->render(false);
+}
 ?>

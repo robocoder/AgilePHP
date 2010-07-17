@@ -326,28 +326,27 @@ class ProjectRemote {
  * @author AgilePHP Generator
  * @version 0.1
  */
- require_once \'AgilePHP\' . DIRECTORY_SEPARATOR . \'AgilePHP.php\';
+ require_once \'AgilePHP/AgilePHP.php\';
 
  try {
-		$agilephp = AgilePHP::getFramework();
-		$agilephp->setDefaultTimezone( \'America/New_York\' );
-		$agilephp->setFrameworkRoot( realpath( dirname( __FILE__ ) . \'/AgilePHP\' ) );
-
-		MVC::getInstance()->dispatch();
+        AgilePHP::init();
+		AgilePHP::setDefaultTimezone(\'America/New_York\');
+		AgilePHP::setFrameworkRoot(realpath(dirname(__FILE__) . \'/AgilePHP\'));
+		MVC::dispatch();
  }
  catch( Exception $e ) {
 
-  	     Log::error( $e->getMessage() );
+  	     Log::error($e->getMessage());
 
 		 $renderer = new PHTMLRenderer();
-		 $renderer->set( \'title\', \'' . $this->projectName . ' :: Error Page\' );
-		 $renderer->set( \'error\', $e->getMessage() . ($agilephp->isInDebugMode() ? \'<pre>\' . $e->getTraceAsString() . \'</pre>\' : \'\' ) );
-		 $renderer->render( \'error\' );
+		 $renderer->set(\'title\', \'' . $this->projectName . ' :: Error Page\');
+		 $renderer->set(\'error\', $e->getMessage() . ($agilephp->isInDebugMode() ? \'<pre>\' . $e->getTraceAsString() . \'</pre>\' : \'\'));
+		 $renderer->render(\'error\');
  }
 ?>';
-	  	 	  $h = fopen( $this->root . '/index.php', 'w' );
-	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $code ) );
-	  		  fclose( $h );
+	  	 	  $h = fopen($this->root . '/index.php', 'w');
+	  		  fwrite($h, str_replace("\n", PHP_EOL, $code));
+	  		  fclose($h);
 	  }
 
 	  private function createStyleSheet() {

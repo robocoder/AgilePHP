@@ -2,7 +2,7 @@
 /**
  * @package com.makeabyte.agilephp.test.mvc
  */
-class RenderersTest extends BaseTest {
+class RenderersTest extends PHPUnit_Framework_TestCase {
 
 	  /**
 	   * @test 

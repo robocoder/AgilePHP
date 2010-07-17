@@ -40,7 +40,7 @@ abstract class BaseController {
 	      */
 	     public function __construct() {
 
-	  	        $this->renderer = AgilePHP::getFramework()->getMVC()->createDefaultRenderer();
+	  	        $this->renderer = MVC::createDefaultRenderer();
 	     }
 
 	     /**
@@ -60,9 +60,9 @@ abstract class BaseController {
 		  * @param String $renderer The name of a renderer the controller will use to render views
 		  * @return void
 	      */
-	     protected function createRenderer( $renderer ) {
+	     protected function createRenderer($renderer) {
 
-	     	       $this->renderer = AgilePHP::getFramework()->getMVC()->createRenderer( $renderer ); 
+	     	       $this->renderer = MVC::createRenderer($renderer); 
 	     }
 
 	     /**
@@ -73,9 +73,9 @@ abstract class BaseController {
 		  * 						Use this method to load renderers outside of the framework mvc package.
 		  * @return void
 	      */
-	     protected function createCustomRenderer( $renderer ) {
+	     protected function createCustomRenderer($renderer) {
 
-	     	       $this->renderer = AgilePHP::getFramework()->getMVC()->createCustomRenderer( $renderer ); 
+	     	       $this->renderer = MVC::createCustomRenderer($renderer); 
 	     }
 
 	     /**
@@ -85,17 +85,17 @@ abstract class BaseController {
 	      * @param bool $debug True to enable client side AgilePHP debugging.
 	      * @return void
 	      */
-	     public function getBaseJS( $debug = false ) {
+	     public function getBaseJS($debug = false) {
 
-	  		    $js = file_get_contents( AgilePHP::getFramework()->getFrameworkRoot() . '/AgilePHP.js' );
+	  		    $js = file_get_contents(AgilePHP::getFrameworkRoot() . '/AgilePHP.js');
 
-	  		    if( $debug ) $js .= "\nAgilePHP.setDebug( true );";
+	  		    if( $debug ) $js .= "\nAgilePHP.setDebug(true);";
 
-	  		    $js .= "\nAgilePHP.setRequestBase( '" . AgilePHP::getFramework()->getRequestBase() . "' );";
-	  		    $js .= "\nAgilePHP.MVC.setController( '" . MVC::getInstance()->getController() . "' );";
-	  		    $js .= "\nAgilePHP.MVC.setAction( '" . MVC::getInstance()->getAction() . "' );";
+	  		    $js .= "\nAgilePHP.setRequestBase('" . AgilePHP::getRequestBase() . "');";
+	  		    $js .= "\nAgilePHP.MVC.setController('" . MVC::getController() . "');";
+	  		    $js .= "\nAgilePHP.MVC.setAction('" . MVC::getAction() . "');";
 
-	  		    header( 'content-type: application/json' );
+	  		    header('content-type: application/json');
 	  		    print $js;
 	     }
 

@@ -60,10 +60,10 @@ class RestService {
 
 	  		 // Parse the REST service class name, resource, and parameters from the HTTP URL
 	  		 $callee = $ic->getCallee();
-	  		 $mvc = $callee['object'];
-	  		 $service = $mvc->getController();
-	  		 $action = $mvc->getAction();
-	  		 $parameters = $mvc->getParameters();
+	  		 $mvc = $callee['class'];
+	  		 $service = $mvc::getController();
+	  		 $action = $mvc::getAction();
+	  		 $parameters = $mvc::getParameters();
 	  		 array_unshift( $parameters, $action );
 	  		 $request = '/' . implode( '/', $parameters );
 

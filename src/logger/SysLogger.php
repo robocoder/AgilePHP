@@ -37,7 +37,7 @@ class SysLogger implements LogProvider {
 	   */
 	  public function __construct() {
 
-	  		 openlog( AgilePHP::getFramework()->getAppName(), LOG_PID | LOG_PERROR, LOG_USER );
+	  		 openlog( AgilePHP::getAppName(), LOG_PID | LOG_PERROR, LOG_USER );
   	  }
 
 	  /**
@@ -95,7 +95,7 @@ class SysLogger implements LogProvider {
 	  private function write( $message, $level ) {
 
 	  		  $requestURI = (isset( $_SERVER['REQUEST_URI' ] ) ? $_SERVER['REQUEST_URI'] : '/' );
-	  	      $header = '[' . $level . ']  ' . AgilePHP::getFramework()->getAppName() . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) . '  ' . $requestURI;
+	  	      $header = '[' . $level . ']  ' . AgilePHP::getAppName() . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) . '  ' . $requestURI;
 
 	  		  if( is_object( $message ) || is_array( $message ) )
 	  	      	  $message = print_r( $message, true );

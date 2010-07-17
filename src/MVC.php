@@ -21,304 +21,289 @@
 
 require_once 'mvc/BaseController.php';
 require_once 'mvc/BaseRenderer.php';
-require_once 'mvc/BaseModelController.php';
-require_once 'mvc/BaseModelXmlController.php';
-require_once 'mvc/BaseModelXslController.php';
-require_once 'mvc/BaseModelActionController.php';
 
 /**
  * Model-View-Control (MVC) component
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
  */
-class MVC {
+final class MVC {
 
-	  private static $instance = null;
-
-	  private $scriptExtension = '.php';
-	  private $defaultController = 'IndexController';
-	  private $defaultAction = 'index';
-	  private $defaultRenderer = 'PHTMLRenderer';
-	  private $controller;
-	  private $action;
-	  private $parameters;
-	  private $sanitize = true;
+	  private static $defaultController = 'IndexController';
+	  private static $defaultAction = 'index';
+	  private static $defaultRenderer = 'PHTMLRenderer';
+	  private static $controller;
+	  private static $action;
+	  private static $parameters;
+	  private static $sanitize = true;
+	  private static $cacheables;
 
 	  private function __construct() { }
 	  private function __clone() {}
 
 	  /**
-	   * Returns a singleton instance of MVC
-	   * 
-	   * @return Singleton instance of MVC
-	   * @static
-	   */
-	  public static function getInstance() {
-
-	  	     if( self::$instance == null )
-	  	         self::$instance = new self;
-
-	  	      return self::$instance;
-	  }
-
-	  /**
 	   * Initalizes the MVC component with agilephp.xml configuration.
-	   * 
+	   *
 	   * @param SimpleXMLElement $config SimpleXMLElement containing the MVC configuration.
 	   * @return void
 	   * @static
 	   */
-	  public function setConfig( $controller, $action, $renderer, $sanitize ) {
+	  public function init($controller, $action, $renderer, $sanitize, $cacheables) {
 
-	  		 if( $controller ) $this->defaultController = $controller;
-	  		 if( $action ) $this->defaultAction = $action;
-	  		 if( $renderer ) $this->defaultRenderer = $renderer;
-	  		 if( $sanitize ) $this->sanitize = $sanitize;
+	  		 if($controller) self::$defaultController = $controller;
+	  		 if($action) self::$defaultAction = $action;
+	  		 if($renderer) self::$defaultRenderer = $renderer;
+	  		 if($sanitize) self::$sanitize = $sanitize;
+	  		 if($cacheables) self::$cacheables = $cacheables;
 	  }
-  
+
 	  /**
 	   * Sets the name of the default controller which is used if one is not
 	   * specified in the request URI. Default is 'IndexController'.
-	   * 
+	   *
 	   * @param String $name The name of the controller
 	   * @return void
+	   * @static
 	   */
-	  public function setDefaultController( $name ) {
+	  public static function setDefaultController($name) {
 
-	  	     $this->defaultController = $name;
+	  	     self::$defaultController = $name;
 	  }
 
 	  /**
 	   * Returns the name of a default controller if one is not specified
 	   * in the request URI. Default is 'IndexController'.
-	   * 
+	   *
 	   * @return String The name of the default controller
+	   * @static
 	   */
-	  public function getDefaultController() {
+	  public static function getDefaultController() {
 
-	  	     return $this->defaultController;
+	  	     return self::$defaultController;
 	  }
 
 	  /**
 	   * Sets the name of the default action method if one is not specified
-	   * in the request URI. Default is 'index'. 
-	   * 
+	   * in the request URI. Default is 'index'.
+	   *
 	   * @param String $name The name of the default action method
 	   * @return void
+	   * @static
 	   */
-	  public function setDefaultAction( $name ) {
+	  public static function setDefaultAction($name) {
 
-	  	     $this->defaultAction = $name;
+	  	     self::$defaultAction = $name;
 	  }
 
 	  /**
 	   * Returns the name of a default action method if one is not specified
 	   * in the request URI. Default is 'index'.
-	   * 
+	   *
 	   * @return String The name of the default action method
+	   * @static
 	   */
-	  public function getDefaultAction() {
+	  public static function getDefaultAction() {
 
-	  	     return $this->defaultAction;
+	  	     return self::$defaultAction;
 	  }
 
 	  /**
 	   * Sets the name of the default view renderer. Default is 'PHTMLRenderer'.
-	   * 
+	   *
 	   * @param String $renderer The name of a view renderer to use as the default
 	   * @return void
+	   * @static
 	   */
-	  public function setDefaultRenderer( $renderer ) {
+	  public static function setDefaultRenderer($renderer) {
 
-	  	     $this->defaultRenderer = $renderer;
+	  	     self::$defaultRenderer = $renderer;
 	  }
 
 	  /**
 	   * Returns the name of the default view renderer
-	   * 
+	   *
 	   * @return String The default view renderer
+	   * @static
 	   */
-	  public function getDefaultRenderer() {
+	  public static function getDefaultRenderer() {
 
-	  	     return $this->defaultRenderer;
+	  	     return self::$defaultRenderer;
 	  }
-	  
+
 	  /**
 	   * Returns the name of the controller currently in use.
-	   * 
+	   *
 	   * @return String The name of the controller in use by the MVC component.
+	   * @static
 	   */
-	  public function getController() {
-	  	
-	  		 return $this->controller;
+	  public static function getController() {
+
+	  		 return self::$controller;
 	  }
 
 	  /**
 	   * Returns the action currently being invoked.
-	   * 
+	   *
 	   * @return String The name of the action currently being invoked.
+	   * @static
 	   */
-	  public function getAction() {
+	  public static function getAction() {
 
-	  		 return $this->action;
+	  		 return self::$action;
 	  }
-	  
+
 	  /**
 	   * Returns the action parameters specified in the request
-	   * 
+	   *
 	   * @return Array Parameters passed to the invoked action
+	   * @static
 	   */
-	  public function getParameters() {
+	  public static function getParameters() {
 
-	  		 return $this->parameters;
+	  		 return self::$parameters;
 	  }
 
 	  /**
 	   * Parses the current request URI to obtain the controller, action method, and arguments
 	   * present for this request and then performs the invocation. If these parameters ARE NOT
 	   * present, the default controller and default action method are used instead.
-	   * 
+	   *
 	   * NOTE: The URI requirement to communicate with this MVC system is as follows
 	   *       http://domain.com/ScriptName.php/ControllerName/ActionMethod/arg1/arg2/arg3/etc...
-	   * 
+	   *
 	   * @return void
+	   * @static
 	   */
-	  public function dispatch() {
+	  public static function dispatch() {
 
 	  		 $path = (isset( $_SERVER['PHP_SELF'] )) ? $_SERVER['PHP_SELF'] : '/';
 
-		  	 preg_match( '/^.*?\.php(.*)/si', $path, $matches );
-	  	 
-	  	     if( count( $matches ) ) {
+	  		 if(self::$cacheables && ($cacher = AgilePHP::getCacher())) {
 
-		  	  	 $this->parameters = explode( '/', $matches[count($matches)-1] );
-			  	 array_shift( $this->parameters );
+	  		    $key = 'AGILEPHP_MVC_' . $path;
+	  		    if($cacher->exists($key))
+	  		       die($cacher->get($key));
+	  		 }
 
-			  	 // Assign controller and action
-		  	     $controller = (isset($this->parameters[0]) > 0 && $this->parameters[0] != '') ? $this->parameters[0] : $this->getDefaultController(); 
-		  	     $action = (isset($this->parameters[1])) ? $this->parameters[1] : $this->getDefaultAction();
+		  	 preg_match('/^.*?\.php(.*)/si', $path, $matches);
 
-		  	     // Remove controller and action from mvcPieces
-		  	     array_shift( $this->parameters );
-		  	     array_shift( $this->parameters );
+	  	     if(count($matches)) {
 
-		  	     // Security, Security, Security.... 
-		  	     $controller = addslashes( strip_tags( $controller ) );
-		  	     $action = addslashes( strip_tags( $action ) );
+		  	  	self::$parameters = explode('/', $matches[count($matches)-1]);
+			  	array_shift(self::$parameters);
 
-		  	     $this->controller = $controller;
-		  	     $this->action = $action;
+			  	// Assign controller and action
+		  	    $controller = (isset(self::$parameters[0]) > 0 && self::$parameters[0] != '') ? self::$parameters[0] : self::$defaultController;
+		  	    $action = (isset(self::$parameters[1])) ? self::$parameters[1] : self::$defaultAction;
+
+		  	    // Remove controller and action from mvcPieces
+		  	    array_splice(self::$parameters, 0, 2);
+
+		  	    // Security, Security, Security....
+		  	    self::$controller = addslashes(strip_tags($controller));
+		  	    self::$action = addslashes(strip_tags($action));
+	  	    }
+
+	  	    if(!self::$controller) self::$controller = self::$defaultController;
+	  	    if(!self::$action) self::$action = self::$defaultAction;
+
+	        // Make sure controllers are loaded from the web application control directory ONLY.
+	  	    if(!class_exists(self::$controller, false)) {
+
+	  	     	// Load front controller style phars first
+	  	     	$phar = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
+	  		  				DIRECTORY_SEPARATOR . self::$controller . '.phar';
+
+	  		  	if(file_exists($phar)) {
+
+	  		  	   require_once $phar;
+	  		  	   return;
+	  		  	}
+
+	  	     	$oController = self::loadController();
 	  	     }
 
-		  	 $this->controller = isset( $controller ) ? $controller : $this->getDefaultController();
-		  	 $this->action = isset( $action ) ? $action : $this->getDefaultAction();
+	  	     // Sanitize action arguments unless configured otherwise
+             if(self::$sanitize)
+     		    foreach(self::$parameters as $key => $val)
+		  	 	   self::$parameters[$key] = htmlspecialchars(addslashes(strip_tags($val)));
 
-		     // Make sure controllers are loaded from the web application control directory ONLY.
-	  	     if( !in_array( $this->controller, get_declared_classes() ) ) {
+	  	     // Make sure requested action method exists
+		     if(!method_exists(self::$controller, self::$action))
+		  	    throw new FrameworkException('The specified action \'' . self::$action . '\' does not exist.', 101);
 
-	  	     	 // Load front controller style phars first
-	  	     	 $phar = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
-	  		  				DIRECTORY_SEPARATOR . $controller . '.phar';
+		  	 // Cache the output if caching is enabled
+		     if(self::$cacheables) {
 
-	  		  	 if( file_exists( $phar ) ) {
-	  		  	 	 require_once $phar;
-	  		  	 	 return;
-	  		  	 }
+		        foreach(self::$cacheables as $cacheable) {
 
-	  	     	 $this->loadController( $controller );
-	  	     }
+		            if($cacheable->attributes()->controller == self::$controller &&
+		               $cacheable->attributes()->action == self::$action) {
 
-	  	     $oController = new $this->controller;
-	  	     $action = $this->action;
+		                   ob_start();
+              	     	   call_user_func_array(array($oController, $action), self::$parameters);
+              	     	   $cacher->set($key, ob_get_flush());
+              	     	   return;
+		               }
+		        }
+		     }
 
-	  	     // This try/catch statement hides the exception stack of the inner call. This makes debugging difficult.
-	  	     //try {
-		  	     	if( isset($this->parameters[0]) ) {
-
-		  	     		$request = Scope::getRequestScope();
-
-		  	     		if( $this->sanitize )
-		  	     			foreach( $this->parameters as $key => $val )
-					  	     	 	 $this->parameters[$key] = $request->sanitize( $val );
-
-				  		// Make sure requested action method exists
-					  	if( !method_exists( $this->controller, $action ) )
-					  		throw new FrameworkException( 'The specified action \'' . $action . '\' does not exist.', 101 );
-
-					  	Log::debug( 'MVC::dispatch Invoking controller \'' . $this->controller . 
-					  	     			'\', action \'' . $this->action . '\', args \'' . implode( ',', $this->parameters  ) . '\'.' );
-
-		  	     		call_user_func_array( array( $oController, $action ), $this->parameters ); 
-		  	     	}
-		  	     	else {
-	
-		  	     		Log::debug( 'MVC::dispatch Invoking controller \'' . $this->controller . 
-					  	     			'\', action \'' . $this->action . '\'.' );
-	
-		  	     		// Make sure requested action method exists
-					  	if( !method_exists( $this->controller, $action ) )
-					  		throw new FrameworkException( 'The specified action \'' . $action . '\' does not exist.', 102 );
-
-		  	     		$oController->$action();
-		  	     	}
-	  	     //}
-	  	     //catch( Exception $e ) {
-
-	  	     		//throw new FrameworkException( $e->getMessage(), $e->getCode() );
-	  	     //}
+		     // Execute the controller action - caching is not enabled
+		     call_user_func_array(array($oController, self::$action), self::$parameters);
 	  }
 
 	  /**
 	   * Returns a new instance of the default view renderer
-	   * 
+	   *
 	   * @return Object An instance of the default renderer
+	   * @static
 	   */
-	  public function createDefaultRenderer() {
+	  public static function createDefaultRenderer() {
 
-	  	     $path = AgilePHP::getFramework()->getFrameworkRoot() . '/mvc/' . $this->getDefaultRenderer() . '.php';
-
-	  	     Log::debug( 'MVC::createDefaultRenderer loading renderer: ' . $this->getDefaultRenderer() );
+	  	     $path = AgilePHP::getFrameworkRoot() . '/mvc/' . self::$defaultRenderer . '.php';
 
 	  	     if( !file_exists( $path ) )
 	  	     	 throw new FrameworkException( 'Default framework renderer could not be loaded from: ' . $path, 103 );
 
 	  	     require_once $path;
 
-	  	     $renderer = $this->getDefaultRenderer();
+	  	     $renderer = self::$defaultRenderer;
 	  	     return new $renderer();
 	  }
 
 	  /**
 	   * Returns a new instance of the specified view renderer
-	   * 
+	   *
 	   * @return Object An instance of the specified renderer
+	   * @static
 	   */
-	  public function createRenderer( $renderer ) {
+	  public static function createRenderer( $renderer ) {
 
-	  	     $path = AgilePHP::getFramework()->getFrameworkRoot() . '/mvc/' . $renderer . '.php';
+	  	     $path = AgilePHP::getFrameworkRoot() . '/mvc/' . $renderer . '.php';
 
 	  	     Log::debug( 'MVC::createRenderer loading renderer: ' . $renderer );
 
 	  		 if( !file_exists( $path ) )
 	  	     	 throw new FrameworkException( 'Framework renderer could not be loaded from: ' . $path, 104 );
 
-			 require_once $path; 	  		 
+			 require_once $path;
 	  		 return new $renderer;
 	  }
 
 	  /**
 	   * Returns a new instance of the specified renderer. The renderer is loaded from
 	   * the web app 'classes' directory.
-	   * 
+	   *
 	   * @param $renderer The name of the custom view renderer
 	   * @param $classpath A relative child path under the webapp's 'classes' folder where the renderer is located.
 	   * @return Object A new instance of the custom renderer
+	   * @static
 	   */
-	  public function createCustomRenderer( $renderer, $classpath='' ) {
+	  public static function createCustomRenderer( $renderer, $classpath='' ) {
 
-	  	     $path = AgilePHP::getFramework()->getWebRoot() . '/classes/' . $classpath . '/' . $renderer . '.php';
+	  	     $path = AgilePHP::getWebRoot() . '/classes/' . $classpath . '/' . $renderer . '.php';
 
 	  	     Log::debug( 'MVC::createDefaultRenderer loading custom renderer: ' . $renderer );
 
@@ -331,37 +316,32 @@ class MVC {
 
 	  /**
 	   * Loads a controller class only if it exists in the application controller directory.
-	   * 
+	   *
 	   * @param String $controller The name of the controller to load.
 	   * @return void
 	   * @throws FrameworkException if the requested controller could not be found.
+	   * @static
 	   */
-	  private function loadController( $controller ) {
+	  private static function loadController() {
 
-	          $webroot = AgilePHP::getFramework()->getWebRoot() . DIRECTORY_SEPARATOR; 
+	          $controller = self::$controller;
+	          $webroot = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR;
 	  		  $f = $webroot . 'control' . DIRECTORY_SEPARATOR . $controller . '.php';
 
-	  		  if( file_exists( $f ) ) {
-
-	  		  	  AgilePHP::autoload( $controller );
-	  		  	  return;
-	  		  }
+	  		  if(file_exists($f)) return new $controller;
 
 	  		  // Perform deeper scan of control directory
 	  		  $f = $webroot . DIRECTORY_SEPARATOR . 'control';
 		  	  $it = new RecursiveDirectoryIterator( $f );
 			  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
-	
+
 			   	       if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
-	
+
 			   	       	   $pieces = explode( DIRECTORY_SEPARATOR, $file );
-			   	      	   $item = array_pop( $pieces ); 
+			   	      	   $item = array_pop( $pieces );
 
-			   	      	   if( $item == $controller . '.php' ) {
-
-				 		   	   AgilePHP::autoload( $controller );
-				 		       return;
-				 		   }
+			   	      	   if( $item == $controller . '.php' )
+				 		   	   return new $controller;
 				       }
 			  }
 

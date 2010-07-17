@@ -44,35 +44,35 @@ abstract class LogFactory {
 		 /**
 		  * Returns a LogProvider singleton instance
 		  */
-	     public static function getLogger( $logger = null ) {
+	     public static function getLogger($logger = null) {
 
-	     		if( self::$logger == null ) {
+	     		if(self::$logger == null) {
 
-	     			$xml = AgilePHP::getFramework()->getConfiguration();
-			     	if( $xml->logger ) {
+	     		   $xml = AgilePHP::getConfiguration();
+			       if($xml && $xml->logger) {
 
-			     		$level = (string)$xml->logger->attributes()->level;
-			     		self::$level = ($level) ? $level : 'info';
+			     	  $level = (string)$xml->logger->attributes()->level;
+			     	  self::$level = ($level) ? $level : 'info';
 
-			     		$provider = (string)$xml->logger->attributes()->provider;
-			     		$provider = ($provider) ? $provider : 'FileLogger';
+			     	  $provider = (string)$xml->logger->attributes()->provider;
+			     	  $provider = ($provider) ? $provider : 'FileLogger';
 
-			     		// Try to load the specified Logger from the framework/logger directory
-			     		$path = AgilePHP::getFramework()->getFrameworkRoot() .
+			     	  // Try to load the specified Logger from the framework/logger directory
+			     	  $path = AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'logger' .
+			     	              DIRECTORY_SEPARATOR . 'FileLogger.php';
+			     	  if(file_exists($path)) require_once $path;
+			       }
+			       else {
+
+			     	  self::$level = 'info';
+			     	  $provider = 'FileLogger';
+
+				  	  require_once AgilePHP::getFrameworkRoot() .
 				  						DIRECTORY_SEPARATOR . 'logger' . DIRECTORY_SEPARATOR . 'FileLogger.php';
-			     		if( file_exists( $path ) ) require_once $path;
-			     	}
-			     	else {
+			       }
 
-			     		self::$level = 'info';
-			     		$provider = 'FileLogger';
-
-				  		require_once AgilePHP::getFramework()->getFrameworkRoot() .
-				  						DIRECTORY_SEPARATOR . 'logger' . DIRECTORY_SEPARATOR . 'FileLogger.php';
-			     	}
-
-			     	// Logger type specifically requested
-			     	self::$logger = ($logger == null) ? new $provider : new $logger;
+			       // Logger type specifically requested
+			       self::$logger = ($logger == null) ? new $provider : new $logger;
 	     		}
 
 	     		return self::$logger;

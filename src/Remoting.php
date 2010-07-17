@@ -242,12 +242,12 @@ abstract class Remoting extends BaseController {
 		   */
 		  public function getBaseJS( $debug = false ) {
 	
-		  		 $js = file_get_contents( AgilePHP::getFramework()->getFrameworkRoot() . DIRECTORY_SEPARATOR . 'AgilePHP.js' );
+		  		 $js = file_get_contents( AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'AgilePHP.js' );
 	
 		  		 if( $debug ) $js .= "\nAgilePHP.setDebug( true );";
 	
-		  		 $js .= "\nAgilePHP.setRequestBase( '" . AgilePHP::getFramework()->getRequestBase() . "' );";
-		  		 $js .= "\nAgilePHP.Remoting.setController( '" . MVC::getInstance()->getController() . "' );";
+		  		 $js .= "\nAgilePHP.setRequestBase( '" . AgilePHP::getRequestBase() . "' );";
+		  		 $js .= "\nAgilePHP.Remoting.setController( '" . MVC::getController() . "' );";
 	
 		  		 header( 'content-type: application/json' );
 		  		 print $js;

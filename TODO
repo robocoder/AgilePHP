@@ -3,16 +3,13 @@
 -----------------------------
 > Iron out RequestScope CSFR issues in regards to destroying session and making requests from client side javascript.
 > ORM framework needs to support many-to-many relationships
-> Need to revisit ORM renderer and make an easy way to
-      allow different client side rendering libraries like jquery, dojo, extjs, etc (adapter?)
 > Add calendar, spinner, date picker, and other widgets to ORM rendering
 > Create Oracle dialect class for ORM package
 > Create LDAPDialect class for ORM package
 > Finish Form::toJSON method (this should probably use AJAXRenderer)
 > Finish creating unit tests for all framework components (naughty, naughty - TDD!)
 > Create ActiveDirectoryAuthenticator, OpenLdapAuthenticator, OpenIdAuthenticator to Identity package
-> Create MemcacheSessionProvider, ApcSessionProvider classes.
-> Abstract out #@Cache interceptor to support configurable providers (MemcacheCacheProvider, FilesystemCacheProvider, etc)
+> Create MemcacheSessionProvider and MemcacheCacheProvider.
 > Move all core framework packages into PHP namespaces (still have some backward compatibility to maintain w/ 5.2)
 > Refactor all classes into alignment with PEAR coding standard
 > Add code sniffer and copy/paste detector to build.xml
