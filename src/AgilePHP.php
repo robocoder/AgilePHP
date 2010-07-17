@@ -512,11 +512,10 @@ final class AgilePHP {
              if(self::$cacher && ($source = self::$cacher->get($key)))
                 return $source;
 
-               // PHP namespace support
+             // PHP namespace support
              $namespace = explode('\\', $class);
              $class = array_pop($namespace);
              $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-             $frameworkRoot = self::$frameworkRoot . DIRECTORY_SEPARATOR;
 
              // Search classmap
              if(isset(self::$classmap[$class])) {
@@ -534,19 +533,6 @@ final class AgilePHP {
                 return $source;
              }
 
-             // Search framework (one level)
-             $directories = glob(self::$frameworkRoot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
-             foreach($directories as $directory) {
-
-                 $path = $directory . $namespace . $class . '.php';
-                 if(file_exists($path)) {
-
-                    $source = file_get_contents($path);
-                    if(self::$cacher) self::$cacher->set($key, $source);
-                    return $source;
-                 }
-             }
-
              // Search web application (one level)
              $directories = glob(self::$webroot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
              foreach($directories as $directory) {
@@ -560,21 +546,21 @@ final class AgilePHP {
                  }
              }
 
-             // Search web application (recursively)
+             // Search web application (recursively - as last resort effort)
 		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
-			 foreach( new RecursiveIteratorIterator($it) as $file) {
+			 foreach(new RecursiveIteratorIterator($it) as $file) {
 
-			   	      if(substr($file, -1  != '.' && substr($file, -2) != '..' &&
-			   	         substr($file, -4) != 'view')) {
+			   	     if(substr($file, -1  != '.' && substr($file, -2) != '..' &&
+			   	        substr($file, -4) != 'view')) {
 
-			   	      	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
+			   	     	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
 				 		  if(array_pop($pieces) == $class . '.php') {
 
-			     	 		  $source = file_get_contents($file);
-				 		      if(self::$cacher) $cacher->set($key, $source);
-			     	 		  return $source;
+			     	 		 $source = file_get_contents($file);
+				 		     if(self::$cacher) $cacher->set($key, $source);
+			     	 		 return $source;
 				 		  }
-				      }
+				     }
 			 }
 
              throw new FrameworkException('Failed to retrieve source code for class \'' . $class . '\'.');
@@ -629,19 +615,6 @@ final class AgilePHP {
                 return;
              }
 
-             // Search framework (one level)
-             $directories = glob(self::$frameworkRoot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
-             foreach($directories as $directory) {
-
-                 $path = $directory . $namespace . $class . '.php';
-                 if(file_exists($path)) {
-
-                    if(self::$cacher) self::$cacher->set($key, $path);
-                    require $path;
-                    return;
-                 }
-             }
-
              // Search web application (one level)
              $directories = glob(self::$webroot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
              foreach($directories as $directory) {
@@ -655,7 +628,7 @@ final class AgilePHP {
                  }
              }
 
-             // Search web application (recursively)
+             // Search web application (recursively - as last resort effort)
 		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
 			 foreach( new RecursiveIteratorIterator($it) as $file) {
 
@@ -665,9 +638,9 @@ final class AgilePHP {
 			   	      	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
 				 		  if(array_pop($pieces) == $class . '.php') {
 
-				 		      if(self::$cacher) $cacher->set($key, $file->getPathname());
-			     	 		  require $file;
-			     	 		  return;
+				 		     if(self::$cacher) $cacher->set($key, $file->getPathname());
+			     	 		 require $file;
+			     	 		 return;
 				 		  }
 				      }
 			 }
@@ -718,6 +691,7 @@ final class AgilePHP {
           'AnnotationException' => '/annotation/AnnotationException.php',
           'AnnotationParser' => '/annotation/AnnotationParser.php',
           'ApcCacheProvider' => '/cache/ApcCacheProvider.php',
+          'CacheProvider' => '/cache/CacheProvider.php',
           'FileCacheProvider' => '/cache/FileCacheProvider.php',
           'XCacheProvider' => '/cache/XCacheProvider.php',
           'RequestParam' => '/form/RequestParam.php',
