@@ -252,11 +252,20 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 						     	 $where .= (count($values) ? ' ' . $this->getRestrictionsLogicOperator() . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->getComparisonLogicOperator() . ' ?';
 
 						     	 if( is_object( $model->$accessor() ) ) {
+
 						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-						     	 	 array_push( $values, $model->$accessor()->$refAccessor() );
+
+						     	 	 if($transformer = $columns[$i]->getTransformer())
+						     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+						     	     else
+				     	 	     	    array_push($values, $model->$accessor()->$refAccessor());
 						     	 }
 						     	 else {
-				     	 	     	 array_push( $values, $model->$accessor() );
+
+				     	 	     	 if($transformer = $columns[$i]->getTransformer())
+						     	        array_push( $values, $transformer::transform($model->$accessor()) );
+						     	     else
+				     	 	     	    array_push( $values, $model->$accessor() );
 						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
@@ -280,7 +289,6 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 					 		  $m = $table->getModelInstance();
 					 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
 
-					 	   	  		   if( !$value ) continue;
 					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name, false );
 
 							 	   	   // Create foreign model instances from foreign values
@@ -288,6 +296,11 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 
 						 	 		   		    if( strtolower( $column->getName() ) != $name ) continue;
 						 	 		   		    if( $column->isLazy() ) continue;
+						 	 		   		    
+						 	 		   		    if($renderer = $column->getRenderer())
+                        				   	       $value = $renderer::render($value);
+
+                        				   	    if(!$value) continue;
 
 						 	 		  		    if( $column->isForeignKey() ) {
 

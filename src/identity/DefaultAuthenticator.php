@@ -52,7 +52,7 @@ class DefaultAuthenticator implements Authentication {
 
 			 if(!preg_match('/' . $hashed . '/', $model->getPassword())) return false;
 
-	  		 if(!$model->getEnabled()) throw new AccessDeniedException('Account Disabled');
+	  		 if($model->getEnabled() == 'No') throw new AccessDeniedException('Account Disabled');
 
 			 return $model;
 	  }

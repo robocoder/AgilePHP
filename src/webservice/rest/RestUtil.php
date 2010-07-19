@@ -179,33 +179,36 @@ class RestUtil {
 	   * 					 (application/xml|application/json|application/x-yaml|application/xhtml+xml)
 	   * @return void
 	   */
-	  public static function consumeTransform( $data, $mime ) {
+	  public static function consumeTransform($data, $mime) {
 
-			 switch( $mime ) {
+	         try {
+        			 switch($mime) {
+        
+        			 	case 'application/xml':
+        			 		return XmlToModel::transform($data);
+        			 	break;
+        
+        			 	case 'application/json':
+        			 		return JsonToModel::transform($data);
+        			 	break;
+        
+        			 	case 'application/x-yaml':
+        			 		 return YamlToModel::transform($data);
+        			 	break;
+        
+        			 	case 'application/xhtml+xml':
+        			 		 return $data;
+        		 		break;
+        
+        			 	default:
+        			 		Log::debug('MimeUtil::consumeTransform Could not transform consumed data type \'' . $mime . '\'. Using raw data as last resort.');
+        			 		return $data;
+        			 }
+	         }
+	         catch(FrameworkException $e) {
 
-			 	case 'application/xml':
-			 		$t = new XMLTransformer();
-			 		return $t->transform( $data );
-			 	break;
-
-			 	case 'application/json':
-			 		$t = new JSONTransformer();
-			 		return $t->transform( $data );
-			 	break;
-
-			 	case 'application/x-yaml':
-			 		 $t = new YAMLTransformer();
-			 		 return $t->transform( $data );
-			 	break;
-
-			 	case 'application/xhtml+xml':
-			 		 return $data;
-		 		break;
-
-			 	default:
-			 		Log::debug( 'MimeUtil::consumeTransform Could not transform consumed data type \'' . $mime . '\'. Using raw data as last resort.' );
-			 		return $data;
-			 }
+	               throw new RestServiceException(400, $e->getMessage());
+	         }
 	  }
 }
 ?>

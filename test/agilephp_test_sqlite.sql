@@ -5,7 +5,7 @@ CREATE TABLE "users" (
 	"created" datetime NOT NULL,
 	"last_login" datetime,
 	"roleId" varchar CONSTRAINT FK_UserRoles REFERENCES roles(name),
-	"enabled" bit
+	"enabled" bool
 );
 
 CREATE TABLE "roles" (
@@ -33,7 +33,7 @@ CREATE TABLE "mailing" (
   "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "name" varchar NOT NULL,
   "email" varchar NOT NULL,
-  "enabled" bit(1) DEFAULT NULL
+  "enabled" bool DEFAULT NULL
 );
 
 insert  into "roles"(name,description) values ('admin','This is an administrator account');

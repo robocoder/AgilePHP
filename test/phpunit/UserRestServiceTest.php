@@ -446,10 +446,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 
 	  		 $data = '<User><username>admin</username><password>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</password><email>root@localhost</email><created>2009-09-06 15:27:44</created><lastLogin>1969-12-31 19:00:00</lastLogin><enabled>1</enabled><Role><name>admin</name><description>This is an administrator account</description></Role><Roles></Roles></User>';
 
-	  		 $t = new XMLTransformer();
-			 $o = $t->transform( $data );
+			 $o = XmlToModel::transform($data);
 
-			 PHPUnit_Framework_Assert::assertType( 'User', $o, 'Failed to transform XML data to PHP object' );
+			 PHPUnit_Framework_Assert::assertType('User', $o, 'Failed to transform XML data to PHP object');
 	  }
 
 	  /**
@@ -459,23 +458,21 @@ class RestTests extends PHPUnit_Framework_TestCase {
 
 	  		 $data = ' { "User" : { "username" : "admin", "password" : "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "email" : "root@localhost", "created" : "2009-09-06 15:27:44", "lastLogin" : "1969-12-31 19:00:00", "enabled" : "1", "Role" : { "name" : "admin", "description" : "This is an administrator account"}  , "Roles" : null  } }';
 
-	  		 $t = new JSONTransformer();
-	  		 $o = $t->transform( $data );
+	  		 $o = JsonToModel::transform($data);
 
-	  		 PHPUnit_Framework_Assert::assertType( 'User', $o, 'Failed to transform JSON data to PHP object' );
+	  		 PHPUnit_Framework_Assert::assertType('User', $o, 'Failed to transform JSON data to PHP object');
 	  }
 	  
 	  /**
 	   * @test
 	   */
 	  public function transformYAML() {
-	  	
+
 	  		 $data = '--- !php/object "O:4:\"User\":1:{s:12:\"\0User\0object\";O:16:\"User_Intercepted\":8:{s:26:\"\0User_Intercepted\0username\";s:5:\"admin\";s:26:\"\0User_Intercepted\0password\";s:64:\"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08\";s:23:\"\0User_Intercepted\0email\";s:14:\"root@localhost\";s:25:\"\0User_Intercepted\0created\";s:19:\"2009-09-06 15:27:44\";s:27:\"\0User_Intercepted\0lastLogin\";s:19:\"1969-12-31 19:00:00\";s:25:\"\0User_Intercepted\0enabled\";s:1:\"1\";s:22:\"\0User_Intercepted\0Role\";O:4:\"Role\":1:{s:12:\"\0Role\0object\";O:16:\"Role_Intercepted\":2:{s:22:\"\0Role_Intercepted\0name\";s:5:\"admin\";s:29:\"\0Role_Intercepted\0description\";s:32:\"This is an administrator account\";}}s:23:\"\0User_Intercepted\0Roles\";N;}}" ...';
 
-	  		  $t = new YAMLTransformer();
-	  		  $o = $t->transform( $data );
+	  		 $o = YamlToModel::transform($data);
 
-	  		  PHPUnit_Framework_Assert::assertType( 'User', $o, 'Failed to transform YAML data to PHP object' );
+	  		 PHPUnit_Framework_Assert::assertType('User', $o, 'Failed to transform YAML data to PHP object');
 	  }
 }
 ?>

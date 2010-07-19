@@ -20,7 +20,7 @@ CREATE TABLE mailing (
   id SERIAL,
   name varchar(150) NOT NULL,
   email varchar(150) NOT NULL,
-  enabled bit(1) DEFAULT NULL,
+  enabled boolean DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -47,7 +47,7 @@ CREATE TABLE users (
   created date NOT NULL,
   last_login date DEFAULT NULL,
   roleId varchar(25) DEFAULT NULL,
-  enabled bit(1) DEFAULT NULL,
+  enabled boolean DEFAULT NULL,
   PRIMARY KEY (username),
   CONSTRAINT FK_UserRoles FOREIGN KEY (roleId) REFERENCES roles (name) ON DELETE SET NULL ON UPDATE CASCADE
 );

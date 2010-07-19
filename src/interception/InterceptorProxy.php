@@ -20,7 +20,8 @@
  */
 
 /**
- * Proxy applied to intercepted classes
+ * Proxy / State Machine responsible for intercepting method calls,
+ * invoking interceptors, and maintaining interceptor chain state.
  *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.

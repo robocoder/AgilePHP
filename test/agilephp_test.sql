@@ -41,7 +41,7 @@ CREATE TABLE `mailing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `enabled` bit(1) DEFAULT NULL,
+  `enabled` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -85,7 +85,7 @@ CREATE TABLE `users` (
   `created` datetime NOT NULL,
   `last_login` datetime DEFAULT NULL,
   `roleId` varchar(25) DEFAULT NULL,
-  `enabled` bit(1) DEFAULT NULL,
+  `enabled` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`username`),
   KEY `FK_UserRoles` (`roleId`),
   CONSTRAINT `FK_UserRoles` FOREIGN KEY (`roleId`) REFERENCES `roles` (`name`) ON DELETE SET NULL ON UPDATE CASCADE

@@ -16,21 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.validator
+ * @package com.makeabyte.agilephp.data.renderer
  */
 
 /**
- * Validates bit values
- *  
+ * Transforms data to YAML
+ * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.validator
+ * @package com.makeabyte.agilephp.data.renderer
  */
-class BitValidator extends Validator {
+class YamlRenderer implements DataRenderer {
 
-	  public function validate() {
+	  /**
+	   * Transforms the specified PHP data to YAML.
+	   * 
+	   * @param mixed $data Data to transform to YAML
+	   * @param int $encoding YAML_ANY_ENCODING, YAML_UTF8_ENCODING, YAML_UTF16LE_ENCODING, YAML_UTF16BE_ENCODING. Defaults to YAML_ANY_ENCODING.
+	   * @param int $linebreak YAML_ANY_BREAK, YAML_CR_BREAK, YAML_LN_BREAK, YAML_CRLN_BREAK. Defaults to YAML_ANY_BREAK
+	   * @return string The YAML formatted data.
+	   */
+	  public static function render($data, $encoding = null, $linebreak = null) {
 
-	  		 return $this->data == 0 || $this->data == 1;
+	  		 return yaml_emit($data, $encoding, $linebreak);
 	  }
 }
 ?>

@@ -327,7 +327,7 @@ final class ORM {
 	   * @param Integer $offset The limit offset.
 	   * @return void
 	   */
-	  public function setOffset( $offset ) {
+	  public static function setOffset( $offset ) {
 
 	 		 ORMFactory::getDialect()->setOffset( $offset );
 	  }
@@ -337,7 +337,7 @@ final class ORM {
 	   * 
 	   * @return Integer The LIMIT offset.
 	   */
-	  public function getOffset() {
+	  public static function getOffset() {
 
 			 return ORMFactory::getDialect()->setOffset( $offset );
 	  }

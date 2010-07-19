@@ -16,32 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.webservice.rest
+ * @package com.makeabyte.agilephp.data.renderer
  */
 
 /**
- * Transforms YAML string data into a populated domain model.
+ * Transforms data from a SQL boolean type, into the string "Yes" or "No".
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.webservice.rest
+ * @package com.makeabyte.agilephp.data.renderer
  */
-class YAMLTransformer implements Transformer {
+class YesNoRenderer implements DataRenderer {
 
-	  /**
-	   * Transforms the specified data into a populated domain model.
-	   * 
-	   * @param string $data The string data which represents the domain model
-	   * 					 and state to create.
-	   * @return Object The domain model specified in the string $data
-	   * @throws RestServiceException 400 Bad Request if the data could not be parsed
-	   */
-	  public function transform( $data ) {
+      /**
+       * Transforms the specified data into a YES or NO string
+       * 
+       * @param mixed $data A value to evaluate.
+       * @return "Yes" if the value evaluates to "1", "No" otherwise.
+       */
+      public static function render($data) {
 
-	  		 $o = yaml_parse( $data );
-	  		 if( $o == null ) throw new RestServiceException( 400 );
-
-	  		 return $o;
-	  }
+             return ($data) ? 'Yes' : 'No';
+      }
 }
 ?>

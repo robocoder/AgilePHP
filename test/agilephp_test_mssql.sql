@@ -13,7 +13,7 @@ CREATE TABLE dbo.mailing (
   id int identity(1,1),
   name varchar(150) NOT NULL,
   email varchar(150) NOT NULL,
-  enabled bit DEFAULT NULL,
+  enabled boolean DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE dbo.users (
   created date NOT NULL,
   last_login date DEFAULT NULL,
   roleId varchar(25) DEFAULT NULL,
-  enabled bit DEFAULT NULL,
+  enabled boolean DEFAULT NULL,
   PRIMARY KEY (username),
   CONSTRAINT FK_UserRoles FOREIGN KEY (roleId) REFERENCES roles (name) ON DELETE SET NULL ON UPDATE CASCADE
 );

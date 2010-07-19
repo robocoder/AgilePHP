@@ -16,25 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.validator
+ * @package com.makeabyte.agilephp.data.transformer
  */
 
 /**
- * Validates boolean values
- *  
+ * Transforms YAML string data into a populated domain model.
+ * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.validator
+ * @package com.makeabyte.agilephp.data.transformer
  */
-class BooleanValidator extends Validator {
+class YamlToModel implements DataTransformer {
 
-      /**
-       * Validates the data by ensuring its either a boolean true/false value
-       * or is a 1/0.
-       */
-	  public function validate() {
+	  /**
+	   * Transforms the specified data into a populated domain model.
+	   * 
+	   * @param string $data The string data which represents the domain model
+	   * 					 and state to create.
+	   * @return Object The domain model specified in the string $data
+	   * @throws FrameworkException if the specified data could not be parsed
+	   */
+	  public static function transform($data) {
 
-	  		 return is_bool($this->data) || $this->data == 1 || $this->data == 0;
+	  		 $o = yaml_parse($data);
+	  		 if($o == null) throw new FrameworkException('Malformed YAML data');
+
+	  		 return $o;
 	  }
 }
 ?>

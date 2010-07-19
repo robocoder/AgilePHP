@@ -267,19 +267,8 @@ abstract class BaseDialect {
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
 			  	     					'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
-			  	if( count( $inputParameters ) ) {
-
-		  			for( $i=0; $i<count( $inputParameters ); $i++ ) {
-
-		  				 // Make sure intended null values get stored in SQL as null
-		  				 ($inputParameters[$i] == 'NULL') ?
-		  				 	 	$this->PDOStatement->bindValue( ($i+1), NULL ) :
-		  				 		$this->PDOStatement->bindValue( $i+1, $inputParameters[$i] );
-		  			}
-			  	}
-
 			  	try {
-					  	if( !$this->PDOStatement->execute() ) {
+					  	if( !$this->PDOStatement->execute($inputParameters) ) {
 		
 						    $info = $this->PDOStatement->errorInfo();
 					            
@@ -407,35 +396,47 @@ abstract class BaseDialect {
 
 			   	    			try {
 			   	    				  // Try to persist the referenced entity first
-					   	    		  $this->persist( $model->$accessor() );
-					   	    		  array_push( $values, $model->$accessor()->$refAccessor() );
+					   	    		  $this->persist($model->$accessor());
+
+					   	    		  if($transformer = $columns[$i]->getTransformer())
+					   	    		     array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+					   	    		  else
+					   	    		      array_push($values, $model->$accessor()->$refAccessor());
 			   	    			}
 			   	    			catch( Exception $e ) {
 
 			   	    				   // The referenced entity doesnt exist yet, persist it
 			   	    				   if( preg_match( '/duplicate/i', $e->getMessage() ) ) {
 
-			   	    				   	   $this->merge( $model->$accessor() );
-			   	    				   	   array_push( $values, $model->$accessor()->$refAccessor() );
+			   	    				   	   $this->merge($model->$accessor());
+
+			   	    				   	   if($transformer = $columns[$i]->getTransformer())
+			   	    				   	      array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+			   	    				   	   else
+			   	    				   	      array_push($values, $model->$accessor()->$refAccessor());
 			   	    				   }
 			   	    			}
 			   	    		}
 			   	    	}
 			   	    	else {
 
-			   	    		array_push( $values, null );
+			   	    		array_push($values, null);
 			   	    	}
 			   	    }
-			   	    else // No foreign key
-			   	    	array_push( $values, (($model->$accessor() == '') ? NULL : $model->$accessor()) );
+			   	    else { // No foreign key
+			   	        
+			   	        if($transformer = $columns[$i]->getTransformer())
+					   	   array_push($values, $transformer::transform((($model->$accessor() == '') ? NULL : $model->$accessor())));
+					   	else
+					   	   array_push($values, (($model->$accessor() == '') ? NULL : $model->$accessor()));
+			   	    }
 
-			   		if( ($i + 1) < count( $columns ) )
-				   		$sql .= ', ';
+			   		if(($i + 1) < count($columns)) $sql .= ', ';
 			   }
 			   $sql .= ' );';
 
-	   		   $this->prepare( $sql );
-	  		   return $this->execute( $values );
+	   		   $this->prepare($sql);
+	  		   return $this->execute($values);
 	    }
 
 	    /**
@@ -479,12 +480,20 @@ abstract class BaseDialect {
 			   	    		if( $model->$accessor()->$refAccessor() != null ) {
 
 		   	    			    $this->merge( $model->$accessor() );
-				   	    		array_push( $values, $model->$accessor()->$refAccessor() );
+		   	    			    
+		   	    			    if($transformer = $columns[$i]->getTransformer())
+   	    				   	       array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+   	    				   	    else
+   	    				   	       array_push($values, $model->$accessor()->$refAccessor());
 			   	    		}
 			   	    		else {
 			   	    			// Persist the referenced model instance, and use its new id as the foreign key value
 				   	    		$this->persist( $model->$accessor() );
-				   	    		array_push( $values, $this->pdo->lastInsertId() );
+				   	    		
+				   	    		if($transformer = $columns[$i]->getTransformer())
+   	    				   	       array_push($values, $transformer::transform($this->pdo->lastInsertId()));
+   	    				   	    else
+   	    				   	       array_push($values, $this->pdo->lastInsertId());
 			   	    		}
 			   	    	}
 			   	    	else {
@@ -492,8 +501,13 @@ abstract class BaseDialect {
 			   	        	array_push( $values, null );
 			   	        }
 			   	    }
-			   	    else // not a foreign key
-			   	    	array_push( $values, $model->$accessor() );
+			   	    else { // not a foreign key
+
+			   	        if($transformer = $columns[$i]->getTransformer())
+				   	       array_push($values, $transformer::transform($model->$accessor()));
+				   	    else
+				   	       array_push($values, $model->$accessor());
+			   	    }
 
 			   	    array_push( $cols, $columns[$i]->getName() );
 			   }
@@ -503,8 +517,18 @@ abstract class BaseDialect {
 			   $pkeyColumns = $table->getPrimaryKeyColumns();
 			   for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
 
-			  	    $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
-			  		$sql .= $columns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
+			        // Primary keys which are also foreign keys are many-to-many
+			        if($pkeyColumns[$i]->isForeignKey()) {
+
+			           $fkAccessor = $this->toAccessor($columns[$i]->getModelPropertyName());
+			           $accessor = $this->toAccessor($pkeyColumns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+			           $sql .= $columns[$i]->getName() . '=\'' . $model->$fkAccessor()->$accessor() . '\'';
+			        }
+			        else {
+
+					   $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
+			           $sql .= $columns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
+			        }
 
 			  		if( ($i+1) < count( $pkeyColumns ) )
 			  		    $sql .= ' AND ';
@@ -534,19 +558,35 @@ abstract class BaseDialect {
 		       $sql = 'DELETE FROM ' . $table->getName() . ' WHERE ';
 
 		       for( $i=0; $i<count( $columns ); $i++ ) {
+		           
+		   		    if( $columns[$i]->isForeignKey() ) {
+	   		        
+		   		        $fkAccessor = $this->toAccessor($columns[$i]->getModelPropertyName());
+			            $accessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+			            
+			            if($transformer = $columns[$i]->getTransformer())
+				   	       $value = $transformer::transform($model->$fkAccessor()->$accessor());
+				   	    else
+				   	       $value = $model->$fkAccessor()->$accessor();
 
-		   		    if( $columns[$i]->isPrimaryKey() ) {
+			            $sql .= $columns[$i]->getName() . '=\'' . $value . '\'';
+			            $sql .= ($i+1) < count( $columns )? ' AND ' : ';';
+		   		    }
+		   		    else {
 
-		   		        $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
+		   		        $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
 		   			    $sql .= '' . $columns[$i]->getName() . '=?';
 		   			    $sql .= ($i+1) < count( $columns )? ' AND ' : ';';
 
-		   			    array_push( $values, $model->$accessor() );
+		   			    if($transformer = $columns[$i]->getTransformer())
+				   	       array_push($values, $transformer::transform($model->$accessor()));
+				   	    else
+				   	       array_push($values, $model->$accessor());
 		   		    }
 		       }
 
-		       $this->prepare( $sql );
-		       return $this->execute( $values );
+		       $this->prepare($sql);
+		       return $this->execute($values);
 	    }
 
  	    /**
@@ -621,10 +661,18 @@ abstract class BaseDialect {
 
 						     	 if( is_object( $model->$accessor() ) ) {
 						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-						     	 	 array_push( $values, $model->$accessor()->$refAccessor() );
+						     	 	 
+						     	 	 if($transformer = $columns[$i]->getTransformer())
+						     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+						     	     else
+				     	 	     	    array_push($values, $model->$accessor()->$refAccessor());
 						     	 }
 						     	 else {
-				     	 	     	 array_push( $values, $model->$accessor() );
+						     	     
+						     	     if($transformer = $columns[$i]->getTransformer())
+						     	        array_push( $values, $transformer::transform($model->$accessor()) );
+						     	     else
+				     	 	     	    array_push( $values, $model->$accessor() );
 						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
@@ -653,7 +701,6 @@ abstract class BaseDialect {
 					 		  $m = $table->getModelInstance();
 					 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
 
-					 	   	  		   if( !$value ) continue;
 					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
 
 							 	   	   // Create foreign model instances from foreign values
@@ -661,6 +708,11 @@ abstract class BaseDialect {
 
 						 	 		   		    if( $column->getName() != $name ) continue;
 						 	 		   		    if( $column->isLazy() ) continue;
+
+						 	 		   		    if($renderer = $column->getRenderer())
+                        				   	       $value = $renderer::render($value);
+
+                        				   	    if(!$value) continue;
 
 						 	 		  		    if( $column->isForeignKey() ) {
 

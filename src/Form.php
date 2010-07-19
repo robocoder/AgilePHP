@@ -283,9 +283,7 @@ class Form {
   		 	      	  }
 
   		 	      	  // Checkbox
-					  else if( $column->getType() == 'bit' ) {
-
-					  	  //$value = (ord($value) == 1);
+					  else if( $column->getType() == 'boolean' ) {
 
 					  	  $html .= '<td>' . $displayName . '</td>';
 					  	  $html .= ($value == 1) ?
@@ -347,20 +345,27 @@ class Form {
 	   */
 	  public function getForeignKeySelection( ForeignKey $foreignKey ) {
 
-	  		 $selectedColumn = $foreignKey->getSelectedColumnInstance();
+	  		 //$selectedColumn = $foreignKey->getSelectedColumnInstance();
 	  		 $selectedProperty = $foreignKey->getSelectedColumnInstance()->getModelPropertyName();
 
    			 // Create an instance of the foreign model
    			 $foreignInstance = $foreignKey->getReferencedTableInstance()->getModelInstance();
 
    			 // Find all foreign models by distinct parent column name
-          	 $foreignModels = ORM::find( $foreignInstance );
+   			 $maxResults = ORM::getMaxResults();
+   			 ORM::setMaxResults(100000);
+          	 $foreignModels = ORM::find($foreignInstance);
+          	 ORM::setMaxResults($maxResults);
 
           	 // The actual foreign key property name in the child table
           	 $property = $foreignKey->getColumnInstance()->getModelPropertyName();
 
-          	 $html = '<select name="' . $property . '">
-          	 			<option value="NULL">Choose...</option>';
+          	 if($foreignKey->getColumnInstance()->isPrimaryKey() && $this->getMode() != 'persist')
+          	     $html = '<select name="' . $property . '" disabled="disabled">';
+          	 else
+          	   	 $html = '<select name="' . $property . '">';
+
+          	 $html .= '<option value="NULL">Choose...</option>';
 
           	 // Create each of the option values. If the foreign key value matches the
           	 // selected foreign model property value, the item is shown as the default.
@@ -387,8 +392,16 @@ class Form {
 	          	 		  	   $pkeys .= $this->getModel()->$fkInstanceAccessor()->$idAccessor();
 	          	 		  	   $pkeys .= (((count($primaryKeys)-1) == $i)) ? '' : '_';
 	          	 		  }
-	          	 		  				
-          	 		  	  $html .= '<option value="' . $pkeys . '" selected="yes">' . $fModel->$fAccessor() . '</option>';
+	          	 		  
+	          	 		  $value = mb_convert_encoding(htmlspecialchars($fModel->$fAccessor()), 'UTF-8', 'ISO-8859-1');
+          	 		  	  $html .= '<option value="' . $pkeys . '" selected="yes">' . $value . '</option>';
+
+          	 		  	  // Primary keys should not be altered, however, shown for informational purposes
+          	 		  	  if($foreignKey->getColumnInstance()->isPrimaryKey() && $this->getMode() != 'persist') {
+
+          	 		  	     $html .= '</select><input type="hidden" name="' . $property . '" value="' . $pkeys . '"/>';
+          	 		  	     return $html;
+          	 		  	  }
           	 		  }
           	 		  else {
 
@@ -403,7 +416,8 @@ class Form {
 	          	 		  	   $pkeys .= (((count($primaryKeys)-1) == $i)) ? '' : '_';
 	          	 		  }
 
-          	 		  	  $html .= '<option value="' . $pkeys . '">' . $fModel->$fAccessor() . '</option>';
+	          	 		  $value = mb_convert_encoding(htmlspecialchars($fModel->$fAccessor()), 'UTF-8', 'ISO-8859-1');
+          	 		  	  $html .= '<option value="' . $pkeys . '">' . $value . '</option>';
           	 		  }
           	 }
 
@@ -492,17 +506,17 @@ class Form {
 					  		 	      	  }
 
 					  		 	      	  // Checkbox
-										  else if( $column->getType() == 'bit' ) {
+										  else if( $column->getType() == 'boolean' ) {
 	  	  
 										  	  $xsl .= '<td>' . $displayName . '</td>';
 										  	  
 										  	  // enabled
-										  	  $xsl .= '<xsl:if test="/Form/' . $model . '/' . $name . ' = 1">';
+										  	  $xsl .= '<xsl:if test="/Form/' . $model . '/' . $name . ' = \'Yes\'">';
 										  	  		$xsl .= '<td><input type="checkbox" checked="true" name="' . $name . '" value="1"/></td>';
 										  	  $xsl .= '</xsl:if>';
 
 										  	  // disabled
-										  	  $xsl .= '<xsl:if test="/Form/' . $model . '/' . $name . ' != 1">';
+										  	  $xsl .= '<xsl:if test="/Form/' . $model . '/' . $name . ' != \'Yes\'">';
 										  	  		$xsl .= '<td><input type="checkbox" name="' . $name . '" value="1"/></td>';
 										  	  $xsl .= '</xsl:if>';
 

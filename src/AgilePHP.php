@@ -110,8 +110,8 @@ final class AgilePHP {
 
               if(self::$xml->annotations) {
 
-                 require 'Annotation.php';
-                 require 'Interception.php';
+                 require_once 'Annotation.php';
+                 require_once 'Interception.php';
                  spl_autoload_register('AgilePHP::autoload');
               }
               else
@@ -333,7 +333,7 @@ final class AgilePHP {
       public static function setDebugMode( $boolean ) {
 
              self::$debugMode = ($boolean === true) ? true : false;
-             if(self::$debugMode) self::$setDisplayPhpErrors(true);
+             if(self::$debugMode) self::setDisplayPhpErrors(true);
       }
 
       /**
@@ -694,6 +694,16 @@ final class AgilePHP {
           'CacheProvider' => '/cache/CacheProvider.php',
           'FileCacheProvider' => '/cache/FileCacheProvider.php',
           'XCacheProvider' => '/cache/XCacheProvider.php',
+          'DataRenderer' => '/data/renderer/DataRenderer.php',
+          'JsonRenderer' => '/data/renderer/JsonRenderer.php',
+          'XmlRenderer' => '/data/renderer/XmlRenderer.php',
+          'YamlRenderer' => '/data/renderer/YamlRenderer.php',
+          'YesNoRenderer' => '/data/renderer/YesNoRenderer.php',
+          'DataTransformer' => '/data/transformer/DataTransformer.php',
+          'JsonToModel' => '/data/transformer/JsonToModel.php',
+          'XmlToModel' => '/data/transformer/XmlToModel.php',
+          'YamlToModel' => '/data/transformer/YamlToModel.php',
+      	  'YesNoToBoolean' => '/data/transformer/YesNoToBoolean.php',
           'RequestParam' => '/form/RequestParam.php',
           'AccessDeniedException' => '/identity/AccessDeniedException.php',
           'Authentication' => '/identity/Authentication.php',
@@ -778,7 +788,6 @@ final class AgilePHP {
           'ConsumeMime' => '/webservice/rest/ConsumeMime.php',
           'DELETE' => '/webservice/rest/DELETE.php',
           'GET' => '/webservice/rest/GET.php',
-          'JSONTransformer' => '/webservice/rest/JSONTransformer.php',
           'Path' => '/webservice/rest/Path.php',
           'POST' => '/webservice/rest/POST.php',
           'ProduceMime' => '/webservice/rest/ProduceMime.php',
@@ -788,9 +797,6 @@ final class AgilePHP {
           'RestService' => '/webservice/rest/RestService.php',
           'RestServiceException' => '/webservice/rest/RestServiceException.php',
           'RestUtil' => '/webservice/rest/RestUtil.php',
-          'Transformer' => '/webservice/rest/Transformer.php',
-          'XMLTransformer' => '/webservice/rest/XMLTransformer.php',
-          'YAMLTransformer' => '/webservice/rest/YAMLTransformer.php',
           'SOAPBinding' => '/webservice/soap/SOAPBinding.php',
           'SOAPService' => '/webservice/soap/SOAPService.php',
           'WebMethod' => '/webservice/soap/WebMethod.php',

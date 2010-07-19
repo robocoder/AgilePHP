@@ -12,7 +12,7 @@
 				<foreignKey name="FK_UserRoles" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="roles" column="name" controller="RoleController" select="name"/>
 			</column>
-	  		<column name="enabled" type="bit" validator="BitValidator"/>
+	  		<column name="enabled" type="boolean" validator="BooleanValidator" transformer="YesNoToBoolean" renderer="YesNoRenderer"/>
 	 	</table>
 	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
 			<column name="name" type="varchar" length="25" primaryKey="true" required="true" validator="StringValidator"/>

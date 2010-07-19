@@ -47,11 +47,11 @@ class DELETE {
 	   * @return void
 	   */
 	  #@AroundInvoke
-	  public function process( InvocationContext $ic ) {
+	  public function process(InvocationContext $ic) {
 
 	  		 // Execute the REST service resource and return 204
-	  		 call_user_func_array( array( $ic->getTarget(), $ic->getMethod() ), $ic->getParameters() ); 
-	  		 header( 'HTTP/1.1 204 No Content' );
+	  		 call_user_func_array(array( $ic->getTarget(), $ic->getMethod()), $ic->getParameters()); 
+	  		 header('HTTP/1.1 204 No Content');
 	  		 exit;
 	  }
 }

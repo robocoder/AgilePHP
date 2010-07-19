@@ -20,7 +20,7 @@
 
 <!ELEMENT database (table*, procedure*)>
 <!ATTLIST database name CDATA #REQUIRED>
-<!ATTLIST database type ( mysql | mssql | pgsql | sqlite | firebird | informix | oracle | dblib | ibm ) "mysql">
+<!ATTLIST database type ( mysql | mssql | pgsql | sqlite ) "mysql">
 <!ATTLIST database hostname CDATA #REQUIRED>
 <!ATTLIST database username CDATA #REQUIRED>
 <!ATTLIST database password CDATA #REQUIRED>
@@ -64,8 +64,10 @@
 <!ATTLIST column sortable CDATA #FIXED "false">
 <!ATTLIST column selectable CDATA #FIXED "true">
 <!ATTLIST column sanitize CDATA #FIXED "false">
-<!ATTLIST column validator CDATA #IMPLIED>
 <!ATTLIST column lazy CDATA #FIXED "true">
+<!ATTLIST column validator CDATA #IMPLIED>
+<!ATTLIST column renderer CDATA #IMPLIED>
+<!ATTLIST column transformer CDATA #IMPLIED>
 
 <!ELEMENT foreignKey (#PCDATA)>
 <!ATTLIST foreignKey type ( one-to-one | one-to-many | many-to-one | many-to-many ) #REQUIRED>

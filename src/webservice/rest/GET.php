@@ -47,7 +47,7 @@ class GET {
 	   * @return void
 	   */
 	  #@AroundInvoke
-	  public function invoke( InvocationContext $ic ) {
+	  public function invoke(InvocationContext $ic) {
 
 	  	     $callee = $ic->getCallee();
 	  		 $class = $callee['class'];
@@ -55,16 +55,16 @@ class GET {
 	  		 $method = $ic->getMethod();
 	  		 $parameters = $ic->getParameters();
 
-	  		 $return = ($parameters) ? call_user_func_array( array( $target, $method ), $parameters ):
-	  		  				call_user_func( array( $target, $method ) );
+	  		 $return = ($parameters) ? call_user_func_array(array($target, $method), $parameters):
+	  		  				call_user_func(array($target, $method));
 
-	  		 $negotiation = RestUtil::negotiate( $class, $ic->getMethod() );
+	  		 $negotiation = RestUtil::negotiate($class, $ic->getMethod());
 			 $ProduceMime = $negotiation['ProduceMime'];
 
 			 // Format the return value according to the negotiated mime type and exit the application.
-	  		 $out = RestUtil::serverTransform( $return, $ProduceMime );
-	  		 header( 'HTTP/1.1 200 OK' );
-	  		 die( $out );
+	  		 $out = RestUtil::serverTransform($return, $ProduceMime);
+	  		 header('HTTP/1.1 200 OK');
+	  		 die($out);
 	  }
 }
 ?>

@@ -242,10 +242,6 @@ class Interception {
 	  		       // Remove type hinting
 	  		       preg_match_all('/\$[a-zA-Z0-9_]+/', $params, $args);
 	  		       $params = '(' . implode(', ', $args[0]) . ')';
-
-	  		  	  // Remove type hinting
-	  		 	  //$param = preg_replace( '/[^\$a-zA-Z0-9][a-zA-Z0-9]+?\s/', ' ', $params );
-	  		 	  //$param = preg_replace( '/=\s*\)/', ')', $params ); // @todo spend countless more hours trying to get everything into one regex
 	  		  }
 
 	  		  $a['signatures'] = $matches[1]; 

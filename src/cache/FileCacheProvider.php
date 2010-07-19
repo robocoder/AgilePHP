@@ -44,7 +44,7 @@ class FileCacheProvider implements CacheProvider {
              if(!file_exists($this->cache)) {
 
                 if(!mkdir($this->cache))
-                   throw new CachingException('Failed to create cache directory at \'' . $this->cache . '\'.');
+                   throw new CacheException('Failed to create cache directory at \'' . $this->cache . '\'.');
 
                 chmod($this->cache, 0777);
              }

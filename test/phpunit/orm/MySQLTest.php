@@ -7,7 +7,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase {
 	  /**
 	   * @test
 	   */
-	  public function coreTests() {
+	  public function mysqlTests() {
 
 	  		 $orm = ORMFactory::load( AgilePHP::getWebRoot() . '/orm_mysql_test.xml' );
 
@@ -45,7 +45,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase {
 	  	     PHPUnit_Framework_Assert::assertEquals( 'phpunit', $phpunit->getUsername(), 'Failed to find persisted username' );
 	  	     PHPUnit_Framework_Assert::assertEquals( $digest, $phpunit->getPassword(), 'Failed to find persisted username' );
 	  	     PHPUnit_Framework_Assert::assertEquals( 'phpunit@localhost', $phpunit->getEmail(), 'Failed to find persisted email' );
-	  	     PHPUnit_Framework_Assert::assertEquals( false, $phpunit->getEnabled(), 'Failed to find persisted enabled flag' );
+	  	     PHPUnit_Framework_Assert::assertEquals( 'No', $phpunit->getEnabled(), 'Failed to find persisted enabled flag' );
 	  	     PHPUnit_Framework_Assert::assertEquals( 'phpunit', $phpunit->getRole()->getName(), 'Failed to find persisted role' );
 	  	     PHPUnit_Framework_Assert::assertEquals( $sessionId, Scope::getSessionScope()->getSession()->getId(), 'Failed to find persisted session' );
 
@@ -77,7 +77,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase {
 	  	     PHPUnit_Framework_Assert::assertEquals( $digest, $phpunit2->getPassword(), 'Failed to find merged username' );
 	  	     PHPUnit_Framework_Assert::assertEquals( 'phpunit2@localhost', $phpunit2->getEmail(), 'Failed to find merged email' );
 	  	     PHPUnit_Framework_Assert::assertEquals( 'test', $phpunit2->getRole()->getName(), 'Failed to find merged role' );
-	  	     PHPUnit_Framework_Assert::assertEquals( 1, $phpunit2->getEnabled(), 'Failed to find merged enabled flag' );
+	  	     PHPUnit_Framework_Assert::assertEquals( 'Yes', $phpunit2->getEnabled(), 'Failed to find merged enabled flag' );
 
 	  	     // test delete 
 	  	     $orm->delete( $user2 );
@@ -115,7 +115,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase {
 
 	  		 $auth = $orm->call( $authenticate );
 
-	  		 PHPUnit_Framework_Assert::assertEquals( 1, ord($auth->getResult()), 'Failed to get expected \'authenticate\' stored procedure result.' );
+	  		 PHPUnit_Framework_Assert::assertEquals( 1, $auth->getResult(), 'Failed to get expected \'authenticate\' stored procedure result.' );
 
 			 $getusers = new SPusers();
 	  		 $users = $orm->call( $getusers );

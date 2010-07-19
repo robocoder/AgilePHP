@@ -20,7 +20,7 @@
  */
 
 /**
- * Includes all annotation package dependancies
+ * Includes all annotation package dependencies
  */
 require_once 'annotation/AnnotationParser.php';
 require_once 'annotation/AnnotatedClass.php';

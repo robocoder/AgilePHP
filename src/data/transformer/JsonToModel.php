@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.webservice.rest
+ * @package com.makeabyte.agilephp.data.transformer
  */
 
 /**
@@ -24,9 +24,9 @@
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.webservice.rest
+ * @package com.makeabyte.agilephp.data.transformer
  */
-class JSONTransformer implements Transformer {
+class JsonToModel implements DataTransformer {
 
 	  /**
 	   * Transforms the specified data into a populated domain model.
@@ -34,22 +34,22 @@ class JSONTransformer implements Transformer {
 	   * @param string $data The string data which represents the domain model
 	   * 					 and state to create.
 	   * @return Object The domain model specified in the string $data
-	   * @throws RestServiceException 400 if the data could not be decoded
+	   * @throws FrameworkException if the json data does not unmarshall to a stdClass object
 	   */
-	  public function transform( $data ) {
+	  public static function transform($data) {
 
-	  		 $o = json_decode( $data );
+	  		 $o = json_decode($data);
 
-	  		 if( !is_object( $o ) ) {
+	  		 if(!is_object($o)) {
 
-	  		 	 Log::debug( 'JSONTransformer::transform Received malformed data ' . $data );
-	  		 	 throw new RestServiceException( 400 );
+	  		 	Log::debug('JSONTransformer::transform Received malformed data ' . $data);
+	  		 	throw new FrameworkException('Malformed JSON object');
 	  		 }
 
-	  		 $vars = get_object_vars( $o );
-	  		 $modelName = key( $vars );
+	  		 $vars = get_object_vars($o);
+	  		 $modelName = key($vars);
 
-	  		 return $this->convert( $modelName, $vars[$modelName] );
+	  		 return self::convert($modelName, $vars[$modelName]);
 	  }
 
 	  /**
@@ -57,20 +57,20 @@ class JSONTransformer implements Transformer {
 	   * instance and copies the data from the stdClass into the model instance.
 	   * 
 	   * @param string $modelName The name of the domain model to instantiate
-	   * @param stdClass $jsonObject A stdClass object which represents a JSON decoded object
+	   * @param stdClass $oJson A stdClass object which represents a JSON decoded object
 	   */
-	  private function convert( $modelName, $jsonObject ) {
+	  private static function convert($modelName, $oJson) {
 
 			  $model = new $modelName();
 
-	  		  $values = get_object_vars( $jsonObject );
-	  		  foreach( $values as $field => $value ) {
+	  		  $values = get_object_vars($oJson);
+	  		  foreach($values as $field => $value) {
 
-	  		  		   $mutator = 'set' . ucfirst( $field );
-	  		  		   $model->$mutator( (is_object( $value ) ? $this->convert( $field, $value ) : $value) );
+	  		  		  $mutator = 'set' . ucfirst($field);
+	  		  		  $model->$mutator((is_object($value) ? self::convert($field, $value) : $value));
 	  		  }
 
 	  		  return $model;
-	  }	  
+	  }
 }
 ?>

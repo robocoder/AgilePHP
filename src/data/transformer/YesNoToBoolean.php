@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -16,25 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.webservice.rest
+ * @package com.makeabyte.agilephp.data.transformer
  */
 
 /**
- * Transforms JSON string data into a populated domain model.
+ * Transforms a "Yes" or "No" string to a SQL bit type
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.webservice.rest
+ * @package com.makeabyte.agilephp.data.transformer
  */
-interface Transformer {
+class YesNoToBoolean implements DataTransformer {
 
-		  /**
-		   * Transforms the specified data into a populated domain model.
-		   * 
-		   * @param string $data The string data which represents the domain model
-		   * 					 and state to create.
-		   * @return Object The domain model specified in the string $data
-		   */
-		  public function transform( $data );
+	  /**
+	   * Transforms a "Yes" or "No" string to a "1" or "0"
+	   * 
+	   * @param string $data The "Yes" or "No" string
+	   * @return int "1" if the string was "Yes", "0" otherwise
+	   */
+	  public static function transform($data) {
+
+             if($data == 1) return 1;
+
+	  		 return (strtolower($data) == 'yes') ? 1 : 0;
+	  }
 }
 ?>

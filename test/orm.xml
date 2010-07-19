@@ -15,7 +15,7 @@
 			<column name="id" type="integer" visible="false" required="true" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
 			<column name="name" type="varchar" length="150" required="true" description="Name of recipient" validator="StringValidator"/>
 			<column name="email" type="varchar" length="150" required="true" description="Email address of recipient" validator="EmailValidator"/>
-			<column name="enabled" type="bit" description="Opt In/Out Flag" validator="BitValidator"/>
+			<column name="enabled" type="boolean" description="Opt In/Out Flag" validator="BooleanValidator" renderer="YesNoRenderer" transformer="YesNoToBoolean"/>
 		</table>
 		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
 			<column name="username" type="varchar" length="150" primaryKey="true" required="true" validator="StringValidator"/>
@@ -27,7 +27,7 @@
 				<foreignKey name="FK_UserRoles" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
 	  							 table="roles" column="name" controller="RoleController" select="name"/>
 			</column>
-	  		<column name="enabled" type="bit" validator="BitValidator"/>
+	  		<column name="enabled" type="boolean" validator="BooleanValidator" renderer="YesNoRenderer" transformer="YesNoToBoolean"/>
 	 	</table>
 	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
 			<column name="name" type="varchar" length="25" primaryKey="true" required="true" validator="StringValidator"/>

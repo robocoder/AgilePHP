@@ -43,8 +43,10 @@ class Column {
 	  private $primaryKey = false;
 	  private $autoIncrement = false;
 	  private $sanitize = true;
-	  private $validator;
 	  private $lazy = false;
+	  private $validator;
+	  private $renderer;
+	  private $transformer;
 
 	  private $foreignKey;
 
@@ -67,8 +69,10 @@ class Column {
 		  		 $this->primaryKey = ($column->attributes()->primaryKey == 'true') ? true : false;
 		  		 $this->autoIncrement = ($column->attributes()->autoIncrement == 'true') ? true : false;
 		  		 $this->sanitize = ($column->attributes()->sanitize == 'false') ? false : true;
-		  		 $this->validator = (string)$column->attributes()->validator;
 		  		 $this->lazy = ($column->attributes()->lazy == 'true') ? true : false;
+		  		 $this->validator = (string)$column->attributes()->validator;
+		  		 $this->renderer = (string)$column->attributes()->renderer;
+		  		 $this->transformer = (string)$column->attributes()->transformer;
 
 		  		 if( $column->foreignKey )
 		  		 	 $this->foreignKey = new ForeignKey( $column->foreignKey, $tableName, $this->name );
@@ -451,22 +455,65 @@ class Column {
 	  /**
 	   * Sets the validator responsible for validating the data.
 	   * 
-	   * @param Validator $validator The validator responsible for verifying the integrity of the data
+	   * @param string $validator The class name of the Validator responsible for verifying the integrity of the data
 	   * @return void
 	   */
-	  public function setValidator( Validator $validator ) {
+	  public function setValidator($validator ) {
 
 	  		 $this->validator = $validator;
 	  }
 
 	  /**
-	   * Returns the validator responsible for validating the data.
+	   * Returns the class name of the Validator responsible for validating the data.
 	   * 
-	   * @return Validator $validator The validator responsible for verifying the integrity of the data
+	   * @return string $validator The validator responsible for verifying the integrity of the data
 	   */
 	  public function getValidator() {
 
 	  		 return $this->validator;
+	  }
+
+	  /**
+	   * Sets the renderer responsible for formatting data for presentation
+	   * 
+	   * @param string $renderer The DataRenderer responsible for formatting the column data for presentation
+	   * @return void
+	   */
+	  public function setRenderer($renderer) {
+
+	  		 $this->renderer = $renderer;
+	  }
+
+	  /**
+	   * Returns the DataRenderer responsible for formatting the column data for presentation
+	   * 
+	   * @return string $renderer The renderer responsible for formatting the column data for presentation
+	   */
+	  public function getRenderer() {
+
+	  		 return $this->renderer;
+	  }
+
+	  /**
+	   * Sets the DataTransformer responsible for transforming data before committing to the database
+	   * 
+	   * @param string $transformer The class name of the DataTransformer responsible for transforming the
+	   *        column data before its committed to the database.
+	   * @return void
+	   */
+	  public function setTransformer($transformer) {
+
+	  		 $this->transformer = $transformer;
+	  }
+
+	  /**
+	   * Returns the class name of the DataTransformer responsible for transforming data before committing to the database
+	   * 
+	   * @return string $transformer The class name of the DataTransformer
+	   */
+	  public function getTransformer() {
+
+	  		 return $this->transformer;
 	  }
 
 	  /**
@@ -500,7 +547,7 @@ class Column {
 
 	  		 return $this->lazy;
 	  }
-	  
+
 	  /**
 	   * Returns the name which is used to access/mutate model properties/fields. If a property
 	   * attribute has been configured in orm.xml for the column, the property value is

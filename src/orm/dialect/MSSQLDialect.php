@@ -430,7 +430,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 			   	    			try {
 			   	    				  // Try to persist the referenced entity first
 					   	    		  $this->persist( $model->$accessor() );
-					   	    		  array_push( $values, $model->$accessor()->$refAccessor() );
+					   	    		  
+					   	    		  if($transformer = $columns[$i]->getTransformer())
+					   	    		     array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+					   	    		  else
+					   	    		      array_push($values, $model->$accessor()->$refAccessor());
 			   	    			}
 			   	    			catch( Exception $e ) {
 
@@ -438,7 +442,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 			   	    				   if( preg_match( '/duplicate/i', $e->getMessage() ) ) {
 
 			   	    				   	   $this->merge( $model->$accessor() );
-			   	    				   	   array_push( $values, $model->$accessor()->$refAccessor() );
+			   	    				   	   
+			   	    				   	   if($transformer = $columns[$i]->getTransformer())
+			   	    				   	      array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+			   	    				   	   else
+			   	    				   	      array_push($values, $model->$accessor()->$refAccessor());
 			   	    				   }
 			   	    			}
 			   	    		}
@@ -517,11 +525,20 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 						     	 $where .= (count($values) ? ' AND ' : ' ') . $columns[$i]->getName() . '=?';
 						     	 
 								 if( is_object( $model->$accessor() ) ) {
+
 						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-						     	 	 array_push( $values, $model->$accessor()->$refAccessor() );
+						     	 	 
+						     	 	 if($transformer = $columns[$i]->getTransformer())
+						     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+						     	     else
+				     	 	     	    array_push($values, $model->$accessor()->$refAccessor());
 						     	 }
 						     	 else {
-				     	 	     	 array_push( $values, $model->$accessor() );
+
+						     	     if($transformer = $columns[$i]->getTransformer())
+						     	        array_push( $values, $transformer::transform($model->$accessor()) );
+						     	     else
+				     	 	     	    array_push( $values, $model->$accessor() );
 						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
@@ -544,8 +561,6 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 					 		  $m = $table->getModelInstance();
 					 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
 
-					 	   	  		   if( $value == null ) continue;
-
 					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
 
 					 	   	  		   if( is_object( $value ) )
@@ -556,6 +571,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 						 	 		   			if( $column->getName() != $name ) continue;
 						 	 		   		    if( $column->isLazy() ) continue;
+
+						 	 		   		    if($renderer = $column->getRenderer())
+                        				   	       $value = $renderer::render($value);
+
+                        				   	    if(!$value) continue;
 
 						 	 		  		    if( $column->isForeignKey() && $column->getName() == $name ) {
 

@@ -35,16 +35,14 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	      *
 	      * @param String $pkeyFields Optional name of the model property to send as the 'id' field to the action when an action
 	      * 			  		      button is clicked. Defaults to the primary key(s) of the model as defined in orm.xml.
-	      * 						  Defaults to null.
 	      * @param String $controller Optional name of the controller to use when an action button is clicked. Defaults
 	      * 				   		  to the name of the controller which invoked this method. Defaults to the extension controller.
 	      * @param string $view Optional name of a PHTML view to render. Defaults to 'admin'. 
 	      * @return XSL stylesheet for BaseModelXmlController
 	      */
-	     protected function getModelListXSL( $pkeyFields = null, $controller = null, $view = 'admin' ) {
+	     protected function getModelListXSL($pkeyFields = null, $controller = null, $view = 'admin') {
 
 	     		   $table = ORM::getTableByModelName( $this->getModelName() );
-
 	     	       $c = (!$controller) ? new ReflectionClass( $this ) : new ReflectionClass( $controller );
 
 	     	       // php namespace support
@@ -52,10 +50,12 @@ abstract class BaseModelXslController extends BaseModelXmlController {
      		   	   $controller = $namespace[0];
      		   	   $modelNamespace = explode( '\\', $this->getModelName() );
      		   	   $modelName = array_pop( $modelNamespace );
-     		   	   
+
      		   	   $requestBase = AgilePHP::getRequestBase();
-   		   		   if( !$pkeyFields )  $pkeyFields = $this->getSerializedPrimaryKeyColumns( $table );
-   		   		   $pkeyFieldsXSL = $this->getSerializedPrimaryKeyColumnsAsXSL( $pkeyFields );
+   		   		   if(!$pkeyFields)  $pkeyFields = $this->getSerializedPrimaryKeyColumns($table);
+
+   		   		   $fkeyXslValues = $this->getSerializedForeignKeyValuesAsXSL($table);
+   		   		   $pkeyFieldsXSL = $this->getSerializedPrimaryKeyColumnsAsXSL($pkeyFields);
    		   		   $order = $this->getOrderBy();
 
 	     		   $xsl = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">';
@@ -164,14 +164,13 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 								     	    	     if( !$table->isVisible( $column->getModelPropertyName() ) )
 			 	   	   			      			         continue;
 
-			 	   	   			      			     
 			 	   	   			      			     if( $column->isForeignKey() ) {
 
-			 	   	   			      			     	 $namespace = explode( '\\', $column->getForeignKey()->getReferencedTableInstance()->getModel() );
-			 	   	   			      			     	 $fModelName = array_pop( $namespace );
-
+			 	   	   			      			     	 $namespace = explode('\\', $column->getForeignKey()->getReferencedTableInstance()->getModel());
+			 	   	   			      			     	 $fModelName = array_pop($namespace);
 			 	   	   			      			     	 $fkey = $column->getForeignKey();
-			 	   	   			      			     	 $fkeyXslValues = $this->getSerializedForeignKeyValuesAsXSL( $table );
+
+			 	   	   			      			     	 if($column->isPrimaryKey()) $primaryAndForeignKey = true;
 
 			 	   	   			      			     	 switch( $fkey->getType() ) {
 
@@ -209,11 +208,12 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 															  </td>';
 								     	    }
 
+
 							       $xsl .= '<td>
-												<a href="' . $requestBase . '/' . $controller . '/edit/' . $pkeyFieldsXSL . '/' . $this->getPage() . '">Edit</a>
+												<a href="' . $requestBase . '/' . $controller . '/edit/' . (isset($primaryAndForeignKey) ? $fkeyXslValues : $pkeyFieldsXSL) . '/' . $this->getPage() . '">Edit</a>
 											</td>
 											<td>
-												<a href="JavaScript:AgilePHP.ORM.confirmDelete(  \'' . $requestBase . '\', \'' . $pkeyFieldsXSL . '\', \'' . $this->getPage() . '\', \'' . $controller . '\', \'delete\' );">Delete</a>
+												<a href="JavaScript:AgilePHP.ORM.confirmDelete(  \'' . $requestBase . '\', \'' . (isset($primaryAndForeignKey) ? $fkeyXslValues : $pkeyFieldsXSL) . '\', \'' . $this->getPage() . '\', \'' . $controller . '\', \'delete\' );">Delete</a>
 											</td>
 										</tr>
 									</xsl:template>
@@ -231,8 +231,12 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	      */
 	     protected function getModelFormXSL() {
 
-	     	       $table = ORM::getTableByModel( $this->getModel() );
-	     	       $pkeyValues = $this->getSerializedPrimaryKeyValues( $table );
+	     	       $table = ORM::getTableByModel($this->getModel());
+	     	       $fkeyXslValues = $this->getSerializedForeignKeyValuesAsXSL($table);
+	     	       $pkeyValues = $this->getSerializedPrimaryKeyValues($table);
+
+	     	       if($fkeyXslValues)
+	     	          $pkeyValues = preg_replace('/{/', '{' . $this->getModelName() . '/', $fkeyXslValues);
 
 	     	       $action = AgilePHP::getRequestBase() . '/{/Form/controller}/{/Form/action}/' . $pkeyValues . '/' . $this->getPage();
 
@@ -245,7 +249,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     	       $form = $table->hasBlobColumn() ? new Form( $this->getModel(), 'frm' . $name, $name, $action, 'multipart/form-data', $token )
 	     	       							       : new Form( $this->getModel(), 'frm' . $name, $name, $action, null, $token );
 				   $form->setMode( $this->getModelPersistenceAction() );
-	     	       $xsl = $form->getXSL( $pkeyValues, $this->getPage() );
+	     	       $xsl = $form->getXSL($pkeyValues, $this->getPage());
 
 	     	       Log::debug( 'BaseModelXslController::getModelFormXSL Returning ' . $xsl );
 
@@ -432,16 +436,16 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 		 		 $values = array();
 		 		 $pkeyColumns = $table->getPrimaryKeyColumns();
-		 		 for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+		 		 for($i=0; $i<count($pkeyColumns); $i++) {
 
-		 		   	  $accessor = 'get' . ucfirst( $pkeyColumns[$i]->getModelPropertyName() );
-					  array_push( $values, $this->getModel()->$accessor() );
+		 		   	 $accessor = 'get' . ucfirst( $pkeyColumns[$i]->getModelPropertyName() );
+		 		   	 $value = $this->getModel()->$accessor();
+		 		   	 if(is_object($value)) continue; // Foreign key that will be handled by getSerializedForeignKeyValuesAsXSL
+					 array_push($values, $value);
 				 }
 
-				 if( count( $values ) )
-		 		 	 return implode( '_', $values );
-
-		 		 return null;
+				 if(count($values))
+		 		 	return implode( '_', $values );
 	  	 }
 
 	  	 /**
@@ -475,33 +479,17 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	  	  * @param Table $table The table instance used to extract foreign key values
 	  	  * @return An 'AgilePHP serialized' string for use in XSL rendering 		
 	  	  */
-		 private function getSerializedForeignKeyValuesAsXSL( Table $table ) {
+		 private function getSerializedForeignKeyValuesAsXSL(Table $table) {
 
-		 		 $bProcessedKeys = array();
-				 $fKeyColumns = $table->getForeignKeyColumns();
-				 for( $i=0; $i<count( $fKeyColumns ); $i++ ) {
+		 		 $keys = array();
+		 		 $fkeys = $table->getForeignKeyColumns();
+		 		 for($i=0; $i<count($fkeys); $i++) {
 
-				  	  $fk = $fKeyColumns[$i]->getForeignKey();
+		 		     $fkey = $fkeys[$i]->getForeignKey();
+		 		     array_push($keys, '{' . $fkey->getReferencedTableInstance()->getModel() . '/' . $fkey->getReferencedColumn() . '}');
+		 		 }
 
-				  	  if( in_array( $fk->getName(), $bProcessedKeys ) )
-					      continue;
-
-					  array_push( $bProcessedKeys, $fk->getName() );
-
-					  // Get foreign keys which are part of the same relationship
-					  $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
-
-					  $retval = '';
-
-				      for( $j=0; $j<count( $relatedKeys ); $j++ ) {				
-
-				      	   $retval .= '{' . $relatedKeys[$j]->getReferencedTableInstance()->getModel() . '/' . $relatedKeys[$j]->getReferencedColumn() . '}'; 
-				      	   if( ($j+1) < count( $relatedKeys ) )
-				      	   		$retval .= '_';
- 	     		      }
-				 }
-
-				 return $retval;
+		 		 return implode('_', $keys);
 	  	 }
 }
 ?>

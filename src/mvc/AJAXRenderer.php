@@ -38,33 +38,41 @@ class AJAXRenderer extends BaseRenderer {
 	   * (non-PHPdoc)
 	   * @see src/mvc/BaseRenderer#render($view)
 	   */
-	  public function render( $data, $name = null ) {
+	  public function render($data, $name = null) {
 
-	  		 if( !$this->output )
-	  		 	 throw new FrameworkException( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
+	  		 if(!$this->output)
+	  		 	throw new FrameworkException('AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml|yaml)');
 
 	  		 if( $this->output == 'json' ) {
 
-	  		 	 $json = $this->toJSON( $data, $name );
+	  		 	 $json = $this->toJSON($data, $name);
 
-	  		 	 Log::debug( 'AJAXRenderer::render Rendering JSON ' . $json );
+	  		 	 Log::debug('AJAXRenderer::render Rendering JSON ' . $json);
 
-	  		 	 header( 'content-type: application/json' );
-	  		 	 print $json;
-	  		 	 exit;
+	  		 	 header('content-type: application/json');
+	  		 	 die($json);
 	  		 }
 
-	  		 else if( $this->output == 'xml' ) {
+	  		 else if($this->output == 'xml') {
 
-	  		 	 if( !$name ) $name = 'Result';
+	  		 	 if(!$name) $name = 'Result';
 
-	  		 	 $xml = $this->toXML( $data, $name );
+	  		 	 $xml = $this->toXML($data, $name);
 
-	  		 	 Log::debug( 'AJAXRenderer::render Rendering XML ' . $xml );
+	  		 	 Log::debug('AJAXRenderer::render Rendering XML ' . $xml);
 
-	  		 	 header( 'content-type: application/xml' );
-	  		 	 print $xml;
-	  		 	 exit;
+	  		 	 header('content-type: application/xml');
+	  		 	 die($xml);
+	  		 }
+
+	  		 else if($this->output == 'yaml') {
+
+	  		     $yaml = $this->toYAML($data);
+
+	  		     Log::debug('AJAXRenderer::render Rendering YAML ' . $yaml);
+
+	  		     header('content-type: application/x-yaml');
+	  		     die($yaml);
 	  		 }
 	  }
 
@@ -75,29 +83,36 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param Object $data A stdClass object to output as either XML or JSON.
 	   * @return void
 	   */
-	  public function renderNoHeader( $data ) {
+	  public function renderNoHeader($data) {
 
-	 		 if( !$this->output )
-	  		 	 throw new FrameworkException( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
+	 		 if(!$this->output)
+	  		 	 throw new FrameworkException('AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml|yaml)');
 
-	  		 if( $this->output == 'json' ) {
+	  		 if($this->output == 'json') {
 
-	  		 	 $json = $this->toJSON( $data );
+	  		 	$json = $this->toJSON($data);
 
-	  		 	 Log::debug( 'AJAXRenderer::render Rendering JSON ' . $json );
+	  		 	Log::debug('AJAXRenderer::render Rendering JSON ' . $json);
 
-	  		 	 print $json;
-	  		 	 exit;
+	  		 	die($json);
 	  		 }
 
-	  		 else if( $this->output == 'xml' ) {
+	  		 else if($this->output == 'xml') {
 
-	  		 	 $xml = $this->toXML( $data );
+	  		 	$xml = $this->toXML($data);
 
-	  		 	 Log::debug( 'AJAXRenderer::render Rendering XML ' . $xml );
+	  		 	Log::debug('AJAXRenderer::render Rendering XML ' . $xml);
 
-	  		 	 print $xml;
-	  		 	 exit;
+	  		 	die($xml);
+	  		 }
+	  		 
+	  		 else if($this->output == 'yaml') {
+
+	  		    $yaml = $this->toYAML($data);
+
+	  		    Log::debug('AJAXRenderer::render Rendering YAML ' . $yaml);
+
+	  		    die($yaml);
 	  		 }
 	  }
 
@@ -109,22 +124,27 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param mixed $data The raw data to render
 	   * @return void
 	   */
-	  public function renderNoFormat( $data ) {
+	  public function renderNoFormat($data) {
 
-	  	     if( !$this->output )
-	  		 	 throw new FrameworkException( 'AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml)' );
+	  	     if(!$this->output)
+	  		 	throw new FrameworkException('AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml|yaml)');
 
-	  		 switch( $this->output ) {
+	  		 switch($this->output) {
 
 			  		 case 'json':
 			  		 case 'JSON':
-			  		 	header( 'content-type: application/json' );
+			  		 	header('content-type: application/json');
 	  		 	 		break;
 
 			  		 case 'xml':
 			  		 case 'XML':
-			  		 	header( 'content-type: application/xml' );
+			  		 	header('content-type: application/xml');
 	  		 	 		break;
+
+			  		 case 'yaml':
+			  		 case 'YAML':
+			  		     header('content-type: application/x-yaml');
+			  		     break;
 	  		 }
 
 	  		 print $data;
@@ -138,20 +158,19 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param Object $data The data to render
 	   * @return void
 	   */
-	  public function renderNoFormatNoHeader( $data ) {
+	  public function renderNoFormatNoHeader($data) {
 
-	  		 print $data;
-	  		 exit;
+	  		 die($data);
 	  }
 
 	  /**
 	   * Sets the desired output type.
 	   * 
-	   * @param String $type The data formatting to use during output. (XML|JSON)
+	   * @param String $type The data formatting to use during output. (XML|JSON|YAML)
 	   * @return void
 	   * @throws FrameworkException if invalid formatting type is specified
 	   */
-	  public function setOutput( $type ) {
+	  public function setOutput($type) {
 
 	  		 switch( $type ) {
 
@@ -164,8 +183,13 @@ class AJAXRenderer extends BaseRenderer {
 	  		 		 case 'XML':
 	  		 		 	$this->output = 'xml';
 	  		 		 	break;
+	  		 		 	
+	  		 		 case 'yaml':
+	  		 		 case 'YAML':
+	  		 		     $this->output = 'yaml';
+	  		 		     break;
 
-	  		 		 throw new FrameworkException( 'Unsupported output type \'' . $type . '\'.' );
+	  		 		 throw new FrameworkException('Unsupported output type \'' . $type . '\'.');
 	  		 }
 	  }
 
@@ -178,95 +202,95 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param String $name Used internally within the method to perform recursion logic.
 	   * @return The JSON encoded data
 	   */
-	  public function toJSON( $data, $name = null, $isChild = false ) {
+	  public function toJSON($data, $name = null, $isChild = false) {
 
 	  		  $json = '';
 
 	  		  // Format arrays
-	  		  if( is_array( $data ) ) {
+	  		  if(is_array($data)) {
 
-	  		  	  $i=0;
-	  		  	  if( $name && $name != 'stdClass' ) $json .= '"' . $name . '" : ';
+	  		  	 $i=0;
+	  		  	 if($name && $name != 'stdClass') $json .= '"' . $name . '" : ';
 
-	  		  	  if( !isset( $data[0] ) ) {
+	  		  	 if(!isset($data[0])) {
 
-	  		  	  	  $json .= 'null';
-	  		  	  	  return $json;
-	  		  	  }
+	  		  	  	 $json .= 'null';
+	  		  	  	 return $json;
+	  		  	 }
 	  		  	  
-	  		  	  $json .= '[ ';
-	  		  	  foreach( $data as $key => $value ) {
+	  		  	 $json .= '[ ';
+	  		  	 foreach($data as $key => $value) {
 
 	  		  	  		$i++;
-	  		  	  	 	$json .= (is_object( $value ) || is_array( $value )) ?
-	  		  	  	 				 $this->toJSON( $value, $name ) :
-	  		  	  	 				 ((is_numeric( $key )) ? json_encode( $value ) : json_encode( $value ) );
-	  		  	  	 	$json .= ( $i < count( $data ) ) ? ', ' : '';
+	  		  	  	 	$json .= (is_object($value) || is_array($value)) ?
+	  		  	  	 				 $this->toJSON($value, $name) :
+	  		  	  	 				 ((is_numeric($key)) ? json_encode($value) : json_encode($value));
+	  		  	  	 	$json .= ($i < count($data)) ? ', ' : '';
 	  		  	  }
 	  		  	  $json .= ' ]';
-	  		  	  if( $name && $name != 'stdClass' ) $json .= ' }';
+	  		  	  if($name && $name != 'stdClass') $json .= ' }';
 	  		  }
 
 	  		  // Format objects (that have private fields)
-	  		  else if( is_object( $data ) ) {
+	  		  else if(is_object($data)) {
 
-		  		  $class = new ReflectionClass( $data );
+		  		  $class = new ReflectionClass($data);
 
 		  		  // stdClass has public properties
-		  		  if( $class->getName() == 'stdClass' )
-		  		  	  return json_encode( $data );
+		  		  if($class->getName() == 'stdClass')
+		  		  	 return json_encode($data);
 
 		  		  $json .= ($isChild) ? '"' . $class->getName() . '" : { ' : ' { "' . $class->getName() . '" : { ';
 
 	  		  	  // @todo Interceptors are still being somewhat intrusive to reflection operations
-	  		      if( method_exists( $data, 'getInterceptedInstance' ) ) {
+	  		      if(method_exists($data, 'getInterceptedInstance')) {
 
-	  		     	  $name = preg_replace( '/_Intercepted/', '', $class->getName() );
-	  		     	  $data = $data->getInterceptedInstance();
-	  		     	  $class = new ReflectionClass( $data );
+	  		     	 $name = preg_replace('/_Intercepted/', '', $class->getName());
+	  		     	 $data = $data->getInterceptedInstance();
+	  		     	 $class = new ReflectionClass($data);
 	  		      }
 
 		  		  $properties = $class->getProperties();
-			  	  for( $i=0; $i<count( $properties ); $i++ ) {
+			  	  for($i=0; $i<count($properties); $i++) {
 	
 			  		   $property = $properties[$i];
 	
 			  		   $context = null;
-			  		   if( $property->isPublic() )
-			  		   	   $context = 'public';
+			  		   if($property->isPublic())
+			  		   	  $context = 'public';
 	
-			  		   else if( $property->isProtected() )
-		  		 		   	    $context = 'protected';
+			  		   else if($property->isProtected())
+		  		 		   	   $context = 'protected';
 	
-		  		 	   else if( $property->isPrivate() )
-			  		 		  	$context = 'private';
+		  		 	   else if($property->isPrivate())
+			  		 		   $context = 'private';
 
 			  		   $value = null;
-			  		   if( $context != 'public' ) {
+			  		   if($context != 'public') {
 
-	  		 		  	   $property->setAccessible( true );
-			  		 	   $value = $property->getValue( $data );
-			  		 	   $property->setAccessible( false );
+	  		 		  	  $property->setAccessible(true);
+			  		 	  $value = $property->getValue($data);
+			  		 	  $property->setAccessible(false);
 			  		   }
 			  		   else {
 
-			  		   	   $value = $property->getValue( $data );
+			  		   	   $value = $property->getValue($data);
 			  		   }
 
-			  		   if( is_object( $value ) || is_array( $value ) )
-			  		   	   $json .= $this->toJSON( $value, $property->getName(), true ) . ' ';
+			  		   if(is_object($value) || is_array($value))
+			  		   	  $json .= $this->toJSON($value, $property->getName(), true) . ' ';
 
 			  		   else
-			  		   		$json .= '"' . $property->getName() . '" : ' . json_encode( $value );
+			  		   	  $json .= '"' . $property->getName() . '" : ' . json_encode($value);
 
-			  		   $json .= ( ($i+1) < count( $properties ) ) ? ', ' : '';
+			  		   $json .= (($i+1) < count($properties)) ? ', ' : '';
 			  	  }
 			  	  $json .= ($isChild) ? '} ' : ' } }';
 		  	  }
 
 		  	  else {
 
-		  	  	  $json = json_encode( $data );
+		  	  	  $json = json_encode($data);
 		  	  }
 
 	  		  return $json;
@@ -279,49 +303,49 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param $name Used internally within the method to perform recursion logic
 	   * @return The XML string
 	   */
-	  public function toXML( $data, $name = 'Result', $isChild = false ) {
+	  public function toXML($data, $name = 'Result', $pluralName = 'Results', $isChild = false, $declaration = true) {
 
-	  		  $xml = ($isChild) ? '' : "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
+	  		  if($isChild) $xml = '';
+	  		  else if($declaration) $xml = '<?xml version="1.0" encoding="UTF-8" ?>';
+	  		  else $xml = '';
 
-	  	      if( is_array( $data ) ) {
+	  	      if(is_array($data)) {
 
-	  	      	  if( !isset( $data[0] ) ) return '<' . $name . '/>';
+	  	      	 if(!isset($data[0])) return '<' . $name . '/>';
 
-  	 		  	  $xml .= '<' . $name . ((!$isChild) ? 's' : '') . '>';
-  	 		  	  foreach( $data as $key => $val ) {
+  	 		  	 $xml .= '<' . ((!$isChild) ? $pluralName : $name) . '>';
+  	 		  	 foreach($data as $key => $val) {
 
-  	 		  	  		if( is_object( $val ) || is_array( $val ) )
-  	 		  	  			$xml .= $this->toXML( $val, $name, true );
+  	 		  	  		if(is_object($val) || is_array($val))
+  	 		  	  		   $xml .= $this->toXML($val, $name, $pluralName, true);
 
   	 		  	  		else {
 
-  	 		  	  			$val = mb_convert_encoding( html_entity_decode( $val ), 'UTF-8', 'ISO-8859-1' );
-  	 		  	  			$xml .= '<' . $key . '>' . $val . '</' . $key . '>';
+  	 		  	  		   $val = mb_convert_encoding($val, 'UTF-8', 'ISO-8859-1');
+  	 		  	  		   $xml .= '<' . $key . '>' . $val . '</' . $key . '>';
   	 		  	  		}
   	 		  	  }
-  	 		  	  $xml .= '</' . $name . ((!$isChild) ? 's' : '') . '>';
+  	 		  	  $xml .= '</' . ((!$isChild) ? $pluralName : $name) . '>';
 
   	 		  	  return $xml;
 	  	      }
 
-	  	      else if( is_object( $data ) ) {
+	  	      else if(is_object($data)) {
 
-	  	      	  $class = new ReflectionClass( $data );
+	  	      	  $class = new ReflectionClass($data);
 
 	  	      	  // stdClass has public properties
-		  		  if( $class->getName() == 'stdClass' ) {
-
-		  		  	  if( $name == null ) $name = 'Results';
+		  		  if($class->getName() == 'stdClass') {
 
 		  		  	  $xml .= '<' . $name . '>';
-		  		  	  foreach( get_object_vars( $data ) as $property => $value ) {
+		  		  	  foreach(get_object_vars($data) as $property => $value) {
 	
-		  		 		  if( is_object( $value ) || is_array( $value ) )
-		  		 		  	  $xml .= $this->toXML( $value, $property, true );
+		  		 		  if(is_object($value) || is_array($value))
+		  		 		  	 $xml .= $this->toXML($value, $property, $property . 's', true);
 
 		  		 		  else {
 	
-			  		 		  $value = mb_convert_encoding( html_entity_decode( $value ), 'UTF-8', 'ISO-8859-1' );
+			  		 		  $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
 			  		 		  $xml .= '<' . $property . '>' . $value . '</' . $property . '>';
 		  		 		  }
 		  		 	  }
@@ -331,44 +355,44 @@ class AJAXRenderer extends BaseRenderer {
 	  		     }
 
 		  	     // @todo Interceptors are still being somewhat intrusive to reflection operations
-	  		     if( method_exists( $data, 'getInterceptedInstance' ) ) {
+	  		     if(method_exists($data, 'getInterceptedInstance')) {
 
-	  		     	 $name = preg_replace( '/_Intercepted/', '', $class->getName() );
-	  		     	 $instance = $data->getInterceptedInstance();
-	  		     	 $class = new ReflectionClass( $instance );
-	  		     	 $data = $instance;
+	  		     	$name = preg_replace('/_Intercepted/', '', $class->getName());
+	  		     	$instance = $data->getInterceptedInstance();
+	  		     	$class = new ReflectionClass($instance);
+	  		     	$data = $instance;
 	  		     }
 
 		  		 $xml = '<' . $name . '>';
-		  		 foreach( $class->getProperties() as $property ) {
+		  		 foreach($class->getProperties() as $property) {
 
-		  		 		  $context = null;
-		  		 		  if( $property->isPublic() )
-		  		 		  	  $context = 'public';
-		  		 		  else if( $property->isProtected() )
-		  		 		  	  $context = 'protected';
-		  		 		  else if( $property->isPrivate() )
-		  		 		  	  $context = 'private';
+		  		 		 $context = null;
+		  		 		 if($property->isPublic())
+		  		 		  	$context = 'public';
+		  		 		 else if($property->isProtected())
+		  		 		 	$context = 'protected';
+		  		 		 else if($property->isPrivate())
+		  		 		  	 $context = 'private';
 	
-		  		 		  $value = null;
-		  		 		  if( $context != 'public' ) {
+		  		 		 $value = null;
+		  		 		 if($context != 'public') {
 
-		  		 		  	  $property->setAccessible( true );
-				  		 	  $value = $property->getValue( $data );
-				  		 	  $property->setAccessible( false );
-		  		 		  }
-		  		 		  else {
+		  		 		  	$property->setAccessible(true);
+				  		 	$value = $property->getValue($data);
+				  		 	$property->setAccessible(false);
+		  		 		 }
+		  		 		 else {
 	
-		  		 		  	  $value = $property->getValue( $data );
-		  		 		  }
+		  		 		  	$value = $property->getValue($data);
+		  		 		 }
 	
-		  		 		  if( is_object( $value ) || is_array( $value ) )
-		  		 		  	  $xml .= $this->toXML( $value, $property->getName() );
+		  		 		 if(is_object($value) || is_array($value))
+		  		 		 	$xml .= $this->toXML($value, $property->getName());
 		  	
-		  		 		  else {
+		  		 		 else {
 	
-			  		 		  $value = mb_convert_encoding( html_entity_decode( $value ), 'UTF-8', 'ISO-8859-1' );
-			  		 		  $xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
+			  		 		$value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+			  		 		$xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
 		  		 		  }
 		  		 }
 		  		 $xml .= '</' . $name . '>';
@@ -384,9 +408,9 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param $int $linebreak YAML_ANY_BREAK, YAML_CR_BREAK, YAML_LN_BREAK, YAML_CRLN_BREAK. Defaults to YAML_ANY_BREAK
 	   * @return $int string The YAML formatted data.
 	   */
-	  public function toYAML( $data, $encoding = null, $linebreak = null ) {
+	  public function toYAML($data, $encoding = null, $linebreak = null) {
 
-	  		 return yaml_emit( $data );
+	  		 return yaml_emit($data, $encoding, $linebreak);
 	  }
 }
 ?>

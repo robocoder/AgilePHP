@@ -16,25 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.validator
+ * @package com.makeabyte.agilephp.data.transformer
  */
 
 /**
- * Validates boolean values
- *  
+ * Transforms data from one format to another, intended for internal
+ * application use.
+ * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.validator
+ * @package com.makeabyte.agilephp.data.renderer
  */
-class BooleanValidator extends Validator {
+interface DataTransformer {
 
-      /**
-       * Validates the data by ensuring its either a boolean true/false value
-       * or is a 1/0.
-       */
-	  public function validate() {
-
-	  		 return is_bool($this->data) || $this->data == 1 || $this->data == 0;
-	  }
+    /**
+     * Transforms the specified data
+     * 
+     * @param mixed $data The data to transform
+     * @return mixed The transformed data
+     */
+    public static function transform($data);
 }
 ?>
