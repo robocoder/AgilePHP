@@ -1,16 +1,2 @@
-- Bug fix to AgilePHP::setDebugMode introduced by static refactoring
-- Bug fix to ORM::setOffet and ORM::getOffset. Missing static keyword.
-- Added preliminary support for many-to-many relationships using two
-  one-to-many or many-to-one relationships with a junction table.
-- Added support to ORM and MVC rendering for primary keys which are
-  also foreign keys (many-to-many).
-- Bug fix to FileCacheProvider - was throwing CachingException instead
-  of CacheException
-- Removed "Transformer" and derived classes from rest package and static
-  AgilePHP classmap.
-- Created data/renderer and data/transformer packages. Integrated with
-  REST and ORM components. Added to AgilePHP static classmap.
-- Changed dynamic form checkbox type from sql bit to boolean
-- Deleted BitValidator
-- Reverted BaseDialect::execute back to passing arguments into PDO::execute
-  as an array rather than looping through each value using bindValue.
+- Bug fix to studio package introduced by refactoring of user.enabled bit to boolean
+- Updated agilephp_studio.sql
