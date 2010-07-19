@@ -21,40 +21,39 @@
 
 /**
  * Provides base rendering implementation for PHTML (PHP) views.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
  */
 class PHTMLRenderer extends BaseRenderer {
 
       /**
 	   * Renders a view by dumping all 'store' variables to locally scoped (page) variables. The view
 	   * is expected to be in <webapp>/view.
-	   * 
+	   *
 	   * @param String $view The view which is rendered from the web app's 'view' directory
 	   * @return void
        */
-      public function render( $view ) {
+      public function render($view) {
 
       	 	 $path = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . $view . '.phtml';
 
-      	 	 if( !file_exists( $path ) )
-      	 	      throw new FrameworkException( 'Error rendering application view. Path does not exist ' . $path );
-  
-      	 	 foreach( $this->getStore() as $key => $value )
-	                  $$key = $value;
+      	 	 if(!file_exists($path))
+      	 	    throw new FrameworkException( 'Error rendering application view. Path does not exist ' . $path );
 
-	         Log::debug( 'PHTMLRenderer::render executed with parameter $view = \'' . $view . '\'' );
+      	 	 foreach($this->getStore() as $key => $value)
+	                 $$key = $value;
+
+	         //Log::debug( 'PHTMLRenderer::render executed with parameter $view = \'' . $view . '\'' );
 
 	         // Prevent local variables from being visible to the view
-	         unset( $f );
-	         unset( $view );
-			 unset( $key );
-			 unset( $value );
+	         unset($f);
+	         unset($view);
+			 unset($key);
+			 unset($value);
 
-	         require_once $path;
+	         require $path;
 	  }
 }
 ?>

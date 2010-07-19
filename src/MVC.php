@@ -195,7 +195,7 @@ final class MVC {
 			  	array_shift(self::$parameters);
 
 			  	// Assign controller and action
-		  	    $controller = (isset(self::$parameters[0]) > 0 && self::$parameters[0] != '') ? self::$parameters[0] : self::$defaultController;
+		  	    $controller = (isset(self::$parameters[0]) && self::$parameters[0] != '') ? self::$parameters[0] : self::$defaultController;
 		  	    $action = (isset(self::$parameters[1])) ? self::$parameters[1] : self::$defaultAction;
 
 		  	    // Remove controller and action from mvcPieces
@@ -224,6 +224,8 @@ final class MVC {
 
 	  	     	$oController = self::loadController();
 	  	     }
+	  	     else
+	  	        $oController = new self::$controller;
 
 	  	     // Sanitize action arguments unless configured otherwise
              if(self::$sanitize)
@@ -264,13 +266,11 @@ final class MVC {
 
 	  	     $path = AgilePHP::getFrameworkRoot() . '/mvc/' . self::$defaultRenderer . '.php';
 
-	  	     if( !file_exists( $path ) )
-	  	     	 throw new FrameworkException( 'Default framework renderer could not be loaded from: ' . $path, 103 );
+	  	     if(!file_exists($path))
+	  	     	throw new FrameworkException( 'Default framework renderer could not be loaded from: ' . $path, 103 );
 
 	  	     require_once $path;
-
-	  	     $renderer = self::$defaultRenderer;
-	  	     return new $renderer();
+	  	     return new self::$defaultRenderer;
 	  }
 
 	  /**
