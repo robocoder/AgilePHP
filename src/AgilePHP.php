@@ -412,7 +412,7 @@ final class AgilePHP {
 
       /**
        * Handles PHP E_NOTICE, E_WARNING, E
-       * 
+       *
        * @return void
        * @static
        */
@@ -603,7 +603,7 @@ final class AgilePHP {
                 require self::$frameworkRoot . self::$classmap[$class];
                 return;
              }
-             
+
              // PHP namespace support
              $namespace = explode('\\', $class);
              $class = array_pop($namespace);
@@ -663,7 +663,7 @@ final class AgilePHP {
       /**
        * Static classmap responsible for storing relationships between classes
        * and their physical location on disk.
-       * 
+       *
        * @var array An associative array of class name keys with their physical disk location as the value.
        * @static
        */
@@ -691,6 +691,7 @@ final class AgilePHP {
           'AnnotationException' => '/annotation/AnnotationException.php',
           'AnnotationParser' => '/annotation/AnnotationParser.php',
           'ApcCacheProvider' => '/cache/ApcCacheProvider.php',
+          'CacheException' => '/cache/CacheException.php',
           'CacheProvider' => '/cache/CacheProvider.php',
           'FileCacheProvider' => '/cache/FileCacheProvider.php',
           'XCacheProvider' => '/cache/XCacheProvider.php',
