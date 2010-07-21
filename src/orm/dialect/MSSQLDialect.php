@@ -504,12 +504,6 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 					 	$sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
 					 	$sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
     	   	         	$sql .= ';';
-
-	   	   	         	$this->setDistinct( null );
-    	   	         	$this->setRestrictions( array() );
-    	   	         	$this->setRestrictionsLogicOperator( 'AND' );
-    	   	         	$this->setOrderBy( null, 'ASC' );
-    	   	         	$this->setGroupBy( null );
 	    	   		 }
 	    	   		 else {
 	    	   		 		$where = '';
@@ -545,6 +539,12 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 						    
 					 }
 
+					 $this->setDistinct( null );
+	   	         	 $this->setRestrictions( array() );
+	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
+	   	         	 $this->setOrderBy( null, 'ASC' );
+	   	         	 $this->setGroupBy( null );
+					 
 					 $this->prepare( $sql );
 					 $this->execute( $values );
 

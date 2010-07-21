@@ -55,7 +55,21 @@ abstract class BaseModelXslController extends BaseModelXmlController {
    		   		   if(!$pkeyFields)  $pkeyFields = $this->getSerializedPrimaryKeyColumns($table);
 
    		   		   $fkeyXslValues = $this->getSerializedForeignKeyValuesAsXSL($table);
-   		   		   $pkeyFieldsXSL = $this->getSerializedPrimaryKeyColumnsAsXSL($pkeyFields);
+   		   		   $pkeyXslValues = $this->getSerializedPrimaryKeyColumnsAsXSL($pkeyFields);
+
+   		   		   // If this is a many to many relationship, primary keys are foreign key values
+	     	       $pkeys = $table->getPrimaryKeyColumns();
+	     	       $fkeys = $table->getForeignKeyColumns();
+	     	       foreach($fkeys as $fColumn) {
+	     	           foreach($pkeys as $pColumn) {
+	     	              if($fColumn->getName() == $pColumn->getName()) {
+
+	     	                  $pkeyXslValues = preg_replace('/{/', '{' . $this->getModelName() . '/', $fkeyXslValues);
+	     	                  break;
+	     	              }	     	               
+	     	           }
+	     	       }
+   		   		   
    		   		   $order = $this->getOrderBy();
 
 	     		   $xsl = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">';
@@ -210,10 +224,10 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 
 							       $xsl .= '<td>
-												<a href="' . $requestBase . '/' . $controller . '/edit/' . (isset($primaryAndForeignKey) ? $fkeyXslValues : $pkeyFieldsXSL) . '/' . $this->getPage() . '">Edit</a>
+												<a href="' . $requestBase . '/' . $controller . '/edit/' . $pkeyXslValues . '/' . $this->getPage() . '">Edit</a>
 											</td>
 											<td>
-												<a href="JavaScript:AgilePHP.ORM.confirmDelete(  \'' . $requestBase . '\', \'' . (isset($primaryAndForeignKey) ? $fkeyXslValues : $pkeyFieldsXSL) . '\', \'' . $this->getPage() . '\', \'' . $controller . '\', \'delete\' );">Delete</a>
+												<a href="JavaScript:AgilePHP.ORM.confirmDelete(  \'' . $requestBase . '\', \'' . $pkeyXslValues . '\', \'' . $this->getPage() . '\', \'' . $controller . '\', \'delete\' );">Delete</a>
 											</td>
 										</tr>
 									</xsl:template>
@@ -235,11 +249,20 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     	       $fkeyXslValues = $this->getSerializedForeignKeyValuesAsXSL($table);
 	     	       $pkeyValues = $this->getSerializedPrimaryKeyValues($table);
 
-	     	       if($fkeyXslValues)
-	     	          $pkeyValues = preg_replace('/{/', '{' . $this->getModelName() . '/', $fkeyXslValues);
+	     	       // If this is a many to many relationship, primary keys are foreign key values
+	     	       $pkeys = $table->getPrimaryKeyColumns();
+	     	       $fkeys = $table->getForeignKeyColumns();
+	     	       foreach($fkeys as $fColumn) {
+	     	           foreach($pkeys as $pColumn) {
+	     	              if($fColumn->getName() == $pColumn->getName()) {
+
+	     	                  $pkeyValues = preg_replace('/{/', '{' . $this->getModelName() . '/', $fkeyXslValues);
+	     	                  break;
+	     	              }	     	               
+	     	           }
+	     	       }
 
 	     	       $action = AgilePHP::getRequestBase() . '/{/Form/controller}/{/Form/action}/' . $pkeyValues . '/' . $this->getPage();
-
 	     	       $token = Scope::getRequestScope()->createToken();
 
 	     	       // php namespace support

@@ -127,7 +127,7 @@ class Upload {
 			 	 		 break;
 			 	 }
 
-			 	 if( !$error ) return;
+			 	 if(!isset($error)) return;
 
 			 	 Log::debug( 'Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.' );
 

@@ -636,12 +636,6 @@ abstract class BaseDialect {
 					 	 $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
 					 	 $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
     	   	         	 $sql .= ';';
-
-	   	   	         	 $this->setDistinct( null );
-    	   	         	 $this->setRestrictions( array() );
-    	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
-    	   	         	 $this->setOrderBy( null, 'ASC' );
-    	   	         	 $this->setGroupBy( null );
 	    	   		 }
 	    	   		 else {
 	    	   		 		$where = '';
@@ -684,6 +678,12 @@ abstract class BaseDialect {
     	   	         	 	$sql .= ';';
 	    	   		 }
 
+	    	   		 $this->setDistinct( null );
+	   	         	 $this->setRestrictions( array() );
+	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
+	   	         	 $this->setOrderBy( null, 'ASC' );
+	   	         	 $this->setGroupBy( null );
+	    	   		 
 					 $this->prepare( $sql );
 					 $this->PDOStatement->setFetchMode( PDO::FETCH_OBJ );
 					 $result = $this->execute( $values );
@@ -1404,6 +1404,9 @@ abstract class BaseDialect {
 
 			  	       // Verify required fields contain data
 			  		   if( $column->isRequired() && $this->model->$accessor() === null ) {
+
+			  		       // Allow file uploads to be null on updates that way the user isnt forced to re-upload data
+			  		       if(!$isPersist && $column->getType() == 'blob') continue;
 
 			  		   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Required field contains null value.';
 			  		   	   Log::debug( $message );

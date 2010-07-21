@@ -231,12 +231,6 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 					 	 $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
 					 	 $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
     	   	         	 $sql .= ';';
-
-	   	   	         	 $this->setDistinct( null );
-    	   	         	 $this->setRestrictions( array() );
-    	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
-    	   	         	 $this->setOrderBy( null, 'ASC' );
-    	   	         	 $this->setGroupBy( null );
 	    	   		 }
 	    	   		 else {
 	    	   		 		$where = '';
@@ -272,6 +266,12 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 						    $sql .= ' LIMIT ' . $this->getMaxResults() . ';';
 	    	   		 }
 
+	    	   		 $this->setDistinct( null );
+	   	         	 $this->setRestrictions( array() );
+	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
+	   	         	 $this->setOrderBy( null, 'ASC' );
+	   	         	 $this->setGroupBy( null );
+	    	   		 
 					 $this->prepare( $sql );
 					 $this->PDOStatement->setFetchMode( PDO::FETCH_OBJ );
 					 $result = $this->execute( $values );

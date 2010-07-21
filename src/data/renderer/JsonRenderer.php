@@ -28,7 +28,17 @@
  */
 class JsonRenderer implements DataRenderer {
 
-      public static function render($data) {
+      /**
+	   * Transforms the specified PHP data to JSON. json_encode does not encode
+	   * private fields within objects, so here we make use PHP 5.3+
+	   * ReflectionProperty::setAccessible to access the private/protected properties.
+	   * 
+	   * @param mixed $data An array or object to transform into JSON
+	   * @param string $name An optional class name. Defaults to null
+	   * @param boolean $isChild Used internally for recursion logic
+	   * @return The JSON encoded data
+	   */
+      public static function render($data, $name = null, $isChild = false) {
 
              $json = '';
 

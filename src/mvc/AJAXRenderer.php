@@ -199,101 +199,14 @@ class AJAXRenderer extends BaseRenderer {
 	   * ReflectionProperty::setAccessible to access the private/protected properties.
 	   * 
 	   * @param mixed $data An array or object to transform into JSON
-	   * @param String $name Used internally within the method to perform recursion logic.
+	   * @param string $name An optional class name. Defaults to null
+	   * @param boolean $isChild Used internally for recursion logic
 	   * @return The JSON encoded data
+	   * @deprecated Use JsonRenderer::render instead
 	   */
 	  public function toJSON($data, $name = null, $isChild = false) {
 
-	  		  $json = '';
-
-	  		  // Format arrays
-	  		  if(is_array($data)) {
-
-	  		  	 $i=0;
-	  		  	 if($name && $name != 'stdClass') $json .= '"' . $name . '" : ';
-
-	  		  	 if(!isset($data[0])) {
-
-	  		  	  	 $json .= 'null';
-	  		  	  	 return $json;
-	  		  	 }
-	  		  	  
-	  		  	 $json .= '[ ';
-	  		  	 foreach($data as $key => $value) {
-
-	  		  	  		$i++;
-	  		  	  	 	$json .= (is_object($value) || is_array($value)) ?
-	  		  	  	 				 $this->toJSON($value, $name) :
-	  		  	  	 				 ((is_numeric($key)) ? json_encode($value) : json_encode($value));
-	  		  	  	 	$json .= ($i < count($data)) ? ', ' : '';
-	  		  	  }
-	  		  	  $json .= ' ]';
-	  		  	  if($name && $name != 'stdClass') $json .= ' }';
-	  		  }
-
-	  		  // Format objects (that have private fields)
-	  		  else if(is_object($data)) {
-
-		  		  $class = new ReflectionClass($data);
-
-		  		  // stdClass has public properties
-		  		  if($class->getName() == 'stdClass')
-		  		  	 return json_encode($data);
-
-		  		  $json .= ($isChild) ? '"' . $class->getName() . '" : { ' : ' { "' . $class->getName() . '" : { ';
-
-	  		  	  // @todo Interceptors are still being somewhat intrusive to reflection operations
-	  		      if(method_exists($data, 'getInterceptedInstance')) {
-
-	  		     	 $name = preg_replace('/_Intercepted/', '', $class->getName());
-	  		     	 $data = $data->getInterceptedInstance();
-	  		     	 $class = new ReflectionClass($data);
-	  		      }
-
-		  		  $properties = $class->getProperties();
-			  	  for($i=0; $i<count($properties); $i++) {
-	
-			  		   $property = $properties[$i];
-	
-			  		   $context = null;
-			  		   if($property->isPublic())
-			  		   	  $context = 'public';
-	
-			  		   else if($property->isProtected())
-		  		 		   	   $context = 'protected';
-	
-		  		 	   else if($property->isPrivate())
-			  		 		   $context = 'private';
-
-			  		   $value = null;
-			  		   if($context != 'public') {
-
-	  		 		  	  $property->setAccessible(true);
-			  		 	  $value = $property->getValue($data);
-			  		 	  $property->setAccessible(false);
-			  		   }
-			  		   else {
-
-			  		   	   $value = $property->getValue($data);
-			  		   }
-
-			  		   if(is_object($value) || is_array($value))
-			  		   	  $json .= $this->toJSON($value, $property->getName(), true) . ' ';
-
-			  		   else
-			  		   	  $json .= '"' . $property->getName() . '" : ' . json_encode($value);
-
-			  		   $json .= (($i+1) < count($properties)) ? ', ' : '';
-			  	  }
-			  	  $json .= ($isChild) ? '} ' : ' } }';
-		  	  }
-
-		  	  else {
-
-		  	  	  $json = json_encode($data);
-		  	  }
-
-	  		  return $json;
+	  		 return JsonRenderer::render($data, $name, $isChild);
 	  }
 
 	  /**
@@ -302,102 +215,11 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param mixed $data An array or object to transform into XML
 	   * @param $name Used internally within the method to perform recursion logic
 	   * @return The XML string
+	   * @deprecated Use XmlRenderer::render instead
 	   */
 	  public function toXML($data, $name = 'Result', $pluralName = 'Results', $isChild = false, $declaration = true) {
 
-	  		  if($isChild) $xml = '';
-	  		  else if($declaration) $xml = '<?xml version="1.0" encoding="UTF-8" ?>';
-	  		  else $xml = '';
-
-	  	      if(is_array($data)) {
-
-	  	      	 if(!isset($data[0])) return '<' . $name . '/>';
-
-  	 		  	 $xml .= '<' . ((!$isChild) ? $pluralName : $name) . '>';
-  	 		  	 foreach($data as $key => $val) {
-
-  	 		  	  		if(is_object($val) || is_array($val))
-  	 		  	  		   $xml .= $this->toXML($val, $name, $pluralName, true);
-
-  	 		  	  		else {
-
-  	 		  	  		   $val = mb_convert_encoding($val, 'UTF-8', 'ISO-8859-1');
-  	 		  	  		   $xml .= '<' . $key . '>' . $val . '</' . $key . '>';
-  	 		  	  		}
-  	 		  	  }
-  	 		  	  $xml .= '</' . ((!$isChild) ? $pluralName : $name) . '>';
-
-  	 		  	  return $xml;
-	  	      }
-
-	  	      else if(is_object($data)) {
-
-	  	      	  $class = new ReflectionClass($data);
-
-	  	      	  // stdClass has public properties
-		  		  if($class->getName() == 'stdClass') {
-
-		  		  	  $xml .= '<' . $name . '>';
-		  		  	  foreach(get_object_vars($data) as $property => $value) {
-	
-		  		 		  if(is_object($value) || is_array($value))
-		  		 		  	 $xml .= $this->toXML($value, $property, $property . 's', true);
-
-		  		 		  else {
-	
-			  		 		  $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
-			  		 		  $xml .= '<' . $property . '>' . $value . '</' . $property . '>';
-		  		 		  }
-		  		 	  }
-		  		 	  $xml .= '</' . $name . '>';
-
-		  		 	  return $xml;
-	  		     }
-
-		  	     // @todo Interceptors are still being somewhat intrusive to reflection operations
-	  		     if(method_exists($data, 'getInterceptedInstance')) {
-
-	  		     	$name = preg_replace('/_Intercepted/', '', $class->getName());
-	  		     	$instance = $data->getInterceptedInstance();
-	  		     	$class = new ReflectionClass($instance);
-	  		     	$data = $instance;
-	  		     }
-
-		  		 $xml = '<' . $name . '>';
-		  		 foreach($class->getProperties() as $property) {
-
-		  		 		 $context = null;
-		  		 		 if($property->isPublic())
-		  		 		  	$context = 'public';
-		  		 		 else if($property->isProtected())
-		  		 		 	$context = 'protected';
-		  		 		 else if($property->isPrivate())
-		  		 		  	 $context = 'private';
-	
-		  		 		 $value = null;
-		  		 		 if($context != 'public') {
-
-		  		 		  	$property->setAccessible(true);
-				  		 	$value = $property->getValue($data);
-				  		 	$property->setAccessible(false);
-		  		 		 }
-		  		 		 else {
-	
-		  		 		  	$value = $property->getValue($data);
-		  		 		 }
-	
-		  		 		 if(is_object($value) || is_array($value))
-		  		 		 	$xml .= $this->toXML($value, $property->getName());
-		  	
-		  		 		 else {
-	
-			  		 		$value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
-			  		 		$xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
-		  		 		  }
-		  		 }
-		  		 $xml .= '</' . $name . '>';
-	  		 }
-	  		 return $xml;
+	  		 return XmlRenderer::render($data, $name, $pluralName, $isChild, $declaration);
 	  }
 
 	  /**
@@ -407,10 +229,11 @@ class AJAXRenderer extends BaseRenderer {
 	   * @param $encoding YAML_ANY_ENCODING, YAML_UTF8_ENCODING, YAML_UTF16LE_ENCODING, YAML_UTF16BE_ENCODING. Defaults to YAML_ANY_ENCODING.
 	   * @param $int $linebreak YAML_ANY_BREAK, YAML_CR_BREAK, YAML_LN_BREAK, YAML_CRLN_BREAK. Defaults to YAML_ANY_BREAK
 	   * @return $int string The YAML formatted data.
+	   * @deprecated Use YamlRenderer::render instead
 	   */
 	  public function toYAML($data, $encoding = null, $linebreak = null) {
 
-	  		 return yaml_emit($data, $encoding, $linebreak);
+	  		 return YamlRenderer::render($data, $encoding, $linebreak);
 	  }
 }
 ?>

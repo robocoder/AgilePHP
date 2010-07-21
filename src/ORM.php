@@ -299,7 +299,7 @@ final class ORM {
 	   * Sets the SQL 'order by' clause.
 	   * 
 	   * @param $column The column name to order the result set by
-	   * $param $direction The direction to sort the result set (ASC|DESC).
+	   * @param $direction The direction to sort the result set (ASC|DESC).
 	   * @return void
 	   * @static
 	   */

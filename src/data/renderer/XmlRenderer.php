@@ -97,7 +97,12 @@ class XmlRenderer implements DataRenderer {
 	  		     	$data = $instance;
 	  		     }
 
-		  		 $xml = '<' . $name . '>';
+	  		     // php namespace support
+			     $namespace = explode('\\', $name);
+			     $className = $namespace[count($namespace)-1];
+		 	     $namespace = implode('\\', $namespace);
+	  		     
+		  		 $xml = '<' . $className . '>';
 		  		 foreach($class->getProperties() as $property) {
 
 		  		 		 $context = null;
@@ -129,7 +134,7 @@ class XmlRenderer implements DataRenderer {
 			  		 		$xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
 		  		 		  }
 		  		 }
-		  		 $xml .= '</' . $name . '>';
+		  		 $xml .= '</' . $className . '>';
 	  		 }
 	  		 return $xml;
       }
