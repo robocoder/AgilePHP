@@ -1,13 +1,11 @@
 <?php
 
- ini_set( 'display_errors', '1' );
- error_reporting( E_ALL );
-
- require_once '../src/AgilePHP.php';
+ require '../src/AgilePHP.php';
 
  try {
  		AgilePHP::init();
         AgilePHP::setDefaultTimezone('America/New_York');
+        AgilePHP::setDebugMode(true);
   	    AgilePHP::setDisplayPhpErrors(true);
     	AgilePHP::setFrameworkRoot(realpath(dirname(__FILE__) . '/../src' ));
     	AgilePHP::setAppName('AgilePHP Framework Tests');

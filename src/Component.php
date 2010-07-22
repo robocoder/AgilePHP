@@ -24,7 +24,7 @@
  * to native PHP objects upon construction and provides helper methods for
  * accessing configuration parameters and dispatching requests for component
  * front controller.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp
@@ -32,71 +32,163 @@
  */
 abstract class Component extends BaseController {
 
-	  private static $instance;
-
 	  private $name;
+	  private $type;
 	  private $version;
 	  private $enabled;
 	  private $params = array();
 
 	  /**
 	   * Component constructor parses component.xml and populates base component properties.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function __construct() {
 
-	  		 $class = get_class( $this );
-	  		 $componentXml = 'components' . DIRECTORY_SEPARATOR . $class . DIRECTORY_SEPARATOR . 'component.xml';
- 			 if( !file_exists( $componentXml ) )
- 				 throw new FrameworkException( $componentXml . ' does not exist' );
+	         $class = get_class($this);
 
- 			 $xml = simplexml_load_file( $componentXml );
- 			 /**
-			  * @todo Validate the component.xml file against the component.dtd
-			  * 
- 			  * $dom = new DOMDocument();
- 			  * $dom->Load( $componentXml );
-			  * if( !$dom->validate() );
-			  *	   throw new ORMException( 'component.xml Document Object Model validation failed.' );
-			  */
- 			 $properties = array();
- 			 $types = array();
- 			 foreach( $xml->component->param as $param ) {
+	         // Retrieve the component.xml configuration (Use caching if enabled)
+             if($cacher = AgilePHP::getCacher()) {
 
- 					  $properties[(string)$param->attributes()->name] = (string)$param->attributes()->value;
- 					  $types[(string)$param->attributes()->name] = (string)$param->attributes()->type;
+                $key = 'AGILEPHP_COMPONENT_XML_' . $class;
+                if($cacher->exists($key))
+                   $xml = $cacher->get($key);
+             }
+
+             if(!isset($xml)) {
+
+    	  		 $componentXml = 'components' . DIRECTORY_SEPARATOR . $class . DIRECTORY_SEPARATOR . 'component.xml';
+     			 if(!file_exists($componentXml))
+     				throw new FrameworkException($componentXml . ' does not exist');
+
+     			 $xml = simplexml_load_file($componentXml);
+             }
+
+             // Set the component params (Use caching if enabled)
+             if($cacher) {
+
+                $key = 'AGILEPHP_COMPONENT_PARAMS_' . $class;
+                $this->params = $cacher->get($key);
+             }
+             else {
+
+     			/**
+    			 * @todo Validate the component.xml file against the component.dtd
+    			 *
+     			 * $dom = new DOMDocument();
+     			 * $dom->Load( $componentXml );
+    			 * if( !$dom->validate() );
+    			 *	   throw new ORMException( 'component.xml Document Object Model validation failed.' );
+    			 */
+     			$properties = array();
+     			$types = array();
+     			foreach($xml->component->param as $param) {
+
+     					$properties[(string)$param->attributes()->name] = (string)$param->attributes()->value;
+     					$types[(string)$param->attributes()->name] = (string)$param->attributes()->type;
+     			}
+
+     			$this->name = (string)$xml->component->attributes()->name;
+     			$this->type = (string)$xml->component->attributes()->type;
+     			$this->version = (string)$xml->component->attributes()->version;
+     			$this->enabled = (string)$xml->component->attributes()->enabled;
+
+     			foreach($xml->component->param as $param) {
+
+     				    $cp = new ComponentParam();
+     					$cp->setName((string)$param->attributes()->name);
+     					$cp->setType((string)$param->attributes()->type);
+     					$cp->setValue((string)$param->attributes()->value);
+
+     					array_push($this->params, $cp);
+     			}
+             }
+
+             // Add orm configs to ORM Database object if present
+ 			 if(isset($xml->component->orm->table)) {
+
+ 			    // @todo Implement logic in Studio to check for conflicting table
+ 			    //       and model names during install to eliminate runtime overhead.
+
+ 			    $database = &ORMFactory::getDialect()->getDatabase();
+ 			    foreach($xml->component->orm->table as $table)
+ 			         $database->addTable(new Table($table));
  			 }
 
- 			 $this->name = (string)$xml->component->attributes()->name;
- 			 $this->version = (string)$xml->component->attributes()->version;
- 			 $this->enabled = (string)$xml->component->attributes()->enabled;
+ 			 // Prepend component autoloader
+ 			 spl_autoload_register('Component::autoload', true, true);
+	  }
 
- 			 foreach( $xml->component->param as $param ) {
+	  /**
+	   * Component autoloader responsible for loading classes from the component
+	   * space (components/#componentName# for source components, phar://#componentName#
+	   * for phar components).
+	   *
+	   * @param string $class The class to load
+	   * @return void
+	   */
+	  public function autoload($class) {
 
- 					  $cp = new ComponentParam();
- 					  $cp->setName( (string)$param->attributes()->name );
- 					  $cp->setType( (string)$param->attributes()->type );
- 					  $cp->setValue( (string)$param->attributes()->value );
+	         // Use caching if enabled
+             if($cacher = AgilePHP::getCacher()) {
 
- 					  array_push( $this->params, $cp );
- 			 }
+                $key = 'AGILEPHP_COMPONENT_AUTOLOAD_' . $class;
+                if($clazz = self::$cacher->get($key)) {
+
+                   require $clazz;
+                   return;
+                }
+             }
+
+             // PHP namespace support
+             $namespace = explode('\\', $class);
+             $className = array_pop($namespace);
+             $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+
+             $phar = 'phar://' . $namespace . $className . '.php';
+
+             if(file_exists($phar)) {
+
+                new InterceptorFilter($phar);
+                if(class_exists($class, false)) return;
+                require $phar;
+             }
+
+             // Search component directory
+             $component = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'components' .
+                             DIRECTORY_SEPARATOR . $this->name;
+		  	 $it = new RecursiveDirectoryIterator($component);
+			 foreach(new RecursiveIteratorIterator($it) as $file) {
+
+			   	     if(substr($file, -1  != '.' && substr($file, -2) != '..' &&
+			   	        substr($file, -4) != 'view')) {
+
+			   	     	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
+				 		  if(array_pop($pieces) == $className . '.php') {
+
+				 		     if($cacher) $cacher->set($key, $file->getPathname());
+
+			     	 		 require $file->getPathname();
+			     	 		 return;
+				 		  }
+				     }
+			 }
 	  }
 
 	  /**
 	   * Sets the name of the component
-	   * 
+	   *
 	   * @param string $name The friendly name of the component
 	   * @return void
 	   */
-	  protected function setName( $name ) {
+	  protected function setName($name) {
 
 	  		 	$this->name = $name;
 	  }
 
 	  /**
 	   * Gets the name of the component
-	   * 
+	   *
 	   * @return string The name of the component
 	   */
 	  protected function getName() {
@@ -106,18 +198,18 @@ abstract class Component extends BaseController {
 
 	  /**
 	   * Sets the version of the component
-	   * 
+	   *
 	   * @param string $version The version of the component
 	   * @return void
 	   */
-	  protected function setVersion( $version ) {
+	  protected function setVersion($version) {
 
 	  		 	$this->version = $version;
 	  }
 
 	  /**
 	   * Gets the version of the component
-	   * 
+	   *
 	   * @return string The version of the component
 	   */
 	  protected function getVersion() {
@@ -127,18 +219,18 @@ abstract class Component extends BaseController {
 
 	  /**
 	   * Sets enabled flag indicating whether or not this component is enabled/disabled.
-	   * 
+	   *
 	   * @param boolean $enabled True or 1 to set enabled, false or 0 otherwise.
 	   * @return void
 	   */
-	  protected function setEnabled( $enabled ) {
+	  protected function setEnabled($enabled) {
 
 	  		 	$this->enabled = $enabled;
 	  }
 
 	  /**
 	   * Returns whether or not this component is enabled
-	   * 
+	   *
 	   * @return boolean True if the component is enabled, false otherwise
 	   */
 	  protected function isEnabled() {
@@ -147,62 +239,22 @@ abstract class Component extends BaseController {
 	  }
 
 	  /**
-	   * Dispatches a request to the specified controller / action / parameters
-	   * using the component controller directory as a sandbox.
-	   * 
-	   * @param BaseController $controller The controller instance responsible for the dispatched action
-	   * @param string $action The controller's action method responsible for the dispatched action
-	   * @param array $parameters An array of parameters to pass into the specified controller / action combo
-	   * @return mixed The return from the invoked call
+	   * Delegates component front controller actions to the specified controller / action.
+	   *
+	   * @param BaseController $controller The controller instance responsible for the delegation.
+	   * @param string $action Optional delegate action method. Defaults to the front controller action name.
+	   * @return void
 	   */
-	  public function dispatch( $controller, $action, array $parameters = null ) {
+	  protected function delegate(BaseController $controller, $action = null) {
 
-	  			$namespace = explode( '\\', $controller );
-	  			$componentURI = implode( '/', $namespace );
-	  			//$controllerName = array_pop( $namespace );
-	  			$component = get_class( $this );
-
-	  			// Phar component support
-	  			$pharURI = 'phar://' . $componentURI . '.php';
-	  			if( file_exists( $pharURI ) ) {
-
-	  				new InterceptorFilter( $pharURI );
-
-	  				$instance = new $controller;
-
-	  				return $instance->$action();
-
-				    die('<b>dead</b>');
-				    
-					//return call_user_func_array( array( $instance, $action ), $parameters );
-	  			}
-
-	  			// This is a non-phar component
-	  		  	$f = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $component . DIRECTORY_SEPARATOR . 'control';
-		  	  	$it = new RecursiveDirectoryIterator( $f );
-			  	foreach( new RecursiveIteratorIterator( $it ) as $file ) {
-
-			   	       	 if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
-
-			   	       	   	 $pieces = explode( DIRECTORY_SEPARATOR, $file );
-			   	      	   	 $item = array_pop( $pieces ); 
-
-			   	      	   	 if( $item == $controllerName . '.php' ) {
-
-				 		   	   	 __autoload( $controllerName );
-				 		       	 if( !$parameters ) return $controller->$action();
-					  		 	 return call_user_func_array( array( $controller, $action ), $parameters );
-				 		   	 }
-				       	 }
-			  	}
-
-	  		  	throw new FrameworkException( 'The requested component controller \'' . $controllerName . '\' could not be found.' );
+	            $action = ($action) ? $action : MVC::getAction();
+	  		  	call_user_func_array(array($controller, $action), MVC::getParameters());
 	  }
 }
 
 /**
  * Provides model for component.xml <param> element
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp
@@ -215,13 +267,13 @@ class ComponentParam {
 
 	  /**
 	   * Constructor for ComponentParam
-	   * 
+	   *
 	   * @param string $name The parameter name
 	   * @param string $type The parameter data type
 	   * @param string $value The parameter value
 	   * @return void
 	   */
-	  public function __construct( $name = null, $type = null, $value = null ) {
+	  public function __construct($name = null, $type = null, $value = null) {
 
 	  		 $this->name = $name;
 	  		 $this->type = $type;
@@ -230,18 +282,18 @@ class ComponentParam {
 
 	  /**
 	   * Sets the parameter name
-	   * 
+	   *
 	   * @param string $name The parameter name
 	   * @return void
 	   */
-	  public function setName( $name ) {
+	  public function setName($name) {
 
 	  		 $this->name = $name;
 	  }
 
 	  /**
 	   * Gets the parameter name
-	   * 
+	   *
 	   * @return string The parameter name
 	   */
 	  public function getName() {
@@ -251,18 +303,18 @@ class ComponentParam {
 
 	  /**
 	   * Sets the parameter type
-	   * 
+	   *
 	   * @param string $type Sets the parameter data type
 	   * @return void
 	   */
-	  public function setType( $type ) {
+	  public function setType($type) {
 
 	  		 $this->type = $type;
 	  }
 
 	  /**
 	   * Gets the parameter data type
-	   * 
+	   *
 	   * @return string The parameter data type
 	   */
 	  public function getType() {
@@ -272,18 +324,18 @@ class ComponentParam {
 
 	  /**
 	   * Sets the parameter value
-	   * 
+	   *
 	   * @param string $value The parameter value
 	   * @return void
 	   */
-	  public function setValue( $value ) {
+	  public function setValue($value) {
 
 	  		 $this->value = $value;
 	  }
 
 	  /**
 	   * Gets the parameter value
-	   * 
+	   *
 	   * @return string The parameter value
 	   */
 	  public function getValue() {

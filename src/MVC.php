@@ -19,8 +19,8 @@
  * @package com.makeabyte.agilephp
  */
 
-require_once 'mvc/BaseController.php';
-require_once 'mvc/BaseRenderer.php';
+require 'mvc/BaseController.php';
+require 'mvc/BaseRenderer.php';
 
 /**
  * Model-View-Control (MVC) component
@@ -187,9 +187,10 @@ final class MVC {
 	  		       die($cacher->get($key));
 	  		 }
 
+	  		 // Capture everything after the first occurance of '.php'
 		  	 preg_match('/^.*?\.php(.*)/si', $path, $matches);
 
-	  	     if(count($matches)) {
+	  	     if(isset($matches[0])) {
 
 		  	  	self::$parameters = explode('/', $matches[count($matches)-1]);
 			  	array_shift(self::$parameters);
@@ -198,7 +199,7 @@ final class MVC {
 		  	    $controller = (isset(self::$parameters[0]) && self::$parameters[0] != '') ? self::$parameters[0] : self::$defaultController;
 		  	    $action = (isset(self::$parameters[1])) ? self::$parameters[1] : self::$defaultAction;
 
-		  	    // Remove controller and action from mvcPieces
+		  	    // Remove controller and action from parameters
 		  	    array_splice(self::$parameters, 0, 2);
 
 		  	    // Security, Security, Security....
@@ -209,22 +210,21 @@ final class MVC {
 	  	    if(!self::$controller) self::$controller = self::$defaultController;
 	  	    if(!self::$action) self::$action = self::$defaultAction;
 
-	        // Make sure controllers are loaded from the web application control directory ONLY.
 	  	    if(!class_exists(self::$controller, false)) {
 
-	  	     	// Load front controller style phars first
+	  	        // PHAR support
 	  	     	$phar = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
 	  		  				DIRECTORY_SEPARATOR . self::$controller . '.phar';
 
 	  		  	if(file_exists($phar)) {
 
-	  		  	   require_once $phar;
-	  		  	   return;
+	  		  	   require $phar;
+	  		  	   $oController = new self::$controller;
 	  		  	}
-
-	  	     	$oController = self::loadController();
+	  		  	else // web application controller
+	  	     	   $oController = self::loadController();
 	  	     }
-	  	     else
+	  	     else // controller already loaded
 	  	        $oController = new self::$controller;
 
 	  	     // Sanitize action arguments unless configured otherwise
@@ -234,7 +234,7 @@ final class MVC {
 
 	  	     // Make sure requested action method exists
 		     if(!method_exists(self::$controller, self::$action))
-		  	    throw new FrameworkException('The specified action \'' . self::$action . '\' does not exist.', 101);
+		  	    throw new FrameworkException('The specified action \'' . self::$action . '\' does not exist.', 102);
 
 		  	 // Cache the output if caching is enabled
 		     if(self::$cacheables) {
@@ -267,7 +267,7 @@ final class MVC {
 	  	     $path = AgilePHP::getFrameworkRoot() . '/mvc/' . self::$defaultRenderer . '.php';
 
 	  	     if(!file_exists($path))
-	  	     	throw new FrameworkException( 'Default framework renderer could not be loaded from: ' . $path, 103 );
+	  	     	throw new FrameworkException('Default framework renderer could not be loaded from: ' . $path, 103);
 
 	  	     require_once $path;
 	  	     return new self::$defaultRenderer;
@@ -279,14 +279,14 @@ final class MVC {
 	   * @return Object An instance of the specified renderer
 	   * @static
 	   */
-	  public static function createRenderer( $renderer ) {
+	  public static function createRenderer($renderer) {
 
 	  	     $path = AgilePHP::getFrameworkRoot() . '/mvc/' . $renderer . '.php';
 
-	  	     Log::debug( 'MVC::createRenderer loading renderer: ' . $renderer );
+	  	     Log::debug('MVC::createRenderer loading renderer: ' . $renderer);
 
-	  		 if( !file_exists( $path ) )
-	  	     	 throw new FrameworkException( 'Framework renderer could not be loaded from: ' . $path, 104 );
+	  		 if(!file_exists($path))
+	  	     	throw new FrameworkException( 'Framework renderer could not be loaded from: ' . $path, 104 );
 
 			 require_once $path;
 	  		 return new $renderer;
@@ -301,13 +301,13 @@ final class MVC {
 	   * @return Object A new instance of the custom renderer
 	   * @static
 	   */
-	  public static function createCustomRenderer( $renderer, $classpath='' ) {
+	  public static function createCustomRenderer($renderer, $classpath='') {
 
 	  	     $path = AgilePHP::getWebRoot() . '/classes/' . $classpath . '/' . $renderer . '.php';
 
 	  	     Log::debug( 'MVC::createDefaultRenderer loading custom renderer: ' . $renderer );
 
-	  	     if( !file_exists( $path ) )
+	  	     if(!file_exists($path))
 	  	     	 throw new FrameworkException( 'Custom renderer could not be loaded from: ' . $path, 105 );
 
 	  	     require_once $path;
@@ -315,7 +315,7 @@ final class MVC {
 	  }
 
 	  /**
-	   * Loads a controller class only if it exists in the application controller directory.
+	   * Loads the requested controller / class ONLY if it exists in the web application controller directory.
 	   *
 	   * @param String $controller The name of the controller to load.
 	   * @return void
@@ -326,14 +326,13 @@ final class MVC {
 
 	          $controller = self::$controller;
 	          $webroot = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR;
-	  		  $f = $webroot . 'control' . DIRECTORY_SEPARATOR . $controller . '.php';
 
-	  		  if(file_exists($f)) return new $controller;
+	  		  if(file_exists($webroot . 'control' . DIRECTORY_SEPARATOR . $controller . '.php'))
+	  		     return new $controller;
 
 	  		  // Perform deeper scan of control directory
-	  		  $f = $webroot . DIRECTORY_SEPARATOR . 'control';
-		  	  $it = new RecursiveDirectoryIterator( $f );
-			  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
+		  	  $it = new RecursiveDirectoryIterator($webroot . DIRECTORY_SEPARATOR . 'control');
+			  foreach( new RecursiveIteratorIterator($it) as $file ) {
 
 			   	       if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
 

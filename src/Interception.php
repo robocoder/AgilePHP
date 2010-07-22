@@ -30,7 +30,7 @@ require_once 'interception/AfterInvoke.php';
  * Performs interceptions by creating a dynamic proxy for intercepted
  * classes. The proxy invokes the intended calls after inspecting (and/or
  * intercepting) it according to the annotations in the intercepted object.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp
@@ -45,7 +45,7 @@ class Interception {
 
 	  /**
 	   * Initalizes the Interception
-	   * 
+	   *
 	   * @param String $class The target class name
 	   * @param String $method The method name
 	   * @param Object $interceptor The instance of the interceptor which will intercept calls
@@ -64,7 +64,7 @@ class Interception {
 
 	  /**
 	   * Returns the name of the target class being intercepted
-	   * 
+	   *
 	   * @return The interception target class name
 	   */
 	  public function getClass() {
@@ -84,14 +84,14 @@ class Interception {
 	   * Returns the name of the property to intercept
 	   */
 	  public function getProperty() {
-	  	
+
 	  		 return $this->property;
 	  }
 
 	  /**
 	   * Returns the interceptor instance which handles the intercepted
 	   * call.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function getInterceptor() {
@@ -102,21 +102,22 @@ class Interception {
 	  /**
 	   * Creates a new intercepted target instance. The target is created by modifying
 	   * the source code of the class being intercepted to *classname*_Intercepted.
-	   * 
+	   *
 	   * @return Object The new intercepted target instance
 	   */
 	  public function createInterceptedTarget() {
 
-	  		 // php namespace support
+ 	  		 // php namespace support
 			 $namespace = explode( '\\', $this->class );
 			 $className = $namespace[count($namespace)-1];
-		 	 $this->namespace = implode( '\\', $namespace );
+			 array_pop( $namespace );
+			 $namespace = implode( '\\', $namespace );
 
 		 	 if( class_exists( $this->class, false ) ) return;
-
+	 	 
 		 	 if( strpos( $className, 'phar://' ) !== false ) {
 
-		 	 	 $code = file_get_contents( $className );
+		 	     $code = file_get_contents( $className );
 		 	 	 $namespace = explode( '/', $className );
 		 	 	 $className = array_pop( $namespace );
 		 	 	 $className = preg_replace( '/\.php/', '', $className );
@@ -124,21 +125,21 @@ class Interception {
 		 	 else {
 
 		 	 	 try {
-	  		 	 	   $code = AgilePHP::getSource( $this->class );
+		 	 	       $code = ($namespace) ? 'namespace ' . $namespace . ';' : '';
+	  		 	 	   $code .= AgilePHP::getSource($this->class);
 		 	 	 }
 		 	 	 catch( FrameworkException $e ) {
-		 	 	 	
+
 		 	 	 		throw new InterceptionException( $e->getMessage(), $e->getCode() );
 		 	 	 }
 		 	 }
 
 		 	 preg_match( '/(class\s+.*){/', $code, $matches);
-
 	  		 $code = preg_replace( '/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code );
 			 $code = $this->clean( $code );
 
 			 //Log::debug( 'Interception::createInterceptedTarget ' . PHP_EOL . $code );
-			 
+
 	  		 if( eval( $code ) === false )
 	  		 	 throw new InterceptionException( 'Failed to create intercepted target' );
 
@@ -148,7 +149,7 @@ class Interception {
 	  /**
 	   * Creates and loads a dynamic proxy class which performs interceptions
 	   * on the class created by Interception::createInterceptedTarget().
-	   * 
+	   *
 	   * @return void
 	   * @throws InterceptionException if there was an issue creating the InterceptorProxy
 	   */
@@ -159,7 +160,9 @@ class Interception {
 			 $className = $namespace[count($namespace)-1];
 			 array_pop( $namespace );
 			 $namespace = implode( '\\', $namespace );
-	  		 $class = str_replace( '\\', '::', $this->class );
+
+			 // __callstatic support
+	  		 $class = str_replace('\\', '::', $this->class);
 
 	  		 if( class_exists( $className, false ) ) return;
 
@@ -175,10 +178,9 @@ class Interception {
 	  		 	 $className = array_pop( $pieces );
 	  		 	 $className = preg_replace( '/\.php/', '', $className );
 		     }
-	  		 
-	  	     $code = ($namespace) ? 'namespace ' . $namespace . ';' : '';
 
 	  	     try {
+	  	            $code = ($namespace) ? 'namespace ' . $namespace . ';' : '';
 	  		 		$code .= AgilePHP::getSource( 'InterceptorProxy' );
 	  	     }
 	  	     catch( FrameworkException $e ) {
@@ -223,10 +225,10 @@ class Interception {
 	   * Creates public method stubs in the proxy class that match public methods
 	   * in the intercepted target class. Without this in place, when using reflection
 	   * on the intercepted target class name, the reflection results will actually be
-	   * taking place on the InterceptorProxy class and not return expected results. 
-	   * 
+	   * taking place on the InterceptorProxy class and not return expected results.
+	   *
 	   * @return array Returns an associative array which contains all method signatures,
-	   * 			   methods, and their parameters for the intercepted class. 
+	   * 			   methods, and their parameters for the intercepted class.
 	   */
 	  private function getMethodStubs() {
 
@@ -244,7 +246,7 @@ class Interception {
 	  		       $params = '(' . implode(', ', $args[0]) . ')';
 	  		  }
 
-	  		  $a['signatures'] = $matches[1]; 
+	  		  $a['signatures'] = $matches[1];
 	  		  $a['methods'] = $matches[2];
 	  		  $a['params'] = $matches[3];
 
@@ -254,7 +256,7 @@ class Interception {
 	  /**
 	   * Strips PHP open/close tags from source code document so it can be
 	   * passed to PHP eval().
-	   * 
+	   *
 	   * @param $code The PHP code to clean
 	   * @return The cleaned code
 	   */

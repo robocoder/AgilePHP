@@ -112,10 +112,10 @@ final class AgilePHP {
 
                  require_once 'Annotation.php';
                  require_once 'Interception.php';
-                 spl_autoload_register('AgilePHP::autoload');
+                 spl_autoload_register('AgilePHP::autoload', true, true);
               }
               else
-                 spl_autoload_register('AgilePHP::autoloadNoAnnotations');
+                 spl_autoload_register('AgilePHP::autoloadNoAnnotations', true, true);
 
               if(self::$xml->caching) {
 
@@ -508,14 +508,13 @@ final class AgilePHP {
        */
       public static function getSource($class) {
 
-             $key = 'AGILEPHP_SOURCE_' . $class;
-             if(self::$cacher && ($source = self::$cacher->get($key)))
-                return $source;
+             // Serve from cache if enabled and present
+             if(self::$cacher) {
 
-             // PHP namespace support
-             $namespace = explode('\\', $class);
-             $class = array_pop($namespace);
-             $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+                $key = 'AGILEPHP_SOURCE_' . $class;
+                if($source = self::$cacher->get($key))
+                   return $source;
+             }
 
              // Search classmap
              if(isset(self::$classmap[$class])) {
@@ -525,11 +524,16 @@ final class AgilePHP {
                 return $source;
              }
 
+             // PHP namespace support
+             $namespace = explode('\\', $class);
+             $className = array_pop($namespace);
+             $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+
              // PHAR support
              if(strpos($class, 'phar://') !== false) {
 
                 $source = file_get_contents($class);
-                if(self::$cacher) $cacher->set($key, $source);
+                if(self::$cacher) self::$cacher->set($key, $source);
                 return $source;
              }
 
@@ -537,7 +541,7 @@ final class AgilePHP {
              $directories = glob(self::$webroot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
              foreach($directories as $directory) {
 
-                 $path = $directory . $namespace . $class . '.php';
+                 $path = $directory . $namespace . $className . '.php';
                  if(file_exists($path)) {
 
                     $source = file_get_contents($path);
@@ -554,10 +558,10 @@ final class AgilePHP {
 			   	        substr($file, -4) != 'view')) {
 
 			   	     	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
-				 		  if(array_pop($pieces) == $class . '.php') {
+				 		  if(array_pop($pieces) == $className . '.php') {
 
 			     	 		 $source = file_get_contents($file);
-				 		     if(self::$cacher) $cacher->set($key, $source);
+				 		     if(self::$cacher) self::$cacher->set($key, $source);
 			     	 		 return $source;
 				 		  }
 				     }
@@ -606,20 +610,14 @@ final class AgilePHP {
 
              // PHP namespace support
              $namespace = explode('\\', $class);
-             $class = array_pop($namespace);
+             $className = array_pop($namespace);
              $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-
-             if(isset(self::$classmap[$class])) {
-
-                require self::$frameworkRoot . self::$classmap[$class];
-                return;
-             }
 
              // Search web application (one level)
              $directories = glob(self::$webroot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
              foreach($directories as $directory) {
 
-                 $path = $directory . $namespace . $class . '.php';
+                 $path = $directory . $namespace . $className . '.php';
                  if(file_exists($path)) {
 
                     if(self::$cacher) self::$cacher->set($key, $path);
@@ -636,9 +634,9 @@ final class AgilePHP {
 			   	         substr($file, -4) != 'view')) {
 
 			   	      	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
-				 		  if(array_pop($pieces) == $class . '.php') {
+				 		  if(array_pop($pieces) == $className . '.php') {
 
-				 		     if(self::$cacher) $cacher->set($key, $file->getPathname());
+				 		     if(self::$cacher) self::$cacher->set($key, $file->getPathname());
 			     	 		 require $file;
 			     	 		 return;
 				 		  }

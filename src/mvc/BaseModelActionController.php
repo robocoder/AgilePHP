@@ -39,7 +39,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 		  * @param String $requiredRole An optional role to require
 		  * @return void
 		  */
-	     public function __construct( $requireLogon = true, $requiredRole = 'admin' ) {
+	     public function __construct( $requireLogon = false, $requiredRole = 'admin' ) {
 
 	     	       if( $requireLogon ) {
 

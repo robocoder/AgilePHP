@@ -1,10 +1,12 @@
-- Added php namespace support to AJAXRenderer::toXML and XmlRenderer::render.
-- Collapsed AJAXRenderer and data/renderer/* functionality and deprecated AJAXRenderer
-  methods. Will remove in a later release.
-- Bug fix to Upload component when move_uploaded_file failed resulting in undefined $error variable.
-- Two bug fixes to BaseModelXslController (getModelFormXSL and getModelListXSL) in regards to
-  new many-to-many relationship support refactoring.
-- Added logic to BaseDialect::validate to skip validation on required blob columns (file upload) during
-  updates, otherwise, users would be forced to re-upload their image when updating other fields.
-- Bug fix to BaseDialect::find - offset, orderby, etc is now cleared on both conditions instead of only
-  on distinct queries.
+- Few more optimizations on AgilePHP and MVC classes
+- Finished adding in phar support to the core framework
+  (autoloading, annotation parsing, and interceptions)
+  in preparation of phar components.
+- Added prepended autoloader to Component class.
+- Removed Component::dispatch method and replaced with
+  Component::dispatch (still need to create a helper
+  class to ease component front controller integration
+  with existing Base* mvc classes).
+- Added TestPhar phar archive component to test/control
+  and added its source to test/components/TestPhar/TestPhar-src.tar.gz
+- Added PHP namespace support to BaseModelXslController::getModelAsReadOnlyXSL

@@ -27,17 +27,12 @@ AgilePHP::import( 'TestComponent.classes.PHTMLRenderer' );
 
 /**
  * A test component for AgilePHP Framework
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte inc,
  * @package com.makeabyte.agilephp.test.component
  */
 class TestComponent extends Component {
-
-      public function __construct() {
-
-	     	 parent::__construct();
-      }
 
       /**
 	   * (non-PHPdoc)
@@ -45,69 +40,62 @@ class TestComponent extends Component {
 	   */
       public function index() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'index', func_get_args() );
-
-      		 /*
-	     	 $renderer = new TestComponent\PHTMLRenderer();
-	     	 $renderer->set( 'title', 'TestComponent :: Home' );
-	     	 $renderer->set( 'content', 'Welcome to the TestComponent home page!' );
-	     	 $renderer->render( 'index' );
-	     	 */
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
 
 	  public function add() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'add', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
 
       public function edit() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'edit', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
-      
+
 	  public function read() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'read', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
-      
+
 	  public function search() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'search', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
-      
+
 	  public function sort() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'sort', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
-      
+
 	  public function persist() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'persist', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
-      
+
 	  public function merge() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'merge', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
-      
+
 	  public function delete() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'delete', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
-      
+
 	  public function setPrimaryKeys() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'setPrimaryKeys', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
-      
+
 	  public function setModelValues() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'setModelValues', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
 
 	  public function getCastedValue() {
 
-      		 parent::dispatch( new TestComponent\control\Table1Controller(), 'getCastedValue', func_get_args() );
+      		 parent::delegate(new TestComponent\control\Table1Controller());
       }
 }
 ?>

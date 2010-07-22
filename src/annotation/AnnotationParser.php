@@ -581,8 +581,7 @@ class AnnotationParser {
 	  private static function getSourceCode() {
 
 	  		  try {
-		  		    $class = preg_replace('/_Intercepted/', '', self::$class);
-		  		    return AgilePHP::getSource($class);
+		  		    return AgilePHP::getSource(self::$class);
 	  		  }
 	  		  catch(FrameworkException $e) {
 
