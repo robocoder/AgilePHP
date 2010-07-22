@@ -2,17 +2,16 @@
 "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<script type="text/javascript" src="/AgilePHP/test/index.php/IndexController/getBaseJS"></script>
 		<title>AgilePHP Form Example</title>
 	</head>
 	<body>
 		<?php
-			if( isset( $form ) )
-				echo $form;
+		    // Shows the form
+			if(isset($form)) echo $form;
 
-			if( isset( $parameters ) )
-				print_r( $parameters );
+			// Shows submitted form values
+			if(isset($parameters))
+			   print_r( $parameters );
 		?>
 	</body>
 </html>

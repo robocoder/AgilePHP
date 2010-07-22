@@ -1,12 +1,17 @@
-- Few more optimizations on AgilePHP and MVC classes
-- Finished adding in phar support to the core framework
-  (autoloading, annotation parsing, and interceptions)
-  in preparation of phar components.
-- Added prepended autoloader to Component class.
-- Removed Component::dispatch method and replaced with
-  Component::dispatch (still need to create a helper
-  class to ease component front controller integration
-  with existing Base* mvc classes).
-- Added TestPhar phar archive component to test/control
-  and added its source to test/components/TestPhar/TestPhar-src.tar.gz
-- Added PHP namespace support to BaseModelXslController::getModelAsReadOnlyXSL
+- More fine tuning of MVC::dispatch and MVC::loadController
+- Refactored MVC::dispatch caching logic from "die" to "echo and return".
+- Refactored AgilePHP::parseXml spl_autoload_register logic
+  to prepend to autoload stack rather than append.
+- Refactored BaseModelActionController::$xsltRenderer from private to protected
+- Cleaned up XSLTRenderer doc comments. Added optional $declaration parameter to
+  XSLTRenderer::render and XSLTRenderer::transform. Defaults to false (dont include).
+- Bug fix to rarely tested Form::getHTML. Brought into alignment with Form::getXSL.
+- Cleaned up test/view/form-example.phtml
+- Removed extraneous meta equiv tag from test/remoting-example.html
+- Bug fix to BaseModelXslController::getModelListXSL which resulted in malformed
+  XSL document when both "display" and "description" atrribute values were missing from
+  orm.xml table element.
+- Bug fix to BaseModelXslController::getModelAsReadOnlyXSL when rendering foreign keys.
+  (there is still a bug here when updating - will fix on next checkin)
+
+** agilephp_helloworld benchmark now breaking 5000 requests per second - w00t w00t! **

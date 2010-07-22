@@ -80,14 +80,17 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 										<div class="agilephpTableDescription">';
 
-											if( $table->getDisplay() )
-												$xsl .= $table->getDisplay();
+						                    $display = $table->getDisplay();
+						                    $description = $table->getDescription();
 
-											if( $table->getDisplay() && $table->getDescription() )
-												$xsl .= ' :: ';
+											if($display) $xsl .= $display;
 
-											if( $table->getDescription() )
-											    $xsl .= $table->getDescription();
+											if($display && $description) $xsl .= ' :: ';
+
+											if($description) $xsl .= $description;
+
+											// Prevents broken document if both display and description are missing from orm.xml
+											if(!$display && !$description) $xsl .= '<p/>';
 
 										$xsl .= '</div>
 
@@ -286,7 +289,6 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	      */
 	     protected function getModelAsReadOnlyXSL() {
 
-	     	       $action = null;
 	     	       $table = ORM::getTableByModelName( $this->getModelName() );
 	     	       $fkeyXslValues = $this->getSerializedForeignKeyValuesAsXSL($table);
 	     	       $pkeyValues = $this->getSerializedPrimaryKeyValues($table);
@@ -321,9 +323,18 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 	  			 	   	  							if( $column->isVisible() == false ) {
 
-	  			 	   	  								if( $column->isPrimaryKey() )
+	  			 	   	  								if($column->isPrimaryKey())
 	  			 	   	  									$xsl .= '<input type="hidden" name="' . $column->getModelPropertyName() . '" value="{/Form/' . $modelName . '/' . $column->getModelPropertyName() . '}"/>';
 	  			 	   	  								continue;
+	  			 	   	  							}
+
+	  			 	   	  							if($column->isForeignKey()) {
+
+	  			 	   	  							   $xsl .= '<tr>
+    	  			 	   	  				     					<td>' . ucfirst( $table->getDisplayNameByProperty( $column->getModelPropertyName() ) ) . '</td>
+    	  			 	   	  				     		   			<td><xsl:value-of select="/Form/' . $modelName . '/' . $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() . '" /></td>
+    	  			 	   	  				     		    	</tr>';
+	  			 	   	  							   continue;
 	  			 	   	  							}
 
 	  			 	   	  				     		$xsl .= '<tr>

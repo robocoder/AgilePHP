@@ -20,8 +20,8 @@
  */
 
 /**
- * Provides a base implementation of a working model action controller. 
- * 
+ * Provides a base implementation of a working model action controller.
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
@@ -29,25 +29,25 @@
  */
 abstract class BaseModelActionController extends BaseModelXslController {
 
-		 private $xsltRenderer;
+		 protected $xsltRenderer;
 
 		 /**z
-		  * Base constructor which allows configuration options in extended classes. 
-		  * 
+		  * Base constructor which allows configuration options in extended classes.
+		  *
 		  * @param bool $requireLogon True to require the user to be logged in, false to allow calls
 		  * 			to unauthenticated calls (uses AgilePHP Identity component to validate logged in session).
 		  * @param String $requiredRole An optional role to require
 		  * @return void
 		  */
-	     public function __construct( $requireLogon = false, $requiredRole = 'admin' ) {
+	     public function __construct($requireLogon = true, $requiredRole = 'admin') {
 
-	     	       if( $requireLogon ) {
+	     	       if($requireLogon) {
 
-		     		   if(!Identity::isLoggedIn())
-		  	     		  throw new NotLoggedInException( 'Login Required' );
+		     		  if(!Identity::isLoggedIn())
+		  	     		 throw new NotLoggedInException( 'Login Required' );
 
-			  	       if(!Identity::hasRole(new Role($requiredRole)))
-			  	     	  throw new AccessDeniedException( 'Access Denied. This area is reserved for ' . $requiredRole );
+			  	      if(!Identity::hasRole(new Role($requiredRole)))
+			  	         throw new AccessDeniedException( 'Access Denied. This area is reserved for ' . $requiredRole );
 	     		   }
 
 	     		   parent::__construct();
@@ -57,7 +57,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     /**
 	      * Returns an instance of the MVC XSLTRenderer object.
-	      * 
+	      *
 	      * @return An instance of XSLTRenderer
 	      */
 	     protected function getXsltRenderer() {
@@ -69,7 +69,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * Performs a search for the model defined in the extension class and displays a
 	      * paginated result list with edit and delete actions, as well as sortable
 	      * column headers.
-	      * 
+	      *
 	      * @param Integer $page The page number within the result set to display. Default is page 1.
 	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
@@ -79,7 +79,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     	    if( !$view ) $view = 'admin';
 
 	     		// Defaults sorting by the first primary key column
-	     		// 
+	     		//
 	     		//$table = ORM::getTableByModel( $this->getModel() );
 	  	        //$pkeyColumns = $table->getPrimaryKeyColumns();
 	  	        //if( $pkeyColumns ) $this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
@@ -93,7 +93,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     /**
 	      * Displays an 'add' form for the model defined in the extension class.
-	      * 
+	      *
 	      * @param int $page The page number to display.
 	      * @param string $view The view to render. Defaults to 'admin'.
 	      * @return void
@@ -107,7 +107,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     /**
 	      * Displays an 'edit' form for the model defined in the extension class.
-	      * 
+	      *
 	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in orm.xml
 	      * @param int $page The page number to display.
 	      * @param string $view The view to render. Defaults to 'admin'.
@@ -123,7 +123,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     /**
 	      * Displays a read only text table for the model defined in the extension class.
-	      * 
+	      *
 	      * @param string $ids Underscore delimited list of primary key id's in same ordinal position as defined in orm.xml
 	      * @param string $view The view to render. Defaults to 'admin'.
 	      * @return void
@@ -138,7 +138,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     /**
 	      * Performs a search on the model defined in the extension class.
-	      * 
+	      *
 	      * @param string $field The database column name to filter on
 	      * @param string $keyword The keyword used as the search criteria. Defaults to null (show everything)
 	      * @param string $view The view to render. Defaults to 'admin'.
@@ -174,7 +174,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     /**
 	      * Sorts the modelList according to the specified column name and direction.
-	      * 
+	      *
 	      * @param String $column The column name to sort on
 	      * @param String $direction The direction to sort. Default is 'ASC' (ascending). (ASC|DESC)
 	      * @param Integer $page The page within the result set to display.
@@ -196,7 +196,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     /**
 	      * Persists a the ActiveRecord state defined by the model in the
 	      * extension class.
-	      * 
+	      *
 	      * @return void
 	      */
 	     public function persist() {
@@ -205,13 +205,13 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	    	    parent::persist( $this->getModel() );
 	    	    $this->__construct();
-	  	 	    $this->index( $this->getPage() );	  	 	    
+	  	 	    $this->index( $this->getPage() );
 	     }
 
  	     /**
 	      * Merges the ActiveRecord state defined by the model in the
 	      * extension class.
-	      * 
+	      *
 	      * @return void
 	      */
 	     public function merge() {
@@ -227,7 +227,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * Deletes the ActiveRecord state defined by the model in the
 	      * extension class and takes the user back to the 'list' view,
 	      * including the page they left off on.
-	      * 
+	      *
 	      * @param string $ids An underscope delimited list of primary key values. Defaults to null
 	      * @param int $page An optional page number. Defaults to 1.
 	      * @return void
@@ -245,7 +245,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     /**
 	      * Parses $ids sent in by the action method and sets all primary keys
 	      * in the model defined in the extension class.
-	      * 
+	      *
 	      * @param String $ids The 'ids' as passed in from the form submit. These 'ids' are
 	      * 			       automagically generated by BaseModelXslController.
 	      * @return void
@@ -281,7 +281,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	  	                   $fModelInstance = new $fModel();
 	  	                   $fModelInstance->$fModelMutator($idz[$i]);
-  	                   
+
 	  	                   $this->getModel()->$mutator($fModelInstance);
 	  	                   continue;
 	  	                }
@@ -296,7 +296,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * from a form submit and set the model properties defined in the extension
 	      * class. This method expects the form element names to match the name
 	      * of the model's property.
-	      * 
+	      *
 	      * @return void
 	      */
 		 protected function setModelValues() {
@@ -341,14 +341,14 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	  		 	  	            $this->getModel()->$mutator( null );
 	  		 	  	        	continue;
 		  	 	  	       	}
-			  		     	
+
 			  		     	// Dont sanitize the value if the column has sanitize="false" set in orm.xml
-		  		     		$value = ($column->getSanitize() === true) ? 
+		  		     		$value = ($column->getSanitize() === true) ?
 	   	  	        		 				urldecode( stripslashes( stripslashes( $request->sanitize( $value ) ) ) ) :
 	   	  	        		 				urldecode( stripslashes( stripslashes( $value ) ) );
 
   	 	  	       			if( $column->isForeignKey() ) {
- 	 	  	       			    
+
   	 	  	       				if( !$value || $value == 'NULL' ) continue;
 
   	 	  	        			$fmodelName = $column->getForeignKey()->getReferencedTableInstance()->getModel();

@@ -21,7 +21,7 @@
 
 /**
  * Generates a form by reverse engineering the specified domain model.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
@@ -39,7 +39,7 @@ class Form {
 
 	  /**
 	   * Creates a new instance of Form.
-	   * 
+	   *
 	   * @param mixed $model Optional domain model instance used to create the form fields
 	   * @param String $id Optional form id
 	   * @param String $name Optional form name
@@ -60,8 +60,8 @@ class Form {
 	  }
 
 	  /**
-	   * Sets the domain model that is used to create the form 
-	   * 
+	   * Sets the domain model that is used to create the form
+	   *
 	   * @param Object $model The domain model object used to create the form
 	   * @return void
 	   */
@@ -72,7 +72,7 @@ class Form {
 
 	  /**
 	   * Returns the domain model instance being used to create the form.
-	   * 
+	   *
 	   * @return Object The domain model instance
 	   */
 	  public function getModel() {
@@ -82,7 +82,7 @@ class Form {
 
 	  /**
 	   * Sets the form presentation mode.
-	   * 
+	   *
 	   * @param String $mode The presentation mode (persist|merge).
 	   * @return void
 	   */
@@ -93,7 +93,7 @@ class Form {
 
 	  /**
 	   * Returns the form presentation mode.
-	   * 
+	   *
 	   * @return String The presentation mode of the form (persist|merge)
 	   */
 	  public function getMode() {
@@ -103,7 +103,7 @@ class Form {
 
 	  /**
 	   * Sets the HTML id attribute value.
-	   * 
+	   *
 	   * @param String $id The form's id
 	   * @return void
 	   */
@@ -114,7 +114,7 @@ class Form {
 
 	  /**
 	   * Returns the form's id attribute value
-	   * 
+	   *
 	   * @return String The id value
 	   */
 	  public function getId() {
@@ -124,7 +124,7 @@ class Form {
 
 	  /**
 	   * Sets the HTML name attribute value
-	   * 
+	   *
 	   * @param String $name The form's name
 	   * @return void
 	   */
@@ -135,7 +135,7 @@ class Form {
 
 	  /**
 	   * Returns the form's HTML name attribute value
-	   * 
+	   *
 	   * @return String The form's name
 	   */
 	  public function getName() {
@@ -145,7 +145,7 @@ class Form {
 
 	  /**
 	   * Sets the form action attribute value
-	   * 
+	   *
 	   * @param String $action The form's action
 	   * @return void
 	   */
@@ -156,7 +156,7 @@ class Form {
 
 	  /**
 	   * Returns the forms action attribute value
-	   * 
+	   *
 	   * @return String The controller action method
 	   */
 	  public function getAction() {
@@ -166,7 +166,7 @@ class Form {
 
 	  /**
 	   * Sets the form's enctype attribute value
-	   * 
+	   *
 	   * @param String $enctype The form's enctype
 	   * @return void
 	   */
@@ -177,7 +177,7 @@ class Form {
 
 	  /**
 	   * Returns the form's enctype attribute value
-	   * 
+	   *
 	   * @return String The form's enctype
 	   */
 	  public function getEnctype() {
@@ -188,7 +188,7 @@ class Form {
 	  /**
 	   * Sets the anti-CSFR token to render within the form. Note that the CSFR token
 	   * should be different on every form!
-	   * 
+	   *
 	   * @param String $token CSFR token as supplied by RequestScope->getToken().
 	   * @return void
 	   * @see RequestScope::createToken()
@@ -200,7 +200,7 @@ class Form {
 
 	  /**
 	   * Returns the anti-CSFR token
-	   * 
+	   *
 	   * @return String anti-CSFR token specific to the form
 	   */
 	  public function getRequestToken() {
@@ -210,10 +210,10 @@ class Form {
 
 	  /**
 	   * Returns the form in HTML format
-	   * 
+	   *
 	   * @return String The HTML generated form
 	   */
-	  public function getHTML() {
+	  public function getHTML($pkeyValues = null, $page = 1) {
 
 	  		 if( !is_object( $this->getModel() ) ) throw new FrameworkException( 'Valid domain model required' );
 
@@ -277,7 +277,7 @@ class Form {
   		 	      	  else if( $column->isAutoIncrement() ) {
 
   		 	      	  	  $html .= '<td>' . $displayName . '</td>';
-						  $html .= ($this->getMode() == 'merge') ? 
+						  $html .= ($this->getMode() == 'merge') ?
   		 	      	  	  	  			'<td><input type="text" readonly="true" name="' . $name . '" value="' . $value . '"/></td>'
   		 	      	  	  	  			: '<td><input type="text" name="' . $name . '" value="' . $value . '"/></td>';
   		 	      	  }
@@ -319,10 +319,10 @@ class Form {
 	  		 $html .= '<tr>
  						<td> </td>
 						<td>';
-	  		 $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
+	  		 $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>'
         							 : '<input type="submit" value="Update"/>
 									   <input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getRequestBase() .
-        							   '\', \'' . $pkeyValues . '\', \'' . $this->getPage() . '\', \'delete\' )"/>
+        							   '\', \'' . $pkeyValues . '\', \'' . $page . '\', \'delete\' )"/>
         							   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';
 
         	 $html .= '</td>
@@ -340,7 +340,7 @@ class Form {
 	   * Returns an HTML select drop-down which contains a list
 	   * of values for foreign key columns used in one-to-many
 	   * relationships.
-	   * 
+	   *
 	   * @return String The populated HTML <select> element
 	   */
 	  public function getForeignKeySelection( ForeignKey $foreignKey ) {
@@ -379,10 +379,10 @@ class Form {
 
           	 		  $fkInstanceAccessor = 'get' . ucfirst( $model );
 
-          	 		  if( is_object( $this->getModel()->$fkInstanceAccessor() ) && 
+          	 		  if( is_object( $this->getModel()->$fkInstanceAccessor() ) &&
           	 		  			$this->getModel()->$fkInstanceAccessor()->$fAccessor() == $fModel->$fAccessor() ) {
 
-          	 		  	  // Assign primary key values delimited by underscore _ character 
+          	 		  	  // Assign primary key values delimited by underscore _ character
           	 		  	  $primaryKeys = $foreignKey->getReferencedTableInstance()->getPrimaryKeyColumns();
 	          	 		  $pkeys = '';
 	          	 		  for( $i=0; $i<count( $primaryKeys ); $i++ ) {
@@ -392,7 +392,7 @@ class Form {
 	          	 		  	   $pkeys .= $this->getModel()->$fkInstanceAccessor()->$idAccessor();
 	          	 		  	   $pkeys .= (((count($primaryKeys)-1) == $i)) ? '' : '_';
 	          	 		  }
-	          	 		  
+
 	          	 		  $value = mb_convert_encoding(htmlspecialchars($fModel->$fAccessor()), 'UTF-8', 'ISO-8859-1');
           	 		  	  $html .= '<option value="' . $pkeys . '" selected="yes">' . $value . '</option>';
 
@@ -405,7 +405,7 @@ class Form {
           	 		  }
           	 		  else {
 
-	          	 		  // Assign primary key values delimited by underscore _ character 
+	          	 		  // Assign primary key values delimited by underscore _ character
           	 		  	  $primaryKeys = $foreignKey->getReferencedTableInstance()->getPrimaryKeyColumns();
 	          	 		  $pkeys = '';
 	          	 		  for( $i=0; $i<count( $primaryKeys ); $i++ ) {
@@ -428,13 +428,13 @@ class Form {
 
 	  /**
 	   * Returns the form in XSL format
-	   * 
+	   *
 	   * @param String $pkeyValues The primary key values for the ActiveRecord displayed in the form. Multiple
 	   * 						   primary keys must be separated by an underscore _ character. Default is null
 	   * @param Integer $page The list page number to return the user after the form is submitted. Default is 1.
 	   * @return String XSL formatted form
 	   */
-	  public function getXSL( $pkeyValues = null, $page = 1 ) {
+	  public function getXSL($pkeyValues = null, $page = 1) {
 
 	 	  	 $id = $this->id == null ? '' : ' id="' . $this->id . '" ';
 	  	     $name = $this->name == null ? '' : ' name="' . $this->name . '" ';
@@ -461,21 +461,21 @@ class Form {
 								  		  $xsl .= '<tr>';
 
 						  		 		  if( !$column->isVisible() ) {
-						  		 		  	
+
 						  		 		  	  if( $column->isPrimaryKey() )
 					  		 	      	  	  	  $xsl .= '<input type="hidden" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/>';
 						  		 		  }
 
 								  		  // Process foreign keys first
 								  		  else if( $column->isForeignKey() ) {
-					
+
 								  		  	  $xsl .= '<td>' . $displayName . '</td>
 								  		  	  		   <td>' . $this->getForeignKeySelection( $column->getForeignKey() ) . '</td>';
 								  		  }
-					
+
 					  		 	      	  // Primary key during merge is read only
 					  		 	      	  else if( $column->isPrimaryKey() ) {
-					
+
 					  		 	      	  	  $xsl .= '<td>' . $displayName . '</td>';
 					  		 	      	      $xsl .= ($this->getMode() == 'merge') ?
 					  		 	      	  	  	  			'<td><input type="text" readonly="true" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>'
@@ -498,18 +498,18 @@ class Form {
 
 					  		 	      	  // Auto-increment
 					  		 	      	  else if( $column->isAutoIncrement() ) {
-					
+
 					  		 	      	  	  $xsl .= '<td>' . $displayName . '</td>';
-											  $xsl .= ($this->getMode() == 'merge') ? 
+											  $xsl .= ($this->getMode() == 'merge') ?
 					  		 	      	  	  	  			'<td><input type="text" readonly="true" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>'
 					  		 	      	  	  	  			: '<td><input type="text" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>';
 					  		 	      	  }
 
 					  		 	      	  // Checkbox
 										  else if( $column->getType() == 'boolean' ) {
-	  	  
+
 										  	  $xsl .= '<td>' . $displayName . '</td>';
-										  	  
+
 										  	  // enabled
 										  	  $xsl .= '<xsl:if test="/Form/' . $model . '/' . $name . ' = \'Yes\'">';
 										  	  		$xsl .= '<td><input type="checkbox" checked="true" name="' . $name . '" value="1"/></td>';
@@ -520,7 +520,7 @@ class Form {
 										  	  		$xsl .= '<td><input type="checkbox" name="' . $name . '" value="1"/></td>';
 										  	  $xsl .= '</xsl:if>';
 
-										  	  // add operation that doesnt contain a model - default to disabled 
+										  	  // add operation that doesnt contain a model - default to disabled
 										  	  $xsl .= '<xsl:if test="/Form/' . $model . ' = \'\'">';
 										  	  		$xsl .= '<td><input type="checkbox" name="' . $name . '" value="1"/></td>';
 										  	  $xsl .= '</xsl:if>';
@@ -543,7 +543,7 @@ class Form {
 										  else if( $column->getType() == 'blob' ) {
 
 											  $xsl .= '<td>' . $displayName . '</td>';
-											  			
+
 											  $xsl .= ($this->getMode() == 'merge') ?
 											  	           '<td><img border="0" height="30" width="200" src="{/Form/' . $model . '/' . $name . '}"/>
 											  	               <br/>
@@ -558,17 +558,17 @@ class Form {
 							  		  		  $xsl .= '<td>' . $displayName . '</td>
 							  		  		  		   <td><input type="text" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>';
 										  }
-					
+
 						  		  		  $xsl .= '</tr>';
 						  		 }
 
 	  		   $xsl .= '<tr>
 		 				  <td> </td>
 						  <td>';
-        	              $xsl .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' 
+        	              $xsl .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>'
         				        						 : '<input type="submit" value="Update"/>
 															<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getRequestBase() .
-        													   '\', \'' . $pkeyValues . '\', \'' . $page . 
+        													   '\', \'' . $pkeyValues . '\', \'' . $page .
         													   '\', \'{/Form/controller}\', \'delete\' )"/>
         													   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';
 			   $xsl .= '  </td>
@@ -590,7 +590,7 @@ class Form {
 	  /**
 	  public function getJSON() {
 
-	  		 $js = '{ form : { 
+	  		 $js = '{ form : {
 	  		 					"id" : "' . $this->id == null ? '' : $this->id . ',
 	  	     					"name" : "' . $this->name == null ? '' : $this->name . ',
 	  	     					"action" : "' . $this->action == null ? '' : $this->action . ',
@@ -599,7 +599,7 @@ class Form {
 	   				}';
 
 	  		 return $js;
-	  
+
 	  }
 	  */
 }

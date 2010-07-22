@@ -54,7 +54,6 @@ abstract class Component extends BaseController {
                 if($cacher->exists($key))
                    $xml = $cacher->get($key);
              }
-
              if(!isset($xml)) {
 
     	  		 $componentXml = 'components' . DIRECTORY_SEPARATOR . $class . DIRECTORY_SEPARATOR . 'component.xml';
@@ -62,15 +61,17 @@ abstract class Component extends BaseController {
      				throw new FrameworkException($componentXml . ' does not exist');
 
      			 $xml = simplexml_load_file($componentXml);
+     			 if($cacher) $cacher->set($key, $xml);
              }
 
              // Set the component params (Use caching if enabled)
              if($cacher) {
 
                 $key = 'AGILEPHP_COMPONENT_PARAMS_' . $class;
-                $this->params = $cacher->get($key);
+                if($cacher->exists($key))
+                   $this->params = $cacher->get($key);
              }
-             else {
+             if(!isset($this->params[0]) && !$cacher) {
 
      			/**
     			 * @todo Validate the component.xml file against the component.dtd
@@ -102,13 +103,15 @@ abstract class Component extends BaseController {
 
      					array_push($this->params, $cp);
      			}
+
+     			if($cacher) $cacher->set($key, $this->params);
              }
 
              // Add orm configs to ORM Database object if present
  			 if(isset($xml->component->orm->table)) {
 
- 			    // @todo Implement logic in Studio to check for conflicting table
- 			    //       and model names during install to eliminate runtime overhead.
+ 			    // @todo Implement logic in Studio to check for conflicting table and
+ 			    //       model names during install to eliminate runtime validation overhead.
 
  			    $database = &ORMFactory::getDialect()->getDatabase();
  			    foreach($xml->component->orm->table as $table)

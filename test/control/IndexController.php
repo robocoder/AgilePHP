@@ -22,7 +22,7 @@
 /**
  * Default test controller used to service client requests. Handles rendering
  * views for simple top level navigation items defined in header.phtml
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
@@ -46,119 +46,129 @@ class IndexController extends BaseController {
 
 	  	     i18n::getInstance(); // initalizes itself based on http language header
 	   		 // i18n::getInstance()->setLocale( 'es_ES' );   language can also be specified manually
-	   		 $welcome = i18n::translate( 'Welcome to the demo application' );
+	   		 $welcome = i18n::translate('Welcome to the demo application');
 
-	  	     $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Home' );
-	  	     $this->getRenderer()->set( 'content', $welcome . '. This is the default PHTML renderer.' );
-	  	     $this->getRenderer()->render( 'index' );
+	  	     $this->getRenderer()->set('title', 'AgilePHP Framework :: Home');
+	  	     $this->getRenderer()->set('content', $welcome . '. This is the default PHTML renderer.');
+	  	     $this->getRenderer()->render('index');
 	  }
 
 	  /**
 	   * Renders the 'about us' page.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function about() {
 
-	  	     $this->getRenderer()->set( 'title', 'AgilePHP Framework :: About' );
-	  	     $this->getRenderer()->render( 'about' );
+	  	     $this->getRenderer()->set('title', 'AgilePHP Framework :: About');
+	  	     $this->getRenderer()->render('about');
 	  }
 
 	  /**
 	   * Renders the 'services' page.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function services() {
 
-	  	     $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Services' );
-	  	     $this->getRenderer()->render( 'services' );
+	  	     $this->getRenderer()->set('title', 'AgilePHP Framework :: Services');
+	  	     $this->getRenderer()->render('services');
 	  }
 
 	  /**
 	   * Renders the 'contact us' page.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function contact() {
 
-	  	     $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Contact' );
-	  	     $this->getRenderer()->render( 'contact' );
+	  	     $this->getRenderer()->set('title', 'AgilePHP Framework :: Contact');
+	  	     $this->getRenderer()->render('contact');
 	  }
 
 	  /**
 	   * Handles 'contact us' form submit.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function contactSubmit() {
 
 	  		 $request = Scope::getRequestScope();
 
-	  	     $body = 'Name: ' . $request->get( 'name' ) . 
-	  	     		 "\nEmail: " . $request->get( 'email' ) .
-	  	     		 "\nComments: " . $request->get( 'comments' );
+	  		 if(!$name = $request->getSanitized('name'))
+	  		    throw new FrameworkException('Name Required');
 
-	  		 $mailer = new Mailer();
+	  		 if(!$email = $request->getSanitized('email'))
+	  		    throw new FrameworkException('Email required');
+
+	  		 if(!$comments = $request->getSanitized('comments'))
+	  		    throw new FrameworkException('Commentary required');
+
+	  	     $body = 'Name: ' . $name .
+	  	     		 "\nEmail: " . $email .
+	  	     		 "\nComments: " . $comments;
+
 	  		 try {
-	  	     	    $mailer->setToName( 'AgilePHP Development Team' );
-	  	     	    $mailer->setTo( 'root@localhost' );
-	  	     	    $mailer->setSubject( 'AgilePHP Demo Applicaiton :: Contact Form Submission' );
-	  	     	    $mailer->setBody( $body );
-	  	     	    $mailer->send();
+	  	     	    Mailer::setToName('Tester');
+	  	     	    Mailer::setTo('root@localhost');
+	  	     	    Mailer::setFromName('AgilePHP Framework Test Application');
+	  	     	    Mailer::setFrom('agilephp@localhost');
+	  	     	    Mailer::setSubject('AgilePHP Demo Applicaiton :: Contact Form Submission');
+	  	     	    Mailer::setBody($body);
+	  	     	    Mailer::send();
   	     	  }
-  	     	  catch( FrameworkException $e ) {
+  	     	  catch(FrameworkException $e) {
 
-  	     	  		 array_push( $failed, $model->getEmail() );
+  	     	  		array_push($failed, $model->getEmail());
   	     	  }
 
-  	     	  $result = 'Thank you, ' . $request->get( 'name' ) . '. We have received your comments.';
+  	     	  $result = 'Thank you, ' . $request->getSanitized('name') . '. We have received your comments.';
 
-  	     	  $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Contact Us' );
-  	     	  $this->getRenderer()->set( 'formResult', $result );
-  	     	  $this->getRenderer()->render( 'contact' );
+  	     	  $this->getRenderer()->set('title', 'AgilePHP Framework :: Contact Us');
+  	     	  $this->getRenderer()->set('formResult', $result);
+  	     	  $this->getRenderer()->render('contact');
 	  }
 
 	  /**
 	   * Demonstrates the ability to easily render and process forms
-	   *  
+	   *
 	   * @return void
 	   */
 	  public function formExample() {
 
 	  	 	 $user = new User();
-	  	 	 $user->setUsername( 'username' );
-	  	 	 $user->setPassword( 'password' );
-	  	 	 $user->setEmail( 'root@localhost' );
-	  	 	 $user->setCreated( date( 'c', strtotime( 'now' ) ) );
-	  	 	 $user->setLastLogin( date( 'c', strtotime( 'now' ) ) );
-	  	 	 $user->setRole( new Role( 'asdfasdf' ) );
+	  	 	 $user->setUsername('username');
+	  	 	 $user->setPassword('password');
+	  	 	 $user->setEmail('root@localhost');
+	  	 	 $user->setCreated(date('c', strtotime('now')));
+	  	 	 $user->setLastLogin(date('c', strtotime('now')));
+	  	 	 $user->setRole(new Role('asdfasdf'));
 
-	  		 $form = new Form( $user, 'frmUserExample', 'frmUserExample', 'formExamplePOST', null, null );
-	  		 $form->setRequestToken( Scope::getRequestScope()->createToken() );
+	  		 $form = new Form($user, 'frmUserExample', 'frmUserExample', 'formExamplePOST', null, null);
+	  		 $form->setRequestToken(Scope::getRequestScope()->createToken());
 
-	  		 $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Form Example' );
-	  		 $this->getRenderer()->set( 'form', $form->getXSL() );
-	  	     $this->getRenderer()->render( 'form-example' );
+	  		 $this->getRenderer()->set('title', 'AgilePHP Framework :: Form Example');
+	  		 $this->getRenderer()->set('form', $form->getHTML());
+	  	     $this->getRenderer()->render('form-example');
 	  }
 
 	  /**
 	   * Shows the array of POST variables and their values.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function formExamplePOST() {
 
 	  		 $params = Scope::getRequestScope()->getParameters();
 
-	  		 $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Form Example - POSTED!' );
-	  		 $this->getRenderer()->set( 'parameters', $params );
-	  		 $this->getRenderer()->render( 'form-example' );
+	  		 $this->getRenderer()->set('title', 'AgilePHP Framework :: Form Example - POSTED!');
+	  		 $this->getRenderer()->set('parameters', $params);
+	  		 $this->getRenderer()->render('form-example');
 	  }
 
 	  /**
 	   * Renders the admin PHTML view
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function admin() {
@@ -169,7 +179,7 @@ class IndexController extends BaseController {
 
 	  /**
 	   * Sets error variable for PHTML renderer and loads system messages view.
-	   * 
+	   *
 	   * @param $message The error message to display
 	   * @return void
 	   */
