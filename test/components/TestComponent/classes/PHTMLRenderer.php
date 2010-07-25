@@ -30,11 +30,6 @@ namespace TestComponent;
 
 class PHTMLRenderer extends \BaseRenderer {
 
-      public static function isWorking() {
-
-	     return true;
-      }
-
       public function render( $view ) {
 
 	     $path = 'components/TestComponent/view/' . $view . '.phtml';

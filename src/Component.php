@@ -73,14 +73,14 @@ abstract class Component extends BaseController {
              }
              if(!isset($this->params[0]) && !$cacher) {
 
-     			/**
-    			 * @todo Validate the component.xml file against the component.dtd
-    			 *
-     			 * $dom = new DOMDocument();
-     			 * $dom->Load( $componentXml );
-    			 * if( !$dom->validate() );
-    			 *	   throw new ORMException( 'component.xml Document Object Model validation failed.' );
-    			 */
+     			$dom = new DOMDocument();
+     			$dom->Load($componentXml);
+    			if(!@$dom->validate()) {
+
+    			   $error = error_get_last();
+    			   throw new FrameworkException('component.xml Document Object Model validation failed. ' . $error['message']);
+    			}
+
      			$properties = array();
      			$types = array();
      			foreach($xml->component->param as $param) {
@@ -113,7 +113,7 @@ abstract class Component extends BaseController {
  			    // @todo Implement logic in Studio to check for conflicting table and
  			    //       model names during install to eliminate runtime validation overhead.
 
- 			    $database = &ORMFactory::getDialect()->getDatabase();
+ 			    $database = ORMFactory::getDialect()->getDatabase();
  			    foreach($xml->component->orm->table as $table)
  			         $database->addTable(new Table($table));
  			 }
@@ -152,8 +152,11 @@ abstract class Component extends BaseController {
 
              if(file_exists($phar)) {
 
-                new InterceptorFilter($phar);
-                if(class_exists($class, false)) return;
+                if(AgilePHP::getConfiguration()->annotations) {
+
+                   new InterceptorFilter($phar);
+                   if(class_exists($class, false)) return;
+                }
                 require $phar;
              }
 
@@ -171,6 +174,11 @@ abstract class Component extends BaseController {
 
 				 		     if($cacher) $cacher->set($key, $file->getPathname());
 
+   				 		     if(AgilePHP::getConfiguration()->annotations) {
+
+                                new InterceptorFilter($class);
+                                if(class_exists($class, false)) return;
+                             }
 			     	 		 require $file->getPathname();
 			     	 		 return;
 				 		  }
@@ -242,6 +250,16 @@ abstract class Component extends BaseController {
 	  }
 
 	  /**
+	   * Returns the configuration <param>'s for the component
+	   * 
+	   * @return array Configuraiton params
+	   */
+	  protected function getParams() {
+
+	            return $this->params;
+	  }
+
+	  /**
 	   * Delegates component front controller actions to the specified controller / action.
 	   *
 	   * @param BaseController $controller The controller instance responsible for the delegation.
@@ -250,8 +268,25 @@ abstract class Component extends BaseController {
 	   */
 	  protected function delegate(BaseController $controller, $action = null) {
 
-	            $action = ($action) ? $action : MVC::getAction();
-	  		  	call_user_func_array(array($controller, $action), MVC::getParameters());
+	            $parameters = MVC::getParameters();
+	            if($action) return call_user_func_array(array($controller, $action), MVC::getParameters()); 
+
+	            if(isset($parameters[0])) {
+
+	               $action = $parameters[0];
+	               array_shift($parameters);
+	            }
+	            else {
+
+	               $action =  MVC::getDefaultAction();
+	               $parameters = array();
+	            }
+
+	            // Make sure requested action method exists
+	            if(!method_exists($controller, $action))
+		  	       throw new FrameworkException('The specified action \'' . $action . '\' does not exist.');
+
+	  		  	return call_user_func_array(array($controller, $action), $parameters);
 	  }
 }
 

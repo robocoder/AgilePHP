@@ -4,7 +4,7 @@
  */
 class SoapRpcEncodedTest extends PHPUnit_Framework_TestCase {
 
- 	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapRpcEncodedTestAPI', 
+ 	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapRpcEncodedTestAPI/?XDEBUG_SESSION_START=1&KEY=agilephp', 
 				  'soapaction' => '',
 				  'classmap' => array( 'MathTest' => 'MathTest' ), // Maps MathTest WSDL data types to MathTest PHP data type (otherwise returned as stdClass)
 				  'trace' => 1,
@@ -19,7 +19,7 @@ class SoapRpcEncodedTest extends PHPUnit_Framework_TestCase {
 	  public function __construct() {
 
 	  		 parent::__construct();
-	  		 $this->client = new SOAPClient( 'http://localhost/test/index.php/SoapRpcEncodedTestAPI/wsdl', $this->options );
+	  		 $this->client = new SOAPClient( 'http://localhost/test/index.php/SoapRpcEncodedTestAPI/wsdl/?XDEBUG_SESSION_START=1&KEY=agilephp', $this->options );
 
 	  		 $this->mt1 = new MathTest();
 			 $this->mt1->setA( 1 );

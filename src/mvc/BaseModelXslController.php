@@ -42,14 +42,19 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	      */
 	     protected function getModelListXSL($pkeyFields = null, $controller = null, $view = 'admin') {
 
-	     		   $table = ORM::getTableByModelName( $this->getModelName() );
-	     	       $c = (!$controller) ? new ReflectionClass( $this ) : new ReflectionClass( $controller );
+	     		   $table = ORM::getTableByModelName($this->getModelName());
+
+	     		   if(!$controller) {
+
+	     		      $thisController = new ReflectionClass($this);
+	     		      $controller = $thisController->getName();
+	     		   }
 
 	     	       // php namespace support
-     		   	   $namespace = explode( '\\', $c->getName() );
-     		   	   $controller = $namespace[0];
-     		   	   $modelNamespace = explode( '\\', $this->getModelName() );
-     		   	   $modelName = array_pop( $modelNamespace );
+     		   	   $namespace = explode('\\', $controller);
+     		   	   //$controller = $namespace[0];
+     		   	   $modelNamespace = explode('\\', $this->getModelName());
+     		   	   $modelName = array_pop($modelNamespace);
 
      		   	   $requestBase = AgilePHP::getRequestBase();
    		   		   if(!$pkeyFields)  $pkeyFields = $this->getSerializedPrimaryKeyColumns($table);
@@ -104,41 +109,40 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 										$xsl .= '</select>
 											 <input type="hidden" value="' . $this->page . '" id="page"/>
 											 <input type="hidden" value="' . $view . '" id="view"/>
-											 <input type="button" value="Search" onclick="javascript:AgilePHP.ORM.search()"/>
+											 <input type="button" value="Search" onclick="javascript:AgilePHP.ORM.search(' . ((strpos($controller, '/') ? 'true' : 'false'))  . ')"/>
 										</div>
 
 										<table class="agilephpTable" border="0" width="100%">';
 
 												$flag = false;
-									     	    foreach( $table->getColumns() as $column ) {
+									     	    foreach($table->getColumns() as $column) {
 
-									     	    		 if( !$table->isVisible( $column->getModelPropertyName() ) )
-									     	    		 	 continue;
+									     	    		if(!$table->isVisible($column->getModelPropertyName())) continue;
 
-			 	   	   			      			    	 if( !$flag ) $xsl .= '<tr class="agilephpHeader">';
-			 	   	   			      			         $flag = true;
+			 	   	   			      			    	if(!$flag) $xsl .= '<tr class="agilephpHeader">';
+			 	   	   			      			        $flag = true;
 
-			 	   	   			      			         if( $column->isSortable() ) {
+			 	   	   			      			        if($column->isSortable()) {
 
-			 	   	   			      			         	 $display = null;  // rendered content
-			 	   	   			      			         	 $arrow = null;    // display an HTML arrow on active sort columns
-			 	   	   			      			         	 if( $column->getName() == $order['column'] ) {
+			 	   	   			      			           $display = null;  // rendered content
+			 	   	   			      			           $arrow = null;    // display an HTML arrow on active sort columns
+			 	   	   			      			           if($column->getName() == $order['column']) {
 
-			 	   	   			      			         	 	 $arrow = $order['direction'] == 'ASC' ? '&#8593;' : '&#8595;';
-			 	   	   			      			         	 	 $display = ucfirst( $column->getViewDisplayName() ) . ' ' . $arrow;
-			 	   	   			      			         	 }
-			 	   	   			      			         	 else {
+			 	   	   			      			         	  $arrow = $order['direction'] == 'ASC' ? '&#8593;' : '&#8595;';
+			 	   	   			      			         	  $display = ucfirst($column->getViewDisplayName()) . ' ' . $arrow;
+			 	   	   			      			           }
+			 	   	   			      			           else {
 
-			 	   	   			      			         	 	$display = ucfirst( $column->getViewDisplayName() );
-			 	   	   			      			         	 }
+			 	   	   			      			         	  $display = ucfirst($column->getViewDisplayName());
+			 	   	   			      			           }
 
 				 	   	   			      			         $xsl .= '<td style="font-weight: bold; padding-left: 5px; padding-right: 5px;">
 				 	   	   			      			         			<a href="' . $requestBase . '/' .
-				 	   	   			      			         			 	MVC::getController() . '/sort/' . $column->getName() . ($order['direction'] ? '/' . $order['direction'] : '') . '">' .
+				 	   	   			      			         			 	$controller . '/sort/' . $column->getName() . ($order['direction'] ? '/' . $order['direction'] : '') . '">' .
 				 	   	   			      			         			 	$display . '</a></td>';
 			 	   	   			      			         }
 			 	   	   			      			         else
-			 	   	   			      			         	$xsl .= '<td style="font-weight: bold; padding-left: 5px; padding-right: 5px;">' . ucfirst( $column->getViewDisplayName() ) . '</td>';
+			 	   	   			      			         	$xsl .= '<td style="font-weight: bold; padding-left: 5px; padding-right: 5px;">' . ucfirst($column->getViewDisplayName()) . '</td>';
 									     	    }
 
 												$xsl .= '<td colspan="2" style="font-weight: bold;">Actions</td>
@@ -176,46 +180,44 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 										</xsl:choose>';
 
-						   					foreach( $table->getColumns() as $column ) {
+						   					foreach($table->getColumns() as $column) {
 
-								     	    	     if( !$table->isVisible( $column->getModelPropertyName() ) )
-			 	   	   			      			         continue;
+								     	    	   if(!$table->isVisible($column->getModelPropertyName())) continue;
 
-			 	   	   			      			     if( $column->isForeignKey() ) {
+			 	   	   			      			   if($column->isForeignKey()) {
 
-			 	   	   			      			     	 $namespace = explode('\\', $column->getForeignKey()->getReferencedTableInstance()->getModel());
-			 	   	   			      			     	 $fModelName = array_pop($namespace);
-			 	   	   			      			     	 $fkey = $column->getForeignKey();
+			 	   	   			      			      $namespace = explode('\\', $column->getForeignKey()->getReferencedTableInstance()->getModel());
+			 	   	   			      			      $fModelName = array_pop($namespace);
+			 	   	   			      			      $fkey = $column->getForeignKey();
 
-			 	   	   			      			     	 if($column->isPrimaryKey()) $primaryAndForeignKey = true;
+			 	   	   			      			      if($column->isPrimaryKey()) $primaryAndForeignKey = true;
 
-			 	   	   			      			     	 switch( $fkey->getType() ) {
+			 	   	   			      			      switch($fkey->getType()) {
 
-				 	   	   			      			     	 	 case 'one-to-one':
+				 	   	   			      			     	 case 'one-to-one':
 
-				 	   	   			      			     	 	 	  $xsl .= '<td>
-						 	   	   			      			     	  			<xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
-							 	   	   			      			      				<a href="' . $requestBase . '/' . $fkey->getReferencedController() .
-							 	   	   			      			     	 					'/read/' . $fkeyXslValues . '">' .
-							 	   	   			      			     	  					$fkey->getReferencedTableInstance()->getViewDisplayName() .  '</a>
-							 	   	   			      			      			</xsl:if>
-							 	   	   			      			      		   </td>';
-						 	   	   			      			     	  break;
+				 	   	   			      			     	      $xsl .= '<td>
+				 	   	   			      			     	  		          <xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
+							 	   	   			      			      		       <a href="' . $requestBase . '/' . $fkey->getReferencedController() . '/read/' . $fkeyXslValues . '">' .
+							 	   	   			      			     	  				  $fkey->getReferencedTableInstance()->getViewDisplayName() .  '</a>
+							 	   	   			      			      	      </xsl:if>
+							 	   	   			      			           </td>';
+						 	   	   			      			 break;
 
-						 	   	   			      			     case 'one-to-many':
-						 	   	   			      			     case 'many-to-one':
+						 	   	   			      			 case 'one-to-many':
+						 	   	   			      			 case 'many-to-one':
 
-						 	   	   			      			     	  $xsl .= '<td>
-						 	   	   			      			     	   			<xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
+						 	   	   			      			  	  $xsl .= '<td>
+						 	   	   			      			        			<xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
 						 	   	   			      			     	 				<a href="' . $requestBase . '/' . $fkey->getReferencedController() .
 						 	   	   			      			     	 						'/read/{' . $fModelName . '/' . $fkey->getReferencedColumnInstance()->getModelPropertyName() . '}">' .
 						 	   	   			      			     	 						$fkey->getReferencedTableInstance()->getViewDisplayName() . '</a>
 						 	   	   			      			     	 			</xsl:if>
-						 	   	   			      			     	 		  </td>';
-						 	   	   			      			     	  break;
+						 	   	   			      			  	 		  </td>';
+						 	   	   			      			 break;
 
-				 	   	   			      			     	 	 default:
-				 	   	   			      			     	 	 	throw new FrameworkException( 'Unsupported relationship type \'' . $fkey->getType() . '\'.' );
+				 	   	   			      			     	 default:
+				 	   	   			      			     	 	throw new FrameworkException('Unsupported relationship type \'' . $fkey->getType() . '\'.');
 			 	   	   			      			     	 }
 
 					 	   	   			      			 continue;
@@ -236,7 +238,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 									</xsl:template>
 								</xsl:stylesheet>';
 
-				   Log::debug( 'BaseModelXslController::getModelListXSL Returning ' . $xsl );
+				   Log::debug('BaseModelXslController::getModelListXSL Returning ' . $xsl);
 
 	     		   return $xsl;
 	     }
@@ -244,9 +246,10 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     /**
 		  * Returns an XSL stylesheet used for add and update actions using the Form component.
 		  *
+		  * @param string $controller Optional controller responsible for edits. Defaults to the extension controller 
 		  * @return String The XSL stylesheet.
 	      */
-	     protected function getModelFormXSL() {
+	     protected function getModelFormXSL($controller = null, $action = null, $view = 'admin') {
 
 	     	       $table = ORM::getTableByModel($this->getModel());
 	     	       $fkeyXslValues = $this->getSerializedForeignKeyValuesAsXSL($table);
@@ -272,12 +275,12 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     	       $namespace = explode( '\\', $this->getModelName() );
 	     	       $name = array_pop( $namespace );
 
-	     	       $form = $table->hasBlobColumn() ? new Form( $this->getModel(), 'frm' . $name, $name, $action, 'multipart/form-data', $token )
-	     	       							       : new Form( $this->getModel(), 'frm' . $name, $name, $action, null, $token );
-				   $form->setMode( $this->getModelPersistenceAction() );
+	     	       $form = $table->hasBlobColumn() ? new Form($this->getModel(), 'frm' . $name, $name, $action, 'multipart/form-data', $token)
+	     	       							       : new Form($this->getModel(), 'frm' . $name, $name, $action, null, $token);
+				   $form->setMode($this->getModelPersistenceAction());
 	     	       $xsl = $form->getXSL($pkeyValues, $this->getPage());
 
-	     	       Log::debug( 'BaseModelXslController::getModelFormXSL Returning ' . $xsl );
+	     	       Log::debug('BaseModelXslController::getModelFormXSL Returning ' . $xsl);
 
 	     	       return $xsl;
 	     }
@@ -287,7 +290,9 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 		  *
 		  * @return An XSL stylesheet used for read operations
 	      */
-	     protected function getModelAsReadOnlyXSL() {
+	     protected function getModelAsReadOnlyXSL($controller = null) {
+
+	               if(!$controller) $controller = MVC::getController();
 
 	     	       $table = ORM::getTableByModelName( $this->getModelName() );
 	     	       $fkeyXslValues = $this->getSerializedForeignKeyValuesAsXSL($table);
@@ -348,7 +353,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 															<td>';
 	  			 	   	  						$xsl .= ( ($action == 'persist') ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>'
   			 	   	  													 : '<input type="button" value="Edit" onclick="javascript:location.href=\'' . $requestBase .
-  			 	   	  													   '/' . MVC::getController() . '/edit/' . $pkeyValues . '\';"/>
+  			 	   	  													   '/' . $controller . '/edit/' . $pkeyValues . '\';"/>
 																			<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . $requestBase .
   			 	   	  													   '\', \'' . $pkeyValues . '\', \'' . $this->getPage() .
   			 	   	  													   '\', \'{/Form/controller}\', \'delete\' )"/>
@@ -359,7 +364,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 				  	  		</xsl:template>
 						</xsl:stylesheet>';
 
-				Log::debug( 'BaseModelXslController::getModelAsReadOnlyXSL Returning ' . $xsl );
+				Log::debug('BaseModelXslController::getModelAsReadOnlyXSL Returning ' . $xsl);
 
 	     	    return $xsl;
 	     }

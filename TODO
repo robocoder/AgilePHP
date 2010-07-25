@@ -17,3 +17,6 @@
 > Integrate PHPUnit and Clover
 > Add HTML and attachments to Mailer component
 > Complete OpenAppstore/component integration
+> Add stored procedure support to component <orm> configurations
+> Figure out how to make unit tests use same dbpg session as phpunit/phing
+  so tests that rely on "external" curl requests show up in coverage report.

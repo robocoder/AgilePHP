@@ -16,18 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!ELEMENT agilephp ( component+, param* )>
+<!ELEMENT agilephp (component+, param*, orm?)>
 
-<!ELEMENT component ( param*, table* )>
-<!ATTLIST component name CDATA #IMPLIED>
-<!ATTLIST component version CDATA #IMPLIED>
+<!ELEMENT component (param*, orm*)>
+<!ATTLIST component name CDATA #REQUIRED>
+<!ATTLIST component version CDATA #REQUIRED>
 <!ATTLIST component enabled CDATA #FIXED "false">
 
 <!ELEMENT param (#PCDATA)>
-<!ATTLIST param name CDATA #IMPLIED>
+<!ATTLIST param name CDATA #REQUIRED>
+<!ATTLIST param type CDATA #REQUIRED>
 <!ATTLIST param value CDATA #IMPLIED>
 
-<!ELEMENT table (column*)>
+<!ELEMENT orm (table+)>
+
+<!ELEMENT table (column+)>
 <!ATTLIST table name CDATA #REQUIRED>
 <!ATTLIST table model CDATA #REQUIRED>
 <!ATTLIST table display CDATA #IMPLIED>
@@ -38,8 +41,9 @@
 
 <!ELEMENT column (foreignKey*)>
 <!ATTLIST column name CDATA #REQUIRED>
-<!ATTLIST column type ( boolean | integer | int | bigint | double | decimal | varchar | float | bit | date | datetime | timestamp | blob | text | password |
-						smallint | tinyint | money | char | varbinary | nvarchar | image | uniqueidentifier | smalldatetime | ntext ) "varchar">
+<!ATTLIST column type ( boolean | integer | int | bigint | double | decimal | varchar | float | bit | date | datetime | timestamp | blob | text | longtext | password |
+						smallint | tinyint | money | char | varbinary | nvarchar | image | uniqueidentifier | smalldatetime | ntext |
+						serial | bigserial | real | numeric | box | bytea | cidr | circle | inet | interval | line | lseg | macaddr | path | point | polygon | uuid | xml ) "varchar">
 <!ATTLIST column length CDATA #IMPLIED>
 <!ATTLIST column description CDATA #IMPLIED>
 <!ATTLIST column property CDATA #IMPLIED>
@@ -53,6 +57,10 @@
 <!ATTLIST column sortable CDATA #FIXED "false">
 <!ATTLIST column selectable CDATA #FIXED "true">
 <!ATTLIST column sanitize CDATA #FIXED "false">
+<!ATTLIST column lazy CDATA #FIXED "true">
+<!ATTLIST column validator CDATA #IMPLIED>
+<!ATTLIST column renderer CDATA #IMPLIED>
+<!ATTLIST column transformer CDATA #IMPLIED>
 
 <!ELEMENT foreignKey (#PCDATA)>
 <!ATTLIST foreignKey type ( one-to-one | one-to-many | many-to-one | many-to-many ) #REQUIRED>

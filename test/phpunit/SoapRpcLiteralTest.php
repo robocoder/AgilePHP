@@ -10,7 +10,7 @@
  */
 class SoapRpcLiteralTest extends PHPUnit_Framework_TestCase {
 
- 	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapRpcLiteralTestAPI', 
+ 	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapRpcLiteralTestAPI/?XDEBUG_SESSION_START=1&KEY=agilephp', 
 				  'soapaction' => '',
 				  'trace' => 1,
 				  'exceptions' => 1,
@@ -25,7 +25,7 @@ class SoapRpcLiteralTest extends PHPUnit_Framework_TestCase {
 	  public function __construct() {
 
 	  		 parent::__construct();
-	  		 $this->client = new SoapClient( 'http://localhost/test/index.php/SoapRpcLiteralTestAPI/wsdl', $this->options );
+	  		 $this->client = new SoapClient( 'http://localhost/test/index.php/SoapRpcLiteralTestAPI/wsdl/?XDEBUG_SESSION_START=1&KEY=agilephp', $this->options );
 
 	  		 $this->mt1 = new MathTest();
 			 $this->mt1->setA( 1 );

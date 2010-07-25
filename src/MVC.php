@@ -190,7 +190,7 @@ final class MVC {
 	  		    }
 	  		 }
 
-	  		 // Capture everything after the first occurance of '.php'
+	  		 // Capture everything after the first occurrence of '.php'
 		  	 preg_match('/^.*?\.php(.*)/si', $path, $matches);
 
 	  	     if(isset($matches[0])) {

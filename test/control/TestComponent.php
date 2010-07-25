@@ -35,67 +35,50 @@ AgilePHP::import( 'TestComponent.classes.PHTMLRenderer' );
 class TestComponent extends Component {
 
       /**
-	   * (non-PHPdoc)
-	   * @see src/mvc/BaseController#index()
-	   */
+       * (non-PHPdoc)
+       * @see src/mvc/BaseController#index()
+       */
       public function index() {
 
-      		 parent::delegate(new TestComponent\control\Table1Controller());
+             $navigation = '<p>
+             				  <a href="' . AgilePHP::getRequestBase() . '/TestComponent/table1">Table 1</a>
+             				  <a href="' . AgilePHP::getRequestBase() . '/TestComponent/table2">Table 2</a>
+             				</p>';
+
+         	 $renderer = new TestComponent\PHTMLRenderer();
+	     	 $renderer->set('title', 'TestComponent :: Home');
+	     	 $renderer->set('content', '<b>Welcome to the TestComponent home page!</b>' . $navigation);
+	     	 $renderer->render('index');
       }
 
-	  public function add() {
+      /**
+       * Shows TestPhar table1 as configured in component.xml <orm>
+       * 
+       * @return void
+       */
+      public function table1() {
 
-      		 parent::delegate(new TestComponent\control\Table1Controller());
+             parent::delegate(new TestComponent\control\Table1Controller());
       }
 
-      public function edit() {
+      /**
+       * Shows TestPhar table2 as configured in component.xml <orm>.
+       * 
+       * @return void
+       */
+      public function table2() {
 
-      		 parent::delegate(new TestComponent\control\Table1Controller());
+             parent::delegate(new TestComponent\control\Table2Controller());
       }
 
-	  public function read() {
+      /**
+       * Shows the component state using print_r($this)
+       * 
+       * @return void
+       */
+      public function debug() {
 
-      		 parent::delegate(new TestComponent\control\Table1Controller());
-      }
-
-	  public function search() {
-
-      		 parent::delegate(new TestComponent\control\Table1Controller());
-      }
-
-	  public function sort() {
-
-      		 parent::delegate(new TestComponent\control\Table1Controller());
-      }
-
-	  public function persist() {
-
-      		 parent::delegate(new TestComponent\control\Table1Controller());
-      }
-
-	  public function merge() {
-
-      		 parent::delegate(new TestComponent\control\Table1Controller());
-      }
-
-	  public function delete() {
-
-      		 parent::delegate(new TestComponent\control\Table1Controller());
-      }
-
-	  public function setPrimaryKeys() {
-
-      		 parent::delegate(new TestComponent\control\Table1Controller());
-      }
-
-	  public function setModelValues() {
-
-      		 parent::delegate(new TestComponent\control\Table1Controller());
-      }
-
-	  public function getCastedValue() {
-
-      		 parent::delegate(new TestComponent\control\Table1Controller());
+             print_r($this);
       }
 }
 ?>

@@ -31,7 +31,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 		 protected $xsltRenderer;
 
-		 /**z
+		 /**
 		  * Base constructor which allows configuration options in extended classes.
 		  *
 		  * @param bool $requireLogon True to require the user to be logged in, false to allow calls
@@ -44,15 +44,15 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     	       if($requireLogon) {
 
 		     		  if(!Identity::isLoggedIn())
-		  	     		 throw new NotLoggedInException( 'Login Required' );
+		  	     		 throw new NotLoggedInException('Login Required');
 
 			  	      if(!Identity::hasRole(new Role($requiredRole)))
-			  	         throw new AccessDeniedException( 'Access Denied. This area is reserved for ' . $requiredRole );
+			  	         throw new AccessDeniedException('Access Denied. This area is reserved for ' . $requiredRole);
 	     		   }
 
 	     		   parent::__construct();
-	     		   $this->xsltRenderer = MVC::createRenderer( 'XSLTRenderer' );
-	     		   $this->getRenderer()->set( 'title', 'Administration :: ' . $this->getModelName() );
+	     		   $this->xsltRenderer = MVC::createRenderer('XSLTRenderer');
+	     		   $this->getRenderer()->set('title', 'Administration :: ' . $this->getModelName());
 	     }
 
 	     /**
@@ -74,9 +74,9 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
 	      */
-	     public function index( $page = 1, $view = null) {
+	     public function index($page = 1, $view = null) {
 
-	     	    if( !$view ) $view = 'admin';
+	     	    if(!$view) $view = 'admin';
 
 	     		// Defaults sorting by the first primary key column
 	     		//
@@ -84,11 +84,11 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	  	        //$pkeyColumns = $table->getPrimaryKeyColumns();
 	  	        //if( $pkeyColumns ) $this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
 
-	  		    $this->setPage( $page );
-	  		    $content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
+	  		    $this->setPage($page);
+	  		    $content = $this->getXsltRenderer()->transform($this->getModelListXSL(), $this->getResultListAsPagedXML());
 
-	  	        $this->getRenderer()->set( 'content', $content );
-	  	        $this->getRenderer()->render( $view );
+	  	        $this->getRenderer()->set('content', $content);
+	  	        $this->getRenderer()->render($view);
 	     }
 
 	     /**
@@ -98,11 +98,11 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param string $view The view to render. Defaults to 'admin'.
 	      * @return void
 	      */
-	     public function add( $page, $view = 'admin' ) {
+	     public function add($page, $view = 'admin') {
 
-	     		$this->setPage( $page );
-  	     		$this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML() ) );
-  	     	    $this->getRenderer()->render( $view );
+	     		$this->setPage($page);
+  	     		$this->getRenderer()->set('content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML()));
+  	     	    $this->getRenderer()->render($view);
 	     }
 
 	     /**
@@ -113,12 +113,12 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param string $view The view to render. Defaults to 'admin'.
 	      * @return void
 	      */
-	     public function edit( $ids, $page = 1, $view = 'admin' ) {
+	     public function edit($ids, $page = 1, $view = 'admin') {
 
-	     		$this->setPrimaryKeys( $ids );
-            	$this->setPage( $page );
-            	$this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML() ) );
-            	$this->getRenderer()->render( $view );
+	     		$this->setPrimaryKeys($ids);
+            	$this->setPage($page);
+            	$this->getRenderer()->set('content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML()));
+            	$this->getRenderer()->render($view);
 	     }
 
 	     /**
@@ -128,12 +128,12 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param string $view The view to render. Defaults to 'admin'.
 	      * @return void
 	      */
-	     public function read( $ids, $view = 'admin' ) {
+	     public function read($ids, $view = 'admin') {
 
-	     		$this->setPrimaryKeys( $ids );
+	     		$this->setPrimaryKeys($ids);
 
-  	     		$this->getRenderer()->set( 'content', $this->getXsltRenderer()->transform( $this->getModelAsReadOnlyXSL(), $this->getModelAsFormXML() ) );
-  	     	    $this->getRenderer()->render( $view );
+  	     		$this->getRenderer()->set('content', $this->getXsltRenderer()->transform( $this->getModelAsReadOnlyXSL(), $this->getModelAsFormXML()));
+  	     	    $this->getRenderer()->render($view);
 	     }
 
 	     /**
@@ -145,31 +145,31 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param int $page The page number to display.
 	      * @return void
 	      */
-	     public function search( $page = 1, $view = 'admin', $field = null, $keyword = null ) {
+	     public function search($page = 1, $view = 'admin', $field = null, $keyword = null) {
 
-	     		$table = ORM::getTableByModel( $this->getModel() );
+	     		$table = ORM::getTableByModel($this->getModel());
 	     		$columns = $table->getColumns();
 
-	     		if( !$field ) {
+	     		if(!$field) {
 
-	     			$columns = $table->getPrimaryKeyColumns();
-	     			$field = $columns[0]->getName();
+	     		   $columns = $table->getPrimaryKeyColumns();
+	     		   $field = $columns[0]->getName();
 	     		}
 
-				foreach( $columns as $column ) {
+				foreach($columns as $column) {
 
-     					 if( $field == $column->getName() )
-     			 		 	 $this->setRestrictions( array( $field => '%' . $keyword . '%' ) );
+     					if($field == $column->getName())
+     			 		   $this->setRestrictions(array($field => '%' . $keyword . '%'));
      			}
 
-     			$this->setComparisonLogicOperator( 'LIKE' );
-     			$this->setPage( $page );
+     			$this->setComparisonLogicOperator('LIKE');
+     			$this->setPage($page);
 
      			$params = $view . '/' . $field . '/' . $keyword;
-     			$content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML( false, 'search', $params ) );
+     			$content = $this->xsltRenderer->transform($this->getModelListXSL(), $this->getResultListAsPagedXML(false, 'search', $params));
 
-  	         	$this->getRenderer()->set( 'content', $content );
-	  	        $this->getRenderer()->render( $view );
+  	         	$this->getRenderer()->set('content', $content);
+	  	        $this->getRenderer()->render($view);
 	     }
 
 	     /**
@@ -181,16 +181,16 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      * @param String $view The view to render. Default is 'admin'.
 	      * @return void
 	      */
-	     public function sort( $column, $direction = 'DESC', $page = 1, $view = 'admin' ) {
+	     public function sort($column, $direction = 'DESC', $page = 1, $view = 'admin') {
 
-	     		$this->setOrderBy( $column, $direction );
-	     		$this->setPage( $page );
-				$this->setOrderBy( $column, ($direction == 'ASC') ? 'DESC' : 'ASC' );
+	     		$this->setOrderBy($column, $direction);
+	     		$this->setPage($page);
+				$this->setOrderBy($column, ($direction == 'ASC') ? 'DESC' : 'ASC');
 
-	     		$content = $this->getXsltRenderer()->transform( $this->getModelListXSL(), $this->getResultListAsPagedXML() );
+	     		$content = $this->xsltRenderer->transform($this->getModelListXSL(), $this->getResultListAsPagedXML());
 
-	  	        $this->getRenderer()->set( 'content', $content );
-	  	        $this->getRenderer()->render( $view );
+	  	        $this->getRenderer()->set('content', $content);
+	  	        $this->getRenderer()->render($view);
 	     }
 
 	     /**
@@ -203,9 +203,9 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     		$this->setModelValues();
 
-	    	    parent::persist( $this->getModel() );
+	    	    parent::persist($this->getModel());
 	    	    $this->__construct();
-	  	 	    $this->index( $this->getPage() );
+	  	 	    $this->index($this->getPage());
 	     }
 
  	     /**
@@ -252,7 +252,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	      */
 	     protected function setPrimaryKeys($ids) {
 
-	  		       if( $ids == null ) return;
+	  		       if($ids == null) return;
 
 	  	           $table = ORM::getTableByModel($this->getModel());
 	  	           $pkeyColumns = $table->getPrimaryKeyColumns();
@@ -260,35 +260,35 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	  	           if(!$pkeyColumns) return; // Poor SQL programming - table should contain a key
 
   			       // Single primary key
-	  	           if( strpos( $ids, '_' ) === false ) {
+	  	           if(strpos($ids, '_') === false) {
 
-		  	           $mutator = $this->toMutator($pkeyColumns[0]->getModelPropertyName());
-	  		 	       $this->getModel()->$mutator( $ids );
-	  		 	       return;
+		  	          $mutator = $this->toMutator($pkeyColumns[0]->getModelPropertyName());
+	  		 	      $this->getModel()->$mutator($ids);
+	  		 	      return;
 	  		       }
 
 	  		       // Compound primary key
-			       $idz = explode( '_', $ids );
-	  	           for( $i=0; $i<count( $idz ); $i++ ) {
+			       $idz = explode('_', $ids);
+	  	           for($i=0; $i<count($idz); $i++) {
 
-	  	                $mutator = $this->toMutator($pkeyColumns[$i]->getModelPropertyName());
+	  	               $mutator = $this->toMutator($pkeyColumns[$i]->getModelPropertyName());
 
-	  	                // Primary key is also a foreign key - (many-to-many)
-	  	                if($pkeyColumns[$i]->isForeignKey()) {
+	  	               // Primary key is also a foreign key - (many-to-many)
+	  	               if($pkeyColumns[$i]->isForeignKey()) {
 
-	  	                   $fModel = ORM::getTableByName($pkeyColumns[$i]->getForeignKey()->getReferencedTable())->getModel();
-	  	                   $fModelMutator = $this->toMutator($pkeyColumns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+	  	                  $fModel = ORM::getTableByName($pkeyColumns[$i]->getForeignKey()->getReferencedTable())->getModel();
+	  	                  $fModelMutator = $this->toMutator($pkeyColumns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 
-	  	                   $fModelInstance = new $fModel();
-	  	                   $fModelInstance->$fModelMutator($idz[$i]);
+	  	                  $fModelInstance = new $fModel();
+	  	                  $fModelInstance->$fModelMutator($idz[$i]);
 
-	  	                   $this->getModel()->$mutator($fModelInstance);
-	  	                   continue;
-	  	                }
+	  	                  $this->getModel()->$mutator($fModelInstance);
+	  	                  continue;
+	  	               }
 
-	  	                // Stand alone primary key
-	  	     	 	    $this->getModel()->$mutator($idz[$i]);
-	  	           }
+	  	               // Stand alone primary key
+	  	     	 	   $this->getModel()->$mutator($idz[$i]);
+	  	          }
 	     }
 
 		 /**
@@ -302,65 +302,64 @@ abstract class BaseModelActionController extends BaseModelXslController {
 		 protected function setModelValues() {
 
 	  		       $request = Scope::getRequestScope();
-	     	       $table = ORM::getTableByModel( $this->getModel() );
+	     	       $table = ORM::getTableByModel($this->getModel());
 
-	  		       if( !$request->getParameters() )
-	  		  	       return;
+	  		       if(!$request->getParameters()) return;
 
-  	 	  	       foreach( $table->getColumns() as $column ) {
+  	 	  	       foreach($table->getColumns() as $column) {
 
-  	 	  	       		    $name = $column->getModelPropertyName();
-		  	 	  	       	$value = $request->get( $name );
+  	 	  	       		   $name = $column->getModelPropertyName();
+		  	 	  	       $value = $request->get($name);
 
-		  	 	  	       	$accessor = $this->toAccessor( $name );
-		  	 	  	       	$mutator = $this->toMutator( $name );
+		  	 	  	       $accessor = $this->toAccessor($name);
+		  	 	  	       $mutator = $this->toMutator($name);
 
-		  	 	  	       	// Password fields usually have a confirm box that needs to verify the integrity
-		  	 	  	       	// of the password. This logic will make sure 'password1' and 'password2' fields match.
-		  	 	  	       	// The password present in the database at the time the form is loaded is expected to be
-		  	 	  	       	// present in the POST array named 'oldPassword'.
-  	 	  	       			if( $name == 'password' ) {
+		  	 	  	       // Password fields usually have a confirm box that needs to verify the integrity
+		  	 	  	       // of the password. This logic will make sure 'password1' and 'password2' fields match.
+		  	 	  	       // The password present in the database at the time the form is loaded is expected to be
+		  	 	  	       // present in the POST array named 'oldPassword'.
+  	 	  	       		   if($name == 'password') {
 
-  	 	  	       				if( $request->getSanitized( 'password1' ) !== $request->getSanitized( 'password2' ) ) {
+  	 	  	       			  if($request->getSanitized('password1') !== $request->getSanitized('password2')) {
 
-			  		     		    $this->getRenderer()->set( 'error', 'Passwords don\'t match' );
-			  		     		    $this->getRenderer()->render( 'error' );
-			  		     		    exit;
-			  		     		}
+			  		     		 $this->getRenderer()->set('error', 'Passwords don\'t match');
+			  		     		 $this->getRenderer()->render('error');
+			  		     		 exit;
+			  		     	  }
 
-			  		     		$password = $request->getSanitized( 'password1' );
-			  		     		if( $request->getSanitized( 'oldPassword' ) != $password )
-									$this->getModel()->setPassword( $password );
+			  		     	  $password = $request->getSanitized( 'password1' );
+			  		     	  if($request->getSanitized('oldPassword') != $password)
+							    $this->getModel()->setPassword($password);
 
-								continue;
-			  		     	}
+							  continue;
+			  		      }
 
-			  		     	// Set model values to null if they are not present in the POST array
-		  	 	  	       	if( !$request->get( $name ) ) {
+			  		      // Set model values to null if they are not present in the POST array
+		  	 	  	      if(!$request->get($name)) {
 
-	  		 	  	            $this->getModel()->$mutator( null );
-	  		 	  	        	continue;
-		  	 	  	       	}
+	  		 	  	         $this->getModel()->$mutator(null);
+	  		 	  	         continue;
+		  	 	  	      }
 
-			  		     	// Dont sanitize the value if the column has sanitize="false" set in orm.xml
-		  		     		$value = ($column->getSanitize() === true) ?
-	   	  	        		 				urldecode( stripslashes( stripslashes( $request->sanitize( $value ) ) ) ) :
-	   	  	        		 				urldecode( stripslashes( stripslashes( $value ) ) );
+			  		      // Dont sanitize the value if the column has sanitize="false" set in orm.xml
+		  		     	  $value = ($column->getSanitize() === true) ?
+	   	  	        					urldecode(stripslashes(stripslashes($request->sanitize($value)))) :
+	   	  	        					urldecode(stripslashes(stripslashes($value)));
 
-  	 	  	       			if( $column->isForeignKey() ) {
+  	 	  	       		  if($column->isForeignKey()) {
 
-  	 	  	       				if( !$value || $value == 'NULL' ) continue;
+  	 	  	       			 if(!$value || $value == 'NULL') continue;
 
-  	 	  	        			$fmodelName = $column->getForeignKey()->getReferencedTableInstance()->getModel();
-  	 	  	        			$fModel = new $fmodelName();
-						        $refMutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-						        $fModel->$refMutator( $value );
- 				     			$this->getModel()->$mutator( $fModel );
+  	 	  	        		 $fmodelName = $column->getForeignKey()->getReferencedTableInstance()->getModel();
+  	 	  	        		 $fModel = new $fmodelName();
+						     $refMutator = $this->toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+						     $fModel->$refMutator($value);
+ 				     		 $this->getModel()->$mutator($fModel);
 
-						     	continue;
-				     		}
+						     continue;
+			     		  }
 
-   		   		 			$this->getModel()->$mutator( $value );
+   		   		 		  $this->getModel()->$mutator($value);
   	 	  	     }
 	     }
 }

@@ -38,12 +38,14 @@ class FrameworkException extends Exception {
 	   * @param Integer $line The line number the exception / error occurred
 	   * @return void
 	   */
-	  public function __construct( $message, $code = null, $file = null, $line = null ) {
+	  public function __construct($message = null, $code = null, $file = null, $line = null) {
 
-			 $this->message = $message;
-	  		 if( $code ) $this->code = $code;
-	  		 $this->file = ($file == null) ? __FILE__ : $file;
-  		 	 $this->line = ($line == null ) ? __LINE__ : $line;
+	         $error = error_get_last();
+
+			 $this->message = $message ? $message : $error['message'];
+	  		 $this->code = $code ? $code : $error['type'];
+	  		 $this->file = $file ? $file : $error['file'];
+  		 	 $this->line = $line ? $line : $error['line'];
 	  		 $this->trace = debug_backtrace();
 	  }
 }

@@ -163,12 +163,12 @@ var AgilePHP = {
 						 el.setAttribute( 'class', style );
 				},
 
-				search: function() {
+				search: function(isComponent) {
 
 					 var pos = location.pathname.indexOf( '.php' ) + 5;
 					 var mvcQuery = location.pathname.substring( pos );
 					 var mvcArgs = mvcQuery.split( '/' );
-					 var controller = mvcArgs[0];
+					 var controller = mvcArgs[0] + ((isComponent) ? '/' + mvcArgs[1] : '');
 					 var keyword = document.getElementById( 'agilephpSearchText' ).value;
 					 var field = document.getElementById( 'agilephpSearchField' ).value;
 					 var view = document.getElementById( 'view' ).value;

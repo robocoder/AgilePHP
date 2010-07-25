@@ -35,51 +35,53 @@ abstract class BaseModelXmlController extends BaseModelController {
 		  * data populated from the database result set.. If there is no 'id' set, the model's property
 		  * nodes will be null. A custom controller and action can be set to modify default behavior.
 		  * 
-		  * @param String $controller Optional controller to use for add/update/delete operations. Defaults to the controller
-		  *   						  that invoked this method.
-		  * @param String $action The controllers action method to invoke. Defaults to the model name (lowercase) followed
-		  * 			  		  by the action mode 'Add' or 'Edit'. For example, a user model would be either 'userAdd' or 'userEdit'.
-		  * @param array $params An array of parameters to pass into the action method 
+		  * @param String $controller Optional controller to use for CRUD operations. Defaults to the name of the controller that invoked this method.
+		  * @param String $action The controllers action method to invoke. Defaults to the persistence mode (persist|merge)
+		  * @param array $params An array of parameters to pass into the action method. Defaults to null.
 	      */
-	     protected function getModelAsFormXML( $controller = null, $action = null, $params = null ) {
+	     protected function getModelAsFormXML($controller = null, $action = null, $params = null) {
 
-	               $renderer = new AJAXRenderer();
-  			 	   $thisController = new ReflectionClass( $this );
+	               if(!$controller) {
 
-  			 	   $c = ($controller) ? $controller : $thisController->getName();
+	                   $thisController = new ReflectionClass($this);
+	                   $c = $thisController->getName();
+	               }
+	               else
+  			 	       $c = $controller;
+
   			 	   $a = ($action) ? $action : $this->getModelPersistenceAction();
 
    			 	   // php namespace support
-     		   	   $namespace = explode( '\\', $c );
+     		   	   $namespace = explode('\\', $c);
      		   	   $c = $namespace[0];
 
-     		   	   $modelNamespace = explode( '\\', $this->getModelName() );
-  			 	   $modelName = array_pop( $modelNamespace );
+     		   	   $modelNamespace = explode('\\', $this->getModelName());
+  			 	   $modelName = array_pop($modelNamespace);
 
   			 	   $xml = '<Form>';
 
   			 	   $fieldCount = 0;
 
-  			 	   if( $this->getModelPersistenceAction() == 'merge' ) {
+  			 	   if($this->getModelPersistenceAction() == 'merge') {
 
   			 	       $models = ORM::find($this->getModel());
   			 	   	   if(!isset($models[0]))
-  			 	   	   	  throw new FrameworkException( 'The ActiveRecord state for model \'' . $this->getModelName() . '\' could not be found.' );
+  			 	   	   	  throw new FrameworkException('The ActiveRecord state for model \'' . $this->getModelName() . '\' could not be found.');
 
   			 	   	   $fieldCount = count(ORM::getTableByModel($this->getModel())->getColumns());
-  			 	       $xml .= $renderer->toXML($models[0], $modelName, $modelName, false, false);
+  			 	       $xml .= XmlRenderer::render($models[0], $modelName, $modelName, false, false);
   			 	   }
   			 	   else
-  			 	       $xml .= $renderer->toXML($this->getModel(), $modelName, $modelName, false, false);
+  			 	       $xml .= XmlRenderer::render($this->getModel(), $modelName, $modelName, false, false);
 
 	  			   $xml .= '<controller>' . $c . '</controller>
 	  			 	   		<action>' . $a . '</action>';
 	  			   $xml .= ($params ? '<params>' . $params . '</params>' : '');
 	  			   $xml .= '<fieldCount>' . $fieldCount . '</fieldCount>
 	  			 	   	</Form>';
-	  			   
-	  			   Log::debug( 'BaseModelXmlController::getModelAsFormXML called with parameters controller = ' . $controller . ', action = ' . $action );
-	  			   Log::debug( 'BaseModelXmlController::getModelAsFormXML returning xml ' . $xml );
+
+	  			   Log::debug('BaseModelXmlController::getModelAsFormXML called with parameters controller = ' . $controller . ', action = ' . $action . ', params = ' . print_r($params, true));
+	  			   Log::debug('BaseModelXmlController::getModelAsFormXML returning xml ' . $xml);
 
   			 	   return $xml;
 	     }
@@ -100,13 +102,11 @@ abstract class BaseModelXmlController extends BaseModelController {
 	      */
 	     protected function getResultListAsXML() {
 
-             	   if( !$this->getResultList() )
-             	   	   throw new FrameworkException( 'BaseModelXmlController::getResultListAsXml() requires a valid result set to transform to XML.' );
-
-             	   $renderer = new AJAXRenderer();
+             	   if(!$this->getResultList())
+             	   	  throw new FrameworkException('BaseModelXmlController::getResultListAsXml() requires a valid result set to transform to XML.');
 
              	   $xml = '<ResultList>';
-             	   $xml .= $renderer->toXML($this->getResultList(), $this->getModelName(), 'Model', false, false);
+             	   $xml .= XmlRenderer::render($this->getResultList(), $this->getModelName(), 'Model', false, false);
 			 	   $xml .= '</ResultList>';
 
 			 	   return $xml;			 	
@@ -137,14 +137,21 @@ abstract class BaseModelXmlController extends BaseModelController {
 	      *		</Pagination>
 	      * </ResultList> 
 	      * 
+	      * @param string $controller 
 	      * @return An XML document representing the result list
 	      */
-	     protected function getResultListAsPagedXML( $controller = null, $action = null, $params = null ) {
+	     protected function getResultListAsPagedXML($controller = null, $action = null, $params = null) {
 
-	     		   $c = (!$controller) ? new ReflectionClass($this) : new ReflectionClass($controller);
+	               if(!$controller) {
+	                   
+	                   $thisController = new ReflectionClass($this);
+	                   $c = $thisController->getName();
+	               }
+	               else
+  			 	       $c = $controller;
 
 	     		   // php namespace support
-     		   	   $namespace = explode('\\', $c->getName());
+     		   	   $namespace = explode('\\', $c);
      		   	   $c = array_pop($namespace);
    		   		   $a = (!$action) ? 'index' : $action;
 
@@ -154,10 +161,8 @@ abstract class BaseModelXmlController extends BaseModelController {
              	   $end = $start + ($this->getMaxResults() - 1);
 			 	   if($end > $this->getCount()) $end = $this->getCount();
 
-             	   $renderer = new AJAXRenderer();
-
              	   $xml = '<ResultList>';
-             	   $xml .= $renderer->toXML($this->getResultList(), $this->getModelName(), 'Model', false, false);
+             	   $xml .= XmlRenderer::render($this->getResultList(), $this->getModelName(), 'Model', false, false);
              	   $xml .= '<Pagination>
              	   				<page>' . $this->getPage() . '</page>
              	   				<pageCount>' . $this->getPageCount() . '</pageCount>
@@ -169,13 +174,13 @@ abstract class BaseModelXmlController extends BaseModelController {
 			 	   				<recordEnd>' . $end . '</recordEnd>
 			 	   				<controller>' . $c . '</controller>
 			 	   				<action>' . $a . '</action>';
-			 	   if( $params ) $xml .= '<params>' . $params . '</params>';
+			 	   if($params) $xml .= '<params>' . $params . '</params>';
 
 			 	   $xml .= '</Pagination>
 			 	   	</ResultList>';
 
 			 	   Log::debug('BaseModelXmlController::getResultListAsPagedXML' . $xml);
-			 	   
+
 			 	   return $xml;			 	   
 	     }
 
@@ -185,37 +190,23 @@ abstract class BaseModelXmlController extends BaseModelController {
 	      * contain a value, the action is assumed a merge. If the primary key(s) do not
 	      * contain a value, the action is assumed persist.
 	      * 
+	      * @todo this needs to be made more robust - should probably be moved to ORM
+	      * 
 	      * @return 'persist' if the primary key value(s) are not present, 'merge' if
 	      * 	    the primary keys are present.
 	      */
 	     protected function getModelPersistenceAction() {
 
-	     		   $table = ORM::getTableByModel( $this->getModel() );
+	     		   $table = ORM::getTableByModel($this->getModel());
 	     		   $pkeyColumns = $table->getPrimaryKeyColumns();
-  			 	   foreach( $pkeyColumns as $column ) {
+  			 	   foreach($pkeyColumns as $column) {
 
-  			 	   			$accessor = 'get' . ucfirst( $column->getModelPropertyName() );
-  			 	   			if( !$this->getModel()->$accessor() )
-  			 	   				return 'persist';
+  			 	   		   $accessor = 'get' . ucfirst($column->getModelPropertyName());
+  			 	   		   if(!$this->getModel()->$accessor())
+  			 	   			  return 'persist';
   			 	   }
 
   			 	   return 'merge';
 	     }
-
-		 /**
-		  * Returns boolean response based on the configured 'type' attribute for the specified column.
-		  *  
-		  * @param Table $table The Table instance containing the column
-		  * @param String $columnName The name of the column to search
-		  * @return bool True if the column's 'type' attribute is set to 'bit', false otherwise.
-		  */
-		 private function isBit( $table, $columnName ) {
-	
-		  		 foreach( $table->getColumns() as $column )
-		  		 		  if( $column->getName() == $columnName )
-		  		 		  	  return $column->getType() == 'bit';
-
-		  		 return false;
-		  }
 }
 ?>

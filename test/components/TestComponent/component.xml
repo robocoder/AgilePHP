@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE agilephp PUBLIC "-//Make A Byte, inc//AgilePHP Component v1//EN" "http://www.makeabyte.com/xml/dtd/component.dtd">
+<!DOCTYPE agilephp SYSTEM "../../../src/component.dtd">
 <agilephp>
-
-	<component name="TestComponent" version="0.1a">
-
+	<component name="TestComponent" version="0.1">
 		<param name="config1" type="string" value="this is a test"/>
 		<param name="config2" type="date" value="2010-05-19T04:00:00.000Z"/>
 		<param name="config3" type="boolean" value="false"/>
 		<param name="config4" type="int" value="123"/>
-
 		<orm>
 			<table name="table1" model="TestComponent\model\Table1" description="">
 				<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" visible="false"/>
-				<column name="field1" type="varchar" length="255" required="true"/>
-				<column name="field2" type="varchar" length="10" default="Foo"/>
-				<column name="field3" type="int" length="10">
+				<column name="field1" display="Field One" type="varchar" length="255" required="true"/>
+				<column name="field2" display="Field Two" type="varchar" length="10" default="Foo"/>
+				<column name="field3" property="Table2" display="Table 2" type="int" length="10" sortable="false">
 					<foreignKey name="FK_Table1_2" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE" 
-						table="table2" column="id" controller="TestComponent" select="name"/>
+						table="table2" column="id" controller="TestComponent/table1" select="name"/>
 				</column>
 			</table>
 			<table name="table2" model="TestComponent\model\Table2" description="">
@@ -25,7 +22,5 @@
 				<column name="description" type="text"/>
 			</table>
 		</orm>
-
 	</component>
-
 </agilephp>

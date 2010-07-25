@@ -11,7 +11,7 @@
 class SoapDocumentLiteralTest extends PHPUnit_Framework_TestCase {
 
 	  
- 	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI', 
+ 	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI/?XDEBUG_SESSION_START=1&KEY=agilephp', 
 				  'soapaction' => '',
 				  'trace' => 1,
 				  'exceptions' => 1,
@@ -55,7 +55,7 @@ class SoapDocumentLiteralTest extends PHPUnit_Framework_TestCase {
                                    );
 
 			 parent::__construct();
-	  		 $this->client = new SOAPClient( 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI/wsdl', $this->options );
+	  		 $this->client = new SOAPClient( 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI/wsdl/?XDEBUG_SESSION_START=1&KEY=agilephp', $this->options );
 
 	  		 $this->mt1 = new MathTest();
 			 $this->mt1->a = 1;

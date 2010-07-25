@@ -9,7 +9,7 @@ class RenderersTest extends PHPUnit_Framework_TestCase {
 	   */
 	  public function PHTMLRenderer() {
 
-	  		 $url = 'http://localhost/test/index.php';
+	  		 $url = 'http://localhost/test/index.php?XDEBUG_SESSION_START=1&KEY=agilephp';
 			 $ch = curl_init( $url );
 			 curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 			 $response = curl_exec( $ch );
@@ -23,7 +23,7 @@ class RenderersTest extends PHPUnit_Framework_TestCase {
 	   */
 	  public function AJAXRendererJSON() {
 
-	  		 $url = 'http://localhost/test/index.php/AJAXController';
+	  		 $url = 'http://localhost/test/index.php/AJAXController/?XDEBUG_SESSION_START=1&KEY=agilephp';
 			 $ch = curl_init( $url );
 			 curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 			 $response = curl_exec( $ch );
@@ -39,7 +39,7 @@ class RenderersTest extends PHPUnit_Framework_TestCase {
 	  public function AJAXRendererXML() {
 
 	  		 $expected = '<?xml version="1.0" encoding="UTF-8" ?><Result><prop1>test1</prop1><prop2>test2</prop2></Result>';
-	  		 $url = 'http://localhost/test/index.php/AJAXController/xml';
+	  		 $url = 'http://localhost/test/index.php/AJAXController/xml/?XDEBUG_SESSION_START=1&KEY=agilephp';
 			 $ch = curl_init( $url );
 			 curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 			 $response = curl_exec( $ch );
@@ -50,21 +50,21 @@ class RenderersTest extends PHPUnit_Framework_TestCase {
 	  private function getMockObject() {
 	  	
 	  		  $role = new Role();
-	  		  $role->setName( 'test' );
+	  		  $role->setName('test');
 	  		  
 	  		  $role2 = new Role();
-	  		  $role2->setName( 'newtest' );
+	  		  $role2->setName('newtest');
 	  		  
-	  		  $roles = array( $role, $role2 );
+	  		  $roles = array($role, $role2);
 
 	  		  $user = new User();
-	  		  $user->setUsername( 'test' );
-	  		  $user->setPassword( '123abc' );
-	  		  $user->setCreated( date( 'c', strtotime( 'now' ) ) );
-	  		  $user->setLastLogin( date( 'c', strtotime( 'now' ) ) );
-	  		  $user->setEmail( 'jeremy.hahn@makeabyte.com' );
-	  		  $user->setRole( $role );
-	  		  $user->setRoles( $roles );
+	  		  $user->setUsername('test');
+	  		  $user->setPassword('123abc');
+	  		  $user->setCreated(date('c', strtotime('now')));
+	  		  $user->setLastLogin(date('c', strtotime('now')));
+	  		  $user->setEmail('root@localhost');
+	  		  $user->setRole($role);
+	  		  $user->setRoles($roles);
 
 	  		  return $user;
 	  }

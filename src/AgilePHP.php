@@ -87,7 +87,7 @@ final class AgilePHP {
 
               if(!file_exists($agilephp_xml)) {
 
-                  spl_autoload_register('AgilePHP::autoloadNoAnnotations');
+                  spl_autoload_register('AgilePHP::autoloadNoAnnotations', true, true);
                   return;
               }
 
@@ -743,6 +743,7 @@ final class AgilePHP {
           'BaseModelXmlController' => '/mvc/BaseModelXmlController.php',
           'BaseModelXslController' => '/mvc/BaseModelXslController.php',
           'BaseRenderer' => '/mvc/BaseRenderer.php',
+      	  'ComponentModelActionController' => '/mvc/ComponentModelActionController.php',
           'ExtFormRenderer' => '/mvc/ExtFormRenderer.php',
           'PHTMLRenderer' => '/mvc/PHTMLRenderer.php',
           'XSLTRenderer' => '/mvc/XSLTRenderer.php',

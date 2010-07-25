@@ -48,10 +48,7 @@ class PHTMLRenderer extends BaseRenderer {
 	         //Log::debug( 'PHTMLRenderer::render executed with parameter $view = \'' . $view . '\'' );
 
 	         // Prevent local variables from being visible to the view
-	         unset($f);
-	         unset($view);
-			 unset($key);
-			 unset($value);
+	         unset($f, $view, $key, $value);
 
 	         require $path;
 	  }

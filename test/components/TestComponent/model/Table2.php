@@ -18,6 +18,7 @@
  *
  * @package com.makeabyte.agilephp.test.component.TestComponent.model
  */
+namespace TestComponent\model;
 
 /**
  * Table2 model in the TestComponent model namespace
@@ -26,46 +27,43 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.component.TestComponent.model
  */
-namespace TestComponent\model;
-
 class Table2 {
 
-  public function __construct() { }
+      private $id;
+      private $name;
+      private $description;
 
-  private $id;
-  private $name;
-  private $description;
+      public function __construct() { }
 
-  #@Id
-  public function setId( $value ) {
-
-     $this->id = $value;
-  }
-
-  public function getId() {
-
-     return $this->id;
-  }
-
-  public function setName( $value ) {
-
-     $this->name = $value;
-  }
-
-  public function getName() {
-
-     return $this->name;
-  }
-  
-  public function setDescription( $description ) {
-  	
-  		$this->description = $description;
-  }
-  
-  public function getDescription() {
-  	
-  		return $this->description;
-  }
-
+      #@Id
+      public function setId( $value ) {
+    
+         $this->id = $value;
+      }
+    
+      public function getId() {
+    
+         return $this->id;
+      }
+    
+      public function setName( $value ) {
+    
+         $this->name = $value;
+      }
+    
+      public function getName() {
+    
+         return $this->name;
+      }
+      
+      public function setDescription( $description ) {
+      	
+      		$this->description = $description;
+      }
+      
+      public function getDescription() {
+      	
+      		return $this->description;
+      }
 }
 ?>

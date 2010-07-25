@@ -18,6 +18,7 @@
  *
  * @package com.makeabyte.agilephp.test.component.TestComponent.control
  */
+namespace TestComponent\control;
 
 /**
  * Table1 controller in the TestComponent controller namespace
@@ -26,25 +27,33 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.component.TestComponent.control
  */
-namespace TestComponent\control;
+class Table1Controller extends \ComponentModelActionController {
 
-class Table1Controller extends \BaseModelActionController {
+      private $model;
+      private $componentName = 'TestComponent';
 
-  private $model;
+      public function __construct() { 
+    
+             $this->model = new \TestComponent\model\Table1();
+             parent::__construct();
+      }
+    
+      /**
+       * (non-PHPdoc)
+       * @see AgilePHP/mvc/BaseModelController#getModel()
+       */
+      public function getModel() { 
+    
+             return $this->model;
+      }
 
-  public function __construct() { 
-
-    $this->model = new \TestComponent\model\Table1();
-    parent::__construct();
-  }
-
-  /**
-   * (non-PHPdoc)
-   * @see AgilePHP/mvc/BaseModelController#getModel()
-   */
-  public function getModel() { 
-
-    return $this->model;
-  }
+      /**
+       * (non-PHPdoc)
+       * @see AgilePHP/mvc/ComponentModelActionController#getComponentName()
+       */
+      protected function getComponentName() {
+    
+             return $this->componentName;
+      }
 }
 ?>
