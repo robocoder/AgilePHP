@@ -317,6 +317,9 @@ class ProjectRemote {
  * @package ' . $this->projectName . '
  */
 
+ ini_set(\'display_errors\', \'1\');
+ error_reporting(E_ALL);
+
 /**
  * This is the default index page that handles all requests for the web application.
  * Here, we load the core AgilePHP framework and call upon the Model-View-Control
@@ -340,7 +343,7 @@ class ProjectRemote {
 
 		 $renderer = new PHTMLRenderer();
 		 $renderer->set(\'title\', \'' . $this->projectName . ' :: Error Page\');
-		 $renderer->set(\'error\', $e->getMessage() . ($agilephp->isInDebugMode() ? \'<pre>\' . $e->getTraceAsString() . \'</pre>\' : \'\'));
+		 $renderer->set(\'error\', $e->getMessage() . (AgilePHP::isInDebugMode() ? \'<pre>\' . $e->getTraceAsString() . \'</pre>\' : \'\'));
 		 $renderer->render(\'error\');
  }
 ?>';

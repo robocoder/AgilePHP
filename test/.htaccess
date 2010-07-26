@@ -1,0 +1,24 @@
+<Files agilephp.xml>
+	order deny,allow
+	deny from all
+</Files>
+<Files orm.xml>
+	order deny,allow
+	deny from all
+</Files>
+<Files orm_mssql_test.xml>
+	order deny,allow
+	deny from all
+</Files>
+<Files orm_mysql_test.xml>
+	order deny,allow
+	deny from all
+</Files>
+<Files orm_pgsql_test.xml>
+	order deny,allow
+	deny from all
+</Files>
+<Files orm_sqlite_test.xml>
+	order deny,allow
+	deny from all
+</Files>

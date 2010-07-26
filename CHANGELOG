@@ -1,17 +1,6 @@
-- refactored component autoloader so that InterceptorFilter is executed only if
-  agilephp.xml contains a valid <annotations/> configuration element.
-- Added Component::getParams
-- Performance optimization to PHTMLRenderer::render
-- Refactored support for front controller style components to AgilePHP.ORM.search in client side javascript
-- Bug fix to Form::getXSL introduced from recent bit -> boolean checkbox refactoring
-- Refactored FrameworkException so all constructor arguments are now optional. Defaults to error_get_last() values.
-- Refactored TestComponent and TestPhar test components.
-- Created src/mvc/ComponentModelActionController.php which overrides BaseModelActionController to provide
-  the same functionality for front controller style components.
-- Component.xml is now being validated against component.dtd
-- Added TestComponent and TestPhar to test/view/header.html and performed
-  various tweaks, enhancements and bug fixes to components
-- Adding new "backward compatible apidoc" flag to changelog which indicates if changes have been made to the
-  framework which breaks backward compatibility / changes interfaces, object names or methods, etc.
+- Bug fix to studio/classes/ProjectRemote::createIndexDotPHP as a result of AgilePHP static refactoring.
+- Added the rest of the postgres data types to orm.dtd
+- Added .htaccess files to test and studio packages.
+- Rebundled test/components/TestPhar.tar.gz source with latest version in appstore
 
-Backward compatible apidoc: No
+Backward compatible apidoc: Yes
