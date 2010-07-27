@@ -63,17 +63,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
    		   		   $pkeyXslValues = $this->getSerializedPrimaryKeyColumnsAsXSL($pkeyFields);
 
    		   		   // If this is a many to many relationship, primary keys are foreign key values
-	     	       $pkeys = $table->getPrimaryKeyColumns();
-	     	       $fkeys = $table->getForeignKeyColumns();
-	     	       foreach($fkeys as $fColumn) {
-	     	           foreach($pkeys as $pColumn) {
-	     	              if($fColumn->getName() == $pColumn->getName()) {
-
-	     	                  $pkeyXslValues = preg_replace('/{/', '{' . $this->getModelName() . '/', $fkeyXslValues);
-	     	                  break;
-	     	              }
-	     	           }
-	     	       }
+	     	       if($fkeyXslValues) $pkeyXslValues = $fkeyXslValues;
 
    		   		   $order = $this->getOrderBy();
 

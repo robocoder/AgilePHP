@@ -352,6 +352,7 @@ abstract class BaseDialect {
 	     * @param $model The domain model object to persist
 	     * @return PDOStatement
 	     * @throws ORMException
+	     * @todo Work out foreign key auto persist/merge logic or drop support?
 	     */
 	    public function persist( $model ) {
 
@@ -394,28 +395,28 @@ abstract class BaseDialect {
 			   	    		// Get foreign key value from the referenced field/instance accessor
 			   	    		if( $model->$accessor()->$refAccessor() != null ) {
 
-			   	    			try {
-			   	    				  // Try to persist the referenced entity first
-					   	    		  $this->persist($model->$accessor());
-
-					   	    		  if($transformer = $columns[$i]->getTransformer())
-					   	    		     array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
-					   	    		  else
+//			   	    			try {
+//			   	    				  // Try to persist the referenced entity first
+//					   	    		  $this->persist($model->$accessor());
+//
+//					   	    		  if($transformer = $columns[$i]->getTransformer())
+//					   	    		     array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+//					   	    		  else
 					   	    		      array_push($values, $model->$accessor()->$refAccessor());
-			   	    			}
-			   	    			catch( Exception $e ) {
-
-			   	    				   // The referenced entity doesnt exist yet, persist it
-			   	    				   if( preg_match( '/duplicate/i', $e->getMessage() ) ) {
-
-			   	    				   	   $this->merge($model->$accessor());
-
-			   	    				   	   if($transformer = $columns[$i]->getTransformer())
-			   	    				   	      array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
-			   	    				   	   else
-			   	    				   	      array_push($values, $model->$accessor()->$refAccessor());
-			   	    				   }
-			   	    			}
+//			   	    			}
+//			   	    			catch( Exception $e ) {
+//
+//			   	    				   // The referenced entity doesnt exist yet, persist it
+//			   	    				   if( preg_match( '/duplicate/i', $e->getMessage() ) ) {
+//
+//			   	    				   	   $this->merge($model->$accessor());
+//
+//			   	    				   	   if($transformer = $columns[$i]->getTransformer())
+//			   	    				   	      array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+//			   	    				   	   else
+//			   	    				   	      array_push($values, $model->$accessor()->$refAccessor());
+//			   	    				   }
+//			   	    			}
 			   	    		}
 			   	    	}
 			   	    	else {
@@ -445,6 +446,7 @@ abstract class BaseDialect {
 	     * @param $model The model object to merge/update
 	     * @return PDOStatement
 	     * @throws ORMException
+	     * @todo Work out foreign key auto persist/merge logic or drop support? 
 	     */
 	    public function merge( $model ) {
 
@@ -479,21 +481,21 @@ abstract class BaseDialect {
 			   	    		// Get foreign key value from the referenced instance
 			   	    		if( $model->$accessor()->$refAccessor() != null ) {
 
-		   	    			    $this->merge( $model->$accessor() );
-		   	    			    
-		   	    			    if($transformer = $columns[$i]->getTransformer())
-   	    				   	       array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
-   	    				   	    else
+//		   	    			    $this->merge( $model->$accessor() );
+//		   	    			    
+//		   	    			    if($transformer = $columns[$i]->getTransformer())
+//   	    				   	       array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+//   	    				   	    else
    	    				   	       array_push($values, $model->$accessor()->$refAccessor());
-			   	    		}
-			   	    		else {
-			   	    			// Persist the referenced model instance, and use its new id as the foreign key value
-				   	    		$this->persist( $model->$accessor() );
-				   	    		
-				   	    		if($transformer = $columns[$i]->getTransformer())
-   	    				   	       array_push($values, $transformer::transform($this->pdo->lastInsertId()));
-   	    				   	    else
-   	    				   	       array_push($values, $this->pdo->lastInsertId());
+//			   	    		}
+//			   	    		else {
+//			   	    			// Persist the referenced model instance, and use its new id as the foreign key value
+//				   	    		$this->persist( $model->$accessor() );
+//				   	    		
+//				   	    		if($transformer = $columns[$i]->getTransformer())
+//   	    				   	       array_push($values, $transformer::transform($this->pdo->lastInsertId()));
+//   	    				   	    else
+//   	    				   	       array_push($values, $this->pdo->lastInsertId());
 			   	    		}
 			   	    	}
 			   	    	else {

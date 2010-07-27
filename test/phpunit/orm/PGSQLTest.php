@@ -24,6 +24,7 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 	  	     $role = new Role();
 	  	     $role->setName( 'phpunit' );
 	  	     $role->setDescription( 'Users who are used for phpunit testing' );
+	  	     $orm->persist($role);
 
 	  	     $session = Scope::getSessionScope();
 	  	     $sessionId = $session->getSessionId();
@@ -59,7 +60,7 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 	  	     $role2 = new Role();
 	  	     $role2->setName( 'test' );
 	  	     $role2->setDescription( 'This is another unit testing role' );
-	  	     ORM::persist( $role2 );
+	  	     $orm->persist($role2);
 
 	  	     $user2->setRole( $role2 );
 

@@ -24,6 +24,7 @@ class MySQLTest extends PHPUnit_Framework_TestCase {
 	  	     $role = new Role();
 	  	     $role->setName( 'phpunit' );
 	  	     $role->setDescription( 'Users who are used for phpunit testing' );
+	  	     $orm->persist($role);
 
 	  	     $session = Scope::getSessionScope();
 	  	     $sessionId = $session->getSessionId();

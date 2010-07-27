@@ -1,6 +1,5 @@
-- Bug fix to studio/classes/ProjectRemote::createIndexDotPHP as a result of AgilePHP static refactoring.
-- Added the rest of the postgres data types to orm.dtd
-- Added .htaccess files to test and studio packages.
-- Rebundled test/components/TestPhar.tar.gz source with latest version in appstore
+- Bug fix to BaseModelXslController::getModelListXSL many-to-many relationship support not supplying primary key values on action links.
+- Removed "auto persist/merge foriegn model" logic from BaseDialect and MSSQLDialect since it was causing data integrity issues in some cases.
+- Updated unit tests to persist foreign key models instead of relying on "auto persist/merge foreign model" logic.
 
 Backward compatible apidoc: Yes
