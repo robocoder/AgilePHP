@@ -63,7 +63,13 @@ abstract class BaseModelXslController extends BaseModelXmlController {
    		   		   $pkeyXslValues = $this->getSerializedPrimaryKeyColumnsAsXSL($pkeyFields);
 
    		   		   // If this is a many to many relationship, primary keys are foreign key values
-	     	       if($fkeyXslValues) $pkeyXslValues = $fkeyXslValues;
+	     	       $pkeys = $table->getPrimaryKeyColumns();
+	     	       foreach($pkeys as $pkey) {
+	     	         if($pkey->isForeignKey()) {
+	     	            $pkeyXslValues = $fkeyXslValues;
+	     	            break;
+	     	         }
+	     	       }
 
    		   		   $order = $this->getOrderBy();
 
@@ -236,7 +242,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     /**
 		  * Returns an XSL stylesheet used for add and update actions using the Form component.
 		  *
-		  * @param string $controller Optional controller responsible for edits. Defaults to the extension controller 
+		  * @param string $controller Optional controller responsible for edits. Defaults to the extension controller
 		  * @return String The XSL stylesheet.
 	      */
 	     protected function getModelFormXSL($controller = null, $action = null, $view = 'admin') {
