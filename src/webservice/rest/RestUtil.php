@@ -141,8 +141,6 @@ class RestUtil {
 	  		 	break;
 
 	  		 	case 'application/xhtml+xml':
-	  		 	      $className = get_class($data);
-
 	  		 	      if(is_array($data)) {
 	  		 	         if(!isset($data[0])) {
 
@@ -151,6 +149,8 @@ class RestUtil {
 	  		 	         }
 	  		 	         $className = get_class($data[0]);
 	  		 	      }
+	  		 	      else
+	  		 	         $className = get_class($data);
 
 	  		 	      $class = new ReflectionClass($className);
 	  		 		  // Perform XSLT transformation if a model xsl view exists
