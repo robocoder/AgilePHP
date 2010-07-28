@@ -114,7 +114,7 @@ class Interception {
 			 $namespace = implode( '\\', $namespace );
 
 		 	 if( class_exists( $this->class, false ) ) return;
-	 	 
+
 		 	 if( strpos( $className, 'phar://' ) !== false ) {
 
 		 	     $code = file_get_contents( $className );
@@ -164,7 +164,7 @@ class Interception {
 			 // __callstatic support
 	  		 $class = str_replace('\\', '::', $this->class);
 
-	  		 if( class_exists( $className, false ) ) return;
+	  		 if( class_exists( $this->class, false ) ) return;
 
 	 	     // Phar support
 	  		 if( strpos( $className, 'phar://' ) !== false ) {

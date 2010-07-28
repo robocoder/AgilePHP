@@ -23,34 +23,34 @@
  * Interceptor responsible for capturing REST resource requests from the MVC
  * component and routing them to the proper service method and resource based
  * on URI composition.
- * 
+ *
  * NOTE: It seems that ironically enough, REST does not really fit the MVC paradigm,
  * since MVC requests use /service-or-controller/action-also-known-as-a-verb whereas
  * REST requests use /service-or-controller/nouns-only.
  * The #@RestService acts as a router or front controller to ensure requests to REST
  * resources stay "restful".
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  * <code>
  * #@RestService
  * class MyRestAPI {
- * 
+ *
  * 		 // #@RestService interceptor will route the HTTP request to the proper resource
  * 	     // defined in the service based on #@Path::resource declarations.
  * }
  * </code>
  */
-#@Interceptor 
+#@Interceptor
 class RestService {
 
 	  /**
 	   * Intercepts a REST web service before the MVC executes an
 	   * action method. This allows introspection of the REST web service
 	   * as its instantiated so this class can perform routing of the
-	   * REST request to the proper action method. 
-	   * 
+	   * REST request to the proper action method.
+	   *
 	   * @param InvocationContext $ic The call state of the interception
 	   * @return void
 	   * @throws RestException
@@ -59,17 +59,15 @@ class RestService {
 	  public function intercept( InvocationContext $ic ) {
 
 	  		 // Parse the REST service class name, resource, and parameters from the HTTP URL
-	  		 $callee = $ic->getCallee();
-	  		 $mvc = $callee['class'];
-	  		 $service = $mvc::getController();
-	  		 $action = $mvc::getAction();
-	  		 $parameters = $mvc::getParameters();
-	  		 array_unshift( $parameters, $action );
-	  		 $request = '/' . implode( '/', $parameters );
+	  		 $service = preg_replace('/_Intercepted/', '', get_class($ic->getTarget()));
+	  		 $action = MVC::getAction();
+	  		 $parameters = MVC::getParameters();
+	  		 array_unshift($parameters, $action);
+	  		 $request = '/' . implode('/', $parameters);
 
 	  		 Log::debug( '#@RestService::intercept Routing REST service \'' . $service . '\' resource request \'' . $request . '\'.' );
 
-			 $annotes = Annotation::getMethodsAsArray( $service );
+			 $annotes = Annotation::getMethodsAsArray($service);
 			 foreach( $annotes as $method => $annotations ) {
 
 			 		  // Process default action method first. It will never have any variables to extract
@@ -122,7 +120,7 @@ class RestService {
 			 				 	   	   $verb = strtoupper( $_SERVER['REQUEST_METHOD'] );
 			 				 	   	   $hasVerb = false;
 			 				 	   	   foreach( $annotations as $a )
-			 				 	   	   		if( $a instanceof $verb ) $hasVerb = true; 
+			 				 	   	   		if( $a instanceof $verb ) $hasVerb = true;
 
 			 				 	   	   if( !$hasVerb ) continue;
 
