@@ -21,7 +21,7 @@
 
 /**
  * Handles MySQL specific queries
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.orm.dialect
@@ -32,31 +32,35 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 
 	  /**
 	   * Initalize MySQLDialect
-	   * 
+	   *
 	   * @param Database $db The Database object representing orm.xml
 	   * @return void
 	   */
-	  public function __construct( Database $db ) {
+	  public function __construct(Database $db) {
 
 	  	     try {
-	  	  			$this->pdo = new PDO( 'mysql:host=' . $db->getHostname() . ';dbname=' . $db->getName(), $db->getUsername(), $db->getPassword() );
-	  	  			$this->connectFlag = 1;   		
-	  	     }
-	  	     catch( PDOException $pdoe ) {
+	  	            $parameters = 'mysql:host=' . $db->getHostname() . ';' .
+	  	                         (($db->getPort()) ? 'port=' . $db->getPort() . ';' : '') .
+	  	                         'dbname=' . $db->getName() . ';';
 
-	  	     	    Log::debug( 'MySQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.' );
+	  	  			$this->pdo = new PDO($parameters, $db->getUsername(), $db->getPassword());
+	  	  			$this->connectFlag = 1;
+	  	     }
+	  	     catch(PDOException $pdoe) {
+
+	  	     	    Log::debug('MySQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.');
 
 	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
 	  	     		// be invoked to create the database schema.
-	  	     	    if( strpos( $pdoe->getMessage(), 'Unknown database' ) ) {
+	  	     	    if(strpos($pdoe->getMessage(), 'Unknown database')) {
 
-	  	     	    	$this->pdo = new PDO( 'mysql:host=' . $db->getHostname() . ';', $db->getUsername(), $db->getPassword() );
+	  	     	    	$this->pdo = new PDO('mysql:host=' . $db->getHostname() . ';', $db->getUsername(), $db->getPassword());
 	  	     	    	$this->connectFlag = 0;
 	  	     	    }
 	  	     	    else {
 
 	  	     	    	$this->connectFlag = -1;
-	  	     	    	throw new ORMException( 'Failed to create MySQLDialect instance. ' . $pdoe->getMessage() );
+	  	     	    	throw new ORMException('Failed to create MySQLDialect instance. ' . $pdoe->getMessage());
 	  	     	    }
 	  	     }
 
@@ -76,65 +80,65 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#call($model)
 	   */
-	  public function call( $model ) {
+	  public function call($model) {
 
 	  	     $values = array();
 	  		 $outs = array();
 	  		 $params = array();
-	  		 $class = get_class( $model );
-	  		 $proc = $this->getProcedureByModel( $model );
+	  		 $class = get_class($model);
+	  		 $proc = $this->getProcedureByModel($model);
 
-	  		 foreach( $proc->getParameters() as $param ) {
+	  		 foreach($proc->getParameters() as $param) {
 
-	  		 		  if( $param->getMode() == 'IN' || $param->getMode() == 'INOUT' ) {
+	  		 		  if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
 
-	  		 			  $accessor = $this->toAccessor( $param->getModelPropertyName() );
-	  		 			  array_push( $params, $model->$accessor() );
+	  		 			  $accessor = $this->toAccessor($param->getModelPropertyName());
+	  		 			  array_push($params, $model->$accessor());
 	  		 		  }
 
-	  		 		  if( $param->getMode() == 'OUT' || $param->getMode() == 'INOUT' )
+	  		 		  if($param->getMode() == 'OUT' || $param->getMode() == 'INOUT')
 	  		 			  $outs[$param->getName()] = $param->getModelPropertyName();
 	  		 }
 
-	  		 $query = 'call ' . $proc->getName() . '( ';
-	  		 for( $i=0; $i<count( $params ); $i++ ) {
+	  		 $query = 'call ' . $proc->getName() . '(';
+	  		 for($i=0; $i<count($params); $i++) {
 
 	  		 		$values[$i] = $params[$i];
-	  		 		$query .= '?' . (($i+1) == count($query) ? ', ': '' );
+	  		 		$query .= '?' . (($i+1) == count($query) ? ', ': '');
 	  		 }
-	  		 $query .= ' );';
+	  		 $query .= ');';
 
-	  		 $this->prepare( $query );
-	  		 $stmt = $this->execute( $values );
-	  		 $stmt->setFetchMode( PDO::FETCH_ASSOC );
+	  		 $this->prepare($query);
+	  		 $stmt = $this->execute($values);
+	  		 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 	  		 $results = $stmt->fetchAll();
 
-	  		 if( !$results ) return true;
+	  		 if(!$results) return true;
 
-	  		 if( count( $results ) > 1 ) {
+	  		 if(count($results) > 1) {
 
 		  		 $models = array();
-		 		 foreach( $results as $record ) {
+		 		 foreach($results as $record) {
 
 		 		 		  $m = new $class;
-		 		 		  foreach( $record as $column => $value ) {
-	
-		 		 		  		   $mutator = $this->toMutator( $outs[$column] );
-		  		 		  		   $m->$mutator( $value );
+		 		 		  foreach($record as $column => $value) {
+
+		 		 		  		   $mutator = $this->toMutator($outs[$column]);
+		  		 		  		   $m->$mutator($value);
 		 		 		  }
-		 		 		  array_push( $models, $m );
+		 		 		  array_push($models, $m);
 	 		 	 }
 
 	 		 	 return $models;
 	  		 }
 
-	  		 foreach( $results as $record ) {
+	  		 foreach($results as $record) {
 
 	  		 		  $m = new $class;
-		 		 	  foreach( $record as $column => $value ) {
-	
-		 		 		  	   $mutator = $this->toMutator( $outs[$column] );
-		  		 		  	   $m->$mutator( $value );
+		 		 	  foreach($record as $column => $value) {
+
+		 		 		  	   $mutator = $this->toMutator($outs[$column]);
+		  		 		  	   $m->$mutator($value);
 		 		      }
 		 		 	  return $m;
 	  		 }
@@ -143,52 +147,52 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#create()
-	   * 
+	   *
 	   * @todo Add engine and charset attributes to orm.xml 'table' element
 	   * 	   and assign values from xml definitions. Also need support for dynamic
 	   * 	   setting of unique key, fulltext, key, index, etc...
 	   */
 	  public function create() {
 
-	  		 $this->query( 'CREATE DATABASE ' . $this->database->getName() . ';' );
-	  		 
+	  		 $this->query('CREATE DATABASE ' . $this->database->getName() . ';');
+
 	  		 // Now that the database is present, connect directly to the database.
-	  		 $this->pdo = new PDO( 'mysql:host=' . $this->database->getHostname() . ';dbname=' . $this->database->getName(),
-	  		 						 $this->database->getUsername(), $this->database->getPassword() );
+	  		 $this->pdo = new PDO('mysql:host=' . $this->database->getHostname() . ';dbname=' . $this->database->getName(),
+	  		 						 $this->database->getUsername(), $this->database->getPassword());
 
-			 $this->query( 'SET foreign_key_checks = 0;' );
+			 $this->query('SET foreign_key_checks = 0;');
 
-	  		 foreach( $this->database->getTables() as $table )
-			   		  $this->query( $this->toCreateTableSQL( $table ) );
+	  		 foreach($this->database->getTables() as $table)
+			   		  $this->query($this->toCreateTableSQL($table));
 
-	  		 $this->query( 'SET foreign_key_checks = 1;' );
+	  		 $this->query('SET foreign_key_checks = 1;');
 	  }
 
 	  /**
 	   * (non-PHPdoc)
-	   * 
+	   *
 	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
 	   */
-	  public function createTable( Table $table ) {
+	  public function createTable(Table $table) {
 
-      	     $this->query( $this->toCreateTableSQL( $table ) );
+      	     $this->query($this->toCreateTableSQL($table));
 	  }
 
 	  /**
 	   * Generates SQL CREATE TABLE for the specified table.
-	   * 
+	   *
 	   * @param Table $table The table to generate the CREATE TABLE code for
 	   * @return string The SQL CREATE TABLE code
 	   */
-	  private function toCreateTableSQL( Table $table ) {
+	  private function toCreateTableSQL(Table $table) {
 
-	  		  $defaultKeywords = array( 'CURRENT_TIMESTAMP' );  // Default values that get passed unquoted
+	  		  $defaultKeywords = array('CURRENT_TIMESTAMP');  // Default values that get passed unquoted
 
-  	 		  $sql = 'CREATE TABLE `' . $table->getName() . '` ( ';
+  	 		  $sql = 'CREATE TABLE `' . $table->getName() . '` (';
 
-  	 		  foreach( $table->getColumns() as $column ) {
+  	 		  foreach($table->getColumns() as $column) {
 
-  	 				   $sql .= '`' . $column->getName() . '` ' . $column->getType() . 
+  	 				   $sql .= '`' . $column->getName() . '` ' . $column->getType() .
   	 						   (($column->getLength()) ? '(' . $column->getLength() . ')' : '') .
   	 						   (($column->isRequired() == true) ? ' NOT NULL' : '') .
   	 						   (($column->isAutoIncrement() === true) ? ' AUTO_INCREMENT' : '') .
@@ -197,69 +201,69 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
   	 		  }
 
    			  $pkeyColumns = $table->getPrimaryKeyColumns();
-   			  if( count( $pkeyColumns ) ) {
+   			  if(count($pkeyColumns)) {
 
-   			  	  $sql .= ' PRIMARY KEY ( ';
-   				  for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+   			  	  $sql .= ' PRIMARY KEY (';
+   				  for($i=0; $i<count($pkeyColumns); $i++) {
 
    					   $sql .= '`' . $pkeyColumns[$i]->getName() . '`';
 
-   						   if( ($i+1) < count( $pkeyColumns ) )
+   						   if(($i+1) < count($pkeyColumns))
    						   	   $sql .= ', ';
    				  }
-   				  $sql .= ' )';
+   				  $sql .= ')';
 
    				  /*
-   				  if( count( $pkeyColumns ) > 1 )
+   				  if(count($pkeyColumns) > 1)
    				  	  $sql .= ', UNIQUE KEY `' . $pkeyColumns[0]->getName() . '` (`' . $pkeyColumns[0]->getName() . '`)';
    				  */
    			  }
    			  else
    			      $sql = substr($sql, 0, -2); // chop off trailing comma due to missing primary key
 
-	   		  if( $table->hasForeignKey() ) {
+	   		  if($table->hasForeignKey()) {
 
 	      		  $bProcessedKeys = array();
 	   		  	  $foreignKeyColumns = $table->getForeignKeyColumns();
-	   		  	  for( $h=0; $h<count( $foreignKeyColumns ); $h++ ) {
+	   		  	  for($h=0; $h<count($foreignKeyColumns); $h++) {
 
 	   		  	  		   $fk = $foreignKeyColumns[$h]->getForeignKey();
 
-   		  	  		       if( in_array( $fk->getName(), $bProcessedKeys ) )
-	   		  	  		       continue;
+   		  	  		       if(in_array($fk->getName(), $bProcessedKeys))
+	   		  	  		      continue;
 
    	  	  	       		   // Get foreign keys which are part of the same relationship
-   	  	  	       		   $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
+   	  	  	       		   $relatedKeys = $table->getForeignKeyColumnsByKey($fk->getName());
 
-   	  	  	       		   $sql .= ', KEY `' . $fk->getName() . '` ( ';
+   	  	  	       		   $sql .= ', KEY `' . $fk->getName() . '` (';
 
-   	  	  	       		   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
-   	  	  	       		   		array_push( $bProcessedKeys, $relatedKeys[$j]->getName() );
+   	  	  	       		   for($j=0; $j<count($relatedKeys); $j++) {
+
+   	  	  	       		   		array_push($bProcessedKeys, $relatedKeys[$j]->getName());
    	  	  	       		   		$sql .= '`' . $relatedKeys[$j]->getColumnInstance()->getName() . '`';
-   	  	  	       		   		if( ($j+1) < count( $relatedKeys ) )
+   	  	  	       		   		if(($j+1) < count($relatedKeys))
    	  	  	       		   		    $sql .= ', ';
    	  	  	       		   }
-   	  	  	       		   $sql .= ' ), CONSTRAINT `' . $fk->getName() . '`';
-       	       		   	 	   $sql .= ' FOREIGN KEY ( ';
-   	  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
+   	  	  	       		   $sql .= '), CONSTRAINT `' . $fk->getName() . '`';
+       	       		   	 	   $sql .= ' FOREIGN KEY (';
+   	  	  		    	   for($j=0; $j<count($relatedKeys); $j++) {
+
    	  	  	       		   	 	$sql .= '`' . $relatedKeys[$j]->getColumnInstance()->getName() . '`';
-   	  	  	       		   		if( ($j+1) < count( $relatedKeys ) )
+   	  	  	       		   		if(($j+1) < count($relatedKeys))
    	  	  	       		   		    $sql .= ', ';
    	  	  	       		   }
-						   $sql .= ' ) REFERENCES `' . $fk->getReferencedTable() . '` ( ';
-   	  	  		    	   for( $j=0; $j<count( $relatedKeys ); $j++ ) {
- 
+						   $sql .= ') REFERENCES `' . $fk->getReferencedTable() . '` (';
+   	  	  		    	   for($j=0; $j<count($relatedKeys); $j++) {
+
        	       		   		 	    $sql .= '`' . $relatedKeys[$j]->getReferencedColumn() . '`';
-   	  	  	       		   	    if( ($j+1) < count( $relatedKeys ) )
+   	  	  	       		   	    if(($j+1) < count($relatedKeys))
    	  	  	       		   		     $sql .= ', ';
    	  	  		    	   }
-   	  	  	       		   $sql .= ' ) ';
-     	  		   			   $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '' );
-     	  		   			   $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' );
+   	  	  	       		   $sql .= ') ';
+     	  		   			   $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '');
+     	  		   			   $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '');
 
-	   		  	  		   array_push( $bProcessedKeys, $fk->getName() );
+	   		  	  		   array_push($bProcessedKeys, $fk->getName());
 	   		  	  }
 	   		  }
 
@@ -273,9 +277,9 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#dropTable(Table $table)
 	   */
-	  public function dropTable( Table $table ) {
+	  public function dropTable(Table $table) {
 
-  	 	 	 $this->query( 'DROP TABLE ' . $table->getName() . ';' );
+  	 	 	 $this->query('DROP TABLE ' . $table->getName() . ';');
 	  }
 
 	  /**
@@ -284,7 +288,7 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function drop() {
 
-  	 	 	 $this->query( 'DROP DATABASE ' . $this->database->getName() . ';' );
+  	 	 	 $this->query('DROP DATABASE ' . $this->database->getName() . ';');
 	  }
 
 	  /**
@@ -294,15 +298,15 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	  public function reverseEngineer() {
 
 	  		 $Database = new Database();
-	  		 $Database->setName( $this->database->getName() );
-	  		 $Database->setType( $this->database->getType() );
-	  		 $Database->setHostname( $this->database->getHostname() );
-	  		 $Database->setUsername( $this->database->getUsername() );
-	  		 $Database->setPassword( $this->database->getPassword() );
+	  		 $Database->setName($this->database->getName());
+	  		 $Database->setType($this->database->getType());
+	  		 $Database->setHostname($this->database->getHostname());
+	  		 $Database->setUsername($this->database->getUsername());
+	  		 $Database->setPassword($this->database->getPassword());
 
-	  		 $stmt = $this->prepare( 'SHOW TABLES' );
+	  		 $stmt = $this->prepare('SHOW TABLES');
       	     $stmt->execute();
-      	     $stmt->setFetchMode( PDO::FETCH_OBJ );
+      	     $stmt->setFetchMode(PDO::FETCH_OBJ);
       	     $tables = $stmt->fetchAll();
 
       	     $tblIndex = 'Tables_in_' . $this->getDatabase()->getName();
@@ -322,76 +326,73 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 							  AND rc.CONSTRAINT_SCHEMA = \'' . $Database->getName() . '\'
 							  AND kcu.REFERENCED_TABLE_NAME IS NOT NULL';
 
-      	     $stmt = $this->query( $fkeyQuery );
-      	     $stmt->setFetchMode( PDO::FETCH_OBJ );
+      	     $stmt = $this->query($fkeyQuery);
+      	     $stmt->setFetchMode(PDO::FETCH_OBJ);
 			 $foreignKeys = $stmt->fetchAll();
-		 
-      	     foreach( $tables as $sqlTable ) {
 
-      	     		  $Table = new Table();
-      	     		  $Table->setName( str_replace( ' ', '_', $sqlTable->$tblIndex ) );
-      	     		  $Table->setModel( ucfirst( $Table->getName() ) );
+      	     foreach($tables as $sqlTable) {
 
-      	      		  $stmt = $this->query( 'DESC ' . $sqlTable->$tblIndex );
-      	      		  $stmt->setFetchMode( PDO::FETCH_OBJ );
-      	      		  $descriptions = $stmt->fetchAll();
-      	      		   
-      	      		  foreach( $descriptions as $desc ) {
+      	     		 $Table = new Table();
+      	     		 $Table->setName(str_replace(' ', '_', $sqlTable->$tblIndex));
+      	     		 $Table->setModel(ucfirst($Table->getName()));
+
+      	      		 $stmt = $this->query('DESC ' . $sqlTable->$tblIndex);
+      	      		 $stmt->setFetchMode(PDO::FETCH_OBJ);
+      	      		 $descriptions = $stmt->fetchAll();
+
+      	      		 foreach($descriptions as $desc) {
 
       	      		   	   $type = $desc->Type;
 	      	      		   $length = null;
-	      	      		   $pos = strpos( $desc->Type, '(' );
+	      	      		   $pos = strpos($desc->Type, '(');
 
-	      	      		   if( $pos !== false ) {
-	      	      		   	 
-	      	      		   	   $type = preg_match_all( '/^(.*)\((.*)\).*$/i', $desc->Type, $matches );
+	      	      		   if($pos !== false) {
+
+	      	      		   	   $type = preg_match_all('/^(.*)\((.*)\).*$/i', $desc->Type, $matches);
 
 	      	      		   	   $type = $matches[1][0];
 	      	      		   	   $length = $matches[2][0];
 	      	      		   }
 
-	      	      		   $Column = new Column( null, $Table->getName() );
-						   $Column->setName( $desc->Field );
-						   $Column->setType( $type );
-						   $Column->setLength( $length );
+	      	      		   $Column = new Column(null, $Table->getName());
+						   $Column->setName($desc->Field);
+						   $Column->setType($type);
+						   $Column->setLength($length);
 
-						   if( isset( $desc->Default ) && $desc->Default )
-						   	    $Column->setDefault( $desc->Default );
+						   if(isset($desc->Default) && $desc->Default)
+						   	  $Column->setDefault($desc->Default);
 
-						   if( isset( $desc->Null ) && $desc->Null == 'NO' )
-						   	   $Column->setRequired( true );
+						   if(isset($desc->Null) && $desc->Null == 'NO')
+						   	  $Column->setRequired(true);
 
-						   if( isset( $desc->Key ) && $desc->Key == 'PRI' )
-						   	   $Column->setPrimaryKey( true );
+						   if(isset($desc->Key) && $desc->Key == 'PRI')
+						   	  $Column->setPrimaryKey(true);
 
-						   if( isset( $desc->Extra ) && $desc->Extra == 'auto_increment' )
-						   	   $Column->setAutoIncrement( true );
+						   if(isset($desc->Extra) && $desc->Extra == 'auto_increment')
+						   	  $Column->setAutoIncrement(true);
 
-	      	      		   foreach( $foreignKeys as $fkey ) {
-	
-									if( $fkey->table == $Table->getName() &&
-										$fkey->column == $Column->getName() ) {
-	
-											$ForeignKey = new ForeignKey( null, $fkey->table, $fkey->column );
-											$ForeignKey->setName( $fkey->constraint );
-											$ForeignKey->setType( 'one-to-many' );
-											$ForeignKey->setReferencedTable( $fkey->referenced_table );
-											$ForeignKey->setReferencedColumn( $fkey->referenced_column );
-											$ForeignKey->setReferencedController( ucfirst( $fkey->referenced_table ) . 'Controller' );
-											$ForeignKey->setOnDelete( $fkey->delete_rule );
-											$ForeignKey->setOnUpdate( $fkey->update_rule );
+	      	      		   foreach($foreignKeys as $fkey) {
 
-											$Column->setForeignKey( $ForeignKey );
-											$Column->setProperty( ucfirst( $fkey->referenced_table ) );
+									if($fkey->table == $Table->getName() &&
+									   $fkey->column == $Column->getName()) {
+
+											$ForeignKey = new ForeignKey(null, $fkey->table, $fkey->column);
+											$ForeignKey->setName($fkey->constraint);
+											$ForeignKey->setType('one-to-many');
+											$ForeignKey->setReferencedTable($fkey->referenced_table);
+											$ForeignKey->setReferencedColumn($fkey->referenced_column);
+											$ForeignKey->setReferencedController(ucfirst($fkey->referenced_table) . 'Controller');
+											$ForeignKey->setOnDelete($fkey->delete_rule);
+											$ForeignKey->setOnUpdate($fkey->update_rule);
+
+											$Column->setForeignKey($ForeignKey);
+											$Column->setProperty(ucfirst($fkey->referenced_table));
 										}
 	      	      		   }
-
-      	      		  	   $Table->addColumn( $Column );
-      	      		   }
-
-      	      		   $Database->addTable( $Table );	   
+      	      		  	   $Table->addColumn($Column);
+      	      		  }
+      	      		  $Database->addTable($Table);
       	      }
-
       	      return $Database;
 	  }
 }

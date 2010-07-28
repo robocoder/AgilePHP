@@ -460,7 +460,10 @@ class IdentityManagerImpl implements IdentityManager {
 
    	  		    $model->setLastLogin(strtotime('now'));
    	  		    $this->setModel($model);
-   	  		    $this->merge();
+
+   	  		    if($authenticator instanceof DefaultAuthenticator)
+   	  		       $this->merge();
+
     	  		return true;
 	  		 }
 

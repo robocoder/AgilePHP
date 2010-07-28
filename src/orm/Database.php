@@ -21,7 +21,7 @@
 
 /**
  * Represents a database in the AgilePHP ORM component.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.orm
@@ -31,6 +31,7 @@ class Database {
 	  private $name;
 	  private $type;
 	  private $hostname;
+	  private $port;
 	  private $username;
 	  private $password;
 	  private $driver;
@@ -40,43 +41,44 @@ class Database {
 
 	  /**
 	   * Creates a new Database instance with optional database assignment.
-	   * 
+	   *
 	   * @param SimpleXMLElement $database A database instance represented in
 	   * 						 a SimpleXMLElement structure.
 	   */
-	  public function __construct( SimpleXMLElement $database = null ) {
+	  public function __construct(SimpleXMLElement $database = null) {
 
-	  		 if( $database !== null ) {
+	  		 if($database !== null) {
 
-		  		 $this->name = (string)$database->attributes()->name;
-		  		 $this->type = (string)$database->attributes()->type;
-		  		 $this->hostname = (string)$database->attributes()->hostname;
-		  		 $this->username = (string)$database->attributes()->username;
-		  		 $this->password = (string)$database->attributes()->password;
-		  		 $this->driver = (string)$database->attributes()->driver;
+		  		$this->name = (string)$database->attributes()->name;
+		  		$this->type = (string)$database->attributes()->type;
+		  		$this->hostname = (string)$database->attributes()->hostname;
+		  		$this->port = (string)$database->attributes()->port;
+		  		$this->username = (string)$database->attributes()->username;
+		  		$this->password = (string)$database->attributes()->password;
+		  		$this->driver = (string)$database->attributes()->driver;
 
-		  		 foreach( $database->table as $table )
-		  		     	  array_push( $this->tables, new Table( $table ) );
+		  		foreach($database->table as $table)
+		  		     array_push($this->tables, new Table($table));
 
-		  		 foreach( $database->procedure as $procedure )
-		  		     	  array_push( $this->procedures, new Procedure( $procedure ) );
+		  		foreach($database->procedure as $procedure)
+		  		     array_push($this->procedures, new Procedure($procedure));
 	  		 }
 	  }
 
 	  /**
 	   * Sets the name of the database
-	   * 
+	   *
 	   * @param String $name The database name
 	   * @return void
 	   */
-	  public function setName( $name ) {
+	  public function setName($name) {
 
 	  		 $this->name = $name;
 	  }
 
 	  /**
 	   * Returns the name of the database
-	   * 
+	   *
 	   * @return String The database name
 	   */
 	  public function getName() {
@@ -86,19 +88,19 @@ class Database {
 
 	  /**
 	   * Sets the type of database server
-	   * 
-	   * @param String $type The database server type (sqlite|mysql|pgsql|firebird|informix|oracle|dblib|ibm)
+	   *
+	   * @param String $type The database server type (sqlite|mysql|pgsql|mssql)
 	   * @return void
 	   */
-	  public function setType( $type ) {
+	  public function setType($type) {
 
 	  		 $this->type = $type;
 	  }
 
 	  /**
 	   * Returns the database server type.
-	   * 
-	   * @return String The type of database server type (sqlite|mysql|pgsql|firebird|informix|oracle|dblib|ibm)
+	   *
+	   * @return String The type of database server type (sqlite|mysql|pgsql|mssql)
 	   */
 	  public function getType() {
 
@@ -107,19 +109,18 @@ class Database {
 
 	  /**
 	   * Sets the hostname of the database server
-	   * 
-	   * @param String $hostname The hostname of the database server (or file path
-	   * 						  for sqlite databases).
+	   *
+	   * @param String $hostname The hostname of the database server (or file path for sqlite databases).
 	   * @return void
 	   */
-	  public function setHostname( $hostname ) {
+	  public function setHostname($hostname) {
 
 	  		 $this->hostname = $hostname;
 	  }
 
 	  /**
 	   * Returns the hostname of the database server.
-	   * 
+	   *
 	   * @return String The hostname of the database server (or file path for sqlite databases).
 	   */
 	  public function getHostname() {
@@ -128,19 +129,40 @@ class Database {
 	  }
 
 	  /**
+	   * Sets the database server's TCP/IP listen port.
+	   *
+	   * @param int $port The TCP/IP port
+	   * @return void
+	   */
+	  public function setPort($port) {
+
+	         $this->port = $port;
+	  }
+
+	  /**
+	   * Gets the database server's TCP/IP listen port.
+	   *
+	   * @return int The TCP/IP port
+	   */
+	  public function getPort() {
+
+	         return $this->port;
+	  }
+
+	  /**
 	   * Sets the username required to access the database
-	   * 
+	   *
 	   * @param String $username The username to connect to the database with
 	   * @return void
 	   */
-	  public function setUsername( $username ) {
+	  public function setUsername($username) {
 
 	  		 $this->username = $username;
 	  }
 
 	  /**
 	   * Returns the username which is used to connect to the database
-	   * 
+	   *
 	   * @return String The username thats used to connect to the database
 	   */
 	  public function getUsername() {
@@ -150,7 +172,7 @@ class Database {
 
 	  /**
 	   * Sets the password which is used to connect to the database
-	   * 
+	   *
 	   * @param String $password The password used to authenticate access to the database
 	   * @return void
 	   */
@@ -161,7 +183,7 @@ class Database {
 
 	  /**
 	   * Returns the password thats used to connect to the database
-	   * 
+	   *
 	   * @return String The password used to authenticate access to the database
 	   */
 	  public function getPassword() {
@@ -171,7 +193,7 @@ class Database {
 
 	  /**
 	   * Sets the driver string used in ODBC connections.
-	   * 
+	   *
 	   * @param String $driver The driver name.
 	   * @return void
 	   */
@@ -182,7 +204,7 @@ class Database {
 
 	  /**
 	   * Returns the driver used in ODBC connections.
-	   * 
+	   *
 	   * @return String The driver name.
 	   */
 	  public function getDriver() {
@@ -193,7 +215,7 @@ class Database {
 	  /**
 	   * Sets the array of Table instances which represent a table in the physical
 	   * database.
-	   * 
+	   *
 	   * @param array $tables An array of Table instances which represent a table in the
 	   * 					  physical database.
 	   * @return void
@@ -205,7 +227,7 @@ class Database {
 
 	  /**
 	   * Pushes a new Table instance onto the stack
-	   * 
+	   *
 	   * @param Table $table The table instance to push onto the stack
 	   * @return void
 	   */
@@ -217,7 +239,7 @@ class Database {
 	  /**
 	   * Returns boolean indicator based on the presence of any Table instances
 	   * configured for the database.
-	   * 
+	   *
 	   * @return True if the database has any one or more tables, false otherwise
 	   */
 	  public function hasTables() {
@@ -228,7 +250,7 @@ class Database {
 	  /**
 	   * Returns an array of Table instances which represent a table in the physical
 	   * database.
-	   * 
+	   *
 	   * @return Array of Table instances each representing a table in the physical database.
 	   */
 	  public function getTables() {

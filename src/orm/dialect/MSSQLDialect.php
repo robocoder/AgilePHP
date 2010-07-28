@@ -22,7 +22,7 @@
 /**
  * Responsible for MSSQL specific database operations.
  * NOTE: This class uses the "Microsft SQL Server Driver for PHP".
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.orm.dialect
@@ -36,7 +36,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 	  /**
 	   *  Initalize MSSQLDialect.
-	   *  
+	   *
 	   * @param Database $db The Database object representing orm.xml
 	   * @return void
 	   */
@@ -49,7 +49,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   		  $noDbParams = array( 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
 
 	  	      if( !$this->conn = sqlsrv_connect( $db->getHostname(), $params ) ) {
-	  	      	
+
 	  	      	  $this->connectFlag = 0;
 			 	  if( !$this->conn = sqlsrv_connect( $db->getHostname(), $noDbParams ) ) { // Create statement needs to bind to server
 
@@ -118,7 +118,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 		 		    }
 		 		 	array_push( $models, $m );
 			 }
-			 
+
 			 return (count( $models ) == 1) ? $models[0] : $models;
 	  }
 
@@ -129,7 +129,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  public function create() {
 
 	  		 $this->query( 'CREATE DATABASE ' . $this->database->getName() . ';' );
-	  		 
+
 	  		 // Close the connection to the server and bind to the new database.
 	  		 $this->close();
 	  		 $params = array( 'Database' => $this->database->getName(), 'UID' => $this->database->getUsername(), 'PWD' => $this->database->getPassword() );
@@ -162,7 +162,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  		 if( count( $constraintFails ) )
 	  		 	 foreach( $constraintFails as $sql )
 	  		 	 		if( !$this->query( $sql ) )
-		  		 	 		throw new ORMException( print_r( sqlsrv_errors(), true ) ); 		 
+		  		 	 		throw new ORMException( print_r( sqlsrv_errors(), true ) );
 	  }
 
 	  /**
@@ -268,16 +268,16 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
               return $sql;
           }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/AgilePHP/orm/BaseDialect#beginTransaction()
 	   */
 	  public function beginTransaction() {
-	  	
+
 	  		 Log::debug( 'MSSQLDialect::beginTransaction Beginning transaction' );
 	  }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/AgilePHP/orm/BaseDialect#commit()
@@ -288,7 +288,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 	  		 Log::debug( 'MSSQLDialect::commit Transaction successfully committed.' );
 	  }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/AgilePHP/orm/BaseDialect#rollBack($message, $code)
@@ -305,7 +305,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 	  /**
 	   * A statement resource. If the statement cannot be created and/or executed, false is returned.
-	   * 
+	   *
 	   * @param String $sql The SQL statement to execute
 	   * @param array $params Optional array of values that correspond to parameters in a parameterized query.
 	   * @return A statement resource. If the statement cannot be created and/or executed, false is returned.
@@ -329,10 +329,10 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  		 Log::debug( 'MSSQLDialect::prepare Preparing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'statement ' . $statement );
-	  	
+
 	  		 $this->statement = $statement;
 	  }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/BaseDialect#execute($inputParameters)
@@ -354,7 +354,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  		 if( !sqlsrv_execute( $this->stmt ) )
 	  		 	 throw new ORMException( print_r( sqlsrv_errors(), true ) );
 	  }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/BaseDialect#truncate($model)
@@ -364,7 +364,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  	     $table = $this->getTableByModel( $model );
 	  		 $this->query( 'TRUNCATE table ' . $table->getName() . ';' );
 	  }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#drop()
@@ -376,7 +376,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 	  	/**
 	   	 * Persists a domain model object
-	     * 
+	     *
 	     * @param $model The domain model object to persist
 	     * @return PDOStatement
 	     * @throws ORMException
@@ -430,7 +430,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 //			   	    			try {
 //			   	    				  // Try to persist the referenced entity first
 //					   	    		  $this->persist( $model->$accessor() );
-//					   	    		  
+//
 //					   	    		  if($transformer = $columns[$i]->getTransformer())
 //					   	    		     array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
 //					   	    		  else
@@ -442,7 +442,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 //			   	    				   if( preg_match( '/duplicate/i', $e->getMessage() ) ) {
 //
 //			   	    				   	   $this->merge( $model->$accessor() );
-//			   	    				   	   
+//
 //			   	    				   	   if($transformer = $columns[$i]->getTransformer())
 //			   	    				   	      array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
 //			   	    				   	   else
@@ -467,10 +467,10 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   		   $this->prepare( $sql );
 	  		   return $this->execute( $values );
 	    }
-	  
+
 	  /**
 	   * Overrides parent find method to provide MSSQL specific syntax.
-	   * 
+	   *
 	   * @param $model A domain model object. Any fields which are set in the object are used to filter results.
 	   * @throws ORMException If any primary keys contain null values or any
 	   * 		   errors are encountered executing queries
@@ -489,9 +489,9 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 	    	   	        $sql = 'SELECT';
 
-	    	   	        if( $this->isDistinct() != null )	    	   	        	
+	    	   	        if( $this->isDistinct() != null )
 	    	   	        	$sql .= ' DISTINCT ' . $this->isDistinct();
-	    	   	        else 
+	    	   	        else
 	    	   	        		$sql .= ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() . ' *' : '');
 
 	    	   	        $sql .= ' FROM ' . $table->getName();
@@ -517,11 +517,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 						     	 if( $model->$accessor() == null ) continue;
 
 						     	 $where .= (count($values) ? ' AND ' : ' ') . $columns[$i]->getName() . '=?';
-						     	 
+
 								 if( is_object( $model->$accessor() ) ) {
 
 						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-						     	 	 
+
 						     	 	 if($transformer = $columns[$i]->getTransformer())
 						     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
 						     	     else
@@ -536,7 +536,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
-						    
+
 					 }
 
 					 $this->setDistinct( null );
@@ -544,11 +544,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
 	   	         	 $this->setOrderBy( null, 'ASC' );
 	   	         	 $this->setGroupBy( null );
-					 
+
 					 $this->prepare( $sql );
 					 $this->execute( $values );
 
-					 if( !sqlsrv_has_rows( $this->stmt ) ) { 
+					 if( !sqlsrv_has_rows( $this->stmt ) ) {
 
 					 	Log::debug( 'MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
 					 	return array();
@@ -586,12 +586,12 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 						 	 		  		   	    $foreignInstance->$foreignMutator( $value );
 
 						 	 		  		   	    $persisted = $this->find( $foreignInstance );
-						 	 		  		   	    
+
 						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
 							 	 		  		   	$foreignModelPieces = explode( '\\', $foreignModel );
 							 	 		  		   	$foreignClassName = array_pop( $foreignModelPieces );
 
-						 	 		  		   	    $instanceMutator = $this->toMutator( $foreignModel );
+						 	 		  		   	    $instanceMutator = $this->toMutator( $modelProperty );
 						 	 		  		   	    $m->$instanceMutator( $persisted[0] );
 						 	 		  		    }
 						 	 		  		    else {
@@ -599,7 +599,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 						 	 		  		   		$mutator = $this->toMutator( $modelProperty );
 					 	   	   		  				$m->$mutator( $value );
 						 	 		  		    }
-						 	 		   }						 	 		   
+						 	 		   }
 					 	   	  }
 
 					 	   	  array_push( $models, $m );
@@ -614,7 +614,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  		 		throw new ORMException( $e->getMessage(), $e->getCode() );
 	  		 }
 	  }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/AgilePHP/orm/BaseDialect#close()
@@ -646,34 +646,34 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 			 while( $stdClass = sqlsrv_fetch_object( $this->stmt ) )
 			 	array_push( $tables, $stdClass );
 
-			 $stmt2 = $this->query( 'SELECT 
-							    FK_Table  = FK.TABLE_NAME, 
-							    FK_Column = CU.COLUMN_NAME, 
-							    PK_Table  = PK.TABLE_NAME, 
-							    PK_Column = PT.COLUMN_NAME, 
-							    Constraint_Name = C.CONSTRAINT_NAME 
-							FROM 
-							    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C 
-							    INNER JOIN 
-							    INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK 
-							        ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME 
-							    INNER JOIN 
-							    INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK 
-							        ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME 
-							    INNER JOIN 
-							    INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU 
-							        ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME 
-							    INNER JOIN 
-							    ( 
-							        SELECT 
-							            i1.TABLE_NAME, i2.COLUMN_NAME 
-							        FROM 
-							            INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1 
-							            INNER JOIN 
-							            INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2 
-							            ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME 
-							            WHERE i1.CONSTRAINT_TYPE = \'PRIMARY KEY\' 
-							    ) PT 
+			 $stmt2 = $this->query( 'SELECT
+							    FK_Table  = FK.TABLE_NAME,
+							    FK_Column = CU.COLUMN_NAME,
+							    PK_Table  = PK.TABLE_NAME,
+							    PK_Column = PT.COLUMN_NAME,
+							    Constraint_Name = C.CONSTRAINT_NAME
+							FROM
+							    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
+							    INNER JOIN
+							    INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK
+							        ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
+							    INNER JOIN
+							    INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK
+							        ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME
+							    INNER JOIN
+							    INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU
+							        ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME
+							    INNER JOIN
+							    (
+							        SELECT
+							            i1.TABLE_NAME, i2.COLUMN_NAME
+							        FROM
+							            INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1
+							            INNER JOIN
+							            INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2
+							            ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
+							            WHERE i1.CONSTRAINT_TYPE = \'PRIMARY KEY\'
+							    ) PT
 							    ON PT.TABLE_NAME = PK.TABLE_NAME' );
 
 			 $foreignKeys = array();
@@ -685,19 +685,19 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 			 		// ignore system tables
 				 	if( substr( $table->TABLE_NAME, 0, 3 ) == 'sys' || $table->TABLE_NAME == 'dtproperties' )
 				 	 	continue;
-				 	 
+
 			 		$stmt3 = $this->query( 'SELECT [name]
-									 FROM syscolumns 
-									 WHERE [id] IN (SELECT [id] 
-									                  FROM sysobjects 
+									 FROM syscolumns
+									 WHERE [id] IN (SELECT [id]
+									                  FROM sysobjects
 									                 WHERE [name] = \'' . $table->TABLE_NAME . '\' )
-									   AND colid IN (SELECT SIK.colid 
-									                   FROM sysindexkeys SIK 
-									                   JOIN sysobjects SO ON SIK.[id] = SO.[id]  
+									   AND colid IN (SELECT SIK.colid
+									                   FROM sysindexkeys SIK
+									                   JOIN sysobjects SO ON SIK.[id] = SO.[id]
 									                  WHERE SIK.indid = 1
 									                    AND SO.[name] = \'' . $table->TABLE_NAME . '\')' );
 
-			 		
+
 					$primaryKeys = array();
 
 					if( $stmt3 ) {
@@ -777,10 +777,10 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 			 return $Database;
 	  }
-	  
+
 	  /**
 	   * Returns the total number of records in the specified model.
-	   * 
+	   *
 	   * @param Object $model The domain object to get the count for.
 	   * @return Integer The total number of records in the table.
 	   */
@@ -799,7 +799,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 	  /**
 	   * Provides unitlity method for casting SQL SERVER objects to PHP values.
-	   * 
+	   *
 	   * @param Object $value The SQL SERVER object to extract the PHP value from.
 	   * @return mixed The extracted PHP value.
 	   */

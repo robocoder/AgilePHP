@@ -22,6 +22,7 @@
 <!ATTLIST database name CDATA #REQUIRED>
 <!ATTLIST database type ( mysql | mssql | pgsql | sqlite ) "mysql">
 <!ATTLIST database hostname CDATA #REQUIRED>
+<!ATTLIST database port CDATA #IMPLIED>
 <!ATTLIST database username CDATA #REQUIRED>
 <!ATTLIST database password CDATA #REQUIRED>
 <!ATTLIST database driver CDATA #IMPLIED>
@@ -53,7 +54,8 @@
 						abstime | aclitem | bool | bpchar | serial | bigserial | real | numeric | box | bytea | cid | cidr | circle | float4 | float8 | gtsvector |  inet
 						| int2 | int4 | int8 | interval | line | lseg | macaddr | name | oid | path | point | polygon | refcursor | regclass | regconfig | regdictionary
 						| regoper | regoperator | regproc | regprocedure | regtype | reltime | smgr | tid | time | timestamptz | timetz | tinterval | tsquery | tsvector
-						| txid_snapshot | unknown | uuid | varbit | xid | xml | int2vector | oidvector ) "varchar">
+						| txid_snapshot | unknown | uuid | varbit | xid | xml | int2vector | oidvector |
+						custom) "varchar">
 <!ATTLIST column length CDATA #IMPLIED>
 <!ATTLIST column description CDATA #IMPLIED>
 <!ATTLIST column property CDATA #IMPLIED>

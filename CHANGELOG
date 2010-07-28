@@ -1,5 +1,14 @@
-- Bug fix to BaseModelXslController::getModelListXSL many-to-many relationship support not supplying primary key values on action links.
-- Removed "auto persist/merge foriegn model" logic from BaseDialect and MSSQLDialect since it was causing data integrity issues in some cases.
-- Updated unit tests to persist foreign key models instead of relying on "auto persist/merge foreign model" logic.
+- Added "port" configuration support to ORM package.
+- Refactorings to bring MySQLDialect and PGSQLDialect classes into alignment with Pear coding standard.
+- Bug fix to IdentityManagerImpl::login when using custom non-sql authenticator. Was trying to perform
+  a merge operations which is now triggered only if the Authenticator implementation is an instanceof
+  DefaultAuthenticator (which means custom sql based authenticators should extend DefaultAuthenticator).
+- Bug fix to BasicAuthentication as a result of refactoring Authenticator to static context.
+- Added "custom" type to orm.dtd to allow for custom user-defined (postgres) data types.
+- Bug fix to logging levels ("error" level conditional was incorrect)
+- Bug fix to RestUtil::serverTransform caused by empty array $data. Also fixed several logging directives
+  which were referencing old "MimeUtil" class name.
+- Bug fix to mysql, mssql, and pgsql dialect "find" - using hard coded foreign model class name instead
+  of the configured column/property value in orm.xml.
 
 Backward compatible apidoc: Yes

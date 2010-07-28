@@ -88,7 +88,7 @@ class BasicAuthentication {
 	  		 	 if( $this->authenticator ) {
 
 	  		 	 	 $callee = $ic->getCallee();
-	  		 	 	 $object = $callee['object'];
+	  		 	 	 $object = $callee['class'];
 		  	     	 $authenticator = $this->authenticator;
 
 		  	     	 // Static authenticator

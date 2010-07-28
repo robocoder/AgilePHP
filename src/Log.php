@@ -42,12 +42,12 @@ final class Log {
 	   * @return void
 	   * @static
 	   */
-	  public static function debug( $message ) {
+	  public static function debug($message) {
 
 	         $logger = LogFactory::getLogger();
 
-	         if( LogFactory::getLevel() == 'debug' )
-  		 	      $logger->debug( $message );
+	         if(LogFactory::getLevel() == 'debug')
+  		 	      $logger->debug($message);
 	  }
 
 	  /**
@@ -57,12 +57,12 @@ final class Log {
 	   * @return void
 	   * @static
 	   */
-	  public static function warn( $message ) {
+	  public static function warn($message) {
 
 	         $logger = LogFactory::getLogger();
 
-	         if( LogFactory::getLevel() == 'warn' || LogFactory::getLevel() == 'error' )
-	  		     $logger->warn( $message );
+	         if(LogFactory::getLevel() != 'error')
+	  		    $logger->warn($message);
 	  }
 
 	  /**
@@ -75,9 +75,10 @@ final class Log {
 	  public static function info( $message ) {
 
 	         $logger = LogFactory::getLogger();
+	         $level = LogFactory::getLevel();
 
-	         if( LogFactory::getLevel() == 'info' || LogFactory::getLevel() == 'debug' )
-	  		     $logger->info( $message );
+	         if($level == 'info' || $level == 'debug')
+	  		    $logger->info($message);
 	  }
 
 	  /**
@@ -87,12 +88,13 @@ final class Log {
 	   * @return void
 	   * @static
 	   */
-	  public static function error( $message ) {
+	  public static function error($message) {
 
 	         $logger = LogFactory::getLogger();
+	         $level = LogFactory::getLevel();
 
-	         if( LogFactory::getLevel() == 'error' )
-	  		     $logger->error( $message );
+	         if($level == 'error' || $level == 'debug' )
+	  		    $logger->error($message);
 	  }
 }
 ?>

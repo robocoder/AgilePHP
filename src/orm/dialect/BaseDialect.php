@@ -21,7 +21,7 @@
 
 /**
  * Base ORM class which assists with common dialect tasks.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.orm.dialect
@@ -47,7 +47,7 @@ abstract class BaseDialect {
 
 		 /**
 		  * Returns the PDO instance in use by the ORM framework.
-		  * 
+		  *
 		  * @return The PDO instance in use by the framework.
 		  */
 		 public function getPDO() {
@@ -57,7 +57,7 @@ abstract class BaseDialect {
 
 		 /**
 		  * Returns the 'Database' object being used by the ORM framework.
-		  * 
+		  *
 		  * @return The 'Database' object in use by the ORM framework.
 		  */
 		 public function getDatabase() {
@@ -67,7 +67,7 @@ abstract class BaseDialect {
 
 		 /**
 		  * Adds an SQL distinct clause to 'find' operation.
-		  * 
+		  *
 		  * @param $columnName The column name to get the distinct values for
 		  * @return void
 		  */
@@ -79,8 +79,8 @@ abstract class BaseDialect {
 		 /**
 		  * Returns the 'distinct' column to use in an SQL SELECT statement
 		  * if one has been defined.
-		  * 
-		  * @return The DISTINCT column name or null if a column name has not been defined. 
+		  *
+		  * @return The DISTINCT column name or null if a column name has not been defined.
 		  */
 		 public function isDistinct() {
 
@@ -90,7 +90,7 @@ abstract class BaseDialect {
 		 /**
 		  * Sets the 'maxResults' property value which is used during
 		  * a 'find' operation which contains an empty model.
-		  *  
+		  *
 		  * @param $maxResults The maximum number of results to return
 		  * @return void
 		  */
@@ -101,8 +101,8 @@ abstract class BaseDialect {
 
 		 /**
 		  * Returns the 'maxResults' property value which is used during
-		  * a 'find' operation which contains an empty model. 
-		  * 
+		  * a 'find' operation which contains an empty model.
+		  *
 		  * @return The 'maxResults'
 		  */
 		 public function getMaxResults() {
@@ -112,7 +112,7 @@ abstract class BaseDialect {
 
 		 /**
 		  * Sets the offset used in a SQL LIMIT clause.
-		  * 
+		  *
 		  * @param Integer $offset The limit offset.
 		  * @return void
 		  */
@@ -123,17 +123,17 @@ abstract class BaseDialect {
 
 		 /**
 		  * Returns the SQL LIMIT offset value.
-		  * 
+		  *
 		  * @return Integer The LIMIT offset.
 		  */
 		 public function getOffset() {
 
 		 		return $this->offset;
 		 }
-		 
+
 		 /**
 	      * Sets the SQL 'group by' clause.
-	      * 
+	      *
 	      * @param $column The column name to group the result set by
 	      * @return void
 	      */
@@ -144,7 +144,7 @@ abstract class BaseDialect {
 
 	     /**
 	      * Returns SQL GROUP BY clause.
-	      * 
+	      *
 	      * @return String GROUP BY value
 	      */
 	     public function getGroupBy() {
@@ -154,7 +154,7 @@ abstract class BaseDialect {
 
 	  	 /**
 	  	  * Begins a transaction
-	  	  * 
+	  	  *
 	  	  * @return void
 	  	  * @throws ORMException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
@@ -176,7 +176,7 @@ abstract class BaseDialect {
 
 	  	 /**
 	  	  * Commits an already started transaction.
-	  	  * 
+	  	  *
 	  	  * @return void
 	  	  * @throws ORMException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
@@ -198,7 +198,7 @@ abstract class BaseDialect {
 
 	  	 /**
 	  	  * Rolls back a transaction.
-	  	  * 
+	  	  *
 	  	  * @param $message Error/reason why the transaction was rolled back
 	  	  * @param $code An error/reason code
 	  	  * @return void
@@ -224,15 +224,15 @@ abstract class BaseDialect {
 
 	  	 /**
 		  * Prepares an SQL prepared statement
-		  * 
+		  *
 		  * @param $statement The SQL statement to prepare
 		  * @return False if the statement could not execute successfully
 		  * @see http://usphp.com/manual/en/function.PDO-prepare.php
 	  	  */
 	  	 public function prepare( $statement ) {
 
-	  		    Log::debug( 'BaseDialect::prepare Preparing' . 
-			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
+	  		    Log::debug( 'BaseDialect::prepare Preparing' .
+			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'statement ' . $statement );
 
 				try {
@@ -256,22 +256,22 @@ abstract class BaseDialect {
 
 	  	 /**
 	  	  * Executes a prepared statement with optional parameters
-	  	  * 
+	  	  *
 	  	  * @param Array $inputParameters Optional array of input parameters
 	  	  * @return True if successful, false on fail
 	  	  * @see http://usphp.com/manual/en/function.PDOStatement-execute.php
 	  	  */
 	  	 public function execute( array $inputParameters = array() ) {
 
-	  		    Log::debug( 'BaseDialect::execute Executing' . 
-			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
+	  		    Log::debug( 'BaseDialect::execute Executing' .
+			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
 
 			  	try {
 					  	if( !$this->PDOStatement->execute($inputParameters) ) {
-		
+
 						    $info = $this->PDOStatement->errorInfo();
-					            
+
 					        if( $this->transactionInProgress )
 					  			$this->rollBack( $info[2], $info[1] );
 
@@ -291,15 +291,15 @@ abstract class BaseDialect {
 
 	  	 /**
 	  	  * Executes an SQL statement and returns the number of rows affected by the query.
-	  	  * 
+	  	  *
 	  	  * @param $statement The SQL statement to execute.
 	  	  * @return The number of rows affected by the query.
 	  	  * @see http://usphp.com/manual/en/function.PDO-exec.php
 	  	  */
 	  	 public function exec( $statement ) {
 
-	  		    Log::debug( 'BaseDialect::exec Executing raw' . 
-			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
+	  		    Log::debug( 'BaseDialect::exec Executing raw' .
+			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'PDO::exec query ' . $sql );
 
 	  		    return $this->pdo->exec( $statement );
@@ -307,7 +307,7 @@ abstract class BaseDialect {
 
 		 /**
 	   	  * Executes a raw SQL query
-	   	  * 
+	   	  *
 	   	  * @param $sql The SQL statement to execute
 	   	  * @return The PDOStatement returned by PDO::query
 	   	  * @throws ORMException
@@ -315,8 +315,8 @@ abstract class BaseDialect {
 	   	  */
 	  	 public function query( $sql ) {
 
-	  		    Log::debug( 'BaseDialect::query Executing' . 
-			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') . 
+	  		    Log::debug( 'BaseDialect::query Executing' .
+			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'raw PDO::query ' . $sql );
 
 	  		    $stmt = $this->pdo->query( $sql );
@@ -333,10 +333,10 @@ abstract class BaseDialect {
 
 	  	        return $stmt;
 	  	}
-	  	
+
 	  	/**
 	  	 * Quotes a string so its theoretically safe to pass into a statement
-	  	 * 
+	  	 *
 	  	 * @param $data The data to quote
 	  	 * @return The quoted data
 	  	 * @see http://www.php.net/manual/en/pdo.quote.php
@@ -348,7 +348,7 @@ abstract class BaseDialect {
 
 	  	/**
 	   	 * Persists a domain model object
-	     * 
+	     *
 	     * @param $model The domain model object to persist
 	     * @return PDOStatement
 	     * @throws ORMException
@@ -425,7 +425,7 @@ abstract class BaseDialect {
 			   	    	}
 			   	    }
 			   	    else { // No foreign key
-			   	        
+
 			   	        if($transformer = $columns[$i]->getTransformer())
 					   	   array_push($values, $transformer::transform((($model->$accessor() == '') ? NULL : $model->$accessor())));
 					   	else
@@ -442,11 +442,11 @@ abstract class BaseDialect {
 
 	    /**
 	     * Merges/updates a persisted domain model object
-	     * 
+	     *
 	     * @param $model The model object to merge/update
 	     * @return PDOStatement
 	     * @throws ORMException
-	     * @todo Work out foreign key auto persist/merge logic or drop support? 
+	     * @todo Work out foreign key auto persist/merge logic or drop support?
 	     */
 	    public function merge( $model ) {
 
@@ -482,7 +482,7 @@ abstract class BaseDialect {
 			   	    		if( $model->$accessor()->$refAccessor() != null ) {
 
 //		   	    			    $this->merge( $model->$accessor() );
-//		   	    			    
+//
 //		   	    			    if($transformer = $columns[$i]->getTransformer())
 //   	    				   	       array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
 //   	    				   	    else
@@ -491,7 +491,7 @@ abstract class BaseDialect {
 //			   	    		else {
 //			   	    			// Persist the referenced model instance, and use its new id as the foreign key value
 //				   	    		$this->persist( $model->$accessor() );
-//				   	    		
+//
 //				   	    		if($transformer = $columns[$i]->getTransformer())
 //   	    				   	       array_push($values, $transformer::transform($this->pdo->lastInsertId()));
 //   	    				   	    else
@@ -544,7 +544,7 @@ abstract class BaseDialect {
 
 	    /**
 	     * Deletes a persisted domain model object (ActiveRecord)
-	     * 
+	     *
 	     * @param $model The domain model object to delete
 	     * @return PDOStatement
 	     * @throws ORMException
@@ -560,12 +560,12 @@ abstract class BaseDialect {
 		       $sql = 'DELETE FROM ' . $table->getName() . ' WHERE ';
 
 		       for( $i=0; $i<count( $columns ); $i++ ) {
-		           
+
 		   		    if( $columns[$i]->isForeignKey() ) {
-	   		        
+
 		   		        $fkAccessor = $this->toAccessor($columns[$i]->getModelPropertyName());
 			            $accessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
-			            
+
 			            if($transformer = $columns[$i]->getTransformer())
 				   	       $value = $transformer::transform($model->$fkAccessor()->$accessor());
 				   	    else
@@ -593,7 +593,7 @@ abstract class BaseDialect {
 
  	    /**
 	     * Truncates the table for the specified domain model object
-	     * 
+	     *
 	     * @param $model A domain model object
 	     * @return PDOStatement
 	     * @throws ORMException
@@ -610,7 +610,7 @@ abstract class BaseDialect {
 	     * Attempts to locate the specified model by values. Any fields set in the object are used
 	     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
 	     * filter results.
-	     * 
+	     *
 	     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
 	     * @throws ORMException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
@@ -657,14 +657,14 @@ abstract class BaseDialect {
 
 						     	 if( is_object( $model->$accessor() ) ) {
 						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-						     	 	 
+
 						     	 	 if($transformer = $columns[$i]->getTransformer())
 						     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
 						     	     else
 				     	 	     	    array_push($values, $model->$accessor()->$refAccessor());
 						     	 }
 						     	 else {
-						     	     
+
 						     	     if($transformer = $columns[$i]->getTransformer())
 						     	        array_push( $values, $transformer::transform($model->$accessor()) );
 						     	     else
@@ -685,7 +685,7 @@ abstract class BaseDialect {
 	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
 	   	         	 $this->setOrderBy( null, 'ASC' );
 	   	         	 $this->setGroupBy( null );
-	    	   		 
+
 					 $this->prepare( $sql );
 					 $this->PDOStatement->setFetchMode( PDO::FETCH_OBJ );
 					 $result = $this->execute( $values );
@@ -730,7 +730,7 @@ abstract class BaseDialect {
 							 	 		  		   	$foreignModelPieces = explode( '\\', $foreignModel );
 							 	 		  		   	$foreignClassName = array_pop( $foreignModelPieces );
 
-						 	 		  		   	    $instanceMutator = $this->toMutator( $foreignClassName );
+						 	 		  		   	    $instanceMutator = $this->toMutator( $modelProperty );
 						 	 		  		   	    $m->$instanceMutator( $persisted[0] );
 						 	 		  		    }
 						 	 		  		    else {
@@ -756,7 +756,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Returns the total number of records in the specified model.
-	   * 
+	   *
 	   * @param Object $model The domain object to get the count for.
 	   * @return Integer The total number of records in the table.
 	   */
@@ -775,7 +775,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Closes the connection to the database.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function close() {
@@ -785,7 +785,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Sets the SQL 'order by' clause.
-	   * 
+	   *
 	   * @param $column The column name to order the result set by
 	   * $param $direction The direction to sort the result set (ASC|DESC).
 	   * @return void
@@ -799,9 +799,9 @@ abstract class BaseDialect {
 	  /**
 	   * Returns an associative array containing the current 'orderBy' clause. The results
 	   * are returned with the name of the column as the index and the direction as the value.
-	   * 
+	   *
 	   * @return An associative array containing the name of the column to sort as the key/index
-	   * 		and the direction of the sort order (ASC|DESC) as the value. 
+	   * 		and the direction of the sort order (ASC|DESC) as the value.
 	   */
 	  public function getOrderBy() {
 
@@ -813,7 +813,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Sets WHERE clause restrictions
-	   * 
+	   *
 	   * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array( 'id' => 21 ) )
 	   * @return void
 	   */
@@ -821,10 +821,10 @@ abstract class BaseDialect {
 
 	   		 $this->restrictions = $restrictions;
 	  }
-	  
+
 	  /**
 	   * Returns the WHERE clause restrictions
-	   * 
+	   *
 	   * @return Array SQL WHERE clause restrictions
 	   */
 	  public function getRestrictions() {
@@ -834,7 +834,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Sets the restriction operator (and|or) used in SQL WHERE clause.
-	   * 
+	   *
 	   * @param $operator The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.
 	   * @return void
 	   */
@@ -848,7 +848,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Returns restriction logic operator used to filter SELECT / find operations.
-	   * 
+	   *
 	   * @return string Retrictions logic operator (AND|OR)
 	   */
 	  public function getRestrictionsLogicOperator() {
@@ -858,7 +858,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Returns the comparison logic operator.
-	   * 
+	   *
 	   * @return string Comparison logic operator (LIKE|<|>|?|=)
 	   */
 	  public function getComparisonLogicOperator() {
@@ -868,7 +868,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Sets the comparison operator (<|>|=|LIKE) used in SQL WHERE clause.
-	   * 
+	   *
 	   * @param $operator The logical comparison operator used is SQL where clauses. Default is '='.
 	   * @return void
 	   */
@@ -882,7 +882,7 @@ abstract class BaseDialect {
 
  	  /**
 	   * Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.
-	   * 
+	   *
 	   * @return The formatted SQL string
 	   */
 	  public function createRestrictSQL() {
@@ -907,7 +907,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Returns the 'Table' object which is mapped to the specified 'Model'.
-	   * 
+	   *
 	   * @param $model The domain model object to retrieve the table element for. Defaults to the model
 	   * 			   currently being managed by the 'ORM'.
 	   * @return The 'Table' object responsible for the model's ORM or null if a table
@@ -925,10 +925,10 @@ abstract class BaseDialect {
 
 			 throw new ORMException( 'BaseDialect::getProcedureByModel Could not locate the requested model \'' . $class . '\' in orm.xml' );
 	  }
-	  
+
 	  /**
 	   * Returns the Procedure responsible for the specified model
-	   * 
+	   *
 	   * @param string $modelName The name of the model class
 	   * @return Procedure The procedure which maps to the specified model name
 	   */
@@ -943,7 +943,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Returns the 'Table' object which is mapped to the specified 'Model'.
-	   * 
+	   *
 	   * @param $model The domain model object to retrieve the table element for. Defaults to the model
 	   * 			   currently being managed by the 'ORM'.
 	   * @return The 'Table' object responsible for the model's ORM or null if a table
@@ -970,7 +970,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Returns the 'Table' object responsible for the specified $modelName.
-	   * 
+	   *
 	   * @param $modelName The name of the model
 	   * @return The 'Table' object responsible for the specified model or
 	   * 		 null if the table could not be found.
@@ -986,7 +986,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Returns a 'Table' object by its name as configured in orm.xml
-	   * 
+	   *
 	   * @param $tableName The value of the table's 'name' attribute
 	   * @return The 'Table' object or null if the table was not found
 	   */
@@ -1002,14 +1002,14 @@ abstract class BaseDialect {
 	  /**
 	   * Returns a 'Table' object representing the table configured in orm.xml as
 	   * the AgilePHP 'Identity' table.
-	   * 
+	   *
 	   * @return The 'Table' object which represents the AgilePHP 'Identity' table, or null
 	   * 		 if an 'Identity' table has not been configured.
 	   */
 	  public function getIdentityTable() {
 
 			 foreach( $this->database->getTables() as $table ) {
- 
+
 		 	  	      if( $table->isIdentity() )
 		 	  	      	  return $table;
 			 }
@@ -1018,16 +1018,16 @@ abstract class BaseDialect {
 	  }
 
 	  /**
-	   * Returns an instance of the domain model object responsible for AgilePHP 
+	   * Returns an instance of the domain model object responsible for AgilePHP
 	   * 'Identity' ORM.
-	   * 
+	   *
 	   * @return An instance of the domain model object responsible for 'Identity'
 	   * 		 ORM.
 	   */
 	  public function getIdentityModel() {
 
 	  		 foreach( $this->database->getTables() as $table ) {
- 
+
 		 	  	      if( $table->isIdentity() ) {
 
 						  $modelName = $table->getModel();
@@ -1050,7 +1050,7 @@ abstract class BaseDialect {
 		 	  	      	  	   	   if( $getUsernameExists && $getPasswordExists && $getEmailExists )
 		 	  	      	  	   		   break;
 	 	  	      	  	   }
-	 	  	      	  	   
+
 	 	  	      	  	   if( !$getUsernameExists || !$getPasswordExists || !$getEmailExists )
 							   throw new ORMException( 'BaseDialect::getIdentityModel Identity model must support methods \'getUsername\', \'getPassword\', and \'getEmail\' as enforced by the interface at ' . AgilePHP::getFrameworkRoot() . '/core/Identity.php.' );
 
@@ -1064,14 +1064,14 @@ abstract class BaseDialect {
 	 /**
 	   * Returns the 'Table' object that represents the table configured in orm.xml as
 	   * an AgilePHP 'SessionScope' session table.
-	   * 
+	   *
 	   * @return The 'Table' object instance containing the 'SessionScope' session table
 	   * 		 or null if a session table has not been configured.
 	   */
 	  public function getSessionTable() {
 
 			 foreach( $this->database->getTables() as $table ) {
- 
+
 		 	  	      if( $table->isSession() )
 		 	  	      	  return $table;
 			 }
@@ -1082,7 +1082,7 @@ abstract class BaseDialect {
 	  /**
 	   * Returns an instance of the domain model object responsible for AgilePHP
 	   * 'SessionScope' session ORM.
-	   * 
+	   *
 	   * @return An instance of the model responsible for AgilePHP 'SessionScope'
 	   * 	     sessions.
 	   */
@@ -1105,7 +1105,7 @@ abstract class BaseDialect {
 	   * for the specified column name. If the 'Column' name can not be matched, it is then
 	   * compared against the 'Column' 'property' attribute value. If neither can be matched,
 	   * the $columnName is returned.
-	   * 
+	   *
 	   * @param $table The 'Table' object which contains the column to retrieve the display
 	   * 			   name from.
 	   * @param $columnName The name of the column to get the display name for
@@ -1134,7 +1134,7 @@ abstract class BaseDialect {
 	  /**
 	   * Returns the value of the 'property' attribute configured in orm.xml for the specified $columnName.
 	   * If the property attribute does not exist, the column name is returned instead.
-	   * 
+	   *
 	   * @param $table The 'Table' object containing the 'Column' to search.
 	   * @param $columnName The name of the column to retrieve the property attribute value from
 	   * @return The property name. If the property does not exist, the $columnName is returned instead
@@ -1157,7 +1157,7 @@ abstract class BaseDialect {
 	   * If the property attribute does not exist, a match is attempted against the column name. If the column
 	   * name matches the expected $propertyName, the column name is returned. If neither can be matched, null is
 	   * returned instead.
-	   * 
+	   *
 	   * @param $table The 'Table' object containing the 'Column' to search.
 	   * @param $propertyName The name of the property to retrieve the name attribute value from
 	   * @return The column name. If the property does not exist and $propertyName matches a column name, the column
@@ -1170,7 +1170,7 @@ abstract class BaseDialect {
 	  		 	      if( $column->getProperty() == $propertyName )
 	  		 	      	  return $column->getName();
 	  		 }
-	  		 
+
 	  		 foreach( $table->getColumns() as $column ) {
 
 	  		 	      if( $column->getName() == $propertyName )
@@ -1182,7 +1182,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Converts the specified parameter to a bigint.
-	   * 
+	   *
 	   * @param $int The bigint value
 	   * @return bigint
 	   */
@@ -1200,7 +1200,7 @@ abstract class BaseDialect {
 	   * Checks the model in use by the ORM framework for the presence
 	   * of property values. If the model does not contain any values, it is
 	   * considered empty.
-	   * 
+	   *
 	   * @return True if the model is empty, false if the model contains any property values.
 	   */
 	  public function isEmpty( $model ) {
@@ -1242,10 +1242,10 @@ abstract class BaseDialect {
 
 	  /**
 	   * Compares domain model object $a with $b.
-	   * 
+	   *
 	   * NOTE: This function assumes the model adheres to the property/getter/setter
 	   * 	   model convention.
-	   * 
+	   *
 	   * @param $a The first object
 	   * @param $b The second object
 	   * @return True if the objects test positive, false if the models do not match
@@ -1255,21 +1255,21 @@ abstract class BaseDialect {
 	  		  try {
 		  		    $classA = new ReflectionClass( $a );
 		  		    $classB = new ReflectionClass( $b );
-	
+
 		  		    if( $classA->getName() !== $classB->getName() )
 		  		  	    throw new Exception( 'model class names dont match' );
-	
+
 		  		    $propsA = $classA->getProperties();
 		  		    $propsB = $classB->getProperties();
-	
+
 		  		    if( !count( $propsA ) || !count( $propsB ) )
 		  		  	    throw new Exception( 'model property count doesnt match' );
 
 		  		    for( $i=0; $i<count( $propsA ); $i++ ) {
-	
+
 		  		  	     if( $propsA[$i]->name !== $propsB[$i]->name )
 		  		  	         throw new Exception( 'model property names dont match' );
-	
+
 		  		  	   	 $accessor = 'get' . ucfirst( $propsA[$i]->name );
 		  		  	     if( $a->$accessor() !== $b->$accessor() )
 		  		  	   	     throw new Exception( 'model property values dont match' );
@@ -1283,12 +1283,12 @@ abstract class BaseDialect {
 
 	  		  return true;
 	  }
-	  
+
 	  /**
 	   * Creates an accessor method from the $property parameter. The $property
 	   * will be returned with the prefix 'get' and the first letter of the property
 	   * uppercased.
-	   * 
+	   *
 	   * @param $property The name of the property to convert to an accessor method name
 	   * @return The accessor string
 	   */
@@ -1301,7 +1301,7 @@ abstract class BaseDialect {
 	   * Creates a mutator method from the $property parameter. The $property
 	   * will be returned with the prefix 'set' and the first letter of the property
 	   * uppercased.
-	   * 
+	   *
 	   * @param $property The name of the property to convert to a mutator method name
 	   * @return The mutator string
 	   */
@@ -1312,7 +1312,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Copies the values from object $a to $b.
-	   * 
+	   *
 	   * @param $a The first object
 	   * @param $b The second object
 	   * @return The same instance of object $b with its properties set as defined in object $a
@@ -1321,18 +1321,18 @@ abstract class BaseDialect {
 
 	  		  $classA = new ReflectionClass( $a );
 		  	  $classB = new ReflectionClass( $b );
-	
+
 		  	  if( $classA->getName() !== $classB->getName() )
 		  	      throw new Exception( 'model class names dont match' );
-	
+
 		  	  $propsA = $classA->getProperties();
 		  	  $propsB = $classB->getProperties();
-	
+
 		  	  if( !count( $propsA ) || !count( $propsB ) )
 		  	      throw new Exception( 'model property count doesnt match' );
 
 		      for( $i=0; $i<count( $propsA ); $i++ ) {
-	
+
 		  		   if( $propsA[$i]->name !== $propsB[$i]->name )
 		  		       throw new Exception( 'model property names dont match' );
 
@@ -1347,7 +1347,7 @@ abstract class BaseDialect {
 		/**
 	     * Performs automation logic for setting all of the foreign keys in the
 	     * current model with the values of its related foreign model ActiveRecord.
-	     * 
+	     *
 	     * @return void
 	     */
 	    private function setForeignKeyValues( $model, $foreignModel ) {
@@ -1360,7 +1360,7 @@ abstract class BaseDialect {
        	   	   			// Only process foreign keys for the $foreignModel table
        	   	   			if( $column->getForeignKey()->getReferencedTable() == $foreignTable->getName() ) {
 
-       	   	   				// Create accessor and mutator methods for $this->model 
+       	   	   				// Create accessor and mutator methods for $this->model
 					    	$accessor = 'get' . ucfirst( $column->getModelPropertyName() );
 					    	$mutator = 'set' . ucfirst( $column->getModelPropertyName() );
 
@@ -1376,7 +1376,7 @@ abstract class BaseDialect {
 
 	  /**
 	   * Validates the domain model object's property values against orm.xml table/column configuration
-	   * 
+	   *
 	   * @param $table The Table object representing the table in orm.xml configuration to validate.
 	   * @param $isInsert True if validating a persist operation
 	   * @return void
@@ -1427,14 +1427,14 @@ abstract class BaseDialect {
 			  	       	   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype( $this->model->$accessor() ) . '\' using validator \'' . $validator . '\'.';
 			  	       	   	   Log::debug( $message );
 			  	       	   	   throw new ORMException( $message );
-			  	       	   }			  	       	   	   
+			  	       	   }
 			  	       }
 			  }
 	  }
 
 	  /**
 	   * Closes the connection to the database.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function __destruct() {
