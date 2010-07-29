@@ -41,17 +41,17 @@ class Procedure {
 	   * @param SimpleXMLElement $procedure The SimpleXMLElement instance representing the procedure.
 	   * @return void
 	   */
-	  public function __construct( SimpleXMLElement $procedure = null ) {
+	  public function __construct( SimpleXMLElement $procedure = null) {
 
-	  		 if( $procedure ) {
+	  		 if( $procedure) {
 
-		  		 $this->name = (string)$procedure->attributes()->name;
-		  		 $this->model = (string)$procedure->attributes()->model;
-		  		 $this->display = (string)$procedure->attributes()->display;
-		  		 $this->description = (string)$procedure->attributes()->description;
+		  		 $this->name =(string)$procedure->attributes()->name;
+		  		 $this->model =(string)$procedure->attributes()->model;
+		  		 $this->display =(string)$procedure->attributes()->display;
+		  		 $this->description =(string)$procedure->attributes()->description;
 
-		  		 foreach( $procedure->parameter as $parameter )
-		  		 		  array_push( $this->parameters, new ProcedureParam( $parameter ) );
+		  		 foreach( $procedure->parameter as $parameter)
+		  		 		  array_push( $this->parameters, new ProcedureParam( $parameter));
 	  		 }
 	  }
 
@@ -61,7 +61,7 @@ class Procedure {
 	   * @param string $name The name of the procedure
 	   * @return void
 	   */
-	  public function setName( $name ) {
+	  public function setName( $name) {
 
 	  		 $this->name = $name;
 	  }
@@ -82,7 +82,7 @@ class Procedure {
 	   * @param string $model The class name of the model responsible for the procedure's ActiveRecord state.
 	   * @return void 
 	   */
-	  public function setModel( $model ) {
+	  public function setModel( $model) {
 
 	  		 $this->model = $model;
 	  }
@@ -103,7 +103,7 @@ class Procedure {
 	   * @param string $display A friendly display name for the procedure
 	   * @return void
 	   */
-	  public function setDisplay( $display ) {
+	  public function setDisplay( $display) {
 
 	  		 $this->display = $display;
 	  }
@@ -124,7 +124,7 @@ class Procedure {
 	   * @param string $description A user friendly description about the procedure
 	   * @return void
 	   */
-	  public function setDescription( $description ) {
+	  public function setDescription( $description) {
 
 	  		 $this->description = $description;
 	  }

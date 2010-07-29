@@ -26,7 +26,6 @@
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
- * @version 0.1a
  */
 class ExtFormRenderer extends AJAXRenderer {
 
@@ -54,7 +53,7 @@ class ExtFormRenderer extends AJAXRenderer {
 	   * {"success": false, "reason": "$message"}
 	   * </code>
 	   */
-	  public function setError( $message ) {
+	  public function setError($message) {
 
 	  		 $this->errors->reason = $message;
 	  		 $this->result->success = false;
@@ -67,11 +66,11 @@ class ExtFormRenderer extends AJAXRenderer {
 	   * @param boolean $result True to render success:true, false to render success:false.
 	   * @return void
 	   */
-	  public function render( $result ) {
+	  public function render($result) {
 
-	  		 $this->result->success = ($result && !property_exists( $this->result, 'reason' )) ? true : false;
-	  		 if( $this->getStore() ) $this->result->data = $this->getStore();
-	  		 parent::render( $this->result );
+	  		 $this->result->success = ($result && !property_exists($this->result, 'reason')) ? true : false;
+	  		 if($this->getStore()) $this->result->data = $this->getStore();
+	  		 parent::render($this->result);
 	  }
 }
 ?>

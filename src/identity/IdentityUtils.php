@@ -40,21 +40,21 @@ class IdentityUtils {
 			 $lcase = 'abcdefghijklmnopqrstuvwzyz';
 			 $ucase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-			 $length = rand( 1, 20 );
+			 $length = rand(1, 20);
 
 			 $token = null;
-			 for( $i=0; $i<$length; $i++ ) {
+			 for($i=0; $i<$length; $i++) {
 
-			  	  if( rand( 0, 1 ) ) {
+			  	 if(rand(0, 1)) {
 
-			  	   	  $cRand = rand( 0, 25 );
-			  	   	  $token .= (rand( 0, 1) ) ? $lcase[$cRand] : $ucase[$cRand];
-			  	  }
-			  	  else {
+			  	    $cRand = rand(0, 25);
+			  	    $token .= (rand(0, 1)) ? $lcase[$cRand] : $ucase[$cRand];
+			  	 }
+			  	 else {
 
-			  	   	  $nRand = rand( 0, 9 );
-			  	   	  $token .= $numbers[$nRand];
-			  	  }
+			  	    $nRand = rand(0, 9);
+			  	   	$token .= $numbers[$nRand];
+			  	 }
 			 }
 
 	  		 return $token;

@@ -41,64 +41,64 @@ class InterceptorProxy {
 	   */
 	  public function __construct() {
 
-	  		 $proxiedClass = get_class( $this );
-	  		 $intercepted = get_class( $this ) . '_Intercepted';
+	  		 $proxiedClass = get_class($this);
+	  		 $intercepted = get_class($this) . '_Intercepted';
 
 	  		 // Create the intercepted class using constructor arguments if we have any
-	  		 if( $args = func_get_args() ) {
+	  		 if($args = func_get_args()) {
 
-	  		 	 $interceptedClass = new \ReflectionClass( $intercepted );
-		  		 $this->object = $interceptedClass->newInstanceArgs( $args );
+	  		 	 $interceptedClass = new \ReflectionClass($intercepted);
+		  		 $this->object = $interceptedClass->newInstanceArgs($args);
 	  		 }
 	  		 else
 		  	 	$this->object = new $intercepted();
 
-	  	 	 $class = new \ReflectionClass( $this->object );
+	  	 	 $class = new \ReflectionClass($this->object);
 
-	  		 foreach( \AgilePHP::getInterceptions() as $interception ) {
+	  		 foreach(\AgilePHP::getInterceptions() as $interception) {
 
 	  		 		 // Invoke class level interceptors
-		     		 if( $interception->getClass() == $proxiedClass &&
-		     		 	 !$interception->getMethod() && !$interception->getProperty() ) {
+		     		 if($interception->getClass() == $proxiedClass &&
+		     		 	 !$interception->getMethod() && !$interception->getProperty()) {
 
-	     		 	 	 $interceptorClass = new \AnnotatedClass( $interception->getInterceptor() );
-     	 	 	 		 foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
+	     		 	 	 $interceptorClass = new \AnnotatedClass($interception->getInterceptor());
+     	 	 	 		 foreach($interceptorClass->getMethods() as $interceptorMethod) {
 
-     		 	 	 	 	      if( $interceptorMethod->hasAnnotation( 'AroundInvoke' ) ) {
+     		 	 	 	 	      if($interceptorMethod->hasAnnotation('AroundInvoke')) {
 
-		     		 	 	 	   	  $invocationCtx = new \InvocationContext( $this->object, null, null, $interception->getInterceptor() );
-							          $ctx = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
-							          if( $ctx instanceof InvocationContext && $ctx->proceed ) {
+		     		 	 	 	   	  $invocationCtx = new \InvocationContext($this->object, null, null, $interception->getInterceptor());
+							          $ctx = $interceptorMethod->invoke($interception->getInterceptor(), $invocationCtx);
+							          if($ctx instanceof InvocationContext && $ctx->proceed) {
 
 							          	  $this->object = $ctx->getTarget();
-								          if( $ctx->getMethod() ) $this->__call( $ctx->getMethod(), $ctx->getParameters() );
+								          if($ctx->getMethod()) $this->__call($ctx->getMethod(), $ctx->getParameters());
 							          }
 		     		 	 	 	  }
 	     		 	 	 }
 		     		 }
 
 		     		 // Perform property/field injections
-		     		 if( $interception->getClass() == $proxiedClass && $interception->getProperty() ) {
+		     		 if($interception->getClass() == $proxiedClass && $interception->getProperty()) {
 
 		     		 	 	 // Execute property level interceptors
-		     		 	 	 $p = new \ReflectionProperty( $this->object, $interception->getProperty() );
-		     		 	 	 if( !$p->isPublic() )
-		     		 	 	 	 throw new \InterceptionException( 'Property level interceptor requires public context at \'' . $proxiedClass .
-		     		 	 	 	 		 '::' . $interception->getProperty() . '\'.' );
+		     		 	 	 $p = new \ReflectionProperty($this->object, $interception->getProperty());
+		     		 	 	 if(!$p->isPublic())
+		     		 	 	 	 throw new \InterceptionException('Property level interceptor requires public context at \'' . $proxiedClass .
+		     		 	 	 	 		 '::' . $interception->getProperty() . '\'.');
 
-     		 	 	 		$interceptorClass = new \AnnotatedClass( $interception->getInterceptor() );
-     		 	 	 		foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
+     		 	 	 		$interceptorClass = new \AnnotatedClass($interception->getInterceptor());
+     		 	 	 		foreach($interceptorClass->getMethods() as $interceptorMethod) {
 
-	     		 	 	 	 	     if( $interceptorMethod->hasAnnotation( 'AroundInvoke' ) ) {
+	     		 	 	 	 	     if($interceptorMethod->hasAnnotation('AroundInvoke')) {
 
-			     		 	 	 	   	 $invocationCtx = new \InvocationContext( $this->object, null, null, $interception->getInterceptor(), $interception->getProperty() );
-								         $value = $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx );
-								         $p->setValue( $this->object, $value );
+			     		 	 	 	   	 $invocationCtx = new \InvocationContext($this->object, null, null, $interception->getInterceptor(), $interception->getProperty());
+								         $value = $interceptorMethod->invoke($interception->getInterceptor(), $invocationCtx);
+								         $p->setValue($this->object, $value);
 			     		 	 	 	 }
-     		 	 	 				 if( $interceptorMethod->hasAnnotation( 'AfterInvoke' ) ) {
+     		 	 	 				 if($interceptorMethod->hasAnnotation('AfterInvoke')) {
 
-	     		 	 	 		  	 	 $invocationCtx = new \InvocationContext( $this->object, null, null, $interception->getInterceptor(), $interception->getProperty() );
-						              	 $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx  );
+	     		 	 	 		  	 	 $invocationCtx = new \InvocationContext($this->object, null, null, $interception->getInterceptor(), $interception->getProperty());
+						              	 $interceptorMethod->invoke($interception->getInterceptor(), $invocationCtx );
 	     		 	 	 		  	 }
 		     		 	 	 }
 		     		 }
@@ -116,10 +116,10 @@ class InterceptorProxy {
 	  		 $backtrace = debug_backtrace();
 	  		 $name = $backtrace[0]['class'] . '_Intercepted';
 
-        	 $class = new \ReflectionClass( $name );
-	  		 $m = $class->getMethod( 'getInstance' );
+        	 $class = new \ReflectionClass($name);
+	  		 $m = $class->getMethod('getInstance');
 	  		 $args = func_get_args();
-	  		 self::$instance = ($args) ? $m->invokeArgs( $class, $args ) : $m->invoke( $class );
+	  		 self::$instance = ($args) ? $m->invokeArgs($class, $args) : $m->invoke($class);
 
 	  		 return self::$instance;
  	  }
@@ -142,15 +142,15 @@ class InterceptorProxy {
 	   * @return The property/field value
 	   * @throws InterceptionException
 	   */
-	  public function __get( $property ) {
+	  public function __get($property) {
 
 	  	     try {
-		  		   $rp = new \ReflectionProperty( $this->object, $property );
-	  	  		   return $rp->getValue( $this->object );
+		  		   $rp = new \ReflectionProperty($this->object, $property);
+	  	  		   return $rp->getValue($this->object);
 	  	     }
-	  	     catch( ReflectionException $re ) {
+	  	     catch(ReflectionException $re) {
 
-	  	     		throw new \InterceptionException( $re->getMessage(), $re->getCode() );
+	  	     		throw new \InterceptionException($re->getMessage(), $re->getCode());
 	  	     }
   	  }
 
@@ -162,15 +162,15 @@ class InterceptorProxy {
   	   * @return void
   	   * @throws InterceptionException
   	   */
-  	  public function __set( $property, $value ) {
+  	  public function __set($property, $value) {
 
   	  		 try {
-		  		   $rp = new \ReflectionProperty( $this->object, $property );
-	  	  		   return $rp->setValue( $this->object, $value );
+		  		   $rp = new \ReflectionProperty($this->object, $property);
+	  	  		   return $rp->setValue($this->object, $value);
 	  	     }
-	  	     catch( ReflectionException $re ) {
+	  	     catch(ReflectionException $re) {
 
-	  	     		throw new \InterceptionException( $re->getMessage(), $re->getCode() );
+	  	     		throw new \InterceptionException($re->getMessage(), $re->getCode());
 	  	     }
       }
 
@@ -181,9 +181,9 @@ class InterceptorProxy {
        * @return True if the property/field is set, false otherwise
        * @throws InterceptionException
        */
-  	  public function __isset( $property ) {
+  	  public function __isset($property) {
 
-  	  		 return $this->__get( $property ) ? true : false;
+  	  		 return $this->__get($property) ? true : false;
   	  }
 
   	  /**
@@ -193,9 +193,9 @@ class InterceptorProxy {
   	   * @return void
   	   * @throws InterceptionException
   	   */
-  	  public function __unset( $property ) {
+  	  public function __unset($property) {
 
-  	 		 $this->__set( $property, null );
+  	 		 $this->__set($property, null);
   	  }
 
   	  /**
@@ -310,7 +310,7 @@ class InterceptorProxy {
      		 	 	$sharedContext->setReturn($args ? $m->invokeArgs($this->object, $args) : $m->invoke($this->object));
      		 	 }
 
-     		 	 $sharedContext = $afterInvokes[$i]['method']->invoke($afterInvokes[$i]['interceptor']->getInterceptor(), $sharedContext );
+     		 	 $sharedContext = $afterInvokes[$i]['method']->invoke($afterInvokes[$i]['interceptor']->getInterceptor(), $sharedContext);
 				 if($sharedContext instanceof InvocationContext && $sharedContext->proceed)
  		 	 	    return $sharedContext->getReturn();
 	  		 }
@@ -330,20 +330,20 @@ class InterceptorProxy {
 	   */
 	  public function __destruct() {
 
-	  		 $proxiedClass = get_class( $this );
-	  		 foreach( \AgilePHP::getInterceptions() as $interception ) {
+	  		 $proxiedClass = get_class($this);
+	  		 foreach(\AgilePHP::getInterceptions() as $interception) {
 
 	  		 		  // Invoke class level interceptor #@AfterInvoke
-		     		  if( $interception->getClass() == $proxiedClass &&
-		     		 	      !$interception->getMethod() && !$interception->getProperty() ) {
+		     		  if($interception->getClass() == $proxiedClass &&
+		     		 	      !$interception->getMethod() && !$interception->getProperty()) {
 
-	     		 	 	  $interceptorClass = new \AnnotatedClass( $interception->getInterceptor() );
-     	 	 	 		  foreach( $interceptorClass->getMethods() as $interceptorMethod ) {
+	     		 	 	  $interceptorClass = new \AnnotatedClass($interception->getInterceptor());
+     	 	 	 		  foreach($interceptorClass->getMethods() as $interceptorMethod) {
 
-     	 	 	 				   if( $interceptorMethod->hasAnnotation( 'AfterInvoke' ) ) {
+     	 	 	 				   if($interceptorMethod->hasAnnotation('AfterInvoke')) {
 
-     		 	 	 		  	 	   $invocationCtx = new \InvocationContext( $this->object, null, null, $interception->getInterceptor() );
-					              	   $interceptorMethod->invoke( $interception->getInterceptor(), $invocationCtx  );
+     		 	 	 		  	 	   $invocationCtx = new \InvocationContext($this->object, null, null, $interception->getInterceptor());
+					              	   $interceptorMethod->invoke($interception->getInterceptor(), $invocationCtx);
      		 	 	 		  	   }
 	     		 	 	  }
 		     		  }

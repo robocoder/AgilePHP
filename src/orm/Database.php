@@ -176,7 +176,7 @@ class Database {
 	   * @param String $password The password used to authenticate access to the database
 	   * @return void
 	   */
-	  public function setPassword( $password ) {
+	  public function setPassword($password) {
 
 	  		 $this->password = $password;
 	  }
@@ -197,7 +197,7 @@ class Database {
 	   * @param String $driver The driver name.
 	   * @return void
 	   */
-	  public function setDriver( $driver ) {
+	  public function setDriver($driver) {
 
 	  		 $this->driver = $driver;
 	  }
@@ -220,7 +220,7 @@ class Database {
 	   * 					  physical database.
 	   * @return void
 	   */
-	  public function setTables( array $tables ) {
+	  public function setTables(array $tables) {
 
 	  		 $this->tables = $tables;
 	  }
@@ -231,9 +231,9 @@ class Database {
 	   * @param Table $table The table instance to push onto the stack
 	   * @return void
 	   */
-	  public function addTable( Table $table ) {
+	  public function addTable(Table $table) {
 
-	  		 array_push( $this->tables, $table );
+	  		 array_push($this->tables, $table);
 	  }
 
 	  /**
@@ -244,7 +244,7 @@ class Database {
 	   */
 	  public function hasTables() {
 
-	  		 return count( $this->tables ) ? true : false;
+	  		 return isset($this->tables[0]) ? true : false;
 	  }
 
 	  /**

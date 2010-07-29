@@ -30,7 +30,7 @@ class ArrayValidator extends Validator {
 
 	  public function validate() {
 
-	  		 return is_array( $this->data );
+	  		 return is_array($this->data);
 	  }
 }
 ?>

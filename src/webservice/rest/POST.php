@@ -29,8 +29,8 @@
  * class MyClassRemote {
  * 
  * #@POST
- * #@Path( resource = '/{id}' )
- * public function createObject( $id ) {
+ * #@Path(resource = '/{id}')
+ * public function createObject($id) {
  * 
  * 		 // This is invoked only when the resource is requested using HTTP POST request method.
   * }

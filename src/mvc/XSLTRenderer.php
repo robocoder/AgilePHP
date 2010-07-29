@@ -164,7 +164,7 @@ class XSLTRenderer extends BaseRenderer {
 			 }
 			 catch(FrameworkException $e) {
 
-			 	   $doc->loadXML(preg_replace( '/\0/', '', $xml)); // serialized objects contain C \0 line terminators
+			 	   $doc->loadXML(preg_replace('/\0/', '', $xml)); // serialized objects contain C \0 line terminators
 			 }
 
 			 $xslt = $xp->transformToXml($doc);

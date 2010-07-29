@@ -30,17 +30,17 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 
 	  private $connectFlag = -1;
 
-	  public function __construct( Database $db ) {
+	  public function __construct(Database $db) {
 
 	  		 try {
-			  	     $this->pdo = new PDO( 'sqlite:' . $db->getName());
+			  	     $this->pdo = new PDO('sqlite:' . $db->getName());
 			 	     $this->database = $db;
 			 	     $this->connectFlag = 1;
 	  		 }
-	  		 catch( PDOException $e ) {
+	  		 catch(PDOException $e) {
 
 	  		 		$this->connectFlag = -1;
-	  		 	    throw new ORMException( $e->getMessage() );
+	  		 	    throw new ORMException($e->getMessage());
 	  		 }
 	  }
 
@@ -59,55 +59,55 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function create() {
 
-	  		 foreach( $this->database->getTables() as $table )
-	  		 		$this->createTable( $table );
+	  		 foreach($this->database->getTables() as $table)
+	  		 		$this->createTable($table);
 	  		 		
-	  		 foreach( $this->database->getTables() as $table )
-	  		 		$this->createTriggers( $table );
+	  		 foreach($this->database->getTables() as $table)
+	  		 		$this->createTriggers($table);
 	  }
 
-	  public function call( $model ) { }
+	  public function call($model) { }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
 	   */
-	  public function createTable( Table $table ) {
+	  public function createTable(Table $table) {
 	  	
-	  		 $sql = 'CREATE TABLE "' . $table->getName() . '" ( ';
+	  		 $sql = 'CREATE TABLE "' . $table->getName() . '" (';
 
   		  	 $bCandidate = false;
 
   	  	     // Format compound keys
              $pkeyColumns = $table->getPrimaryKeyColumns();
-  	 		 if( count( $pkeyColumns ) > 1 ) {
+  	 		 if(count($pkeyColumns) > 1) {
 
-  		 		 foreach( $table->getColumns() as $column ) {
+  		 		 foreach($table->getColumns() as $column) {
 
-  		 			      if( $column->isAutoIncrement() )
-  		 			     	  Log::debug( 'Ignoring autoIncrement="true" for column ' . $column->getName() . '. Sqlite does not support the use of auto-increment with compound primary keys' );
+  		 			      if($column->isAutoIncrement())
+  		 			     	  Log::debug('Ignoring autoIncrement="true" for column ' . $column->getName() . '. Sqlite does not support the use of auto-increment with compound primary keys');
 
   		 				  $sql .= '"' . $column->getName() . '" ' . $column->getType() .
   		 						 (($column->isRequired() == true) ? ' NOT NULL' : '') .
   		 						 (($column->getDefault()) ? ' DEFAULT \'' . $column->getDefault() . '\'' : '') . ', ';
   		 		 }
   		 		
-  		 		 $sql .= 'PRIMARY KEY ( ';
-  		 		 for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+  		 		 $sql .= 'PRIMARY KEY (';
+  		 		 for($i=0; $i<count($pkeyColumns); $i++) {
 
   		 			  $sql .= '"' . $pkeyColumns[$i]->getName() . '"';
 
-  		 			  if( ($i+1) < count( $pkeyColumns ) )
+  		 			  if(($i+1) < count($pkeyColumns))
   		 				  $sql .= ', ';
   		 		 }
-  		 		 $sql .= ' ) );';
+  		 		 $sql .= '));';
 
   	 		 }
   	 		 else {
 
-  		 		foreach( $table->getColumns() as $column ) {
+  		 		foreach($table->getColumns() as $column) {
 
-  		 			     if( $column->isAutoIncrement() && $column->isPrimaryKey() )
+  		 			     if($column->isAutoIncrement() && $column->isPrimaryKey())
   		 			     	 $bCandidate = true;
 
   		 				 $sql .= '"' . $column->getName() . '" ' . $column->getType() . (($column->isPrimaryKey() === true) ? ' PRIMARY KEY' : '') .
@@ -118,22 +118,22 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
   		 		}
 
   		 		// remove last comma and space
-		   		$sql = substr( $sql, 0, -2 );
+		   		$sql = substr($sql, 0, -2);
   	 		}
 
-  	 		$sql .= ' );';
+  	 		$sql .= ');';
 
-	   		//if( $bCandidate && (count( $table->getPrimaryKeyColumns() ) > 1) )
-	   			//throw new ORMException( 'Sqlite does not allow the use of auto-increment with compound primary keys (' . $table->getName() . ')' );
+	   		//if($bCandidate && (count($table->getPrimaryKeyColumns()) > 1))
+	   			//throw new ORMException('Sqlite does not allow the use of auto-increment with compound primary keys (' . $table->getName() . ')');
 
-	   		$this->query( $sql );
+	   		$this->query($sql);
 
 	   		// Throw exceptions
-  	 		if( $this->pdo->errorInfo() !== null ) {
+  	 		if($this->pdo->errorInfo() !== null) {
 
   	 			$info = $this->pdo->errorInfo();
-  	 			if( $info[0] != '0000' )
-  	 				throw new ORMException( $info[2], $info[1] );
+  	 			if($info[0] != '0000')
+  	 				throw new ORMException($info[2], $info[1]);
 			}
 	  }
 
@@ -143,58 +143,58 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @param Table $table The table to create the trigger for
 	   * @return void
 	   */
-	  private function createTriggers( Table $table ) {
+	  private function createTriggers(Table $table) {
 	  	
-	  		  foreach( $table->getForeignKeyColumns() as $column ) {
+	  		  foreach($table->getForeignKeyColumns() as $column) {
 
 		   			// Create default restrict triggers for inserts, updates, and deletes to referenced column
-		   			$this->createInsertRestrictTrigger( $column->getForeignKey()->getName() . '_fkInsert', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
-		   			$this->createUpdateRestrictTrigger( $column->getForeignKey()->getName() . '_refUpdate', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
-		   			$this->createDeleteRestrictTrigger( $column->getForeignKey()->getName() . '_refDelete', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   			$this->createInsertRestrictTrigger($column->getForeignKey()->getName() . '_fkInsert', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired());
+		   			$this->createUpdateRestrictTrigger($column->getForeignKey()->getName() . '_refUpdate', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired());
+		   			$this->createDeleteRestrictTrigger($column->getForeignKey()->getName() . '_refDelete', $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired());
 
 		   			// Set appropriate ON UPDATE clause based on orm.xml configuration
-		   			switch( $column->getForeignKey()->getOnUpdate() ) {
+		   			switch($column->getForeignKey()->getOnUpdate()) {
 
 		   				case 'NO ACTION':
 		   					break;
 
 		   				case 'RESTRICT':
-		   					$this->createUpdateRestrictTrigger( $column->getForeignKey()->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $table->getName(), $column->getName(), $column->isRequired() );		
+		   					$this->createUpdateRestrictTrigger($column->getForeignKey()->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $table->getName(), $column->getName(), $column->isRequired());		
 		   					break;
 
 		   				case 'CASCADE':
-		   					$this->createUpdateCascadeTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   					$this->createUpdateCascadeTrigger($column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired());
 		   					break;
 
 		   				case 'SET NULL':
-							$this->createUpdateSetNullTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+							$this->createUpdateSetNullTrigger($column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired());
 		   					break;
 
 		   				case 'SET DEFAULT':
-		   					$this->createUpdateSetDefaultTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired(), $column->getDefault() );
+		   					$this->createUpdateSetDefaultTrigger($column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired(), $column->getDefault());
 		   					break;
 		   			}
 
 		   			// Set appropriate ON DELETE clause based on orm.xml configuration
-		   			switch( $column->getForeignKey()->getOnDelete() ) {
+		   			switch($column->getForeignKey()->getOnDelete()) {
 
 		   				case 'NO ACTION':
 		   					break;
 
 		   				case 'RESTRICT':
-		   					$this->createDeleteRestrictTrigger( $column->getForeignKey()->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $table->getName(), $column->getName(), $column->isRequired() );		
+		   					$this->createDeleteRestrictTrigger($column->getForeignKey()->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $table->getName(), $column->getName(), $column->isRequired());		
 		   					break;
 
 		   				case 'CASCADE':
-		   					$this->createDeleteCascadeTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   					$this->createDeleteCascadeTrigger($column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired());
 		   					break;
 
 		   				case 'SET NULL':
-		   					$this->createDeleteSetNullTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired() );
+		   					$this->createDeleteSetNullTrigger($column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired());
 		   					break;
 
 		   				case 'SET_DEFAULT':
-							$this->createDeleteSetDefaultTrigger( $column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired(), $column->getDefault() );
+							$this->createDeleteSetDefaultTrigger($column->getForeignKey()->getName(), $table->getName(), $column->getName(), $column->getForeignKey()->getReferencedTable(), $column->getForeignKey()->getReferencedColumn(), $column->isRequired(), $column->getDefault());
 		   					break;
 		   			}
 		   }
@@ -204,19 +204,19 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * (non-PHPdoc)
 	   * @see src/orm/BaseDialect#truncate($model)
 	   */
-	  public function truncate( $model ) {
+	  public function truncate($model) {
 
-	  	     $table = $this->getTableByModel( $model );
-	  		 $this->query( 'DELETE FROM ' . $table->getName() . ';' );
+	  	     $table = $this->getTableByModel($model);
+	  		 $this->query('DELETE FROM ' . $table->getName() . ';');
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#dropTable()
 	   */
-	  public function dropTable( Table $table ) {
+	  public function dropTable(Table $table) {
 
-	  		 $this->query( 'DROP TABLE ' . $table->getName() );
+	  		 $this->query('DROP TABLE ' . $table->getName());
 	  }
 
 	  /**
@@ -227,13 +227,13 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 
   	 	 	 $dbfile = $this->database->getName();
 
-  	 	 	 if( !file_exists( $dbfile ) )
-  	  	 	 	 throw new ORMException( 'Could not locate sqlite database: ' . $dbfile );
+  	 	 	 if(!file_exists($dbfile))
+  	  	 	 	 throw new ORMException('Could not locate sqlite database: ' . $dbfile);
 
-  	  	 	 chmod( $dbfile, 0777 );
+  	  	 	 chmod($dbfile, 0777);
 
-  	  	 	 if( !unlink( $dbfile ) )
-  		 	 	throw new ORMException( 'Could not drop/delete the sqlite database: ' . $dbfile );
+  	  	 	 if(!unlink($dbfile))
+  		 	 	throw new ORMException('Could not drop/delete the sqlite database: ' . $dbfile);
 	  }
 
 	  /**
@@ -243,17 +243,17 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	  public function reverseEngineer() {
 
 	  		 $Database = new Database();
-	  		 $Database->setName( $this->database->getName() );
-	  		 $Database->setType( $this->database->getType() );
-	  		 $Database->setHostname( $this->database->getHostname() );
-	  		 $Database->setUsername( $this->database->getUsername() );
-	  		 $Database->setPassword( $this->database->getPassword() );
+	  		 $Database->setName($this->database->getName());
+	  		 $Database->setType($this->database->getType());
+	  		 $Database->setHostname($this->database->getHostname());
+	  		 $Database->setUsername($this->database->getUsername());
+	  		 $Database->setPassword($this->database->getPassword());
 
-	  		 $stmt = $this->query( "SELECT name, sql FROM sqlite_master WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY 1" );
-	  		 $stmt->setFetchMode( PDO::FETCH_OBJ );
+	  		 $stmt = $this->query("SELECT name, sql FROM sqlite_master WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY 1");
+	  		 $stmt->setFetchMode(PDO::FETCH_OBJ);
 
-	  		 foreach( $stmt->fetchAll() as $table )
-  		 		$Database->addTable( $this->parseTable( $table->sql ) );
+	  		 foreach($stmt->fetchAll() as $table)
+  		 		$Database->addTable($this->parseTable($table->sql));
 
   		 	 return $Database;
 	  }
@@ -264,16 +264,16 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @param String $sql CREATE TABLE SQL statement
 	   * @return Table The parsed table instance
 	   */
-	  private function parseTable( $sql ) {
+	  private function parseTable($sql) {
 
-	  		  preg_match( '/TABLE\\s*"(.*?)"\\s/i', $sql, $name );
+	  		  preg_match('/TABLE\\s*"(.*?)"\\s/i', $sql, $name);
 
 	  		  $Table = new Table();
-	  		  $Table->setName( $name[1] );
-	  		  $Table->setModel( ucfirst( $name[1] ) );
+	  		  $Table->setName($name[1]);
+	  		  $Table->setModel(ucfirst($name[1]));
 
-	  		  foreach( $this->parseColumns( $sql, $Table->getName() ) as $column )
- 		  			$Table->addColumn( $column );
+	  		  foreach($this->parseColumns($sql, $Table->getName()) as $column)
+ 		  			$Table->addColumn($column);
 
 	  		  return $Table;
 	  }
@@ -285,49 +285,49 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @param String $tblName The name of the table being parsed
 	   * @return void
 	   */
-	  private function parseColumns( $sql, $tblName ) {
+	  private function parseColumns($sql, $tblName) {
 
 	  		  $colz = array();
 
-	  		  preg_match( '/\((.*)\)/', $sql, $cols );
+	  		  preg_match('/\((.*)\)/', $sql, $cols);
 
-	  		  $columns = explode( ',', $cols[1] );
-	  		  foreach( $columns as $column ) {
+	  		  $columns = explode(',', $cols[1]);
+	  		  foreach($columns as $column) {
 
-	  		  		preg_match( '/"(.*)"/', $column, $name );
-	  		  		preg_match( '/\\s(\\w+)/', $column, $type );
+	  		  		preg_match('/"(.*)"/', $column, $name);
+	  		  		preg_match('/\\s(\\w+)/', $column, $type);
 
-	  		  		$Column = new Column( null, $tblName );
-	  		  		$Column->setName( $name[1] );
-	  		  		$Column->setType( strtolower( $type[1] ) );
+	  		  		$Column = new Column(null, $tblName);
+	  		  		$Column->setName($name[1]);
+	  		  		$Column->setType(strtolower($type[1]));
 	  		  		
-	  		  		if( preg_match( '/primary key/i', $column ) )
-	  		  			$Column->setPrimaryKey( true );
+	  		  		if(preg_match('/primary key/i', $column))
+	  		  			$Column->setPrimaryKey(true);
 
-	  		  		if( preg_match( '/not null/i', $column ) )
-	  		  			$Column->setRequired( true );
+	  		  		if(preg_match('/not null/i', $column))
+	  		  			$Column->setRequired(true);
 
-	  		  		preg_match( '/default\\s(.*)/i', $column, $default );
-	  		  		if( count( $default ) )
-	  		  			$Column->setDefault( trim( str_replace( "'", '', $default[1] ) ) );
+	  		  		preg_match('/default\\s(.*)/i', $column, $default);
+	  		  		if(count($default))
+	  		  			$Column->setDefault(trim(str_replace("'", '', $default[1])));
 
-	  		  		preg_match( '/(constraint\\s(.*?)\\sreferences\\s?(.*)\((.*)\))/i', $column, $fkey );
+	  		  		preg_match('/(constraint\\s(.*?)\\sreferences\\s?(.*)\((.*)\))/i', $column, $fkey);
 	  		  		
-	  		  		if( count( $fkey ) == 5 ) {
+	  		  		if(count($fkey) == 5) {
 
-	  		  			$ForeignKey = new ForeignKey( null, $tblName, $name[1] );
-	  		  			$ForeignKey->setName( $fkey[2] );
-	  		  			$ForeignKey->setSelect( $fkey[4] );
-						$ForeignKey->setType( 'one-to-many' );
-						$ForeignKey->setReferencedTable( $fkey[3] );
-						$ForeignKey->setReferencedColumn( $fkey[4] );
-						$ForeignKey->setReferencedController( ucfirst( $fkey[3] ) . 'Controller' );
-						$ForeignKey->setOnDelete( 'SET_NULL' );
-						$ForeignKey->setOnUpdate( 'CASCADE' );
+	  		  			$ForeignKey = new ForeignKey(null, $tblName, $name[1]);
+	  		  			$ForeignKey->setName($fkey[2]);
+	  		  			$ForeignKey->setSelect($fkey[4]);
+						$ForeignKey->setType('one-to-many');
+						$ForeignKey->setReferencedTable($fkey[3]);
+						$ForeignKey->setReferencedColumn($fkey[4]);
+						$ForeignKey->setReferencedController(ucfirst($fkey[3]) . 'Controller');
+						$ForeignKey->setOnDelete('SET_NULL');
+						$ForeignKey->setOnUpdate('CASCADE');
 
-						$Column->setForeignKey( $ForeignKey );
+						$Column->setForeignKey($ForeignKey);
 	  		  		}
-	  		  		array_push( $colz, $Column );
+	  		  		array_push($colz, $Column);
 	  		  }
 	  		  return $colz; 
 	  }
@@ -345,23 +345,23 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @return void
 	   * @throws ORMException
 	   */
-	  private function createInsertRestrictTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
+	  private function createInsertRestrictTrigger($fkName, $table, $column, $rTable, $rColumn, $notNull = false) {
 
 	  		  $sql = 'CREATE TRIGGER tir' . $fkName . '
 	  		  			BEFORE INSERT ON [' . $table . ']
 	  		  			FOR EACH ROW BEGIN
-	  		  				SELECT RAISE( ROLLBACK, \'Insert on table "' . $table . '" violates foreign key constraint "' . str_replace( '_fkInsert', '', $fkName ) . '"\' )
+	  		  				SELECT RAISE(ROLLBACK, \'Insert on table "' . $table . '" violates foreign key constraint "' . str_replace('_fkInsert', '', $fkName) . '"\')
 	  		  				WHERE NEW.' . $column . ' IS NOT NULL AND (SELECT ' . $rColumn . ' FROM ' . $rTable . ' WHERE ' . $rColumn . ' = NEW.' . $column . ') IS NULL;
 	  		  			END;';
 
-	  		  $this->query( $sql );
+	  		  $this->query($sql);
 
-  	 		  if( $this->pdo->errorInfo() !== null ) {
+  	 		  if($this->pdo->errorInfo() !== null) {
 
   	 			  $info = $this->pdo->errorInfo();
-  	 			  if( $info[0] == '0000' ) return;
+  	 			  if($info[0] == '0000') return;
 
-		  	      throw new ORMException( $info[2], $info[1] );
+		  	      throw new ORMException($info[2], $info[1]);
 		  	  }
 	  }
 
@@ -378,23 +378,23 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @return void
 	   * @throws ORMException
 	   */
-	  private function createUpdateRestrictTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
+	  private function createUpdateRestrictTrigger($fkName, $table, $column, $rTable, $rColumn, $notNull = false) {
 	
 	  		  $sql = 'CREATE TRIGGER tur' . $fkName . '
 						BEFORE UPDATE ON [' . $table . ']
 						FOR EACH ROW BEGIN
-						    SELECT RAISE( ROLLBACK, \'Update on table "' . $table . '" violates foreign key constraint "' . str_replace( '_refUpdate', '', $fkName ) . '"\' )
+						    SELECT RAISE(ROLLBACK, \'Update on table "' . $table . '" violates foreign key constraint "' . str_replace('_refUpdate', '', $fkName) . '"\')
 						      WHERE NEW.' . $column . ' IS NOT NULL AND (SELECT ' . $rColumn . ' FROM ' . $rTable . ' WHERE ' . $rColumn . ' = NEW.' . $column . ') IS NULL;
 						END;';
 
-	  		  $this->query( $sql );
+	  		  $this->query($sql);
 
-  	 		  if( $this->pdo->errorInfo() !== null ) {
+  	 		  if($this->pdo->errorInfo() !== null) {
 
   	 			  $info = $this->pdo->errorInfo();
-  	 			  if( $info[0] == '0000' ) return;
+  	 			  if($info[0] == '0000') return;
 
-		  	      throw new ORMException( $info[2], $info[1] );
+		  	      throw new ORMException($info[2], $info[1]);
 		  	  }
 	  }
 
@@ -411,23 +411,23 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @return void
 	   * @throws ORMException
 	   */
-	  private function createDeleteRestrictTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
+	  private function createDeleteRestrictTrigger($fkName, $table, $column, $rTable, $rColumn, $notNull = false) {
 	
 	  		  $sql = 'CREATE TRIGGER tdr' . $fkName . '
 						BEFORE DELETE ON [' . $rTable . ']
 						FOR EACH ROW BEGIN
-						  SELECT RAISE( ROLLBACK, \'Delete on table "' . $rTable . '" violates foreign key constraint "' . str_replace( '_refDelete', '', $fkName ) . '"\' )
+						  SELECT RAISE(ROLLBACK, \'Delete on table "' . $rTable . '" violates foreign key constraint "' . str_replace('_refDelete', '', $fkName) . '"\')
 						  WHERE (SELECT ' . $column . ' FROM ' . $table . ' WHERE ' . $column . ' = OLD.' . $rColumn . ') IS NOT NULL;
 						END;';
 
-	  		  $this->query( $sql );
+	  		  $this->query($sql);
 
-  	 		  if( $this->pdo->errorInfo() !== null ) {
+  	 		  if($this->pdo->errorInfo() !== null) {
 
   	 			  $info = $this->pdo->errorInfo();
-  	 			  if( $info[0] == '0000' ) return;
+  	 			  if($info[0] == '0000') return;
 
-		  	      throw new ORMException( $info[2], $info[1] );
+		  	      throw new ORMException($info[2], $info[1]);
 		  	  }
 	  }
 
@@ -444,7 +444,7 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @return void
 	   * @throws ORMException
 	   */
-	  private function createUpdateCascadeTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
+	  private function createUpdateCascadeTrigger($fkName, $table, $column, $rTable, $rColumn, $notNull = false) {
 
 	  		  $sql = 'CREATE TRIGGER tuc' . $fkName . '
 						BEFORE UPDATE ON [' . $rTable . ']
@@ -452,14 +452,14 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 						    UPDATE ' . $table . ' SET ' . $column . ' = NEW.' . $rColumn . ' WHERE ' . $table . '.' . $column . ' = OLD.' . $rColumn . ';
 						END;';
 
-	  		  $this->query( $sql );
+	  		  $this->query($sql);
 
-  	 		  if( $this->pdo->errorInfo() !== null ) {
+  	 		  if($this->pdo->errorInfo() !== null) {
 
   	 			  $info = $this->pdo->errorInfo();
-  	 			  if( $info[0] == '0000' ) return;
+  	 			  if($info[0] == '0000') return;
 
-		  	      throw new ORMException( $info[2], $info[1] );
+		  	      throw new ORMException($info[2], $info[1]);
 		  	  }
 	  }
 
@@ -476,7 +476,7 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @return void
 	   * @throws ORMException
 	   */
-	  private function createDeleteCascadeTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
+	  private function createDeleteCascadeTrigger($fkName, $table, $column, $rTable, $rColumn, $notNull = false) {
 
 	  		  $sql = 'CREATE TRIGGER tdc' . $fkName . '
 						BEFORE DELETE ON [' . $rTable . ']
@@ -484,14 +484,14 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 						    DELETE FROM ' . $table . ' WHERE ' . $table . '.' . $column . ' = OLD.' . $rColumn . ';
 						END;';
 
-	  		  $this->query( $sql );
+	  		  $this->query($sql);
 
-  	 		  if( $this->pdo->errorInfo() !== null ) {
+  	 		  if($this->pdo->errorInfo() !== null) {
 
   	 			  $info = $this->pdo->errorInfo();
-  	 			  if( $info[0] == '0000' ) return;
+  	 			  if($info[0] == '0000') return;
 
-		  	      throw new ORMException( $info[2], $info[1] );
+		  	      throw new ORMException($info[2], $info[1]);
 		  	  }
 	  }
 
@@ -508,7 +508,7 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @return void
 	   * @throws ORMException
 	   */
-	  private function createUpdateSetNullTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
+	  private function createUpdateSetNullTrigger($fkName, $table, $column, $rTable, $rColumn, $notNull = false) {
 
 	  		  $sql = 'CREATE TRIGGER tusn' . $fkName . '
 						BEFORE UPDATE ON [' . $rTable . ']
@@ -516,14 +516,14 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 						    UPDATE ' . $table . ' SET ' . $column . ' = NULL WHERE ' . $column . ' = OLD.' . $rColumn . ';
 						END;';
 	  		  
-	  		  $this->query( $sql );
+	  		  $this->query($sql);
 
-  	 		  if( $this->pdo->errorInfo() !== null ) {
+  	 		  if($this->pdo->errorInfo() !== null) {
 
   	 			  $info = $this->pdo->errorInfo();
-  	 			  if( $info[0] == '0000' ) return;
+  	 			  if($info[0] == '0000') return;
 
-		  	      throw new ORMException( $info[2], $info[1] );
+		  	      throw new ORMException($info[2], $info[1]);
 		  	  }
 	  }
 
@@ -540,7 +540,7 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @return void
 	   * @throws ORMException
 	   */
-	  private function createDeleteSetNullTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false ) {
+	  private function createDeleteSetNullTrigger($fkName, $table, $column, $rTable, $rColumn, $notNull = false) {
 
 	  		  $sql = 'CREATE TRIGGER tdsn' . $fkName . '
 						BEFORE DELETE ON [' . $rTable . ']
@@ -548,14 +548,14 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 						    UPDATE ' . $table . ' SET ' . $column . ' = NULL WHERE ' . $column . ' = OLD.' . $rColumn . ';
 						END;';
 
-	  		  $this->query( $sql );
+	  		  $this->query($sql);
 
-  	 		  if( $this->pdo->errorInfo() !== null ) {
+  	 		  if($this->pdo->errorInfo() !== null) {
 
   	 			  $info = $this->pdo->errorInfo();
-  	 			  if( $info[0] == '0000' ) return;
+  	 			  if($info[0] == '0000') return;
 
-		  	      throw new ORMException( $info[2], $info[1] );
+		  	      throw new ORMException($info[2], $info[1]);
 		  	  }
 	  }
 	  
@@ -573,7 +573,7 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @return void
 	   * @throws ORMException
 	   */
-	  private function createUpdateSetDefaultTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false, $default ) {
+	  private function createUpdateSetDefaultTrigger($fkName, $table, $column, $rTable, $rColumn, $notNull = false, $default) {
 
 	  		  $sql = 'CREATE TRIGGER tusd' . $fkName . '
 						BEFORE UPDATE ON [' . $rTable . ']
@@ -581,14 +581,14 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 						    UPDATE ' . $table . ' SET ' . $column . ' = "' . $default . '" WHERE ' . $column . ' = OLD.' . $rColumn . ';
 						END;';
 	  		  
-	  		  $this->query( $sql );
+	  		  $this->query($sql);
 
-  	 		  if( $this->pdo->errorInfo() !== null ) {
+  	 		  if($this->pdo->errorInfo() !== null) {
 
   	 			  $info = $this->pdo->errorInfo();
-  	 			  if( $info[0] == '0000' ) return;
+  	 			  if($info[0] == '0000') return;
 
-		  	      throw new ORMException( $info[2], $info[1] );
+		  	      throw new ORMException($info[2], $info[1]);
 		  	  }
 	  }
 
@@ -606,7 +606,7 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	   * @return void
 	   * @throws ORMException
 	   */
-	  private function createDeleteSetDefaultTrigger( $fkName, $table, $column, $rTable, $rColumn, $notNull = false, $default ) {
+	  private function createDeleteSetDefaultTrigger($fkName, $table, $column, $rTable, $rColumn, $notNull = false, $default) {
 
 	  		  $sql = 'CREATE TRIGGER tdsd' . $fkName . '
 						BEFORE DELETE ON [' . $rTable . ']
@@ -614,14 +614,14 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 						    UPDATE ' . $table . ' SET ' . $column . ' = "' . $default . '" WHERE ' . $column . ' = OLD.' . $rColumn . ';
 						END;';
 
-	  		  $this->query( $sql );
+	  		  $this->query($sql);
 
-  	 		  if( $this->pdo->errorInfo() !== null ) {
+  	 		  if($this->pdo->errorInfo() !== null) {
 
   	 			  $info = $this->pdo->errorInfo();
-  	 			  if( $info[0] == '0000' ) return;
+  	 			  if($info[0] == '0000') return;
 
-		  	      throw new ORMException( $info[2], $info[1] );
+		  	      throw new ORMException($info[2], $info[1]);
 		  	  }
 	  }  
 }

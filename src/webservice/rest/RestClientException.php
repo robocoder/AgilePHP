@@ -39,10 +39,10 @@ class RestClientException extends RestServiceException {
 	   * @param Integer $code The HTTP status code to send.
 	   * @return void
 	   */
-	  public function __construct( $code ) {
+	  public function __construct($code) {
 
-	  		 if( !array_key_exists( $code, $this->codes ) )
-	  		 	 throw new FrameworkException( 'Invalid HTTP Response code \'' . $code . '\'.' );
+	  		 if(!array_key_exists($code, $this->codes))
+	  		 	 throw new FrameworkException('Invalid HTTP Response code \'' . $code . '\'.');
 
 			 $this->code = $code;
 			 $this->message = $code . ' ' . $this->codes[$code];

@@ -41,16 +41,16 @@ class Crypto {
 	  public function __construct() {
 
 	  		 $agilephp_xml = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
-	  		 $xml = simplexml_load_file( $agilephp_xml );
+	  		 $xml = simplexml_load_file($agilephp_xml);
 
-	  	     if( $xml->crypto ) {
+	  	     if($xml->crypto) {
 
-	  		  	 $this->setAlgorithm( (string)$xml->crypto->attributes()->algorithm );
+	  		  	 $this->setAlgorithm((string)$xml->crypto->attributes()->algorithm);
 
-	  		  	 if( $xml->crypto->attributes()->iv )
+	  		  	 if($xml->crypto->attributes()->iv)
 	  		  	 	 $this->iv = (string)$xml->crypto->attributes()->iv;
 	  		  	 	 
-	  		  	 if( $xml->crypto->attributes()->key )
+	  		  	 if($xml->crypto->attributes()->key)
 	  		  	 	 $this->key = (string)$xml->crypto->attributes()->key;
 	  	     }
 	  }
@@ -63,7 +63,7 @@ class Crypto {
 	   */
 	  public static function getInstance() {
 
-	  	     if( self::$instance == null )
+	  	     if(self::$instance == null)
 	  	         self::$instance = new self;
 
 	  	     return self::$instance;
@@ -79,13 +79,13 @@ class Crypto {
 	   * @throws FrameworkException If passed a hashing name not available in
 	   * 							getSupportedHashAlgorithms().
 	   */
-	  public function setAlgorithm( $algorithm ) {
+	  public function setAlgorithm($algorithm) {
 
-	  		 if( in_array( $algorithm, $this->getSupportedHashAlgorithms() ) )
+	  		 if(in_array($algorithm, $this->getSupportedHashAlgorithms()))
 	  		 	 $this->algorithm = $algorithm;
 
-	  		 if( !$this->algorithm )
-	  		 	 throw new FrameworkException( 'Unsupported hashing algorithm \'' . $algorithm . '\'.' );
+	  		 if(!$this->algorithm)
+	  		 	 throw new FrameworkException('Unsupported hashing algorithm \'' . $algorithm . '\'.');
 	  }
 
 	  /**
@@ -107,7 +107,7 @@ class Crypto {
 	   */
 	  public function getIV() {
 
-	  		 return base64_decode( $this->iv );
+	  		 return base64_decode($this->iv);
 	  }
 
 	  /**
@@ -128,9 +128,9 @@ class Crypto {
 	   * @param mixed $data The data to hash
 	   * @return String The hashed string
 	   */
-	  public function getDigest( $data ) {
+	  public function getDigest($data) {
 
-	  		 return $this->hash( $this->getAlgorithm(), $data );
+	  		 return $this->hash($this->getAlgorithm(), $data);
 	  }
 
 	  /**
@@ -139,9 +139,9 @@ class Crypto {
 	   * @param mixed $data The data to hash
 	   * @return String The hashed MD5 string
 	   */
-	  public function md5( $data ) {
+	  public function md5($data) {
 
-	  		 return md5( $data );
+	  		 return md5($data);
 	  }
 
 	  /**
@@ -150,9 +150,9 @@ class Crypto {
 	   * @param $data The data to hash
 	   * @return String The hashed SHA1 string
 	   */
-	  public function sha1( $data ) {
+	  public function sha1($data) {
 
-	  		 return hash( 'sha1', $data );
+	  		 return hash('sha1', $data);
 	  }
 
 	  /**
@@ -161,9 +161,9 @@ class Crypto {
 	   * @param mixed $data The data to hash
 	   * @return String The hashed SHA256 string
 	   */
-	  public function sha256( $data ) {
+	  public function sha256($data) {
 
-	  		 return hash( 'sha256', $data );
+	  		 return hash('sha256', $data);
 	  }
 
 	  /**
@@ -172,9 +172,9 @@ class Crypto {
 	   * @param mixed $data The data to hash
 	   * @return String The hashed SHA384 string
 	   */
-	  public function sha384( $data ) {
+	  public function sha384($data) {
 
-	  		 return hash( 'sha384', $data );
+	  		 return hash('sha384', $data);
 	  }
 
 	  /**
@@ -183,9 +183,9 @@ class Crypto {
 	   * @param $data The data to hash
 	   * @return String The hashed SHA512 string
 	   */
-	  public function sha512( $data ) {
+	  public function sha512($data) {
 
-	  		 return hash( 'sha512', $data );
+	  		 return hash('sha512', $data);
 	  }
 
 	  /**
@@ -194,9 +194,9 @@ class Crypto {
 	   * @param mixed $data The data to hash
 	   * @return String The hashed CRC32 string
 	   */
-	  public function crc32( $data ) {
+	  public function crc32($data) {
 
-	  		 return hash( 'crc32', $data );
+	  		 return hash('crc32', $data);
 	  }
 
 	  /**
@@ -209,9 +209,9 @@ class Crypto {
 	   * @param mixed $data The data to hash
 	   * @return String The hashed SHA1 string
 	   */
-	  public function hash( $algorithm, $data ) {
+	  public function hash($algorithm, $data) {
 
-	  		 return hash( $algorithm, $data );
+	  		 return hash($algorithm, $data);
 	  }
 
 	  /**
@@ -241,9 +241,9 @@ class Crypto {
 	   *  
 	   * @return String The initial value (iv) as created by mcrypt_create_iv.
 	   */
-	  public function createIV( $cipher = MCRYPT_TripleDES ) {
+	  public function createIV($cipher = MCRYPT_TripleDES) {
 
-	  		 return mcrypt_create_iv( mcrypt_get_block_size( $cipher, MCRYPT_MODE_CBC ), MCRYPT_DEV_RANDOM );
+	  		 return mcrypt_create_iv(mcrypt_get_block_size($cipher, MCRYPT_MODE_CBC), MCRYPT_DEV_RANDOM);
 	  }
 
 	  /**
@@ -254,13 +254,13 @@ class Crypto {
 	   * @param mixed $data The data to encrypt
 	   * @return byte[] Triple DES encrypted string
 	   */
-	  public function encrypt_3des( $iv, $key, $data ) {
+	  public function encrypt_3des($iv, $key, $data) {
 
-	  		 $size = mcrypt_get_key_size( MCRYPT_TripleDES, MCRYPT_MODE_CBC );
-	  		 if( strlen( $key ) > $size )
-	  		 	 $key = substr( $key, 0, $size );
+	  		 $size = mcrypt_get_key_size(MCRYPT_TripleDES, MCRYPT_MODE_CBC);
+	  		 if(strlen($key) > $size)
+	  		 	 $key = substr($key, 0, $size);
 
-	  		 return mcrypt_cbc( MCRYPT_TripleDES, $key, $data, MCRYPT_ENCRYPT, $iv );
+	  		 return mcrypt_cbc(MCRYPT_TripleDES, $key, $data, MCRYPT_ENCRYPT, $iv);
 	  }
 
 	  /**
@@ -270,13 +270,13 @@ class Crypto {
 	   * @param mixed $data The data to encrypt
 	   * @return byte[] Plain text, decrypted data if a proper key was supplied
 	   */
-	  public function decrypt_3des( $iv, $key, $data ) {
+	  public function decrypt_3des($iv, $key, $data) {
 
-	  		 $size = mcrypt_get_key_size( MCRYPT_TripleDES, MCRYPT_MODE_CBC );
-	  		 if( strlen( $key ) > $size )
-	  		 	 $key = substr( $key, 0, $size );
+	  		 $size = mcrypt_get_key_size(MCRYPT_TripleDES, MCRYPT_MODE_CBC);
+	  		 if(strlen($key) > $size)
+	  		 	 $key = substr($key, 0, $size);
 
-	  		 return trim( mcrypt_cbc( MCRYPT_TripleDES, $key, $data, MCRYPT_DECRYPT, $iv ) );
+	  		 return trim(mcrypt_cbc(MCRYPT_TripleDES, $key, $data, MCRYPT_DECRYPT, $iv));
 	  }
 
 	  /**
@@ -287,13 +287,13 @@ class Crypto {
 	   * @param mixed $data The data to encrypt
 	   * @return byte[] Blowfish encrypted string
 	   */
-	  public function encrypt_blowfish( $iv, $key, $data ) {
+	  public function encrypt_blowfish($iv, $key, $data) {
 
-	  		 $size = mcrypt_get_key_size( MCRYPT_BLOWFISH, MCRYPT_MODE_CBC );
-	  		 if( strlen( $key ) > $size )
-	  		 	 $key = substr( $key, 0, $size );
+	  		 $size = mcrypt_get_key_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC);
+	  		 if(strlen($key) > $size)
+	  		 	 $key = substr($key, 0, $size);
 
-	  		 return mcrypt_cbc( MCRYPT_BLOWFISH, $key, $data, MCRYPT_ENCRYPT, $iv );
+	  		 return mcrypt_cbc(MCRYPT_BLOWFISH, $key, $data, MCRYPT_ENCRYPT, $iv);
 	  }
 
 	  /**
@@ -304,13 +304,13 @@ class Crypto {
 	   * @param mixed $data The data to encrypt
 	   * @return byte[] Plain text, decrypted data if a proper key was supplied
 	   */
-	  public function decrypt_blowfish( $iv, $key, $data ) {
+	  public function decrypt_blowfish($iv, $key, $data) {
 
-	  		 $size = mcrypt_get_key_size( MCRYPT_BLOWFISH, MCRYPT_MODE_CBC );
-	  		 if( strlen( $key ) > $size )
-	  		 	 $key = substr( $key, 0, $size );
+	  		 $size = mcrypt_get_key_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC);
+	  		 if(strlen($key) > $size)
+	  		 	 $key = substr($key, 0, $size);
 
-	  		 return trim( mcrypt_cbc( MCRYPT_BLOWFISH, $key, $data, MCRYPT_DECRYPT, $iv ) );
+	  		 return trim(mcrypt_cbc(MCRYPT_BLOWFISH, $key, $data, MCRYPT_DECRYPT, $iv));
 	  }
 
 	  /**
@@ -320,13 +320,13 @@ class Crypto {
 	   * @param mixed $data The data to encrypt
 	   * @return byte[] AES 256 encrypted data
 	   */
-	  public function encrypt_aes256( $iv, $key, $data ) {
+	  public function encrypt_aes256($iv, $key, $data) {
 
-	  		 $size = mcrypt_get_key_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC );
-	  		 if( strlen( $key ) > $size )
-	  		 	 $key = substr( $key, 0, $size );
+	  		 $size = mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+	  		 if(strlen($key) > $size)
+	  		 	 $key = substr($key, 0, $size);
 
-	  		 return mcrypt_cbc( MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_ENCRYPT, $iv );
+	  		 return mcrypt_cbc(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_ENCRYPT, $iv);
 	  }
 
 	  /**
@@ -336,13 +336,13 @@ class Crypto {
 	   * @param mixed $data The data to encrypt
 	   * @return byte[] AES 256 decrypted data if a proper key was supplied
 	   */
-	  public function decrypt_aes256( $iv, $key, $data ) {
+	  public function decrypt_aes256($iv, $key, $data) {
 
-	  		 $size = mcrypt_get_key_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC );
-	  		 if( strlen( $key ) > $size )
-	  		 	 $key = substr( $key, 0, $size );
+	  		 $size = mcrypt_get_key_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+	  		 if(strlen($key) > $size)
+	  		 	 $key = substr($key, 0, $size);
 
-	  		 return trim( mcrypt_cbc( MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_DECRYPT, $iv ) );
+	  		 return trim(mcrypt_cbc(MCRYPT_RIJNDAEL_256, $key, $data, MCRYPT_DECRYPT, $iv));
 	  }
 }
 ?>

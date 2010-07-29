@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -39,7 +39,7 @@ class Upload {
 	   * @param String $name The name attribute of the HTML file input element
 	   * @return void
 	   */
-	  public function setName( $name ) {
+	  public function setName($name) {
 
 	  		 $this->name = $name;
 	  }
@@ -60,13 +60,13 @@ class Upload {
 	   * @param String $directory The upload destination directory
 	   * @return void
 	   */
-	  public function setDirectory( $directory ) {
+	  public function setDirectory($directory) {
 	  	
 	  		 $this->directory = $directory;
 
-	  		 if( !file_exists( $directory ) )
-	  		 	 if( !mkdir( $directory, true ) )
-	  		 	 	 throw new FrameworkException( 'Upload directory does not exist and an attempt to create it failed.' );
+	  		 if(!file_exists($directory))
+	  		 	 if(!mkdir($directory, true))
+	  		 	 	 throw new FrameworkException('Upload directory does not exist and an attempt to create it failed.');
 	  }
 
 	  /**
@@ -87,16 +87,16 @@ class Upload {
 	   * @return String The uploaded file path.
 	   * @throws ORMException if any errors occur
 	   */
-	  public function save( $filename = null ) {
+	  public function save($filename = null) {
 
 	  		 $name = ($filename) ? $filename : $_FILES[ $this->getName() ]['name'];
 			 $target = $this->getDirectory() . DIRECTORY_SEPARATOR . $name;
 
-			 Log::debug( 'Upload::save Saving upload with name \'' . $this->getName() . '\' to target path \'' . $target . '\'.' );
+			 Log::debug('Upload::save Saving upload with name \'' . $this->getName() . '\' to target path \'' . $target . '\'.');
 
-			 if( !move_uploaded_file( $_FILES[ $this->getName() ]['tmp_name'], $target ) ) {
+			 if(!move_uploaded_file($_FILES[ $this->getName() ]['tmp_name'], $target)) {
 
-			 	 switch( $_FILES[ $this->getName() ]['error'] ) {
+			 	 switch($_FILES[ $this->getName() ]['error']) {
 
 			 	 	case 1:
 			 	 		$error = 'The uploaded file exceeds the upload_max_filesize directive in php.ini.';
@@ -129,14 +129,14 @@ class Upload {
 
 			 	 if(!isset($error)) return;
 
-			 	 Log::debug( 'Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.' );
+			 	 Log::debug('Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.');
 
-			 	 throw new FrameworkException( $error, $_FILES[ $this->getName() ]['error'] );
+			 	 throw new FrameworkException($error, $_FILES[ $this->getName() ]['error']);
 			 }
 
-			 chmod( $target, 0755 );
+			 chmod($target, 0755);
 
-			 Log::debug( 'Upload::save Upload successfully saved' );
+			 Log::debug('Upload::save Upload successfully saved');
 
 			 return $target;
 	  }
@@ -148,10 +148,10 @@ class Upload {
 	   */
 	  public function delete() {
 
-	  		 if( !unlink( $this->getDirectory() .'/' . $_FILES[ $this->getName() ]['name'] ) )
-	  		 	 Log::debug( 'Upload::delete Failed to delete upload' );
+	  		 if(!unlink($this->getDirectory() .'/' . $_FILES[ $this->getName() ]['name']))
+	  		 	 Log::debug('Upload::delete Failed to delete upload');
 	  		 else
-	  		 	 Log::debug( 'Upload::delete Delete successful' );
+	  		 	 Log::debug('Upload::delete Delete successful');
 	  }
 }
 ?>

@@ -71,7 +71,7 @@ abstract class BaseDialect {
 		  * @param $columnName The column name to get the distinct values for
 		  * @return void
 		  */
-		 public function setDistinct( $columnName ) {
+		 public function setDistinct($columnName) {
 
 		 		$this->distinct = $columnName;
 		 }
@@ -94,7 +94,7 @@ abstract class BaseDialect {
 		  * @param $maxResults The maximum number of results to return
 		  * @return void
 		  */
-		 public function setMaxResults( $maxResults = 25 ) {
+		 public function setMaxResults($maxResults = 25) {
 
 		 		$this->maxResults = $maxResults;
 		 }
@@ -116,7 +116,7 @@ abstract class BaseDialect {
 		  * @param Integer $offset The limit offset.
 		  * @return void
 		  */
-		 public function setOffset( $offset ) {
+		 public function setOffset($offset) {
 
 		 		$this->offset = $offset;
 		 }
@@ -137,7 +137,7 @@ abstract class BaseDialect {
 	      * @param $column The column name to group the result set by
 	      * @return void
 	      */
-	     public function setGroupBy( $column ) {
+	     public function setGroupBy($column) {
 
 	     		   $this->groupBy = $column;
 	     }
@@ -162,15 +162,15 @@ abstract class BaseDialect {
 	  	  */
 	  	 public function beginTransaction() {
 
-	  		    Log::debug( 'BaseDialect::beginTransaction Beginning transaction' );
+	  		    Log::debug('BaseDialect::beginTransaction Beginning transaction');
 
 	  		    try {
 	  		   	 	  $this->pdo->beginTransaction();
 	  		   	 	  $this->transactionInProgress = true;
 	  		    }
-	  		    catch( PDOException $e ) {
+	  		    catch(PDOException $e) {
 
-	  		   		   throw new ORMException( $e->getMessage(), $e->getCode() );
+	  		   		   throw new ORMException($e->getMessage(), $e->getCode());
 	  		    }
 	  	 }
 
@@ -184,15 +184,15 @@ abstract class BaseDialect {
 	  	  */
 	  	 public function commit() {
 
-	  		    Log::debug( 'BaseDialect::commit Transaction successfully committed' );
+	  		    Log::debug('BaseDialect::commit Transaction successfully committed');
 
 	  		    try {
 	  		   		  $this->pdo->commit();
 	  		   		  $this->transactionInProgress = false;
 	  		    }
-	  		    catch( PDOException $e ) {
+	  		    catch(PDOException $e) {
 
-	  		   		   throw new ORMException( $e->getMessage(), $e->getCode() );
+	  		   		   throw new ORMException($e->getMessage(), $e->getCode());
 	  		    }
 	  	 }
 
@@ -206,20 +206,20 @@ abstract class BaseDialect {
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	  * @see http://usphp.com/manual/en/function.PDO-rollBack.php
 	  	  */
-	  	 public function rollBack( $message = null, $code = 0 ) {
+	  	 public function rollBack($message = null, $code = 0) {
 
-	  		    Log::debug( 'BaseDialect::rollBack' . (($message == null) ? '' : ' ' . $message ));
+	  		    Log::debug('BaseDialect::rollBack' . (($message == null) ? '' : ' ' . $message));
 
 	  		    try {
 	  		    	  $this->pdo->rollBack();
 	  		    	  $this->transactionInProgress = false;
 	  		    }
-	  		    catch( PDOException $e ) {
+	  		    catch(PDOException $e) {
 
-	  		   		   throw new ORMException( $e->getMessage(), $e->getCode() );
+	  		   		   throw new ORMException($e->getMessage(), $e->getCode());
 	  		    }
 
-	  		    if( $message ) throw new ORMException( $message, $code );
+	  		    if($message) throw new ORMException($message, $code);
 	  	 }
 
 	  	 /**
@@ -229,26 +229,26 @@ abstract class BaseDialect {
 		  * @return False if the statement could not execute successfully
 		  * @see http://usphp.com/manual/en/function.PDO-prepare.php
 	  	  */
-	  	 public function prepare( $statement ) {
+	  	 public function prepare($statement) {
 
-	  		    Log::debug( 'BaseDialect::prepare Preparing' .
+	  		    Log::debug('BaseDialect::prepare Preparing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
-			  	     					'statement ' . $statement );
+			  	     					'statement ' . $statement);
 
 				try {
-						if( !$this->PDOStatement = $this->pdo->prepare( $statement ) ) {
+						if(!$this->PDOStatement = $this->pdo->prepare($statement)) {
 
 					  	  	$info = $this->pdo->errorInfo();
 
-					  	  	if( $this->transactionInProgress )
-			  	 		    	$this->rollBack( $info[2], $info[1] );
+					  	  	if($this->transactionInProgress)
+			  	 		    	$this->rollBack($info[2], $info[1]);
 
-						  	throw new ORMException( $info[2], $info[1] );
+						  	throw new ORMException($info[2], $info[1]);
 					    }
 				}
-				catch( PDOException $e ) {
+				catch(PDOException $e) {
 
-					   throw new ORMException( $e->getMessage(), $e->getCode() );
+					   throw new ORMException($e->getMessage(), $e->getCode());
 				}
 
 	  		    return $this->PDOStatement;
@@ -261,29 +261,29 @@ abstract class BaseDialect {
 	  	  * @return True if successful, false on fail
 	  	  * @see http://usphp.com/manual/en/function.PDOStatement-execute.php
 	  	  */
-	  	 public function execute( array $inputParameters = array() ) {
+	  	 public function execute(array $inputParameters = array()) {
 
-	  		    Log::debug( 'BaseDialect::execute Executing' .
+	  		    Log::debug('BaseDialect::execute Executing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
-			  	     					'prepared statement with $inputParameters ' . print_r( $inputParameters, true ) );
+			  	     					'prepared statement with $inputParameters ' . print_r($inputParameters, true));
 
 			  	try {
-					  	if( !$this->PDOStatement->execute($inputParameters) ) {
+					  	if(!$this->PDOStatement->execute($inputParameters)) {
 
 						    $info = $this->PDOStatement->errorInfo();
 
-					        if( $this->transactionInProgress )
-					  			$this->rollBack( $info[2], $info[1] );
+					        if($this->transactionInProgress)
+					  			$this->rollBack($info[2], $info[1]);
 
-						  	throw new ORMException( $info[2], $info[1] );
+						  	throw new ORMException($info[2], $info[1]);
 					    }
 			  	}
-			  	catch( PDOException $e ) {
+			  	catch(PDOException $e) {
 
-			  		   if( $this->transactionInProgress )
+			  		   if($this->transactionInProgress)
 					  	   $this->rollBack();
 
-			  		   throw new ORMException( $e->getMessage(), $e->getCode() );
+			  		   throw new ORMException($e->getMessage(), $e->getCode());
 			  	}
 
 			    return $this->PDOStatement;
@@ -296,13 +296,13 @@ abstract class BaseDialect {
 	  	  * @return The number of rows affected by the query.
 	  	  * @see http://usphp.com/manual/en/function.PDO-exec.php
 	  	  */
-	  	 public function exec( $statement ) {
+	  	 public function exec($statement) {
 
-	  		    Log::debug( 'BaseDialect::exec Executing raw' .
+	  		    Log::debug('BaseDialect::exec Executing raw' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
-			  	     					'PDO::exec query ' . $sql );
+			  	     					'PDO::exec query ' . $sql);
 
-	  		    return $this->pdo->exec( $statement );
+	  		    return $this->pdo->exec($statement);
 	  	 }
 
 		 /**
@@ -313,22 +313,22 @@ abstract class BaseDialect {
 	   	  * @throws ORMException
 	   	  * @see http://usphp.com/manual/en/function.PDO-query.php
 	   	  */
-	  	 public function query( $sql ) {
+	  	 public function query($sql) {
 
-	  		    Log::debug( 'BaseDialect::query Executing' .
+	  		    Log::debug('BaseDialect::query Executing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
-			  	     					'raw PDO::query ' . $sql );
+			  	     					'raw PDO::query ' . $sql);
 
-	  		    $stmt = $this->pdo->query( $sql );
+	  		    $stmt = $this->pdo->query($sql);
 
-	  	        if( $this->pdo->errorCode() > 0 ) {
+	  	        if($this->pdo->errorCode() > 0) {
 
                     $info = $this->pdo->errorInfo();
 
-                    if( $this->transactionInProgress )
-			  			$this->rollBack( $info[2], $info[1] );
+                    if($this->transactionInProgress)
+			  			$this->rollBack($info[2], $info[1]);
 
-	  	     	    throw new ORMException( $info[2], $this->pdo->errorCode() );
+	  	     	    throw new ORMException($info[2], $this->pdo->errorCode());
 	  	        }
 
 	  	        return $stmt;
@@ -341,9 +341,9 @@ abstract class BaseDialect {
 	  	 * @return The quoted data
 	  	 * @see http://www.php.net/manual/en/pdo.quote.php
 	  	 */
-	  	public function quote( $data ) {
+	  	public function quote($data) {
 
-	  		   return $this->pdo->quote( $data );
+	  		   return $this->pdo->quote($data);
 	  	}
 
 	  	/**
@@ -354,46 +354,46 @@ abstract class BaseDialect {
 	     * @throws ORMException
 	     * @todo Work out foreign key auto persist/merge logic or drop support?
 	     */
-	    public function persist( $model ) {
+	    public function persist($model) {
 
 	    	   $this->model = $model;
 
 	   		   $values = array();
-			   $table = $this->getTableByModel( $model );
+			   $table = $this->getTableByModel($model);
 
-			   Log::debug( 'BaseDialect::persist Performing persist on model \'' . $table->getModel() . '\'.' );
+			   Log::debug('BaseDialect::persist Performing persist on model \'' . $table->getModel() . '\'.');
 
-	   		   $this->validate( $table, true );
+	   		   $this->validate($table, true);
 
-			   $sql = 'INSERT INTO ' . $table->getName() . '( ';
+			   $sql = 'INSERT INTO ' . $table->getName() . '(';
 
 			   $columns = $table->getColumns();
-			   for( $i=0; $i<count( $columns ); $i++ ) {
+			   for($i=0; $i<count($columns); $i++) {
 
-			   		if( $columns[$i]->isAutoIncrement() ) continue;
-			   		if( $columns[$i]->isLazy() ) continue;
+			   		if($columns[$i]->isAutoIncrement()) continue;
+			   		if($columns[$i]->isLazy()) continue;
 
 			   		$sql .= $columns[$i]->getName();
 
-			   		if( ($i + 1) < count( $columns ) )
+			   		if(($i + 1) < count($columns))
 			   			$sql .= ', ';
 			   }
-			   $sql .= ' ) VALUES ( ';
-			   for( $i=0; $i<count( $columns ); $i++ ) {
+			   $sql .= ') VALUES (';
+			   for($i=0; $i<count($columns); $i++) {
 
-			   		if( $columns[$i]->isAutoIncrement() ) continue;
-			   		if( $columns[$i]->isLazy() ) continue;
+			   		if($columns[$i]->isAutoIncrement()) continue;
+			   		if($columns[$i]->isLazy()) continue;
 
 			   		$sql .= '?';
 
-			   	    $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
-			   	    if( $columns[$i]->isForeignKey() ) {
+			   	    $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
+			   	    if($columns[$i]->isForeignKey()) {
 
-			   	    	if( is_object( $model->$accessor() ) ) {
+			   	    	if(is_object($model->$accessor())) {
 
-			   	    		$refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+			   	    		$refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 			   	    		// Get foreign key value from the referenced field/instance accessor
-			   	    		if( $model->$accessor()->$refAccessor() != null ) {
+			   	    		if($model->$accessor()->$refAccessor() != null) {
 
 //			   	    			try {
 //			   	    				  // Try to persist the referenced entity first
@@ -404,10 +404,10 @@ abstract class BaseDialect {
 //					   	    		  else
 					   	    		      array_push($values, $model->$accessor()->$refAccessor());
 //			   	    			}
-//			   	    			catch( Exception $e ) {
+//			   	    			catch(Exception $e) {
 //
 //			   	    				   // The referenced entity doesnt exist yet, persist it
-//			   	    				   if( preg_match( '/duplicate/i', $e->getMessage() ) ) {
+//			   	    				   if(preg_match('/duplicate/i', $e->getMessage())) {
 //
 //			   	    				   	   $this->merge($model->$accessor());
 //
@@ -434,7 +434,7 @@ abstract class BaseDialect {
 
 			   		if(($i + 1) < count($columns)) $sql .= ', ';
 			   }
-			   $sql .= ' );';
+			   $sql .= ');';
 
 	   		   $this->prepare($sql);
 	  		   return $this->execute($values);
@@ -448,40 +448,40 @@ abstract class BaseDialect {
 	     * @throws ORMException
 	     * @todo Work out foreign key auto persist/merge logic or drop support?
 	     */
-	    public function merge( $model ) {
+	    public function merge($model) {
 
 	    	   $this->model = $model;
-	    	   $table = $this->getTableByModel( $model );
+	    	   $table = $this->getTableByModel($model);
 
-	    	   Log::debug( 'BaseDialect::merge Performing merge on model \'' . $table->getModel() . '\'.' );
+	    	   Log::debug('BaseDialect::merge Performing merge on model \'' . $table->getModel() . '\'.');
 
 	    	   $this->model = $model;
 	  	       $values = array();
 	  	       $cols = array();
-			   $this->validate( $table );
+			   $this->validate($table);
 
 			   $sql = 'UPDATE ' . $table->getName() . ' SET ';
 
 	  		   $columns = $table->getColumns();
 	  		   $naCount = 0;
-			   for( $i=0; $i<count( $columns ); $i++ ) {
+			   for($i=0; $i<count($columns); $i++) {
 
-			   	    if( $columns[$i]->isPrimaryKey() || $columns[$i]->isAutoIncrement() ) continue;
-			   		if( $columns[$i]->isLazy() ) continue;
+			   	    if($columns[$i]->isPrimaryKey() || $columns[$i]->isAutoIncrement()) continue;
+			   		if($columns[$i]->isLazy()) continue;
 
-			   		$accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
+			   		$accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
 			   		// Extract foreign key value from the referenced column
-			   	    if( $columns[$i]->isForeignKey() ) {
+			   	    if($columns[$i]->isForeignKey()) {
 
-			   	    	if( is_object( $model->$accessor() ) ) {
+			   	    	if(is_object($model->$accessor())) {
 
 			   	    		// Create name for the foreign model's instance accessor
-			   	    		$refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+			   	    		$refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 
 			   	    		// Get foreign key value from the referenced instance
-			   	    		if( $model->$accessor()->$refAccessor() != null ) {
+			   	    		if($model->$accessor()->$refAccessor() != null) {
 
-//		   	    			    $this->merge( $model->$accessor() );
+//		   	    			    $this->merge($model->$accessor());
 //
 //		   	    			    if($transformer = $columns[$i]->getTransformer())
 //   	    				   	       array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
@@ -490,7 +490,7 @@ abstract class BaseDialect {
 //			   	    		}
 //			   	    		else {
 //			   	    			// Persist the referenced model instance, and use its new id as the foreign key value
-//				   	    		$this->persist( $model->$accessor() );
+//				   	    		$this->persist($model->$accessor());
 //
 //				   	    		if($transformer = $columns[$i]->getTransformer())
 //   	    				   	       array_push($values, $transformer::transform($this->pdo->lastInsertId()));
@@ -500,7 +500,7 @@ abstract class BaseDialect {
 			   	    	}
 			   	    	else {
 
-			   	        	array_push( $values, null );
+			   	        	array_push($values, null);
 			   	        }
 			   	    }
 			   	    else { // not a foreign key
@@ -511,13 +511,13 @@ abstract class BaseDialect {
 				   	       array_push($values, $model->$accessor());
 			   	    }
 
-			   	    array_push( $cols, $columns[$i]->getName() );
+			   	    array_push($cols, $columns[$i]->getName());
 			   }
 
-			   $sql .= implode( $cols, '=?, ' ) . '=? WHERE ';
+			   $sql .= implode($cols, '=?, ') . '=? WHERE ';
 
 			   $pkeyColumns = $table->getPrimaryKeyColumns();
-			   for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+			   for($i=0; $i<count($pkeyColumns); $i++) {
 
 			        // Primary keys which are also foreign keys are many-to-many
 			        if($pkeyColumns[$i]->isForeignKey()) {
@@ -528,18 +528,18 @@ abstract class BaseDialect {
 			        }
 			        else {
 
-					   $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
+					   $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
 			           $sql .= $columns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
 			        }
 
-			  		if( ($i+1) < count( $pkeyColumns ) )
+			  		if(($i+1) < count($pkeyColumns))
 			  		    $sql .= ' AND ';
 			   }
 
 			   $sql .= ';';
 
-		       $this->prepare( $sql );
-	  	       return $this->execute( $values );
+		       $this->prepare($sql);
+	  	       return $this->execute($values);
 	    }
 
 	    /**
@@ -549,19 +549,19 @@ abstract class BaseDialect {
 	     * @return PDOStatement
 	     * @throws ORMException
 	     */
-	    public function delete( $model ) {
+	    public function delete($model) {
 
-	      	   $table = $this->getTableByModel( $model );
+	      	   $table = $this->getTableByModel($model);
 
-	      	   Log::debug( 'BaseDialect::delete Performing delete on model \'' . $table->getModel() . '\'.' );
+	      	   Log::debug('BaseDialect::delete Performing delete on model \'' . $table->getModel() . '\'.');
 
 	    	   $values = array();
 		       $columns = $table->getPrimaryKeyColumns();
 		       $sql = 'DELETE FROM ' . $table->getName() . ' WHERE ';
 
-		       for( $i=0; $i<count( $columns ); $i++ ) {
+		       for($i=0; $i<count($columns); $i++) {
 
-		   		    if( $columns[$i]->isForeignKey() ) {
+		   		    if($columns[$i]->isForeignKey()) {
 
 		   		        $fkAccessor = $this->toAccessor($columns[$i]->getModelPropertyName());
 			            $accessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
@@ -572,13 +572,13 @@ abstract class BaseDialect {
 				   	       $value = $model->$fkAccessor()->$accessor();
 
 			            $sql .= $columns[$i]->getName() . '=\'' . $value . '\'';
-			            $sql .= ($i+1) < count( $columns )? ' AND ' : ';';
+			            $sql .= ($i+1) < count($columns)? ' AND ' : ';';
 		   		    }
 		   		    else {
 
 		   		        $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
 		   			    $sql .= '' . $columns[$i]->getName() . '=?';
-		   			    $sql .= ($i+1) < count( $columns )? ' AND ' : ';';
+		   			    $sql .= ($i+1) < count($columns)? ' AND ' : ';';
 
 		   			    if($transformer = $columns[$i]->getTransformer())
 				   	       array_push($values, $transformer::transform($model->$accessor()));
@@ -598,11 +598,11 @@ abstract class BaseDialect {
 	     * @return PDOStatement
 	     * @throws ORMException
 	     */
-	    public function truncate( $model ) {
+	    public function truncate($model) {
 
 			   $table = $this->getTableByModel();
 			   $sql = 'TRUNCATE TABLE ' . $table->getName() . ';';
-			   $this->prepare( $sql );
+			   $this->prepare($sql);
 			   return $this->execute();
 	    }
 
@@ -615,16 +615,16 @@ abstract class BaseDialect {
 	     * @throws ORMException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
 	     */
-	    public function find( $model ) {
+	    public function find($model) {
 
-	    	   $table = $this->getTableByModel( $model );
+	    	   $table = $this->getTableByModel($model);
 			   $newModel = $table->getModelInstance();
 			   $values = array();
 
-			   Log::debug( 'BaseDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
+			   Log::debug('BaseDialect::find Performing find on model \'' . $table->getModel() . '\'.');
 
 	  		   try {
-	  		   		 if( $this->isEmpty( $model ) ) {
+	  		   		 if($this->isEmpty($model)) {
 
 	    	   	         $sql = 'SELECT ' . (($this->isDistinct() == null) ? '*' : 'DISTINCT ' . $this->isDistinct()) . ' FROM ' . $table->getName();
 
@@ -646,17 +646,17 @@ abstract class BaseDialect {
 	    	   	         	$groupBy = $this->getGroupBy();
 
 	    	   		 		$columns = $table->getColumns();
-							for( $i=0; $i<count( $columns ); $i++ ) {
+							for($i=0; $i<count($columns); $i++) {
 
-							 	 if( $columns[$i]->isLazy() ) continue;
+							 	 if($columns[$i]->isLazy()) continue;
 
-							 	 $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
-						     	 if( $model->$accessor() == null ) continue;
+							 	 $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
+						     	 if($model->$accessor() == null) continue;
 
 						     	 $where .= (count($values) ? ' ' . $this->restrictionsLogic . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->comparisonLogic . ' ?';
 
-						     	 if( is_object( $model->$accessor() ) ) {
-						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+						     	 if(is_object($model->$accessor())) {
+						     	 	 $refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 
 						     	 	 if($transformer = $columns[$i]->getTransformer())
 						     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
@@ -666,9 +666,9 @@ abstract class BaseDialect {
 						     	 else {
 
 						     	     if($transformer = $columns[$i]->getTransformer())
-						     	        array_push( $values, $transformer::transform($model->$accessor()) );
+						     	        array_push($values, $transformer::transform($model->$accessor()));
 						     	     else
-				     	 	     	    array_push( $values, $model->$accessor() );
+				     	 	     	    array_push($values, $model->$accessor());
 						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
@@ -680,77 +680,77 @@ abstract class BaseDialect {
     	   	         	 	$sql .= ';';
 	    	   		 }
 
-	    	   		 $this->setDistinct( null );
-	   	         	 $this->setRestrictions( array() );
-	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
-	   	         	 $this->setOrderBy( null, 'ASC' );
-	   	         	 $this->setGroupBy( null );
+	    	   		 $this->setDistinct(null);
+	   	         	 $this->setRestrictions(array());
+	   	         	 $this->setRestrictionsLogicOperator('AND');
+	   	         	 $this->setOrderBy(null, 'ASC');
+	   	         	 $this->setGroupBy(null);
 
-					 $this->prepare( $sql );
-					 $this->PDOStatement->setFetchMode( PDO::FETCH_OBJ );
-					 $result = $this->execute( $values );
+					 $this->prepare($sql);
+					 $this->PDOStatement->setFetchMode(PDO::FETCH_OBJ);
+					 $result = $this->execute($values);
 
-					 if( !count( $result ) ) {
+					 if(!count($result)) {
 
-					 	 Log::debug( 'BaseDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	 Log::debug('BaseDialect::find Empty result set for model \'' . $table->getModel() . '\'.');
 					 	 return null;
 					 }
 
 				 	 $index = 0;
 				 	 $models = array();
-					 foreach( $result as $stdClass  ) {
+					 foreach($result as $stdClass ) {
 
 					 		  $m = $table->getModelInstance();
-					 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
+					 	   	  foreach(get_object_vars($stdClass) as $name => $value) {
 
-					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
+					 	   	  		   $modelProperty = $this->getPropertyNameForColumn($table, $name);
 
 							 	   	   // Create foreign model instances from foreign values
-						 	 		   foreach( $table->getColumns() as $column ) {
+						 	 		   foreach($table->getColumns() as $column) {
 
-						 	 		   		    if( $column->getName() != $name ) continue;
-						 	 		   		    if( $column->isLazy() ) continue;
+						 	 		   		    if($column->getName() != $name) continue;
+						 	 		   		    if($column->isLazy()) continue;
 
 						 	 		   		    if($renderer = $column->getRenderer())
                         				   	       $value = $renderer::render($value);
 
                         				   	    if(!$value) continue;
 
-						 	 		  		    if( $column->isForeignKey() ) {
+						 	 		  		    if($column->isForeignKey()) {
 
 						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
 						 	 		  		   	    $foreignInstance = new $foreignModel();
 
-						 	 		  		   	    $foreignMutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-						 	 		  		   	    $foreignInstance->$foreignMutator( $value );
+						 	 		  		   	    $foreignMutator = $this->toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+						 	 		  		   	    $foreignInstance->$foreignMutator($value);
 
-						 	 		  		   	    $persisted = $this->find( $foreignInstance );
+						 	 		  		   	    $persisted = $this->find($foreignInstance);
 
 						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
-							 	 		  		   	$foreignModelPieces = explode( '\\', $foreignModel );
-							 	 		  		   	$foreignClassName = array_pop( $foreignModelPieces );
+							 	 		  		   	$foreignModelPieces = explode('\\', $foreignModel);
+							 	 		  		   	$foreignClassName = array_pop($foreignModelPieces);
 
-						 	 		  		   	    $instanceMutator = $this->toMutator( $modelProperty );
-						 	 		  		   	    $m->$instanceMutator( $persisted[0] );
+						 	 		  		   	    $instanceMutator = $this->toMutator($modelProperty);
+						 	 		  		   	    $m->$instanceMutator($persisted[0]);
 						 	 		  		    }
 						 	 		  		    else {
 
-						 	 		  		   		$mutator = $this->toMutator( $modelProperty );
-					 	   	   		  				$m->$mutator( $value );
+						 	 		  		   		$mutator = $this->toMutator($modelProperty);
+					 	   	   		  				$m->$mutator($value);
 						 	 		  		    }
 						 	 		   }
 					 	   	  }
 
-					 	   	  array_push( $models, $m );
+					 	   	  array_push($models, $m);
 					 	   	  $index++;
-					 	   	  if( $index == $this->maxResults )  break;
+					 	   	  if($index == $this->maxResults)  break;
 				     }
 
 				     return $models;
 	  		 }
-	  		 catch( Exception $e ) {
+	  		 catch(Exception $e) {
 
-	  		 		throw new ORMException( $e->getMessage(), $e->getCode() );
+	  		 		throw new ORMException($e->getMessage(), $e->getCode());
 	  		 }
 	  }
 
@@ -760,14 +760,14 @@ abstract class BaseDialect {
 	   * @param Object $model The domain object to get the count for.
 	   * @return Integer The total number of records in the table.
 	   */
-	  public function count( $model ) {
+	  public function count($model) {
 
-	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel( $model )->getName();
+	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel($model)->getName();
 			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
 			 $sql .= ';';
 
-	     	 $stmt = $this->query( $sql );
-  			 $stmt->setFetchMode( PDO::FETCH_OBJ );
+	     	 $stmt = $this->query($sql);
+  			 $stmt->setFetchMode(PDO::FETCH_OBJ);
   			 $result = $stmt->fetchAll();
 
   			 return ($result == null) ? 0 : $result[0]->count;
@@ -790,7 +790,7 @@ abstract class BaseDialect {
 	   * $param $direction The direction to sort the result set (ASC|DESC).
 	   * @return void
 	   */
-	  public function setOrderBy( $column, $direction ) {
+	  public function setOrderBy($column, $direction) {
 
 	         $this->orderBy = $column;
 	     	 $this->orderDirection = $direction;
@@ -805,19 +805,19 @@ abstract class BaseDialect {
 	   */
 	  public function getOrderBy() {
 
-	  		 if( !$this->orderBy )
+	  		 if(!$this->orderBy)
 	  		 	 return null;
 
-	  	     return array( 'column' => $this->orderBy, 'direction' => $this->orderDirection );
+	  	     return array('column' => $this->orderBy, 'direction' => $this->orderDirection);
 	  }
 
 	  /**
 	   * Sets WHERE clause restrictions
 	   *
-	   * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array( 'id' => 21 ) )
+	   * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
 	   * @return void
 	   */
-	  public function setRestrictions( array $restrictions ) {
+	  public function setRestrictions(array $restrictions) {
 
 	   		 $this->restrictions = $restrictions;
 	  }
@@ -838,10 +838,10 @@ abstract class BaseDialect {
 	   * @param $operator The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.
 	   * @return void
 	   */
-	  public function setRestrictionsLogicOperator( $operator ) {
+	  public function setRestrictionsLogicOperator($operator) {
 
-	   	     if( strtolower( $operator ) !== 'and' && strtolower( $operator ) !== 'or' )
-	     	     throw new ORMException( 'Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.' );
+	   	     if(strtolower($operator) !== 'and' && strtolower($operator) !== 'or')
+	     	     throw new ORMException('Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.');
 
 	     	 $this->restrictionsLogic = $operator;
 	  }
@@ -872,10 +872,10 @@ abstract class BaseDialect {
 	   * @param $operator The logical comparison operator used is SQL where clauses. Default is '='.
 	   * @return void
 	   */
-	  public function setComparisonLogicOperator( $operator ) {
+	  public function setComparisonLogicOperator($operator) {
 
-	  		 if( strtolower( $operator ) != 'like' && $operator !== '<' && $operator !== '>' && $operator !== '=' )
-	     	     throw new ORMException( 'Comparison logic operator must be \'>\', \'<\', \'=\', or \'LIKE\'. Found \'' . $operator . '\'.' );
+	  		 if(strtolower($operator) != 'like' && $operator !== '<' && $operator !== '>' && $operator !== '=')
+	     	     throw new ORMException('Comparison logic operator must be \'>\', \'<\', \'=\', or \'LIKE\'. Found \'' . $operator . '\'.');
 
 	     	 $this->comparisonLogic = $operator;
 	  }
@@ -888,16 +888,16 @@ abstract class BaseDialect {
 	  public function createRestrictSQL() {
 
 	     	 $restricts = null;
-			 if( count( $this->restrictions ) ) {
+			 if(count($this->restrictions)) {
 
 			  	 $restricts = ' WHERE ';
 				 $index = 0;
-				 foreach( $this->restrictions as $key => $val ) {
+				 foreach($this->restrictions as $key => $val) {
 
 				   		  $index++;
-				   		  $restricts .= $key . ' ' . $this->comparisonLogic . ' \'' . addslashes( $val ) . '\'';
+				   		  $restricts .= $key . ' ' . $this->comparisonLogic . ' \'' . addslashes($val) . '\'';
 
-				   		  if( $index < count( $this->restrictions ) )
+				   		  if($index < count($this->restrictions))
 				   			  $restricts .= ' ' . $this->restrictionsLogic . ' ';
 				 }
 			 }
@@ -913,17 +913,17 @@ abstract class BaseDialect {
 	   * @return The 'Table' object responsible for the model's ORM or null if a table
 	   * 		 could not be located for the specified $model.
 	   */
-	  public function getProcedureByModel( $model ) {
+	  public function getProcedureByModel($model) {
 
-	  		 $class = get_class( $model );
+	  		 $class = get_class($model);
 
-			 foreach( $this->database->getProcedures() as $proc ) {
+			 foreach($this->database->getProcedures() as $proc) {
 
-			 	  	  if( $proc->getModel() == $class )
+			 	  	  if($proc->getModel() == $class)
 			 	  	      return $proc;
 			 }
 
-			 throw new ORMException( 'BaseDialect::getProcedureByModel Could not locate the requested model \'' . $class . '\' in orm.xml' );
+			 throw new ORMException('BaseDialect::getProcedureByModel Could not locate the requested model \'' . $class . '\' in orm.xml');
 	  }
 
 	  /**
@@ -932,13 +932,13 @@ abstract class BaseDialect {
 	   * @param string $modelName The name of the model class
 	   * @return Procedure The procedure which maps to the specified model name
 	   */
-	  public function getProcedureByModelName( $modelName ) {
+	  public function getProcedureByModelName($modelName) {
 
-			 foreach( $this->database->getProcedures() as $proc )
-			  	  	  if( $proc->getModel() == $modelName )
+			 foreach($this->database->getProcedures() as $proc)
+			  	  	  if($proc->getModel() == $modelName)
 			 	  	      return $proc;
 
-			 throw new ORMException( 'BaseDialect::getProcedureByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml' );
+			 throw new ORMException('BaseDialect::getProcedureByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml');
 	  }
 
 	  /**
@@ -949,23 +949,23 @@ abstract class BaseDialect {
 	   * @return The 'Table' object responsible for the model's ORM or null if a table
 	   * 		 could not be located for the specified $model.
 	   */
-	  public function getTableByModel( $model = null ) {
+	  public function getTableByModel($model = null) {
 
 	  		 try {
-	  	     	   $class = new ReflectionClass( (($model == null) ? $this->model : $model) );
+	  	     	   $class = new ReflectionClass((($model == null) ? $this->model : $model));
 	  		 }
-	  		 catch( ReflectionException $re ) {
+	  		 catch(ReflectionException $re) {
 
-	  		 		throw new ORMException( 'BaseDialect::getTableByModel Could not get table because \'' . $re->getMessage() . '\'.' );
+	  		 		throw new ORMException('BaseDialect::getTableByModel Could not get table because \'' . $re->getMessage() . '\'.');
 	  		 }
 
-			 foreach( $this->database->getTables() as $table ) {
+			 foreach($this->database->getTables() as $table) {
 
-			 	  	  if( $table->getModel() == $class->getName() )
+			 	  	  if($table->getModel() == $class->getName())
 			 	  	      return $table;
 			 }
 
-			 throw new ORMException( 'BaseDialect::getTableByModel Could not locate the requested model \'' . $class->getName() . '\' in orm.xml' );
+			 throw new ORMException('BaseDialect::getTableByModel Could not locate the requested model \'' . $class->getName() . '\' in orm.xml');
 	  }
 
 	  /**
@@ -975,13 +975,13 @@ abstract class BaseDialect {
 	   * @return The 'Table' object responsible for the specified model or
 	   * 		 null if the table could not be found.
 	   */
-	  public function getTableByModelName( $modelName ) {
+	  public function getTableByModelName($modelName) {
 
-			 foreach( $this->database->getTables() as $table )
-			  	  	  if( $table->getModel() == $modelName )
+			 foreach($this->database->getTables() as $table)
+			  	  	  if($table->getModel() == $modelName)
 			 	  	      return $table;
 
-			 throw new ORMException( 'BaseDialect::getTableByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml' );
+			 throw new ORMException('BaseDialect::getTableByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml');
 	  }
 
 	  /**
@@ -990,13 +990,13 @@ abstract class BaseDialect {
 	   * @param $tableName The value of the table's 'name' attribute
 	   * @return The 'Table' object or null if the table was not found
 	   */
-	  public function getTableByName( $tableName ) {
+	  public function getTableByName($tableName) {
 
-	  		 foreach( $this->database->getTables() as $table )
-	  		 		  if( $table->getName() == $tableName )
+	  		 foreach($this->database->getTables() as $table)
+	  		 		  if($table->getName() == $tableName)
 	  		 		  	  return $table;
 
-	  		 throw new ORMException( 'BaseDialect::getTableByName Could not locate the requested table \'' . $tableName . '\' in orm.xml' );
+	  		 throw new ORMException('BaseDialect::getTableByName Could not locate the requested table \'' . $tableName . '\' in orm.xml');
 	  }
 
 	  /**
@@ -1008,9 +1008,9 @@ abstract class BaseDialect {
 	   */
 	  public function getIdentityTable() {
 
-			 foreach( $this->database->getTables() as $table ) {
+			 foreach($this->database->getTables() as $table) {
 
-		 	  	      if( $table->isIdentity() )
+		 	  	      if($table->isIdentity())
 		 	  	      	  return $table;
 			 }
 
@@ -1026,33 +1026,33 @@ abstract class BaseDialect {
 	   */
 	  public function getIdentityModel() {
 
-	  		 foreach( $this->database->getTables() as $table ) {
+	  		 foreach($this->database->getTables() as $table) {
 
-		 	  	      if( $table->isIdentity() ) {
+		 	  	      if($table->isIdentity()) {
 
 						  $modelName = $table->getModel();
-		 	  	      	  $reflector = new ReflectionClass( $modelName );
+		 	  	      	  $reflector = new ReflectionClass($modelName);
 
 	 	  	      	  	  $getUsernameExists = false;
 		 	  	      	  $getPasswordExists = false;
 		 	  	      	  $getEmailExists = false;
-		 	  	      	  foreach( $reflector->getMethods() as $method ) {
+		 	  	      	  foreach($reflector->getMethods() as $method) {
 
-		 	  	      	   		   if( $method->name == 'getUsername' )
+		 	  	      	   		   if($method->name == 'getUsername')
 		 	  	      	  	   		   $getUsernameExists = true;
 
-		 	  	      	  	   	   if( $method->name == 'getPassword' )
+		 	  	      	  	   	   if($method->name == 'getPassword')
 	 	  	      	  	   			   $getPasswordExists = true;
 
-		 	  	      	  	   	   if( $method->name == 'getEmail' )
+		 	  	      	  	   	   if($method->name == 'getEmail')
 		 	  	      	  	   		   $getEmailExists = true;
 
-		 	  	      	  	   	   if( $getUsernameExists && $getPasswordExists && $getEmailExists )
+		 	  	      	  	   	   if($getUsernameExists && $getPasswordExists && $getEmailExists)
 		 	  	      	  	   		   break;
 	 	  	      	  	   }
 
-	 	  	      	  	   if( !$getUsernameExists || !$getPasswordExists || !$getEmailExists )
-							   throw new ORMException( 'BaseDialect::getIdentityModel Identity model must support methods \'getUsername\', \'getPassword\', and \'getEmail\' as enforced by the interface at ' . AgilePHP::getFrameworkRoot() . '/core/Identity.php.' );
+	 	  	      	  	   if(!$getUsernameExists || !$getPasswordExists || !$getEmailExists)
+							   throw new ORMException('BaseDialect::getIdentityModel Identity model must support methods \'getUsername\', \'getPassword\', and \'getEmail\' as enforced by the interface at ' . AgilePHP::getFrameworkRoot() . '/core/Identity.php.');
 
 	 	  	      	  	   return new $modelName();
 		 	  	      }
@@ -1070,9 +1070,9 @@ abstract class BaseDialect {
 	   */
 	  public function getSessionTable() {
 
-			 foreach( $this->database->getTables() as $table ) {
+			 foreach($this->database->getTables() as $table) {
 
-		 	  	      if( $table->isSession() )
+		 	  	      if($table->isSession())
 		 	  	      	  return $table;
 			 }
 
@@ -1088,9 +1088,9 @@ abstract class BaseDialect {
 	   */
 	  public function getSessionModel() {
 
-	  		 foreach( $this->database->getTables() as $table ) {
+	  		 foreach($this->database->getTables() as $table) {
 
-		 	  	      if( $table->isSession() ) {
+		 	  	      if($table->isSession()) {
 
 		 	  	      	  $modelName = $table->getModel();
  	  	      	  		  return new $modelName();
@@ -1111,24 +1111,24 @@ abstract class BaseDialect {
 	   * @param $columnName The name of the column to get the display name for
 	   * @return Custom display name if configured, otherwise the $columnName is returned
 	   */
-	  public function getDisplayNameForColumn( $table, $columnName ) {
+	  public function getDisplayNameForColumn($table, $columnName) {
 
-	  		 foreach( $table->getColumns() as $column ) {
+	  		 foreach($table->getColumns() as $column) {
 
-	  		 	      if( $column->getName() == $columnName ) {
+	  		 	      if($column->getName() == $columnName) {
 
-	  		 	      	  if( $column->getDisplay() )
-	  		 	          	  return ucfirst( $column->getDisplay() );
+	  		 	      	  if($column->getDisplay())
+	  		 	          	  return ucfirst($column->getDisplay());
 	  		 	      }
 
-	  		 		  if( $column->getProperty() == $columnName ) {
+	  		 		  if($column->getProperty() == $columnName) {
 
-	  		 	      	  if( $column->getDisplay() )
-	  		 	          	  return ucfirst( $column->getDisplay() );
+	  		 	      	  if($column->getDisplay())
+	  		 	          	  return ucfirst($column->getDisplay());
 					  }
 	  		 }
 
-	  		 return ucfirst( $columnName );
+	  		 return ucfirst($columnName);
 	  }
 
 	  /**
@@ -1139,13 +1139,13 @@ abstract class BaseDialect {
 	   * @param $columnName The name of the column to retrieve the property attribute value from
 	   * @return The property name. If the property does not exist, the $columnName is returned instead
 	   */
-	  public function getPropertyNameForColumn( $table, $columnName, $caseSensitive = true ) {
+	  public function getPropertyNameForColumn($table, $columnName, $caseSensitive = true) {
 
-	  		 foreach( $table->getColumns() as $column ) {
+	  		 foreach($table->getColumns() as $column) {
 
-	  		 		  $col = ($caseSensitive) ? $column->getName() : strtolower( $column->getName() );
-	  		 	      if( $col == $columnName )
-	  		 	      	  if( $column->getProperty() )
+	  		 		  $col = ($caseSensitive) ? $column->getName() : strtolower($column->getName());
+	  		 	      if($col == $columnName)
+	  		 	      	  if($column->getProperty())
 	  		 	      	  	  return $column->getProperty();
 	  		 }
 
@@ -1163,17 +1163,17 @@ abstract class BaseDialect {
 	   * @return The column name. If the property does not exist and $propertyName matches a column name, the column
 	   * 		 name is returned instead. If neither can be matched, null is returned.
 	   */
-	  public function getColumnNameForProperty( $table, $propertyName ) {
+	  public function getColumnNameForProperty($table, $propertyName) {
 
-	  		 foreach( $table->getColumns() as $column ) {
+	  		 foreach($table->getColumns() as $column) {
 
-	  		 	      if( $column->getProperty() == $propertyName )
+	  		 	      if($column->getProperty() == $propertyName)
 	  		 	      	  return $column->getName();
 	  		 }
 
-	  		 foreach( $table->getColumns() as $column ) {
+	  		 foreach($table->getColumns() as $column) {
 
-	  		 	      if( $column->getName() == $propertyName )
+	  		 	      if($column->getName() == $propertyName)
 	  		 	      	  return $column->getName();
 	  		 }
 
@@ -1186,12 +1186,12 @@ abstract class BaseDialect {
 	   * @param $int The bigint value
 	   * @return bigint
 	   */
-	  public function toBigInt( $number ) {
+	  public function toBigInt($number) {
 
-	  			$precision = ini_get( 'precision' );
-				@ini_set( 'precision', 16 );
-				$bigint = sprintf( '%.0f', $number );
-				@ini_set( 'precision', $precision );
+	  			$precision = ini_get('precision');
+				@ini_set('precision', 16);
+				$bigint = sprintf('%.0f', $number);
+				@ini_set('precision', $precision);
 
 				return $bigint;
 	  }
@@ -1203,37 +1203,37 @@ abstract class BaseDialect {
 	   *
 	   * @return True if the model is empty, false if the model contains any property values.
 	   */
-	  public function isEmpty( $model ) {
+	  public function isEmpty($model) {
 
-	  		 $class = new ReflectionClass( $model );
+	  		 $class = new ReflectionClass($model);
 
 	  		 // Need to grab the real model if this is an interceptor proxy.
 	  		 try {
-	  		 		$m = $class->getMethod( 'getInterceptedInstance' );
+	  		 		$m = $class->getMethod('getInterceptedInstance');
 
-	  		 		$class = new ReflectionClass( $model->getInterceptedInstance() );
+	  		 		$class = new ReflectionClass($model->getInterceptedInstance());
 	  		 		$methods = $class->getMethods();
-			  		foreach( $methods as $method ) {
+			  		foreach($methods as $method) {
 
 			  		 		 $mName = $method->name;
-			  		 		 if( $mName == 'getInstance' ) continue;
-			  		 		 if( $mName == 'getInterceptedInstance' ) continue;
-			  		 		 if( substr( $mName, 0, 3 ) == 'get' )
-			  		 		 	 if( !is_object( $model->$mName() ) && $model->$mName() )  // Ignore models with a child object - problem?
+			  		 		 if($mName == 'getInstance') continue;
+			  		 		 if($mName == 'getInterceptedInstance') continue;
+			  		 		 if(substr($mName, 0, 3) == 'get')
+			  		 		 	 if(!is_object($model->$mName()) && $model->$mName())  // Ignore models with a child object - problem?
 			  		 		  	 	 return false;
 			  		}
 
 			  		return true;
 	  		 }
-	  		 catch( Exception $e ) {}
+	  		 catch(Exception $e) {}
 
 	  		 // This is a real model.
 	  		 $methods = $class->getMethods();
-	  		 foreach( $methods as $method ) {
+	  		 foreach($methods as $method) {
 
 	  		 		  $mName = $method->name;
-	  		 		  if( substr( $mName, 0, 3 ) == 'get' )
-	  		 		  	  if( $model->$mName() )
+	  		 		  if(substr($mName, 0, 3) == 'get')
+	  		 		  	  if($model->$mName())
 	  		 		  	  	  return false;
 	  		 }
 
@@ -1250,34 +1250,34 @@ abstract class BaseDialect {
 	   * @param $b The second object
 	   * @return True if the objects test positive, false if the models do not match
 	   */
-	  public function compare( $a, $b ) {
+	  public function compare($a, $b) {
 
 	  		  try {
-		  		    $classA = new ReflectionClass( $a );
-		  		    $classB = new ReflectionClass( $b );
+		  		    $classA = new ReflectionClass($a);
+		  		    $classB = new ReflectionClass($b);
 
-		  		    if( $classA->getName() !== $classB->getName() )
-		  		  	    throw new Exception( 'model class names dont match' );
+		  		    if($classA->getName() !== $classB->getName())
+		  		  	    throw new Exception('model class names dont match');
 
 		  		    $propsA = $classA->getProperties();
 		  		    $propsB = $classB->getProperties();
 
-		  		    if( !count( $propsA ) || !count( $propsB ) )
-		  		  	    throw new Exception( 'model property count doesnt match' );
+		  		    if(!count($propsA) || !count($propsB))
+		  		  	    throw new Exception('model property count doesnt match');
 
-		  		    for( $i=0; $i<count( $propsA ); $i++ ) {
+		  		    for($i=0; $i<count($propsA); $i++) {
 
-		  		  	     if( $propsA[$i]->name !== $propsB[$i]->name )
-		  		  	         throw new Exception( 'model property names dont match' );
+		  		  	     if($propsA[$i]->name !== $propsB[$i]->name)
+		  		  	         throw new Exception('model property names dont match');
 
-		  		  	   	 $accessor = 'get' . ucfirst( $propsA[$i]->name );
-		  		  	     if( $a->$accessor() !== $b->$accessor() )
-		  		  	   	     throw new Exception( 'model property values dont match' );
+		  		  	   	 $accessor = 'get' . ucfirst($propsA[$i]->name);
+		  		  	     if($a->$accessor() !== $b->$accessor())
+		  		  	   	     throw new Exception('model property values dont match');
 		  		  	}
 	  		  }
-	  		  catch( Exception $e ) {
+	  		  catch(Exception $e) {
 
-	  		  		 Log::debug( 'BaseDialect::compare ' . $e->getMessage() );
+	  		  		 Log::debug('BaseDialect::compare ' . $e->getMessage());
 	  		  		 return false;
 	  		  }
 
@@ -1292,9 +1292,9 @@ abstract class BaseDialect {
 	   * @param $property The name of the property to convert to an accessor method name
 	   * @return The accessor string
 	   */
-	  public function toAccessor( $property ) {
+	  public function toAccessor($property) {
 
-	   		 return 'get' . ucfirst( $property );
+	   		 return 'get' . ucfirst($property);
 	  }
 
 	  /**
@@ -1305,9 +1305,9 @@ abstract class BaseDialect {
 	   * @param $property The name of the property to convert to a mutator method name
 	   * @return The mutator string
 	   */
-	  public function toMutator( $property ) {
+	  public function toMutator($property) {
 
-	  	     return 'set' . ucfirst( $property );
+	  	     return 'set' . ucfirst($property);
 	  }
 
 	  /**
@@ -1317,28 +1317,28 @@ abstract class BaseDialect {
 	   * @param $b The second object
 	   * @return The same instance of object $b with its properties set as defined in object $a
 	   */
-	  private function copy( $a, $b ) {
+	  private function copy($a, $b) {
 
-	  		  $classA = new ReflectionClass( $a );
-		  	  $classB = new ReflectionClass( $b );
+	  		  $classA = new ReflectionClass($a);
+		  	  $classB = new ReflectionClass($b);
 
-		  	  if( $classA->getName() !== $classB->getName() )
-		  	      throw new Exception( 'model class names dont match' );
+		  	  if($classA->getName() !== $classB->getName())
+		  	      throw new Exception('model class names dont match');
 
 		  	  $propsA = $classA->getProperties();
 		  	  $propsB = $classB->getProperties();
 
-		  	  if( !count( $propsA ) || !count( $propsB ) )
-		  	      throw new Exception( 'model property count doesnt match' );
+		  	  if(!count($propsA) || !count($propsB))
+		  	      throw new Exception('model property count doesnt match');
 
-		      for( $i=0; $i<count( $propsA ); $i++ ) {
+		      for($i=0; $i<count($propsA); $i++) {
 
-		  		   if( $propsA[$i]->name !== $propsB[$i]->name )
-		  		       throw new Exception( 'model property names dont match' );
+		  		   if($propsA[$i]->name !== $propsB[$i]->name)
+		  		       throw new Exception('model property names dont match');
 
-		  		   $accessor = 'get' . ucfirst( $propsA[$i]->name );
-		  		   $mutator = 'set' . ucfirst( $propsB[$i]->name );
-		  		   $b->$mutator( $a->$accessor() );
+		  		   $accessor = 'get' . ucfirst($propsA[$i]->name);
+		  		   $mutator = 'set' . ucfirst($propsB[$i]->name);
+		  		   $b->$mutator($a->$accessor());
 		  	  }
 
 		  	  return $b;
@@ -1350,24 +1350,24 @@ abstract class BaseDialect {
 	     *
 	     * @return void
 	     */
-	    private function setForeignKeyValues( $model, $foreignModel ) {
+	    private function setForeignKeyValues($model, $foreignModel) {
 
-			   $table = $this->getTableByModel( $model );
-			   $foreignTable = $this->getTableByModel( $foreignModel );
+			   $table = $this->getTableByModel($model);
+			   $foreignTable = $this->getTableByModel($foreignModel);
 
-       	   	   foreach( $table->getForeignKeyColumns() as $column ) {
+       	   	   foreach($table->getForeignKeyColumns() as $column) {
 
        	   	   			// Only process foreign keys for the $foreignModel table
-       	   	   			if( $column->getForeignKey()->getReferencedTable() == $foreignTable->getName() ) {
+       	   	   			if($column->getForeignKey()->getReferencedTable() == $foreignTable->getName()) {
 
        	   	   				// Create accessor and mutator methods for $this->model
-					    	$accessor = 'get' . ucfirst( $column->getModelPropertyName() );
-					    	$mutator = 'set' . ucfirst( $column->getModelPropertyName() );
+					    	$accessor = 'get' . ucfirst($column->getModelPropertyName());
+					    	$mutator = 'set' . ucfirst($column->getModelPropertyName());
 
 	   	   					// Create accessor method for the foreign model and set the foreign key property value for $this->model
-    		   	   			$fModelAccessor = 'get' . ucfirst( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+    		   	   			$fModelAccessor = 'get' . ucfirst($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 	    	   	   			$foreignModelValue = $foreignModel->$fModelAccessor();
-	   	   	   				$model->$mutator( $foreignModelValue );
+	   	   	   				$model->$mutator($foreignModelValue);
        	   	   			}
 	    	   }
 
@@ -1381,52 +1381,52 @@ abstract class BaseDialect {
 	   * @param $isInsert True if validating a persist operation
 	   * @return void
 	   */
-	  protected function validate( Table $table, $isPersist = false ) {
+	  protected function validate(Table $table, $isPersist = false) {
 
-	  	        if( $table->getValidate() == false ) return;
+	  	        if($table->getValidate() == false) return;
 
-			    foreach( $table->getColumns() as $column ) {
+			    foreach($table->getColumns() as $column) {
 
-			  	       $accessor = 'get' . ucfirst( $column->getModelPropertyName() );
+			  	       $accessor = 'get' . ucfirst($column->getModelPropertyName());
 
-			  	       if( $isPersist == true && $column->isPrimaryKey() || $column->isAutoIncrement() )
+			  	       if($isPersist == true && $column->isPrimaryKey() || $column->isAutoIncrement())
 			  	       	   continue;
 
 			  	       // Verify length
-			  	       if( $length = $column->getLength() && !is_object( $this->model->$accessor() ) ) {
+			  	       if($length = $column->getLength() && !is_object($this->model->$accessor())) {
 
-			  	       	   $dataLen = strlen( $this->model->$accessor() );
-			  	       	   if( $dataLen > $length ) {
+			  	       	   $dataLen = strlen($this->model->$accessor());
+			  	       	   if($dataLen > $length) {
 
 			  	       	   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Length defined in orm.xml as \'' . $column->getLength() . '\' but the has a length of \'' . $dataLen . '\'.';
-			  	       	   	   Log::debug( $message );
-			  	       	   	   throw new ORMException( $message );
+			  	       	   	   Log::debug($message);
+			  	       	   	   throw new ORMException($message);
 			  	       	   }
 			  	       }
 
 			  	       // Verify required fields contain data
-			  		   if( $column->isRequired() && $this->model->$accessor() === null ) {
+			  		   if($column->isRequired() && $this->model->$accessor() === null) {
 
 			  		       // Allow file uploads to be null on updates that way the user isnt forced to re-upload data
 			  		       if(!$isPersist && $column->getType() == 'blob') continue;
 
 			  		   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Required field contains null value.';
-			  		   	   Log::debug( $message );
-			  		       throw new ORMException( $message );
+			  		   	   Log::debug($message);
+			  		       throw new ORMException($message);
 			  		   }
 
 			  		   // Use specified validator to verify data integrity
-			  	       if( $validator = $column->getValidator() ) {
+			  	       if($validator = $column->getValidator()) {
 
 			  	       	   // Allow null values for columns that are not required
-			  	       	   if( !$column->isRequired() && $this->model->$accessor() == null ) continue;
+			  	       	   if(!$column->isRequired() && $this->model->$accessor() == null) continue;
 
-			  	       	   $o = new $validator( $this->model->$accessor() );
-			  	       	   if( !$o->validate() ) {
+			  	       	   $o = new $validator($this->model->$accessor());
+			  	       	   if(!$o->validate()) {
 
-			  	       	   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype( $this->model->$accessor() ) . '\' using validator \'' . $validator . '\'.';
-			  	       	   	   Log::debug( $message );
-			  	       	   	   throw new ORMException( $message );
+			  	       	   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype($this->model->$accessor()) . '\' using validator \'' . $validator . '\'.';
+			  	       	   	   Log::debug($message);
+			  	       	   	   throw new ORMException($message);
 			  	       	   }
 			  	       }
 			  }

@@ -30,7 +30,7 @@ class ObjectValidator extends Validator {
 
 	  public function validate() {
 
-	  		 return is_object( $this->data );
+	  		 return is_object($this->data);
 	  }
 }
 ?>

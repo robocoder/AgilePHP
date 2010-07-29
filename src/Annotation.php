@@ -47,9 +47,9 @@ class Annotation {
 	   * @throws AnnotationException
 	   * @static
 	   */
-	  public static function getClass( $class ) {
+	  public static function getClass($class) {
 
-	  		 return new AnnotatedClass( $class );
+	  		 return new AnnotatedClass($class);
 	  }
 
 	  /**
@@ -61,9 +61,9 @@ class Annotation {
 	   * @throws AnnotationException
 	   * @static
 	   */
-	  public static function getMethod( $class, $method ) {
+	  public static function getMethod($class, $method) {
 
-	  		 return new AnnotatedMethod( $class, $method );
+	  		 return new AnnotatedMethod($class, $method);
 	  }
 
 	  /**
@@ -75,9 +75,9 @@ class Annotation {
 	   * @throws AnnotationException
 	   * @static
 	   */
-	  public static function getProperty( $class, $property ) {
+	  public static function getProperty($class, $property) {
 
-	  		 return new AnnotatedProperty( $class, $property );
+	  		 return new AnnotatedProperty($class, $property);
 	  }
 
 	  /**
@@ -90,17 +90,17 @@ class Annotation {
 	   * @throws AnnotationException
 	   * @static
 	   */
-	  public static function hasAnnotations( $class ) {
+	  public static function hasAnnotations($class) {
 
-	  		 $clazz = new AnnotatedClass( $class );
+	  		 $clazz = new AnnotatedClass($class);
 
-	  		 if( $clazz->isAnnotated() ) return true;
+	  		 if($clazz->isAnnotated()) return true;
 
-	  		 foreach( $clazz->getMethods() as $method )
-	  		 		  if( $method->isAnnotated() ) return true;
+	  		 foreach($clazz->getMethods() as $method)
+	  		 		  if($method->isAnnotated()) return true;
 
-	  		 foreach( $clazz->getProperties() as $property )
-	  		 		  if( $property->isAnnotated() ) return true;
+	  		 foreach($clazz->getProperties() as $property)
+	  		 		  if($property->isAnnotated()) return true;
 
 	  		 return false;
 	  }
@@ -115,7 +115,7 @@ class Annotation {
 	   * @throws AnnotationException
 	   * @static
 	   */
-	  public static function getClassAsArray( $class ) {
+	  public static function getClassAsArray($class) {
 
 			 $annotes = AnnotationParser::getClassAnnotationsAsArray($class);
 			 if($annotes) return $annotes;
@@ -132,9 +132,9 @@ class Annotation {
 	   * @throws AnnotationException
 	   * @static
 	   */
-	  public static function getMethodsAsArray( $class ) {
+	  public static function getMethodsAsArray($class) {
 
-	         $annotes = AnnotationParser::getMethodAnnotationsAsArray( $class );
+	         $annotes = AnnotationParser::getMethodAnnotationsAsArray($class);
 			 if($annotes) return $annotes;
 
 			 AnnotationParser::parse($class);

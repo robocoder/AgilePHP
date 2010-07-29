@@ -36,8 +36,8 @@
  * 
  * // example 1
  * #@GET
- * #@Path( resource = '/{id}' )
- * public function getObject1( $id ) {
+ * #@Path(resource = '/{id}')
+ * public function getObject1($id) {
  * 
  * 	     // request is sent to http://mydomain.com/index.php/MyRestAPI/33
  *       // $id has a value of 33 
@@ -45,8 +45,8 @@
  * 
  * // example 2
  * #@GET
- * #@Path( resource = '/{id}/some/deeper/resource{newId}' )
- * public function getObject2( $id, $newId ) {
+ * #@Path(resource = '/{id}/some/deeper/resource{newId}')
+ * public function getObject2($id, $newId) {
  * 
  * 		  // request is sent to http://mydomain.com/index.php/MyRestAPI/33/some/deeper/resource/55
  * 		  // $id has a value of 33 and $newId has a value of 55
@@ -54,8 +54,8 @@
  * 
  * // example 3
  * #@GET
- * #@Path( resource = '/{id}/.*regex$' )
- * public function getObject3( $id ) {
+ * #@Path(resource = '/{id}/.*regex$')
+ * public function getObject3($id) {
  * 
  * 		  // request is sent to http://mydomain.com/index.php/MyRestAPI/33/some/long/resource/that/you/want/to/match/with/a/regex
  * 		  // $id has a value of 33 and the method gets executed since its regex matches the request

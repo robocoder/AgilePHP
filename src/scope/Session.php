@@ -41,7 +41,7 @@ class Session {
 	   * @param String $id The session id
 	   * @return void
 	   */
-	  public function setId( $id ) {
+	  public function setId($id) {
 
 	  		 $this->id = $id;
 	  }
@@ -62,7 +62,7 @@ class Session {
 	   * @param String $data Serialized session data
 	   * @return void
 	   */
-	  public function setData( $data ) {
+	  public function setData($data) {
 
 	  		 $this->data = $data;
 	  }
@@ -83,9 +83,9 @@ class Session {
 	   * @param Date $dateTime Timestamp indicating when the session was created
 	   * @return void
 	   */
-	  public function setCreated( $timestamp ) {
+	  public function setCreated($timestamp) {
 
-	  		 $this->created = date( 'Y-m-d H:i:s', strtotime( $timestamp ) );
+	  		 $this->created = date('Y-m-d H:i:s', strtotime($timestamp));
 	  }
 
 	  /**

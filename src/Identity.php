@@ -243,7 +243,7 @@ class Identity {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#resetPassword($token, $sessionId)
 	   */
-	  public static function resetPassword( $token, $sessionId) {
+	  public static function resetPassword($token, $sessionId) {
 
 	  	     IdentityManagerFactory::getManager()->resetPassword($token, $sessionId);
 	  }

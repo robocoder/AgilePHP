@@ -31,7 +31,7 @@
  * class MyInterceptor {
  * 
  * #@AfterInvoke
- * public function aMethodICanNameAnything( InvocationTarget $ic ) {
+ * public function aMethodICanNameAnything(InvocationTarget $ic) {
  * 
  * 		  // Inspect the invocation context for the call stack and state
  * 		  // of the application and perform some kind of aspect logic.
@@ -43,7 +43,7 @@
  * }
  * 
  * #@AfterInvoke
- * public function anotationCausesMeToBeInvoked( InvocationContext $ic ) {
+ * public function anotationCausesMeToBeInvoked(InvocationContext $ic) {
  * 
  * 		  // The #@AfterInvoke annotation causes methods within the interceptor
  * 		  // to be invoked AFTER the intended/intercpeted call occurs.

@@ -37,7 +37,7 @@ class StringValidator extends Validator {
 	   */
 	  public function validate() {
 
-   			 return is_string( $this->data );
+   			 return is_string($this->data);
 	  }
 }
 ?>

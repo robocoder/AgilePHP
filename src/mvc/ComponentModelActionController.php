@@ -45,9 +45,9 @@ abstract class ComponentModelActionController extends BaseModelActionController 
 
 	     		// Defaults sorting by the first primary key column
 	     		//
-	     		//$table = ORM::getTableByModel( $this->getModel() );
+	     		//$table = ORM::getTableByModel($this->getModel());
 	  	        //$pkeyColumns = $table->getPrimaryKeyColumns();
-	  	        //if( $pkeyColumns ) $this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
+	  	        //if($pkeyColumns) $this->setOrderBy($pkeyColumns[0]->getModelPropertyName(), 'ASC');
 
 	  		    $this->setPage($page);
 	  		    $xsl = $this->getModelListXSL(null, $this->getComponentName() . '/' . MVC::getAction());
@@ -133,7 +133,7 @@ abstract class ComponentModelActionController extends BaseModelActionController 
      			}
 
      			$this->setComparisonLogicOperator('LIKE');
-     			$this->setPage( $page );
+     			$this->setPage($page);
 
      			$params = $view . '/' . $field . '/' . $keyword;
      			

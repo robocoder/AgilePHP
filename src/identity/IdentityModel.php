@@ -34,7 +34,7 @@ interface IdentityModel {
 		   * @param String $username The username to assign
 		   * @return void
 		   */
-		  public function setUsername( $username );
+		  public function setUsername($username);
 
 		  /**
 		   * Returns the username of the identity.
@@ -49,7 +49,7 @@ interface IdentityModel {
 		   * @param String $password The password to assign
 		   * @return void
 		   */
-		  public function setPassword( $password );
+		  public function setPassword($password);
 
 		  /**
 		   * Returns the password of the identity.
@@ -64,7 +64,7 @@ interface IdentityModel {
 		   * @param String $email The email address
 		   * @return void
 		   */
-		  public function setEmail( $email );
+		  public function setEmail($email);
 
 		  /**
 		   * Returns the email address of the identity.
@@ -79,7 +79,7 @@ interface IdentityModel {
 		   * @param Date $dateTime ISO-8601 formatted date indicating when the identity was created.
 		   * @return void
 		   */
-		  public function setCreated( $dateTime );
+		  public function setCreated($dateTime);
 
 		  /**
 		   * Returns the ISO-8601 formatted date.
@@ -94,7 +94,7 @@ interface IdentityModel {
 		   * @param Date $dateTime ISO-8601 date indicating when the identity last logged in
 		   * @return void
 		   */
-		  public function setLastLogin( $dateTime );
+		  public function setLastLogin($dateTime);
 
 		  /**
 		   * Returns the date and time the identity last logged in successfully.
@@ -109,7 +109,7 @@ interface IdentityModel {
 		   * @param Role $role The role instance to assign to the identity
 		   * @return void
 		   */
-		  public function setRole( Role $role = null );
+		  public function setRole(Role $role = null);
 
 		  /**
 		   * Returns the AgilePHP Role instance assigned to the identity.
@@ -124,7 +124,7 @@ interface IdentityModel {
 		   * @param bool $value True to enable login, false to disable
 		   * @return void
 		   */
-		  public function setEnabled( $value );
+		  public function setEnabled($value);
 
 		  /**
 		   * Returns boolean value indicating whether the identity is allowed

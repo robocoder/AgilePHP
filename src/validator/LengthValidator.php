@@ -28,25 +28,9 @@
  */
 class LengthValidator extends Validator {
 
-	  private $size;
-
-	  /**
-	   * Creates a new LengthValidator
-	   * 
-	   * @param mixed $data The data to validate
-	   * @param int $size A required length
-	   * @return void
-	   */
-	  public function __construct( $data, $size = 1 ) {
-
-	  		 $this->data = $data;
-	  		 $this->size = $size;
-	  }
-
 	  public function validate() {
 
-	  		 if( strlen( $data ) < $size ) return false;
-	  		 return (strtotime( $this->data ) === false) ? false : true;
+	  		 return strlen($this->data) > 0;
 	  }
 }
 ?>

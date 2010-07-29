@@ -35,10 +35,7 @@ class IPv4Validator extends Validator {
 	   */
 	  public function validate() {
 
-	  		 if( preg_match( '/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/', $this->data ) )
-	  		 	 return true;
-
-	  		 return false;
+	  		 return filter_var($this->data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
 	  }
 }
 ?>

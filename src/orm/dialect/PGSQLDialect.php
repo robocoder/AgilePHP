@@ -285,7 +285,7 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 
 				 	 $index = 0;
 				 	 $models = array();
-					 foreach($result as $stdClass ) {
+					 foreach($result as $stdClass) {
 
 					 		  $m = $table->getModelInstance();
 					 	   	  foreach(get_object_vars($stdClass) as $name => $value) {

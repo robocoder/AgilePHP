@@ -40,12 +40,12 @@ class PHTMLRenderer extends BaseRenderer {
       	 	 $path = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . $view . '.phtml';
 
       	 	 if(!file_exists($path))
-      	 	    throw new FrameworkException( 'Error rendering application view. Path does not exist ' . $path );
+      	 	    throw new FrameworkException('Error rendering application view. Path does not exist ' . $path);
 
       	 	 foreach($this->getStore() as $key => $value)
 	                 $$key = $value;
 
-	         //Log::debug( 'PHTMLRenderer::render executed with parameter $view = \'' . $view . '\'' );
+	         //Log::debug('PHTMLRenderer::render executed with parameter $view = \'' . $view . '\'');
 
 	         // Prevent local variables from being visible to the view
 	         unset($f, $view, $key, $value);

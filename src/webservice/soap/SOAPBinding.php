@@ -26,8 +26,8 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.soap
  * <code>
- * #@WebService( serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI' )
- * #@SOAPBinding( style = SOAPStyle::RPC, use = SOAPStyle::ENCODED )
+ * #@WebService(serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI')
+ * #@SOAPBinding(style = SOAPStyle::RPC, use = SOAPStyle::ENCODED)
  * class MyAPI {
  * 
  * 		 // I am a RPC/Encoded SOAP web service and can be easily changed into

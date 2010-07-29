@@ -34,17 +34,17 @@
  * </code>
  *
  * <code>
- * #@BasicAuthentication( realm = 'mydomain.com' )
+ * #@BasicAuthentication(realm = 'mydomain.com')
  * public function basicAuth() { }
  * </code>
  *
  * <code>
- * #@BasicAuthentication( authenticator = 'customMethodAuthenticatorInMyCallingClass' )
+ * #@BasicAuthentication(authenticator = 'customMethodAuthenticatorInMyCallingClass')
  * public function basicAuth() { }
  * </code>
  *
  * <code>
- * #@BasicAuthentication( authenticator = 'customAuthenticator', realm = 'mydomain.com' )
+ * #@BasicAuthentication(authenticator = 'customAuthenticator', realm = 'mydomain.com')
  * public function basicAuth() { }
  * </code>
  */
@@ -55,7 +55,7 @@ class BasicAuthentication {
 	   *  @var string An optional realm. Defaults to the HTTP HOST header.
 	   *  <code>
 	   *  Example:
-	   *  #@BasicAuthentication( realm = 'mydomain.com' )
+	   *  #@BasicAuthentication(realm = 'mydomain.com')
 	   *  </code>
 	   */
 	  public $realm;
@@ -68,7 +68,7 @@ class BasicAuthentication {
 	   *  			  an AccessDeniedException if false is returned.
 	   *  <code>
 	   *  Example:
-	   *  #@BasicAuthentication( authenticator = 'myAuthenticator' )
+	   *  #@BasicAuthentication(authenticator = 'myAuthenticator')
 	   *  </code>
 	   */
 	  public $authenticator;
@@ -81,49 +81,49 @@ class BasicAuthentication {
 	   * @throws AccessDeniedException
 	   */
 	  #@AroundInvoke
-	  public function prompt( InvocationContext $ic ) {
+	  public function prompt(InvocationContext $ic) {
 
-	  		 if( isset( $_SERVER['PHP_AUTH_USER'] ) ) {
+	  		 if(isset($_SERVER['PHP_AUTH_USER'])) {
 
-	  		 	 if( $this->authenticator ) {
+	  		 	 if($this->authenticator) {
 
 	  		 	 	 $callee = $ic->getCallee();
 	  		 	 	 $object = $callee['class'];
 		  	     	 $authenticator = $this->authenticator;
 
 		  	     	 // Static authenticator
-		  	     	 if( preg_match( '/::/' , $authenticator ) ) {
+		  	     	 if(preg_match('/::/' , $authenticator)) {
 
-		  	     	     $pieces = explode( '::', $authenticator );
-		  	     	     $class = array_shift( $pieces );
-		  	     	     $method = array_shift( $pieces );
+		  	     	    $pieces = explode('::', $authenticator);
+		  	     	    $class = array_shift($pieces);
+		  	     	    $method = array_shift($pieces);
 
-		  	     	     if( $class::$method( $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] ) )
-		  	     	         return $ic->proceed();
+		  	     	    if($class::$method($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']))
+		  	     	       return $ic->proceed();
 
-		  	     	     header( 'HTTP/1.0 401 Unauthorized' );
-		  	     	     throw new AccessDeniedException( 'Invalid username/password' );
+		  	     	    header('HTTP/1.0 401 Unauthorized');
+		  	     	    throw new AccessDeniedException('Invalid username/password');
 		  	     	 }
 
 		  	     	 // Use authenticator method defined inside of the intercepted target class
-		  	     	 if( $object->$authenticator( $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] ) )
-		  	     	 	 return $ic->proceed();
+		  	     	 if($object->$authenticator($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']))
+		  	     	 	return $ic->proceed();
 
-		  	     	 header( 'HTTP/1.0 401 Unauthorized' );
-		  	     	 throw new AccessDeniedException( 'Invalid username/password' );
+		  	     	 header('HTTP/1.0 401 Unauthorized');
+		  	     	 throw new AccessDeniedException('Invalid username/password');
 	  		 	 }
 
-	  		 	 if( Identity::login( $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] ) )
-	  		 	 	 return $ic->proceed();
+	  		 	 if(Identity::login($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']))
+	  		 	 	return $ic->proceed();
 
-	  		 	 header( 'HTTP/1.0 401 Unauthorized' );
-	  		 	 throw new AccessDeniedException( 'Invalid username/password' );
+	  		 	 header('HTTP/1.0 401 Unauthorized');
+	  		 	 throw new AccessDeniedException('Invalid username/password');
 	  		 }
 
 	  		 $realm = ($this->realm == null) ? $_SERVER['HTTP_HOST'] : $this->realm;
-	  		 header( 'HTTP/1.0 401 Unauthorized' );
-	  		 header( 'WWW-Authenticate: Basic realm=' . $realm );
-		     throw new AccessDeniedException( 'Unauthorized' );
+	  		 header('HTTP/1.0 401 Unauthorized');
+	  		 header('WWW-Authenticate: Basic realm=' . $realm);
+		     throw new AccessDeniedException('Unauthorized');
 	  }
 }
 ?>

@@ -39,7 +39,7 @@ require_once 'cache/CacheProvider.php';
  * 		  // and once the site is live they dont change)
  * }
  *
- * #@Cache( minutes = 5 )
+ * #@Cache(minutes = 5)
  * public function index() {
  *
  * 		  // A call that might perform some processing intensive action
@@ -115,7 +115,7 @@ class Cache {
         	  $clsName = get_class($ic->getTarget());
         	  $o = new $clsName();
 
-        	  $class = new ReflectionClass( $o );
+        	  $class = new ReflectionClass($o);
         	  $m = $class->getMethod($ic->getMethod());
         	  $data = $ic->getParameters() ? $m->invokeArgs($o, $ic->getParameters()) : $m->invoke($o);
 
@@ -139,7 +139,7 @@ class Cache {
         	  $clsName = get_class($ic->getTarget());
 	          $o = new $clsName();
 
-        	  $class = new ReflectionClass( $o );
+        	  $class = new ReflectionClass($o);
         	  $m = $class->getMethod($ic->getMethod());
         	  $data = $ic->getParameters() ? $m->invokeArgs($o, $ic->getParameters()) : $m->invoke($o);
 

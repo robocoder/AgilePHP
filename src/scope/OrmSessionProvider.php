@@ -108,12 +108,12 @@ class OrmSessionProvider implements SessionProvider {
 	   */
 	  public function setSessionId($id) {
 
-	  		 $this->session->setId( $id );
+	  		 $this->session->setId($id);
 
 	  		 setcookie('AGILEPHP_SESSION_ID', $id, time()+3600*24*30, '/'); // 30 days
 	  		 Log::debug('OrmSessionProvider::setSessionId Initalizing session from specified session id and dropping a new session cookie');
 
-	  		 if($persistedSession = ORM::find( $this->getSession())) {
+	  		 if($persistedSession = ORM::find($this->getSession())) {
 
 	  		     $this->persisted = true;
 	  		     $data = unserialize($persisted[0]->getData());
@@ -277,7 +277,7 @@ class OrmSessionProvider implements SessionProvider {
 
 		  	       if(!$this->persisted) $this->persist();
 		  	 }
-		  	 catch( Exception $e ) {
+		  	 catch(Exception $e) {
 
 		  	 	    $message = 'OrmSessionProvider::__destruct ' . $e->getMessage();
 		  		    Log::error($message);

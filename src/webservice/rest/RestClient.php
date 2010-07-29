@@ -40,13 +40,13 @@ class RestClient {
 	   * @param string $useragent Optional User-Agent header value to include in the request
 	   * @return void
 	   */
-	  public function __construct( $endpoint, $useragent = null ) {
+	  public function __construct($endpoint, $useragent = null) {
 
-	  		 $this->curl = curl_init( $endpoint );
-	  		 curl_setopt( $this->curl, CURLOPT_USERAGENT, (($useragent) ? $useragent : 'AgilePHP RestClient') );
-			 curl_setopt( $this->curl, CURLOPT_RETURNTRANSFER, true );
-			 curl_setopt( $this->curl, CURLOPT_SSL_VERIFYHOST, false );
-			 curl_setopt( $this->curl, CURLOPT_SSL_VERIFYPEER, false );
+	  		 $this->curl = curl_init($endpoint);
+	  		 curl_setopt($this->curl, CURLOPT_USERAGENT, (($useragent) ? $useragent : 'AgilePHP RestClient'));
+			 curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+			 curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, false);
+			 curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false);
 	  }
 
 	  /**
@@ -55,7 +55,7 @@ class RestClient {
 	   * @param array $headers An array of HTTP headers to include in the rest.
 	   * @return void
 	   */
-	  public function setHeaders( array $headers ) {
+	  public function setHeaders(array $headers) {
 
 	  		 $this->headers = $headers;
 	  }
@@ -77,9 +77,9 @@ class RestClient {
 	   * @param string $password The password used to authenticate the specified user.
 	   * @return void
 	   */
-	  public function authenticate( $username, $password ) {
+	  public function authenticate($username, $password) {
 
-	  		 curl_setopt( $this->curl, CURLOPT_USERPWD, "$username:$password");
+	  		 curl_setopt($this->curl, CURLOPT_USERPWD, "$username:$password");
 	  }
 
 	  /**
@@ -89,12 +89,12 @@ class RestClient {
 	   */
 	  public function get() {
 
-	  		 curl_setopt( $this->curl, CURLOPT_HTTPHEADER, $this->headers );
+	  		 curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->headers);
 
-	  		 $response = curl_exec( $this->curl );
+	  		 $response = curl_exec($this->curl);
 
-	  		 $this->responseCode = curl_getinfo( $this->curl, CURLINFO_HTTP_CODE );
-	  		 if( $this->responseCode > 206 ) throw new RestClientException( $this->responseCode );
+	  		 $this->responseCode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+	  		 if($this->responseCode > 206) throw new RestClientException($this->responseCode);
 
 	  		 return $response;
 	  }
@@ -105,16 +105,16 @@ class RestClient {
 	   * @param string $data The data to supply as the request body
 	   * @return mixed The response from the REST service call.
 	   */
-	  public function post( $data ) {
+	  public function post($data) {
 
-	  		 curl_setopt( $this->curl, CURLOPT_HTTPHEADER, $this->headers );
-	  		 curl_setopt( $this->curl, CURLOPT_POST, true );
-	  		 curl_setopt( $this->curl, CURLOPT_POSTFIELDS, $data );
+	  		 curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->headers);
+	  		 curl_setopt($this->curl, CURLOPT_POST, true);
+	  		 curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
 
-	  		 $response = curl_exec( $this->curl );
+	  		 $response = curl_exec($this->curl);
 
-	  		 $this->responseCode = curl_getinfo( $this->curl, CURLINFO_HTTP_CODE );
-	  		 if( $this->responseCode > 206 ) throw new RestClientException( $this->responseCode );
+	  		 $this->responseCode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+	  		 if($this->responseCode > 206) throw new RestClientException($this->responseCode);
 
 	  		 return $response;
 	  }
@@ -125,16 +125,16 @@ class RestClient {
 	   * @param string $data The data to supply as the request body.
 	   * @return mixed The response from the REST service call.
 	   */
-	  public function put( $data ) {
+	  public function put($data) {
 
-	  		 curl_setopt( $this->curl, CURLOPT_CUSTOMREQUEST, 'PUT' );
-	  		 curl_setopt( $this->curl, CURLOPT_HTTPHEADER, $this->headers );
-			 curl_setopt( $this->curl, CURLOPT_POSTFIELDS, $data );
+	  		 curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+	  		 curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->headers);
+			 curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
 
-			 $response = curl_exec( $this->curl );
+			 $response = curl_exec($this->curl);
 
-	  		 $this->responseCode = curl_getinfo( $this->curl, CURLINFO_HTTP_CODE );
-	  		 if( $this->responseCode > 206 ) throw new RestClientException( $this->responseCode );
+	  		 $this->responseCode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+	  		 if($this->responseCode > 206) throw new RestClientException($this->responseCode);
 
 	  		 return $response;
 	  }
@@ -146,13 +146,13 @@ class RestClient {
 	   */
 	  public function delete() {
 
-	  		 //curl_setopt( $this->curl, CURLOPT_HTTPHEADER, $this->headers );
-	  		 curl_setopt( $this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE' );
+	  		 //curl_setopt($this->curl, CURLOPT_HTTPHEADER, $this->headers);
+	  		 curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
 
-	  		 $response = curl_exec( $this->curl );
+	  		 $response = curl_exec($this->curl);
 
-	  		 $this->responseCode = curl_getinfo( $this->curl, CURLINFO_HTTP_CODE );
-	  		 if( $this->responseCode > 206 ) throw new RestClientException( $this->responseCode );
+	  		 $this->responseCode = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+	  		 if($this->responseCode > 206) throw new RestClientException($this->responseCode);
 
 	  		 return $response;
 	  }
@@ -164,7 +164,7 @@ class RestClient {
 	   */
 	  public function __destruct() {
 
-	  		 curl_close( $this->curl );
+	  		 curl_close($this->curl);
 	  }
 }
 ?>

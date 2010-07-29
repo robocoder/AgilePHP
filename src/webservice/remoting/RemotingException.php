@@ -51,8 +51,8 @@ class RemotingException extends FrameworkException {
 
 			 $this->message = $message;
 			 $this->trace = parent::getTraceAsString();
-	  		 $renderer = MVC::createRenderer( 'AJAXRenderer' );
-	  		 $renderer->render( $this );
+	  		 $renderer = MVC::createRenderer('AJAXRenderer');
+	  		 $renderer->render($this);
 	  		 exit;
 	  }
 }

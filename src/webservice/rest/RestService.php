@@ -56,7 +56,7 @@ class RestService {
 	   * @throws RestException
 	   */
 	  #@AroundInvoke
-	  public function intercept( InvocationContext $ic ) {
+	  public function intercept(InvocationContext $ic) {
 
 	  		 // Parse the REST service class name, resource, and parameters from the HTTP URL
 	  		 $service = preg_replace('/_Intercepted/', '', get_class($ic->getTarget()));
@@ -65,67 +65,67 @@ class RestService {
 	  		 array_unshift($parameters, $action);
 	  		 $request = '/' . implode('/', $parameters);
 
-	  		 Log::debug( '#@RestService::intercept Routing REST service \'' . $service . '\' resource request \'' . $request . '\'.' );
+	  		 Log::debug('#@RestService::intercept Routing REST service \'' . $service . '\' resource request \'' . $request . '\'.');
 
 			 $annotes = Annotation::getMethodsAsArray($service);
-			 foreach( $annotes as $method => $annotations ) {
+			 foreach($annotes as $method => $annotations) {
 
 			 		  // Process default action method first. It will never have any variables to extract
-			 		  if( $request == '/index' ) return $ic->proceed();
+			 		  if($request == '/index') return $ic->proceed();
 
-			 		  foreach( $annotations as $annote ) {
+			 		  foreach($annotations as $annote) {
 
-			 				   if( $annote instanceof Path ) {
+			 				   if($annote instanceof Path) {
 
 			 				   	   // All #@Path annotations should have a resource at this point since the default /index
 			 				   	   // request has already been processed. Ignore this method.
-			 				 	   if( !$annote->resource ) continue;
+			 				 	   if(!$annote->resource) continue;
 
 			 				 	   // No variables to extract simply invoke the requested resource
-			 				 	   if( $annote->resource == $request )
-			 				 	 	   call_user_func( array( $service, $method ) );
+			 				 	   if($annote->resource == $request)
+			 				 	 	   call_user_func(array($service, $method));
 
 			 				 	   // Create regex based on the #@Path resource definition
-			 				 	   $escapedAnnote = preg_replace( '/\//', '\/', $annote->resource );
-			 				 	   $regex = '^' . preg_replace( '/{.+?}/', '(.+)', $escapedAnnote ) . '$';
+			 				 	   $escapedAnnote = preg_replace('/\//', '\/', $annote->resource);
+			 				 	   $regex = '^' . preg_replace('/{.+?}/', '(.+)', $escapedAnnote) . '$';
 
 			 				 	   // Extract variable names and values
-			 				 	   preg_match( '/' . $regex . '/', $annote->resource, $variables ); // Extract variable names from the #@Path::resource definition
-			 				 	   preg_match( '/' . $regex . '/', $request, $values );	// Extract values from the request URI
+			 				 	   preg_match('/' . $regex . '/', $annote->resource, $variables); // Extract variable names from the #@Path::resource definition
+			 				 	   preg_match('/' . $regex . '/', $request, $values);	// Extract values from the request URI
 
-			 				 	   if( !isset( $values[1] ) ) continue; // No match
+			 				 	   if(!isset($values[1])) continue; // No match
 
 			 				 	   // First elements are the text that was matched - remove
-			 				 	   array_shift( $variables );
-			 				 	   array_shift( $values );
+			 				 	   array_shift($variables);
+			 				 	   array_shift($values);
 
 			 				 	   // Use the extracted variable names and values to construct #@Path and $request matchers. If
 			 				 	   // the $method #@Path resource matches the $request and the extracted values match up with
 			 				 	   // EL {variable} braces, then route the call to this method.
-			 				 	   $req = preg_replace( '/\//', '\\\\\0', $request );
+			 				 	   $req = preg_replace('/\//', '\\\\\0', $request);
 			 				 	   $resMatcher = "/^$req";
 			 				 	   $pathMatcher = "/^$req";
-			 				 	   for( $i=0; $i<count( $values ); $i++ ) {
+			 				 	   for($i=0; $i<count($values); $i++) {
 
-			 				 	   		$var = preg_replace( '/\{|\}/', '\\\\\0', $variables[$i] ); // escpape { and } chars
-			 				 	 	    $pathMatcher = str_replace( $values[$i], $var, $pathMatcher );
-			 				 	 	    $resMatcher = str_replace( $var, $values[$i], $resMatcher );
+			 				 	   		$var = preg_replace('/\{|\}/', '\\\\\0', $variables[$i]); // escpape { and } chars
+			 				 	 	    $pathMatcher = str_replace($values[$i], $var, $pathMatcher);
+			 				 	 	    $resMatcher = str_replace($var, $values[$i], $resMatcher);
 			 				 	   }
 			 				 	   $pathMatcher .= '$/';
 			 				 	   $resMatcher .= '$/';
 
 			 				 	   // Execute the REST service method if its #@Path resource matches the current request
-			 				 	   if( preg_match( $pathMatcher, $annote->resource ) && preg_match( $resMatcher, $request ) ) {
+			 				 	   if(preg_match($pathMatcher, $annote->resource) && preg_match($resMatcher, $request)) {
 
-			 				 	   	   $verb = strtoupper( $_SERVER['REQUEST_METHOD'] );
+			 				 	   	   $verb = strtoupper($_SERVER['REQUEST_METHOD']);
 			 				 	   	   $hasVerb = false;
-			 				 	   	   foreach( $annotations as $a )
-			 				 	   	   		if( $a instanceof $verb ) $hasVerb = true;
+			 				 	   	   foreach($annotations as $a)
+			 				 	   	   		if($a instanceof $verb) $hasVerb = true;
 
-			 				 	   	   if( !$hasVerb ) continue;
+			 				 	   	   if(!$hasVerb) continue;
 
-			 				 	   	   $ic->setMethod( $method );
-				 				 	   $ic->setParameters( $values );
+			 				 	   	   $ic->setMethod($method);
+				 				 	   $ic->setParameters($values);
 
 				 				 	   return $ic->proceed();
 			 				   	   }
@@ -133,8 +133,8 @@ class RestService {
 			 		}
 			 }
 
-			 Log::debug( '#@RestService::intercept Failed to route \'' . $request . '\' to a \'' . $service . '\' service method.' );
-			 throw new RestServiceException( 404 );
+			 Log::debug('#@RestService::intercept Failed to route \'' . $request . '\' to a \'' . $service . '\' service method.');
+			 throw new RestServiceException(404);
 	  }
 }
 ?>

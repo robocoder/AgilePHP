@@ -30,7 +30,7 @@ class FloatValidator extends Validator {
 
 	  public function validate() {
 
-	  		 return is_float( $this->data );
+	  		 return is_float($this->data);
 	  }
 }
 ?>

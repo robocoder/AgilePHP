@@ -50,7 +50,7 @@ class InvocationContext {
 	   * @param String $field The name of the field/property which was intercepted
 	   * @return void
 	   */
-	  public function __construct( $target, $method, $parameters, $interceptor, $field = null ) {
+	  public function __construct($target, $method, $parameters, $interceptor, $field = null) {
 
 	  		 $this->target = $target;
 	  		 $this->method = $method;
@@ -81,7 +81,7 @@ class InvocationContext {
 	   * @param String $method The name of the method to invoke
 	   * @return void
 	   */
-	  public function setMethod( $method ) {
+	  public function setMethod($method) {
 
 	  		 $this->method = $method;
 	  }
@@ -94,7 +94,7 @@ class InvocationContext {
 	   * @param array $parameters An array of parameters to pass into the invoked method
 	   * @return void
 	   */
-	  public function setParameters( array $parameters ) {
+	  public function setParameters(array $parameters) {
 
 	  		 $this->parameters = $parameters;
 	  }
@@ -126,7 +126,7 @@ class InvocationContext {
 	   * @param Object $instance The intercepted target instance
 	   * @return void
 	   */
-	  public function setTarget( $instance ) {
+	  public function setTarget($instance) {
 
 	  		 $this->target = $instance;
 	  }
@@ -168,7 +168,7 @@ class InvocationContext {
 	   * 
 	   * @param mixed The value which the intercepted method call returned
 	   */
-	  public function setReturn( $return ) {
+	  public function setReturn($return) {
 
 	  		 $this->return = $return;
 	  }

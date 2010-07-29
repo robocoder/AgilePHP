@@ -34,7 +34,7 @@ interface SQLDialect {
 		   * @param $columnName The column name to get the distinct values for
 		   * @return void
 		   */
-	  	  public function setDistinct( $columnName );
+	  	  public function setDistinct($columnName);
 
 	  	  /**
 		   * Returns the 'distinct' column to use in an SQL SELECT statement
@@ -50,7 +50,7 @@ interface SQLDialect {
 		   * @param $count Maximum number of records to return
 		   * @return void
 	       */
-	      public function setMaxResults( $maxResults = 25 );
+	      public function setMaxResults($maxResults = 25);
 
 	      /**
 	       * Returns the maximum number of results to retrieve. This translates
@@ -90,7 +90,7 @@ interface SQLDialect {
 	  	   * @see http://us2.php.net/manual/en/pdo.transactions.php
 	  	   * @see http://usphp.com/manual/en/function.PDO-rollBack.php
 	  	   */
-	  	  public function rollBack( $message = null, $code = 0 );
+	  	  public function rollBack($message = null, $code = 0);
 	  	 
 	  	  /**
 		   * Prepares an SQL prepared statement
@@ -99,7 +99,7 @@ interface SQLDialect {
 		   * @return False if the statement could not execute successfully
 		   * @see http://usphp.com/manual/en/function.PDO-prepare.php
 	  	   */
-	  	  public function prepare( $statement );
+	  	  public function prepare($statement);
 	  	 
 	  	  /**
 	  	   * Executes a prepared statement (with parameters)
@@ -108,7 +108,7 @@ interface SQLDialect {
 	  	   * @return True if successful, false on fail
 	  	   * @see http://usphp.com/manual/en/function.PDOStatement-execute.php
 	  	   */
-	  	  public function execute( array $inputParameters = array() );
+	  	  public function execute(array $inputParameters = array());
 	  	 
 		  /**
 	  	   * Executes an SQL statement and returns the number of rows affected by the query.
@@ -117,7 +117,7 @@ interface SQLDialect {
 	  	   * @return The number of rows affected by the query.
 	  	   * @see http://usphp.com/manual/en/function.PDO-exec.php
 	  	   */
-	  	  public function exec( $statement );
+	  	  public function exec($statement);
 
 	  	  /**
 	  	   * Quotes a string so its theoretically safe to pass into a statement
@@ -127,7 +127,7 @@ interface SQLDialect {
 	  	   * @return The quoted data
 	  	   * @see http://www.php.net/manual/en/pdo.quote.php
 	  	   */
-	  	  public function quote( $data );
+	  	  public function quote($data);
 
 		  /**
 	   	   * Executes a raw SQL query using PDO::query
@@ -135,15 +135,15 @@ interface SQLDialect {
 	   	   * @param $sql The SQL statement to execute
 	   	   * @return PDO::PDOStatement as returned by PDO::query
 	   	   */
-	  	  public function query( $sql );
+	  	  public function query($sql);
 
 	      /**
 	       * Sets WHERE clause restrictions
 	       * 
-	       * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array( 'id' => 21 ) )
+	       * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
 	       * @return void
 	       */
-	      public function setRestrictions( array $restrictions );
+	      public function setRestrictions(array $restrictions);
 
 	      /**
 	       * Sets the restriction operator (and|or) used in SQL WHERE clause.
@@ -151,7 +151,7 @@ interface SQLDialect {
 	       * @param $operator The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.
 	       * @return void
 	       */
-	      public function setRestrictionsLogicOperator( $operator );
+	      public function setRestrictionsLogicOperator($operator);
 
 	      /**
 	       * Sets the SQL 'group by' clause.
@@ -159,7 +159,7 @@ interface SQLDialect {
 	       * @param $column The column name to group the result set by
 	       * @return void
 	       */
-	      public function setGroupBy( $column );
+	      public function setGroupBy($column);
 
 	      /**
 	       * Returns SQL GROUP BY clause.
@@ -175,7 +175,7 @@ interface SQLDialect {
 	       * $param $direction The direction to sort the result set (ASC|DESC).
 	       * @return void
 	       */
-	      public function setOrderBy( $column, $direction );
+	      public function setOrderBy($column, $direction);
 
 	      /**
 	       * Returns an associative array containing the current 'orderBy' clause. The results
@@ -194,7 +194,7 @@ interface SQLDialect {
 	       * @return The 'Table' object responsible for the model's ORM or null if a table
 	       * 		 could not be located for the specified $model.
 	       */
-	      public function getTableByModel( $model = null );
+	      public function getTableByModel($model = null);
 
 	      /**
 	       * Returns a 'Table' object representing the table configured in orm.xml as
@@ -203,7 +203,7 @@ interface SQLDialect {
 	       * @return The 'Table' object which represents the AgilePHP 'Identity' table, or null
 	       * 		 if an 'Identity' table has not been configured.
 	       */
-	      public function getTableByModelName( $modelName );
+	      public function getTableByModelName($modelName);
 
 		  /**
 	       * Creates an accessor method from the $property parameter. The $property
@@ -213,7 +213,7 @@ interface SQLDialect {
 	       * @param $property The name of the property to convert to an accessor method name
 	       * @return The accessor string
 	       */
-	      public function toAccessor( $property );
+	      public function toAccessor($property);
 
 	      /**
 	       * Creates a mutator method from the $property parameter. The $property
@@ -223,7 +223,7 @@ interface SQLDialect {
 	       * @param $property The name of the property to convert to a mutator method name
 	       * @return The mutator string
 	       */
-	      public function toMutator( $property );
+	      public function toMutator($property);
 	     
 		  /**
 		   * Creates the active database in use by the ORM framework
@@ -240,7 +240,7 @@ interface SQLDialect {
 		   * @return void
 		   * @throws ORMException
 		   */
-		  public function createTable( Table $table );
+		  public function createTable(Table $table);
 
 		  /**
 	   	   * Drops the active database in use by the ORM framework
@@ -259,7 +259,7 @@ interface SQLDialect {
 	   	   * @return void
 	   	   * @throws ORMException
 	   	   */
-	  	  public function dropTable( Table $table );
+	  	  public function dropTable(Table $table);
 
 	  	 /**
 	   	  * Persists a domain model object
@@ -268,7 +268,7 @@ interface SQLDialect {
 		  * @return PDOStatement
 		  * @throws ORMException
 		  */
-  	     public function persist( $model );
+  	     public function persist($model);
 
 	  	 /**
 	   	  * Merges/updates a persisted domain model object
@@ -277,7 +277,7 @@ interface SQLDialect {
 		  * @return PDOStatement
 		  * @throws ORMException
 		  */
-	  	 public function merge( $model );
+	  	 public function merge($model);
 
 		 /**
 		  * Deletes a persisted domain model object
@@ -286,7 +286,7 @@ interface SQLDialect {
 		  * @return PDOStatement
 		  * @throws ORMException
 		  */
-		 public function delete( $model );
+		 public function delete($model);
 
 	  	 /**
 	   	  * Truncates the table for the specified domain model object
@@ -295,7 +295,7 @@ interface SQLDialect {
 		  * @return PDOStatement
 		  * @throws ORMException
 		  */
-		 public function truncate( $model );
+		 public function truncate($model);
 
 	  	 /**
 	   	  * Attempts to locate the specified model by primary key value.
@@ -305,7 +305,7 @@ interface SQLDialect {
 	      * 		 database values) or null if a matching record could not be found.
 	      * @throws ORMException
 	      */
-	  	 public function find( $model );
+	  	 public function find($model);
 
 	  	 /**
 	  	  * Calls a stored procedure.
@@ -313,7 +313,7 @@ interface SQLDialect {
 	  	  * @param $model ActiveRecord model state representing the stored procedure
 	  	  * @return mixed The stored procedure return value or null if the stored procedure does not return
 	  	  */
-	  	 public function call( $model );
+	  	 public function call($model);
 
 	  	 /**
 		  * Reverse engineers the active database and returns a Database object that represents

@@ -99,8 +99,8 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 											 Search
 											 <input type="text" id="agilephpSearchText" name="agilephpSearchText"/>
 											 <select id="agilephpSearchField" name="agilephpSearchField">';
-												foreach( $table->getColumns() as $column )
-													if( $column->isVisible() )
+												foreach($table->getColumns() as $column)
+													if($column->isVisible())
 														$xsl .= '<option value="' . $column->getName() . '">' . $column->getViewDisplayName() . '</option>';
 										$xsl .= '</select>
 											 <input type="hidden" value="' . $this->page . '" id="page"/>
@@ -164,14 +164,14 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 											<xsl:when test="(position() mod 2 = 1)">
 												<xsl:attribute name="class">agilephpRow1</xsl:attribute>
-												<xsl:attribute name="onmouseover">AgilePHP.ORM.setStyle( this, \'agilephpHighlight\' );</xsl:attribute>
-												<xsl:attribute name="onmouseout">AgilePHP.ORM.setStyle( this, \'agilephpRow1\' );</xsl:attribute>
+												<xsl:attribute name="onmouseover">AgilePHP.ORM.setStyle(this, \'agilephpHighlight\');</xsl:attribute>
+												<xsl:attribute name="onmouseout">AgilePHP.ORM.setStyle(this, \'agilephpRow1\');</xsl:attribute>
 											</xsl:when>
 
 											<xsl:otherwise>
 												<xsl:attribute name="class">agilephpRow2</xsl:attribute>
-												<xsl:attribute name="onmouseover">AgilePHP.ORM.setStyle( this, \'agilephpHighlight\' );</xsl:attribute>
-												<xsl:attribute name="onmouseout">AgilePHP.ORM.setStyle( this, \'agilephpRow2\' );</xsl:attribute>
+												<xsl:attribute name="onmouseover">AgilePHP.ORM.setStyle(this, \'agilephpHighlight\');</xsl:attribute>
+												<xsl:attribute name="onmouseout">AgilePHP.ORM.setStyle(this, \'agilephpRow2\');</xsl:attribute>
 											</xsl:otherwise>
 
 										</xsl:choose>';
@@ -228,7 +228,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 												<a href="' . $requestBase . '/' . $controller . '/edit/' . $pkeyXslValues . '/' . $this->getPage() . '">Edit</a>
 											</td>
 											<td>
-												<a href="JavaScript:AgilePHP.ORM.confirmDelete(  \'' . $requestBase . '\', \'' . $pkeyXslValues . '\', \'' . $this->getPage() . '\', \'' . $controller . '\', \'delete\' );">Delete</a>
+												<a href="JavaScript:AgilePHP.ORM.confirmDelete( \'' . $requestBase . '\', \'' . $pkeyXslValues . '\', \'' . $this->getPage() . '\', \'' . $controller . '\', \'delete\');">Delete</a>
 											</td>
 										</tr>
 									</xsl:template>
@@ -268,8 +268,8 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	     	       $token = Scope::getRequestScope()->createToken();
 
 	     	       // php namespace support
-	     	       $namespace = explode( '\\', $this->getModelName() );
-	     	       $name = array_pop( $namespace );
+	     	       $namespace = explode('\\', $this->getModelName());
+	     	       $name = array_pop($namespace);
 
 	     	       $form = $table->hasBlobColumn() ? new Form($this->getModel(), 'frm' . $name, $name, $action, 'multipart/form-data', $token)
 	     	       							       : new Form($this->getModel(), 'frm' . $name, $name, $action, null, $token);
@@ -290,7 +290,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 	               if(!$controller) $controller = MVC::getController();
 
-	     	       $table = ORM::getTableByModelName( $this->getModelName() );
+	     	       $table = ORM::getTableByModelName($this->getModelName());
 	     	       $fkeyXslValues = $this->getSerializedForeignKeyValuesAsXSL($table);
 	     	       $pkeyValues = $this->getSerializedPrimaryKeyValues($table);
 
@@ -320,9 +320,9 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 
 				    				$xsl .= '<table class="agilephpTable" border="0" cellpadding="3">';
 
-  			 	   	  						foreach( $table->getColumns() as $column ) {
+  			 	   	  						foreach($table->getColumns() as $column) {
 
-	  			 	   	  							if( $column->isVisible() == false ) {
+	  			 	   	  							if($column->isVisible() == false) {
 
 	  			 	   	  								if($column->isPrimaryKey())
 	  			 	   	  									$xsl .= '<input type="hidden" name="' . $column->getModelPropertyName() . '" value="{/Form/' . $modelName . '/' . $column->getModelPropertyName() . '}"/>';
@@ -332,14 +332,14 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	  			 	   	  							if($column->isForeignKey()) {
 
 	  			 	   	  							   $xsl .= '<tr>
-    	  			 	   	  				     					<td>' . ucfirst( $table->getDisplayNameByProperty( $column->getModelPropertyName() ) ) . '</td>
+    	  			 	   	  				     					<td>' . ucfirst($table->getDisplayNameByProperty($column->getModelPropertyName())) . '</td>
     	  			 	   	  				     		   			<td><xsl:value-of select="/Form/' . $modelName . '/' . $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() . '" /></td>
     	  			 	   	  				     		    	</tr>';
 	  			 	   	  							   continue;
 	  			 	   	  							}
 
 	  			 	   	  				     		$xsl .= '<tr>
-	  			 	   	  				     					<td>' . ucfirst( $table->getDisplayNameByProperty( $column->getModelPropertyName() ) ) . '</td>
+	  			 	   	  				     					<td>' . ucfirst($table->getDisplayNameByProperty($column->getModelPropertyName())) . '</td>
 	  			 	   	  				     		   			<td><xsl:value-of select="/Form/' . $modelName . '/' . $column->getModelPropertyName() . '" /></td>
 	  			 	   	  				     		    	</tr>';
 	  			 	   	  						}
@@ -347,13 +347,13 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	  			 	   	  						$xsl .= '<tr>
 								 							<td>&#8201;</td>
 															<td>';
-	  			 	   	  						$xsl .= ( ($action == 'persist') ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>'
+	  			 	   	  						$xsl .= (($action == 'persist') ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>'
   			 	   	  													 : '<input type="button" value="Edit" onclick="javascript:location.href=\'' . $requestBase .
   			 	   	  													   '/' . $controller . '/edit/' . $pkeyValues . '\';"/>
-																			<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . $requestBase .
+																			<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete(\'' . $requestBase .
   			 	   	  													   '\', \'' . $pkeyValues . '\', \'' . $this->getPage() .
-  			 	   	  													   '\', \'{/Form/controller}\', \'delete\' )"/>
-  			 	   	  													   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>' );
+  			 	   	  													   '\', \'{/Form/controller}\', \'delete\')"/>
+  			 	   	  													   <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>');
 												$xsl .= '</td>
 														</tr>';
 				$xsl .= '			</table>
@@ -434,11 +434,11 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 								   			<td><xsl:value-of select="$i" /></td>
 								   		</xsl:if>
 
-								   		<xsl:if test="$i != $page and not( $i &lt; ($page - ($maxResults + 1 ) ))">
+								   		<xsl:if test="$i != $page and not($i &lt; ($page - ($maxResults + 1)))">
 								      			<td><a href="' . $requestBase . '/{$controller}/{$action}/{$i}/{$params}"><xsl:value-of select="$i" /></a></td>
 										</xsl:if>
 
-										<xsl:if test="not( $i >= $pageCount or $i > ( $page + $maxResults ))">
+										<xsl:if test="not($i >= $pageCount or $i > ($page + $maxResults))">
 								   			<xsl:call-template name="pageNumberGenerator">
 								   				<xsl:with-param name="i" select="$i + 1"/>
 								   				<xsl:with-param name="page" select="$page"/>
@@ -461,14 +461,14 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	   	  * @param Table $table Table instance used to get primary keys.
 	   	  * @return The 'AgilePHP serialized' string of primary keys.
 	   	  */
-	  	private function getSerializedPrimaryKeyColumns( Table $table ) {
+	  	private function getSerializedPrimaryKeyColumns(Table $table) {
 
 	  		   $pkeyColumns = array();
-   		   	   foreach( $table->getPrimaryKeyColumns() as $column )
-   		   		        array_push( $pkeyColumns, $column->getModelPropertyName() );
+   		   	   foreach($table->getPrimaryKeyColumns() as $column)
+   		   		        array_push($pkeyColumns, $column->getModelPropertyName());
 
-   		   	   if( count( $pkeyColumns ) )
-   		   	 	   return implode( '_', $pkeyColumns );
+   		   	   if(count($pkeyColumns))
+   		   	 	   return implode('_', $pkeyColumns);
 
    		   	   return null;
 	  	 }
@@ -483,20 +483,20 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	  	  * @return An array of AgilePHP ORM 'Column' objects configured for
 	  	  * 		the specified 'Table'.
 	  	  */
-		 private function getSerializedPrimaryKeyValues( Table $table ) {
+		 private function getSerializedPrimaryKeyValues(Table $table) {
 
 		 		 $values = array();
 		 		 $pkeyColumns = $table->getPrimaryKeyColumns();
 		 		 for($i=0; $i<count($pkeyColumns); $i++) {
 
-		 		   	 $accessor = 'get' . ucfirst( $pkeyColumns[$i]->getModelPropertyName() );
+		 		   	 $accessor = 'get' . ucfirst($pkeyColumns[$i]->getModelPropertyName());
 		 		   	 $value = $this->getModel()->$accessor();
 		 		   	 if(is_object($value)) continue; // Foreign key that will be handled by getSerializedForeignKeyValuesAsXSL
 					 array_push($values, $value);
 				 }
 
 				 if(count($values))
-		 		 	return implode( '_', $values );
+		 		 	return implode('_', $values);
 	  	 }
 
 	  	 /**
@@ -509,14 +509,14 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 	  	  *
 	  	  * @return The XSL string
 	  	  */
-	     private function getSerializedPrimaryKeyColumnsAsXSL( $pkeyFields ) {
+	     private function getSerializedPrimaryKeyColumnsAsXSL($pkeyFields) {
 
 	     		 $xsl = null;
-	     		 $pieces = explode( '_', $pkeyFields );
-	     	     for( $i=0; $i<count( $pieces ); $i++ ) {
+	     		 $pieces = explode('_', $pkeyFields);
+	     	     for($i=0; $i<count($pieces); $i++) {
 
 	     	       	  $xsl .= '{' . $pieces[$i] . '}';
-	     	       	  if( ($i+1) < count( $pieces ) )
+	     	       	  if(($i+1) < count($pieces))
 	     	       	  	  $xsl .= '_';
 	     	     }
 

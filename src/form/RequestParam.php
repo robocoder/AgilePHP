@@ -34,11 +34,11 @@
  * public $fname;
  * 
  * // Optionally, we can specify the name of the input element
- * #@RequestParam( name = 'email' )
+ * #@RequestParam(name = 'email')
  * public $emailaddress;
  * 
  * // Optionally, we can also specify no sanitation
- * #@RequestParam( name = 'password', sanitize = false )
+ * #@RequestParam(name = 'password', sanitize = false)
  * public $plainTextPassword;
  * 
  * public function showEmail() {
@@ -88,17 +88,17 @@ class RequestParam {
 	   * @return void
 	   */
 	  #@AroundInvoke
-	  public function setFormValue( InvocationContext $ic ) {
+	  public function setFormValue(InvocationContext $ic) {
 
-	  		 if( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+	  		 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	  		 		$request = Scope::getRequestScope();
-	  		 		$name = ($this->name) ? $ic->getInterceptor()->name : $ic->getField();
+	  		 	$request = Scope::getRequestScope();
+	  		 	$name = ($this->name) ? $ic->getInterceptor()->name : $ic->getField();
 
-	  		 		if( $this->required && !$request->get( $name ) )
-	  		 			throw new FrameworkException( $name . ' is required' );
+	  		 	if($this->required && !$request->get($name))
+	  		 	   throw new FrameworkException($name . ' is required');
 
-	  		 		return ($ic->getInterceptor()->sanitize) ? $request->getSanitized( $name ) : $request->get( $name );
+	  		 	return ($ic->getInterceptor()->sanitize) ? $request->getSanitized($name) : $request->get($name);
 	  		 }
 	  }
 }

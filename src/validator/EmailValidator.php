@@ -38,62 +38,14 @@ class EmailValidator extends Validator {
 	   */
 	  public function validate() {
 
-   			 $atIndex = strrpos( $this->data, '@' );
-   			 if( is_bool( $atIndex ) && !$atIndex )
-      			 return false;
-   
-   			 $domain = substr( $this->data, $atIndex + 1 );
-      		 $local = substr( $this->data, 0, $atIndex );
-      		 $localLen = strlen( $local );
-      		 $domainLen = strlen( $domain );
-      		 if( $localLen < 1 || $localLen > 64 ) {
+	         if(!filter_var($this->data, FILTER_VALIDATE_EMAIL)) return false;
+	      
+   			 $index = strrpos($this->data, '@');
+   			 $domain = substr($this->data, $atIndex + 1);
 
-      		 	 // local part length exceeded
-         	     return false;
-      		 }
-      		 else if( $domainLen < 1 || $domainLen > 255 ) {
+      		 if(!checkdnsrr($domain, "MX") || checkdnsrr($domain, "A")) return false;
 
-      		 	  // domain part length exceeded
-         		  return false;
-      		 }
-      		 else if ($local[0] == '.' || $local[$localLen-1] == '.') {
-
-      		 	  // local part starts or ends with '.'
-         	      return false;
-      		 }
-      		 else if( preg_match( '/\\.\\./', $local ) ) {
-
-      		 	  // local part has two consecutive dots
-         	      return false;
-      		 }
-      		 else if( !preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain ) ) {
-
-      		 	  // character not valid in domain portion
-         		  return false;
-      		 }
-      		 else if( preg_match('/\\.\\./', $domain ) ) {
-
-      		 	  // domain part has two consecutive dots
-         		  return false;
-      		 }
-      		 else if( !preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',
-                 			str_replace( "\\\\", "", $local ) ) ) {
-
-                  // character not valid in local part unless 
-		          // local part is quoted
-         		  if( !preg_match( '/^"(\\\\"|[^"])+"$/', str_replace( "\\\\", "", $local ) ) ) {
-
-         		  	  return false;
-         		  }
-      		}
-
-      		if( !( checkdnsrr( $domain, "MX" ) || checkdnsrr( $domain, "A" ) ) ) {
-
-      			// domain not found in DNS
-		        return false;
-      		}
-
-   			return true;
+   			 return true;
 	  }
 }
 ?>

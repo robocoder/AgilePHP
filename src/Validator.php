@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -37,7 +37,7 @@ abstract class Validator {
 	   * @param mixed $data The data to validate
 	   * @return void
 	   */
-	  public function __construct( $data ) { 
+	  public function __construct($data) { 
 
 	  		 $this->data = $data;
 	  }

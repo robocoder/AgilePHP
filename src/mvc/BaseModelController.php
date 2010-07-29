@@ -43,7 +43,7 @@ abstract class BaseModelController extends BaseController {
 	      * @param Object $model The domain model the ORM is to manipulate
 	      * @return void
 	      */
-	     protected function setModel( $model ) {
+	     protected function setModel($model) {
 
 	    	    $this->model = $model;
 	     }
@@ -55,10 +55,10 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getTableName() {
  
-	     	       if( !$this->getModelName() )
-	     	           throw new FrameworkException( 'Property \'model\' must be defined in ORM ' . $this->getModelName() );
+	     	       if(!$this->getModelName())
+	     	           throw new FrameworkException('Property \'model\' must be defined in ORM ' . $this->getModelName());
 
-	     	       return ORM::getTableByModelName( $this->getModelName() )->getName();
+	     	       return ORM::getTableByModelName($this->getModelName())->getName();
 	     }
 
          /**
@@ -97,7 +97,7 @@ abstract class BaseModelController extends BaseController {
 	      * 
 	      * @param $sql A valid SQL statement
 	      */
-	     protected function createQuery( $sql ) {
+	     protected function createQuery($sql) {
 
 	     	       $this->sql = $sql;
 	     }
@@ -109,8 +109,8 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function executeQuery() {
 
-	               Log::debug( 'BaseModelController::executeQuery ' . $this->sql );
-	     	       return ORM::query( $this->sql );
+	               Log::debug('BaseModelController::executeQuery ' . $this->sql);
+	     	       return ORM::query($this->sql);
 	     }
 
 	     /**
@@ -121,8 +121,8 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function executeCountQuery() {
 
-	     	       $this->count = ORM::count( $this->getModel() );
-  			 	   $this->pageCount = ceil( $this->count / ORM::getMaxResults() );
+	     	       $this->count = ORM::count($this->getModel());
+  			 	   $this->pageCount = ceil($this->count / ORM::getMaxResults());
 	     }
 
 	     /**
@@ -142,35 +142,35 @@ abstract class BaseModelController extends BaseController {
 		  * @param $pageNumber The page number
 		  * @return void
 	      */
-	     protected function setPage( $pageNumber ) {
+	     protected function setPage($pageNumber) {
 
-	     	    if( !is_numeric( $pageNumber ) || !$pageNumber )
+	     	    if(!is_numeric($pageNumber) || !$pageNumber)
 	     	        $pageNumber = 1;
 
 	     	    $this->page = $pageNumber;
 				$this->executeCountQuery();
 
-				if( $this->page > $this->pageCount )
+				if($this->page > $this->pageCount)
 				    $pageNumber = $this->pageCount;
 
 				$offset = ($this->getPage() - 1) * ORM::getMaxResults();
-	     	    if( $offset < 0 ) $offset = 0;
+	     	    if($offset < 0) $offset = 0;
 
-  	 	     	ORM::setOffset( $offset );
-				$result = ORM::find( $this->getModel() );
+  	 	     	ORM::setOffset($offset);
+				$result = ORM::find($this->getModel());
 
-				if( !$result ) return false;
+				if(!$result) return false;
 
 				$this->resultList = $result;
-				$this->resultCount = count( $result );
+				$this->resultCount = count($result);
 
-				ORM::setGroupBy( null );
-	  		 	ORM::setOrderBy( null, 'ASC' );
-	  		 	ORM::setRestrictions( array() );
-	  		 	ORM::setRestrictionsLogicOperator( 'AND' );
-	  		 	ORM::setComparisonLogicOperator( '=' );
+				ORM::setGroupBy(null);
+	  		 	ORM::setOrderBy(null, 'ASC');
+	  		 	ORM::setRestrictions(array());
+	  		 	ORM::setRestrictionsLogicOperator('AND');
+	  		 	ORM::setComparisonLogicOperator('=');
 
-				Log::debug( 'BaseModelController::setPage ' . $this->page );
+				Log::debug('BaseModelController::setPage ' . $this->page);
 	     }
 
 	     /**
@@ -233,7 +233,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getNextResultList() {
 
-	     	       $this->setPage( $this->page + 1 );
+	     	       $this->setPage($this->page + 1);
 	     }
 
 	     /**
@@ -243,18 +243,18 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function getPreviousResultList() {
 
-	     	       $this->setPage( $this->page - 1 );
+	     	       $this->setPage($this->page - 1);
 	     }
 
 	     /**
 	      * Sets WHERE clause restrictions
 	      * 
-	      * @param array $restrictions An associative array containing WHERE clause restrictions. (For example: array( 'id' => 21 ) )
+	      * @param array $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
 	      * @return void
 	      */
-	     protected function setRestrictions( array $restrictions ) {
+	     protected function setRestrictions(array $restrictions) {
 
-	     		   ORM::setRestrictions( $restrictions );
+	     		   ORM::setRestrictions($restrictions);
 	     }
 
 	     /**
@@ -263,9 +263,9 @@ abstract class BaseModelController extends BaseController {
 	      * @param String $operator The logical operator to be used in SQL WHERE clause. Default is 'AND'. (AND|OR)
 	      * @return void
 	      */
-	     protected function setRestrictionsLogicOperator( $operator ) {
+	     protected function setRestrictionsLogicOperator($operator) {
 
-				   ORM::setRestrictionsLogicOperator( $operator );
+				   ORM::setRestrictionsLogicOperator($operator);
 	     }
 	     
 		 /**
@@ -274,9 +274,9 @@ abstract class BaseModelController extends BaseController {
 		  * @param $operator The logical comparison operator used is SQL where clauses. Default is '='.
 		  * @return void
 		  */
-	     protected function setComparisonLogicOperator( $operator ) {
+	     protected function setComparisonLogicOperator($operator) {
 
-	     	       ORM::setComparisonLogicOperator( $operator );
+	     	       ORM::setComparisonLogicOperator($operator);
 	     }
 
 	     /**
@@ -285,9 +285,9 @@ abstract class BaseModelController extends BaseController {
 	      * @param String $column The column name to group the result set by
 	      * @return void
 	      */
-	     protected function setGroupBy( $column ) {
+	     protected function setGroupBy($column) {
 
-	     		   ORM::setGroupBy( $column );
+	     		   ORM::setGroupBy($column);
 	     }
 
 	     /**
@@ -297,9 +297,9 @@ abstract class BaseModelController extends BaseController {
 	      * $param String $direction The direction to sort the result set (ASC|DESC).
 	      * @return void
 	      */
-	     protected function setOrderBy( $column, $direction ) {
+	     protected function setOrderBy($column, $direction) {
 
-	     		   ORM::setOrderBy( $column, $direction );
+	     		   ORM::setOrderBy($column, $direction);
 	     }
 
 	     /**
@@ -323,10 +323,10 @@ abstract class BaseModelController extends BaseController {
 	     protected function getModelName() {
 
 	     		   try {
-	     		   		 $class = new ReflectionClass( $this->getModel() );
+	     		   		 $class = new ReflectionClass($this->getModel());
 	     		   		 return $class->getName();
 	     		   }
-	     		   catch( ReflectionException $re ) { }
+	     		   catch(ReflectionException $re) { }
 	     }
 
 	     /**
@@ -334,11 +334,11 @@ abstract class BaseModelController extends BaseController {
 	      * 
 	      * @return Model $model Optional model instance to search on according to ActiveRecord state.
 	      */
-	     protected function find( $model = null ) {
+	     protected function find($model = null) {
 
 	     		   $m = ($model == null) ? $this->getModel() : $model;
-	     		   $this->resultList = ORM::find( $m );
-				   $this->resultCount = count( $this->resultList );
+	     		   $this->resultList = ORM::find($m);
+				   $this->resultCount = count($this->resultList);
 
 	     		   return $this->resultList;
 	     }
@@ -350,7 +350,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function persist() {
 
-	     		   ORM::persist( $this->getModel() );
+	     		   ORM::persist($this->getModel());
 	     }
 
 	     /**
@@ -361,7 +361,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function merge() {
 
-	     		   ORM::merge( $this->getModel() );
+	     		   ORM::merge($this->getModel());
 	     }
 
 	     /**
@@ -372,7 +372,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function delete() {
 
-	     		   ORM::delete( $this->getModel() );
+	     		   ORM::delete($this->getModel());
 	     }
 
 		 /**
@@ -382,16 +382,16 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function clear() {
 
-	  	           $table = ORM::getTableByModel( $this->getModel() );
+	  	           $table = ORM::getTableByModel($this->getModel());
 	  	           $columns = $table->getColumns();
 
-  			       for( $i=0; $i<count( $columns ); $i++ ) {
+  			       for($i=0; $i<count($columns); $i++) {
 
-	  	     	 	    $mutator = $this->toMutator( $columns[$i]->getModelPropertyName() );
-	  	     	 	    $this->getModel()->$mutator( null );
+	  	     	 	    $mutator = $this->toMutator($columns[$i]->getModelPropertyName());
+	  	     	 	    $this->getModel()->$mutator(null);
 	  	           }
 
-	  	           Log::debug( 'BaseModelController::clear ' );
+	  	           Log::debug('BaseModelController::clear ');
 	     }
 
 	     /**
@@ -402,9 +402,9 @@ abstract class BaseModelController extends BaseController {
 	      * @param $property The name of the property to convert to an accessor method name
 	      * @return The accessor string
 	      */
-	     protected function toAccessor( $property ) {
+	     protected function toAccessor($property) {
 
-	     		   return 'get' . ucfirst( $property );
+	     		   return 'get' . ucfirst($property);
 	     }
 
 	     /**
@@ -415,9 +415,9 @@ abstract class BaseModelController extends BaseController {
 	      * @param $property The name of the property to convert to a mutator method name
 	      * @return The mutator string
 	      */
-	     protected function toMutator( $property ) {
+	     protected function toMutator($property) {
 
-	     		   return 'set' . ucfirst( $property );
+	     		   return 'set' . ucfirst($property);
 	     }
 
 	     abstract protected function getModel();

@@ -28,15 +28,15 @@
  * @package com.makeabyte.agilephp.identity
  * <code>
  * #@Password
- * public function setPassword( $myPassword ) {
+ * public function setPassword( $myPassword) {
  * 
  * 		  $this->password = $myPassword;
  * }
  * </code>
  * 
  * <code>
- * #@Password( parameter = 1 ) // Hashes the second method parameter
- * public function updateUser( $username, $password ) {
+ * #@Password( parameter = 1) // Hashes the second method parameter
+ * public function updateUser( $username, $password) {
  * 
  * 		  // Update the user account
  * }
@@ -60,18 +60,18 @@ class Password {
 	   * @throws InterceptionException if a specified parameter index is out of bounds
 	   */
 	  #@AroundInvoke
-	  public function hash( InvocationContext $ic ) {
+	  public function hash(InvocationContext $ic) {
 
-	  		 if( !$ic->getParameters() )
-	  		 	 throw new InterceptionException( '#@Password::encrypt Requires a method which accepts at least one parameter.' );
+	  		 if(!$ic->getParameters())
+	  		 	throw new InterceptionException('#@Password::encrypt Requires a method which accepts at least one parameter.');
 
 		  	 // Dont encrypt passwords coming from ORM 'find' operation.
 	  		 $callee = $ic->getCallee();
-	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file'] );
-	  		 $className = str_replace( '.php', '', array_pop( $pieces ) );
+	  		 $pieces = explode(DIRECTORY_SEPARATOR, $callee['file']);
+	  		 $className = str_replace('.php', '', array_pop($pieces));
 
-	  		 if( preg_match( '/^(orm.*)|(.*dialect)$/i', $className ) )
-	  		 	 return $ic->proceed();
+	  		 if(preg_match('/^(orm.*)|(.*dialect)$/i', $className))
+	  		    return $ic->proceed();
 
 	  		 // Hash the parameter
 	  		 $crypto = new Crypto();
@@ -79,22 +79,22 @@ class Password {
 
 	  		 $logMessage = '#@Password::hash ' . $callee['class'] . '::' . $ic->getMethod() . ' password hased using ' . $crypto->getAlgorithm();
 
-	  		 if( $this->parameter ) {
+	  		 if($this->parameter) {
 
-	  		 	 if( !array_key_exists( $this->parameter, $params ) )
-	  		 	 	 throw new InterceptionException( '#@Password::parameter index out of bounds' );
+	  		 	if(!array_key_exists($this->parameter, $params))
+	  		 	   throw new InterceptionException('#@Password::parameter index out of bounds');
 
-	  		 	 $params[$this->parameter] = $crypto->getDigest( $params[$this->parameter] );
-	  		 	 $ic->setParameters( $params );
+	  		 	$params[$this->parameter] = $crypto->getDigest($params[$this->parameter]);
+	  		 	$ic->setParameters($params);
 
-	  		 	 Log::debug( $logMessage );
+	  		 	Log::debug($logMessage);
 
-	  		 	 return $ic->proceed();
+	  		 	return $ic->proceed();
 	  		 }
 
-			 $ic->setParameters( array( $crypto->getDigest( $params[0] ) ) );
+			 $ic->setParameters(array($crypto->getDigest($params[0])));
 
-			 Log::debug( $logMessage );
+			 Log::debug($logMessage);
 
 			 return $ic->proceed();
 	  }

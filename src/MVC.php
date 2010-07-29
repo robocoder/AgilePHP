@@ -50,7 +50,7 @@ final class MVC {
 	   * @return void
 	   * @static
 	   */
-	  public function init($controller, $action, $renderer, $sanitize, $cacheables) {
+	  public static function init($controller, $action, $renderer, $sanitize, $cacheables) {
 
 	  		 if($controller) self::$defaultController = $controller;
 	  		 if($action) self::$defaultAction = $action;
@@ -178,7 +178,7 @@ final class MVC {
 	   */
 	  public static function dispatch() {
 
-	  		 $path = (isset( $_SERVER['PHP_SELF'] )) ? $_SERVER['PHP_SELF'] : '/';
+	  		 $path = (isset($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : '/';
 
 	  		 if(self::$cacheables && ($cacher = AgilePHP::getCacher())) {
 
@@ -288,7 +288,7 @@ final class MVC {
 	  	     Log::debug('MVC::createRenderer loading renderer: ' . $renderer);
 
 	  		 if(!file_exists($path))
-	  	     	throw new FrameworkException( 'Framework renderer could not be loaded from: ' . $path, 104 );
+	  	     	throw new FrameworkException('Framework renderer could not be loaded from: ' . $path, 104);
 
 			 require_once $path;
 	  		 return new $renderer;
@@ -307,10 +307,10 @@ final class MVC {
 
 	  	     $path = AgilePHP::getWebRoot() . '/classes/' . $classpath . '/' . $renderer . '.php';
 
-	  	     Log::debug( 'MVC::createDefaultRenderer loading custom renderer: ' . $renderer );
+	  	     Log::debug('MVC::createDefaultRenderer loading custom renderer: ' . $renderer);
 
 	  	     if(!file_exists($path))
-	  	     	 throw new FrameworkException( 'Custom renderer could not be loaded from: ' . $path, 105 );
+	  	     	 throw new FrameworkException('Custom renderer could not be loaded from: ' . $path, 105);
 
 	  	     require_once $path;
 	  	     return new $renderer;

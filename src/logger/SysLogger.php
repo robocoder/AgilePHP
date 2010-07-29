@@ -37,7 +37,7 @@ class SysLogger implements LogProvider {
 	   */
 	  public function __construct() {
 
-	  		 openlog( AgilePHP::getAppName(), LOG_PID | LOG_PERROR, LOG_USER );
+	  		 openlog(AgilePHP::getAppName(), LOG_PID | LOG_PERROR, LOG_USER);
   	  }
 
 	  /**
@@ -47,9 +47,9 @@ class SysLogger implements LogProvider {
 	   * @return void
 	   * @static
 	   */
-	  public function debug( $message ) {
+	  public function debug($message) {
 
-  		 	 $this->write( $message, LOG_DEBUG );
+  		 	 $this->write($message, LOG_DEBUG);
 	  }
 
 	  /**
@@ -58,9 +58,9 @@ class SysLogger implements LogProvider {
 	   * @param String $message The warning message to log
 	   * @return void
 	   */
-	  public function warn( $message ) {
+	  public function warn($message) {
 
-	  		 $this->write( $message, LOG_WARNING );
+	  		 $this->write($message, LOG_WARNING);
 	  }
 
 	  /**
@@ -69,9 +69,9 @@ class SysLogger implements LogProvider {
 	   * @param String $message The informative message to log
 	   * @return void
 	   */
-	  public function info( $message ) {
+	  public function info($message) {
 
-	  		 $this->write( $message, LOG_INFO );
+	  		 $this->write($message, LOG_INFO);
 	  }
 
 	  /**
@@ -81,9 +81,9 @@ class SysLogger implements LogProvider {
 	   * @return void
 	   * @static
 	   */
-	  public function error( $message ) {
+	  public function error($message) {
 
-	  		 $this->write( $message, LOG_ERR );
+	  		 $this->write($message, LOG_ERR);
 	  }
 
 	  /**
@@ -92,15 +92,15 @@ class SysLogger implements LogProvider {
 	   * @param string $message The log entry message
 	   * @return void
 	   */
-	  private function write( $message, $level ) {
+	  private function write($message, $level) {
 
-	  		  $requestURI = (isset( $_SERVER['REQUEST_URI' ] ) ? $_SERVER['REQUEST_URI'] : '/' );
-	  	      $header = '[' . $level . ']  ' . AgilePHP::getAppName() . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) . '  ' . $requestURI;
+	  		  $requestURI = (isset($_SERVER['REQUEST_URI' ]) ? $_SERVER['REQUEST_URI'] : '/');
+	  	      $header = '[' . $level . ']  ' . AgilePHP::getAppName() . '  ' . date("m-d-y g:i:sa", strtotime('now')) . '  ' . $requestURI;
 
-	  		  if( is_object( $message ) || is_array( $message ) )
-	  	      	  $message = print_r( $message, true );
+	  		  if(is_object($message) || is_array($message))
+	  	      	  $message = print_r($message, true);
 
-	  	      syslog( $level, $header . "\t" . $message . PHP_EOL ); 
+	  	      syslog($level, $header . "\t" . $message . PHP_EOL); 
 	  }
 }
 ?>

@@ -72,7 +72,7 @@ final class Log {
 	   * @return void
 	   * @static
 	   */
-	  public static function info( $message ) {
+	  public static function info($message) {
 
 	         $logger = LogFactory::getLogger();
 	         $level = LogFactory::getLevel();
@@ -93,7 +93,7 @@ final class Log {
 	         $logger = LogFactory::getLogger();
 	         $level = LogFactory::getLevel();
 
-	         if($level == 'error' || $level == 'debug' )
+	         if($level == 'error' || $level == 'debug')
 	  		    $logger->error($message);
 	  }
 }

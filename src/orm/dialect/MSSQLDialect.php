@@ -40,21 +40,21 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   * @param Database $db The Database object representing orm.xml
 	   * @return void
 	   */
-	   public function __construct( Database $db ) {
+	   public function __construct(Database $db) {
 
-	   		  if( !function_exists( 'sqlsrv_connect' ) )
-	   		  	  throw new ORMException( 'Microsoft SQL Server Driver for PHP is not installed on the server.' );
+	   		  if(!function_exists('sqlsrv_connect'))
+	   		  	  throw new ORMException('Microsoft SQL Server Driver for PHP is not installed on the server.');
 
-	   		  $params = array( 'Database' => $db->getName(), 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
-	   		  $noDbParams = array( 'UID' => $db->getUsername(), 'PWD' => $db->getPassword() );
+	   		  $params = array('Database' => $db->getName(), 'UID' => $db->getUsername(), 'PWD' => $db->getPassword());
+	   		  $noDbParams = array('UID' => $db->getUsername(), 'PWD' => $db->getPassword());
 
-	  	      if( !$this->conn = sqlsrv_connect( $db->getHostname(), $params ) ) {
+	  	      if(!$this->conn = sqlsrv_connect($db->getHostname(), $params)) {
 
 	  	      	  $this->connectFlag = 0;
-			 	  if( !$this->conn = sqlsrv_connect( $db->getHostname(), $noDbParams ) ) { // Create statement needs to bind to server
+			 	  if(!$this->conn = sqlsrv_connect($db->getHostname(), $noDbParams)) { // Create statement needs to bind to server
 
 			 	  	  $this->connectFlag = -1;
-			 	  	  throw new ORMException( print_r( sqlsrv_errors(), true ) );
+			 	  	  throw new ORMException(print_r(sqlsrv_errors(), true));
 			 	  }
 	  	      }
 
@@ -71,55 +71,55 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  		 return $this->connectFlag;
 	  }
 
-	  public function call( $model ) {
+	  public function call($model) {
 
 	  		 $values = array();
 	  		 $outs = array();
 	  		 $params = array();
-	  		 $class = get_class( $model );
-	  		 $proc = $this->getProcedureByModel( $model );
+	  		 $class = get_class($model);
+	  		 $proc = $this->getProcedureByModel($model);
 
-	  		 foreach( $proc->getParameters() as $param ) {
+	  		 foreach($proc->getParameters() as $param) {
 
-	  		 		  if( $param->getMode() == 'IN' || $param->getMode() == 'INOUT' ) {
+	  		 		  if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
 
-	  		 			  $accessor = $this->toAccessor( $param->getModelPropertyName() );
-	  		 			  array_push( $params, $model->$accessor() );
+	  		 			  $accessor = $this->toAccessor($param->getModelPropertyName());
+	  		 			  array_push($params, $model->$accessor());
 	  		 		  }
 
-	  		 		  if( $param->getMode() == 'OUT' || $param->getMode() == 'INOUT' )
+	  		 		  if($param->getMode() == 'OUT' || $param->getMode() == 'INOUT')
 	  		 			  $outs[$param->getName()] = $param->getModelPropertyName();
 	  		 }
 
-	  		 $query = '{call ' . $proc->getName() . ' ( ';
-	  		 for( $i=0; $i<count( $params ); $i++ ) {
+	  		 $query = '{call ' . $proc->getName() . ' (';
+	  		 for($i=0; $i<count($params); $i++) {
 
 	  		 		$values[$i] = $params[$i];
-	  		 		$query .= '?' . (($i+1) == count($query) ? ', ' : '' );
+	  		 		$query .= '?' . (($i+1) == count($query) ? ', ' : '');
 	  		 }
-	  		 $query .= ' ) }';
+	  		 $query .= ') }';
 
 	  		 $models = array();
-	  		 $params = array_merge( $params, $outs );
+	  		 $params = array_merge($params, $outs);
 
-	  		 Log::debug( 'MSSQLDialect::call ' . $query . ' with params ' . print_r( $params, true ) );
+	  		 Log::debug('MSSQLDialect::call ' . $query . ' with params ' . print_r($params, true));
 
-			 $stmt = sqlsrv_query( $this->conn, $query, array_merge( $params, $outs ) );
-			 while( $record = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC ) ) {
+			 $stmt = sqlsrv_query($this->conn, $query, array_merge($params, $outs));
+			 while($record = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
 			 		$m = new $class;
-		 		 	foreach( $record as $column => $value ) {
+		 		 	foreach($record as $column => $value) {
 
-		 		 			 if( $value instanceof DateTime )
+		 		 			 if($value instanceof DateTime)
 		 		 			 	 $value = $value->date;
 
-		 		 	 		 $mutator = $this->toMutator( $outs[$column] );
-		  		 		  	 $m->$mutator( $value );
+		 		 	 		 $mutator = $this->toMutator($outs[$column]);
+		  		 		  	 $m->$mutator($value);
 		 		    }
-		 		 	array_push( $models, $m );
+		 		 	array_push($models, $m);
 			 }
 
-			 return (count( $models ) == 1) ? $models[0] : $models;
+			 return (count($models) == 1) ? $models[0] : $models;
 	  }
 
 	  /**
@@ -128,59 +128,59 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function create() {
 
-	  		 $this->query( 'CREATE DATABASE ' . $this->database->getName() . ';' );
+	  		 $this->query('CREATE DATABASE ' . $this->database->getName() . ';');
 
 	  		 // Close the connection to the server and bind to the new database.
 	  		 $this->close();
-	  		 $params = array( 'Database' => $this->database->getName(), 'UID' => $this->database->getUsername(), 'PWD' => $this->database->getPassword() );
-	  		 if( !$this->conn = sqlsrv_connect( $this->database->getHostname(), $params ) )
-	  		 	 throw new ORMException( print_r( sqlsrv_errors(), true ) );
+	  		 $params = array('Database' => $this->database->getName(), 'UID' => $this->database->getUsername(), 'PWD' => $this->database->getPassword());
+	  		 if(!$this->conn = sqlsrv_connect($this->database->getHostname(), $params))
+	  		 	 throw new ORMException(print_r(sqlsrv_errors(), true));
 
 			 $constraintFails = array();
 
-	  		 foreach( $this->database->getTables() as $table ) {
+	  		 foreach($this->database->getTables() as $table) {
 
-                                  $sql = $this->toCreateTableSQL( $table );
-                                  if( !$this->query( $sql ) ) {
+                                  $sql = $this->toCreateTableSQL($table);
+                                  if(!$this->query($sql)) {
 
                                           $error = sqlsrv_errors();
 
                                           // This saves the create operation from blowing up if orm.xml defines a table
                                           // that references a table further down the orm.xml file that has not been
                                           // created yet. Is there a cleaner way - like disabling constraint checks?
-                                          if( stristr( $error[0]['message'], 'references invalid table' ) ) {
+                                          if(stristr($error[0]['message'], 'references invalid table')) {
 
-                                                  array_push( $constraintFails, $sql );
+                                                  array_push($constraintFails, $sql);
                                                   continue;
                                           }
 
-                                          throw new ORMException( print_r( sqlsrv_errors(), true ) );
+                                          throw new ORMException(print_r(sqlsrv_errors(), true));
                                   }
 	  		 }
 
 	  		 // Constraint hack continued
-	  		 if( count( $constraintFails ) )
-	  		 	 foreach( $constraintFails as $sql )
-	  		 	 		if( !$this->query( $sql ) )
-		  		 	 		throw new ORMException( print_r( sqlsrv_errors(), true ) );
+	  		 if(count($constraintFails))
+	  		 	 foreach($constraintFails as $sql)
+	  		 	 		if(!$this->query($sql))
+		  		 	 		throw new ORMException(print_r(sqlsrv_errors(), true));
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
 	   */
-      public function createTable( Table $table ) {
+      public function createTable(Table $table) {
 
-              $this->query( $this->toCreateTableSQL( $table ) );
+              $this->query($this->toCreateTableSQL($table));
       }
 
       /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#dropTable(Table $table)
 	   */
-      public function dropTable( Table $table ) {
+      public function dropTable(Table $table) {
 
-             $this->query( 'DROP TABLE ' . $table->getName() );
+             $this->query('DROP TABLE ' . $table->getName());
       }
 
       /**
@@ -189,11 +189,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
        * @param Table $table The table to create the SQL code for
        * @return string The SQL CREATE TABLE statement
        */
-      private function toCreateTableSQL( Table $table ) {
+      private function toCreateTableSQL(Table $table) {
 
-              $sql = 'CREATE TABLE ' . $table->getName() . ' ( ';
+              $sql = 'CREATE TABLE ' . $table->getName() . ' (';
 
-              foreach( $table->getColumns() as $column ) {
+              foreach($table->getColumns() as $column) {
 
                        $sql .= '[' . $column->getName() . '] ' . $column->getType() .
                                  (($column->getLength()) ? '(' . $column->getLength() . ')' : '') .
@@ -207,60 +207,60 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
               }
 
               $pkeyColumns = $table->getPrimaryKeyColumns();
-              if( count( $pkeyColumns ) ) {
+              if(count($pkeyColumns)) {
 
-                  $sql .= ' PRIMARY KEY ( ';
-                  for( $i=0; $i<count( $pkeyColumns ); $i++ ) {
+                  $sql .= ' PRIMARY KEY (';
+                  for($i=0; $i<count($pkeyColumns); $i++) {
 
                        $sql .= '[' . $pkeyColumns[$i]->getName() . ']';
 
-                       if( ($i+1) < count( $pkeyColumns ) )
+                       if(($i+1) < count($pkeyColumns))
                            $sql .= ', ';
                   }
-	              $sql .= ' ), ';
+	              $sql .= '), ';
               }
 
-              if( $table->hasForeignKey() ) {
+              if($table->hasForeignKey()) {
 
                   $bProcessedKeys = array();
                   $foreignKeyColumns = $table->getForeignKeyColumns();
-                  for( $h=0; $h<count( $foreignKeyColumns ); $h++ ) {
+                  for($h=0; $h<count($foreignKeyColumns); $h++) {
 
                         $fk = $foreignKeyColumns[$h]->getForeignKey();
 
-                        if( in_array( $fk->getName(), $bProcessedKeys ) )
+                        if(in_array($fk->getName(), $bProcessedKeys))
                             continue;
 
-                        $fk->setOnUpdate( str_replace( '_', ' ', $fk->getOnUpdate() ) );
-                        $fk->setOnDelete( str_replace( '_', ' ', $fk->getOnDelete() ) );
+                        $fk->setOnUpdate(str_replace('_', ' ', $fk->getOnUpdate()));
+                        $fk->setOnDelete(str_replace('_', ' ', $fk->getOnDelete()));
 
                         // Get foreign keys which are part of the same relationship
-                        $relatedKeys = $table->getForeignKeyColumnsByKey( $fk->getName() );
+                        $relatedKeys = $table->getForeignKeyColumnsByKey($fk->getName());
 
                         $sql .= ' CONSTRAINT ' . $fk->getName() . '';
-                        $sql .= ' FOREIGN KEY ( ';
+                        $sql .= ' FOREIGN KEY (';
 
-                        for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+                        for($j=0; $j<count($relatedKeys); $j++) {
 
                              $sql .= $relatedKeys[$j]->getColumnInstance()->getName();
-                             if( ($j+1) < count( $relatedKeys ) )
+                             if(($j+1) < count($relatedKeys))
                                  $sql .= ', ';
                         }
 
-                        $sql .= ' ) REFERENCES ' . $fk->getReferencedTable() . ' ( ';
+                        $sql .= ') REFERENCES ' . $fk->getReferencedTable() . ' (';
 
-                        for( $j=0; $j<count( $relatedKeys ); $j++ ) {
+                        for($j=0; $j<count($relatedKeys); $j++) {
 
                              $sql .= '' . $relatedKeys[$j]->getReferencedColumn() . '';
-                             if( ($j+1) < count( $relatedKeys ) )
+                             if(($j+1) < count($relatedKeys))
                                  $sql .= ', ';
                         }
 
-                        $sql .= ' ) ';
-                        $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '' );
-                        $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '' ) . ', ';
+                        $sql .= ') ';
+                        $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '');
+                        $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '') . ', ';
 
-                        array_push( $bProcessedKeys, $fk->getName() );
+                        array_push($bProcessedKeys, $fk->getName());
                    }
               }
 
@@ -275,7 +275,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function beginTransaction() {
 
-	  		 Log::debug( 'MSSQLDialect::beginTransaction Beginning transaction' );
+	  		 Log::debug('MSSQLDialect::beginTransaction Beginning transaction');
 	  }
 
 	  /**
@@ -284,23 +284,23 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function commit() {
 
-	  		 sqlsrv_commit( $this->conn );
+	  		 sqlsrv_commit($this->conn);
 
-	  		 Log::debug( 'MSSQLDialect::commit Transaction successfully committed.' );
+	  		 Log::debug('MSSQLDialect::commit Transaction successfully committed.');
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/AgilePHP/orm/BaseDialect#rollBack($message, $code)
 	   */
-	  public function rollBack( $message = null, $code = 0 ) {
+	  public function rollBack($message = null, $code = 0) {
 
-	  		 Log::debug( 'MSSQLDialect::rollBack ' . (($message == null) ? '' : ' ' . $message ) );
+	  		 Log::debug('MSSQLDialect::rollBack ' . (($message == null) ? '' : ' ' . $message));
 
 	  		 $this->transactionInProgress = false;
-	  		 sqlsrv_rollback( $this->conn );
+	  		 sqlsrv_rollback($this->conn);
 
-	  		 if( $message ) throw new ORMException( $message, $code );
+	  		 if($message) throw new ORMException($message, $code);
 	  }
 
 	  /**
@@ -311,24 +311,24 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   * @return A statement resource. If the statement cannot be created and/or executed, false is returned.
 	   * @see src/AgilePHP/orm/BaseDialect#query($sql)
 	   */
-	  public function query( $sql, $params = array() ) {
+	  public function query($sql, $params = array()) {
 
-	  		 Log::debug( 'MSSQLDialect::query Executing' .
+	  		 Log::debug('MSSQLDialect::query Executing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
-			  	     					'raw PDO::query ' . $sql . 'with $params ' . print_r( $params, true ) );
+			  	     					'raw PDO::query ' . $sql . 'with $params ' . print_r($params, true));
 
-	  		 return sqlsrv_query( $this->conn, $sql, (count( $params )) ? $params : null );
+	  		 return sqlsrv_query($this->conn, $sql, (count($params)) ? $params : null);
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/BaseDialect#prepare($statement)
 	   */
-	  public function prepare( $statement ) {
+	  public function prepare($statement) {
 
-	  		 Log::debug( 'MSSQLDialect::prepare Preparing' .
+	  		 Log::debug('MSSQLDialect::prepare Preparing' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
-			  	     					'statement ' . $statement );
+			  	     					'statement ' . $statement);
 
 	  		 $this->statement = $statement;
 	  }
@@ -337,32 +337,32 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   * (non-PHPdoc)
 	   * @see src/orm/BaseDialect#execute($inputParameters)
 	   */
-	  public function execute( array $inputParameters = array() ) {
+	  public function execute(array $inputParameters = array()) {
 
-	  		 Log::debug( 'MSSQLDialect::execute Executing' .
+	  		 Log::debug('MSSQLDialect::execute Executing' .
 			  	     		(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
-			  	     		'prepared statement with inputParameters ' . print_r( $inputParameters, true ) );
+			  	     		'prepared statement with inputParameters ' . print_r($inputParameters, true));
 
 	  		 // SQLSRV driver requires parameters passed to prepare be passed by reference
 	  		 $params = array();
-	  		 for( $i=0; $i<count( $inputParameters ); $i++ )
+	  		 for($i=0; $i<count($inputParameters); $i++)
 	  		 	 $params[$i] = &$inputParameters[$i];
 
-	  		 if( !$this->stmt = sqlsrv_prepare( $this->conn, $this->statement, $params ) )
-	  		 	 throw new ORMException( print_r( sqlsrv_errors(), true ) );
+	  		 if(!$this->stmt = sqlsrv_prepare($this->conn, $this->statement, $params))
+	  		 	 throw new ORMException(print_r(sqlsrv_errors(), true));
 
-	  		 if( !sqlsrv_execute( $this->stmt ) )
-	  		 	 throw new ORMException( print_r( sqlsrv_errors(), true ) );
+	  		 if(!sqlsrv_execute($this->stmt))
+	  		 	 throw new ORMException(print_r(sqlsrv_errors(), true));
 	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/BaseDialect#truncate($model)
 	   */
-	  public function truncate( $model ) {
+	  public function truncate($model) {
 
-	  	     $table = $this->getTableByModel( $model );
-	  		 $this->query( 'TRUNCATE table ' . $table->getName() . ';' );
+	  	     $table = $this->getTableByModel($model);
+	  		 $this->query('TRUNCATE table ' . $table->getName() . ';');
 	  }
 
 	  /**
@@ -371,7 +371,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function drop() {
 
-  	 	 	 $this->query( 'DROP DATABASE ' . $this->getDatabase()->getName() );
+  	 	 	 $this->query('DROP DATABASE ' . $this->getDatabase()->getName());
 	  }
 
 	  	/**
@@ -381,67 +381,67 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	     * @return PDOStatement
 	     * @throws ORMException
 	     */
-	    public function persist( $model ) {
+	    public function persist($model) {
 
 	    	   $this->model = $model;
 
 	   		   $values = array();
-			   $table = $this->getTableByModel( $model );
+			   $table = $this->getTableByModel($model);
 
-			   Log::debug( 'MSSQLDialect::persist Performing persist on model \'' . $table->getModel() . '\'.' );
+			   Log::debug('MSSQLDialect::persist Performing persist on model \'' . $table->getModel() . '\'.');
 
-	   		   $this->validate( $table, true );
+	   		   $this->validate($table, true);
 
-			   $sql = 'INSERT INTO ' . $table->getName() . '( ';
+			   $sql = 'INSERT INTO ' . $table->getName() . '(';
 
 			   $cols = $table->getColumns();
 
 			   $columns = array();
-			   foreach( $cols as $column ) {
+			   foreach($cols as $column) {
 
-			   		if( $column->getType() == 'timestamp' ) continue;
-			   		if( $column->isAutoIncrement() ) continue;
-			   		if( $column->isLazy() ) continue;
+			   		if($column->getType() == 'timestamp') continue;
+			   		if($column->isAutoIncrement()) continue;
+			   		if($column->isLazy()) continue;
 
-			   		array_push( $columns, $column );
+			   		array_push($columns, $column);
 			   }
 
-			   for( $i=0; $i<count( $columns ); $i++ ) {
+			   for($i=0; $i<count($columns); $i++) {
 
 			   		$sql .= $columns[$i]->getName();
 
-			   		if( ($i + 1) < count( $columns ) )
+			   		if(($i + 1) < count($columns))
 			   			$sql .= ', ';
 			   }
-			   $sql .= ' ) VALUES ( ';
-			   for( $i=0; $i<count( $columns ); $i++ ) {
+			   $sql .= ') VALUES (';
+			   for($i=0; $i<count($columns); $i++) {
 
 			   		$sql .= '?';
 
-			   	    $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
-			   	    if( $columns[$i]->isForeignKey() ) {
+			   	    $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
+			   	    if($columns[$i]->isForeignKey()) {
 
-			   	    	if( is_object( $model->$accessor() ) ) {
+			   	    	if(is_object($model->$accessor())) {
 
-			   	    		$refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+			   	    		$refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 			   	    		// Get foreign key value from the referenced field/instance accessor
-			   	    		if( $model->$accessor()->$refAccessor() != null ) {
+			   	    		if($model->$accessor()->$refAccessor() != null) {
 
 //			   	    			try {
 //			   	    				  // Try to persist the referenced entity first
-//					   	    		  $this->persist( $model->$accessor() );
+//					   	    		  $this->persist($model->$accessor());
 //
 //					   	    		  if($transformer = $columns[$i]->getTransformer())
 //					   	    		     array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
 //					   	    		  else
 					   	    		      array_push($values, $model->$accessor()->$refAccessor());
 //			   	    			}
-//			   	    			catch( Exception $e ) {
+//			   	    			catch(Exception $e) {
 //
 //			   	    				   // The referenced entity doesnt exist yet, persist it
-//			   	    				   if( preg_match( '/duplicate/i', $e->getMessage() ) ) {
+//			   	    				   if(preg_match('/duplicate/i', $e->getMessage())) {
 //
-//			   	    				   	   $this->merge( $model->$accessor() );
+//			   	    				   	   $this->merge($model->$accessor());
 //
 //			   	    				   	   if($transformer = $columns[$i]->getTransformer())
 //			   	    				   	      array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
@@ -453,19 +453,19 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 			   	    	}
 			   	    	else {
 
-			   	    		array_push( $values, null );
+			   	    		array_push($values, null);
 			   	    	}
 			   	    }
 			   	    else // No foreign key
-			   	    	array_push( $values, (($model->$accessor() == '') ? NULL : $model->$accessor()) );
+			   	    	array_push($values, (($model->$accessor() == '') ? NULL : $model->$accessor()));
 
-			   		if( ($i + 1) < count( $columns ) )
+			   		if(($i + 1) < count($columns))
 				   		$sql .= ', ';
 			   }
-			   $sql .= ' );';
+			   $sql .= ');';
 
-	   		   $this->prepare( $sql );
-	  		   return $this->execute( $values );
+	   		   $this->prepare($sql);
+	  		   return $this->execute($values);
 	    }
 
 	  /**
@@ -475,21 +475,21 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   * @throws ORMException If any primary keys contain null values or any
 	   * 		   errors are encountered executing queries
 	   */
-	  public function find( $model ) {
+	  public function find($model) {
 
-	    	 $table = $this->getTableByModel( $model );
+	    	 $table = $this->getTableByModel($model);
 			 $newModel = $table->getModelInstance();
 			 $values = array();
 
-			 Log::debug( 'MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.' );
+			 Log::debug('MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.');
 
 	  		 try {
 	  		  	    $pkeyColumns = $table->getPrimaryKeyColumns();
-	  		   		if( $this->isEmpty( $model ) ) {
+	  		   		if($this->isEmpty($model)) {
 
 	    	   	        $sql = 'SELECT';
 
-	    	   	        if( $this->isDistinct() != null )
+	    	   	        if($this->isDistinct() != null)
 	    	   	        	$sql .= ' DISTINCT ' . $this->isDistinct();
 	    	   	        else
 	    	   	        		$sql .= ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() . ' *' : '');
@@ -509,18 +509,18 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	    	   		 		$where = '';
 
 	    	   		 		$columns = $table->getColumns();
-							for( $i=0; $i<count( $columns ); $i++ ) {
+							for($i=0; $i<count($columns); $i++) {
 
-								 if( $columns[$i]->isLazy() ) continue;
+								 if($columns[$i]->isLazy()) continue;
 
-							 	 $accessor = $this->toAccessor( $columns[$i]->getModelPropertyName() );
-						     	 if( $model->$accessor() == null ) continue;
+							 	 $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
+						     	 if($model->$accessor() == null) continue;
 
 						     	 $where .= (count($values) ? ' AND ' : ' ') . $columns[$i]->getName() . '=?';
 
-								 if( is_object( $model->$accessor() ) ) {
+								 if(is_object($model->$accessor())) {
 
-						     	 	 $refAccessor = $this->toAccessor( $columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
+						     	 	 $refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 
 						     	 	 if($transformer = $columns[$i]->getTransformer())
 						     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
@@ -530,88 +530,88 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 						     	 else {
 
 						     	     if($transformer = $columns[$i]->getTransformer())
-						     	        array_push( $values, $transformer::transform($model->$accessor()) );
+						     	        array_push($values, $transformer::transform($model->$accessor()));
 						     	     else
-				     	 	     	    array_push( $values, $model->$accessor() );
+				     	 	     	    array_push($values, $model->$accessor());
 						     	 }
 						    }
 						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 
 					 }
 
-					 $this->setDistinct( null );
-	   	         	 $this->setRestrictions( array() );
-	   	         	 $this->setRestrictionsLogicOperator( 'AND' );
-	   	         	 $this->setOrderBy( null, 'ASC' );
-	   	         	 $this->setGroupBy( null );
+					 $this->setDistinct(null);
+	   	         	 $this->setRestrictions(array());
+	   	         	 $this->setRestrictionsLogicOperator('AND');
+	   	         	 $this->setOrderBy(null, 'ASC');
+	   	         	 $this->setGroupBy(null);
 
-					 $this->prepare( $sql );
-					 $this->execute( $values );
+					 $this->prepare($sql);
+					 $this->execute($values);
 
-					 if( !sqlsrv_has_rows( $this->stmt ) ) {
+					 if(!sqlsrv_has_rows($this->stmt)) {
 
-					 	Log::debug( 'MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.' );
+					 	Log::debug('MSSQLDialect::find Empty result set for model \'' . $table->getModel() . '\'.');
 					 	return array();
 					 }
 
 				 	 $index = 0;
 				 	 $models = array();
-					 while( $stdClass = sqlsrv_fetch_object( $this->stmt ) ) {
+					 while($stdClass = sqlsrv_fetch_object($this->stmt)) {
 
 					 		  $m = $table->getModelInstance();
-					 	   	  foreach( get_object_vars( $stdClass ) as $name => $value ) {
+					 	   	  foreach(get_object_vars($stdClass) as $name => $value) {
 
-					 	   	  		   $modelProperty = $this->getPropertyNameForColumn( $table, $name );
+					 	   	  		   $modelProperty = $this->getPropertyNameForColumn($table, $name);
 
-					 	   	  		   if( is_object( $value ) )
-					 	   	  		   	   $value = $this->cast( $value );
+					 	   	  		   if(is_object($value))
+					 	   	  		   	   $value = $this->cast($value);
 
 							 	   	   // Create foreign model instances from foreign values
-						 	 		   foreach( $table->getColumns() as $column ) {
+						 	 		   foreach($table->getColumns() as $column) {
 
-						 	 		   			if( $column->getName() != $name ) continue;
-						 	 		   		    if( $column->isLazy() ) continue;
+						 	 		   			if($column->getName() != $name) continue;
+						 	 		   		    if($column->isLazy()) continue;
 
 						 	 		   		    if($renderer = $column->getRenderer())
                         				   	       $value = $renderer::render($value);
 
                         				   	    if(!$value) continue;
 
-						 	 		  		    if( $column->isForeignKey() && $column->getName() == $name ) {
+						 	 		  		    if($column->isForeignKey() && $column->getName() == $name) {
 
 						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
 						 	 		  		   	    $foreignInstance = new $foreignModel();
 
-						 	 		  		   	    $foreignMutator = $this->toMutator( $column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName() );
-						 	 		  		   	    $foreignInstance->$foreignMutator( $value );
+						 	 		  		   	    $foreignMutator = $this->toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+						 	 		  		   	    $foreignInstance->$foreignMutator($value);
 
-						 	 		  		   	    $persisted = $this->find( $foreignInstance );
+						 	 		  		   	    $persisted = $this->find($foreignInstance);
 
 						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
-							 	 		  		   	$foreignModelPieces = explode( '\\', $foreignModel );
-							 	 		  		   	$foreignClassName = array_pop( $foreignModelPieces );
+							 	 		  		   	$foreignModelPieces = explode('\\', $foreignModel);
+							 	 		  		   	$foreignClassName = array_pop($foreignModelPieces);
 
-						 	 		  		   	    $instanceMutator = $this->toMutator( $modelProperty );
-						 	 		  		   	    $m->$instanceMutator( $persisted[0] );
+						 	 		  		   	    $instanceMutator = $this->toMutator($modelProperty);
+						 	 		  		   	    $m->$instanceMutator($persisted[0]);
 						 	 		  		    }
 						 	 		  		    else {
 
-						 	 		  		   		$mutator = $this->toMutator( $modelProperty );
-					 	   	   		  				$m->$mutator( $value );
+						 	 		  		   		$mutator = $this->toMutator($modelProperty);
+					 	   	   		  				$m->$mutator($value);
 						 	 		  		    }
 						 	 		   }
 					 	   	  }
 
-					 	   	  array_push( $models, $m );
+					 	   	  array_push($models, $m);
 					 	   	  $index++;
-					 	   	  if( $index == $this->getMaxResults() )  break;
+					 	   	  if($index == $this->getMaxResults())  break;
 				     }
 
 				     return $models;
 	  		 }
-	  		 catch( Exception $e ) {
+	  		 catch(Exception $e) {
 
-	  		 		throw new ORMException( $e->getMessage(), $e->getCode() );
+	  		 		throw new ORMException($e->getMessage(), $e->getCode());
 	  		 }
 	  }
 
@@ -621,8 +621,8 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function close() {
 
-	  		 if( $this->conn )
-	  		 	sqlsrv_close( $this->conn );
+	  		 if($this->conn)
+	  		 	sqlsrv_close($this->conn);
 	  }
 
 	  /**
@@ -631,22 +631,22 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   */
 	  public function reverseEngineer() {
 
-	  		 $lengthables = array( 'binary', 'char', 'decimal', 'nchar', 'numeric', 'nvarchar', 'varbinary', 'varchar' );
+	  		 $lengthables = array('binary', 'char', 'decimal', 'nchar', 'numeric', 'nvarchar', 'varbinary', 'varchar');
 
 	  		 $Database = new Database();
-	  		 $Database->setName( $this->database->getName() );
-	  		 $Database->setType( $this->database->getType() );
-	  		 $Database->setHostname( $this->database->getHostname() );
-	  		 $Database->setUsername( $this->database->getUsername() );
-	  		 $Database->setPassword( $this->database->getPassword() );
+	  		 $Database->setName($this->database->getName());
+	  		 $Database->setType($this->database->getType());
+	  		 $Database->setHostname($this->database->getHostname());
+	  		 $Database->setUsername($this->database->getUsername());
+	  		 $Database->setPassword($this->database->getPassword());
 
-	  		 $stmt = $this->prepare( 'select * from information_schema.tables;' );
+	  		 $stmt = $this->prepare('select * from information_schema.tables;');
 	  		 $this->execute();
 			 $tables = array();
-			 while( $stdClass = sqlsrv_fetch_object( $this->stmt ) )
-			 	array_push( $tables, $stdClass );
+			 while($stdClass = sqlsrv_fetch_object($this->stmt))
+			 	array_push($tables, $stdClass);
 
-			 $stmt2 = $this->query( 'SELECT
+			 $stmt2 = $this->query('SELECT
 							    FK_Table  = FK.TABLE_NAME,
 							    FK_Column = CU.COLUMN_NAME,
 							    PK_Table  = PK.TABLE_NAME,
@@ -673,55 +673,55 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 							            INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2
 							            ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
 							            WHERE i1.CONSTRAINT_TYPE = \'PRIMARY KEY\'
-							    ) PT
-							    ON PT.TABLE_NAME = PK.TABLE_NAME' );
+							   ) PT
+							    ON PT.TABLE_NAME = PK.TABLE_NAME');
 
 			 $foreignKeys = array();
-			 while( $stdClass = sqlsrv_fetch_object( $stmt2 ) )
-			 	array_push( $foreignKeys, $stdClass );
+			 while($stdClass = sqlsrv_fetch_object($stmt2))
+			 	array_push($foreignKeys, $stdClass);
 
-			 foreach( $tables as $table ) {
+			 foreach($tables as $table) {
 
 			 		// ignore system tables
-				 	if( substr( $table->TABLE_NAME, 0, 3 ) == 'sys' || $table->TABLE_NAME == 'dtproperties' )
+				 	if(substr($table->TABLE_NAME, 0, 3) == 'sys' || $table->TABLE_NAME == 'dtproperties')
 				 	 	continue;
 
-			 		$stmt3 = $this->query( 'SELECT [name]
+			 		$stmt3 = $this->query('SELECT [name]
 									 FROM syscolumns
 									 WHERE [id] IN (SELECT [id]
 									                  FROM sysobjects
-									                 WHERE [name] = \'' . $table->TABLE_NAME . '\' )
+									                 WHERE [name] = \'' . $table->TABLE_NAME . '\')
 									   AND colid IN (SELECT SIK.colid
 									                   FROM sysindexkeys SIK
 									                   JOIN sysobjects SO ON SIK.[id] = SO.[id]
 									                  WHERE SIK.indid = 1
-									                    AND SO.[name] = \'' . $table->TABLE_NAME . '\')' );
+									                    AND SO.[name] = \'' . $table->TABLE_NAME . '\')');
 
 
 					$primaryKeys = array();
 
-					if( $stmt3 ) {
+					if($stmt3) {
 
-						while( $stdClass = sqlsrv_fetch_object( $stmt3 ) )
-							array_push( $primaryKeys, $stdClass );
+						while($stdClass = sqlsrv_fetch_object($stmt3))
+							array_push($primaryKeys, $stdClass);
 					}
 
 			 		$Table = new Table();
-			 		$Table->setName( $table->TABLE_NAME );
-			 		$Table->setModel( ucfirst( $table->TABLE_NAME ) );
+			 		$Table->setName($table->TABLE_NAME);
+			 		$Table->setModel(ucfirst($table->TABLE_NAME));
 
-			 		$this->prepare( 'exec sp_columns ' . $table->TABLE_NAME );
+			 		$this->prepare('exec sp_columns ' . $table->TABLE_NAME);
 			  		$this->execute();
 					$columns = array();
-					while( $stdClass = sqlsrv_fetch_object( $this->stmt ) )
-						array_push( $columns, $stdClass );
+					while($stdClass = sqlsrv_fetch_object($this->stmt))
+						array_push($columns, $stdClass);
 
-					foreach( $columns as $column ) {
+					foreach($columns as $column) {
 
-							$type = preg_match_all( '/^(.*)\\s+(identity).*$/i', $column->TYPE_NAME, $matches );
+							$type = preg_match_all('/^(.*)\\s+(identity).*$/i', $column->TYPE_NAME, $matches);
 							$identity = null;
 
-							if( count( $matches ) == 3 && !empty( $matches[1] ) ) {
+							if(count($matches) == 3 && !empty($matches[1])) {
 
 								$type = $matches[1][0];
 	      	      		   		$identity = $matches[2][0];
@@ -731,46 +731,46 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 								$type = $column->TYPE_NAME;
 							}
 
-							$Column = new Column( null, $table->TABLE_NAME );
-							$Column->setName( $column->COLUMN_NAME );
-							$Column->setType( $type );
+							$Column = new Column(null, $table->TABLE_NAME);
+							$Column->setName($column->COLUMN_NAME);
+							$Column->setType($type);
 
-							if( in_array( $column->TYPE_NAME, $lengthables ) )
-								$Column->setLength( ($column->LENGTH == 2147483647) ? 8000 : $column->LENGTH );
+							if(in_array($column->TYPE_NAME, $lengthables))
+								$Column->setLength(($column->LENGTH == 2147483647) ? 8000 : $column->LENGTH);
 
-							$Column->setRequired( ($column->IS_NULLABLE == 'YES') ? true : false );
+							$Column->setRequired(($column->IS_NULLABLE == 'YES') ? true : false);
 
-							if( $identity )
-								$Column->setAutoIncrement( true );
+							if($identity)
+								$Column->setAutoIncrement(true);
 
-							foreach( $primaryKeys as $pkey ) {
+							foreach($primaryKeys as $pkey) {
 
-								if( $column->COLUMN_NAME == $pkey->name )
-									$Column->setPrimaryKey( true );
+								if($column->COLUMN_NAME == $pkey->name)
+									$Column->setPrimaryKey(true);
 							}
 
-							foreach( $foreignKeys as $fkey ) {
+							foreach($foreignKeys as $fkey) {
 
-								if( $fkey->FK_Table == $table->TABLE_NAME &&
-									$fkey->FK_Column == $column->COLUMN_NAME ) {
+								if($fkey->FK_Table == $table->TABLE_NAME &&
+									$fkey->FK_Column == $column->COLUMN_NAME) {
 
-										$ForeignKey = new ForeignKey( null, $fkey->FK_Table, $fkey->FK_Column );
-										$ForeignKey->setName( $fkey->Constraint_Name );
-										$ForeignKey->setType( 'one-to-many' );
-										$ForeignKey->setReferencedTable( $fkey->PK_Table );
-										$ForeignKey->setReferencedColumn( $fkey->PK_Column );
-										$ForeignKey->setReferencedController( ucfirst( $fkey->FK_Table ) . 'Controller' );
-										$ForeignKey->setOnDelete( ($Column->isRequired()) ? 'CASCADE' : 'SET_NULL' );
-										$ForeignKey->setOnUpdate( 'CASCADE' );
+										$ForeignKey = new ForeignKey(null, $fkey->FK_Table, $fkey->FK_Column);
+										$ForeignKey->setName($fkey->Constraint_Name);
+										$ForeignKey->setType('one-to-many');
+										$ForeignKey->setReferencedTable($fkey->PK_Table);
+										$ForeignKey->setReferencedColumn($fkey->PK_Column);
+										$ForeignKey->setReferencedController(ucfirst($fkey->FK_Table) . 'Controller');
+										$ForeignKey->setOnDelete(($Column->isRequired()) ? 'CASCADE' : 'SET_NULL');
+										$ForeignKey->setOnUpdate('CASCADE');
 
-										$Column->setForeignKey( $ForeignKey );
+										$Column->setForeignKey($ForeignKey);
 									}
 							}
 
-							$Table->addColumn( $Column );
+							$Table->addColumn($Column);
 					}
 
-					$Database->addTable( $Table );
+					$Database->addTable($Table);
 			 }
 
 			 // sp_stored_procedures
@@ -784,15 +784,15 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   * @param Object $model The domain object to get the count for.
 	   * @return Integer The total number of records in the table.
 	   */
-	  public function count( $model ) {
+	  public function count($model) {
 
-	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel( $model )->getName();
+	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel($model)->getName();
 			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
 			 $sql .= ';';
 
-	     	 $this->prepare( $sql );
+	     	 $this->prepare($sql);
 	     	 $this->execute();
-  			 $result = sqlsrv_fetch_object( $this->stmt );
+  			 $result = sqlsrv_fetch_object($this->stmt);
 
   			 return ($result == null) ? 0 : $result->count;
 	  }
@@ -803,10 +803,10 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   * @param Object $value The SQL SERVER object to extract the PHP value from.
 	   * @return mixed The extracted PHP value.
 	   */
-	  private function cast( $value ) {
+	  private function cast($value) {
 
-	  		  if( $value instanceof DateTime )
-	  		  	  if( isset( $value->date ) )
+	  		  if($value instanceof DateTime)
+	  		  	  if(isset($value->date))
 	  		  	  	  return $value->date;
 	  }
 }

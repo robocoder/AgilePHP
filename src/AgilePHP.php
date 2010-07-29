@@ -288,7 +288,7 @@ final class AgilePHP {
        * @throws FrameworkException If an error occurred loading the specified classpath
        * @static
        */
-      public static function import( $classpath ) {
+      public static function import($classpath) {
 
              Log::debug('AgilePHP::import ' . $classpath);
 
@@ -330,7 +330,7 @@ final class AgilePHP {
        * @return void
        * @static
        */
-      public static function setDebugMode( $boolean ) {
+      public static function setDebugMode($boolean) {
 
              self::$debugMode = ($boolean === true) ? true : false;
              if(self::$debugMode) self::setDisplayPhpErrors(true);
@@ -354,7 +354,7 @@ final class AgilePHP {
        * @return void
        * @static
        * <code>
-       * AgilePHP::setDefaultTimezone( 'America/New_York' );
+       * AgilePHP::setDefaultTimezone('America/New_York');
        * </code>
        */
       public static function setDefaultTimezone($timezone) {
@@ -489,7 +489,7 @@ final class AgilePHP {
       public static function stopClock() {
 
              $mtime = microtime();
-             $mtime = explode( ' ', $mtime );
+             $mtime = explode(' ', $mtime);
              $mtime = $mtime[1] + $mtime[0];
              $endtime = $mtime;
              $difference = ($endtime - self::$startTime);
@@ -628,7 +628,7 @@ final class AgilePHP {
 
              // Search web application (recursively - as last resort effort)
 		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
-			 foreach( new RecursiveIteratorIterator($it) as $file) {
+			 foreach(new RecursiveIteratorIterator($it) as $file) {
 
 			   	      if(substr($file, -1  != '.' && substr($file, -2) != '..' &&
 			   	         substr($file, -4) != 'view')) {

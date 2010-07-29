@@ -80,9 +80,9 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     		// Defaults sorting by the first primary key column
 	     		//
-	     		//$table = ORM::getTableByModel( $this->getModel() );
+	     		//$table = ORM::getTableByModel($this->getModel());
 	  	        //$pkeyColumns = $table->getPrimaryKeyColumns();
-	  	        //if( $pkeyColumns ) $this->setOrderBy( $pkeyColumns[0]->getModelPropertyName(), 'ASC' );
+	  	        //if($pkeyColumns) $this->setOrderBy($pkeyColumns[0]->getModelPropertyName(), 'ASC');
 
 	  		    $this->setPage($page);
 	  		    $content = $this->getXsltRenderer()->transform($this->getModelListXSL(), $this->getResultListAsPagedXML());
@@ -101,7 +101,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     public function add($page, $view = 'admin') {
 
 	     		$this->setPage($page);
-  	     		$this->getRenderer()->set('content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML()));
+  	     		$this->getRenderer()->set('content', $this->getXsltRenderer()->transform($this->getModelFormXSL(), $this->getModelAsFormXML()));
   	     	    $this->getRenderer()->render($view);
 	     }
 
@@ -117,7 +117,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     		$this->setPrimaryKeys($ids);
             	$this->setPage($page);
-            	$this->getRenderer()->set('content', $this->getXsltRenderer()->transform( $this->getModelFormXSL(), $this->getModelAsFormXML()));
+            	$this->getRenderer()->set('content', $this->getXsltRenderer()->transform($this->getModelFormXSL(), $this->getModelAsFormXML()));
             	$this->getRenderer()->render($view);
 	     }
 
@@ -132,7 +132,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     		$this->setPrimaryKeys($ids);
 
-  	     		$this->getRenderer()->set('content', $this->getXsltRenderer()->transform( $this->getModelAsReadOnlyXSL(), $this->getModelAsFormXML()));
+  	     		$this->getRenderer()->set('content', $this->getXsltRenderer()->transform($this->getModelAsReadOnlyXSL(), $this->getModelAsFormXML()));
   	     	    $this->getRenderer()->render($view);
 	     }
 
@@ -327,7 +327,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 			  		     		 exit;
 			  		     	  }
 
-			  		     	  $password = $request->getSanitized( 'password1' );
+			  		     	  $password = $request->getSanitized('password1');
 			  		     	  if($request->getSanitized('oldPassword') != $password)
 							    $this->getModel()->setPassword($password);
 

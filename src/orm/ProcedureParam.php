@@ -6,7 +6,7 @@
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *(at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -32,13 +32,13 @@ class ProcedureParam {
 	  private $property;
 	  private $mode;
 
-	  public function __construct( SimpleXMLElement $parameter = null ) {
+	  public function __construct( SimpleXMLElement $parameter = null) {
 
-	  		 if( $parameter ) {
+	  		 if( $parameter) {
 
-	  		 	 $this->name = (string)$parameter->attributes()->name;
-		  		 $this->property = (string)$parameter->attributes()->property;
-		  		 $this->mode = (string)$parameter->attributes()->mode;
+	  		 	 $this->name =(string)$parameter->attributes()->name;
+		  		 $this->property =(string)$parameter->attributes()->property;
+		  		 $this->mode =(string)$parameter->attributes()->mode;
 	  		 }
 	  }
 
@@ -48,7 +48,7 @@ class ProcedureParam {
 	   * @param string $name The parameter name
 	   * @return void
 	   */
-	  public function setName( $name ) {
+	  public function setName( $name) {
 
 	  		 $this->name = $name;
 	  }
@@ -69,7 +69,7 @@ class ProcedureParam {
 	   * @param string $property The name of the property which the parameter maps
 	   * @return void
 	   */
-	  public function setProperty( $property ) {
+	  public function setProperty( $property) {
 
 	  		 $this->property = $property;
 	  }
@@ -87,9 +87,9 @@ class ProcedureParam {
 	  /**
 	   * Sets the parameter type
 	   * 
-	   * @param string $mode The parameter type (IN|OUT|INOUT)
+	   * @param string $mode The parameter type(IN|OUT|INOUT)
 	   */
-	  public function setMode( $mode ) {
+	  public function setMode( $mode) {
 
 	  		 $this->mode = $mode;
 	  }
@@ -97,7 +97,7 @@ class ProcedureParam {
 	  /**
 	   * Gets the parameter type
 	   * 
-	   * @return string The parameter type (IN|OUT|INOUT)
+	   * @return string The parameter type(IN|OUT|INOUT)
 	   */
 	  public function getMode() {
 
@@ -113,6 +113,6 @@ class ProcedureParam {
 	   */
 	  public function getModelPropertyName() {
 
-	  		 return ($this->property) ? $this->property : $this->name;
+	  		 return($this->property) ? $this->property : $this->name;
 	  }
 }

@@ -52,7 +52,7 @@ class RequestScope {
 	  	      	  if(!isset($this->store['AGILEPHP_REQUEST_TOKEN']) || 
 	  	      	  			$this->store['AGILEPHP_REQUEST_TOKEN'] != $_COOKIE['AGILEPHP_REQUEST_TOKEN']) {
 
-	  	      	  	  $rt = (!isset($this->store['AGILEPHP_REQUEST_TOKEN'] ) ) ? null : $this->store['AGILEPHP_REQUEST_TOKEN'];
+	  	      	  	  $rt = (!isset($this->store['AGILEPHP_REQUEST_TOKEN'])) ? null : $this->store['AGILEPHP_REQUEST_TOKEN'];
 
 	  	      	  	  Log::debug('RequestScope::__construct Found invalid request token \'' . $rt . '\', expected \'' . $_COOKIE['AGILEPHP_REQUEST_TOKEN'] . '\'.');
 	  	      	  	  throw new FrameworkException('Invalid request token \'' . $rt . '\'. Possible Cross-Site Forgery Request (CSFR) attempt.');
@@ -72,7 +72,7 @@ class RequestScope {
 	   */
 	  public static function getInstance() {
 
-	  	     if( self::$instance == null )
+	  	     if(self::$instance == null)
 	  	         self::$instance = new self;
 
 	  	     return self::$instance;
@@ -85,7 +85,7 @@ class RequestScope {
 	   * @param String $value The variable value
 	   * @return void
 	   */
-	  public function set( $key, $value ) {
+	  public function set($key, $value) {
 
 	  		 $this->store[$key] = $value;
 	  }
@@ -96,7 +96,7 @@ class RequestScope {
 	   * @param $key The key/index of the variable
 	   * @return The variable value
 	   */
-	  public function get( $key ) {
+	  public function get($key) {
 
 	  	     if(isset($this->store[$key]) && !empty($this->store[$key]))
 	  	     	 return (is_array($this->store[$key])) ? $this->store[$key] : urldecode($this->store[$key]);

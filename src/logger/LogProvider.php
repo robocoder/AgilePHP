@@ -29,9 +29,9 @@
 interface LogProvider {
 
 	public function __construct();
-	public function info( $message );
-	public function warn( $message );
-	public function error( $message );
-	public function debug( $message );
+	public function info($message);
+	public function warn($message);
+	public function error($message);
+	public function debug($message);
 }
 ?>

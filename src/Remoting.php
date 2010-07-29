@@ -132,7 +132,7 @@ abstract class Remoting extends BaseController {
 	
 		  		 		  // Create javascript object w/ matching constructor parameters
 		  		 		  $constructor = $clazz->getConstructor();
-		  		 		  if( $constructor ) {
+		  		 		  if($constructor) {
 	
 		  		 			  $js = 'function ' . $this->class . '(';
 		  		 			  $params = $constructor->getParameters();
@@ -152,7 +152,7 @@ abstract class Remoting extends BaseController {
 
 		  		 		  // create methods
 		  		 		  $methods = $clazz->getMethods();
-		  		 		  for( $i=0; $i<count($methods); $i++ ) {
+		  		 		  for($i=0; $i<count($methods); $i++) {
 	
 	  		 				   if($methods[$i]->isAnnotated() && $methods[$i]->hasAnnotation('RemoteMethod')) {
 
@@ -166,11 +166,11 @@ abstract class Remoting extends BaseController {
 		  		 				   for($j=0; $j<count($params); $j++) {
 
 		  		 				 	 	$js .= $params[$j]->getName();
-		  		 				 	 	$js .= ( ($j+1) < count( $params ) ) ? ', ' : '';
+		  		 				 	 	$js .= (($j+1) < count($params)) ? ', ' : '';
 		  		 				   }
-		  		 				   $js .= " ) {\n\n";
+		  		 				   $js .= ") {\n\n";
 		  		 				   // function body
-		  		 				   $js .= "\treturn AgilePHP.Remoting.invoke( this, '" . $methods[$i]->getName() . "', arguments );\n";
+		  		 				   $js .= "\treturn AgilePHP.Remoting.invoke(this, '" . $methods[$i]->getName() . "', arguments);\n";
 		  		 				   // function closure
 	  		 				 	   $js .= "}\n\n";
 	  		 				   }
@@ -179,13 +179,13 @@ abstract class Remoting extends BaseController {
 		  		 		  // Remoting internals - store class name and callback hook
 		  		 		  $js .= $this->class . ".prototype._class = '" . $this->class . "';\n";
 	 				 	  $js .= $this->class . ".prototype._callback = null;\n";
-	  		 			  $js .= $this->class . ".prototype.setCallback = function( func ) {\n" .
+	  		 			  $js .= $this->class . ".prototype.setCallback = function(func) {\n" .
 	  		 			  				"\tthis._callback = func;\n}\n";
 		  		 		  echo $js;
 		  		 }
-		  		 catch( Exception $e ) {
+		  		 catch(Exception $e) {
 
-		  		 		throw new RemotingException( $e->getMessage(), $e->getCode() );
+		  		 		throw new RemotingException($e->getMessage(), $e->getCode());
 		  		 }
 		  }
 
@@ -201,34 +201,34 @@ abstract class Remoting extends BaseController {
 
 	    	     $request = Scope::getRequestScope();
 
-	    	     $stateful = $request->getSanitized( 'stateful' );
-	    	     if( $stateful ) $this->invokeStateful();
+	    	     $stateful = $request->getSanitized('stateful');
+	    	     if($stateful) $this->invokeStateful();
 
-	    	     $class = $request->getSanitized( 'class' );
-	    	     $method = $request->getSanitized( 'method' );
-	    	     $constructorArgs = $this->decode( $request->getSanitized( 'constructorArgs' ) );
-	    	     $args = $this->decode( $request->getSanitized( 'parameters' ) );
+	    	     $class = $request->getSanitized('class');
+	    	     $method = $request->getSanitized('method');
+	    	     $constructorArgs = $this->decode($request->getSanitized('constructorArgs'));
+	    	     $args = $this->decode($request->getSanitized('parameters'));
 
 	    	     // Security, Security, Security...
-	    	     $clazz = new AnnotatedClass( $class );
+	    	     $clazz = new AnnotatedClass($class);
 	    	     $methods = $clazz->getMethods();
-	    	     for( $i=0; $i<count( $methods ); $i++ )
-	  		 		 if( $methods[$i]->getName() == $method && !$methods[$i]->hasAnnotation( 'RemoteMethod' ) )
-	  		 		 	 throw new RemotingException( 'No hacking please...' );
+	    	     for($i=0; $i<count($methods); $i++)
+	  		 		 if($methods[$i]->getName() == $method && !$methods[$i]->hasAnnotation('RemoteMethod'))
+	  		 		 	 throw new RemotingException('No hacking please...');
 
-	  		     Log::debug( 'Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
-	  		 	   	 '\', constructorArgs \'' . print_r( $constructorArgs, true ) . '\', args \'' . print_r( $args, true ) . '\'.' );
+	  		     Log::debug('Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
+	  		 	   	 '\', constructorArgs \'' . print_r($constructorArgs, true) . '\', args \'' . print_r($args, true) . '\'.');
 
 	  		     try {
-		  	           $clazz = new ReflectionClass( $class );
-		  	           $instance = $constructorArgs ? $clazz->newInstanceArgs( (array)$constructorArgs ) : $clazz->newInstance();
-		  		       $m = $clazz->getMethod( $method );
+		  	           $clazz = new ReflectionClass($class);
+		  	           $instance = $constructorArgs ? $clazz->newInstanceArgs((array)$constructorArgs) : $clazz->newInstance();
+		  		       $m = $clazz->getMethod($method);
 
-		  		       $this->getRenderer()->render( $args ? $m->invokeArgs( $instance, (array)$args ) : $m->invoke( $instance ) );
+		  		       $this->getRenderer()->render($args ? $m->invokeArgs($instance, (array)$args) : $m->invoke($instance));
 	  		     }
-	  		     catch( Exception $e ) {
+	  		     catch(Exception $e) {
 
-	  		 		    throw new RemotingException( $e->getMessage(), $e->getCode() );
+	  		 		    throw new RemotingException($e->getMessage(), $e->getCode());
 	  		     }
 	      }
 
@@ -240,16 +240,16 @@ abstract class Remoting extends BaseController {
 		   * @param bool $debug True to enable client side AgilePHP debugging.
 		   * @return void
 		   */
-		  public function getBaseJS( $debug = false ) {
+		  public function getBaseJS($debug = false) {
 	
-		  		 $js = file_get_contents( AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'AgilePHP.js' );
+		  		 $js = file_get_contents(AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'AgilePHP.js');
 	
-		  		 if( $debug ) $js .= "\nAgilePHP.setDebug( true );";
+		  		 if($debug) $js .= "\nAgilePHP.setDebug(true);";
 	
-		  		 $js .= "\nAgilePHP.setRequestBase( '" . AgilePHP::getRequestBase() . "' );";
-		  		 $js .= "\nAgilePHP.Remoting.setController( '" . MVC::getController() . "' );";
+		  		 $js .= "\nAgilePHP.setRequestBase('" . AgilePHP::getRequestBase() . "');";
+		  		 $js .= "\nAgilePHP.Remoting.setController('" . MVC::getController() . "');";
 	
-		  		 header( 'content-type: application/json' );
+		  		 header('content-type: application/json');
 		  		 print $js;
 		  }
 
@@ -260,14 +260,14 @@ abstract class Remoting extends BaseController {
 		   * @return stdClass The JSON decoded stdClass object
 		   * @throws RemotingException if the received data does not unmarshall into a PHP object
 		   */
-		  private function decode( $data ) {
+		  private function decode($data) {
 
-		  		  if( !$data ) return;
+		  		  if(!$data) return;
 
-		  		  Log::debug( 'Remoting::decode ' . $data );
+		  		  Log::debug('Remoting::decode ' . $data);
 
-		  		  $o = json_decode( htmlspecialchars_decode( stripslashes( urldecode( $data ) ) ) );
-		  		  if( !is_object( $o ) ) throw new RemotingException( 'Malformed data' );
+		  		  $o = json_decode(htmlspecialchars_decode(stripslashes(urldecode($data))));
+		  		  if(!is_object($o)) throw new RemotingException('Malformed data');
 
 		  		  return $o;
 		  }
@@ -279,15 +279,15 @@ abstract class Remoting extends BaseController {
 		   * @return void
 		   * throws RemotingException
 		   */
-		  public function captureErrors( $buffer ) {
+		  public function captureErrors($buffer) {
 	
 				 $matches = array();
 				 $errors = '';
 	
-				 if( preg_match('/(error<\/b>:)(.+)(<br)/', $buffer, $regs ) ) {
+				 if(preg_match('/(error<\/b>:)(.+)(<br)/', $buffer, $regs)) {
 	
 				 	 $err = preg_replace("/<.*?>/","",$regs[2]);
-			         $buffer = json_encode( array( '_class' => 'RemotingException', 'message' => $err, 'trace' => debug_backtrace() ) );
+			         $buffer = json_encode(array('_class' => 'RemotingException', 'message' => $err, 'trace' => debug_backtrace()));
 			     }
 			     return $buffer;
 		  }
@@ -302,12 +302,12 @@ abstract class Remoting extends BaseController {
 		   * @return false
 		   * @throws FrameworkException
 		   */
-	 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
+	 	  public static function ErrorHandler($errno, $errmsg, $errfile, $errline) {
 	
 	 	  		 $entry = PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg . 
 	 	  		 		  PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline;
 	
-	 	  		 throw new RemotingException( $errmsg, $errno, $errfile, $errline );
+	 	  		 throw new RemotingException($errmsg, $errno, $errfile, $errline);
 		  }
 	
 		  /**

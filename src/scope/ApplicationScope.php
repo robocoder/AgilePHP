@@ -45,15 +45,15 @@ class ApplicationScope {
 
 	  	 	  $file = self::getAppTempFile();
 
-	  	 	  if( file_exists( $file ) && !count( $this->store ) ) {
+	  	 	  if(file_exists($file) && !count($this->store)) {
 
 	  	 	  	  $data = null;
-	  	 	  	  $h = fopen( $file, 'r' );
-	  	 	  	  while( !feof( $h ) )
-	  	 	  	         $data .= fgets( $h, filesize( $file ) );
-	  	 	  	  fclose( $h );
+	  	 	  	  $h = fopen($file, 'r');
+	  	 	  	  while(!feof($h))
+	  	 	  	         $data .= fgets($h, filesize($file));
+	  	 	  	  fclose($h);
 
-	  	 	  	  $this->store = unserialize( $data );
+	  	 	  	  $this->store = unserialize($data);
 	  	 	  } 	   
 	  }
 
@@ -66,7 +66,7 @@ class ApplicationScope {
 	   */
 	  public static function getInstance() {
 
-	  	     if( self::$instance == null )
+	  	     if(self::$instance == null)
 	  	         self::$instance = new self;
 
 	  	     return self::$instance;
@@ -78,9 +78,9 @@ class ApplicationScope {
 	   * @param String $key The key to retrieve from the ApplicationScope store.
 	   * @return mixed The key value if its present, otherwise null is returned.
 	   */
-	  public function get( $key ) {
+	  public function get($key) {
 
-	  	     if( isset( $this->store[$key] ) && !empty( $this->store[$key] ) )
+	  	     if(isset($this->store[$key]) && !empty($this->store[$key]))
 	  	     	 return $this->store[$key];
 	  }
 
@@ -91,7 +91,7 @@ class ApplicationScope {
 	   * @param mixed $value The variable value
 	   * @return void
 	   */
-	  public function set( $key, $value ) {
+	  public function set($key, $value) {
 
 	  		 $this->store[$key] = $value;
 	  }
@@ -116,7 +116,7 @@ class ApplicationScope {
 
 	  		 $this->clear();
 	  		 if(file_exists(self::getAppTempFile()))
-	  		    unlink( self::getAppTempFile() );
+	  		    unlink(self::getAppTempFile());
 	  }
 
 	  /**
@@ -136,15 +136,15 @@ class ApplicationScope {
 	   */
 	  public function persist() {
 
-			 if( count( $this->store ) ) {
+			 if(count($this->store)) {
 
-		  	     $h = fopen( self::getAppTempFile(), 'w' );
-				 fwrite( $h, serialize( $this->store ) );
-				 fclose( $h );
+		  	     $h = fopen(self::getAppTempFile(), 'w');
+				 fwrite($h, serialize($this->store));
+				 fclose($h);
 			 }
 
-			 if( !count( $this->store ) && file_exists( self::getAppTempFile() ) )
-			 	 unlink( self::getAppTempFile() );
+			 if(!count($this->store) && file_exists(self::getAppTempFile()))
+			 	 unlink(self::getAppTempFile());
 	  }
 
 	  /**

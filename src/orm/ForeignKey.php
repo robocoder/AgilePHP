@@ -41,18 +41,18 @@ class ForeignKey {
 	  private $fkTable ;    // Passed in from 'Column'; retains the name of the foreign key table
 	  private $fkColumn;    // Passed in from 'Column'; retains the name of the foreign key column
 
-	  public function __construct( SimpleXMLElement $foreign = null, $tableName, $columnName ) {
+	  public function __construct(SimpleXMLElement $foreign = null, $tableName, $columnName) {
 
-	  		 if( $foreign ) {
+	  		 if($foreign) {
 
 		  	     $this->name = (string)$foreign->attributes()->name;
 		  		 $this->type = (string)$foreign->attributes()->type;
 		  		 $this->table = (string)$foreign->attributes()->table;
 		  		 $this->column = (string)$foreign->attributes()->column;
 		  		 $this->controller = (string)$foreign->attributes()->controller;
-		  		 $this->setOnUpdate( preg_replace( '/_/', ' ', (string)$foreign->attributes()->onUpdate ) );
-		  		 $this->setOnDelete( preg_replace( '/_/', ' ', (string)$foreign->attributes()->onDelete ) );
-		  		 $this->setSelect( (string)$foreign->attributes()->select );
+		  		 $this->setOnUpdate(preg_replace('/_/', ' ', (string)$foreign->attributes()->onUpdate));
+		  		 $this->setOnDelete(preg_replace('/_/', ' ', (string)$foreign->attributes()->onDelete));
+		  		 $this->setSelect((string)$foreign->attributes()->select);
 	  		 }
 
 	  		 $this->fkTable = $tableName;
@@ -66,7 +66,7 @@ class ForeignKey {
 	   * @param String $name The foreign key name
 	   * @return void
 	   */
-	  public function setName( $name ) {
+	  public function setName($name) {
 	  	
 	  		 $this->name = $name;
 	  }
@@ -87,7 +87,7 @@ class ForeignKey {
 	   * @param String $type The data type of the value being stored in the foreign key column
 	   * @return void
 	   */
-	  public function setType( $type ) {
+	  public function setType($type) {
 
 	  		 $this->type = $type;
 	  }
@@ -108,7 +108,7 @@ class ForeignKey {
 	   * @param String $tableName The name of the referenced (parent) table.
 	   * @return void
 	   */
-	  public function setReferencedTable( $tableName ) {
+	  public function setReferencedTable($tableName) {
 	  	
 	  		 $this->table = $tableName;
 	  }
@@ -129,7 +129,7 @@ class ForeignKey {
 	   * @param String $columnName The referenced column name
 	   * @return void
 	   */
-	  public function setReferencedColumn( $columnName ) {
+	  public function setReferencedColumn($columnName) {
 
 	  		 $this->column = $columnName;
 	  }
@@ -139,7 +139,7 @@ class ForeignKey {
 	   * 
 	   * @return String The name of the referenced (parent) column.
 	   */
-	  public function getReferencedColumn( ) {
+	  public function getReferencedColumn() {
 
 		  	 return $this->column;
 	  }
@@ -152,7 +152,7 @@ class ForeignKey {
 	   * 						   referenced domain model
 	   * @return void
 	   */
-	  public function setReferencedController( $controller ) {
+	  public function setReferencedController($controller) {
 
 	  		 $this->controller = $controller;
 	  }
@@ -176,7 +176,7 @@ class ForeignKey {
 	   * @param String $action The action to perform (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
 	   * @return void
 	   */
-	  public function setOnUpdate( $action ) {
+	  public function setOnUpdate($action) {
 
 	  		 $this->onUpdate = $action;
 	  }
@@ -199,7 +199,7 @@ class ForeignKey {
 	   * 			   		  (NO_ACTION|RESTRICT|CASCADE|SET_NULL|SET_DEFAULT)
 	   * @return void
 	   */
-	  public function setOnDelete( $action ) {
+	  public function setOnDelete($action) {
 
 	  		 $this->onDelete = $action; 
 	  }
@@ -221,7 +221,7 @@ class ForeignKey {
 	   * @param String $tableName The phsical name of the foreign key table.
 	   * @return void
 	   */
-	  public function setFkTable( $tableName ) {
+	  public function setFkTable($tableName) {
 
 	  		 $this->fkTable = $tableName;
 	  }
@@ -242,7 +242,7 @@ class ForeignKey {
 	   * @param String $columnName The physical column name
 	   * @return void
 	   */
-	  public function setFkColumn( $columnName ) {
+	  public function setFkColumn($columnName) {
 
 	  		 $this->fkColumn = $columnName;
 	  }
@@ -264,7 +264,7 @@ class ForeignKey {
 	   * @param String $columnName The foreign column name
 	   * @return void
 	   */
-	  public function setSelect( $columnName ) {
+	  public function setSelect($columnName) {
 
 	  		 $this->select = $columnName;
 	  }
@@ -287,7 +287,7 @@ class ForeignKey {
 	   */
 	  public function getReferencedTableInstance() {
 
-	  		 return ORM::getTableByName( $this->getReferencedTable() );
+	  		 return ORM::getTableByName($this->getReferencedTable());
 	  }
 
 	  /**
@@ -297,10 +297,10 @@ class ForeignKey {
 	   */
 	  public function getReferencedColumnInstance() {
 
-	  		 $table = ORM::getTableByName( $this->getReferencedTable() );
+	  		 $table = ORM::getTableByName($this->getReferencedTable());
 
-	  		 foreach( $table->getColumns() as $column )
-	  		 		  if( $column->getName() == $this->getReferencedColumn() )
+	  		 foreach($table->getColumns() as $column)
+	  		 		  if($column->getName() == $this->getReferencedColumn())
 	  		 		  	  return $column;
 
 	  		 return null;
@@ -313,10 +313,10 @@ class ForeignKey {
 	   */
 	  public function getColumnInstance() {
 
-	  		 $table = ORM::getTableByName( $this->getFkTable() );
+	  		 $table = ORM::getTableByName($this->getFkTable());
 
-	  		 foreach( $table->getColumns() as $column )
-	  		 		  if( $column->getName() == $this->getFkColumn() )
+	  		 foreach($table->getColumns() as $column)
+	  		 		  if($column->getName() == $this->getFkColumn())
 	  		 		  	  return $column;
 
 	  		 return null;
@@ -332,8 +332,8 @@ class ForeignKey {
 	   */
 	  public function getSelectedColumnInstance() {
 
-	  		 foreach( $this->getReferencedTableInstance()->getColumns() as $column )
-	  		 		  if( $column->getName() == $this->getSelect() )
+	  		 foreach($this->getReferencedTableInstance()->getColumns() as $column)
+	  		 		  if($column->getName() == $this->getSelect())
 	  		 		  	  return $column;
 
 	  		 return $this->getReferencedColumnInstance();

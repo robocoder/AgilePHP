@@ -29,7 +29,7 @@
  * <code>
  * class MyClass {
  * 
- * #@In( class = new MyClass2() )
+ * #@In(class = new MyClass2())
  * public $myClasss;
  * 
  * public function invokeMe() {
@@ -43,7 +43,7 @@
  * <code>
  * class MyClass {
  * 
- * #@In( class = MySingleton::getInstance() )
+ * #@In(class = MySingleton::getInstance())
  * public $mySingleton;
  * 
  * public function invokeMe() {
@@ -62,7 +62,7 @@ class In {
 	  public $class;
 
 	  #@AroundInvoke
-	  public function setValue( InvocationContext $ic ) {
+	  public function setValue(InvocationContext $ic) {
 
 	  		 return $ic->getInterceptor()->class;
 	  }

@@ -50,29 +50,29 @@ class Stateful {
 	   * @throws FrameworkException
 	   */
 	  #@AroundInvoke
-	  public function restore( InvocationContext $ic ) {
+	  public function restore(InvocationContext $ic) {
 
-	  		 $reflector = new ReflectionClass( $ic->getTarget() );
+	  		 $reflector = new ReflectionClass($ic->getTarget());
 	  		 $className = $reflector->getName();
 
 	  		 $session = Scope::getSessionScope();
-	  		 $instance = $session->get( 'STATEFUL_' . $className );
+	  		 $instance = $session->get('STATEFUL_' . $className);
 
-	  		 if( $instance ) {
+	  		 if($instance) {
 
-	  		 	 $ic->setTarget( $instance );
+	  		 	 $ic->setTarget($instance);
 	  		 	 return $ic->proceed();
 	  		 }
 	  }
 
 	  #@AfterInvoke
-	  public function persist( InvocationContext $ic ) {
+	  public function persist(InvocationContext $ic) {
 
-	  		 $reflector = new ReflectionClass( $ic->getTarget() );
+	  		 $reflector = new ReflectionClass($ic->getTarget());
 	  		 $className = $reflector->getName();
 
 	  		 $session = Scope::getSessionScope();
-	  		 $session->set( 'STATEFUL_' . $className, $ic->getTarget() );
+	  		 $session->set('STATEFUL_' . $className, $ic->getTarget());
 	  }
 }
 ?>

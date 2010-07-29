@@ -41,23 +41,23 @@ abstract class SOAPService extends BaseController {
 
 		 		$wsdlMethod = 'wsdl';
 
-		 		$class = new AnnotatedClass( $this );
+		 		$class = new AnnotatedClass($this);
 
 		 		// Provide default targetNamespace in case #@WebService annotation is missing
 		 		$targetNamespace = 'http://' . $_SERVER['HTTP_HOST'] . AgilePHP::getRequestBase() . '/' . MVC::getController();
-	  		    $annotations = Annotation::getClassAsArray( $class->getName() );
+	  		    $annotations = Annotation::getClassAsArray($class->getName());
 
 		  		// Initalize web service configuration from #@WebService annotation if present
-	  		 	if( count( $annotations ) ) {
+	  		 	if(count($annotations)) {
 
-		  		 	foreach( $annotations as $annotation ) {
+		  		 	foreach($annotations as $annotation) {
 
-		  		 	 	if( $annotation instanceof WebService ) {
+		  		 	 	if($annotation instanceof WebService) {
 
-		  		 	 		if( $annotation->serviceName )
+		  		 	 		if($annotation->serviceName)
 		  		 	 			$serviceName = $annotation->serviceName;
 
-		  		 	 		if( $annotation->targetNamespace )
+		  		 	 		if($annotation->targetNamespace)
 		  		 	 			$targetNamespace = $annotation->targetNamespace;
 	  		 	 		}
 		  		 	}
@@ -65,13 +65,13 @@ abstract class SOAPService extends BaseController {
 
 	  		 	// Get method annotated with WSDL interceptor
 	  		 	$methods = $class->getMethods();
-	  		 	foreach( $methods as $method ) {
+	  		 	foreach($methods as $method) {
 
-	  		 		foreach( $method->getAnnotations() as $annotes ) {
+	  		 		foreach($method->getAnnotations() as $annotes) {
 
-	  		 			foreach( $annotes as $annote ) {
+	  		 			foreach($annotes as $annote) {
 
-	  		 				if( $annote instanceof WSDL ) {
+	  		 				if($annote instanceof WSDL) {
 
 	  		 					$wsdlMethod = $method->getName();
 	  		 					break;
@@ -80,11 +80,11 @@ abstract class SOAPService extends BaseController {
 	  		 		}
 	  		 	}
 
-		 		if( AgilePHP::isInDebugMode() )
-					ini_set( 'soap.wsdl_cache_enabled', '0' );
+		 		if(AgilePHP::isInDebugMode())
+					ini_set('soap.wsdl_cache_enabled', '0');
 
-				$server = new SoapServer( $targetNamespace . '/' . $wsdlMethod );
-				$server->setClass( $class->getName() );
+				$server = new SoapServer($targetNamespace . '/' . $wsdlMethod);
+				$server->setClass($class->getName());
 				$server->handle();
 		 }
 }

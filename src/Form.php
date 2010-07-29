@@ -251,7 +251,7 @@ class Form {
 			  		  }
 
   		 	      	  // Primary key during merge is read only
-  		 	      	  else if( $column->isPrimaryKey() ) {
+  		 	      	  else if($column->isPrimaryKey()) {
 
   		 	      	  	  $html .= '<td>' . $displayName . '</td>';
   		 	      	      $html .= ($this->getMode() == 'merge') ?
@@ -295,7 +295,7 @@ class Form {
 					  else if($column->getType() == 'text') {
 
 						  $html .= '<td>' . $displayName . '</td>
-						  			<td><textarea rows="10" name="' . stripslashes( $name ) . '"></textarea></td>';
+						  			<td><textarea rows="10" name="' . stripslashes($name) . '"></textarea></td>';
 					  }
 
 					  // File upload
@@ -319,11 +319,11 @@ class Form {
 	  		 $html .= '<tr>
  						<td> </td>
 						<td>';
-	  		 $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>'
+	  		 $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>'
         							 : '<input type="submit" value="Update"/>
-									   <input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getRequestBase() .
-        							   '\', \'' . $pkeyValues . '\', \'' . $page . '\', \'delete\' )"/>
-        							   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';
+									   <input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete(\'' . AgilePHP::getRequestBase() .
+        							   '\', \'' . $pkeyValues . '\', \'' . $page . '\', \'delete\')"/>
+        							   <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>';
 
         	 $html .= '</td>
 							</tr>';
@@ -386,7 +386,7 @@ class Form {
           	 		    // Assign primary key values delimited by underscore _ character
           	 		    $primaryKeys = $foreignKey->getReferencedTableInstance()->getPrimaryKeyColumns();
 	          	 		$pkeys = '';
-	          	 		for($i=0; $i<count( $primaryKeys ); $i++) {
+	          	 		for($i=0; $i<count($primaryKeys); $i++) {
 
 	          	 		    $idAccessor = 'get' . ucfirst($primaryKeys[$i]->getModelPropertyName());
 
@@ -529,7 +529,7 @@ class Form {
 
 											  $xsl .= '<td>' . $displayName . '</td>
 											  		   <td><textarea rows="10" name="' . $name . '">';
-											  				if( !$xslValue ) $xsl .= '<xsl:comment/>';
+											  				if(!$xslValue) $xsl .= '<xsl:comment/>';
 											  				$xsl .= '<xsl:value-of select="/Form/' . $model . '/' . $name . '"/></textarea>
 							  		 				   </td>';
 										  }
@@ -560,12 +560,12 @@ class Form {
 	  		   $xsl .= '<tr>
 		 				  <td> </td>
 						  <td>';
-        	              $xsl .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>'
+        	              $xsl .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>'
         				        						 : '<input type="submit" value="Update"/>
-															<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete( \'' . AgilePHP::getRequestBase() .
+															<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete(\'' . AgilePHP::getRequestBase() .
         													   '\', \'' . $pkeyValues . '\', \'' . $page .
-        													   '\', \'{/Form/controller}\', \'delete\' )"/>
-        													   <input type="button" value="Cancel" onclick="javascript:history.go( -1 );"/>';
+        													   '\', \'{/Form/controller}\', \'delete\')"/>
+        													   <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>';
 			   $xsl .= '  </td>
 				        </tr>';
 

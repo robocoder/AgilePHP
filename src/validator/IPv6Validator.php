@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -20,32 +20,22 @@
  */
 
 /**
- * Validates password values to ensure they meet minimum password policy.
+ * Validates IPv4 addresses.
  *  
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class PasswordValidator extends Validator {
-
-	  protected $size;
+class IPv6Validator extends Validator {
 
 	  /**
-	   * Creates a new PasswordValidator
+	   * Validates the specified data by ensuring it is a valid IP address.
 	   * 
-	   * @param mixed $data The data to validate
-	   * @param int $size Optional length to require. Defaults to 7.
-	   * @return void
+	   * @return bool True if the specified data is a valid IP address, false otherwise.
 	   */
-	  public function __construct($data, $size = 7) {
-
-	  		 $this->data = $data;
-	  		 $this->size = $size;
-	  }
-
 	  public function validate() {
 
-	  		 return ($this->size && (strlen($this->data) < $this->size)) ? false : true;
+	  		 return filter_var($this->data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
 	  }
 }
 ?>

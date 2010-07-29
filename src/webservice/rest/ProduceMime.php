@@ -36,8 +36,8 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  * <code>
- * #@ProduceMime( type = 'application/xml' )
- * public function updateObject( $id, $data ) {
+ * #@ProduceMime(type = 'application/xml')
+ * public function updateObject($id, $data) {
  * 
  * 		  // code here to process the request
  * 

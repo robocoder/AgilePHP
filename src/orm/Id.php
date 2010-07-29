@@ -29,7 +29,7 @@
  * @package com.makeabyte.agilephp.orm
  * <code>
  * #@Id
- * public function setId( $id ) {
+ * public function setId( $id) {
  * 
  * 		  $this->id = $id;
  * }
@@ -45,29 +45,29 @@ class Id {
 	   * @return mixed InvocationContext if the context of the call has changed, null otherwise.
 	   */
 	  #@AroundInvoke
-	  public function populate( InvocationContext $ic ) {
+	  public function populate( InvocationContext $ic) {
 
 	  		 $callee = $ic->getCallee();
-	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file'] );
-	  		 $className = str_replace( '.php', '', array_pop( $pieces ) );
+	  		 $pieces = explode( DIRECTORY_SEPARATOR, $callee['file']);
+	  		 $className = str_replace( '.php', '', array_pop( $pieces));
 
  		 	 // Dont populate calls made from ORM
-	  		 if( $className == 'Id' || preg_match( '/dialect$/i', $className ) )
+	  		 if( $className == 'Id' || preg_match( '/dialect$/i', $className))
 	  		 	 return $ic->proceed();
 
 	  	     $class = $callee['class'];
 	  	     $mutator = $callee['function'];
 
 	  	     $params = $ic->getParameters();
-	  	     if( !$params[0] ) return;
+	  	     if( !$params[0]) return;
 
 	  	     $model = new $class;
-	  	     $model->$mutator( $params[0] );
+	  	     $model->$mutator( $params[0]);
 
-	 		 $activeRecord = ORM::find( $model );
+	 		 $activeRecord = ORM::find( $model);
 
-	 		 return (count( $activeRecord )) ?
-	 		 	 $this->copy( $activeRecord[0]->getInterceptedInstance(), $ic->getTarget() ) :
+	 		 return(count( $activeRecord)) ?
+	 		 	 $this->copy( $activeRecord[0]->getInterceptedInstance(), $ic->getTarget()) :
 	 		 	 $ic->proceed();
 	  }
 
@@ -78,22 +78,22 @@ class Id {
 	   * @param $b The second object
 	   * @return void
 	   */
-	  private function copy( $a, $b ) {
+	  private function copy( $a, $b) {
 
-	  		  $classA = new ReflectionClass( $a );
-		  	  $classB = new ReflectionClass( $b );
+	  		  $classA = new ReflectionClass( $a);
+		  	  $classB = new ReflectionClass( $b);
 		
 		  	  $propsA = $classA->getProperties();
 		  	  $propsB = $classB->getProperties();
 
-		  	  for( $i=0; $i<count( $propsA ); $i++ ) {
+		  	  for( $i=0; $i<count( $propsA); $i++) {
 
-		  		   $accessor = 'get' . ucfirst( $propsA[$i]->name );
-		  		   $mutator = 'set' . ucfirst( $propsB[$i]->name );
-	  		   	   $b->$mutator( $a->$accessor() );
+		  		   $accessor = 'get' . ucfirst( $propsA[$i]->name);
+		  		   $mutator = 'set' . ucfirst( $propsB[$i]->name);
+	  		   	   $b->$mutator( $a->$accessor());
 		  	  }
 
-  	 		  Log::debug( '#@Id::populate Created ActiveRecord state for model \'' . preg_replace( '/_Intercepted/', '' , $classA->getName() ) . '\'.' );
+  	 		  Log::debug( '#@Id::populate Created ActiveRecord state for model \'' . preg_replace( '/_Intercepted/', '' , $classA->getName()) . '\'.');
 	  }
 }
 ?>

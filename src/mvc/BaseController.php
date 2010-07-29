@@ -31,7 +31,7 @@
  */
 abstract class BaseController {
 
-	     private $renderer = null;
+	     protected $renderer = null;
 
 	     /**
 	      * Creates a new instance of default renderer
@@ -51,6 +51,16 @@ abstract class BaseController {
 	     protected function getRenderer() {
 
 	     		   return $this->renderer;
+	     }
+
+	     /**
+	      * Shorthand / alias for getRenderer()->set
+	      * 
+	      * @return void
+	      */
+	     public function set($key, $value) {
+
+	            $this->renderer->set($key, $value);
 	     }
 
 	     /**
@@ -89,7 +99,7 @@ abstract class BaseController {
 
 	  		    $js = file_get_contents(AgilePHP::getFrameworkRoot() . '/AgilePHP.js');
 
-	  		    if( $debug ) $js .= "\nAgilePHP.setDebug(true);";
+	  		    if($debug) $js .= "\nAgilePHP.setDebug(true);";
 
 	  		    $js .= "\nAgilePHP.setRequestBase('" . AgilePHP::getRequestBase() . "');";
 	  		    $js .= "\nAgilePHP.MVC.setController('" . MVC::getController() . "');";

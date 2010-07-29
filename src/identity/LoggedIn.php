@@ -30,13 +30,13 @@
  * class MyClass {
  *  
  * #@LoggedIn
- * public function requiresLoginToInvoke( $arg ) {
+ * public function requiresLoginToInvoke($arg) {
  * 
  * 		  // Do something here that requires the user to be logged in
  * }
  * 
- * #@LoggedIn( message = 'My custom exception message' )
- * public function requiresLoginToInvoke( $arg ) {
+ * #@LoggedIn(message = 'My custom exception message')
+ * public function requiresLoginToInvoke($arg) {
  * 
  * 		  // Do something here that requires the user to be logged in
  * }
@@ -55,12 +55,12 @@ class LoggedIn {
 	  public $message;
 
 	  #@AroundInvoke
-	  public function process( InvocationContext $ic ) {
+	  public function process(InvocationContext $ic) {
 
 	  		 $message = ($this->message) ? $this->message : 'You must be logged in to view the requested content!';
 
-	  		 if( !Identity::isLoggedIn() )
-	  		 	 throw new NotLoggedInException( $message );
+	  		 if(!Identity::isLoggedIn())
+	  		 	throw new NotLoggedInException($message);
 	  }
 }
 ?>

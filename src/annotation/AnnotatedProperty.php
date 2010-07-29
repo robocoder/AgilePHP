@@ -29,120 +29,120 @@
  */
 class AnnotatedProperty extends ReflectionProperty {
 
-	  private $annotations;
+      private $annotations;
 
-	  /**
-	   * Creates a new instance of AnnotatedProperty.
-	   *
-	   * @param mixed type $class The name or instance of a class to inspect.
-	   * @param string $property The name of the property to inspect.
-	   * @return void
-	   * @throws AnnotationException
-	   */
-	  public function __construct($class, $property) {
+      /**
+       * Creates a new instance of AnnotatedProperty.
+       *
+       * @param mixed type $class The name or instance of a class to inspect.
+       * @param string $property The name of the property to inspect.
+       * @return void
+       * @throws AnnotationException
+       */
+      public function __construct($class, $property) {
 
-	  		 try {
-			        parent::__construct($class, $property);
-			  		AnnotationParser::parse(parent::getDeclaringClass()->getName());
+             try {
+                    parent::__construct($class, $property);
+                    AnnotationParser::parse(parent::getDeclaringClass()->getName());
 
-			  		$annotations = AnnotationParser::getPropertyAnnotations($this);
-			  		$this->annotations = count($annotations) ? $annotations : null;
-	  		 }
-	  		 catch(ReflectionException $e) {
+                    $annotations = AnnotationParser::getPropertyAnnotations($this);
+                    $this->annotations = count($annotations) ? $annotations : null;
+             }
+             catch(ReflectionException $e) {
 
-	  		 	   throw new AnnotationException($e->getMessage(), $e->getCode());
-	  		 }
-	  }
+                   throw new AnnotationException($e->getMessage(), $e->getCode());
+             }
+      }
 
-	  /**
-	   * Returns boolean indicator based on the presence of any annotations.
-	   *
-	   * @return True if this property has any annotations, false otherwise.
-	   */
-	  public function isAnnotated() {
+      /**
+       * Returns boolean indicator based on the presence of any annotations.
+       *
+       * @return True if this property has any annotations, false otherwise.
+       */
+      public function isAnnotated() {
 
-	  		 return count( $this->annotations ) && isset( $this->annotations[0] ) ? true : false;
-	  }
+              return count($this->annotations) && isset($this->annotations[0]) ? true : false;
+      }
 
-	  /**
-	   * Checks the property for the presence of the specified annotation.
-	   *
-	   * @param String $annotation The name of the annotation.
-	   * @return True if the annotation is present, false otherwise.
-	   */
-	  public function hasAnnotation( $annotation ) {
+      /**
+       * Checks the property for the presence of the specified annotation.
+       *
+       * @param String $annotation The name of the annotation.
+       * @return True if the annotation is present, false otherwise.
+       */
+      public function hasAnnotation($annotation) {
 
-	  		 foreach( $this->annotations as $annote ) {
+             foreach($this->annotations as $annote) {
 
-	  		 		  $class = new ReflectionClass( $annote );
-	  		 		  if( $class->getName() == $annotation )
-	  		 		  	  return true;
-	  		 }
+                 $class = new ReflectionClass($annote);
+                 if($class->getName() == $annotation)
+                    return true;
+             }
 
-	  		 return false;
-	  }
+             return false;
+      }
 
-	  /**
-	   * Returns all property annotations. If a name is specified
-	   * only annotations which match the specified name will be returned,
-	   * otherwise all annotations are returned.
-	   *
-	   * @param String $name Optional name of the annotation to filter on. Default is return
-	   * 					 all annotations.
-	   * @return An array of property level annotations or false of no annotations could
-	   * 		 be found.
-	   */
-	  public function getAnnotations( $name = null ) {
+      /**
+       * Returns all property annotations. If a name is specified
+       * only annotations which match the specified name will be returned,
+       * otherwise all annotations are returned.
+       *
+       * @param String $name Optional name of the annotation to filter on. Default is return
+       *                      all annotations.
+       * @return An array of property level annotations or false of no annotations could
+       *          be found.
+       */
+      public function getAnnotations($name = null) {
 
-	  		 if( $name != null ) {
+             if($name != null) {
 
-	  		 	 $annotations = array();
-		  		 foreach( $this->annotations as $annote ) {
+                $annotations = array();
+                foreach($this->annotations as $annote) {
 
-		  		 		  if( $annote instanceof $name )
-		  		 		  	  array_push( $annotations, $annote );
-		  		 }
+                    if($annote instanceof $name)
+                      array_push($annotations, $annote);
+                }
 
-		  		 if( !count( $annotations ) ) return false;
+                if(!count($annotations)) return false;
 
-		  		 return $annotations;
-	  		 }
+                return $annotations;
+             }
 
-	  		 return $this->annotations;
-	  }
+             return $this->annotations;
+      }
 
-	  /**
-	   * Gets an annotation instance by name. If the named annotation is found more
-	   * than once, an array of annotations are returned.
-	   *
-	   * @param String $name The name of the annotation
-	   * @return The annotation instance or false if the annotation was not found
-	   */
-	  public function getAnnotation( $annotation ) {
+      /**
+       * Gets an annotation instance by name. If the named annotation is found more
+       * than once, an array of annotations are returned.
+       *
+       * @param String $name The name of the annotation
+       * @return The annotation instance or false if the annotation was not found
+       */
+      public function getAnnotation($annotation) {
 
-	  		 $annotations = array();
+             $annotations = array();
 
-	  		 foreach( $this->annotations as $annote ) {
+             foreach($this->annotations as $annote) {
 
-	  		 		  $class = new ReflectionClass( $annote );
-	  		 		  if( $class->getName() == $annotation )
-	  		 		  	  array_push( $annotations, $annote );
-	  		 }
+                 $class = new ReflectionClass($annote);
+                 if($class->getName() == $annotation)
+                    array_push($annotations, $annote);
+             }
 
-	  		 if( !count( $annotations ) ) return false;
+             if(!count($annotations)) return false;
 
-	  		 return (count($annotations) > 1) ? $annotations : $annotations[0];
-	  }
+             return (count($annotations) > 1) ? $annotations : $annotations[0];
+      }
 
-	  /**
-	   * Gets the parent class as an AnnotatedClass
-	   *
-	   * @return AnnotatedClass
-	   */
-	  public function getDeclaringClass() {
+      /**
+       * Gets the parent class as an AnnotatedClass
+       *
+       * @return AnnotatedClass
+       */
+      public function getDeclaringClass() {
 
-	  	     $class = parent::getDeclaringClass();
-			 return new AnnotatedClass( $class->getName() );
-	  }
+             $class = parent::getDeclaringClass();
+             return new AnnotatedClass($class->getName());
+      }
 }
 ?>

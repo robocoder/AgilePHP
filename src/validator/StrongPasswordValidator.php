@@ -35,12 +35,12 @@ class StrongPasswordValidator extends PasswordValidator {
 	   * 1 number or special character
 	   * at least 7 characters in length
 	   * 
-	   *  @return Boolean True if the password meets the criteria, false otherwise
+	   * @return Boolean True if the password meets the criteria, false otherwise
 	   */
 	  public function validate() {
 
-	  		 if( $this->size && (strlen( $this->data ) < $this->size) ) return false;
-	  		 return preg_match( '/(?=^.{7,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/', $this->data );
+	  		 if($this->size && (strlen($this->data) < $this->size)) return false;
+	  		 return preg_match('/(?=^.{7,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/', $this->data);
 	  }
 }
 ?>

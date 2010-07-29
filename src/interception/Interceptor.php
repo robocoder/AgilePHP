@@ -53,16 +53,16 @@
  * 
  * class MyInterceptorImpl {
  * 
- * 		 #@MyInterceptor( param = 'this is a parameter string value' )
+ * 		 #@MyInterceptor(param = 'this is a parameter string value')
  * 		 public function doSomething() { }
  * 
- * 		 #@MyInterceptor( param = { 'this', 'key2' => 'is', 3 => 'an', 'key4' => 'array parameter value' } )
+ * 		 #@MyInterceptor(param = { 'this', 'key2' => 'is', 3 => 'an', 'key4' => 'array parameter value' })
  * 		 public function doSomething2() { }
  * 
- * 		 #@MyInterceptor( param = new MyClass() )
+ * 		 #@MyInterceptor(param = new MyClass())
  * 		 public function doSomething3() { }
  * 
- * 		 #@MyInterceptor( param = MySingleton::getInstance() )
+ * 		 #@MyInterceptor(param = MySingleton::getInstance())
  * 		 public function doSomething4() { }
  * }
  * </code>

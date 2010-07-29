@@ -28,8 +28,6 @@
  */
 class AJAXController extends BaseController {
 
-	  private $renderer;
-
 	  public function __construct() {
 
 	  		 $this->createRenderer( 'AJAXRenderer' );

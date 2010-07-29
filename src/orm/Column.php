@@ -50,9 +50,9 @@ class Column {
 
 	  private $foreignKey;
 
-	  public function __construct( SimpleXMLElement $column = null, $tableName ) {
+	  public function __construct(SimpleXMLElement $column = null, $tableName) {
 
-	  		 if( $column ) {
+	  		 if($column) {
 
 		  		 $this->name = (string)$column->attributes()->name;
 		  		 $this->type = (string)$column->attributes()->type;
@@ -74,8 +74,8 @@ class Column {
 		  		 $this->renderer = (string)$column->attributes()->renderer;
 		  		 $this->transformer = (string)$column->attributes()->transformer;
 
-		  		 if( $column->foreignKey )
-		  		 	 $this->foreignKey = new ForeignKey( $column->foreignKey, $tableName, $this->name );
+		  		 if($column->foreignKey)
+		  		 	 $this->foreignKey = new ForeignKey($column->foreignKey, $tableName, $this->name);
 	  		 }
 	  }
 
@@ -85,7 +85,7 @@ class Column {
 	   * @param String $name The column name in the physical database
 	   * @return void
 	   */
-	  public function setName( $name ) {
+	  public function setName($name) {
 
 	  		 $this->name = $name;
 	  }
@@ -107,7 +107,7 @@ class Column {
 	   * @param String $type The data type being stored (varchar|int|text|etc...)
 	   * @return void
 	   */
-	  public function setType( $type ) {
+	  public function setType($type) {
 
 	  	     $this->type = $type;
 	  }
@@ -129,7 +129,7 @@ class Column {
 	   * @param $length The maximum length of the data being persisted
 	   * @return void
 	   */
-	  public function setLength( $length ) {
+	  public function setLength($length) {
 
 	  		 $this->length = (integer)$length;
 	  }
@@ -151,7 +151,7 @@ class Column {
 	   * @param String $description The friendly description explaining the purpose of the column, etc.
 	   * @return void
 	   */
-	  public function setDescription( $description ) {
+	  public function setDescription($description) {
 
 	  		 $this->description = $description;
 	  }
@@ -172,7 +172,7 @@ class Column {
 	   * @param String $property The property name in the domain model that stores the column data
 	   * @return void
 	   */
-	  public function setProperty( $property ) {
+	  public function setProperty($property) {
 
 	  		 $this->property = $property;
 	  }
@@ -194,7 +194,7 @@ class Column {
 	   * @param String $text The friendly name to display
 	   * @return void
 	   */
-	  public function setDisplay( $text ) {
+	  public function setDisplay($text) {
 
 	  		 $this->display = $text;
 	  }
@@ -215,7 +215,7 @@ class Column {
 	   * @param mixed $value The default value if nothing has been assigned
 	   * @return void
 	   */
-	  public function setDefault( $value ) {
+	  public function setDefault($value) {
 
 	  		 $this->default = $value;
 	  }
@@ -240,7 +240,7 @@ class Column {
 	   * 				 	  should be rendered. True to render, false to hide.
 	   * @return void
 	   */
-	  public function setVisible( $boolean ) {
+	  public function setVisible($boolean) {
 
 	  		 $this->visible = $boolean ? true : false;
 	  }
@@ -262,7 +262,7 @@ class Column {
 	   * 				 column header as plain text.
 	   * @return void
 	   */
-	  public function setSortable( $boolean ) {
+	  public function setSortable($boolean) {
 
 	  		 return $this->sortable === true ? true : false;
 	  }
@@ -287,7 +287,7 @@ class Column {
 	   * 				 	  in an HTML drop-down in place of their foreign key value(s)
 	   * @return void
 	   */
-	  public function setSelectable( $boolean ) {
+	  public function setSelectable($boolean) {
 
 	  		 $this->selectable = $boolean ? true : false;
 	  }
@@ -310,7 +310,7 @@ class Column {
 	   * @param $boolean True if this column requires a value, false otherwise
 	   * @return void
 	   */
-	  public function setRequired( $boolean ) {
+	  public function setRequired($boolean) {
 
 	  		 $this->required = $boolean ? true : false;
 	  }
@@ -331,7 +331,7 @@ class Column {
 	   * @param $boolean True if this column is an index, false otherwise
 	   * @return void
 	   */
-	  public function setIndex( $boolean ) {
+	  public function setIndex($boolean) {
 
 	  		 $this->index = $boolean ? true : false;
 	  }
@@ -352,7 +352,7 @@ class Column {
 	   * @param bool $boolean True to mark this column as a primary key, false otherwise
 	   * @return void
 	   */
-	  public function setPrimaryKey( $boolean ) {
+	  public function setPrimaryKey($boolean) {
 
 	  		 $this->primaryKey = $boolean ? true : false;
 	  }
@@ -373,7 +373,7 @@ class Column {
 	   * @param bool $boolean True if the column contains AUTO_INCREMENT values, false otherwise
 	   * @return void
 	   */
-	  public function setAutoIncrement( $boolean ) {
+	  public function setAutoIncrement($boolean) {
 
 	  		 $this->autoIncrement = $boolean ? true : false;
 	  }
@@ -395,7 +395,7 @@ class Column {
 	   * @param ForeignKey $foreignKey A ForeignKey instance representing the relationship for this column
 	   * @return void
 	   */
-	  public function setForeignKey( ForeignKey $foreignKey ) {
+	  public function setForeignKey(ForeignKey $foreignKey) {
 
 	  		 $this->foreignKey = $foreignKey;
 	  }
@@ -447,7 +447,7 @@ class Column {
 	   * @param boolean $bool
 	   * @return voi
 	   */
-	  public function setSanitize( $bool ) {
+	  public function setSanitize($bool) {
 
 	  		 $this->sanitize = $bool;
 	  }
@@ -458,7 +458,7 @@ class Column {
 	   * @param string $validator The class name of the Validator responsible for verifying the integrity of the data
 	   * @return void
 	   */
-	  public function setValidator($validator ) {
+	  public function setValidator($validator) {
 
 	  		 $this->validator = $validator;
 	  }
@@ -532,7 +532,7 @@ class Column {
 	   * @param bool $bool True to enable lazy loading, false otherwise. Defaults to true.
 	   * @return void
 	   */
-	  public function setLazy( $bool = true ) {
+	  public function setLazy($bool = true) {
 
 	  		 $this->lazy = $bool;
 	  }
@@ -569,7 +569,7 @@ class Column {
 	   */
 	  public function getViewDisplayName() {
 
-	  		 return $this->getDisplay() ? $this->getDisplay() : ucfirst( $this->getName() );
+	  		 return $this->getDisplay() ? $this->getDisplay() : ucfirst($this->getName());
 	  }
 }
 ?>

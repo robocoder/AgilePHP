@@ -39,23 +39,23 @@ class FileLogger implements LogProvider {
 
 	  		 $logDirectory = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
 
-	  	     if( !file_exists( $logDirectory ) )  	      	
-	  	      	 if( !mkdir( $logDirectory ) )
-	  	      	   	 throw new FrameworkException( 'Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.' );
+	  	     if(!file_exists($logDirectory))  	      	
+	  	      	 if(!mkdir($logDirectory))
+	  	      	   	 throw new FrameworkException('Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.');
 
-	  	     if( !is_writable( $logDirectory ) )
-	  	     	 throw new FrameworkException( 'Logging directory is not writable. The PHP process requires write access to this directory.' );
+	  	     if(!is_writable($logDirectory))
+	  	     	 throw new FrameworkException('Logging directory is not writable. The PHP process requires write access to this directory.');
 
-	  	     $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date( "m-d-y" ) . '.log';
-	  	     if( !file_exists( $filename ) ) {
+	  	     $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date("m-d-y") . '.log';
+	  	     if(!file_exists($filename)) {
 
-	  	     	 if( !touch( $filename ) )
-	  	     	 	 throw new FrameworkException( 'Unable to create log file at \'' . $filename . '\'.' );
+	  	     	 if(!touch($filename))
+	  	     	 	 throw new FrameworkException('Unable to create log file at \'' . $filename . '\'.');
 
-	  	     	 @chmod( $filename, 0777 );
+	  	     	 @chmod($filename, 0777);
 	  	     }
 
-	  		 $this->log = fopen(  $filename, 'a+' );
+	  		 $this->log = fopen( $filename, 'a+');
   	  }
 
 	  /**
@@ -65,9 +65,9 @@ class FileLogger implements LogProvider {
 	   * @return void
 	   * @static
 	   */
-	  public function debug( $message ) {
+	  public function debug($message) {
 
-  		 	 $this->write( $message, 'DEBUG' );
+  		 	 $this->write($message, 'DEBUG');
 	  }
 
 	  /**
@@ -76,9 +76,9 @@ class FileLogger implements LogProvider {
 	   * @param String $message The warning message to log
 	   * @return void
 	   */
-	  public function warn( $message ) {
+	  public function warn($message) {
 
-	  		 $this->write( $message, 'WARN' );
+	  		 $this->write($message, 'WARN');
 	  }
 
 	  /**
@@ -87,9 +87,9 @@ class FileLogger implements LogProvider {
 	   * @param String $message The informative message to log
 	   * @return void
 	   */
-	  public function info( $message ) {
+	  public function info($message) {
 
-	  		 $this->write( $message, 'INFO' );
+	  		 $this->write($message, 'INFO');
 	  }
 
 	  /**
@@ -99,9 +99,9 @@ class FileLogger implements LogProvider {
 	   * @return void
 	   * @static
 	   */
-	  public function error( $message ) {
+	  public function error($message) {
 
-	  		 $this->write( $message, 'ERROR' );
+	  		 $this->write($message, 'ERROR');
 	  }
 
 	  /**
@@ -110,16 +110,16 @@ class FileLogger implements LogProvider {
 	   * @param string $message The log entry message
 	   * @return void
 	   */
-	  private function write( $message, $level ) {
+	  private function write($message, $level) {
 
 	  		  $host = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : AgilePHP::getAppName();
-	  		  $requestURI = (isset( $_SERVER['REQUEST_URI' ] ) ? $_SERVER['REQUEST_URI'] : '/' );
-	  	      $header = '[' . $level . ']  ' . $host . '  ' . date( "m-d-y g:i:sa", strtotime( 'now' ) ) . '  ' . $requestURI;
+	  		  $requestURI = (isset($_SERVER['REQUEST_URI' ]) ? $_SERVER['REQUEST_URI'] : '/');
+	  	      $header = '[' . $level . ']  ' . $host . '  ' . date("m-d-y g:i:sa", strtotime('now')) . '  ' . $requestURI;
 
-	  		  if( is_object( $message ) || is_array( $message ) )
-	  	      	  $message = print_r( $message, true );
+	  		  if(is_object($message) || is_array($message))
+	  	      	  $message = print_r($message, true);
 
-	  	      fputs( $this->log, $header . "\t" . $message . PHP_EOL );
+	  	      fputs($this->log, $header . "\t" . $message . PHP_EOL);
 	  }
 }
 ?>

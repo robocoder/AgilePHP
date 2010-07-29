@@ -33,8 +33,8 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  * <code>
- * #@ConsumeMime( type = 'application/xml' )
- * public function updateObject( $id, $data ) {
+ * #@ConsumeMime(type = 'application/xml')
+ * public function updateObject($id, $data) {
  * 
  * 	     // $data is a SimpleXMLElement
  * }

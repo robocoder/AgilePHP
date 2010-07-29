@@ -42,9 +42,9 @@ final class ORM {
 	   * @param Database $db The database to establish a connection with
 	   * @return void
 	   */
-	  public static function connect( Database $db ) {
+	  public static function connect(Database $db) {
 
-	  		 return ORMFactory::connect( $db );
+	  		 return ORMFactory::connect($db);
 	  }
 	
 	  /**
@@ -86,9 +86,9 @@ final class ORM {
 	   * @return void
 	   * @static
 	   */
-	  public static function setDistinct( $columnName ) {
+	  public static function setDistinct($columnName) {
 
-	   		 ORMFactory::getDialect()->setDistinct( $columnName );
+	   		 ORMFactory::getDialect()->setDistinct($columnName);
 	  }
 
 	  /**
@@ -110,9 +110,9 @@ final class ORM {
 	   * @return void
 	   * @static
 	   */
-	  public static function setMaxResults( $maxResults = 25 ) {
+	  public static function setMaxResults($maxResults = 25) {
 
-	     	 ORMFactory::getDialect()->setMaxResults( $maxResults );
+	     	 ORMFactory::getDialect()->setMaxResults($maxResults);
 	  }
 
 	  /**
@@ -166,9 +166,9 @@ final class ORM {
 	   * @see http://usphp.com/manual/en/function.PDO-rollBack.php
 	   * @static
 	   */
-	  public static function rollBack( $message = null, $code = 0 ) {
+	  public static function rollBack($message = null, $code = 0) {
 
-	  	     ORMFactory::getDialect()->rollBack( $message, $code );
+	  	     ORMFactory::getDialect()->rollBack($message, $code);
 	  }
 	  	 
 	  /**
@@ -179,9 +179,9 @@ final class ORM {
 	   * @see http://usphp.com/manual/en/function.PDO-prepare.php
 	   * @static
 	   */
-	  public static function prepare( $statement ) {
+	  public static function prepare($statement) {
 
-	  	     return ORMFactory::getDialect()->prepare( $statement );
+	  	     return ORMFactory::getDialect()->prepare($statement);
 	  }
 	  	 
 	  /**
@@ -192,9 +192,9 @@ final class ORM {
 	   * @see http://usphp.com/manual/en/function.PDOStatement-execute.php
 	   * @static
 	   */
-	  public static function execute( array $inputParameters = array() ) {
+	  public static function execute(array $inputParameters = array()) {
 	  	 	
-	  	     return ORMFactory::getDialect()->execute( $inputParameters );
+	  	     return ORMFactory::getDialect()->execute($inputParameters);
 	  }
 	  	 
 	  /**
@@ -205,9 +205,9 @@ final class ORM {
 	   * @see http://usphp.com/manual/en/function.PDO-exec.php
 	   * @static
 	   */
-	  public static function exec( $statement ) {
+	  public static function exec($statement) {
 
-	  		 return ORMFactory::getDialect()->exec( $statement );
+	  		 return ORMFactory::getDialect()->exec($statement);
 	  }
 
 	  /**
@@ -219,9 +219,9 @@ final class ORM {
 	   * @see http://www.php.net/manual/en/pdo.quote.php
 	   * @static
 	   */
-	  public static function quote( $data ) {
+	  public static function quote($data) {
 
-	  		 return ORMFactory::getDialect()->quote( $data );
+	  		 return ORMFactory::getDialect()->quote($data);
 	  }
 
 	  /**
@@ -231,21 +231,21 @@ final class ORM {
 	   * @return PDO::PDOStatement as returned by PDO::query
 	   * @static
 	   */
-	  public static function query( $sql ) {
+	  public static function query($sql) {
 
-	  	     return ORMFactory::getDialect()->query( $sql );
+	  	     return ORMFactory::getDialect()->query($sql);
 	  }
 
       /**
 	   * Sets WHERE clause restrictions
 	   * 
-	   * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array( 'id' => 21 ) )
+	   * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
 	   * @return void
 	   * @static
 	   */
-	  public static function setRestrictions( array $restrictions ) {
+	  public static function setRestrictions(array $restrictions) {
 
-	         ORMFactory::getDialect()->setRestrictions( $restrictions );
+	         ORMFactory::getDialect()->setRestrictions($restrictions);
 	  }
 
 	  /**
@@ -255,9 +255,9 @@ final class ORM {
 	   * @return void
 	   * @static
 	   */
-	  public static function setRestrictionsLogicOperator( $operator ) {
+	  public static function setRestrictionsLogicOperator($operator) {
 
-	     	 ORMFactory::getDialect()->setRestrictionsLogicOperator( $operator );
+	     	 ORMFactory::getDialect()->setRestrictionsLogicOperator($operator);
 	  }
 
 	  /**
@@ -267,9 +267,9 @@ final class ORM {
 	   * @return void
 	   * @static
 	   */
-	  public static function setComparisonLogicOperator( $operator ) {
+	  public static function setComparisonLogicOperator($operator) {
 
-	     	 ORMFactory::getDialect()->setComparisonLogicOperator( $operator );
+	     	 ORMFactory::getDialect()->setComparisonLogicOperator($operator);
 	  }
 
 	  /**
@@ -279,9 +279,9 @@ final class ORM {
 	   * @return void
 	   * @static
 	   */
-	  public static function setGroupBy( $column ) {
+	  public static function setGroupBy($column) {
 
-	         ORMFactory::getDialect()->setGroupBy( $column );
+	         ORMFactory::getDialect()->setGroupBy($column);
 	  }
 
 	  /**
@@ -303,9 +303,9 @@ final class ORM {
 	   * @return void
 	   * @static
 	   */
-	  public static function setOrderBy( $column, $direction ) {
+	  public static function setOrderBy($column, $direction) {
 
-	     	 ORMFactory::getDialect()->setOrderBy( $column, $direction );
+	     	 ORMFactory::getDialect()->setOrderBy($column, $direction);
 	  }
 
 	  /**
@@ -327,9 +327,9 @@ final class ORM {
 	   * @param Integer $offset The limit offset.
 	   * @return void
 	   */
-	  public static function setOffset( $offset ) {
+	  public static function setOffset($offset) {
 
-	 		 ORMFactory::getDialect()->setOffset( $offset );
+	 		 ORMFactory::getDialect()->setOffset($offset);
 	  }
 
 	  /**
@@ -339,7 +339,7 @@ final class ORM {
 	   */
 	  public static function getOffset() {
 
-			 return ORMFactory::getDialect()->setOffset( $offset );
+			 return ORMFactory::getDialect()->setOffset($offset);
 	  }
 
 	  /**
@@ -351,9 +351,9 @@ final class ORM {
 	   * 		 could not be located for the specified $model.
 	   * @static
 	   */
-	  public static function getTableByModel( $model = null ) {
+	  public static function getTableByModel($model = null) {
 
-		     return ORMFactory::getDialect()->getTableByModel( $model );
+		     return ORMFactory::getDialect()->getTableByModel($model);
 	  }
 
 	  /**
@@ -364,9 +364,9 @@ final class ORM {
 	   * 		 if an 'Identity' table has not been configured.
 	   * @static
 	   */
-	  public static function getTableByModelName( $modelName ) {
+	  public static function getTableByModelName($modelName) {
 
-			 return ORMFactory::getDialect()->getTableByModelName( $modelName );
+			 return ORMFactory::getDialect()->getTableByModelName($modelName);
 	  }
 
 	  /**
@@ -376,9 +376,9 @@ final class ORM {
 	   * @return The 'Table' object or null if the table was not found
 	   * @static
 	   */
-	  public static function getTableByName( $tableName ) {
+	  public static function getTableByName($tableName) {
 
-	  		 return ORMFactory::getDialect()->getTableByName( $tableName );
+	  		 return ORMFactory::getDialect()->getTableByName($tableName);
 	  }
 
 	  /**
@@ -390,9 +390,9 @@ final class ORM {
 	   * @return The column name or null if the $property could not be found in the table
 	   * @static
 	   */
-	  public static function getColumnNameForProperty( $table, $property ) {
+	  public static function getColumnNameForProperty($table, $property) {
 
-			 return ORMFactory::getDialect()->getColumnNameForProperty( $table, $property );
+			 return ORMFactory::getDialect()->getColumnNameForProperty($table, $property);
       }
 
 	  /**
@@ -404,9 +404,9 @@ final class ORM {
 	   * @return The column name or null if the $property could not be found in the table
 	   * @static
 	   */
-	  public static function getPropertyNameForColumn( $table, $columnName ) {
+	  public static function getPropertyNameForColumn($table, $columnName) {
 
-			 return ORMFactory::getDialect()->getPropertyNameForColumn( $table, $columnName );
+			 return ORMFactory::getDialect()->getPropertyNameForColumn($table, $columnName);
       }
     
 	  /**
@@ -426,9 +426,9 @@ final class ORM {
 	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
 	   * @static
  	   */
-	  public static function createTable( Table $table ) {
+	  public static function createTable(Table $table) {
 
-		     ORMFactory::getDialect()->createTable( $table );
+		     ORMFactory::getDialect()->createTable($table);
 	  }
 
 	  /**
@@ -449,9 +449,9 @@ final class ORM {
 	   * @see src/orm/dialect/SQLDialect#dropTable(Table $table)
 	   * @static
 	   */
-	  public static function dropTable( Table $table ) {
+	  public static function dropTable(Table $table) {
 
-		  	 ORMFactory::getDialect()->dropTable( $table );
+		  	 ORMFactory::getDialect()->dropTable($table);
 	  }
 
   	  /**
@@ -462,9 +462,9 @@ final class ORM {
 	   * @throws ORMException
 	   * @static
 	   */
-	  public static function persist( $model ) {
+	  public static function persist($model) {
 
-	  	     return ORMFactory::getDialect()->persist( $model );
+	  	     return ORMFactory::getDialect()->persist($model);
 	  }
 
 	  /**
@@ -475,9 +475,9 @@ final class ORM {
 	   * @throws ORMException
 	   * @static
 	   */
-  	  public static function merge( $model ) {
+  	  public static function merge($model) {
 
-  	  	     return ORMFactory::getDialect()->merge( $model );
+  	  	     return ORMFactory::getDialect()->merge($model);
 	  }
 
 	  /**
@@ -488,9 +488,9 @@ final class ORM {
 	   * @throws ORMException
 	   * @static
 	   */
-	  public static function delete( $model ) {
+	  public static function delete($model) {
 
-  	     	 return ORMFactory::getDialect()->delete( $model );
+  	     	 return ORMFactory::getDialect()->delete($model);
   	  }
 
   	  /**
@@ -501,9 +501,9 @@ final class ORM {
 	   * @throws ORMException
 	   * @static
 	   */
-	 public static function truncate( $model ) {
+	 public static function truncate($model) {
 
-  		    return ORMFactory::getDialect()->truncate( $model );
+  		    return ORMFactory::getDialect()->truncate($model);
   	 }
 
   	 /**
@@ -515,9 +515,9 @@ final class ORM {
       * @throws ORMException
       * @static
       */
-  	 public static function find( $model ) {
+  	 public static function find($model) {
 
-  		    return ORMFactory::getDialect()->find( $model );
+  		    return ORMFactory::getDialect()->find($model);
   	 }
 
 	 /**
@@ -526,9 +526,9 @@ final class ORM {
 	  * @param Object $model The model to get the count for.
 	  * @return Integer The total number of records in the table.
 	  */
-  	 public static function count( $model ) {
+  	 public static function count($model) {
 
-	  		return ORMFactory::getDialect()->count( $model );
+	  		return ORMFactory::getDialect()->count($model);
 	 }
 
   	 /**
@@ -556,9 +556,9 @@ final class ORM {
      /**
       * Calls a stored procedure
       */
-     public static function call( $model ) {
+     public static function call($model) {
 
-     		return ORMFactory::getDialect()->call( $model );
+     		return ORMFactory::getDialect()->call($model);
      }
 }
 ?>

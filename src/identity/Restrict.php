@@ -28,7 +28,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  * <code>
- * #@Restrict( role = 'admin' )
+ * #@Restrict(role = 'admin')
  * public function methodThatRequiresCertainRole() {
  * 
  * 		  // Some logic that requires the current logged in user
@@ -37,7 +37,7 @@
  * </code>
  * 
  * <code>
- * #@Restrict( role = 'admin', message = 'Your not allowed here!' )
+ * #@Restrict(role = 'admin', message = 'Your not allowed here!')
  * public function methodThatRequiresCertainRole() {
  * 
  * 		  // Some logic that requires the current logged in user
@@ -47,7 +47,7 @@
  * </code>
  * 
  * <code>
- * #@Restrict( roles = { 'admin', 'member' }, message = 'Your not allowed here!' )
+ * #@Restrict(roles = { 'admin', 'member' }, message = 'Your not allowed here!')
  * public function methodThatRequiresCertainRole() {
  * 
  * 		  // Some logic that requires the current logged in user
@@ -56,7 +56,7 @@
  * </code>
  * 
  * <code>
- * #@Restrict( roles = { 'admin', 'member' }, message = 'Your not allowed here!' )
+ * #@Restrict(roles = { 'admin', 'member' }, message = 'Your not allowed here!')
  * public function methodThatRequiresCertainRole() {
  * 
  * 		  // Some logic that requires the current logged in user
@@ -97,7 +97,7 @@ class Restrict {
 	  		 $message = $ic->getInterceptor()->message ? $ic->getInterceptor()->message : 'Access Denied';
 
 	  		 $requiredRole = $ic->getInterceptor()->role;
-	  	     if( Identity::hasRole(new Role($requiredRole)))
+	  	     if(Identity::hasRole(new Role($requiredRole)))
 	  	     	 return $ic->proceed();
 
 	  	     $roles = $ic->getInterceptor()->roles;

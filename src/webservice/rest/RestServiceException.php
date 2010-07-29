@@ -74,7 +74,7 @@ class RestServiceException extends FrameworkException {
              503 => 'Service Unavailable',
              504 => 'Gateway Timeout',
              505 => 'HTTP Version Not Supported'
-      );
+     );
 
 	  /**
 	   * Accepts a valid RFC 2616 HTTP status code and sends the appropriate
@@ -83,17 +83,17 @@ class RestServiceException extends FrameworkException {
 	   * @param Integer $code The HTTP status code to send.
 	   * @return void
 	   */
-	  public function __construct( $code = null ) {
+	  public function __construct($code = null) {
 
-	  		 if( !array_key_exists( $code, $this->codes ) )
-	  		 	 throw new FrameworkException( 'Invalid HTTP Response code \'' . $code . '\'.' );
+	  		 if(!array_key_exists($code, $this->codes))
+	  		 	 throw new FrameworkException('Invalid HTTP Response code \'' . $code . '\'.');
 
 	  		 $this->code = $code;
 	  		 $this->message = $code . ' ' . $this->codes[$code];
 	  		 $this->trace = debug_backtrace();
 
-	  		 header( 'HTTP/1.1 ' . $code . ' ' . $this->codes[$code] );
-	  		 Log::error( 'RestServiceException ' . $this->message );
+	  		 header('HTTP/1.1 ' . $code . ' ' . $this->codes[$code]);
+	  		 Log::error('RestServiceException ' . $this->message);
 	  		 echo $this->message;
 	  		 exit;
 	  }

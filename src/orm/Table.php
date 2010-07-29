@@ -45,9 +45,9 @@ class Table {
 	   * 								physical database table.
 	   * @return void
 	   */
-	  public function __construct( SimpleXMLElement $table = null ) {
+	  public function __construct(SimpleXMLElement $table = null) {
 
-	  		 if( $table ) {
+	  		 if($table) {
 
 		  		 $this->name = (string)$table->attributes()->name;
 		  		 $this->model = (string)$table->attributes()->model;
@@ -57,8 +57,8 @@ class Table {
 		  		 $this->isIdentity = ($table->attributes()->isIdentity == 'true') ? true : false;
 		  		 $this->isSession = ($table->attributes()->isSession == 'true') ? true : false;
 
-		  		 foreach( $table->column as $column )
-		  		 		  array_push( $this->columns, new Column( $column, $this->name ) );
+		  		 foreach($table->column as $column)
+		  		 		  array_push($this->columns, new Column($column, $this->name));
 	  		 }
 	  }
 
@@ -68,7 +68,7 @@ class Table {
 	   * @param String $name The name of the database table
 	   * @return void
 	   */
-	  public function setName( $name ) {
+	  public function setName($name) {
 
 	  		 $this->name = $name;
 	  }
@@ -89,7 +89,7 @@ class Table {
 	   * @param String $model The name of the domain model
 	   * @return void
 	   */
-	  public function setModel( $model ) {
+	  public function setModel($model) {
 
 	  		 $this->model = $model;
 	  }
@@ -112,7 +112,7 @@ class Table {
 	   * @param String $display The friendly display name for the table
 	   * @return void
 	   */
-	  public function setDisplay( $display ) {
+	  public function setDisplay($display) {
 	  	
 	  		 $this->display = $display;
 	  }
@@ -133,7 +133,7 @@ class Table {
 	   * @param bool $boolean True to enable validation, false to disable. Default is True.
 	   * @return void
 	   */
-	  public function setValidate( $boolean ) {
+	  public function setValidate($boolean) {
 
 	  		 $this->validate = $boolean ? true : false;
 	  }
@@ -155,7 +155,7 @@ class Table {
 	   * @param String $description A short description of the table
 	   * @return void
 	   */
-	  public function setDescription( $description ) {
+	  public function setDescription($description) {
 
 	  		 $this->description = $description;
 	  }
@@ -176,7 +176,7 @@ class Table {
 	   * @param bool $boolean True if the table is responsible for AgilePHP Identity orm.
 	   * @return void
 	   */
-	  public function setIsIdentity( $boolean ) {
+	  public function setIsIdentity($boolean) {
 
 	  		 $this->isIdentity = $boolean ? true : false;
 	  }
@@ -197,7 +197,7 @@ class Table {
 	   * @param bool $boolean True if the table is responsible for AgilePHP Session orm.
 	   * @return void
 	   */
-	  public function setIsSession( $boolean ) {
+	  public function setIsSession($boolean) {
 
 	  		 $this->isSession = $boolean ? true : false;
 	  }
@@ -219,7 +219,7 @@ class Table {
 	   * @param array $columns An array of Column instances which belong to this table
 	   * @return void
 	   */
-	  public function setColumns( array $columns ) {
+	  public function setColumns(array $columns) {
 
 	  		 $this->columns = $columns;
 	  }
@@ -230,9 +230,9 @@ class Table {
 	   * @param Column $column The Column instance to push onto the stack
 	   * @return void
 	   */
-	  public function addColumn( Column $column ) {
+	  public function addColumn(Column $column) {
 
-	  		 array_push( $this->columns, $column );
+	  		 array_push($this->columns, $column);
 	  }
 
 	  /**
@@ -241,10 +241,10 @@ class Table {
 	   * @param string $name The column name
 	   * @return void
 	   */
-	  public function getColumn( $name ) {
+	  public function getColumn($name) {
 
-	  		 foreach( $this->columns as $c )
-	  		 	if( $c->getName() == $name )
+	  		 foreach($this->columns as $c)
+	  		 	if($c->getName() == $name)
 	  		 		return $c;
 	  }
 
@@ -256,7 +256,7 @@ class Table {
 	   */
 	  public function hasColumns() {
 
-	  		 return count( $this->columns ) ? true : false;
+	  		 return count($this->columns) ? true : false;
 	  }
 
 	  /**
@@ -278,9 +278,9 @@ class Table {
 	  public function getPrimaryKeyColumns() {
 
 	  		 $columns = array();
-	  		 foreach( $this->getColumns() as $column )
-	  		 	      if( $column->isPrimaryKey() )
-	  		 	      	  array_push( $columns, $column );
+	  		 foreach($this->getColumns() as $column)
+	  		 	      if($column->isPrimaryKey())
+	  		 	      	  array_push($columns, $column);
 
 	  		 return $columns;
 	  }
@@ -293,9 +293,9 @@ class Table {
 	  public function getForeignKeyColumns() {
 
 	  		 $columns = array();
-	  		 foreach( $this->getColumns() as $column )
-	  		 	      if( $column->isForeignKey() )
-	  		 	      	  array_push( $columns, $column );
+	  		 foreach($this->getColumns() as $column)
+	  		 	      if($column->isForeignKey())
+	  		 	      	  array_push($columns, $column);
 
 	  		 return $columns;
 	  }
@@ -308,9 +308,9 @@ class Table {
 	  public function getSelectableColumns() {
 
 	  		 $columns = array();
-	  		 foreach( $this->getColumns() as $column )
-	  		 		  if( $column->isSelectable() )
-	  		 		  	  array_push( $columns, $column );
+	  		 foreach($this->getColumns() as $column)
+	  		 		  if($column->isSelectable())
+	  		 		  	  array_push($columns, $column);
 
 	  		 return $columns;
 	  }
@@ -321,14 +321,14 @@ class Table {
 	   * @param String $name The name of the foreign key
 	   * @return array An array of columns with the specified 'name' attribute
 	   */
-	  public function getForeignKeyColumnsByKey( $name ) {
+	  public function getForeignKeyColumnsByKey($name) {
 
 	  	     $keys = array();
-	  	     foreach( $this->getColumns() as $column )
+	  	     foreach($this->getColumns() as $column)
 
-	  	     		  if( $column->isForeignKey() )
-	  	     		  	  if( $column->getForeignKey()->getName() == $name )
-	  	     		  	  	  array_push( $keys, $column->getForeignKey() );
+	  	     		  if($column->isForeignKey())
+	  	     		  	  if($column->getForeignKey()->getName() == $name)
+	  	     		  	  	  array_push($keys, $column->getForeignKey());
 
 	  		 return $keys;
 	  }
@@ -339,19 +339,19 @@ class Table {
 	   * @param $property The name of a domain model property to return its corresponding column name
 	   * @return mixed Column name or null if the column name could not be found
 	   */
-	  public function getColumnNameByProperty( $property ) {
+	  public function getColumnNameByProperty($property) {
 
-			 foreach( $this->getColumns() as $column )
-			   		  if( $column->getProperty() == $property )
+			 foreach($this->getColumns() as $column)
+			   		  if($column->getProperty() == $property)
 			   			  return $column->getName();
 
-			 Log::warn( 'Table::getColumnByProperty Could not find a property name corresponding to \'' . $property . '\'. Attempting to return column name instead.' );
+			 Log::warn('Table::getColumnByProperty Could not find a property name corresponding to \'' . $property . '\'. Attempting to return column name instead.');
 
-			 foreach( $this->getColumns() as $column )
-			   		  if( $column->getName() == $property )
+			 foreach($this->getColumns() as $column)
+			   		  if($column->getName() == $property)
 			   			  return $column->getName();
 
-			 Log::warn( 'Table::getColumnByProperty Warning about could not find a matching column name corresponding to \'' . $property . '\'. Returning null.' );
+			 Log::warn('Table::getColumnByProperty Warning about could not find a matching column name corresponding to \'' . $property . '\'. Returning null.');
 
 			 return null;
 	  }
@@ -363,13 +363,13 @@ class Table {
 	   * @param String $property The name of the domain model property to retrieve the display name for
 	   * @return The columns 'display' name or null if a display name has not been configured.
 	   */
-	  public function getDisplayNameByProperty( $property ) {
+	  public function getDisplayNameByProperty($property) {
 
-	  		 foreach( $this->getColumns() as $column )
-	  		 		  if( $column->getModelPropertyName() == $property )
-	  		 		  	  return $column->getDisplay() ? $column->getDisplay() : ucfirst( $column->getName() ); 
+	  		 foreach($this->getColumns() as $column)
+	  		 		  if($column->getModelPropertyName() == $property)
+	  		 		  	  return $column->getDisplay() ? $column->getDisplay() : ucfirst($column->getName()); 
 
-			 Log::debug( 'Table::getDisplayNameByProperty returning null value for property \'' . $property . '\'.' );
+			 Log::debug('Table::getDisplayNameByProperty returning null value for property \'' . $property . '\'.');
 
 	  		 return null;
 	  }
@@ -381,10 +381,10 @@ class Table {
 	   * @param String $property The domain object model's property name
 	   * @return bool True if the column is visible or false if the column is NOT visible
 	   */
-	  public function isVisible( $property ) {
+	  public function isVisible($property) {
 
-	  		 foreach( $this->getColumns() as $column )
-	  		 		  if( $column->getModelPropertyName() == $property )
+	  		 foreach($this->getColumns() as $column)
+	  		 		  if($column->getModelPropertyName() == $property)
 	  		 		  	  return $column->isVisible() == true;
 
 	  		 return true;
@@ -399,8 +399,8 @@ class Table {
 	   */
 	  public function hasBlobColumn() {
 
-	  		 foreach( $this->getColumns() as $column )
-	  		 		  if( $column->getType() == 'blob' )
+	  		 foreach($this->getColumns() as $column)
+	  		 		  if($column->getType() == 'blob')
 	  		 		  	  return true;
 
 	  		 return false;
@@ -415,8 +415,8 @@ class Table {
 	   */
 	  public function hasForeignKey() {
 
-	  		 foreach( $this->getColumns() as $column )
-	  		 		  if( $column->isForeignKey() )
+	  		 foreach($this->getColumns() as $column)
+	  		 		  if($column->isForeignKey())
 	  		 		  	  return true;
 
 	  		 return false;
@@ -432,11 +432,11 @@ class Table {
 	  public function hasForeignKeyReferences() {
 
 	  		 $orm = ORMFactory::getDialect();
-	  		 foreach( $orm->getDatabase()->getTables() as $table )
-	  		 		  foreach( $table->getColumns() as $column )
-	  		 		  		   if( $column->isForeignKey() )
-	  		 		  		   	   if( $column->getForeignKey()->getReferencedTable() == $this->getName() )
-	  		 		  		   	   return true;
+	  		 foreach($orm->getDatabase()->getTables() as $table)
+	  		 	foreach($table->getColumns() as $column)
+	  		 	   if($column->isForeignKey())
+	  		 	  	  if($column->getForeignKey()->getReferencedTable() == $this->getName())
+	  		 		     return true;
 
 	  		 return false;
 	  }

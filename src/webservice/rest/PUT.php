@@ -54,7 +54,7 @@ class PUT {
 			 $class = $callee['class'];
 
 			 // Get the negotiated mime type thats used to format the response data 
-			 $negotiation = RestUtil::negotiate( $class, $ic->getMethod() );
+			 $negotiation = RestUtil::negotiate($class, $ic->getMethod());
 			 $ProduceMime = $negotiation['ProduceMime'];
 			 $ConsumeMime = $negotiation['ConsumeMime'];
 

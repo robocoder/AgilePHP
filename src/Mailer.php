@@ -85,7 +85,7 @@ abstract class Mailer {
 	   * @param string $subject The text to display in the subject line
 	   * @return void
 	   */
-	  public function setSubject( $subject ) {
+	  public function setSubject($subject) {
 	  	
 	  		 $this->subject = $subject;
 	  }
@@ -96,7 +96,7 @@ abstract class Mailer {
 	   * @param string $body The email message body
 	   * @return void
 	   */
-	  public function setBody( $body ) {
+	  public function setBody($body) {
 
 	  		 $this->body = $body;
 	  }
@@ -114,8 +114,8 @@ abstract class Mailer {
           	 $headers .= 'Return-Path: ' . $this->from . "\n";
         	 $headers .= 'X-mailer: AgilePHP Framework on PHP (' . phpversion() . ')' . "\n";
 
-        	 if( !mail( $this->to, $this->subject, $this->body, $headers ) )
-        	 	 throw new FrameworkException( 'Error sending email' );
+        	 if(!mail($this->to, $this->subject, $this->body, $headers))
+        	 	 throw new FrameworkException('Error sending email');
 	  }
 }
 ?>

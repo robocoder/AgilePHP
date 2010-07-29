@@ -38,7 +38,7 @@ var AgilePHP = {
 		 * @param path {String} The request base path
 		 * @return void
 		 */
-		setRequestBase : function( path ) {
+		setRequestBase : function(path) {
 
 			this.requestBase = path;
 		},
@@ -50,10 +50,10 @@ var AgilePHP = {
 		 */
 		getRequestBase : function() {
 
-			if( !AgilePHP.requestBase ) {
+			if(!AgilePHP.requestBase) {
 
-				var pos = location.pathname.indexOf( '.php' ) + 4;
-				AgilePHP.requestBase = location.pathname.substring( 0, pos );
+				var pos = location.pathname.indexOf('.php') + 4;
+				AgilePHP.requestBase = location.pathname.substring(0, pos);
 			}
 
 			return AgilePHP.requestBase;
@@ -66,10 +66,10 @@ var AgilePHP = {
 		 */
 		getDocumentRoot: function() {
 
-			 if( !AgilePHP.documentRoot ) {
+			 if(!AgilePHP.documentRoot) {
 
-				 var pieces = AgilePHP.getRequestBase().split( '/' );
-				 AgilePHP.documentRoot = pieces.slice( 0, (pieces.length-1) ).join( '/' ) + '/';
+				 var pieces = AgilePHP.getRequestBase().split('/');
+				 AgilePHP.documentRoot = pieces.slice(0, (pieces.length-1)).join('/') + '/';
 			 }
 
 			 return AgilePHP.documentRoot;
@@ -82,7 +82,7 @@ var AgilePHP = {
 		 * @param boolean {Boolean} True to enable debugging, false to disable
 		 * @return void
 		 */
-		setDebug : function( boolean ) {
+		setDebug : function(boolean) {
 
 			this.debugMode = boolean;
 		},
@@ -103,7 +103,7 @@ var AgilePHP = {
 		 * @param url {String} The url to load
 		 * @return void
 		 */
-		go : function( url ) {
+		go : function(url) {
 
 			location.href = url;
 		},
@@ -115,13 +115,13 @@ var AgilePHP = {
 		 * @param file {String} The file to set as the value to the script src attribute
 		 * @return void
 		 */
-		loadScript : function( file )  {
+		loadScript : function(file)  {
 
-			   var head= document.getElementsByTagName( 'head' )[0];
-		       var script= document.createElement( 'script' );
+			   var head= document.getElementsByTagName('head')[0];
+		       var script= document.createElement('script');
 		       script.type= 'text/javascript';
 		       script.src= file;
-		       head.appendChild( script );
+		       head.appendChild(script);
 		},
 
 		/**
@@ -130,13 +130,13 @@ var AgilePHP = {
 		 * @param msg {Mixed} Write the specified message to the firebug console
 		 * @return void
 		 */
-		debug : function( msg ) {
+		debug : function(msg) {
 
 			try {
-				  if( this.isInDebugMode() )
-					  console.log( msg );
+				  if(this.isInDebugMode())
+					  console.log(msg);
 			}
-			catch( e ) { }
+			catch(e) { }
 		},
 
 		/**
@@ -148,31 +148,31 @@ var AgilePHP = {
 			     * This is fired when a user clicks a delete action link on a database record
 			     * when rendered using the XSLT controller.
 			     */
-				confirmDelete : function( requestBase, value, page, controller, action ) {
+				confirmDelete : function(requestBase, value, page, controller, action) {
 
-			         var decision = confirm( 'Are you sure you want to delete this record?' );
-			         if( decision === true )
+			         var decision = confirm('Are you sure you want to delete this record?');
+			         if(decision === true)
 				         location.href = requestBase + '/' + controller + '/' +  action + '/' + value + '/' + page;
 				},
 
 				/**
 				 * Used to highlight a database table row on mouseover
 				 */
-				setStyle : function( el, style ) {
+				setStyle : function(el, style) {
 
-						 el.setAttribute( 'class', style );
+						 el.setAttribute('class', style);
 				},
 
 				search: function(isComponent) {
 
-					 var pos = location.pathname.indexOf( '.php' ) + 5;
-					 var mvcQuery = location.pathname.substring( pos );
-					 var mvcArgs = mvcQuery.split( '/' );
+					 var pos = location.pathname.indexOf('.php') + 5;
+					 var mvcQuery = location.pathname.substring(pos);
+					 var mvcArgs = mvcQuery.split('/');
 					 var controller = mvcArgs[0] + ((isComponent) ? '/' + mvcArgs[1] : '');
-					 var keyword = document.getElementById( 'agilephpSearchText' ).value;
-					 var field = document.getElementById( 'agilephpSearchField' ).value;
-					 var view = document.getElementById( 'view' ).value;
-					 var page = document.getElementById( 'page' ).value;
+					 var keyword = document.getElementById('agilephpSearchText').value;
+					 var field = document.getElementById('agilephpSearchField').value;
+					 var view = document.getElementById('view').value;
+					 var page = document.getElementById('page').value;
 					 var url = location.protocol + '//' + location.host + AgilePHP.getRequestBase() + '/' + controller + '/search/' + page + '/' + view + '/' + field + '/' + keyword;
 					 location.href = url;
 				}
@@ -202,26 +202,26 @@ var AgilePHP = {
 			 */
 			this.getInstance = function() {
 
-				 if( this.instance == null ) {
+				 if(this.instance == null) {
 
-				     if( window.XMLHttpRequest != null )
+				     if(window.XMLHttpRequest != null)
 				    	 this.instance = new window.XMLHttpRequest();
 	
-				     else if( window.ActiveXObject != null ) {
+				     else if(window.ActiveXObject != null) {
 	
-				    	  for( var i=0; i<this.MS_PROGIDS.length && !obj; i++ ) {
+				    	  for(var i=0; i<this.MS_PROGIDS.length && !obj; i++) {
 	
 				    		   try {
-				    			     this.instance = new ActiveXObject( this.MS_PROGIDS[i] );
+				    			     this.instance = new ActiveXObject(this.MS_PROGIDS[i]);
 				    		   }
-				    		   catch( ex ) {}
+				    		   catch(ex) {}
 				    	  }
 				     }
 	
-				     if( this.instance == null ) {
+				     if(this.instance == null) {
 	
 				    	 var msg = 'Could not create XHR object.';
-				    	 AgilePHP.debug( msg );
+				    	 AgilePHP.debug(msg);
 				    	 throw msg;
 				     }
 				 }
@@ -254,7 +254,7 @@ var AgilePHP = {
 			 * @param token {string} The anti-CSFR token
 			 * @return void
 			 */
-			this.setRequestToken = function( token ) {
+			this.setRequestToken = function(token) {
 
 				 this.requestToken = token;
 			},
@@ -275,9 +275,9 @@ var AgilePHP = {
 			 * @param xhr {XMLHttpRequest} The XMLHttpRequest object to evaluate
 			 * @return The evaluation result
 			 */
-			this.eval = function( xhr ) {
+			this.eval = function(xhr) {
 
-				return eval( '(' + xhr.responseText + ')' );
+				return eval('(' + xhr.responseText + ')');
 			},
 
 			/**
@@ -288,30 +288,30 @@ var AgilePHP = {
 			 * @return The XMLHttpRequest response object if XHR.setSynchronous was called. Otherwise
 			 * 		   the callback is executed when the request has completed.
 			 */
-			this.request = function( url, callback ) {
+			this.request = function(url, callback) {
 
 				 var xhr = this.getInstance();
 
-				 xhr.open( 'GET', url, this.isAsync );
-				 xhr.setRequestHeader( 'X-Powered-By', 'AgilePHP Framework' );
-				 xhr.send( null );
+				 xhr.open('GET', url, this.isAsync);
+				 xhr.setRequestHeader('X-Powered-By', 'AgilePHP Framework');
+				 xhr.send(null);
 
-				 if( this.isAsync ) {
+				 if(this.isAsync) {
 
 					 xhr.onreadystatechange = function() {
 	
-						 if( xhr.readyState == 4 ) {
+						 if(xhr.readyState == 4) {
 	
-							 var data = (xhr.responseText.length) ? eval( '(' + xhr.responseText + ')' ) : null;
-							 AgilePHP.debug( data );
-							 if( callback ) callback( data );
+							 var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
+							 AgilePHP.debug(data);
+							 if(callback) callback(data);
 						 }
 					}
 				 }
 				 else {
 
-					 var data = (xhr.responseText.length) ? eval( '(' + xhr.responseText + ')' ) : null;
-					 AgilePHP.debug( data );
+					 var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
+					 AgilePHP.debug(data);
 					 return data;
 				 }
 			},
@@ -325,37 +325,37 @@ var AgilePHP = {
 			 * @return The XMLHttpRequest response object if XHR.setSynchronous was called. Otherwise
 			 * 		   the callback is executed when the request has completed.
 			 */
-			this.post = function( url, data, callback ) {
+			this.post = function(url, data, callback) {
 
 				  // Add AgilePHP RequestScope anti-CSFR token to POST requests if present
-				  if( this.getRequestToken() )
+				  if(this.getRequestToken())
 					  data = 'AGILEPHP_REQUEST_TOKEN=' + this.getRequestToken() + '&' + data;
 
 				  var xhr = this.getInstance();
 
-				  xhr.open( 'POST', url, this.isAsync );
-				  xhr.setRequestHeader( 'X-Powered-By', 'AgilePHP Framework' );
-				  xhr.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
-				  xhr.setRequestHeader( 'Content-length', data.length );
-				  xhr.setRequestHeader( 'Connection', 'close' );
-				  xhr.send( data );
+				  xhr.open('POST', url, this.isAsync);
+				  xhr.setRequestHeader('X-Powered-By', 'AgilePHP Framework');
+				  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+				  xhr.setRequestHeader('Content-length', data.length);
+				  xhr.setRequestHeader('Connection', 'close');
+				  xhr.send(data);
 
-				  if( this.isAsync ) {
+				  if(this.isAsync) {
 
 						 xhr.onreadystatechange = function() {
 		
-							 if( xhr.readyState == 4 ) {
+							 if(xhr.readyState == 4) {
 
-								 var data = (xhr.responseText.length) ? eval( '(' + xhr.responseText + ')' ) : null;
-								 AgilePHP.debug( data );
-								 if( callback ) callback( data );
+								 var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
+								 AgilePHP.debug(data);
+								 if(callback) callback(data);
 							 }
 						}
 				  }
 				  else {
 
-					  	 var data = (xhr.responseText.length) ? eval( '(' + xhr.responseText + ')' ) : null;
-						 AgilePHP.debug( data );
+					  	 var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
+						 AgilePHP.debug(data);
 						 return data;
 				  }
 			},
@@ -368,30 +368,30 @@ var AgilePHP = {
 			 * @param el {Object} The HTML element to set the .innerHTML value with the XMLHttpRequest responseText
 			 * @return void
 			 */
-			this.updater = function( url, el ) {
+			this.updater = function(url, el) {
 
 				 var xhr = this.getInstance();
-				 xhr.open( 'GET', url, this.isAsync );
-				 xhr.setRequestHeader( 'X-Powered-By', 'AgilePHP Framework' );
-				 xhr.send( null );
+				 xhr.open('GET', url, this.isAsync);
+				 xhr.setRequestHeader('X-Powered-By', 'AgilePHP Framework');
+				 xhr.send(null);
 
-				 if( this.isAsync ) {
+				 if(this.isAsync) {
 
 					 xhr.onreadystatechange = function() {
 	
-						 if( xhr.readyState == 4 ) {
+						 if(xhr.readyState == 4) {
 	
-							 AgilePHP.debug( xhr );
-							 AgilePHP.debug( el );
-							 new AgilePHP.XHR().updaterHandler( xhr, el );
+							 AgilePHP.debug(xhr);
+							 AgilePHP.debug(el);
+							 new AgilePHP.XHR().updaterHandler(xhr, el);
 						 }
 					}
 				 }
 				 else {
 
-					 AgilePHP.debug( xhr );
-					 AgilePHP.debug( el );
-					 new AgilePHP.XHR().updaterHandler( xhr, el );
+					 AgilePHP.debug(xhr);
+					 AgilePHP.debug(el);
+					 new AgilePHP.XHR().updaterHandler(xhr, el);
 				 }
 			},
 
@@ -403,14 +403,14 @@ var AgilePHP = {
 			 * @return void
 			 * @throws If the responseText attribute does not exist
 			 */
-			this.updaterHandler = function( o, el ) {
+			this.updaterHandler = function(o, el) {
 
 				 try {
-					   document.getElementById( el ).innerHTML = o.responseText;
+					   document.getElementById(el).innerHTML = o.responseText;
 				 }
-				 catch( e ) {
+				 catch(e) {
 
-					 AgilePHP.debug( e );
+					 AgilePHP.debug(e);
 					 throw e;
 				 }
 			},
@@ -429,67 +429,67 @@ var AgilePHP = {
 			 * @param callback {function} The callback function or object to invoke with the XHR result
 			 * @return void
 			 */
-			this.formSubmit = function( url, form, callback ) {
+			this.formSubmit = function(url, form, callback) {
 
 				 var data = '';
 
 				 // Standard input form elements
-				 for( var i=0; i<form.getElementsByTagName( 'input' ).length; i++ ) {
+				 for(var i=0; i<form.getElementsByTagName('input').length; i++) {
 
-					  if( form.getElementsByTagName( 'input' )[i].type == 'text')
-				          data += form.getElementsByTagName( 'input' )[i].name + '=' + 
-				          	form.getElementsByTagName( 'input' )[i].value + '&';
+					  if(form.getElementsByTagName('input')[i].type == 'text')
+				          data += form.getElementsByTagName('input')[i].name + '=' + 
+				          	form.getElementsByTagName('input')[i].value + '&';
 					  
-					  if( form.getElementsByTagName( 'input' )[i].type == 'password')
-				          data += form.getElementsByTagName( 'input' )[i].name + '=' + 
+					  if(form.getElementsByTagName('input')[i].type == 'password')
+				          data += form.getElementsByTagName('input')[i].name + '=' + 
 				          	form.getElementsByTagName("input")[i].value + '&';
 
-				      if( form.getElementsByTagName( 'input' )[i].type == 'checkbox' ) {
+				      if(form.getElementsByTagName('input')[i].type == 'checkbox') {
 				           
-				    	  if( form.getElementsByTagName( 'input' )[i].checked )
-				              data += form.getElementsByTagName( 'input' )[i].name + '=' + 
-				              	form.getElementsByTagName( 'input' )[i].value + '&';
+				    	  if(form.getElementsByTagName('input')[i].checked)
+				              data += form.getElementsByTagName('input')[i].name + '=' + 
+				              	form.getElementsByTagName('input')[i].value + '&';
 				    	  else
-				              data += form.getElementsByTagName( 'input' )[i].name + '=&';
+				              data += form.getElementsByTagName('input')[i].name + '=&';
 			          }
-				      if( form.getElementsByTagName( 'input' )[i].type == 'radio' ) {
+				      if(form.getElementsByTagName('input')[i].type == 'radio') {
 
-				    	  if( form.getElementsByTagName( 'input' )[i].checked ) {
+				    	  if(form.getElementsByTagName('input')[i].checked) {
 
-				    		  data += form.getElementsByTagName( 'input' )[i].name + '=' + 
-				    		  		  form.getElementsByTagName( 'input' )[i].value + '&';
+				    		  data += form.getElementsByTagName('input')[i].name + '=' + 
+				    		  		  form.getElementsByTagName('input')[i].value + '&';
 				          }
 				     }
 
 				     // Set AgilePHP RequestScope anti-CSFR token if present 
-				     if( form.getElementsByTagName( 'input' )[i].type == 'hidden' ) {
+				     if(form.getElementsByTagName('input')[i].type == 'hidden') {
 
-				    	 if( form.getElementsByTagName( 'input' )[i].name == 'AGILEPHP_REQUEST_TOKEN' )
-				    		 this.setRequestToken( form.getElementsByTagName( 'input' )[i].value );
+				    	 if(form.getElementsByTagName('input')[i].name == 'AGILEPHP_REQUEST_TOKEN')
+				    		 this.setRequestToken(form.getElementsByTagName('input')[i].value);
 				     }
 				 }
 
 				 // select elements
-				 for( var i=0; i<form.getElementsByTagName( 'select' ).length; i++ ) {
+				 for(var i=0; i<form.getElementsByTagName('select').length; i++) {
 
-					  var index = form.getElementsByTagName( 'select' )[i].selectedIndex;
-						  data += form.getElementsByTagName( 'select' )[i].name + '=' +
-					  	      		form.getElementsByTagName( 'select' )[i].options[index].value + '&';
+					  var index = form.getElementsByTagName('select')[i].selectedIndex;
+						  data += form.getElementsByTagName('select')[i].name + '=' +
+					  	      		form.getElementsByTagName('select')[i].options[index].value + '&';
 				 }
 
 			 	 // textarea elements
-				 for( var i=0; i<form.getElementsByTagName( 'textarea' ).length; i++ )
-					  data += form.getElementsByTagName( 'textarea' )[i].name + '=' + 
-   		  		  				form.getElementsByTagName( 'textarea' )[i].value + '&';
+				 for(var i=0; i<form.getElementsByTagName('textarea').length; i++)
+					  data += form.getElementsByTagName('textarea')[i].name + '=' + 
+   		  		  				form.getElementsByTagName('textarea')[i].value + '&';
 
-				 data = data.substring( 0, data.length-1 );
-				 if( callback == undefined || callback == null ) {
+				 data = data.substring(0, data.length-1);
+				 if(callback == undefined || callback == null) {
 
-					 this.setSynchronous( true );
-					 return this.post( url, data );
+					 this.setSynchronous(true);
+					 return this.post(url, data);
 				 }
 
-				 this.post( url, data, callback );
+				 this.post(url, data, callback);
 			}
 		},
 
@@ -508,7 +508,7 @@ var AgilePHP = {
 			 * @param controller {String} The name of the controller to send the request
 			 * @return void
 			 */
-			setController : function( controller ) {
+			setController : function(controller) {
 				
 				AgilePHP.MVC.controller = controller;
 			},
@@ -529,7 +529,7 @@ var AgilePHP = {
 			 * @param action {String} The name of the controllers action method to invoke
 			 * @return void
 			 */
-			setAction : function( action ) {
+			setAction : function(action) {
 				
 				AgilePHP.MVC.action = action;
 			},
@@ -550,11 +550,11 @@ var AgilePHP = {
 			 * @param params {Array} An array of parameters to pass into the controller action method
 			 * @return void
 			 */
-			setParameters : function( params ) {
+			setParameters : function(params) {
 
-				if( typeof params == 'Array' ) {
+				if(typeof params == 'Array') {
 
-					AgilePHP.MVC.parameters = params.join( '/' );
+					AgilePHP.MVC.parameters = params.join('/');
 					return;
 				}
 
@@ -568,22 +568,22 @@ var AgilePHP = {
 			 * @param callback {function} The callback function to execute after the XHR request has completed
 			 * @return If no callback function is supplied, the call is treated synchronously and the result is returned. 
 			 */
-			processRequest : function( callback ) {
+			processRequest : function(callback) {
 
 				    var url = AgilePHP.getRequestBase() + '/' + this.getController() + '/' + this.getAction();
 
-				    if( this.parameters.length )
-				    	url += '/' + this.parameters.join( '/' );
+				    if(this.parameters.length)
+				    	url += '/' + this.parameters.join('/');
 
-				    if( callback != undefined )
-				    	new AgilePHP.XHR().request( url, callback )
+				    if(callback != undefined)
+				    	new AgilePHP.XHR().request(url, callback)
 
 				    else {
 
 				    	var xhr = new AgilePHP.XHR();
-				    		xhr.setSynchronous( true );
+				    		xhr.setSynchronous(true);
 
-				    	return xhr.request( url );
+				    	return xhr.request(url);
 				    }
 			}
 		},
@@ -604,7 +604,7 @@ var AgilePHP = {
 			 * @param controller {String} The name of the remoting controller
 			 * @return void
 			 */
-			setController : function( controller ) {
+			setController : function(controller) {
 
 				AgilePHP.Remoting.controller = controller;
 			},
@@ -625,7 +625,7 @@ var AgilePHP = {
 			 * @param {String} transport The transport mechanism used for communication (XHR|WebSocket)
 			 * @return void
 			 */
-			setTransport: function( transport ) {
+			setTransport: function(transport) {
 
 				AgilePHP.Remoting.transport = transport.toLowerCase();
 			},
@@ -648,12 +648,12 @@ var AgilePHP = {
 			 * @param parameters {array} An array containing the arguments/parameters to pass into
 			 * @return mixed Void if asynchronous (call will be executed), otherwise the eval'd response from the service
 			 */
-			invoke: function( stub, method, parameters ) {
+			invoke: function(stub, method, parameters) {
 
-				 AgilePHP.debug( 'AgilePHP.Remoting.invoke' );
-				 AgilePHP.debug( stub );
-				 AgilePHP.debug( method );
-				 AgilePHP.debug( parameters );
+				 AgilePHP.debug('AgilePHP.Remoting.invoke');
+				 AgilePHP.debug(stub);
+				 AgilePHP.debug(method);
+				 AgilePHP.debug(parameters);
 
 				 var clazz = stub._class
 				 var callback = stub._callback;
@@ -661,18 +661,18 @@ var AgilePHP = {
 				 delete stub._class;
 				 delete stub._callback;
 
-				 var data = 'class=' + clazz + '&method=' + method + '&constructorArgs=' + JSON.stringify( stub );
+				 var data = 'class=' + clazz + '&method=' + method + '&constructorArgs=' + JSON.stringify(stub);
 
-				 if( parameters != undefined ) {
+				 if(parameters != undefined) {
 
 					 var o = new Object();
-					 for( var i=0; i<parameters.length; i++ )
+					 for(var i=0; i<parameters.length; i++)
 						  o[ 'argument' + (i+1) ] = parameters[i];
 
-					 data += '&parameters=' + JSON.stringify( o );
+					 data += '&parameters=' + JSON.stringify(o);
 				 }
 
-				 return AgilePHP.Remoting._send( data, callback );
+				 return AgilePHP.Remoting._send(data, callback);
 			},
 
 			/**
@@ -684,33 +684,33 @@ var AgilePHP = {
 			 * @param {function} callback Response callback handler
 			 * @return mixed Void if asynchronous (call will be executed), otherwise the eval'd response from the service
 			 */
-			_send: function( data, callback ) {
+			_send: function(data, callback) {
 
 				// WebSocket Transport
-				if( AgilePHP.Remoting.getTransport() == 'websocket' ) {
+				if(AgilePHP.Remoting.getTransport() == 'websocket') {
 
-					if( !'WebSocket' in window ) {
+					if(!'WebSocket' in window) {
 
-						alert( 'WebSocket API not supported!' );
+						alert('WebSocket API not supported!');
 						return false;
 					}
-					if( callback == undefined ) {
+					if(callback == undefined) {
 
-						alert( 'AgilePHP.Remoting._send [ERROR]: WebSocket transport requires callback' );
+						alert('AgilePHP.Remoting._send [ERROR]: WebSocket transport requires callback');
 						return false;
 					}
-					var ws = new WebSocket( 'ws://' + AgilePHP.Remoting.endpoint );
+					var ws = new WebSocket('ws://' + AgilePHP.Remoting.endpoint);
 		                ws.onopen = function() {
 
-			                ws.send( data ); 
+			                ws.send(data); 
 			            };
-		                ws.onmessage = function( evt ) {
+		                ws.onmessage = function(evt) {
 
-		                        callback( evt.data ); 
+		                        callback(evt.data); 
 		                };
 		                ws.onclose = function() {
 
-		                	AgilePHP.debug( 'WebSocket Closed' );
+		                	AgilePHP.debug('WebSocket Closed');
 		                };
 		             return;
 				}
@@ -719,15 +719,15 @@ var AgilePHP = {
 				var url = (AgilePHP.Remoting.controller == null) ? AgilePHP.Remoting.endpoint : 
 								AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.controller + '/invoke';
 
-				if( callback == undefined ) {
+				if(callback == undefined) {
 
 					 var xhr = new AgilePHP.XHR();
-					 	 xhr.setSynchronous( true );
+					 	 xhr.setSynchronous(true);
 
-					 return xhr.post( url, data );
+					 return xhr.post(url, data);
 				 }
 
-				 new AgilePHP.XHR().post( url, data, callback );
+				 new AgilePHP.XHR().post(url, data, callback);
 			},
 
 			/**
@@ -736,7 +736,7 @@ var AgilePHP = {
 			 * @param {String} clazz The remote class name
 			 * @return Boolean True if the stub has already been loaded, false otherwise
 			 */
-			isLoaded: function( clazz ) {
+			isLoaded: function(clazz) {
 
 				 return AgilePHP.Remoting.classes[clazz] == true;
 			},
@@ -747,12 +747,12 @@ var AgilePHP = {
 			 * @param {String} The remote class name
 			 * @return void
 			 */
-			load: function( clazz ) {
+			load: function(clazz) {
 
-				if( !AgilePHP.Remoting.classes[clazz] ) {
+				if(!AgilePHP.Remoting.classes[clazz]) {
 
 					AgilePHP.Remoting.classes[clazz] = true;
-					AgilePHP.loadScript( AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.getController() + '/index/' + clazz );
+					AgilePHP.loadScript(AgilePHP.getRequestBase() + '/' + AgilePHP.Remoting.getController() + '/index/' + clazz);
 				}
 			}
 

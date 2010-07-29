@@ -36,7 +36,7 @@ class PhpSessionProvider implements SessionProvider {
 	   */
 	  public function __construct() {
 
-	  		 if( !@session_id() ) @session_start();
+	  		 if(!@session_id()) @session_start();
 
 	  	     if(isset($_SESSION['AGILEPHP_SESSION'])) {
 
@@ -121,7 +121,7 @@ class PhpSessionProvider implements SessionProvider {
 	   * @param String $value The variable value
 	   * @return void
 	   */
-	  public function set( $key, $value ) {
+	  public function set($key, $value) {
 
 	  		 $store = unserialize($this->getSession()->getData());
 	  		 $store[$key] = $value;
@@ -186,7 +186,7 @@ class PhpSessionProvider implements SessionProvider {
 		  	 try {
 		  		   $this->persist();
 		  	 }
-		  	 catch( Exception $e ) {
+		  	 catch(Exception $e) {
 
 		  	 	    $message = 'SessionScope::__destruct ' . $e->getMessage();
 		  		    Log::error($message);

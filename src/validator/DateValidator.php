@@ -30,7 +30,7 @@ class DateValidator extends Validator {
 
 	  public function validate() {
 
-	  		 return (strtotime( $this->data ) === false) ? false : true;
+	  		 return (strtotime($this->data) === false) ? false : true;
 	  }
 }
 ?>

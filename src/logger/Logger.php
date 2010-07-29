@@ -21,7 +21,7 @@
 
 /**
  * Responsible for performing property level #@Logger dependency injections.
- * Shorthand for #@In( class = LogFactory::getLogger() )
+ * Shorthand for #@In(class = LogFactory::getLogger())
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
@@ -38,7 +38,7 @@
 class Logger {
 
 	  #@AroundInvoke
-	  public function inject( InvocationContext $ic ) {
+	  public function inject(InvocationContext $ic) {
 
 	  		 return LogFactory::getLogger();
 	  }

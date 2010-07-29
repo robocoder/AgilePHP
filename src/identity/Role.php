@@ -37,7 +37,7 @@ class Role {
 	   * @param String $name An optional user friendly name of the role. 
 	   * @return void
 	   */
-	  public function __construct( $name = null, $description = null ) {
+	  public function __construct($name = null, $description = null) {
 
 	  		 $this->name = $name;
 	  		 $this->description = $description;
@@ -50,7 +50,7 @@ class Role {
 	   * @return void
 	   */
 	  #@Id
-	  public function setName( $name ) {
+	  public function setName($name) {
 
 	  		 $this->name = $name;
 	  }
@@ -71,7 +71,7 @@ class Role {
 	   * @param String $description The role description
 	   * @return void
 	   */
-	  public function setDescription( $description ) {
+	  public function setDescription($description) {
 
 	  		 $this->description = $description;
 	  }

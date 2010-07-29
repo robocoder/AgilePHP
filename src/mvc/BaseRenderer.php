@@ -39,7 +39,7 @@ abstract class BaseRenderer {
 		  * @param mixed $value The variable value
 		  * @return void
 		  */
-	  	 public function set( $key, $value ) {
+	  	 public function set($key, $value) {
 
 	  	      	$this->store[$key] = $value;
       	 }
@@ -50,7 +50,7 @@ abstract class BaseRenderer {
       	  * @param String $key The key to retrieve the value from
       	  * @return mixed The value stored in the $key index
       	  */
-      	 public function get( $key ) {
+      	 public function get($key) {
 
       	 		return $this->store[$key];
       	 }
@@ -66,6 +66,6 @@ abstract class BaseRenderer {
       	 	    return $this->store;
       	 }
 
-         abstract public function render( $view );
+         abstract public function render($view);
 }
 ?>

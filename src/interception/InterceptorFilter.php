@@ -30,57 +30,57 @@
  */
 class InterceptorFilter {
 
-	  public function __construct( $class ) {
+	  public function __construct($class) {
 
 	  		 // Process class level annotations
-			 $classAnnotations = Annotation::getClassAsArray( $class );
-	  	     if( count( $classAnnotations ) ) {
+			 $classAnnotations = Annotation::getClassAsArray($class);
+	  	     if(count($classAnnotations)) {
 
-			     foreach( $classAnnotations as $annotation ) {
+                foreach($classAnnotations as $annotation) {
 
-			  	   		  $annote = new AnnotatedClass( $annotation );
-				   	   	  if( $annote->hasAnnotation( 'Interceptor' ) ) {
+			  	  		$annote = new AnnotatedClass($annotation);
+				   	   	if($annote->hasAnnotation('Interceptor')) {
 
-				   	   	  	  $interceptor = $annote->getName();
-				   	   	  	  $interception = new Interception( $class, null, null, $annotation );
-				   	   	  	  AgilePHP::addInterception( $interception );
-				   	   	  }
+				   	   	   $interceptor = $annote->getName();
+				   	   	   $interception = new Interception($class, null, null, $annotation);
+				   	   	   AgilePHP::addInterception($interception);
+				   	   	}
 				 }
 	  	     }
 
 	  	     // Process method level annotations
-			 $annotatedMethods = Annotation::getMethodsAsArray( $class );
-		 	 if( count( $annotatedMethods ) ) {
+			 $annotatedMethods = Annotation::getMethodsAsArray($class);
+		 	 if(count($annotatedMethods)) {
 
-				 foreach( $annotatedMethods as $methodName => $methodAnnotation ) {
+				foreach($annotatedMethods as $methodName => $methodAnnotation) {
 
-				     foreach( $methodAnnotation as $annotation ) {
+				     foreach($methodAnnotation as $annotation) {
 
-				  	   		  $annote = new AnnotatedClass( $annotation );
-					   	   	  if( $annote->hasAnnotation( 'Interceptor' ) ) {
+				  	   		 $annote = new AnnotatedClass($annotation);
+					   	   	 if($annote->hasAnnotation('Interceptor')) {
 
-					   	   	  	  $interceptor = $annote->getName();
-					   	   	  	  $interception = new Interception( $class, $methodName, null, $annotation );
-					   	   	  	  AgilePHP::addInterception( $interception );
-					   	   	  }
+					   	   	  	$interceptor = $annote->getName();
+					   	   	  	$interception = new Interception($class, $methodName, null, $annotation);
+					   	   	  	AgilePHP::addInterception($interception);
+					   	   	 }
 					 }
 				 }
 	  	     }
 
 	  	     // Proces property/field level annotations
-	  	     $annotatedProperties = Annotation::getPropertiesAsArray( $class );
-		 	 if( count( $annotatedProperties ) ) {
+	  	     $annotatedProperties = Annotation::getPropertiesAsArray($class);
+		 	 if(count($annotatedProperties)) {
 
-				 foreach( $annotatedProperties as $fieldName => $fieldAnnotation ) {
+				foreach($annotatedProperties as $fieldName => $fieldAnnotation) {
 
-				     foreach( $fieldAnnotation as $annotation ) {
+				     foreach($fieldAnnotation as $annotation) {
 
-				  	   		  $annote = new AnnotatedClass( $annotation );
-					   	   	  if( $annote->hasAnnotation( 'Interceptor' ) ) {
+				  	   		 $annote = new AnnotatedClass($annotation);
+					   	   	 if($annote->hasAnnotation('Interceptor')) {
 
-					   	   	  	  $interceptor = $annote->getName();
-					   	   	  	  $interception = new Interception( $class, null, $fieldName, $annotation );
-					   	   	  	  AgilePHP::addInterception( $interception );
+					   	   	  	$interceptor = $annote->getName();
+					   	   	  	$interception = new Interception($class, null, $fieldName, $annotation);
+					   	   	  	AgilePHP::addInterception($interception);
 					   	   	  }
 					 }
 				 }

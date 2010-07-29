@@ -40,18 +40,18 @@ class i18n {
 	   */
 	  private function __construct() {
 
-	  		  if( isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
+	  		  if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
 
 	  		  	  $httpLang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-	  		 	  $pieces = explode( ';', $httpLang );
-	  		 	  $dirty = (count( $pieces ) > 0) ? substr( $pieces[0], 0, 5 ) : null;
-	  		 	  $locale = str_replace( '-', '_', $dirty );
+	  		 	  $pieces = explode(';', $httpLang);
+	  		 	  $dirty = (count($pieces) > 0) ? substr($pieces[0], 0, 5) : null;
+	  		 	  $locale = str_replace('-', '_', $dirty);
 
-	  		 	  if( file_exists( AgilePHP::getWebRoot() . 
-	  		 	  			DIRECTORY_SEPARATOR . 'locale' . $this->getLocale() ) ) {
+	  		 	  if(file_exists(AgilePHP::getWebRoot() . 
+	  		 	  			DIRECTORY_SEPARATOR . 'locale' . $this->getLocale())) {
 
-	  		 	  	  $this->setLocale( $locale );
-	  		 	  	  $this->setDomain( $this->domain );
+	  		 	  	  $this->setLocale($locale);
+	  		 	  	  $this->setDomain($this->domain);
 	  		 	  }
 	  		  }
 	  }
@@ -64,7 +64,7 @@ class i18n {
 	   */
 	  public static function getInstance() {
 
-	  		 if( self::$instance == null )
+	  		 if(self::$instance == null)
 	  		 	 self::$instance = new self;
 
 	  		 return self::$instance;
@@ -76,12 +76,12 @@ class i18n {
 	   * @param String $domain The messaging domain. Defaults to 'messages'.
 	   * @return void
 	   */
-	  public function setDomain( $domain ) {
+	  public function setDomain($domain) {
 
 	  		 $this->domain = $domain;
 
-	  		 bindtextdomain( $domain, AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'locale' );
-			 textdomain( $domain );
+	  		 bindtextdomain($domain, AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'locale');
+			 textdomain($domain);
 	  }
 
 	  /**
@@ -100,10 +100,10 @@ class i18n {
 	   * @param $locale The two letter_TWO LETTER language local. (ie. en_US, en_ES, ...)
 	   * @return void
 	   */
-	  public function setLocale( $locale ) {
+	  public function setLocale($locale) {
 
 	  		 $this->locale = $locale;
-	  		 setlocale( LC_ALL, $locale );
+	  		 setlocale(LC_ALL, $locale);
 	  }
 
 	  /**
@@ -123,9 +123,9 @@ class i18n {
 	   * @return string The translated text
 	   * @static
 	   */
-	  public static function translate( $text ) {
+	  public static function translate($text) {
 
-	  		 return _( $text );
+	  		 return _($text);
 	  }
 }
 ?>

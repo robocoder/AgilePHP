@@ -51,7 +51,7 @@ class Interception {
 	   * @param Object $interceptor The instance of the interceptor which will intercept calls
 	   * @return void
 	   */
-	  public function __construct( $class, $method, $property, $interceptor ) {
+	  public function __construct($class, $method, $property, $interceptor) {
 
 	  		 $this->class = $class;
 	  		 $this->method = $method;
@@ -108,19 +108,19 @@ class Interception {
 	  public function createInterceptedTarget() {
 
  	  		 // php namespace support
-			 $namespace = explode( '\\', $this->class );
+			 $namespace = explode('\\', $this->class);
 			 $className = $namespace[count($namespace)-1];
-			 array_pop( $namespace );
-			 $namespace = implode( '\\', $namespace );
+			 array_pop($namespace);
+			 $namespace = implode('\\', $namespace);
 
-		 	 if( class_exists( $this->class, false ) ) return;
+		 	 if(class_exists($this->class, false)) return;
 
-		 	 if( strpos( $className, 'phar://' ) !== false ) {
+		 	 if(strpos($className, 'phar://') !== false) {
 
-		 	     $code = file_get_contents( $className );
-		 	 	 $namespace = explode( '/', $className );
-		 	 	 $className = array_pop( $namespace );
-		 	 	 $className = preg_replace( '/\.php/', '', $className );
+		 	     $code = file_get_contents($className);
+		 	 	 $namespace = explode('/', $className);
+		 	 	 $className = array_pop($namespace);
+		 	 	 $className = preg_replace('/\.php/', '', $className);
 		 	 }
 		 	 else {
 
@@ -128,20 +128,20 @@ class Interception {
 		 	 	       $code = ($namespace) ? 'namespace ' . $namespace . ';' : '';
 	  		 	 	   $code .= AgilePHP::getSource($this->class);
 		 	 	 }
-		 	 	 catch( FrameworkException $e ) {
+		 	 	 catch(FrameworkException $e) {
 
-		 	 	 		throw new InterceptionException( $e->getMessage(), $e->getCode() );
+		 	 	 		throw new InterceptionException($e->getMessage(), $e->getCode());
 		 	 	 }
 		 	 }
 
-		 	 preg_match( '/(class\s+.*){/', $code, $matches);
-	  		 $code = preg_replace( '/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code );
-			 $code = $this->clean( $code );
+		 	 preg_match('/(class\s+.*){/', $code, $matches);
+	  		 $code = preg_replace('/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code);
+			 $code = $this->clean($code);
 
-			 //Log::debug( 'Interception::createInterceptedTarget ' . PHP_EOL . $code );
+			 //Log::debug('Interception::createInterceptedTarget ' . PHP_EOL . $code);
 
-	  		 if( eval( $code ) === false )
-	  		 	 throw new InterceptionException( 'Failed to create intercepted target' );
+	  		 if(eval($code) === false)
+	  		 	 throw new InterceptionException('Failed to create intercepted target');
 
 	  		 return $matches[1];
 	  }
@@ -156,69 +156,69 @@ class Interception {
 	  public function createInterceptorProxy($prototype) {
 
 	  		 // php namespace support
-			 $namespace = explode( '\\', $this->class );
+			 $namespace = explode('\\', $this->class);
 			 $className = $namespace[count($namespace)-1];
-			 array_pop( $namespace );
-			 $namespace = implode( '\\', $namespace );
+			 array_pop($namespace);
+			 $namespace = implode('\\', $namespace);
 
 			 // __callstatic support
 	  		 $class = str_replace('\\', '::', $this->class);
 
-	  		 if( class_exists( $this->class, false ) ) return;
+	  		 if(class_exists($this->class, false)) return;
 
 	 	     // Phar support
-	  		 if( strpos( $className, 'phar://' ) !== false ) {
+	  		 if(strpos($className, 'phar://') !== false) {
 
-		     	 $className = preg_replace( '/phar:\/\//', '', $className );
-		     	 $nspieces = explode( '/', $className );
-		     	 array_pop( $nspieces );
-		     	 $namespace = implode( '\\', $nspieces );
+		     	 $className = preg_replace('/phar:\/\//', '', $className);
+		     	 $nspieces = explode('/', $className);
+		     	 array_pop($nspieces);
+		     	 $namespace = implode('\\', $nspieces);
 
-	  		 	 $pieces = explode( '/', $className );
-	  		 	 $className = array_pop( $pieces );
-	  		 	 $className = preg_replace( '/\.php/', '', $className );
+	  		 	 $pieces = explode('/', $className);
+	  		 	 $className = array_pop($pieces);
+	  		 	 $className = preg_replace('/\.php/', '', $className);
 		     }
 
 	  	     try {
 	  	            $code = ($namespace) ? 'namespace ' . $namespace . ';' : '';
-	  		 		$code .= AgilePHP::getSource( 'InterceptorProxy' );
+	  		 		$code .= AgilePHP::getSource('InterceptorProxy');
 	  	     }
-	  	     catch( FrameworkException $e ) {
+	  	     catch(FrameworkException $e) {
 
-	  	     		throw new InterceptionException( $e->getMessage(), $e->getCode() );
+	  	     		throw new InterceptionException($e->getMessage(), $e->getCode());
 	  	     }
 
-	  		 $code = preg_replace( '/class\s.*{/', $prototype . '{', $code );
+	  		 $code = preg_replace('/class\s.*{/', $prototype . '{', $code);
 	  		 $stubs = $this->getMethodStubs();
-	  		 $proxyMethods = array( 'getInstance', 'getInterceptedInstance',
-	  		 						   '__get', '__set', '__isset', '__unset', '__call' );
+	  		 $proxyMethods = array('getInstance', 'getInterceptedInstance',
+	  		 						   '__get', '__set', '__isset', '__unset', '__call');
 
 	  		 $constructor = null;
 
 	  		 // Create method stubs in the proxy which match those in the intercepted class
-	  		 for( $i=0; $i<count( $stubs['signatures'] ); $i++ ) {
+	  		 for($i=0; $i<count($stubs['signatures']); $i++) {
 
-	  		 		if( $stubs['methods'][$i] == '__construct' ) {
+	  		 		if($stubs['methods'][$i] == '__construct') {
 
 	  		 			$constructor = $stubs['signatures'][$i];
 	  		 			continue;
 	  		 		}
-	  		 		else if( in_array( $stubs['methods'][$i], $proxyMethods ) ) continue;
+	  		 		else if(in_array($stubs['methods'][$i], $proxyMethods)) continue;
 
-	  		 		$call = $stubs['signatures'][$i] . ' { return $this->__call( "' . $stubs['methods'][$i] . '", array' . $stubs['params'][$i] . ' ); } ';
-	  		 		$code = preg_replace( '/\}\s*\?>/m', "\t" . $call . PHP_EOL . '}' . PHP_EOL . '?>', $code );
+	  		 		$call = $stubs['signatures'][$i] . ' { return $this->__call("' . $stubs['methods'][$i] . '", array' . $stubs['params'][$i] . '); } ';
+	  		 		$code = preg_replace('/\}\s*\?>/m', "\t" . $call . PHP_EOL . '}' . PHP_EOL . '?>', $code);
 	  		 }
 
 	  		 // Make sure the proxy constructor matches the intercepted class
-	  		 if( $constructor )
-	  		 	 $code = preg_replace( '/public\s+function\s+__construct.*\)/', $constructor, $code );
+	  		 if($constructor)
+	  		 	 $code = preg_replace('/public\s+function\s+__construct.*\)/', $constructor, $code);
 
-	  		 $code = $this->clean( $code );
+	  		 $code = $this->clean($code);
 
-	  		 //Log::debug( 'Interception::createInterceptorProxy ' . PHP_EOL . $code );
+	  		 //Log::debug('Interception::createInterceptorProxy ' . PHP_EOL . $code);
 
-	  		 if( eval( $code ) === false )
-	  		 	 throw new InterceptionException( 'Failed to create interceptor proxy for \'' . $this->class . '\'.' );
+	  		 if(eval($code) === false)
+	  		 	 throw new InterceptionException('Failed to create interceptor proxy for \'' . $this->class . '\'.');
 	  }
 
 	  /**
@@ -232,14 +232,14 @@ class Interception {
 	   */
 	  private function getMethodStubs() {
 
-	  		  $code = AgilePHP::getSource( $this->class );
-	  		  preg_match_all( '/(public\s+function\s+(.*?)(\(.*\)))\s/', $code, $matches );
+	  		  $code = AgilePHP::getSource($this->class);
+	  		  preg_match_all('/(public\s+function\s+(.*?)(\(.*\)))\s/', $code, $matches);
 
-	  		  if( !isset( $matches[1] ) )
+	  		  if(!isset($matches[1]))
 	  		 	   return array();
 
 	  		  // Parameter names are gotten from the method signature
-	  		  foreach( $matches[3] as &$params ) {
+	  		  foreach($matches[3] as &$params) {
 
 	  		       // Remove type hinting
 	  		       preg_match_all('/\$[a-zA-Z0-9_]+/', $params, $args);
@@ -260,10 +260,10 @@ class Interception {
 	   * @param $code The PHP code to clean
 	   * @return The cleaned code
 	   */
-	  private function clean( $code ) {
+	  private function clean($code) {
 
-	  		  $code = preg_replace( '/<\?php/', '', $code );
-	  		  $code = preg_replace( '/\?>/', '', $code );
+	  		  $code = preg_replace('/<\?php/', '', $code);
+	  		  $code = preg_replace('/\?>/', '', $code);
 
 	  		  return $code;
 	  }

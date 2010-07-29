@@ -30,7 +30,7 @@
  * 
  * 		 // Calls to this function are logged including class, method, parameters, and return value.
  * 		 #@Audit
- * 		 public function doSomething( $param1, $param2 ) {
+ * 		 public function doSomething($param1, $param2) {
  * 
  * 				return 'something useful';
  * 		 }
@@ -56,40 +56,40 @@ class Audit {
 	   */
 	  public $verbose = false;
 
-	  private $valid = array( 'info', 'warn', 'error', 'debug' );
+	  private $valid = array('info', 'warn', 'error', 'debug');
 
 	  #@AroundInvoke
-	  public function logInvocation( InvocationContext $ic ) {
+	  public function logInvocation(InvocationContext $ic) {
 
-	  		 $level = (in_array( $this->level, $this->valid)) ? $this->level : 'debug';
-	  		 if( $this->verbose ) {
+	  		 $level = (in_array($this->level, $this->valid)) ? $this->level : 'debug';
+	  		 if($this->verbose) {
 
-	  		 	 Log::$level( '#@Audit::logInvocation' );
-	  		 	 Log::$level( $ic );
+	  		 	 Log::$level('#@Audit::logInvocation');
+	  		 	 Log::$level($ic);
 	  		 	 return $ic->proceed();	 
 	  		 }
 
 	  		 $callee = $ic->getCallee();
-	  		 $message = 'class = \'' . $callee['class'] . '\', method = \'' . $callee['function'] . '\', args = \'' . implode( ',', $ic->getParameters() ) . '\'';
+	  		 $message = 'class = \'' . $callee['class'] . '\', method = \'' . $callee['function'] . '\', args = \'' . implode(',', $ic->getParameters()) . '\'';
 
-	  		 Log::$level( '#@Audit::logInvocation ' . $message ); 
+	  		 Log::$level('#@Audit::logInvocation ' . $message); 
 	  		 return $ic->proceed();
 	  }
 
 	  #@AfterInvoke
-	  public function logReturn( InvocationContext $ic ) {
+	  public function logReturn(InvocationContext $ic) {
 
-	  		 $level = (in_array( $this->level, $this->valid)) ? $this->level : 'debug';
-	  		 if( $this->verbose ) {
+	  		 $level = (in_array($this->level, $this->valid)) ? $this->level : 'debug';
+	  		 if($this->verbose) {
 
-	  		 	 Log::$level( '#@Audit::logReturn' );
-	  		 	 Log::$level( $ic );
+	  		 	 Log::$level('#@Audit::logReturn');
+	  		 	 Log::$level($ic);
 	  		 	 return $ic->proceed();	 
 	  		 }
 
 	  		 $return = $ic->getReturn();
-	  		 Log::$level( '#@Audit::logReturn' );
-	  		 Log::$level( (($return) ? $return : '(null)') );
+	  		 Log::$level('#@Audit::logReturn');
+	  		 Log::$level((($return) ? $return : '(null)'));
 
 	  		 return $ic->proceed();
 	  }
