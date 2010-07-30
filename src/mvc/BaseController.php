@@ -23,7 +23,7 @@
  * AgilePHP :: MVC BaseController
  * Provides basic renderer implementations and defines 'index'
  * abstract method.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.mvc
@@ -35,7 +35,7 @@ abstract class BaseController {
 
 	     /**
 	      * Creates a new instance of default renderer
-	      * 
+	      *
 	      * @return void
 	      */
 	     public function __construct() {
@@ -45,7 +45,7 @@ abstract class BaseController {
 
 	     /**
 	      * Returns the controllers view renderer.
-	      * 
+	      *
 	      * @return void
 	      */
 	     protected function getRenderer() {
@@ -55,7 +55,7 @@ abstract class BaseController {
 
 	     /**
 	      * Shorthand / alias for getRenderer()->set
-	      * 
+	      *
 	      * @return void
 	      */
 	     public function set($key, $value) {
@@ -64,34 +64,44 @@ abstract class BaseController {
 	     }
 
 	     /**
+	      * Shorthand / alias for getRenderer()->render
+	      *
+	      * @return void
+	      */
+	     public function render($view) {
+
+	            $this->renderer->render($view);
+	     }
+
+	     /**
 		  * Creates an instance of the specified renderer the controller will use to render views.
 		  * This renderer is loaded from the AgilePHP framework.
-		  * 
+		  *
 		  * @param String $renderer The name of a renderer the controller will use to render views
 		  * @return void
 	      */
 	     protected function createRenderer($renderer) {
 
-	     	       $this->renderer = MVC::createRenderer($renderer); 
+	     	       $this->renderer = MVC::createRenderer($renderer);
 	     }
 
 	     /**
 		  * Creates an instance of the specified custom renderer the controller will use to render views.
 		  * This renderer is loaded from the application 'classes' directory.
-		  * 
+		  *
 		  * @param String $renderer The name of a custom renderer the controller will use to render views.
 		  * 						Use this method to load renderers outside of the framework mvc package.
 		  * @return void
 	      */
 	     protected function createCustomRenderer($renderer) {
 
-	     	       $this->renderer = MVC::createCustomRenderer($renderer); 
+	     	       $this->renderer = MVC::createCustomRenderer($renderer);
 	     }
 
 	     /**
 	      * Returns the raw JavaScript contents of the AgilePHP.js file and pre-configures the library
 	      * with a default AgilePHP.debug, AgilePHP.MVC.controller, and AgilePHP.MVC.action value.
-	      * 
+	      *
 	      * @param bool $debug True to enable client side AgilePHP debugging.
 	      * @return void
 	      */
@@ -111,7 +121,7 @@ abstract class BaseController {
 
 	     /**
 	      * Default controller action method.
-	      * 
+	      *
 	      * @return void
 	      */
 	     abstract public function index();

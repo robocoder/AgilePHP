@@ -1,13 +1,9 @@
-- Bug (E_WARNING) fix to MVC::init - refactored to static
-- Went through the entire framework bringing parenthesis syntax into alignment with
-  PEAR coding standard - ($value) instead of ( $value ) and \t (tabs) replaced with
-  4 spaces (in annotation package only - still need to do the rest of the framework)  
-- Refactored BaseController::renderer from private to protected
-- Added BaseController::set as shorthand/alias for getRenderer()->set
-- Removed private $renderer field from Updated test/control/AJAXController.php
-- Performance optimization to Database::hasTables.
-- Refactored IPv4Validator and EmailValidator to use filter_var
-- Created IPv6Validator using filter_var
-- Deleted webservice/remoting/json.js (developer can download from json.org if necessary)
+- Bug fix to EmailValidator introduced in last checkin.
+- Created BaseController::render as shorthand / alias for getRenderer()->render
+- Added IPv6Validator to AgilePHP::$classmap
+- Added conditionals to AgilePHP::getSource and AgilePHP::autoload to allow
+  overriding framework class paths. The web application directory is searched
+  first now instead of the framework.
+- Bug fix to RestUtil::serverTransform application/xhtml+xml case introduced in last refactoring.
 
 Backward compatible apidoc: Yes

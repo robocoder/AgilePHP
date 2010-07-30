@@ -519,9 +519,19 @@ final class AgilePHP {
              // Search classmap
              if(isset(self::$classmap[$class])) {
 
-                $source = file_get_contents(self::$frameworkRoot . self::$classmap[$class]);
-                if(self::$cacher) self::$cacher->set($key, $source);
-                return $source;
+                // Allow the application to override framework class paths
+                if(file_exists(self::$webroot . self::$classmap[$class])) {
+
+                   $source = file_get_contents(self::$webroot . self::$classmap[$class]);
+                   if(self::$cacher) self::$cacher->set($key, $source);
+                   return $source;
+                }
+                else {
+
+                    $source = file_get_contents(self::$frameworkRoot . self::$classmap[$class]);
+                    if(self::$cacher) self::$cacher->set($key, $source);
+                    return $source;
+                }
              }
 
              // PHP namespace support
@@ -601,11 +611,22 @@ final class AgilePHP {
                 if(class_exists($class, false)) return;
              }
 
-             // Search static classmap
+             // Search classmap
              if(isset(self::$classmap[$class])) {
 
-                require self::$frameworkRoot . self::$classmap[$class];
-                return;
+                // Allow the application to override framework class paths
+                if(file_exists(self::$webroot . self::$classmap[$class])) {
+
+                    if(self::$cacher) self::$cacher->set($key, self::$webroot . self::$classmap[$class]);
+                    require self::$webroot . self::$classmap[$class];
+                    return;
+                }
+                else {
+
+                    if(self::$cacher) self::$cacher->set($key, self::$frameworkRoot . self::$classmap[$class]);
+                    require self::$frameworkRoot . self::$classmap[$class];
+                    return;
+                }
              }
 
              // PHP namespace support
@@ -777,6 +798,7 @@ final class AgilePHP {
           'EmailValidator' => '/validator/EmailValidator.php',
           'FloatValidator' => '/validator/FloatValidator.php',
           'IPv4Validator' => '/validator/IPv4Validator.php',
+          'IPv6Validator' => '/validator/IPv6Validator.php',
           'LengthValidator' => '/validator/LengthValidator.php',
           'NumberValidator' => '/validator/NumberValidator.php',
           'ObjectValidator' => '/validator/ObjectValidator.php',

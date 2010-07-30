@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -22,7 +22,7 @@
 /**
  * Validates email addresses by checking its syntax and checking the domain
  * for valid A and MX records.
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
@@ -32,16 +32,16 @@ class EmailValidator extends Validator {
 	  /**
 	   * Validates an email address by checking its syntax and performing
 	   * and DNS lookup on the domain.
-	   * 
+	   *
 	   * @param String $email The email address to validate
 	   * @return bool True if the email address is considered valid, false otherwise.
 	   */
 	  public function validate() {
 
 	         if(!filter_var($this->data, FILTER_VALIDATE_EMAIL)) return false;
-	      
+
    			 $index = strrpos($this->data, '@');
-   			 $domain = substr($this->data, $atIndex + 1);
+   			 $domain = substr($this->data, $index + 1);
 
       		 if(!checkdnsrr($domain, "MX") || checkdnsrr($domain, "A")) return false;
 

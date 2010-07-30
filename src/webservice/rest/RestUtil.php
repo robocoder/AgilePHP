@@ -153,9 +153,14 @@ class RestUtil {
 	  		 	         $className = get_class($data);
 
 	  		 	      $class = new ReflectionClass($className);
+
+	  		 	      $namespace = explode('\\', $class->getName());
+                      $className = array_pop($namespace);
+
 	  		 		  // Perform XSLT transformation if a model xsl view exists
-	  		 		  if(file_exists(AgilePHP::getWebRoot() . '/view/' . $class->getName() . '.xsl')) {
-	  		 		  	  return $renderer->transformXsl($class->getName(), XmlRenderer::render($data));
+	  		 		  $renderer = new XSLTRenderer();
+	  		 		  if(file_exists(AgilePHP::getWebRoot() . '/view/' . $className . '.xsl')) {
+	  		 		  	  return $renderer->transformXsl($className, XmlRenderer::render($data));
 	  		 		  }
 	  		 		  else {
 	  		 		  	  // Otherwise send the response as XML
