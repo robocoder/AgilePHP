@@ -27,7 +27,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
  */
-class Session {
+class Session implements ActiveRecord {
 
 	  private $id;
 	  private $data;

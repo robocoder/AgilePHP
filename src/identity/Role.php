@@ -26,7 +26,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  */
-class Role {
+class Role implements ActiveRecord {
 
 	  private $name;
 	  private $description;

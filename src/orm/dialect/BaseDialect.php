@@ -591,21 +591,125 @@ abstract class BaseDialect {
 		       return $this->execute($values);
 	    }
 
- 	    /**
-	     * Truncates the table for the specified domain model object
+		/**
+	     * Looks up a single record using the primary keys values set in the model.
 	     *
-	     * @param $model A domain model object
-	     * @return PDOStatement
-	     * @throws ORMException
+	     * @param ActiveRecord $model A domain model object. Any fields which are set in the object are used to filter results.
+	     * @throws ORMException If any primary keys contain null values or any
+	     * 		   errors are encountered executing queries
 	     */
-	    public function truncate($model) {
+	    public function get(ActiveRecord $model) {
 
-			   $table = $this->getTableByModel();
-			   $sql = 'TRUNCATE TABLE ' . $table->getName() . ';';
-			   $this->prepare($sql);
-			   return $this->execute();
+	           if($m = IdentityMap::get($model)) return $m; 
+
+	    	   $table = $this->getTableByModel($model);
+			   $values = array();
+
+			   Log::debug('BaseDialect::get Performing get on model \'' . $table->getModel() . '\'.');
+
+	  		   try {
+    	   		 		$where = '';
+    	   		 		$order = $this->getOrderBy();
+    	   	         	$offset = $this->getOffset();
+    	   	         	$groupBy = $this->getGroupBy();
+
+    	   		 		$columns = $table->getColumns();
+						for($i=0; $i<count($columns); $i++) {
+
+						 	 if($columns[$i]->isLazy()) continue;
+
+						 	 $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
+					     	 if($model->$accessor() == null) continue;
+
+					     	 $where .= ' ' . $columns[$i]->getName() . ' = ?';
+
+					     	 if(is_object($model->$accessor())) {
+					     	 	 $refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+
+					     	 	 if($transformer = $columns[$i]->getTransformer())
+					     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+					     	     else
+			     	 	     	    array_push($values, $model->$accessor()->$refAccessor());
+					     	 }
+					     	 else {
+
+					     	     if($transformer = $columns[$i]->getTransformer())
+					     	        array_push($values, $transformer::transform($model->$accessor()));
+					     	     else
+			     	 	     	    array_push($values, $model->$accessor());
+					     	 }
+					    }
+					    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where . ';';
+
+	   	         	 	$this->prepare($sql);
+    					$this->PDOStatement->setFetchMode(PDO::FETCH_OBJ);
+    					$result = $this->execute($values);
+    
+    					if(!count($result)) {
+    
+    					   Log::debug('BaseDialect::get Empty result set for model \'' . $table->getModel() . '\'.');
+    					   return;
+    					}
+    					elseif(count($result) > 1)
+    					   throw new ORMException('BaseDialect::get located more than one record in the result set');
+
+				 	    $index = 0;
+				 	    $models = array();
+					    foreach($result as $stdClass ) {
+
+					 		  $m = $table->getModelInstance();
+					 	   	  foreach(get_object_vars($stdClass) as $name => $value) {
+
+					 	   	  		   $modelProperty = $this->getPropertyNameForColumn($table, $name);
+
+							 	   	   // Create foreign model instances from foreign values
+						 	 		   foreach($table->getColumns() as $column) {
+
+						 	 		   		    if($column->getName() != $name) continue;
+						 	 		   		    if($column->isLazy()) continue;
+
+						 	 		   		    if($renderer = $column->getRenderer())
+                        				   	       $value = $renderer::render($value);
+
+                        				   	    if(!$value) continue;
+
+						 	 		  		    if($column->isForeignKey()) {
+
+						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
+						 	 		  		   	    $foreignInstance = new $foreignModel();
+
+						 	 		  		   	    $foreignMutator = $this->toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+						 	 		  		   	    $foreignInstance->$foreignMutator($value);
+
+						 	 		  		   	    $persisted = $this->find($foreignInstance);
+
+						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
+							 	 		  		   	$foreignModelPieces = explode('\\', $foreignModel);
+							 	 		  		   	$foreignClassName = array_pop($foreignModelPieces);
+
+						 	 		  		   	    $instanceMutator = $this->toMutator($modelProperty);
+						 	 		  		   	    $m->$instanceMutator($persisted[0]);
+						 	 		  		    }
+						 	 		  		    else {
+
+						 	 		  		   		$mutator = $this->toMutator($modelProperty);
+					 	   	   		  				$m->$mutator($value);
+						 	 		  		    }
+						 	 		   }
+					 	   	  }
+
+					 	   	  IdentityMap::addModel($m);
+					 	   	  return $m;
+				        }
+
+				        
+	  		 }
+	  		 catch(Exception $e) {
+
+	  		 		throw new ORMException($e->getMessage(), $e->getCode());
+	  		 }
 	    }
-
+	    
 	    /**
 	     * Attempts to locate the specified model by values. Any fields set in the object are used
 	     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
@@ -618,7 +722,6 @@ abstract class BaseDialect {
 	    public function find($model) {
 
 	    	   $table = $this->getTableByModel($model);
-			   $newModel = $table->getModelInstance();
 			   $values = array();
 
 			   Log::debug('BaseDialect::find Performing find on model \'' . $table->getModel() . '\'.');
@@ -693,7 +796,7 @@ abstract class BaseDialect {
 					 if(!count($result)) {
 
 					 	 Log::debug('BaseDialect::find Empty result set for model \'' . $table->getModel() . '\'.');
-					 	 return null;
+					 	 return;
 					 }
 
 				 	 $index = 0;
@@ -741,6 +844,7 @@ abstract class BaseDialect {
 						 	 		   }
 					 	   	  }
 
+					 	   	  IdentityMap::addModel($m);
 					 	   	  array_push($models, $m);
 					 	   	  $index++;
 					 	   	  if($index == $this->maxResults)  break;
@@ -752,6 +856,21 @@ abstract class BaseDialect {
 
 	  		 		throw new ORMException($e->getMessage(), $e->getCode());
 	  		 }
+	  }
+
+ 	  /**
+	   * Truncates the table for the specified domain model object
+	   *
+	   * @param $model A domain model object
+	   * @return PDOStatement
+	   * @throws ORMException
+	   */
+	  public function truncate($model) {
+
+			 $table = $this->getTableByModel();
+			 $sql = 'TRUNCATE TABLE ' . $table->getName() . ';';
+			 $this->prepare($sql);
+		     return $this->execute();
 	  }
 
 	  /**

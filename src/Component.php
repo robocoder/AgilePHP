@@ -45,7 +45,7 @@ abstract class Component extends BaseController {
 	   */
 	  public function __construct() {
 
-	         $class = get_class($this);
+	         $class = preg_replace('/_Intercepted/', '', get_class($this));
 
 	         // Retrieve the component.xml configuration (Use caching if enabled)
              if($cacher = AgilePHP::getCacher()) {

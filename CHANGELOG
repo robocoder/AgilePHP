@@ -1,9 +1,11 @@
-- Bug fix to EmailValidator introduced in last checkin.
-- Created BaseController::render as shorthand / alias for getRenderer()->render
-- Added IPv6Validator to AgilePHP::$classmap
-- Added conditionals to AgilePHP::getSource and AgilePHP::autoload to allow
-  overriding framework class paths. The web application directory is searched
-  first now instead of the framework.
-- Bug fix to RestUtil::serverTransform application/xhtml+xml case introduced in last refactoring.
+- Added interceptor support to Component class.
+- Added DomainModel, ActiveRecord, and IdentityMap to ORM package. IdentityMap fixes
+  inefficient/duplicate lookups/queries issue.
+- Added new "get" method to BaseDialect (havent added to SQLDialect interface yet
+  which means only mysql and sqlite dialects will work properly when get() is called)
+  which is designed to fetch a single record. This fetch is also performed "through"
+  the new IdentityMap.
+- Refactored test package and core framework models to implement new ActiveRecord interface.
+- Added new classes/interfaces to AgilePHP static classmap.
 
 Backward compatible apidoc: Yes

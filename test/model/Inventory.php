@@ -29,7 +29,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.model
  */
-class Inventory {
+class Inventory implements ActiveRecord {
 
 	  private $id;
 	  private $name;

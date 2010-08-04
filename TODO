@@ -18,3 +18,6 @@
 > Add stored procedure support to component <orm> configurations
 > Figure out how to make unit tests use same dbpg session as phpunit/phing
   so tests that rely on "external" curl requests show up in coverage report.
+> Add "unit of work" pattern to ORM. Add "#@Transactional" interceptor to ORM package. Add new ActiveRecord type hinting
+  to dialect orm'ing methods (persist, find, delete, merge, etc) - will break backward compatibility since all models
+  will be required to implement ActiveRecord.

@@ -20,9 +20,8 @@
  */
 
 /**
- * AgilePHP :: MVC BaseController
- * Provides basic renderer implementations and defines 'index'
- * abstract method.
+ * Provides common rendering implementations and defines an abstract
+ * "index" method.
  *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc

@@ -29,14 +29,14 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.model
  */
-class Mailing {
-	
+class Mailing implements ActiveRecord {
+
 	  private $id;
 	  private $name;
 	  private $email;
 	  private $enabled;
 	  
-	  public function Mailing() { }
+	  public function __construct() { }
 
 	  #@Id
 	  public function setId( $id ) {
