@@ -40,7 +40,7 @@ class MathTest {
 	   * @param int $a
 	   * @return void
 	   */
-	  public function setA( $a ) {
+	  public function setA($a) {
 	  	
 	  		 $this->a = $a;
 	  }
@@ -61,7 +61,7 @@ class MathTest {
 	   * @param int $b
 	   * @return void
 	   */
-	  public function setB( $b ) {
+	  public function setB($b) {
 	  		 
 	  		 $this->b = $b;
 	  }
@@ -83,7 +83,7 @@ class MathTest {
 	   * @param int $b The number to add to the base
 	   * @return int The sum
 	   */
-	  public function add( $a, $b ) {
+	  public function add($a, $b) {
 
 	  		 return $a + $b;
 	  }
@@ -95,7 +95,7 @@ class MathTest {
 	   * @param int $b The number to subtract from the base
 	   * @return int The difference
 	   */
-	  public function subtract( $a, $b ) {
+	  public function subtract($a, $b) {
 	  	
 	  		 return $a - $b;
 	  }
@@ -107,7 +107,7 @@ class MathTest {
 	   * @param int $b The number to multiply to the base
 	   * @return int The product
 	   */
-	  public function multiply( $a, $b ) {
+	  public function multiply($a, $b) {
 	  	
 	  		 return $a * $b;
 	  }
@@ -119,7 +119,7 @@ class MathTest {
 	   * @param int $b The divisor of the base
 	   * @return int The quotient
 	   */
-	  public function divide( $a, $b ) {
+	  public function divide($a, $b) {
 	  	
 	  		 return $a / $b;
 	  }

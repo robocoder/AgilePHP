@@ -45,12 +45,12 @@ class IndexController extends BaseController {
 	  public function index() {
 
 	  	     i18n::getInstance(); // initalizes itself based on http language header
-	   		 // i18n::getInstance()->setLocale( 'es_ES' );   language can also be specified manually
+	   		 // i18n::getInstance()->setLocale('es_ES');   language can also be specified manually
 	   		 $welcome = i18n::translate('Welcome to the demo application');
 
-	  	     $this->getRenderer()->set('title', 'AgilePHP Framework :: Home');
-	  	     $this->getRenderer()->set('content', $welcome . '. This is the default PHTML renderer.');
-	  	     $this->getRenderer()->render('index');
+	  	     $this->set('title', 'AgilePHP Framework :: Home');
+	  	     $this->set('content', $welcome . '. This is the default PHTML renderer.');
+	  	     $this->render('index');
 	  }
 
 	  /**
@@ -60,8 +60,8 @@ class IndexController extends BaseController {
 	   */
 	  public function about() {
 
-	  	     $this->getRenderer()->set('title', 'AgilePHP Framework :: About');
-	  	     $this->getRenderer()->render('about');
+	  	     $this->set('title', 'AgilePHP Framework :: About');
+	  	     $this->render('about');
 	  }
 
 	  /**
@@ -71,8 +71,8 @@ class IndexController extends BaseController {
 	   */
 	  public function services() {
 
-	  	     $this->getRenderer()->set('title', 'AgilePHP Framework :: Services');
-	  	     $this->getRenderer()->render('services');
+	  	     $this->set('title', 'AgilePHP Framework :: Services');
+	  	     $this->render('services');
 	  }
 
 	  /**
@@ -82,8 +82,8 @@ class IndexController extends BaseController {
 	   */
 	  public function contact() {
 
-	  	     $this->getRenderer()->set('title', 'AgilePHP Framework :: Contact');
-	  	     $this->getRenderer()->render('contact');
+	  	     $this->set('title', 'AgilePHP Framework :: Contact');
+	  	     $this->render('contact');
 	  }
 
 	  /**
@@ -124,9 +124,9 @@ class IndexController extends BaseController {
 
   	     	  $result = 'Thank you, ' . $request->getSanitized('name') . '. We have received your comments.';
 
-  	     	  $this->getRenderer()->set('title', 'AgilePHP Framework :: Contact Us');
-  	     	  $this->getRenderer()->set('formResult', $result);
-  	     	  $this->getRenderer()->render('contact');
+  	     	  $this->set('title', 'AgilePHP Framework :: Contact Us');
+  	     	  $this->set('formResult', $result);
+  	     	  $this->render('contact');
 	  }
 
 	  /**
@@ -147,9 +147,9 @@ class IndexController extends BaseController {
 	  		 $form = new Form($user, 'frmUserExample', 'frmUserExample', 'formExamplePOST', null, null);
 	  		 $form->setRequestToken(Scope::getRequestScope()->createToken());
 
-	  		 $this->getRenderer()->set('title', 'AgilePHP Framework :: Form Example');
-	  		 $this->getRenderer()->set('form', $form->getHTML());
-	  	     $this->getRenderer()->render('form-example');
+	  		 $this->set('title', 'AgilePHP Framework :: Form Example');
+	  		 $this->set('form', $form->getHTML());
+	  	     $this->render('form-example');
 	  }
 
 	  /**
@@ -161,9 +161,9 @@ class IndexController extends BaseController {
 
 	  		 $params = Scope::getRequestScope()->getParameters();
 
-	  		 $this->getRenderer()->set('title', 'AgilePHP Framework :: Form Example - POSTED!');
-	  		 $this->getRenderer()->set('parameters', $params);
-	  		 $this->getRenderer()->render('form-example');
+	  		 $this->set('title', 'AgilePHP Framework :: Form Example - POSTED!');
+	  		 $this->set('parameters', $params);
+	  		 $this->render('form-example');
 	  }
 
 	  /**
@@ -173,8 +173,20 @@ class IndexController extends BaseController {
 	   */
 	  public function admin() {
 
-	  		 $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Administration' );
-	  	     $this->getRenderer()->render( 'admin' );
+	  		 $this->set('title', 'AgilePHP Framework :: Administration');
+	  	     $this->render('admin');
+	  }
+
+	  /**
+	   * Renders the admin PHTML view displaying phpinfo()
+	   *
+	   * @return void
+	   */
+	  public function info() {
+
+	  		 $this->set('title', 'AgilePHP Framework :: Administration');
+	  		 $this->set('content', phpinfo());
+	  	     $this->render('admin');
 	  }
 
 	  /**
@@ -183,11 +195,11 @@ class IndexController extends BaseController {
 	   * @param $message The error message to display
 	   * @return void
 	   */
-	  private function handleError( $message ) {
+	  private function handleError($message) {
 
-	  	      $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Error Page' );
-	  		  $this->getRenderer()->set( 'error', $message );
-		  	  $this->getRenderer()->render( 'error' );
+	  	      $this->set('title', 'AgilePHP Framework :: Error Page');
+	  		  $this->set('error', $message);
+		  	  $this->render('error');
 		  	  exit;
 	  }
 }

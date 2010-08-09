@@ -43,10 +43,20 @@ class AnnotatedProperty extends ReflectionProperty {
 
              try {
                     parent::__construct($class, $property);
-                    AnnotationParser::parse(parent::getDeclaringClass()->getName());
 
-                    $annotations = AnnotationParser::getPropertyAnnotations($this);
-                    $this->annotations = count($annotations) ? $annotations : null;
+                    if($cacher = AgilePHP::getCacher()) {
+
+                         $cacheKey = 'AGILEPHP_ANNOTATEDPROPERTY_' . parent::getDeclaringClass()->getName() . $property;
+                         if($cacher->exists($cacheKey)) {
+    
+                            $this->annotations = $cacher->get($cacheKey);
+                            return;
+                         }
+                    }
+
+                    AnnotationParser::parse(parent::getDeclaringClass()->getName());
+                    $this->annotations = AnnotationParser::getPropertyAnnotations($this);
+                    if(isset($cacher)) $cacher->set($cacheKey, $this->annotations);   
              }
              catch(ReflectionException $e) {
 

@@ -721,6 +721,8 @@ abstract class BaseDialect {
 	     */
 	    public function find($model) {
 
+	           //if($m = IdentityMap::get($model)) return array($m);
+
 	    	   $table = $this->getTableByModel($model);
 			   $values = array();
 
@@ -1325,35 +1327,12 @@ abstract class BaseDialect {
 	  public function isEmpty($model) {
 
 	  		 $class = new ReflectionClass($model);
+	  		 $properties = $class->getProperties();
+	  		 foreach($properties as $property) {
 
-	  		 // Need to grab the real model if this is an interceptor proxy.
-	  		 try {
-	  		 		$m = $class->getMethod('getInterceptedInstance');
-
-	  		 		$class = new ReflectionClass($model->getInterceptedInstance());
-	  		 		$methods = $class->getMethods();
-			  		foreach($methods as $method) {
-
-			  		 		 $mName = $method->name;
-			  		 		 if($mName == 'getInstance') continue;
-			  		 		 if($mName == 'getInterceptedInstance') continue;
-			  		 		 if(substr($mName, 0, 3) == 'get')
-			  		 		 	 if(!is_object($model->$mName()) && $model->$mName())  // Ignore models with a child object - problem?
-			  		 		  	 	 return false;
-			  		}
-
-			  		return true;
-	  		 }
-	  		 catch(Exception $e) {}
-
-	  		 // This is a real model.
-	  		 $methods = $class->getMethods();
-	  		 foreach($methods as $method) {
-
-	  		 		  $mName = $method->name;
-	  		 		  if(substr($mName, 0, 3) == 'get')
-	  		 		  	  if($model->$mName())
-	  		 		  	  	  return false;
+	  		     if($property->name == 'interceptedTarget') continue;
+	  		     $accessor = $this->toAccessor($property->name);
+	  		     if($model->$accessor()) return false;
 	  		 }
 
 	  		 return true;

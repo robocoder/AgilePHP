@@ -41,127 +41,9 @@ class AnnotationParser {
       private function __clone() { }
 
       /**
-       * Adds parsed class level annotations to the stack
-       *
-       * @param string $class The class name
-       * @param array $annotations An array of parsed class level annotations
-       * @return void
-       */
-      private static function addClass($class, array $annotations) {
-
-              if(self::$cacher) {
-
-                 $key = 'AGILEPHP_ANNOTATION_' . $class;
-                 if(self::$cacher->exists($key)) return;
-
-                 self::$classes[$class] = $annotations;
-                 self::$cacher->set($key, self::$classes);
-                 return;
-              }
-
-              self::$classes[$class] = $annotations;
-      }
-
-      /**
-       * Retrieves annotations parsed from the specified class
-       *
-       * @param string $class The class name
-       * @return mixed An array of annotations if any were parsed, void otherwise
-       */
-      private static function getClass($class) {
-
-              if(self::$cacher) {
-
-                 $key = 'AGILEPHP_ANNOTATION_' . $class;
-                 if($value = self::$cacher->get($key)) return $value;
-              }
-
-              return self::$classes;
-      }
-
-      /**
-       * Adds parsed method level annotations to the stack
-       *
-       * @param string $class The class name
-       * @param string $method The method name
-       * @param array $annotations An array of parsed method level annotations
-       * @return void
-       */
-      private static function addMethod($class, $method, array $annotations) {
-
-              if(self::$cacher) {
-
-                 $key = 'AGILEPHP_ANNOTATION_' . $class . '_M';
-                 if(self::$cacher->exists($key)) return;
-
-                 self::$methods[$class][$method] = $annotations;
-                 self::$cacher->set($key, self::$methods);
-                 return;
-              }
-
-              self::$methods[$class][$method] = $annotations;
-      }
-
-      /**
-       * Retrieves a list of method level annotations for the specified class
-       *
-       * @param string $class The class name
-       * @return mixed An array of parsed method level annotations if any were parsed, void otherwise
-       */
-      private static function getMethods($class) {
-
-              if(self::$cacher) {
-
-                 $key = 'AGILEPHP_ANNOTATION_' . $class . '_M';
-                 if($value = self::$cacher->get($key)) return $value;
-              }
-
-              return self::$methods;
-      }
-
-      /**
-       * Adds a property level annotation to the stack
-       *
-       * @param string $class The class name
-       * @param string $property The property/field name
-       * @param array $annotations An array of parsed property level annotations
-       * @return void
-       */
-      private static function addProperty($class, $property, array $annotations) {
-
-              if(self::$cacher) {
-
-                 $key = 'AGILEPHP_ANNOTATION_' . $class . '_P';
-                 if(self::$cacher->exists($key)) return;
-
-                 self::$properties[$class][$property] = $annotations;
-                 self::$cacher->set($key, self::$properties);
-                 return;
-              }
-
-              self::$properties[$class][$property] = $annotations;
-      }
-
-      /**
-       * Retrieves a list of parsed property annotations for the specified class
-       *
-       * @param string $class The name of the class to retrieve the properties for
-       * @return array
-       */
-      private static function getProperties($class) {
-
-              if(self::$cacher) {
-
-                 $key = 'AGILEPHP_ANNOTATION_' . $class . '_P';
-                 if($value = self::$cacher->get($key)) return $value;
-              }
-
-              return self::$properties;
-      }
-
-      /**
        * Breaks the class file into PHP tokens and extracts all interface,
-       * class, method, and property level annotations.
+       * class, method, and property level annotations. Uses AgilePHP
+       * CacheProvider if enabled.
        *
        * @param String $class The name of the class to parse
        * @return void
@@ -173,12 +55,24 @@ class AnnotationParser {
              self::$class = $class;
              self::$filename = $class . '.php';
 
-             // @todo continue optimizations
-             //if(!self::$cacher) {
+             // First level cache - non-persistent
+             if(in_array(self::$filename, self::$sources)) return;
+             array_push(self::$sources, self::$filename);
 
-                 if(in_array(self::$filename, self::$sources)) return;
-                 array_push(self::$sources, self::$filename);
-             //}
+             // Second level cache - persistent
+             if(self::$cacher) {
+
+                $cacheKey = 'AGILEPHP_ANNOTATIONPARSER_PARSE_' . $class;
+                if(self::$cacher->exists($cacheKey)) {
+
+                   $annotes = self::$cacher->get($cacheKey);
+
+                   self::$classes[$class] = $annotes->classes;
+                   self::$methods[$class] = $annotes->methods;
+                   self::$properties[$class] = $annotes->properties;
+                   return;
+                }
+             }
 
              $comments = array();
              $tokens = token_get_all(self::getSourceCode());
@@ -201,7 +95,7 @@ class AnnotationParser {
                            case T_CLASS:
 
                                  if(count($comments)) {
-                                    self::addClass($class, self::parseAnnotations($comments));
+                                    self::$classes[$class] = self::parseAnnotations($comments);
                                     $comments = array();
                                  }
                                  break;
@@ -210,7 +104,7 @@ class AnnotationParser {
 
                                 if(count($comments)) {
                                    $key = str_replace('$', '', $token[1]);
-                                   self::addProperty($class, $key, self::parseAnnotations($comments));
+                                   self::$properties[$class][ $key ] = self::parseAnnotations($comments);
                                    $comments = array();
                                 }
                                 break;
@@ -221,14 +115,47 @@ class AnnotationParser {
                                    for($j=$i; $j<count($tokens); $j++) {
                                        if(is_array($tokens[$j])) {
                                           if($tokens[$j][0] == T_STRING) {
-                                              self::addMethod($class, $tokens[$j][1], self::parseAnnotations($comments));
+                                              self::$methods[$class][$tokens[$j][1]] = self::parseAnnotations($comments);
                                               $comments = array();
                                               break;
                                           }
                                        }
                                    }
                                 }
-                                 break;
+                                break;
+
+                           case T_STATIC:
+
+                               if(isset($comments[0])) {
+
+                                  // Static methods can be defined using the following:
+                                  // "context" static function name()
+                                  // static "context" function name()
+                                  // static function name()
+                                  // The following for loop makes sure all possibilities are accounted for
+                                  // and the function/method name is parsed.
+                                  //
+                                  // Properties/fields are also parsed if this token is a field declaration
+                                  // and not a method declaration
+                                  $count = 0;
+                                  for($j=$i; $j<count($tokens); $j++) {
+                                      $count++;
+                                      if(is_array($tokens[$i])) {
+                                         if($tokens[$i+$count][0] == T_FUNCTION) {
+                                            self::$methods[$class][$tokens[$i+$count+2][1]] = self::parseAnnotations($comments);
+                                            $comments = array();
+                                            break;
+                                         }
+                                         elseif(isset($tokens[$i+$count][1]) && strpos($tokens[$i+$count][1], '$') === 0) {
+
+                                             $key = str_replace('$', '', $tokens[$i+$count][1]);
+                                             self::$properties[$class][$key] = self::parseAnnotations($comments);
+                                             $comments = array();
+                                             break;
+                                         }
+                                      }
+                                  }
+                               }
 
                             /** @todo Support annotated interfaces */
                             // case T_INTERFACE:
@@ -252,6 +179,16 @@ class AnnotationParser {
                         $comments = array();
                     }
                 }
+
+                if(self::$cacher) {
+
+                   $annotes = new stdClass;
+                   $annotes->classes = isset(self::$classes[$class]) ? self::$classes[$class] : array();
+                   $annotes->methods = isset(self::$methods[$class]) ? self::$methods[$class] : array();
+                   $annotes->properties = isset(self::$properties[$class]) ? self::$properties[$class] : array();
+
+                   self::$cacher->set($cacheKey, $annotes);
+             }
       }
 
       /**
@@ -265,8 +202,7 @@ class AnnotationParser {
        */
       public static function getClassAnnotations(AnnotatedClass $class) {
 
-             $classes = self::getClass($class->getName());
-             return isset($classes[$class->getName()]) ? $classes[$class->getName()] : false;
+             return isset(self::$classes[$class->getName()]) ? self::$classes[$class->getName()] : false;
       }
 
       /**
@@ -280,14 +216,15 @@ class AnnotationParser {
       public static function getPropertyAnnotations(AnnotatedProperty $property) {
 
              $class = $property->getDeclaringClass()->getName();
-             $properties = self::getProperties($class);
 
-             if(isset($properties[$class])) {
+  		 	 if(isset(self::$properties[$class])) {
 
-                foreach($properties[$class] as $name => $value)
-                    if($name == $property->getName())
-                       return $value;
-             }
+		  		foreach(self::$properties[$class] as $name => $value)
+		  		  		if($name == $property->getName())
+		  		 		   return $value;
+  		 	 }
+
+  		 	 return false;
       }
 
       /**
@@ -301,14 +238,14 @@ class AnnotationParser {
       public static function getMethodAnnotations(AnnotatedMethod $method) {
 
              $class = $method->getDeclaringClass()->getName();
-             $methods = self::getMethods($class);
+	  	     if(isset(self::$methods[$class])) {
 
-             if(isset($methods[$class])) {
+	  	     	foreach(self::$methods[$class] as $name => $value)
+			  		    if($name == $method->getName())
+			  		       return $value;
+	  	     }
 
-                foreach($methods[$class] as $name => $value)
-                    if($name == $method->getName())
-                       return $value;
-             }
+		  	 return false;
       }
 
       /**
@@ -320,9 +257,8 @@ class AnnotationParser {
        */
       public static function getClassAnnotationsAsArray($class) {
 
-             $classes = self::getClass($class);
-             if(array_key_exists($class, $classes))
-                  return $classes[$class];
+             if(array_key_exists($class, self::$classes))
+	  		 	return self::$classes[$class];
       }
 
       /**
@@ -335,9 +271,8 @@ class AnnotationParser {
        */
       public static function getMethodAnnotationsAsArray($class) {
 
-             $methods = self::getMethods($class);
-             if(array_key_exists($class, $methods))
-                return $methods[$class];
+             if(array_key_exists($class, self::$methods))
+                return self::$methods[$class];
       }
 
       /**
@@ -349,9 +284,8 @@ class AnnotationParser {
        */
       public static function getPropertyAnnotationsAsArray($class) {
 
-             $properties = self::getProperties($class);
-             if(array_key_exists($class, $properties))
-                return $properties[$class];
+             if(array_key_exists($class, self::$properties))
+	  		    return self::$properties[$class];
       }
 
       /**

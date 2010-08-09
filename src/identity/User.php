@@ -27,7 +27,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  */
-class User implements IdentityModel, ActiveRecord {
+class User extends DomainModel implements IdentityModel, ActiveRecord {
 
 	  private $username;
 	  private $password;

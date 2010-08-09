@@ -33,7 +33,7 @@ class AnnotatedClass extends ReflectionClass {
 
       /**
        * Inializes the AnnotatedClass by parsing the passed class file for
-       * AgilePHP annotations.
+       * AgilePHP annotations. Uses AgilePHP CacheProvider if enabled.
        *
        * @param mixed $class The name or instance of the class to inspect
        * @return AnnotatedClass
@@ -43,8 +43,20 @@ class AnnotatedClass extends ReflectionClass {
 
              try {
                    parent::__construct($class);
+
+                   if($cacher = AgilePHP::getCacher()) {
+                       
+                      $cacheKey = 'AGILEPHP_ANNOTATEDCLASS_' . parent::getName();
+                      if($cacher->exists($cacheKey)) {
+
+                         $this->annotations = $cacher->get($cacheKey);
+                         return;
+                      }
+                   }
+
                    AnnotationParser::parse(parent::getName());
                    $this->annotations = AnnotationParser::getClassAnnotations($this);
+                   if(isset($cacher)) $cacher->set($cacheKey, $this->annotations);
                }
                catch(ReflectionException $e) {
 

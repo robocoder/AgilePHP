@@ -78,5 +78,39 @@ class InterceptorTest extends PHPUnit_Framework_TestCase {
 	         PHPUnit_Framework_Assert::assertNotEquals('test', $user->getPassword(), 'Password interceptor failed to hash password');
 	         PHPUnit_Framework_Assert::assertEquals(64, strlen($user->getPassword()), 'Password interceptor failed to hash password {2}');
 	  }
+
+      /**
+       * @test
+       */
+      public function staticMethodInterception() {
+         
+             MockInterceptionTarget::setProperty2('THIS IS A TEST VALUE');
+
+             PHPUnit_Framework_Assert::assertEquals('intercepted value', MockInterceptionTarget::getProperty2(), 'Static method interception failed');
+      }
+      
+      /**
+       * @test
+       */
+      public function staticPropertyDependencyInjection() {
+
+             PHPUnit_Framework_Assert::assertType('IdentityManagerImpl', MockInterceptionTarget::getIdentityManager(), 'DI failed on static field $identityManager');
+      }
+
+      /**
+       * @test
+       */
+      public function staticClassDependencyInjection() {
+
+             PHPUnit_Framework_Assert::assertType('LogProvider', StaticClass::getLogger(), 'DI failed on static field StaticClass::$logger');
+      }
+
+      /**
+       * @test
+       */
+      public function staticClassMethodInterceptor() {
+
+             PHPUnit_Framework_Assert::assertEquals('intercepted value', StaticClass::test('test'), 'Static class method interception failed');
+      }
 }
 ?>

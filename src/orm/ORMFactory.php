@@ -32,20 +32,18 @@ abstract class ORMFactory {
 		 private static $dialect;
 
 		 /**
-		  * Returns a SQLDialect singleton instance
+		  * Returns a SQLDialect singleton instance. Uses AgilePHP CacheProvider if enabled.
 		  * 
 		  * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
 		  * @return SQLDialect
 		  */
-	     public static function getDialect( $ormXml = null) {
+	     public static function getDialect($ormXml = null) {
 
-	     		 if( self::$dialect == null) {
+	     		 if(self::$dialect == null) {
 
-		    		 $xml = self::getXml( $ormXml);
-
-		     		 $db = new Database( $xml->database);
-	     		 
-		     		 self::$dialect = self::connect( $db);
+		    		 $xml = self::getXml($ormXml);
+    	     		 $db = self::getDatabase($xml);
+		     		 self::$dialect = self::connect($db);
 	     		 }
 
 	     		 return self::$dialect;
@@ -59,13 +57,11 @@ abstract class ORMFactory {
 	      * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
 	      * @return SQLDialect
 	      */
-	     public static function load( $ormXml = null) {
+	     public static function load($ormXml = null) {
 
-	    		 $xml = self::getXml( $ormXml);
-
-                 $db = new Database( $xml->database);
-
-                 self::$dialect = self::connect( $db);
+	    		 $xml = self::getXml($ormXml, $ormXml == null);
+                 $db = new Database($xml->database);
+                 self::$dialect = self::connect($db);
 
                  return self::$dialect;
 	     }
@@ -78,13 +74,12 @@ abstract class ORMFactory {
 	      * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
 	      * @return SQLDialect
 	      */
-	     public static function createDialect( $ormXml = null) {
+	     public static function createDialect($ormXml = null) {
 
-	    		 $xml = self::getXml( $ormXml);
+	    		 $xml = self::getXml($ormXml, $ormXml == null);
+                 $db = new Database($xml->database);
 
-                 $db = new Database( $xml->database);
-
-                 return self::connect( $db);
+                 return self::connect($db);
 	     }
 
 		 /**
@@ -93,35 +88,35 @@ abstract class ORMFactory {
 	      * @param Database $db The database object to establish a connection with
 	      * @return SQLDialect A dialect instance responsible for the specified database
 	      */
-	     public static function connect( Database $db) {
+	     public static function connect(Database $db) {
 
 	     		$root = AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'orm' .
 	     		 				 DIRECTORY_SEPARATOR . 'dialect' . DIRECTORY_SEPARATOR;
 
-	     		     switch( $db->getType()) {
+	     		     switch($db->getType()) {
 	
 		  	 			 case 'sqlite':
 	  	     		 	  	  require_once $root . 'SQLiteDialect.php';
-	  	     		 	  	  return new SQLiteDialect( $db);
+	  	     		 	  	  return new SQLiteDialect($db);
 		  	     		 break;
 	
 		  	     	     case 'mysql':
 		  	     		 	  require_once $root . 'MySQLDialect.php';
-		  	     		 	  return new MySQLDialect( $db);
+		  	     		 	  return new MySQLDialect($db);
 	  	     		 	 break;
 	
 	  	     		 	 case 'pgsql':
 	  	     		 		  require_once $root . 'PGSQLDialect.php';
-	  	     		 		  return new PGSQLDialect( $db);
+	  	     		 		  return new PGSQLDialect($db);
 	  	     		 	 break;
 	
 	  	     		 	 case 'mssql':
 		  	     	       	  require_once $root . 'MSSQLDialect.php';
-		  	     	     	  return new MSSQLDialect( $db);
+		  	     	     	  return new MSSQLDialect($db);
 	  	     	     	 break;
 
 	  	     		 	 default:
-	  	     		 	 	throw new ORMException( 'Invalid database type');
+	  	     		 	 	throw new ORMException('Invalid database type');
 	                 }
 	     }
 
@@ -132,28 +127,63 @@ abstract class ORMFactory {
 
 	     		self::$dialect = null;
 	     }
-	     
+
 	     /**
-	      * Returns orm.xml configuration
+	      * Returns orm.xml configuration. Uses AgilePHP CacheProvider if enabled.
 	      * 
 	      * @param string $ormXml File path to the orm.xml file to load
 	      * @return SimpleXMLElement
 	      */
-		 private static function getXml( $ormXml) {
+		 private static function getXml($ormXml, $useCache = true) {
 
 		 		 $orm_xml =($ormXml) ? $ormXml : AgilePHP::getWebRoot() . '/orm.xml';
 
-                 if( !file_exists( $orm_xml))
-                     throw new ORMException( 'Failed to load orm.xml at \'' . $orm_xml . '\'.');
+		 		 if($useCache && $cacher = AgilePHP::getCacher()) {
 
-                 $xml = simplexml_load_file( $orm_xml);
+		 		    $cacheKey = 'AGILEPHP_ORMFACTORY_XML';
+		 		    if($cacher->exists($cacheKey)) return simplexml_load_string($cacher->get($cacheKey));
+		 		 }
+
+                 if(!file_exists($orm_xml))
+                    throw new ORMException('Failed to load orm.xml at \'' . $orm_xml . '\'.');
+
+                 $xml = simplexml_load_file($orm_xml);
 
                  $dom = new DOMDocument();
-                 $dom->Load( $orm_xml);
-                 if( !$dom->validate())
-                     throw new ORMException( $ormXml . ' Document Object Model validation failed.');
+                 $dom->Load($orm_xml);
+                 if(!$dom->validate())
+                     throw new ORMException($ormXml . ' Document Object Model validation failed.');
 
+                 if(isset($cacher)) $cacher->set($cacheKey, $xml->asXML());
                  return $xml;
+		 }
+
+		 /**
+		  * Returns a Database instance which represents orm.xml configuration. Uses AgilePHP
+		  * CacheProvider if enabled.
+		  * 
+		  * @param SimpleXMLElement $xml The Database element from orm.xml
+		  * @return Database A Database instance representing orm.xml configuration
+		  */
+		 private function getDatabase(SimpleXMLElement $xml) {
+		     
+		         if($cacher = AgilePHP::getCacher()) {
+
+    		  	    $cacheKey = 'AGILEPHP_ORM_DATABASE_' . $xml->database->name . $xml->database->type;
+    		  		if($cacher->exists($cacheKey)) {
+    		  		       
+    		  		   $db = $cacher->get($cacheKey);
+    		  		}
+    		  		else {
+    		  		       
+    		  		   $db = new Database($xml->database);
+    		  		   $cacher->set($cacheKey, $db);
+    		  		}
+    		  	 }
+    		  	 else
+    		  	    return new Database($xml->database);
+
+    		  	 return $db;
 		 }
 }
 ?>

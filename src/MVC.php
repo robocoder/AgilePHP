@@ -182,10 +182,10 @@ final class MVC {
 
 	  		 if(self::$cacheables && ($cacher = AgilePHP::getCacher())) {
 
-	  		    $key = 'AGILEPHP_MVC_' . $path;
-	  		    if($cacher->exists($key)) {
+	  		    $cacheKey = 'AGILEPHP_MVC_' . $path;
+	  		    if($cacher->exists($cacheKey)) {
 
-	  		       echo $cacher->get($key);
+	  		       echo $cacher->get($cacheKey);
 	  		       return;
 	  		    }
 	  		 }
@@ -248,7 +248,7 @@ final class MVC {
 
 		                   ob_start();
               	     	   call_user_func_array(array($oController, $action), self::$parameters);
-              	     	   $cacher->set($key, ob_get_flush());
+              	     	   $cacher->set($cacheKey, ob_get_flush());
               	     	   return;
 		               }
 		        }

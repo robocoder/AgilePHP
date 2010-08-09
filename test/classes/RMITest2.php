@@ -31,7 +31,7 @@ class RMITest2 {
 	  public function __construct() { }
 
 	  #@RemoteMethod
-	  public function testme( $param1 = null, $param2 ) {
+	  public function testme($param1 = null, $param2) {
 
 	  		 $o = new stdClass;
 	  		 $o->param1 = $param1;
@@ -41,7 +41,7 @@ class RMITest2 {
 	  }
 
 	  #@RemoteMethod
-	  public function testme2( $param1 = null, $param2 ) {
+	  public function testme2($param1 = null, $param2) {
 	  	
 	  		 $o = new stdClass;
 	  		 $o->testme2 = 'this does something 2';

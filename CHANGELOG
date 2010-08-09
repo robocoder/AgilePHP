@@ -1,11 +1,27 @@
-- Added interceptor support to Component class.
-- Added DomainModel, ActiveRecord, and IdentityMap to ORM package. IdentityMap fixes
-  inefficient/duplicate lookups/queries issue.
-- Added new "get" method to BaseDialect (havent added to SQLDialect interface yet
-  which means only mysql and sqlite dialects will work properly when get() is called)
-  which is designed to fetch a single record. This fetch is also performed "through"
-  the new IdentityMap.
-- Refactored test package and core framework models to implement new ActiveRecord interface.
-- Added new classes/interfaces to AgilePHP static classmap.
+- Refactored AgilePHP::addInterception log message. Now logs the type of
+  interception (class, method, property) as well as the name of the interceptor
+  and the class::method/property which caused the interception to take place.
+- Added static method and field/property parsing support to AnnotationParser and
+  interception package.
+- Added support to interceptor package for static method interceptions.
+- Removed property level interceptor support using __get and __set. All field level
+  annotations are executed only when the class is instantiated now.
+- Bug fix to Interception::getMethodStubs. Was not accounting for constructors which use
+  more than one line to define itself.
+- Properties are now copied into InterceptorProxy instances to be more transparent to reflection
+  operations. InterceptorProxy can be distinguished by looking for the "interceptedTarget" property
+  or the "getInterceptedInstance" method. 
+- Refactored BaseDialect::isEmpty to take advantage of property names present in interception proxies.
+- Refactored AgilePHP::init - moved frameworkRoot initialization outside of init to allow specifying
+  the root before the framework starts up. Refactored test/index.php to set frameworkRoot before starting.
+- Bug fix to AnnotationParser caching logic. Also did some cleaning up and streamlining.
+- Added caching logic to Annotation facade.
+- Bug fix to MVC caching logic.
+- Added caching logic to ORMFactory::getXml and ORMFactory::getDatabase.
+- Added commented caching logic to IdentityMap. Need to add caching attributes to orm.xml
+  configuration objects.
+- Bug fix to MVC::dispatch caching logic. $key variable getting overwritten by sanitation logic.
+- Bug fixes to test/components/TestComponent.
+- Bug fix to AgilePHP::getSource - added namespace to glob
 
-Backward compatible apidoc: Yes
+Backward compatible apidoc: No

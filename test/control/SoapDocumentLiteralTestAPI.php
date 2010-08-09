@@ -36,7 +36,7 @@
  * @package com.makeabyte.agilephp.test.control
  */
 
-#@WebService( serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI' )
+#@WebService(serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI')
 class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  private $MathTest;
@@ -75,10 +75,10 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	   * @return int The sum of a and b
 	   */
 	  #@WebMethod
-	  public function add( add $addRequest ) {
+	  public function add(add $addRequest) {
 
 	  		 $o = new addResponse;
-	  		 $o->return = $this->MathTest->add( $addRequest->a, $addRequest->b );
+	  		 $o->return = $this->MathTest->add($addRequest->a, $addRequest->b);
 	  		 
 	  		 return $o;
 	  }
@@ -90,10 +90,10 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	   * @return int The difference between a and b
 	   */
 	  #@WebMethod
-	  public function subtract( subtract $subtractRequest ) {
+	  public function subtract(subtract $subtractRequest) {
 
 	  		 $o = new subtractResponse;
-	  		 $o->return = $this->MathTest->subtract( $subtractRequest->a, $subtractRequest->b );
+	  		 $o->return = $this->MathTest->subtract($subtractRequest->a, $subtractRequest->b);
 
 	  		 return $o;
 	  }
@@ -105,10 +105,10 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	   * @return int The product of a and b
 	   */
 	  #@WebMethod
-	  public function multiply( multiply $multiplyRequest ) {
+	  public function multiply(multiply $multiplyRequest) {
 
 	  		 $o = new multiplyResponse;
-	  		 $o->return = $this->MathTest->multiply( $multiplyRequest->a, $multiplyRequest->b );
+	  		 $o->return = $this->MathTest->multiply($multiplyRequest->a, $multiplyRequest->b);
 
 	  		 return $o;
 	  }
@@ -120,10 +120,10 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	   * @return int The quotient of a and b
 	   */
 	  #@WebMethod
-	  public function divide( divide $divideRequest ) {
+	  public function divide(divide $divideRequest) {
 
 	  		 $o = new divideResponse;
-	  		 $o->return = $this->MathTest->divide( $divideRequest->a, $divideRequest->b );
+	  		 $o->return = $this->MathTest->divide($divideRequest->a, $divideRequest->b);
 
 	  		 return $o;
 	  }
@@ -135,7 +135,7 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	   * @return int Returns the sum of both A and B fields in the MathTest object.
 	   */
 	  #@WebMethod
-	  public function objectParameterTest( MathTest $MathTest ) {
+	  public function objectParameterTest(MathTest $MathTest) {
 
 	  		 $o = new objectParameterTestResponse();
 	  		 $o->return = ($MathTest->MathTest->a + $MathTest->MathTest->b);
@@ -150,7 +150,7 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	   * @return MathTest[] Returns the same array ob MathTest objects that were passed in.
 	   */
 	  #@WebMethod
-	  public function arrayOfObjectsTest( array $MathTests ) {
+	  public function arrayOfObjectsTest(array $MathTests) {
 
 	  		 $o = new arrayOfObjectsTestResponse;
 	  		 $o->return = $MathTests->MathTests;
@@ -165,7 +165,7 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	   * @return string[] The same strings that were passed in
 	   */
 	  #@WebMethod
-	  public function arrayStringTest( array $strings ) {
+	  public function arrayStringTest(array $strings) {
 
 	  	     $o = new arrayStringTestResponse;
 	  	     $o->return = $strings->strings;
@@ -180,9 +180,9 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	   * @return string[][] The same multi-dimensional array that was passed in
 	   */
 	  #@WebMethod
-	  public function arrayOfArraysTest( array $strings ) {
+	  public function arrayOfArraysTest(array $strings) {
 
-	  		 Log::debug( $strings );
+	  		 Log::debug($strings);
 
 	  		 $o = new arrayOfArraysTestResponse;
 	  		 $o->return = $strings->strings->strings;
@@ -197,10 +197,10 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 	   * @return int Adds A and B for each array and returns the sum of all MathTest objects
 	   */
 	  #@WebMethod
-	  public function arrayAddTest( array $MathTests ) {
+	  public function arrayAddTest(array $MathTests) {
 
 			 $sum = 0;
-	  		 foreach( $MathTests->MathTests as $MathTest )
+	  		 foreach($MathTests->MathTests as $MathTest)
 	  		 	$sum += ($MathTest->a + $MathTest->b);
 
 	  		 $o = new arrayAddTestResponse;

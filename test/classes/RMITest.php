@@ -32,7 +32,7 @@ class RMITest {
 	  private $test2;
 	  private $test3;
 
-	  public function __construct( $test1, $test2 = null, $test3 = 'test' ) {
+	  public function __construct($test1, $test2 = null, $test3 = 'test') {
 
 	  		 $this->test1 = $test1;
 	  		 $this->test2 = $test2;
@@ -40,7 +40,7 @@ class RMITest {
 	  }
 
 	  #@RemoteMethod
-	  public function testme( $param1 = null, $param2 ) {
+	  public function testme($param1 = null, $param2) {
 
 	  		 $o = new stdClass;
 	  		 $o->test1 = $this->test1;
@@ -53,8 +53,8 @@ class RMITest {
 	  }
 
 	  #@RemoteMethod
-	  #@Restrict( role = 'foo' )
-	  public function testme2( $param1 = null, $param2 ) {
+	  #@Restrict(role = 'foo')
+	  public function testme2($param1 = null, $param2) {
 
 	  		 $o = new stdClass;
 	  		 $o->testme2 = 'this does something 2 as long as the user is logged in and belongs to role "foo"';
@@ -74,7 +74,7 @@ class RMITest {
 	  public function testme4() { }
 
 	  #@RemoteMethod
-	  public function setTest2( $val ) {
+	  public function setTest2($val) {
 
 	  		 $this->test2 = $val;
 
@@ -97,7 +97,7 @@ class RMITest {
 	  public function show() {
 
 	  		 $o = new stdClass;
-	  		 $o->show = print_r( $this, true );
+	  		 $o->show = print_r($this, true);
 
 	  		 return $o;
 	  }

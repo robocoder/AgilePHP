@@ -26,7 +26,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  */
-class Role implements ActiveRecord {
+class Role extends DomainModel implements ActiveRecord {
 
 	  private $name;
 	  private $description;

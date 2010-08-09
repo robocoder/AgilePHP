@@ -62,7 +62,9 @@ final class AgilePHP {
 
              self::$webroot = getcwd();
              self::$requestBase = $_SERVER['SCRIPT_NAME'];
-             self::$frameworkRoot = self::$webroot . DIRECTORY_SEPARATOR . 'AgilePHP';
+
+             if(!self::$frameworkRoot)
+                self::$frameworkRoot = self::$webroot . DIRECTORY_SEPARATOR . 'AgilePHP';
 
              self::parseXml($agilephpDotXml);
       }
@@ -179,7 +181,7 @@ final class AgilePHP {
              if(strpos($include_path, ':' . $path) === false)
                 ini_set('include_path', $include_path . PATH_SEPARATOR . ':' . $path);
 
-             Log::debug('Initalizing framework with php include_path: ' . ini_get('include_path'));
+             //Log::debug('Initalizing framework with php include_path: ' . ini_get('include_path'));
       }
 
       /**
@@ -371,7 +373,24 @@ final class AgilePHP {
        */
       public static function addInterception(Interception $interception) {
 
-             Log::debug('AgilePHP::addInterception Adding interception for class \'' . $interception->getClass() . '\'.');
+             if($interception->getMethod()) {
+
+                $level = 'method';
+                $from = $interception->getClass() . '::' . $interception->getMethod();
+             }
+             elseif($interception->getProperty()) {
+
+                $level = 'property';
+                $from = $interception->getClass() . '::' . $interception->getProperty();
+             }
+             else {
+
+                 $level = 'class';
+                 $from = $interception->getClass(); 
+             }
+
+             Log::debug('AgilePHP::addInterception Adding ' . $level . ' level #@' . get_class($interception->getInterceptor()) .
+             		' interceptor for \'' . $from . '\'.');
 
              array_push(self::$interceptions, $interception);
       }
@@ -551,7 +570,7 @@ final class AgilePHP {
              $directories = glob(self::$webroot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
              foreach($directories as $directory) {
 
-                 $path = $directory . $namespace . $className . '.php';
+                 $path = $directory . DIRECTORY_SEPARATOR . $namespace . $className . '.php';
                  if(file_exists($path)) {
 
                     $source = file_get_contents($path);
@@ -560,21 +579,20 @@ final class AgilePHP {
                  }
              }
 
-             // Search web application (recursively - as last resort effort)
+             // Search web application (using namespace)
 		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
 			 foreach(new RecursiveIteratorIterator($it) as $file) {
 
-			   	     if(substr($file, -1  != '.' && substr($file, -2) != '..' &&
-			   	        substr($file, -4) != 'view')) {
+    			   	     if(substr($file->getPathname(), -1)  != '.' && substr($file->getPathname(), -2) != '..') {
 
-			   	     	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
-				 		  if(array_pop($pieces) == $className . '.php') {
+    			   	        $pieces = explode(DIRECTORY_SEPARATOR, $file);
+				 		    if(array_pop($pieces) == $className . '.php') {
 
-			     	 		 $source = file_get_contents($file);
-				 		     if(self::$cacher) self::$cacher->set($key, $source);
-			     	 		 return $source;
-				 		  }
-				     }
+    			   	             $source = file_get_contents($file);
+    				 		     if(self::$cacher) self::$cacher->set($key, $source);
+    			     	 		 return $source;
+    			   	          }
+    				     }
 			 }
 
              throw new FrameworkException('Failed to retrieve source code for class \'' . $class . '\'.');
@@ -591,6 +609,15 @@ final class AgilePHP {
        */
       public static function autoload($class, $bypassInterceptors = false) {
 
+             // Parse class for AgilePHP interceptors if enabled
+             if(!$bypassInterceptors) {
+
+                new InterceptorFilter($class);
+
+                // Intercepted classes are loaded by the filter
+                if(class_exists($class, false)) return;
+             }
+
              // Use caching if enabled
              if(self::$cacher) {
 
@@ -601,16 +628,7 @@ final class AgilePHP {
                    return;
                 }
              }
-
-             // Parse class for AgilePHP interceptors if enabled
-             if(!$bypassInterceptors) {
-
-                new InterceptorFilter($class);
-
-                // Intercepted classes are loaded by the filter
-                if(class_exists($class, false)) return;
-             }
-
+             
              // Search classmap
              if(isset(self::$classmap[$class])) {
 
@@ -651,8 +669,7 @@ final class AgilePHP {
 		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
 			 foreach(new RecursiveIteratorIterator($it) as $file) {
 
-			   	      if(substr($file, -1  != '.' && substr($file, -2) != '..' &&
-			   	         substr($file, -4) != 'view')) {
+			   	      if(substr($file, -1  != '.' && substr($file, -2) != '..')) {
 
 			   	      	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
 				 		  if(array_pop($pieces) == $className . '.php') {

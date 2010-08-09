@@ -350,7 +350,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function persist() {
 
-	     		   ORM::persist($this->getModel());
+	     		   $this->getModel()->persist();
 	     }
 
 	     /**
@@ -361,7 +361,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function merge() {
 
-	     		   ORM::merge($this->getModel());
+	     		   $this->getModel()->merge();
 	     }
 
 	     /**
@@ -372,7 +372,7 @@ abstract class BaseModelController extends BaseController {
 	      */
 	     protected function delete() {
 
-	     		   ORM::delete($this->getModel());
+	     		   $this->getModel()->delete();
 	     }
 
 		 /**
@@ -391,7 +391,7 @@ abstract class BaseModelController extends BaseController {
 	  	     	 	    $this->getModel()->$mutator(null);
 	  	           }
 
-	  	           Log::debug('BaseModelController::clear ');
+	  	           Log::debug('BaseModelController::clear');
 	     }
 
 	     /**

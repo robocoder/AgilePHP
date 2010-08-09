@@ -34,7 +34,6 @@ class MailingController extends BaseModelActionController {
 	  public function __construct() {
 
 	  		 $this->model = new Mailing();
-
 	  	     parent::__construct();
 	  }
   
@@ -43,52 +42,52 @@ class MailingController extends BaseModelActionController {
 	  	     return $this->model;
 	  }
 
-	  public function mailingBroadcast( $process = false) {
+	  public function mailingBroadcast($process = false) {
 
-	  	     if( $process == true ) {
+	  	     if($process == true) {
 
 	  	     	 $request = Scope::getRequestScope();
 	  	     	 $error = null;
 		  		 $message = null;
 		  		 $failed = array();
-		  		 $mailer = new Mailer();
-		  		 $mailer->setFromName( 'AgilePHP Framework' );
-		  		 $mailer->setFrom( 'root@localhost' );
 
-	  	     	 $this->createQuery( 'SELECT * FROM mailing' );
+		  		 Mailer::setFromName('AgilePHP Framework');
+		  		 Mailer::setFrom('root@localhost');
+
+	  	     	 $this->createQuery('SELECT * FROM mailing');
 	  	     	 $this->executeQuery();
 	  	     	 $recipientCount = 0;
 
-	  	     	 foreach( $this->getResultListAsModels() as $model ) {
+	  	     	 foreach($this->getResultListAsModels() as $model) {
 
-			  	     	  if( !$model->isEnabled() ) continue;
+			  	     	  if(!$model->isEnabled()) continue;
 
 			  	     	  try {
-				  	     	    $mailer->setToName( $model->getName() );
-				  	     	    $mailer->setTo( $model->getEmail() );
-				  	     	    $mailer->setSubject( $request->get( 'subject' ) );
-				  	     	    $mailer->setBody( $request->get( 'body' ) . "\n\n" . $request->get( 'signature' ) );
-				  	     	    $mailer->send();
+				  	     	    Mailer::setToName($model->getName());
+				  	     	    Mailer::setTo($model->getEmail());
+				  	     	    Mailer::setSubject($request->get('subject'));
+				  	     	    Mailer::setBody($request->get('body') . "\n\n" . $request->get('signature'));
+				  	     	    Mailer::send();
 
 				  	     	    $recipientCount++;
 			  	     	  }
-			  	     	  catch( FrameworkException $e ) {
+			  	     	  catch(FrameworkException $e) {
 
-			  	     	  		 array_push( $failed, $model->getEmail() );
+			  	     	  		array_push($failed, $model->getEmail());
 			  	     	  }
 	  	     	 }
 
-		  	     if( count( $failedArray ) ) {
+		  	     if(count($failedArray)) {
 	
-		  	     	 $this->getRenderer()->set( 'error', 'Email broadcast failed.' );
-		  	     	 $this->getRenderer()->set( 'failedEmails', $failed );
+		  	     	$this->set('error', 'Email broadcast failed.');
+		  	     	$this->set('failedEmails', $failed);
 		  	     }
 		  	     else {
 	
-		  	     	 $this->getRenderer()->set( 'message', 'Email broadcast sent to ' . $recipientCount . ' recipients.' );
+		  	     	 $this->set('message', 'Email broadcast sent to ' . $recipientCount . ' recipients.');
 		  	     }
 	  	     }
 
-	  		 $this->getRenderer()->render( 'admin_broadcast' );
+	  		 $this->render('admin_broadcast');
 	  }
 }

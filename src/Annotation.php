@@ -40,7 +40,8 @@ class Annotation {
 	  private function __clone() {}
 
 	  /**
-	   * Static factory method used to retrieve AnnotatedClass instances.
+	   * Static factory method used to retrieve AnnotatedClass instances. Uses
+	   * AgilePHP CacheProvider if enabled.
 	   *
 	   * @param mixed $class The class name or instance to inspect
 	   * @return void
@@ -49,11 +50,21 @@ class Annotation {
 	   */
 	  public static function getClass($class) {
 
-	  		 return new AnnotatedClass($class);
+	         if($cacher = AgilePHP::getCacher()) {
+
+	            $cacheKey = 'AGILEPHP_ANNOTATION_CLASS_' . $class;
+	            if($cacher->exists($cacheKey))
+	               return $cacher->get($cacheKey);
+	         }
+
+	         $c = new AnnotatedClass($class); 
+	         if(isset($cacher)) $cacher->set($cacheKey, $c);
+	  		 return $c;
 	  }
 
 	  /**
-	   * Static factory method used to retrieve AnnotatedMethod instances.
+	   * Static factory method used to retrieve AnnotatedMethod instances. Uses
+	   * AgilePHP CacheProvider if enabled.
 	   *
 	   * @param mixed $class The class name or instance to inspect.
 	   * @param String $name The method name
@@ -63,11 +74,21 @@ class Annotation {
 	   */
 	  public static function getMethod($class, $method) {
 
-	  		 return new AnnotatedMethod($class, $method);
+	         if($cacher = AgilePHP::getCacher()) {
+
+	            $cacheKey = 'AGILEPHP_ANNOTATION_METHOD_' . $class . $method;
+	            if($cacher->exists($cacheKey))
+	               return $cacher->get($cacheKey);
+	         }
+
+	         $m = new AnnotatedMethod($class, $method);
+	         if(isset($cacher)) $cacher->set($cacheKey, $m);
+	  		 return $m;
 	  }
 
 	  /**
-	   * Static factory method used to retrieve AnnotatedProperty instances.
+	   * Static factory method used to retrieve AnnotatedProperty instances. Uses
+	   * AgilePHP CacheProvider if enabled.
 	   *
 	   * @param mixed $class The class name or instance to inspect
 	   * @param String $property The property name
@@ -77,7 +98,16 @@ class Annotation {
 	   */
 	  public static function getProperty($class, $property) {
 
-	  		 return new AnnotatedProperty($class, $property);
+	         if($cacher = AgilePHP::getCacher()) {
+
+	            $cacheKey = 'AGILEPHP_ANNOTATION_PROPERTY_' . $class . $property;
+	            if($cacher->exists($cacheKey))
+	               return $cacher->get($cacheKey);
+	         }
+
+	         $p = new AnnotatedProperty($class, $property);
+	         if(isset($cacher)) $cacher->set($cacheKey, $p);
+	         return $p;
 	  }
 
 	  /**
@@ -108,7 +138,8 @@ class Annotation {
 	  /**
 	   * Returns an array of class level annotations for the specified class.
 	   * Tries to return a cached set of results first. If no annotations are
-	   * found the specified class is then parsed and the new result is returned.
+	   * found the specified class is then parsed and the new result is returned. Uses
+	   * AgilePHP CacheProvider if enabled.
 	   *
 	   * @param mixed $class The class name or instance to inspect.
 	   * @return array Array of class level annotations
@@ -117,15 +148,30 @@ class Annotation {
 	   */
 	  public static function getClassAsArray($class) {
 
+	        if($cacher = AgilePHP::getCacher()) {
+
+	            $cacheKey = 'AGILEPHP_ANNOTATION_CLASS_ARRAY_' . $class;
+	            if($cacher->exists($cacheKey))
+	               return $cacher->get($cacheKey);
+	         }
+
 			 $annotes = AnnotationParser::getClassAnnotationsAsArray($class);
-			 if($annotes) return $annotes;
+			 if($annotes) {
+			     
+			    if(isset($cacher)) $cacher->set($cacheKey, $annotes);
+			    return $annotes;
+			 }
 
 			 AnnotationParser::parse($class);
-	  	     return AnnotationParser::getClassAnnotationsAsArray($class);
+	  	     $annotes = AnnotationParser::getClassAnnotationsAsArray($class);
+	  	     if(isset($cacher)) $cacher->set($cacheKey, $annotes);
+
+	  	     return $annotes;
 	  }
 
 	  /**
-	   * Returns an array of method level annotations for the specified class/method.
+	   * Returns an array of method level annotations for the specified class/method. Uses
+	   * AgilePHP CacheProvider if enabled.
 	   *
 	   * @param mixed $class The class name or instance to inspect
 	   * @return array Array of method level annotations
@@ -134,17 +180,31 @@ class Annotation {
 	   */
 	  public static function getMethodsAsArray($class) {
 
+	         if($cacher = AgilePHP::getCacher()) {
+
+	            $cacheKey = 'AGILEPHP_ANNOTATION_METHODS_ARRAY_' . $class;
+	            if($cacher->exists($cacheKey))
+	               return $cacher->get($cacheKey);
+	         }
+
 	         $annotes = AnnotationParser::getMethodAnnotationsAsArray($class);
-			 if($annotes) return $annotes;
+			 if($annotes) {
+
+			    if(isset($cacher)) $cacher->set($cacheKey, $annotes);
+			    return $annotes;
+			 }
 
 			 AnnotationParser::parse($class);
-	  	     return AnnotationParser::getMethodAnnotationsAsArray($class);
+	  	     $annotes = AnnotationParser::getMethodAnnotationsAsArray($class);
+	  	     if(isset($cacher)) $cacher->set($cacheKey, $annotes);
+	  	     return $annotes;
 	  }
 
 	  /**
 	   * Returns an array of property level annotations for the specified class/property.
 	   * Tries to return a caches set of annotations first. If no annotations are
-	   * found then the specified class is then parsed and the new result is returned.
+	   * found then the specified class is then parsed and the new result is returned. Uses
+	   * AgilePHP CacheProvider if enabled.
 	   *
 	   * @param mixed $class The class name or instance to inspect
 	   * @return Array of class level annotations
@@ -153,11 +213,24 @@ class Annotation {
 	   */
 	  public static function getPropertiesAsArray($class) {
 
+	         if($cacher = AgilePHP::getCacher()) {
+
+	            $cacheKey = 'AGILEPHP_ANNOTATION_PROPERTIES_ARRAY_' . $class;
+	            if($cacher->exists($cacheKey))
+	               return $cacher->get($cacheKey);
+	         }
+
 			 $annotes = AnnotationParser::getPropertyAnnotationsAsArray($class);
-			 if($annotes) return $annotes;
+			 if($annotes) {
+			     
+			    if(isset($cacher)) $cacher->set($cacheKey, $annotes);
+			    return $annotes;
+			 }
 
 			 AnnotationParser::parse($class);
-	  	     return AnnotationParser::getPropertyAnnotationsAsArray($class);
+	  	     $annotes = AnnotationParser::getPropertyAnnotationsAsArray($class);
+	  	     if(isset($cacher)) $cacher->set($cacheKey, $annotes);
+	  	     return $annotes;
 	  }
 }
 ?>

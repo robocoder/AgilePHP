@@ -41,10 +41,35 @@ class InterceptorFilter {
 			  	  		$annote = new AnnotatedClass($annotation);
 				   	   	if($annote->hasAnnotation('Interceptor')) {
 
-				   	   	   $interceptor = $annote->getName();
 				   	   	   $interception = new Interception($class, null, null, $annotation);
+				   	   	   $interception->createInterceptorProxy($interception->createInterceptedTarget());
+
 				   	   	   AgilePHP::addInterception($interception);
+
+				   	   	   if($interception->isStatic()) $class::__initstatic();
 				   	   	}
+				 }
+	  	     }
+
+	  	     // Process property/field level annotations
+	  	     $annotatedProperties = Annotation::getPropertiesAsArray($class);
+		 	 if(count($annotatedProperties)) {
+
+				foreach($annotatedProperties as $fieldName => $fieldAnnotation) {
+
+				     foreach($fieldAnnotation as $annotation) {
+
+				  	   		 $annote = new AnnotatedClass($annotation);
+					   	   	 if($annote->hasAnnotation('Interceptor')) {
+
+					   	   	  	$interception = new Interception($class, null, $fieldName, $annotation);
+					   	   	  	$interception->createInterceptorProxy($interception->createInterceptedTarget());
+
+					   	   	  	AgilePHP::addInterception($interception);
+
+					   	   	  	if($interception->isStatic()) $class::__initstatic();
+					   	   	  }
+					 }
 				 }
 	  	     }
 
@@ -59,29 +84,13 @@ class InterceptorFilter {
 				  	   		 $annote = new AnnotatedClass($annotation);
 					   	   	 if($annote->hasAnnotation('Interceptor')) {
 
-					   	   	  	$interceptor = $annote->getName();
 					   	   	  	$interception = new Interception($class, $methodName, null, $annotation);
+					   	   	  	$interception->createInterceptorProxy($interception->createInterceptedTarget());
+
 					   	   	  	AgilePHP::addInterception($interception);
+
+					   	   	  	if($interception->isStatic()) $class::__initstatic();
 					   	   	 }
-					 }
-				 }
-	  	     }
-
-	  	     // Proces property/field level annotations
-	  	     $annotatedProperties = Annotation::getPropertiesAsArray($class);
-		 	 if(count($annotatedProperties)) {
-
-				foreach($annotatedProperties as $fieldName => $fieldAnnotation) {
-
-				     foreach($fieldAnnotation as $annotation) {
-
-				  	   		 $annote = new AnnotatedClass($annotation);
-					   	   	 if($annote->hasAnnotation('Interceptor')) {
-
-					   	   	  	$interceptor = $annote->getName();
-					   	   	  	$interception = new Interception($class, null, $fieldName, $annotation);
-					   	   	  	AgilePHP::addInterception($interception);
-					   	   	  }
 					 }
 				 }
 	  	     }

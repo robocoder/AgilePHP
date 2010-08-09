@@ -44,7 +44,7 @@ class LoginController extends BaseController {
 	  		 Identity::setRole($role);
 	  		 Identity::register();
 
-	  		 $this->getRenderer()->set('info', 'Registration successful. Check your email for a confirmation link.');
+	  		 $this->set('info', 'Registration successful. Check your email for a confirmation link.');
 	  		 $this->showRegister();
 	  }
 
@@ -61,7 +61,7 @@ class LoginController extends BaseController {
 
 	  		 Identity::confirm($request->sanitize($token), $request->sanitize($sessionId));
 
-	  		 $this->getRenderer()->set('info', 'Activation Successful');
+	  		 $this->set('info', 'Activation Successful');
 	  		 $this->showLogin();
 	  }
 
@@ -78,24 +78,24 @@ class LoginController extends BaseController {
 
 	  		 if(!$username = $request->getSanitized('username')) {
 
-	  		 	$this->getRenderer()->set('error', 'Username required');
+	  		 	$this->set('error', 'Username required');
 	  		 	$this->showLogin();
 	  		 	return;
 	  		 }
 
 	  		 if(!$password = $request->getSanitized('password')) {
 
-	  		 	$this->getRenderer()->set('error', 'Password required');
+	  		 	$this->set('error', 'Password required');
 	  		 	$this->showLogin();
 	  		 	return;
 	  		 }
 
 			 if(!Identity::login($username, $password)) {
 
-			 	 $this->getRenderer()->set('title', 'Administration :: Home');
-	  	      	 $this->getRenderer()->set('error', 'Invalid username/password');
-	  	      	 $this->getRenderer()->set('request_token', Scope::getRequestScope()->createToken());
-	  	      	 $this->getRenderer()->render('login');
+			 	 $this->set('title', 'Administration :: Home');
+	  	      	 $this->set('error', 'Invalid username/password');
+	  	      	 $this->set('request_token', Scope::getRequestScope()->createToken());
+	  	      	 $this->render('login');
 	  	      	 return;
 			 }
 
@@ -135,14 +135,14 @@ class LoginController extends BaseController {
 
 	  		 if(!$username = $request->getSanitized('username' )) {
 
-	  		 	$this->getRenderer()->set('error', 'Username required');
+	  		 	$this->set('error', 'Username required');
 	  		 	$this->showForgotPassword();
 	  		 	return;
 	  		 }
 
 	  		 if(!$email = $request->getSanitized('email')) {
 
-	  		 	$this->getRenderer()->set('error', 'Email required');
+	  		 	$this->set('error', 'Email required');
 	  		 	$this->showForgotPassword();
 	  		 	return;
 	  		 }
@@ -155,11 +155,11 @@ class LoginController extends BaseController {
 	  		 }
 	  		 catch( FrameworkException $e ) {
 
-	  		 		$this->getRenderer()->set('error', $e->getMessage());
+	  		 		$this->set('error', $e->getMessage());
 	  		 		$this->showForgotPassword();
 	  		 }
 
-	  		 $this->getRenderer()->set('info', 'Instructions have been sent to your email address.');
+	  		 $this->set('info', 'Instructions have been sent to your email address.');
 	  		 $this->showForgotPassword();
 	  }
 
@@ -173,7 +173,7 @@ class LoginController extends BaseController {
 	  public function resetPassword($token, $sessionId) {
 
 	  		 Identity::resetPassword($token, $sessionId);
-	  		 $this->getRenderer()->set('info', 'Your new password has been sent to your email address.');
+	  		 $this->set('info', 'Your new password has been sent to your email address.');
 	  		 $this->showLogin();
 	  }
 
@@ -184,8 +184,8 @@ class LoginController extends BaseController {
 	   */
 	  private function showAdmin() {
 
-	  	      $this->getRenderer()->set('title', 'Administration :: Home');
-	  	      $this->getRenderer()->render('admin');
+	  	      $this->set('title', 'Administration :: Home');
+	  	      $this->render('admin');
 	  }
 
 	  /**
@@ -195,9 +195,9 @@ class LoginController extends BaseController {
 	   */
 	  public function showRegister() {
 
-	  		 $this->getRenderer()->set('title', 'AgilePHP Framework :: Register');
-	  		 $this->getRenderer()->set('request_token', Scope::getRequestScope()->createToken());
-	  	     $this->getRenderer()->render('register');
+	  		 $this->set('title', 'AgilePHP Framework :: Register');
+	  		 $this->set('request_token', Scope::getRequestScope()->createToken());
+	  	     $this->render('register');
 	  }
 
 	  /**
@@ -207,9 +207,9 @@ class LoginController extends BaseController {
 	   */
 	  private function showLogin() {
 
-	  		 $this->getRenderer()->set('title', 'Administration :: Login');
-	  		 $this->getRenderer()->set('request_token', Scope::getRequestScope()->createToken());
-	  	     $this->getRenderer()->render('login');
+	  		 $this->set('title', 'Administration :: Login');
+	  		 $this->set('request_token', Scope::getRequestScope()->createToken());
+	  	     $this->render('login');
 	  }
 
 	  /**
@@ -219,9 +219,9 @@ class LoginController extends BaseController {
 	   */
 	  private function showForgotPassword() {
 
-	  		  $this->getRenderer()->set('title', 'Administration :: Login :: Forgot Password');
-	  		  $this->getRenderer()->set('request_token', Scope::getRequestScope()->createToken());
-	  	      $this->getRenderer()->render('forgot_password');
+	  		  $this->set('title', 'Administration :: Login :: Forgot Password');
+	  		  $this->set('request_token', Scope::getRequestScope()->createToken());
+	  	      $this->render('forgot_password');
 	  }
 }
 ?>

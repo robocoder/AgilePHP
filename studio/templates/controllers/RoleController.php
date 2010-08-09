@@ -7,7 +7,6 @@ class RoleController extends BaseModelActionController {
 	  public function __construct() {
 
 	  		 $this->model = new Role();
-
 	  		 parent::__construct();
 	  }
 

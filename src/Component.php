@@ -52,7 +52,7 @@ abstract class Component extends BaseController {
 
                 $key = 'AGILEPHP_COMPONENT_XML_' . $class;
                 if($cacher->exists($key))
-                   $xml = $cacher->get($key);
+                   $xml = simplexml_load_string($cacher->get($key));
              }
              if(!isset($xml)) {
 
@@ -61,7 +61,7 @@ abstract class Component extends BaseController {
      				throw new FrameworkException($componentXml . ' does not exist');
 
      			 $xml = simplexml_load_file($componentXml);
-     			 if($cacher) $cacher->set($key, $xml);
+     			 if($cacher) $cacher->set($key, $xml->asXML());
              }
 
              // Set the component params (Use caching if enabled)
@@ -136,7 +136,7 @@ abstract class Component extends BaseController {
              if($cacher = AgilePHP::getCacher()) {
 
                 $key = 'AGILEPHP_COMPONENT_AUTOLOAD_' . $class;
-                if($clazz = self::$cacher->get($key)) {
+                if($clazz = $cacher->get($key)) {
 
                    require $clazz;
                    return;
@@ -158,6 +158,7 @@ abstract class Component extends BaseController {
                    if(class_exists($class, false)) return;
                 }
                 require $phar;
+                return;
              }
 
              // Search component directory
@@ -179,6 +180,7 @@ abstract class Component extends BaseController {
                                 new InterceptorFilter($class);
                                 if(class_exists($class, false)) return;
                              }
+                             
 			     	 		 require $file->getPathname();
 			     	 		 return;
 				 		  }

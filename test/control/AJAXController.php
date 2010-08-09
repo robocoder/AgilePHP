@@ -30,7 +30,7 @@ class AJAXController extends BaseController {
 
 	  public function __construct() {
 
-	  		 $this->createRenderer( 'AJAXRenderer' );
+	  		 $this->createRenderer('AJAXRenderer');
 
 	  		 // CSFR token seems to cause some interference with the javascript code - needs to be ironed out!
 	  		 //Scope::getRequestScope()->createToken();
@@ -44,13 +44,13 @@ class AJAXController extends BaseController {
 
 	  		 $stdClass = new stdClass();
 	  		 $stdClass->result = 'Some text from the AJAXController';
-	  		 $this->getRenderer()->render( $stdClass );
+	  		 $this->render($stdClass);
 	  }
 
 	  public function xml() {
 
-	  		 $this->getRenderer()->setOutput( 'xml' );
-	  		 $this->getRenderer()->render( $this->getMockData() );
+	  		 $this->getRenderer()->setOutput('xml');
+	  		 $this->render($this->getMockData());
 	  }
 
 	  public function testUpdater() {
@@ -61,9 +61,9 @@ class AJAXController extends BaseController {
 	  public function formSubmit() {
 
 	  		 $stdClass = new stdClass();
-	  		 $stdClass->result = implode( ',', Scope::getRequestScope()->getParameters() );
+	  		 $stdClass->result = implode(',', Scope::getRequestScope()->getParameters());
 
-	  		 $this->getRenderer()->render( $stdClass );
+	  		 $this->render($stdClass);
 	  }
 
 	  /**
@@ -74,9 +74,9 @@ class AJAXController extends BaseController {
 	   */
 	  public function jqueryExample() {
 
-	  		 $models = ORM::find( new User(), true );
+	  		 $models = ORM::find(new User(), true);
 
-	  		 $this->getRenderer()->renderNoHeader( $models );
+	  		 $this->getRenderer()->renderNoHeader($models);
 	  }
 	  
 	  private function getMockData() {

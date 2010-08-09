@@ -41,9 +41,61 @@ class IdentityMap {
        */
       public static function get(ActiveRecord $model) {
 
+             // Get the model class name
+             $class = new ReflectionClass($model);
+             $name = $class->getName();
+
+             /*
+             if($cacher = AgilePHP::getCacher()) {
+
+                $cacheKey = 'AGILEPHP_ORM_IDENTITYMAP_' . $name;
+                if($cacher->exists($cacheKey)) return $cacher->get($cacheKey);
+             }
+             */
+
              $table = ORMFactory::getDialect()->getTableByModel($model);
 
              // If this is a many-to-many relationships, primary keys are foriegn key values
+   	         $pkeys = $table->getPrimaryKeyColumns();
+	     	 foreach($pkeys as $pkey) {
+	     	     if($pkey->isForeignKey()) {
+	     	        $pkeys = $table->getForeignKeyColumns();
+     	         }
+   	         }
+
+   	         // Create a unique class "key" used to distinguish the ActiveRecord
+   	         $count = count($pkeys);
+   	         $key = ''; 
+   	         for($i=0; $i<$count; $i++ ) {
+
+   	             $accessor = 'get' . ucfirst($pkeys[$i]->getModelPropertyName());
+   	             $key .= $model->$accessor();
+   	             if(($i+1) < $count) $key .= '_-';
+   	         }
+
+             // If the ActiveRecord has already been pulled, return it
+             if(isset(self::$map[$name][$key])) {
+
+                if(isset($cacher)) $cacher->set($cacheKey, self::$map[$name][$key]);
+                return self::$map[$name][$key];
+             }
+
+             return false;
+      }
+
+      /**
+       * Adds a new ActiveRecord model instance to the IdentityMap stack.
+       * 
+       * @param ActiveRecord $model The ActiveRecord instance to add to the stack.
+       * @return void
+       */
+      public static function addModel(ActiveRecord $model) {
+
+             $table = ORMFactory::getDialect()->getTableByModel($model);
+
+             Log::debug('IdentityMap::addModel Storing model \'' . $table->getModel() . '\'.');
+             
+             // If this is a many-to-many relationships, primary keys are foreign key values
    	         $pkeys = $table->getPrimaryKeyColumns();
 	     	 foreach($pkeys as $pkey) {
 	     	     if($pkey->isForeignKey()) {
@@ -65,47 +117,15 @@ class IdentityMap {
              $class = new ReflectionClass($model);
              $name = $class->getName();
 
-             // If the ActiveRecord has already been pulled, return it
-             if(isset(self::$map[$name][$key]))
-                return self::$map[$name][$key];
+             self::$map[$name][$key] = $model;
 
-             return false;
-      }
+             /*
+             if($cacher = AgilePHP::getCacher()) {
 
-      /**
-       * Adds a new ActiveRecord model instance to the IdentityMap stack.
-       * 
-       * @param ActiveRecord $model The ActiveRecord instance to add to the stack.
-       * @return void
-       */
-      public static function addModel(ActiveRecord $model) {
-
-             $table = ORMFactory::getDialect()->getTableByModel($model);
-
-             Log::debug('IdentityMap::addModel Storing model \'' . $table->getModel() . '\'.');
-             
-             // If this is a many-to-many relationships, primary keys are foriegn key values
-   	         $pkeys = $table->getPrimaryKeyColumns();
-	     	 foreach($pkeys as $pkey) {
-	     	     if($pkey->isForeignKey()) {
-	     	        $pkeys = $table->getForeignKeyColumns();
-     	         }
-   	         }
-
-   	         // Create a unique class "key" used to distinguish the ActiveRecord
-   	         $count = count($pkeys);
-   	         $key = ''; 
-   	         for($i=0; $i<$count; $i++ ) {
-
-   	             $accessor = 'get' . ucfirst($pkeys[$i]->getModelPropertyName());
-   	             $key .= $model->$accessor();
-   	             if(($i+1) < $count) $key .= '_-';
-   	         }
-
-   	         // Get the model class name
-             $class = new ReflectionClass($model);
-  	         
-             self::$map[$class->getName()][$key] = $model;
+                $cacheKey = 'AGILEPHP_ORM_IDENTITYMAP_' . $name;
+                $cacher->set($cacheKey, $model);
+             }
+             */
       }
 }
 ?>

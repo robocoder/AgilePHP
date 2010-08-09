@@ -5,7 +5,7 @@ class SPauthenticate {
 	  private $passwd;
 	  private $result;
 
-	  public function setUserId( $userId ) {
+	  public function setUserId($userId) {
 
 	  		 $this->userId = $userId;
 	  }
@@ -15,7 +15,7 @@ class SPauthenticate {
 	  		 return $this->userId;
 	  }
 
-	  public function setPasswd( $password ) {
+	  public function setPasswd($password) {
 
 	  		 $this->passwd = $password;
 	  }
@@ -25,7 +25,7 @@ class SPauthenticate {
 	  		 return $this->passwd;
 	  }
 
-	  public function setResult( $result ) {
+	  public function setResult($result) {
 
 	  		 $this->result = $result;
 	  } 

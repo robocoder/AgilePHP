@@ -8,9 +8,9 @@ class IndexController extends BaseController {
 	   */
 	  public function index() {
 
-	  	     $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Home' );
-	  	     $this->getRenderer()->set( 'content', 'Welcome to the demo application. This is the default PHTML renderer.' );
-	  	     $this->getRenderer()->render( 'index' );
+	  	     $this->set('title', 'AgilePHP Framework :: Home');
+	  	     $this->set('content', 'Welcome to the demo application. This is the default PHTML renderer.');
+	  	     $this->render('index');
 	  }
 
 	  /**
@@ -20,8 +20,8 @@ class IndexController extends BaseController {
 	   */
 	  public function admin() {
 
-	  		 $this->getRenderer()->set( 'title', 'AgilePHP Framework :: Administration' );
-	  	     $this->getRenderer()->render( 'admin' );
+	  		 $this->set('title', 'AgilePHP Framework :: Administration');
+	  	     $this->render('admin');
 	  }
 }
 ?>

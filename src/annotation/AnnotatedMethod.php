@@ -32,7 +32,8 @@ class AnnotatedMethod extends ReflectionMethod {
       private $annotations = array();
 
       /**
-       * Creates a new instance of AnnotatedMethod.
+       * Creates a new instance of AnnotatedMethod. Uses AgilePHP CacheProvider
+       * if enabled.
        *
        * @param mixed $class The name or instance of a class to inspect
        * @param String $method The name of the method to inspect.
@@ -43,10 +44,19 @@ class AnnotatedMethod extends ReflectionMethod {
 
                try {
                       parent::__construct($class, $method);
-                      AnnotationParser::parse(parent::getDeclaringClass()->getName());
 
-                      $annotations = AnnotationParser::getMethodAnnotations($this);
-                      $this->annotations = count($annotations) ? $annotations : null;
+                      if($cacher = AgilePHP::getCacher()) {
+
+                         $cacheKey = 'AGILEPHP_ANNOTATEDMETHOD_' . parent::getDeclaringClass()->getName() . $method;
+                         if($cacher->exists($cacheKey)) {
+    
+                            $this->annotations = $cacher->get($cacheKey);
+                            return;
+                         }
+                      }
+                      AnnotationParser::parse(parent::getDeclaringClass()->getName());
+                      $this->annotations = AnnotationParser::getMethodAnnotations($this);
+                      if(isset($cacher)) $cacher->set($cacheKey, $this->annotations);                      
                }
                catch(ReflectionException $e) {
 

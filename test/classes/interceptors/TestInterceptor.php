@@ -35,11 +35,11 @@ class TestInterceptor {
 	   * An example using the InvocationContext getMethod in logic criteria
 	   */
 	  #@AroundInvoke
-	  public function property1Setter( InvocationContext $ic ) {
+	  public function property1Setter(InvocationContext $ic) {
 
 	  		 $method = $ic->getMethod();
 
-	  		 if($method == 'setProperty1') {
+	  		 if($method == 'setProperty1' || $method == 'setProperty2' || $method = 'test') {
 
 	  		 	 // these are the original parameters passed into setProperty1
 	  		 	 $params = $ic->getParameters();

@@ -13,7 +13,7 @@
 				<column name="field2" display="Field Two" type="varchar" length="10" default="Foo"/>
 				<column name="field3" property="Table2" display="Table 2" type="int" length="10" sortable="false">
 					<foreignKey name="FK_Table1_2" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE" 
-						table="table2" column="id" controller="TestComponent/table1" select="name"/>
+						table="table2" column="id" controller="TestComponent/table2" select="name"/>
 				</column>
 			</table>
 			<table name="table2" model="TestComponent\model\Table2" description="">

@@ -52,8 +52,8 @@ abstract class ComponentModelActionController extends BaseModelActionController 
 	  		    $this->setPage($page);
 	  		    $xsl = $this->getModelListXSL(null, $this->getComponentName() . '/' . MVC::getAction());
 	  		    $xml = $this->getResultListAsPagedXML($this->getComponentName() . '/' . MVC::getAction());
-	  	        $this->getRenderer()->set('content', $this->xsltRenderer->transform($xsl, $xml));
-	  	        $this->getRenderer()->render($view);
+	  	        $this->set('content', $this->xsltRenderer->transform($xsl, $xml));
+	  	        $this->render($view);
 	     }
 
 	     /**
@@ -68,8 +68,8 @@ abstract class ComponentModelActionController extends BaseModelActionController 
 	     		$this->setPage($page);
 	     		$xsl = $this->getModelFormXSL(null, $this->getComponentName() . '/' . MVC::getAction());
 	     		$xml = $this->getModelAsFormXML($this->getComponentName() . '/' . MVC::getAction());
-  	     		$this->getRenderer()->set('content', $this->xsltRenderer->transform($xsl, $xml));
-  	     	    $this->getRenderer()->render($view);
+  	     		$this->set('content', $this->xsltRenderer->transform($xsl, $xml));
+  	     	    $this->render($view);
 	     }
 
 	     /**
@@ -86,8 +86,8 @@ abstract class ComponentModelActionController extends BaseModelActionController 
             	$this->setPage($page);
             	$xsl = $this->getModelFormXSL(null, $this->getComponentName() . '/' . MVC::getAction());
             	$xml = $this->getModelAsFormXML($this->getComponentName() . '/' . MVC::getAction());
-	  	        $this->getRenderer()->set('content', $this->xsltRenderer->transform($xsl, $xml));
-            	$this->getRenderer()->render($view);
+	  	        $this->set('content', $this->xsltRenderer->transform($xsl, $xml));
+            	$this->render($view);
 	     }
 
 	     /**
@@ -102,8 +102,8 @@ abstract class ComponentModelActionController extends BaseModelActionController 
 	     		$this->setPrimaryKeys($ids);
 	     		$xsl = $this->getModelAsReadOnlyXSL($this->getComponentName() . '/' . MVC::getAction());
 	     		$xml = $this->getModelAsFormXML($this->getComponentName() . '/' . MVC::getAction());
-  	     		$this->getRenderer()->set('content', $this->xsltRenderer->transform($xsl, $xml));
-  	     	    $this->getRenderer()->render($view);
+  	     		$this->set('content', $this->xsltRenderer->transform($xsl, $xml));
+  	     	    $this->render($view);
 	     }
 
 	     /**
@@ -140,8 +140,8 @@ abstract class ComponentModelActionController extends BaseModelActionController 
      			$xsl = $this->getModelListXSL(null, $this->getComponentName() . '/' . MVC::getAction());
      			$xml = $this->getResultListAsPagedXML($this->getComponentName() . '/' . MVC::getAction(), 'search', $params);
      			$content = $this->xsltRenderer->transform($xsl, $xml);
-  	         	$this->getRenderer()->set('content', $content);
-	  	        $this->getRenderer()->render($view);
+  	         	$this->set('content', $content);
+	  	        $this->render($view);
 	     }
 
 	     /**
@@ -163,8 +163,8 @@ abstract class ComponentModelActionController extends BaseModelActionController 
 				$xml = $this->getResultListAsPagedXML($this->getComponentName() . '/' . MVC::getAction());
 	     		$content = $this->xsltRenderer->transform($xsl, $xml);
 
-	  	        $this->getRenderer()->set('content', $content);
-	  	        $this->getRenderer()->render($view);
+	  	        $this->set('content', $content);
+	  	        $this->render($view);
 	     }
 
 	     /**

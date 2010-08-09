@@ -5,11 +5,10 @@
  require '../src/AgilePHP.php';
 
  try {
+        AgilePHP::setFrameworkRoot(realpath(dirname(__FILE__) . '/../src' ));
  		AgilePHP::init();
         AgilePHP::setDefaultTimezone('America/New_York');
         AgilePHP::setDebugMode(true);
-  	    AgilePHP::setDisplayPhpErrors(true);
-    	AgilePHP::setFrameworkRoot(realpath(dirname(__FILE__) . '/../src' ));
     	AgilePHP::setAppName('AgilePHP Framework Tests');
 
     	MVC::dispatch();

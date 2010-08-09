@@ -27,7 +27,7 @@ namespace TestComponent\model;
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.component.TestComponent.model
  */
-class Table1 {
+class Table1 extends \DomainModel implements \ActiveRecord {
   
       private $id;
       private $field1;

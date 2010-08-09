@@ -27,13 +27,17 @@
  * @package com.makeabyte.agilephp.test.classes
  */
 
-#@TestInterceptor2( param1 = "test", param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role() )
+#@TestInterceptor2(param1 = "test", param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role())
 class MockInterceptionTarget {
 
 	  #@Logger
 	  public $logger;
 
 	  private $property1;
+	  private static $property2;
+
+	  #@In(class = IdentityManagerFactory::getManager())
+	  public static $identityManager;
 
 	  public function __construct() { }
 
@@ -44,10 +48,10 @@ class MockInterceptionTarget {
 	   * @return void
 	   */
 	  #@TestInterceptor
-	  #@TestInterceptor2( param1 = Crypto::getInstance(), param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role() )
-	  public function setProperty1( $value ) {
+	  #@TestInterceptor2(param1 = Crypto::getInstance(), param2 = { key1 = "test2", "test3", key2 = "test4" }, param3 = new Role())
+	  public function setProperty1($value) {
 
-	  		 Log::debug( 'MockInterceptionTarget::setProperty1 with value \'' . $value . '\'.' );
+	  		 Log::debug('MockInterceptionTarget::setProperty1 with value \'' . $value . '\'.');
 	  		 $this->property1 = $value;
 	  }
 
@@ -62,16 +66,52 @@ class MockInterceptionTarget {
 	  }
 
 	  /**
+	   * Static property2 mutator
+	   * 
+	   * @param mixed $value The test value that gets transformed by #@TestInterceptor
+	   * @static
+	   */
+	  #@TestInterceptor
+	  public static function setProperty2($value) {
+
+	         self::$property2 = $value;
+	  } 
+
+	  /**
+	   * Static property2 accessor
+	   * 
+	   * @static
+	   * @return string 'intercepted value' as set by #@TestInterceptor
+	   */
+	  public static function getProperty2() {
+
+	         return self::$property2;
+	  }
+
+	  /**
+	   * Accessor for the $identityManager field used to test Dependency Injection
+	   * on static fields. NOTE: The class must be instantiated in order for the #@In
+	   * DI interceptor to get executed. That means that DI can not take place on an
+	   * abstract class, for example, and requires at a minimum, a singleton.
+	   * 
+	   * @return IdentityManager
+	   */
+	  public static function getIdentityManager() {
+
+	         return self::$identityManager;
+	  }
+
+	  /**
 	   * Restricted method. Only users with a role of
 	   * 'admin' can invoke this method.
 	   * 
 	   * @return The string 'restrictedMethod'
 	   * @throws AccessDeniedException
 	   */
-	  #@Restrict( role = 'admin' )
+	  #@Restrict(role = 'admin')
 	  public function restrictedMethod() {
 
-	  		 Log::debug( 'MockInterceptionTarget::restrictedMethod invoked' );
+	  		 Log::debug('MockInterceptionTarget::restrictedMethod invoked');
 	  }
 
 	  /**
@@ -83,7 +123,7 @@ class MockInterceptionTarget {
 	  #@LoggedIn
 	  public function secureMethod() {
 
-	  		 Log::debug( 'MockInterceptionTarget::secureMethod invoked' );
+	  		 Log::debug('MockInterceptionTarget::secureMethod invoked');
 	  }
 
 	  /**

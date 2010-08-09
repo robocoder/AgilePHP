@@ -34,7 +34,6 @@ class InventoryController extends BaseModelActionController {
 	  public function __construct() {
 
 	  	     $this->model = new Inventory();
-
 	  	     parent::__construct();
 	  }
 
@@ -59,36 +58,36 @@ class InventoryController extends BaseModelActionController {
 	  	     $image = null;
 	  	     $video = null;
 
-	  	     if( $_FILES['image']['size'] )
-	  	     	 $image = $this->upload( 'image' );
+	  	     if($_FILES['image']['size'])
+	  	     	 $image = $this->upload('image');
 
-	  	     if( $_FILES['video']['size'] )
-	  	     	 $video = $this->upload( 'video' );
-
-	  		 $i = new Inventory();
-	  		 $i->setName( $request->get( 'name' ) );
-	  		 $i->setDescription( $request->get( 'description' ) );
-	  		 $i->setPrice( floatval( $request->get( 'price' ) ) );
-	  		 $i->setCategory( $request->get( 'category' ) );
-	  		 if( $image ) $i->setImage( $image );
-	  		 if( $video ) $i->setVideo( $video );
+	  	     if($_FILES['video']['size'])
+	  	     	 $video = $this->upload('video');
 
 	  		 try {
-	  	 	 		ORM::persist( $i );
+	  		       $i = new Inventory();
+	  		       $i->setName($request->get('name'));
+	  		       $i->setDescription($request->get('description'));
+	  		       $i->setPrice(floatval($request->get('price')));
+	  		       $i->setCategory($request->get('category'));
+	  		       if($image) $i->setImage($image);
+	  		       if($video) $i->setVideo($video);
+
+	  	 	 		$i->persist();
 	  		 }
-	  		 catch( ORMException $e ) {
+	  		 catch(ORMException $e) {
 
-	  		 		if( file_exists( AgilePHP::getWebRoot() . $image ) )
-	  		 			@unlink( AgilePHP::getWebRoot() . $image );
+	  		 	   if(file_exists(AgilePHP::getWebRoot() . $image))
+	  		 		  @unlink(AgilePHP::getWebRoot() . $image);
 
-	  		 		if( file_exists( AgilePHP::getWebRoot() . $video ) )
-	  		 			@unlink( AgilePHP::getWebRoot() . $video );
+	  		 	   if(file_exists(AgilePHP::getWebRoot() . $video))
+	  		 		  @unlink(AgilePHP::getWebRoot() . $video);
 
-	  	     	    throw new ORMException( $e->getMessage(), $e->getCode() );
+	  	     	   throw new ORMException($e->getMessage(), $e->getCode());
 	  		 }
 
 	  		 $this->clear();
-	  	 	 parent::index( $this->getPage() );
+	  	 	 parent::index($this->getPage());
 	  }
 
 	  /**
@@ -96,60 +95,55 @@ class InventoryController extends BaseModelActionController {
 	   * 
 	   * @return void
 	   */
-	  public function merge( $id, $page = 1 ) {
+	  public function merge($id, $page = 1) {
 
 	  		 $request = Scope::getRequestScope();
 
-			 if( $_FILES['image']['size'] )
-			 	 $image = $this->upload( 'image' );
+			 if($_FILES['image']['size'])
+			 	 $image = $this->upload('image');
 
-			 if( $_FILES['video']['size'] )
-			 	$video = $this->upload( 'video' );
-
-			 $this->getModel()->setId( $id );
-			 $i = new Inventory();
-			 $i->setId( $id );
-
-	  		 if( isset( $image ) && $image != $i->getImage() ) {
-
-	  		 	 $img = realpath( '../' . $i->getImage() );
-	  		 	 if( file_exists( $img ) ) unlink( $img );
-
-  		 	 	 $i->setImage( $image );
-	  		 }
-
-	  		 //if( isset( $image ) && $image == $i->getImage() || !isset( $image ) && $i->getImage() )
-	  		 	// $i->setImage( $i->getImage() );
-
-	  		 if( isset( $video ) && $video != $i->getVideo() ) {
-
-	  		 	 $vid = realpath( '../' . $i->getVideo() );
-	  		 	 if( file_exists( $vid ) ) unlink( $vid );
-
-	  		 	 $i->setVideo( $video );
-	  		 }
-
-	  		 $i->setName( $request->get( 'name' ) );
-	  		 $i->setDescription( $request->get( 'description' ) );
-	  		 $i->setCategory( $request->get( 'category' ) );
-	  		 $i->setPrice( floatval( $request->get( 'price' ) ) );
+			 if($_FILES['video']['size'])
+			 	$video = $this->upload('video');
 
 	  		 try {
-	  	 	 		ORM::merge( $i );
+	  		        $this->getModel()->setId($id);
+
+	  		        if(isset($image) && $image != $this->getModel()->getImage()) {
+
+        	  		   $img = realpath('../' . $this->getModel()->getImage());
+        	  		   if(file_exists($img)) unlink($img);
+        
+          		 	   $this->getModel()->setImage($image);
+        	  		}
+        
+        	  		if(isset($video) && $video != $this->getModel()->getVideo()) {
+        
+        	  		 	$vid = realpath('../' . $this->getModel()->getVideo());
+        	  		 	if(file_exists($vid)) unlink($vid);
+        
+        	  			$this->getModel()->setVideo($video);
+        	  		}
+        
+        	  		$this->getModel()->setName($request->get('name'));
+        	  		$this->getModel()->setDescription($request->get('description'));
+        	  		$this->getModel()->setCategory($request->get('category'));
+        	  		$this->getModel()->setPrice(floatval($request->get('price')));
+
+	  	 	 		$this->getModel()->merge();
 	  		 }
-	  		 catch( ORMException $e ) {
+	  		 catch(ORMException $e) {
 
-	  		 		$img = realpath( '../' . $i->getImage() );
-	  		 		$vid = realpath( '../' . $i->geVideo() );
+	  		 		$img = realpath('../' . $i->getImage());
+	  		 		$vid = realpath('../' . $i->geVideo());
 
-	  		 		if( $i->getImage() && file_exists( $mg ) ) unlink( $img );
-	  		 		if( $i->getVideo() && file_exists( $vid ) ) unlink( $vid );
+	  		 		if($this->getModel()->getImage() && file_exists($mg)) unlink($img);
+	  		 		if($this->getModel()->getVideo() && file_exists($vid)) unlink($vid);
 
-	  	     	    throw new ORMException( $e->getMessage(), $e->getCode() );
+	  	     	    throw new ORMException($e->getMessage(), $e->getCode());
 	  		 }
 
 	  		 $this->clear();
-	  	 	 parent::index( $this->getPage() );
+	  	 	 parent::index($this->getPage());
 	  }
 
 	  /**
@@ -158,20 +152,19 @@ class InventoryController extends BaseModelActionController {
 	   * @param $id The id of the inventory item to delete
 	   * @return void
 	   */
-	  public function delete( $id ) {
+	  public function delete($id) {
 
-	 		 $this->getModel()->setId( $id );
+	 		 $this->getModel()->setId($id);
 
-	 		 $img = realpath( '../' . $this->getModel()->getImage() );
-	 		 $vid = realpath( '../' . $this->getModel()->getVideo() );
+	 		 $img = realpath('../' . $this->getModel()->getImage());
+	 		 $vid = realpath('../' . $this->getModel()->getVideo());
 
-	  	     if( $this->getModel()->getImage() && file_exists( $img ) ) unlink( $img );
-	  	     if( $this->getModel()->getVideo() && file_exists( $vid ) ) unlink( $vid );
+	  	     if($this->getModel()->getImage() && file_exists($img)) unlink($img);
+	  	     if($this->getModel()->getVideo() && file_exists($vid)) unlink($vid);
 
-	  		 ORM::delete( $this->getModel() );
-
+	  		 $this->getModel()->delete();
 	  		 $this->clear();
-  		     parent::index( $this->getPage() );
+  		     parent::index($this->getPage());
 	  }
 
 	  /**
@@ -181,24 +174,24 @@ class InventoryController extends BaseModelActionController {
 	   * @param $type The type of file to upload (image|video).
 	   * @return void
 	   */
-	  public function upload( $type ) {
+	  public function upload($type) {
 
 	  	     // If php.ini post_max_size is set to a size less than the data being posted,
 		  	 // the PHP $_POST array will be empty (regardless if POST data is present.
-			 $maxSize = (integer)ini_get( 'post_max_size' ) * 1024 * 1024; 
+			 $maxSize = (integer)ini_get('post_max_size') * 1024 * 1024; 
 			 $contentLength = (integer)$_SERVER['CONTENT_LENGTH'];
-			 if( $contentLength > $maxSize )
-			 	 throw new FrameworkException( 'HTTP Content-Length greater than PHP configuration directive \'post_max_size\' (results in empty $_POST array). Content-Length = \'' . $contentLength . '\', post_max_size = \'' . $maxSize . '\'' );
+			 if($contentLength > $maxSize)
+			 	 throw new FrameworkException('HTTP Content-Length greater than PHP configuration directive \'post_max_size\' (results in empty $_POST array). Content-Length = \'' . $contentLength . '\', post_max_size = \'' . $maxSize . '\'');
 
 			 $target = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR
 			 		  . $type . DIRECTORY_SEPARATOR . $_FILES[$type]['name'];
 
 			 $upload = new Upload();
-			 $upload->setName( $type );
-			 $upload->setDirectory( AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' .
-			 						DIRECTORY_SEPARATOR . $type );
+			 $upload->setName($type);
+			 $upload->setDirectory(AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'uploads' .
+			 						DIRECTORY_SEPARATOR . $type);
 			 $upload->save();
 
-			 return str_replace( AgilePHP::getWebRoot(), AgilePHP::getDocumentRoot(), $target );
+			 return str_replace(AgilePHP::getWebRoot(), AgilePHP::getDocumentRoot(), $target);
 	  }
 }

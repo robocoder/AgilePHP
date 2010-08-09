@@ -52,7 +52,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     		   parent::__construct();
 	     		   $this->xsltRenderer = MVC::createRenderer('XSLTRenderer');
-	     		   $this->getRenderer()->set('title', 'Administration :: ' . $this->getModelName());
+	     		   $this->set('title', 'Administration :: ' . $this->getModelName());
 	     }
 
 	     /**
@@ -87,8 +87,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	  		    $this->setPage($page);
 	  		    $content = $this->getXsltRenderer()->transform($this->getModelListXSL(), $this->getResultListAsPagedXML());
 
-	  	        $this->getRenderer()->set('content', $content);
-	  	        $this->getRenderer()->render($view);
+	  	        $this->set('content', $content);
+	  	        $this->render($view);
 	     }
 
 	     /**
@@ -101,8 +101,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     public function add($page, $view = 'admin') {
 
 	     		$this->setPage($page);
-  	     		$this->getRenderer()->set('content', $this->getXsltRenderer()->transform($this->getModelFormXSL(), $this->getModelAsFormXML()));
-  	     	    $this->getRenderer()->render($view);
+  	     		$this->set('content', $this->getXsltRenderer()->transform($this->getModelFormXSL(), $this->getModelAsFormXML()));
+  	     	    $this->render($view);
 	     }
 
 	     /**
@@ -117,8 +117,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     		$this->setPrimaryKeys($ids);
             	$this->setPage($page);
-            	$this->getRenderer()->set('content', $this->getXsltRenderer()->transform($this->getModelFormXSL(), $this->getModelAsFormXML()));
-            	$this->getRenderer()->render($view);
+            	$this->set('content', $this->getXsltRenderer()->transform($this->getModelFormXSL(), $this->getModelAsFormXML()));
+            	$this->render($view);
 	     }
 
 	     /**
@@ -132,8 +132,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     		$this->setPrimaryKeys($ids);
 
-  	     		$this->getRenderer()->set('content', $this->getXsltRenderer()->transform($this->getModelAsReadOnlyXSL(), $this->getModelAsFormXML()));
-  	     	    $this->getRenderer()->render($view);
+  	     		$this->set('content', $this->getXsltRenderer()->transform($this->getModelAsReadOnlyXSL(), $this->getModelAsFormXML()));
+  	     	    $this->render($view);
 	     }
 
 	     /**
@@ -168,8 +168,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
      			$params = $view . '/' . $field . '/' . $keyword;
      			$content = $this->xsltRenderer->transform($this->getModelListXSL(), $this->getResultListAsPagedXML(false, 'search', $params));
 
-  	         	$this->getRenderer()->set('content', $content);
-	  	        $this->getRenderer()->render($view);
+  	         	$this->set('content', $content);
+	  	        $this->render($view);
 	     }
 
 	     /**
@@ -189,8 +189,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
 	     		$content = $this->xsltRenderer->transform($this->getModelListXSL(), $this->getResultListAsPagedXML());
 
-	  	        $this->getRenderer()->set('content', $content);
-	  	        $this->getRenderer()->render($view);
+	  	        $this->set('content', $content);
+	  	        $this->render($view);
 	     }
 
 	     /**
@@ -322,8 +322,8 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
   	 	  	       			  if($request->getSanitized('password1') !== $request->getSanitized('password2')) {
 
-			  		     		 $this->getRenderer()->set('error', 'Passwords don\'t match');
-			  		     		 $this->getRenderer()->render('error');
+			  		     		 $this->set('error', 'Passwords don\'t match');
+			  		     		 $this->render('error');
 			  		     		 exit;
 			  		     	  }
 

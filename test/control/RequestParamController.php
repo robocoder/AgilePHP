@@ -49,7 +49,7 @@ class RequestParamController extends BaseController {
 	   */
 	  public function index() {
 
-	  		 $this->getRenderer()->render( 'request-param-example' );
+	  		 $this->render( 'request-param-example' );
 	  }
 
 	  /**
@@ -63,7 +63,7 @@ class RequestParamController extends BaseController {
 	  		 echo 'Name: ' . $this->name . '<br>';
 	  		 echo 'Comments: ' . $this->comments . '<br>';
 
-	  		 $this->logger->debug( 'RequestParamController::process Name = ' . $this->name . ', comments: ' . $this->comments );
+	  		 $this->logger->debug('RequestParamController::process Name = ' . $this->name . ', comments: ' . $this->comments);
 	  }
 }
 ?>

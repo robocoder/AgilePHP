@@ -39,7 +39,7 @@ class MockCacher {
 	   * Outputs the value of the markup property with a 1 second cache expiry time. 
 	   * 
 	   */
-	  #@Cache( minutes = 1 )
+	  #@Cache(minutes = 1)
 	  public function expires() {
 
 	  		 return $this->getMarkup();
@@ -60,7 +60,7 @@ class MockCacher {
 	   * @param mixed $value The value to have the cached method output
 	   * @return void
 	   */
-	  public function setMarkup( $value ) {
+	  public function setMarkup($value) {
 
 	  		 $this->markup = $value;
 	  }

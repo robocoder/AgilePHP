@@ -36,83 +36,81 @@ class users extends BaseController {
 	  #@GET
 	  public function index() {
 
-	  		 return ORM::find( new User() );
+	  		 return ORM::find(new User());
 	  }
 
 	  #@GET
-	  #@Path( resource = '/{username}' )
-	  #@ProduceMime( type = 'application/xml' )
-	  public function getUser( $username ) {
+	  #@Path(resource = '/{username}')
+	  #@ProduceMime(type = 'application/xml')
+	  public function getUser($username) {
 
 	  		 $user = new User();
-	  		 $user->setUsername( $username );
+	  		 $user->setUsername($username);
 
 	  		 return $user;
 	  }
 
 	  #@GET
-	  #@Path( resource = '/{username}/role' )
-	  public function getRole( $username ) {
+	  #@Path(resource = '/{username}/role')
+	  public function getRole($username) {
 
 	  		 $user = new User();
-	  		 $user->setUsername( $username );
+	  		 $user->setUsername($username);
 
 	  		 return $user->getRole();
 	  }
 
 	  #@GET
-	  #@Path( resource = '/{username}/session' )
-	  public function getSession( $username ) {
+	  #@Path(resource = '/{username}/session')
+	  public function getSession($username) {
 
 	  		 return Scope::getSessionScope()->getSession();
 	  }
 
 	  #@POST
-	  #@Path( resource = '/{username}' )
-	  #@ConsumeMime( type = 'application/xml' )
-	  #@ProduceMime( type = 'application/xml' )
-	  public function createUser( $username, User $user ) {
+	  #@Path(resource = '/{username}')
+	  #@ConsumeMime(type = 'application/xml')
+	  #@ProduceMime(type = 'application/xml')
+	  public function createUser($username, User $user) {
 
-	  		 ORM::persist( $user );
+	  		 $user->persist();
 	  		 return $user;
 	  }
 
 	  #@PUT
-	  #@Path( resource = '/{username}' )
-	  #@ConsumeMime( type = 'application/xml' )
-	  #@ProduceMime( type = 'application/xml' )
-	  public function updateUser( $username, User $user ) {
+	  #@Path(resource = '/{username}')
+	  #@ConsumeMime(type = 'application/xml')
+	  #@ProduceMime(type = 'application/xml')
+	  public function updateUser($username, User $user) {
 
-	  		 ORM::merge( $user );
+	  		 $user->merge();
 	  		 return $user;
 	  }
 
 	  #@PUT
-	  #@Path( resource = '/{username}/json' )
-	  #@ConsumeMime( type = 'application/json' )
-	  #@ProduceMime( type = 'application/json' )
-	  public function updateUserJSON( $username, User $user ) {
+	  #@Path(resource = '/{username}/json')
+	  #@ConsumeMime(type = 'application/json')
+	  #@ProduceMime(type = 'application/json')
+	  public function updateUserJSON($username, User $user) {
 
-	  		 ORM::merge( $user );
+	  		 $user->merge();
 	  		 return $user;
 	  }
 
 	  #@PUT
-	  #@Path( resource = '/{username}/wildcard' )
-	  public function updateUserWildcard( $username, User $user ) {
+	  #@Path(resource = '/{username}/wildcard')
+	  public function updateUserWildcard($username, User $user) {
 
-	  		 ORM::merge( $user );
+	  		 $user->merge();
 	  		 return $user;
 	  }
 
 	  #@DELETE
-	  #@Path( resource = '/{username}' )
-	  public function deleteUser( $username ) {
+	  #@Path(resource = '/{username}')
+	  public function deleteUser($username) {
 
-	  		 $user = new User();
-	  		 $user->setUsername( $username );
-
-	  		 ORM::delete( $user );
+	  		 $user = new User($username);
+	  		 $user->delete();
 	  }
 }
 ?>

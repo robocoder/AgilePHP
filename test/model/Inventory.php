@@ -29,7 +29,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.model
  */
-class Inventory implements ActiveRecord {
+class Inventory extends DomainModel implements ActiveRecord {
 
 	  private $id;
 	  private $name;
@@ -53,7 +53,7 @@ class Inventory implements ActiveRecord {
 	   * @return void
 	   */
 	  #@Id
-	  public function setId( $id ) {
+	  public function setId($id) {
 
 	  	     $this->id = $id;
 	  }
@@ -63,7 +63,7 @@ class Inventory implements ActiveRecord {
 	  	     return $this->id;
 	  }
 
-	  public function setName( $name ) {
+	  public function setName($name) {
 
 	  	     $this->name = $name;
 	  }
@@ -73,7 +73,7 @@ class Inventory implements ActiveRecord {
 	  	     return $this->name;
 	  }
 
-	  public function setDescription( $description ) {
+	  public function setDescription($description) {
 	  	
 	  	     $this->description = $description;
 	  }
@@ -83,7 +83,7 @@ class Inventory implements ActiveRecord {
 	  	     return $this->description;
 	  }
 
-	  public function setPrice( $price ) {
+	  public function setPrice($price) {
 
 	  	     $this->price = $price;	  	     
 	  }
@@ -98,12 +98,12 @@ class Inventory implements ActiveRecord {
 	  		 return $this->category;
 	  }
 	  
-	  public function setCategory( $category ) {
+	  public function setCategory($category) {
 	  	
 	  		 $this->category = $category;
 	  }
 
-	  public function setImage( $path ) {
+	  public function setImage($path) {
 	  	
 	  	     $this->image = $path;
 	  }
@@ -113,7 +113,7 @@ class Inventory implements ActiveRecord {
 	  	     return $this->image;
 	  }
 	  
-	  public function setVideo( $path ) {
+	  public function setVideo($path) {
 
 	  	     $this->video = $path;
 	  }

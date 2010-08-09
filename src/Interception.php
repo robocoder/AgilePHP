@@ -19,12 +19,12 @@
  * @package com.makeabyte.agilephp
  */
 
-require_once 'interception/InterceptionException.php';
-require_once 'interception/InterceptorFilter.php';
-require_once 'interception/InterceptorProxy.php';
-require_once 'interception/InvocationContext.php';
-require_once 'interception/AroundInvoke.php';
-require_once 'interception/AfterInvoke.php';
+require 'interception/InterceptionException.php';
+require 'interception/InterceptorFilter.php';
+require 'interception/InterceptorProxy.php';
+require 'interception/InvocationContext.php';
+require 'interception/AroundInvoke.php';
+require 'interception/AfterInvoke.php';
 
 /**
  * Performs interceptions by creating a dynamic proxy for intercepted
@@ -42,12 +42,14 @@ class Interception {
 	  private $method;
 	  private $property;
 	  private $interceptor;
+	  private $static;
 
 	  /**
 	   * Initalizes the Interception
 	   *
 	   * @param String $class The target class name
-	   * @param String $method The method name
+	   * @param String $method The method name if this is a method level interception
+	   * @param String $property The property name if this is a field level interception
 	   * @param Object $interceptor The instance of the interceptor which will intercept calls
 	   * @return void
 	   */
@@ -57,9 +59,6 @@ class Interception {
 	  		 $this->method = $method;
 	  		 $this->property = $property;
 	  		 $this->interceptor = $interceptor;
-
-	  		 $prototype = $this->createInterceptedTarget();
-	  		 $this->createInterceptorProxy($prototype);
 	  }
 
 	  /**
@@ -100,6 +99,17 @@ class Interception {
 	  }
 
 	  /**
+	   * Returns boolean flag used to indicate whether or not the intercepted class
+	   * is static.
+	   * 
+	   * @return boolean True if the class is static, false otherwise.
+	   */
+	  public function isStatic() {
+
+	         return $this->static;
+	  }
+
+	  /**
 	   * Creates a new intercepted target instance. The target is created by modifying
 	   * the source code of the class being intercepted to *classname*_Intercepted.
 	   *
@@ -107,13 +117,28 @@ class Interception {
 	   */
 	  public function createInterceptedTarget() {
 
+	         if(class_exists($this->class, false)) return;
+
+	         // Use cache if caching is enabled
+		     if($cacher = AgilePHP::getCacher()) {
+
+		        $cacheKey = 'AGILEPHP_INTERCEPTION_TARGET_' . $this->class;
+		        if($cacher->exists($cacheKey)) {
+
+		            $o = $cacher->get($cacheKey);
+    		        if(@eval($o->code) === false) {
+
+        	  		   Log::error('Interception::createInterceptorProxy ' . PHP_EOL . $code);
+        	  		   throw new InterceptionException('Failed to create intercepted target');
+    	  		    }
+    	  		    return $o->prototype;
+		        }
+		     }
+
  	  		 // php namespace support
 			 $namespace = explode('\\', $this->class);
-			 $className = $namespace[count($namespace)-1];
-			 array_pop($namespace);
+			 $className = array_pop($namespace);
 			 $namespace = implode('\\', $namespace);
-
-		 	 if(class_exists($this->class, false)) return;
 
 		 	 if(strpos($className, 'phar://') !== false) {
 
@@ -138,10 +163,22 @@ class Interception {
 	  		 $code = preg_replace('/class\s' . $className . '\s/', 'class ' . $className . '_Intercepted ', $code);
 			 $code = $this->clean($code);
 
-			 //Log::debug('Interception::createInterceptedTarget ' . PHP_EOL . $code);
+			 // Log::debug('Interception::createInterceptedTarget ' . PHP_EOL . $code);
 
-	  		 if(eval($code) === false)
-	  		 	 throw new InterceptionException('Failed to create intercepted target');
+	  		 if(@eval($code) === false) {
+
+	  		    Log::error('Interception::createInterceptorProxy ' . PHP_EOL . $code);
+	  		 	throw new InterceptionException('Failed to create intercepted target');
+	  		 }
+
+	  		 if(isset($cacher)) {
+
+	  		    $o = new stdClass;
+	  		    $o->code = $code;
+	  		    $o->prototype = $matches[1];
+
+	  		    $cacher->set($cacheKey, $o);
+	  		 }
 
 	  		 return $matches[1];
 	  }
@@ -155,16 +192,28 @@ class Interception {
 	   */
 	  public function createInterceptorProxy($prototype) {
 
+	         if(class_exists($this->class, false)) return;
+
+	         // Use cache if caching is enabled
+		     if($cacher = AgilePHP::getCacher()) {
+
+		        $cacheKey = 'AGILEPHP_INTERCEPTION_PROXY_' . $this->class;
+		        if($cacher->exists($cacheKey)) {
+
+		            $code = $cacher->get($cacheKey);
+    		        if(@eval($code) === false) {
+
+    	  		       Log::error('Interception::createInterceptorProxy ' . PHP_EOL . $code);
+    	  		 	   throw new InterceptionException('Failed to create interceptor proxy for \'' . $this->class . '\'.');
+    	  		    }
+    	  		    return;
+		        }
+		     }
+	      
 	  		 // php namespace support
 			 $namespace = explode('\\', $this->class);
-			 $className = $namespace[count($namespace)-1];
-			 array_pop($namespace);
+			 $className = array_pop($namespace);
 			 $namespace = implode('\\', $namespace);
-
-			 // __callstatic support
-	  		 $class = str_replace('\\', '::', $this->class);
-
-	  		 if(class_exists($this->class, false)) return;
 
 	 	     // Phar support
 	  		 if(strpos($className, 'phar://') !== false) {
@@ -179,6 +228,8 @@ class Interception {
 	  		 	 $className = preg_replace('/\.php/', '', $className);
 		     }
 
+		     // Create a new class using the intercepted target class prototype (class name and
+		     // other associated keywords - namespace, extends, implements, etc).
 	  	     try {
 	  	            $code = ($namespace) ? 'namespace ' . $namespace . ';' : '';
 	  		 		$code .= AgilePHP::getSource('InterceptorProxy');
@@ -188,11 +239,16 @@ class Interception {
 	  	     		throw new InterceptionException($e->getMessage(), $e->getCode());
 	  	     }
 
-	  		 $code = preg_replace('/class\s.*{/', $prototype . '{', $code);
-	  		 $stubs = $this->getMethodStubs();
-	  		 $proxyMethods = array('getInstance', 'getInterceptedInstance',
-	  		 						   '__get', '__set', '__isset', '__unset', '__call');
+	  	     // Replace the class declaration with that of the intercepted target's prototype
+	  	     // so that keywords such as "extends" and "implements" and their parameters are
+	  	     // preserved. This regex also copies the intercepted target's properties/fields
+	  	     // into the proxy.
+	  		 $code = preg_replace('/class\s.*{/',
+	  		                      $prototype . '{' . PHP_EOL . PHP_EOL . "\t" . implode(PHP_EOL . "\t", $this->getPropertyStubs()),
+	  		                      $code);
 
+	  		 $stubs = $this->getMethodStubs();
+	  		 $proxyMethods = array('getInterceptedInstance', '__call', '__callstatic', '__initstatic');
 	  		 $constructor = null;
 
 	  		 // Create method stubs in the proxy which match those in the intercepted class
@@ -205,22 +261,47 @@ class Interception {
 	  		 		}
 	  		 		else if(in_array($stubs['methods'][$i], $proxyMethods)) continue;
 
-	  		 		$call = $stubs['signatures'][$i] . ' { return $this->__call("' . $stubs['methods'][$i] . '", array' . $stubs['params'][$i] . '); } ';
-	  		 		$code = preg_replace('/\}\s*\?>/m', "\t" . $call . PHP_EOL . '}' . PHP_EOL . '?>', $code);
+	  		 		$call = preg_match('/static\s+/', $stubs['signatures'][$i]) ? 'self::__callstatic' : '$this->__call';
+	  		 		$stub = $stubs['signatures'][$i] . ' { return ' . $call . '("' . $stubs['methods'][$i] . '", array' . $stubs['params'][$i] . '); } ';
+	  		 		$code = preg_replace('/\}\s*\?>/m', "\t" . $stub . PHP_EOL . '}' . PHP_EOL . '?>', $code);
 	  		 }
 
-	  		 // Make sure the proxy constructor matches the intercepted class
-	  		 if($constructor)
-	  		 	 $code = preg_replace('/public\s+function\s+__construct.*\)/', $constructor, $code);
+	  		 // Replace the InterceptorProxy constructor with that of the intercepted target.
+	  		 if($constructor) $code = preg_replace('/(public|protected|private)?\sfunction\s__construct\(.*?\)\s{/sm', $constructor . ' {', $code);
 
 	  		 $code = $this->clean($code);
 
-	  		 //Log::debug('Interception::createInterceptorProxy ' . PHP_EOL . $code);
+	  		 // Log::debug('Interception::createInterceptorProxy ' . PHP_EOL . $code);
 
-	  		 if(eval($code) === false)
-	  		 	 throw new InterceptionException('Failed to create interceptor proxy for \'' . $this->class . '\'.');
+	  		 if(@eval($code) === false) {
+
+	  		    Log::error('Interception::createInterceptorProxy ' . PHP_EOL . $code);
+	  		 	throw new InterceptionException('Failed to create interceptor proxy for \'' . $this->class . '\'.');
+	  		 }
+
+	  		 // Cache the source code for subsequent requests
+	  		 if(isset($cacher)) $cacher->set($cacheKey, $code);
 	  }
 
+	  /**
+	   * Extracts all property declarations from the intercepted target.
+	   * 
+	   * @return mixed An array of property declarations or void if no properties could be extracted
+	   */
+	  private function getPropertyStubs() {
+
+	           $code = AgilePHP::getSource($this->class);
+
+	           // If more than one class exists in the document, only the first class is parsed
+	           preg_match('/^class\s.*?}.*?\n}\n/ms', $code, $classes);
+
+	           if($classes[0]) {
+
+	               preg_match_all('/(private|protected|public|[^@]var)\s*(\$.*?;)/sm', $classes[0], $matches);
+	               if(isset($matches[0])) return $matches[0];
+	           }
+	  }
+	  
 	  /**
 	   * Creates public method stubs in the proxy class that match public methods
 	   * in the intercepted target class. Without this in place, when using reflection
@@ -233,22 +314,28 @@ class Interception {
 	  private function getMethodStubs() {
 
 	  		  $code = AgilePHP::getSource($this->class);
-	  		  preg_match_all('/(public\s+function\s+(.*?)(\(.*\)))\s/', $code, $matches);
 
-	  		  if(!isset($matches[1]))
-	  		 	   return array();
+	  		  preg_match_all('/[^static]\s(public\s+function\s+(.*?)(\(.*?\)))\s/sm', $code, $methods);
+	  		  preg_match_all('/(static\s+.*function\s+(.*?)(\(.*\)))\s/', $code, $statics);
+
+	  		  if(!isset($methods[1]) && !isset($statics[1])) return array();
+
+	  		  $methods[1] = array_merge($methods[1], $statics[1]);
+	  		  $methods[2] = array_merge($methods[2], $statics[2]);
+	  		  $methods[3] = array_merge($methods[3], $statics[3]);
 
 	  		  // Parameter names are gotten from the method signature
-	  		  foreach($matches[3] as &$params) {
+	  		  foreach($methods[3] as &$params) {
 
 	  		       // Remove type hinting
 	  		       preg_match_all('/\$[a-zA-Z0-9_]+/', $params, $args);
 	  		       $params = '(' . implode(', ', $args[0]) . ')';
 	  		  }
 
-	  		  $a['signatures'] = $matches[1];
-	  		  $a['methods'] = $matches[2];
-	  		  $a['params'] = $matches[3];
+	  		  $a['signatures'] = $methods[1];
+	  		  $a['methods'] = $methods[2];
+	  		  $a['params'] = $methods[3];
+	  		  $this->static = count($methods[2]) == count($statics[2]);
 
 	  		  return $a;
 	  }

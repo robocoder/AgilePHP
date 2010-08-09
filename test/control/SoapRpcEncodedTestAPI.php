@@ -33,8 +33,8 @@
  * @package com.makeabyte.agilephp.test.control
  */
 
-#@WebService( serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/SoapRpcEncodedTestAPI' )
-#@SOAPBinding( style = SOAPStyle::RPC, use = SOAPStyle::ENCODED )
+#@WebService(serviceName = 'TestAPIService', targetNamespace = 'http://localhost/test/index.php/SoapRpcEncodedTestAPI')
+#@SOAPBinding(style = SOAPStyle::RPC, use = SOAPStyle::ENCODED)
 class SoapRpcEncodedTestAPI extends SOAPService {
 
 	  /**
@@ -75,9 +75,9 @@ class SoapRpcEncodedTestAPI extends SOAPService {
 	   * @return int The sum
 	   */
 	  #@WebMethod
-	  public function add( $a, $b ) {
+	  public function add($a, $b) {
 
-	  		 return $this->MathTest->add( $a, $b );
+	  		 return $this->MathTest->add($a, $b);
 	  }
 
 	  /**
@@ -88,9 +88,9 @@ class SoapRpcEncodedTestAPI extends SOAPService {
 	   * @return int The difference
 	   */
 	  #@WebMethod
-	  public function subtract( $a, $b ) {
+	  public function subtract($a, $b) {
 
-	  		 return $this->MathTest->subtract( $a, $b );
+	  		 return $this->MathTest->subtract($a, $b);
 	  }
 
 	  /**
@@ -101,9 +101,9 @@ class SoapRpcEncodedTestAPI extends SOAPService {
 	   * @return int The product
 	   */
 	  #@WebMethod
-	  public function multiply( $a, $b ) {
+	  public function multiply($a, $b) {
 
-	  		 return $this->MathTest->multiply( $a, $b );
+	  		 return $this->MathTest->multiply($a, $b);
 	  }
 
 	  /**
@@ -114,9 +114,9 @@ class SoapRpcEncodedTestAPI extends SOAPService {
 	   * @return int The quotient
 	   */
 	  #@WebMethod
-	  public function divide( $a, $b ) {
+	  public function divide($a, $b) {
 
-	  		 return $this->MathTest->divide( $a, $b );
+	  		 return $this->MathTest->divide($a, $b);
 	  }
 
 	  /**
@@ -126,7 +126,7 @@ class SoapRpcEncodedTestAPI extends SOAPService {
 	   * @return int Returns the sum of both A and B fields in the MathTest object.
 	   */
 	  #@WebMethod
-	  public function objectParameterTest( MathTest $MathTest ) {
+	  public function objectParameterTest(MathTest $MathTest) {
 
 	  		 return ($MathTest->a + $MathTest->b);
 	  }
@@ -138,7 +138,7 @@ class SoapRpcEncodedTestAPI extends SOAPService {
 	   * @return MathTest[] Returns the same array that was passed in.
 	   */
 	  #@WebMethod
-	  public function arrayOfObjectsTest( array $MathTests ) {
+	  public function arrayOfObjectsTest(array $MathTests) {
 
 	  		 return $MathTests;
 	  }
@@ -150,7 +150,7 @@ class SoapRpcEncodedTestAPI extends SOAPService {
 	   * @return string[] The same strings that were passed in
 	   */
 	  #@WebMethod
-	  public function arrayStringTest( array $strings ) {
+	  public function arrayStringTest(array $strings) {
 
 	  		 return $strings;
 	  }
@@ -162,7 +162,7 @@ class SoapRpcEncodedTestAPI extends SOAPService {
 	   * @return string[][] The same multi-dimensional array that was passed in
 	   */
 	  #@WebMethod
-	  public function arrayOfArraysTest( array $strings ) {
+	  public function arrayOfArraysTest(array $strings) {
 
 	  		 return $strings;
 	  }
@@ -174,10 +174,10 @@ class SoapRpcEncodedTestAPI extends SOAPService {
 	   * @return int Adds A and B for each array and returns the sum of all MathTest objects
 	   */
 	  #@WebMethod
-	  public function arrayAddTest( array $MathTests ) {
+	  public function arrayAddTest(array $MathTests) {
 
 	  		 $sum = 0;
-	  		 foreach( $MathTests as $MathTest )
+	  		 foreach($MathTests as $MathTest)
 	  		 	$sum += ($MathTest->a + $MathTest->b);
 
 	  		 return $sum;

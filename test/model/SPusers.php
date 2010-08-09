@@ -40,7 +40,7 @@ class SPusers {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setUsername($username)
 	   */
-	  public function setUsername( $username ) {
+	  public function setUsername($username) {
 
 	  	     $this->username = $username;
 	  }
@@ -58,7 +58,7 @@ class SPusers {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setPassword($password)
 	   */
-	  public function setPassword( $password ) {
+	  public function setPassword($password) {
 
 	  	     $this->password = $password;
 	  }
@@ -76,7 +76,7 @@ class SPusers {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setEmail($email)
 	   */
-	  public function setEmail( $email ) {
+	  public function setEmail($email) {
 
 	  		 $this->email = $email;
 	  }
@@ -94,7 +94,7 @@ class SPusers {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setCreated($dateTime)
 	   */
-	  public function setCreated( $dateTime ) {
+	  public function setCreated($dateTime) {
 
 	  	     $this->created = $dateTime;
 	  }
@@ -112,7 +112,7 @@ class SPusers {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setLastLogin($dateTime)
 	   */
-	  public function setLastLogin( $timestamp ) {
+	  public function setLastLogin($timestamp) {
 
 	  	     $this->lastLogin = $timestamp;
 	  }
@@ -130,7 +130,7 @@ class SPusers {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setRoles($roles)
 	   */
-	  public function setRoleId( $roleId ) {
+	  public function setRoleId($roleId) {
 
 	  	     $this->roleId = $roleId;
 	  }
@@ -148,15 +148,9 @@ class SPusers {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setEnabled($value)
 	   */
-	  public function setEnabled( $value ) {
+	  public function setEnabled($value) {
 
-	  		 if( $value == '1' ) {
-
-	  		 	 $this->enabled = $value;
-	  		 	 return;
-	  		 }
-
-	  		 $this->enabled = (ord($value) == 1) ? '1' : null;
+	  		 $this->enabled = $value;
 	  }
 
 	  /**

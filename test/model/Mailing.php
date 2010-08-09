@@ -29,7 +29,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.model
  */
-class Mailing implements ActiveRecord {
+class Mailing extends DomainModel implements ActiveRecord {
 
 	  private $id;
 	  private $name;
@@ -39,7 +39,7 @@ class Mailing implements ActiveRecord {
 	  public function __construct() { }
 
 	  #@Id
-	  public function setId( $id ) {
+	  public function setId($id) {
 	  	
 	  	     $this->id = $id;
 	  }
@@ -49,7 +49,7 @@ class Mailing implements ActiveRecord {
 	  	     return $this->id;
 	  }
 	  
-	  public function setName( $name ) {
+	  public function setName($name) {
 	  	
 	  	     $this->name = $name;
 	  }
@@ -59,7 +59,7 @@ class Mailing implements ActiveRecord {
 	  	     return $this->name;
 	  }
 	  
-	  public function setEmail( $email ) {
+	  public function setEmail($email) {
 	  	
 	  	     $this->email = $email;
 	  }
@@ -69,7 +69,7 @@ class Mailing implements ActiveRecord {
 	  	     return $this->email;
 	  }
 	  
-	  public function setEnabled( $bool ) {
+	  public function setEnabled($bool) {
 	  	
 	  	     $this->enabled = $bool;
 	  }
