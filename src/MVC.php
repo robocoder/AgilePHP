@@ -176,7 +176,7 @@ final class MVC {
 	   * @return void
 	   * @static
 	   */
-	  public static function dispatch() {
+	  public static function dispatch($controller = null, $action = null) {
 
 	  		 $path = (isset($_SERVER['PHP_SELF'])) ? $_SERVER['PHP_SELF'] : '/';
 
@@ -190,64 +190,74 @@ final class MVC {
 	  		    }
 	  		 }
 
-	  		 // Capture everything after the first occurrence of '.php'
-		  	 preg_match('/^.*?\.php(.*)/si', $path, $matches);
+	  		 if(!$controller) {
 
-	  	     if(isset($matches[0])) {
+    	  		// Capture everything after the first occurrence of '.php'
+    		  	preg_match('/^.*?\.php(.*)/si', $path, $matches);
 
-		  	  	self::$parameters = explode('/', $matches[count($matches)-1]);
+    	  	    if(isset($matches[0])) {
 
-			  	// Assign controller and action
-		  	    $controller = isset(self::$parameters[1]) ? self::$parameters[1] : self::$defaultController;
-		  	    $action = isset(self::$parameters[2]) ? self::$parameters[2] : self::$defaultAction;
+    		  	   $parameters = explode('/', $matches[count($matches)-1]);
 
-		  	    // Remove empty element, controller and action values
-		  	    array_splice(self::$parameters, 0, 3);
+    			   // Assign controller and action
+    		  	   $controller = isset($parameters[1]) ? $parameters[1] : self::$defaultController;
+    		  	   $action = isset($parameters[2]) ? $parameters[2] : self::$defaultAction;
 
-		  	    // Security, Security, Security....
-		  	    self::$controller = addslashes(strip_tags($controller));
-		  	    self::$action = addslashes(strip_tags($action));
-	  	    }
+    		  	   // Remove empty element, controller and action values
+    		  	   array_splice($parameters, 0, 3);
 
-	  	    if(!self::$controller) self::$controller = self::$defaultController;
-	  	    if(!self::$action) self::$action = self::$defaultAction;
+    		  	   // Security, Security, Security....
+    		  	   $controller = addslashes(strip_tags($controller));
+    		  	   $action = addslashes(strip_tags($action));
+    	  	    }
+	  		}
 
-	  	    if(!class_exists(self::$controller, false)) {
+	  	    if(!$controller) $controller = self::$defaultController;
+	  	    if(!$action) $action = self::$defaultAction;
+	  	    if(!isset($parameters)) $parameters = array();
+
+	  	    self::$controller = $controller;
+            self::$action = $action;
+            self::$parameters = $parameters;
+
+	  	    if(!class_exists($controller, false)) {
+
+	  	        $webroot = AgilePHP::getWebRoot();
 
 	  	        // PHAR support
-	  	     	$phar = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'control' .
-	  		  				DIRECTORY_SEPARATOR . self::$controller . '.phar';
+	  	     	$phar = $webroot . DIRECTORY_SEPARATOR . 'control' .
+	  		  				DIRECTORY_SEPARATOR . $controller . '.phar';
 
 	  		  	if(file_exists($phar)) {
 
 	  		  	   require $phar;
-	  		  	   $oController = new self::$controller;
+	  		  	   $oController = new $controller;
 	  		  	}
 	  		  	else // web application controller
-	  	     	   $oController = self::loadController();
+	  	     	   $oController = self::loadController($webroot, $controller);
 	  	     }
 	  	     else // controller already loaded
-	  	        $oController = new self::$controller;
+	  	        $oController = new $controller;
 
 	  	     // Sanitize action arguments unless configured otherwise
              if(self::$sanitize)
-     		    foreach(self::$parameters as $key => $val)
-		  	 	   self::$parameters[$key] = addslashes(strip_tags($val));
+     		    foreach($parameters as $key => $val)
+		  	 	   $parameters[$key] = addslashes(strip_tags($val));
 
 	  	     // Make sure requested action method exists
-		     if(!method_exists(self::$controller, self::$action))
-		  	    throw new FrameworkException('The specified action \'' . self::$action . '\' does not exist.', 102);
+		     if(!method_exists($controller, $action))
+		  	    throw new FrameworkException('The specified action \'' . $action . '\' does not exist.', 102);
 
 		  	 // Cache the output if caching is enabled
 		     if(self::$cacheables) {
 
 		        foreach(self::$cacheables as $cacheable) {
 
-		            if($cacheable->attributes()->controller == self::$controller &&
-		               $cacheable->attributes()->action == self::$action) {
+		            if($cacheable->attributes()->controller == $controller &&
+		               $cacheable->attributes()->action == $action) {
 
 		                   ob_start();
-              	     	   call_user_func_array(array($oController, $action), self::$parameters);
+              	     	   call_user_func_array(array($oController, $action), $parameters);
               	     	   $cacher->set($cacheKey, ob_get_flush());
               	     	   return;
 		               }
@@ -255,7 +265,7 @@ final class MVC {
 		     }
 
 		     // Execute the controller action - caching is not enabled
-		     call_user_func_array(array($oController, self::$action), self::$parameters);
+		     call_user_func_array(array($oController, $action), $parameters);
 	  }
 
 	  /**
@@ -324,12 +334,28 @@ final class MVC {
 	   * @throws FrameworkException if the requested controller could not be found.
 	   * @static
 	   */
-	  private static function loadController() {
+	  private static function loadController($webroot, $controller) {
 
-	          $webroot = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR;
+	          // PHP namespace support
+	          $controller = str_replace('\\\\', '\\', $controller);
+	          $namespace = explode('\\', $controller);
+	  		  $className = array_pop($namespace);
+	  		  $namespace = implode(DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
 
-	  		  if(file_exists($webroot . 'control' . DIRECTORY_SEPARATOR . self::$controller . '.php'))
-	  		     return new self::$controller;
+	  		  // Load the controller from the application control directory
+	  		  if(file_exists($webroot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR .
+	  		              $namespace . $className . '.php'))
+	  		     return new $controller;
+
+	  		  // Load the controller from component control directory
+	  		  if(strpos($controller, '\\') !== false) {
+
+	  		     $path = $webroot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR
+  		                 . $namespace . $className . '.php';
+
+  		         if(file_exists($path))
+	  		        return new $controller;
+	  		  }
 
 	  		  // Perform deep scan of control directory
 		  	  $it = new RecursiveDirectoryIterator($webroot . DIRECTORY_SEPARATOR . 'control');
@@ -340,12 +366,12 @@ final class MVC {
 			   	       	 $pieces = explode(DIRECTORY_SEPARATOR, $file);
 			   	      	 $item = array_pop($pieces);
 
-			   	      	 if($item == self::$controller . '.php')
-				 		    return new self::$controller;
+			   	      	 if($item == $controller . '.php')
+				 		    return new $controller;
 				      }
 			  }
 
-	  		  throw new FrameworkException('The requested controller \'' . self::$controller . '\' could not be found.', 106);
+	  		  throw new FrameworkException('The requested controller \'' . $controller . '\' could not be found.', 106);
 	  }
 }
 ?>

@@ -209,7 +209,7 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	     * @throws ORMException If any primary keys contain null values or any
 	     * 		   errors are encountered executing queries
 	     */
-	    public function find($model) {
+	    public function find(DomainModel $model) {
 
 	    	   $table = $this->getTableByModel($model);
 			   $newModel = $table->getModelInstance();
@@ -290,12 +290,12 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 					 		  $m = $table->getModelInstance();
 					 	   	  foreach(get_object_vars($stdClass) as $name => $value) {
 
-					 	   	  		   $modelProperty = $this->getPropertyNameForColumn($table, $name, false);
+					 	   	  		   $modelProperty = $this->getPropertyNameForColumn($table, $name, true);
 
 							 	   	   // Create foreign model instances from foreign values
 						 	 		   foreach($table->getColumns() as $column) {
 
-						 	 		   		    if(strtolower($column->getName()) != $name) continue;
+						 	 		   		    if($column->getName() != $name) continue;
 						 	 		   		    if($column->isLazy()) continue;
 
 						 	 		   		    if($renderer = $column->getRenderer())
@@ -361,9 +361,9 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/orm/dialect/SQLDialect#call($model)
+	   * @see src/orm/dialect/SQLDialect#call(DomainModel $model)
 	   */
-	  public function call($model) {
+	  public function call(DomainModel $model) {
 
 	  		 $outs = array();
 	  		 $params = array();
@@ -432,7 +432,7 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	   * @param Object $model The domain object to get the count for.
 	   * @return Integer The total number of records in the table.
 	   */
-	  public function count($model) {
+	  public function count(DomainModel $model) {
 
 	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel($model)->getName();
 			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();

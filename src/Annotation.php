@@ -155,14 +155,6 @@ class Annotation {
 	               return $cacher->get($cacheKey);
 	         }
 
-			 $annotes = AnnotationParser::getClassAnnotationsAsArray($class);
-			 if($annotes) {
-			     
-			    if(isset($cacher)) $cacher->set($cacheKey, $annotes);
-			    return $annotes;
-			 }
-
-			 AnnotationParser::parse($class);
 	  	     $annotes = AnnotationParser::getClassAnnotationsAsArray($class);
 	  	     if(isset($cacher)) $cacher->set($cacheKey, $annotes);
 
@@ -187,14 +179,6 @@ class Annotation {
 	               return $cacher->get($cacheKey);
 	         }
 
-	         $annotes = AnnotationParser::getMethodAnnotationsAsArray($class);
-			 if($annotes) {
-
-			    if(isset($cacher)) $cacher->set($cacheKey, $annotes);
-			    return $annotes;
-			 }
-
-			 AnnotationParser::parse($class);
 	  	     $annotes = AnnotationParser::getMethodAnnotationsAsArray($class);
 	  	     if(isset($cacher)) $cacher->set($cacheKey, $annotes);
 	  	     return $annotes;
@@ -220,14 +204,6 @@ class Annotation {
 	               return $cacher->get($cacheKey);
 	         }
 
-			 $annotes = AnnotationParser::getPropertyAnnotationsAsArray($class);
-			 if($annotes) {
-			     
-			    if(isset($cacher)) $cacher->set($cacheKey, $annotes);
-			    return $annotes;
-			 }
-
-			 AnnotationParser::parse($class);
 	  	     $annotes = AnnotationParser::getPropertyAnnotationsAsArray($class);
 	  	     if(isset($cacher)) $cacher->set($cacheKey, $annotes);
 	  	     return $annotes;

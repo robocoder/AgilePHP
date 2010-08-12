@@ -32,18 +32,17 @@ require 'MVC.php';
  */
 final class AgilePHP {
 
-      private static $instance;
       private static $displayPhpErrors = true;
       private static $webroot;                    // The full system path to the web application
-      private static $frameworkRoot;            // The full system path to the location of the AgilePHP framework
-      private static $documentRoot;                // The relative path to the web app from the server's document root.
+      private static $frameworkRoot;              // The full system path to the location of the AgilePHP framework
+      private static $documentRoot;               // The relative path to the web app from the server's document root.
       private static $requestBase;                // The base request URL (used to communicate with MVC component)
-      private static $debugMode = false;        // Whether or not this component is running in debug mode
+      private static $debugMode = false;          // Whether or not this component is running in debug mode
       private static $xml;                        // AgilePHP configuration - agilephp.xml
       private static $appName;                    // Name of the AgilePHP application
       private static $interceptions = array();    // An array of interceptions which have occurred during __autoload
-      private static $startTime;                // Used with startClock and stopClock methods
-      private static $cacher;                   // Stores a CacheProvider instance if configured in agilephp.xml
+      private static $startTime;                  // Used with startClock and stopClock methods
+      private static $cacher;                     // Stores a CacheProvider instance if configured in agilephp.xml
 
       private function __construct() { }
       private function __clone() { }
@@ -583,16 +582,13 @@ final class AgilePHP {
 		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
 			 foreach(new RecursiveIteratorIterator($it) as $file) {
 
-    			   	     if(substr($file->getPathname(), -1)  != '.' && substr($file->getPathname(), -2) != '..') {
+  			   	     $pieces = explode(DIRECTORY_SEPARATOR, $file);
+				 	 if(array_pop($pieces) == $className . '.php') {
 
-    			   	        $pieces = explode(DIRECTORY_SEPARATOR, $file);
-				 		    if(array_pop($pieces) == $className . '.php') {
-
-    			   	             $source = file_get_contents($file);
-    				 		     if(self::$cacher) self::$cacher->set($key, $source);
-    			     	 		 return $source;
-    			   	          }
-    				     }
+    			   	    $source = file_get_contents($file);
+    				    if(self::$cacher) self::$cacher->set($key, $source);
+    			        return $source;
+    			   	 }
 			 }
 
              throw new FrameworkException('Failed to retrieve source code for class \'' . $class . '\'.');
@@ -612,6 +608,10 @@ final class AgilePHP {
              // Parse class for AgilePHP interceptors if enabled
              if(!$bypassInterceptors) {
 
+                // Parse the class for the presence of annotations
+	            AnnotationParser::parse($class);
+
+	            // Filter for interceptors
                 new InterceptorFilter($class);
 
                 // Intercepted classes are loaded by the filter
@@ -669,16 +669,13 @@ final class AgilePHP {
 		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
 			 foreach(new RecursiveIteratorIterator($it) as $file) {
 
-			   	      if(substr($file, -1  != '.' && substr($file, -2) != '..')) {
+		   	      	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
+			 		  if(array_pop($pieces) == $className . '.php') {
 
-			   	      	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
-				 		  if(array_pop($pieces) == $className . '.php') {
-
-				 		     if(self::$cacher) self::$cacher->set($key, $file->getPathname());
-			     	 		 require $file;
-			     	 		 return;
-				 		  }
-				      }
+			 		     if(self::$cacher) self::$cacher->set($key, $file->getPathname());
+		     	 		 require $file;
+		     	 		 return;
+			 		  }
 			 }
 
              throw new FrameworkException('The requested class \'' . $class . '\' could not be auto loaded.');
@@ -782,7 +779,6 @@ final class AgilePHP {
           'BaseModelXslController' => '/mvc/BaseModelXslController.php',
           'BaseRenderer' => '/mvc/BaseRenderer.php',
       	  'ComponentModelActionController' => '/mvc/ComponentModelActionController.php',
-          'DomainModel' => '/mvc/DomainModel.php',
           'ExtFormRenderer' => '/mvc/ExtFormRenderer.php',
           'PHTMLRenderer' => '/mvc/PHTMLRenderer.php',
           'XSLTRenderer' => '/mvc/XSLTRenderer.php',
@@ -794,10 +790,10 @@ final class AgilePHP {
           'SQLiteDialect' => '/orm/dialect/SQLiteDialect.php',
           'Column' => '/orm/Column.php',
           'Database' => '/orm/Database.php',
+      	  'DomainModel' => '/orm/DomainModel.php',
           'ForeignKey' => '/orm/ForeignKey.php',
           'Id' => '/orm/Id.php',
           'IdentityMap' => '/orm/IdentityMap.php',
-          'ActiveRecord' => '/orm/ActiveRecord.php',
           'ORMException' => '/orm/ORMException.php',
           'ORMFactory' => '/orm/ORMFactory.php',
           'Procedure' => '/orm/Procedure.php',

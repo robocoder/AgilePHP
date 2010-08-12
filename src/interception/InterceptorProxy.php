@@ -67,7 +67,7 @@ class InterceptorProxy {
 
 		     		 	 	 	   	  $invocationCtx = new \InvocationContext($this->interceptedTarget, null, null, $interception->getInterceptor());
 							          $ctx = $interceptorMethod->invoke($interception->getInterceptor(), $invocationCtx);
-							          if($ctx instanceof InvocationContext && $ctx->proceed) {
+							          if($ctx instanceof \InvocationContext && $ctx->proceed) {
 
 							          	  $this->interceptedTarget = $ctx->getTarget();
 								          if($ctx->getMethod()) $this->__call($ctx->getMethod(), $ctx->getParameters());

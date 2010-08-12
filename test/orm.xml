@@ -2,6 +2,7 @@
 <!DOCTYPE orm SYSTEM "../src/orm/orm.dtd">
 <orm>
 	<database name="agilephp_test" type="mysql" hostname="localhost" username="php" password="php007">
+
 		<table name="inventory" model="Inventory" display="Inventory" description="Product inventory">
 			<column name="id" visible="false" type="integer" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
 			<column name="name" type="varchar" length="255" required="true" validator="StringValidator"/>
@@ -11,12 +12,14 @@
 			<column name="image" type="blob" required="true"/>
 			<column name="video" type="blob" />
 		</table>
+
 		<table name="mailing" model="Mailing" display="Mailing List" description="People on your mailing list">
 			<column name="id" type="integer" visible="false" required="true" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
 			<column name="name" type="varchar" length="150" required="true" description="Name of recipient" validator="StringValidator"/>
 			<column name="email" type="varchar" length="150" required="true" description="Email address of recipient" validator="EmailValidator"/>
 			<column name="enabled" type="boolean" description="Opt In/Out Flag" validator="BooleanValidator" renderer="YesNoRenderer" transformer="YesNoToBoolean"/>
 		</table>
+
 		<table name="users" isIdentity="true" display="Users" model="User" description="Users within the web application">
 			<column name="username" type="varchar" length="150" primaryKey="true" required="true" validator="StringValidator"/>
 			<column name="password" type="varchar" length="255" required="true" validator="PasswordValidator"/>
@@ -29,15 +32,18 @@
 			</column>
 	  		<column name="enabled" type="boolean" validator="BooleanValidator" renderer="YesNoRenderer" transformer="YesNoToBoolean"/>
 	 	</table>
+
 	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
 			<column name="name" type="varchar" length="25" primaryKey="true" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
 	 	</table>
+
 		<!-- AgilePHP Session -->
 		<table name="sessions" display="Session" isSession="true" model="Session" description="User sessions">
 			<column name="id" type="varchar" length="21" primaryKey="true" description="Unique ID" validator="StringValidator"/>
 			<column name="data" type="text" description="Name of recipient" validator="StringValidator"/>
 			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP" validator="DateValidator"/>
 		</table>
+
 	</database>
 </orm>

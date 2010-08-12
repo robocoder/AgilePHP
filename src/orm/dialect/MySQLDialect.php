@@ -80,7 +80,7 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#call($model)
 	   */
-	  public function call($model) {
+	  public function call(DomainModel $model) {
 
 	  	     $values = array();
 	  		 $outs = array();

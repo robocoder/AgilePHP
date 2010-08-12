@@ -48,7 +48,7 @@ abstract class BaseDialect {
 		 /**
 		  * Returns the PDO instance in use by the ORM framework.
 		  *
-		  * @return The PDO instance in use by the framework.
+		  * @return PDO The PDO instance in use by the framework.
 		  */
 		 public function getPDO() {
 
@@ -56,9 +56,9 @@ abstract class BaseDialect {
 		 }
 
 		 /**
-		  * Returns the 'Database' object being used by the ORM framework.
+		  * Returns the Database instance the ORM is currently managing.
 		  *
-		  * @return The 'Database' object in use by the ORM framework.
+		  * @return Database The Database object representation of orm.xml
 		  */
 		 public function getDatabase() {
 
@@ -68,7 +68,7 @@ abstract class BaseDialect {
 		 /**
 		  * Adds an SQL distinct clause to 'find' operation.
 		  *
-		  * @param $columnName The column name to get the distinct values for
+		  * @param string $columnName The column name to get the distinct values for
 		  * @return void
 		  */
 		 public function setDistinct($columnName) {
@@ -80,7 +80,7 @@ abstract class BaseDialect {
 		  * Returns the 'distinct' column to use in an SQL SELECT statement
 		  * if one has been defined.
 		  *
-		  * @return The DISTINCT column name or null if a column name has not been defined.
+		  * @return string The DISTINCT column name or null if a column name has not been defined.
 		  */
 		 public function isDistinct() {
 
@@ -88,10 +88,10 @@ abstract class BaseDialect {
 		 }
 
 		 /**
-		  * Sets the 'maxResults' property value which is used during
-		  * a 'find' operation which contains an empty model.
+		  * Sets the maxResults property value which is used during
+		  * find operations which contain an empty model.
 		  *
-		  * @param $maxResults The maximum number of results to return
+		  * @param integer $maxResults Optional number of records to return in result sets. Defaults to 25.
 		  * @return void
 		  */
 		 public function setMaxResults($maxResults = 25) {
@@ -103,7 +103,7 @@ abstract class BaseDialect {
 		  * Returns the 'maxResults' property value which is used during
 		  * a 'find' operation which contains an empty model.
 		  *
-		  * @return The 'maxResults'
+		  * @return integer The total number of records to return in a result set.
 		  */
 		 public function getMaxResults() {
 
@@ -113,7 +113,7 @@ abstract class BaseDialect {
 		 /**
 		  * Sets the offset used in a SQL LIMIT clause.
 		  *
-		  * @param Integer $offset The limit offset.
+		  * @param integer $offset The limit offset.
 		  * @return void
 		  */
 		 public function setOffset($offset) {
@@ -134,7 +134,7 @@ abstract class BaseDialect {
 		 /**
 	      * Sets the SQL 'group by' clause.
 	      *
-	      * @param $column The column name to group the result set by
+	      * @param string $column The column name to group the result set by
 	      * @return void
 	      */
 	     public function setGroupBy($column) {
@@ -199,8 +199,8 @@ abstract class BaseDialect {
 	  	 /**
 	  	  * Rolls back a transaction.
 	  	  *
-	  	  * @param $message Error/reason why the transaction was rolled back
-	  	  * @param $code An error/reason code
+	  	  * @param string $message Error/reason why the transaction was rolled back
+	  	  * @param integer $code An error/reason code
 	  	  * @return void
 	  	  * @throws ORMException
 	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
@@ -225,8 +225,9 @@ abstract class BaseDialect {
 	  	 /**
 		  * Prepares an SQL prepared statement
 		  *
-		  * @param $statement The SQL statement to prepare
-		  * @return False if the statement could not execute successfully
+		  * @param string $statement The SQL statement to prepare
+		  * @return boolean False if the statement could not execute successfully
+		  * @throws ORMException
 		  * @see http://usphp.com/manual/en/function.PDO-prepare.php
 	  	  */
 	  	 public function prepare($statement) {
@@ -257,8 +258,9 @@ abstract class BaseDialect {
 	  	 /**
 	  	  * Executes a prepared statement with optional parameters
 	  	  *
-	  	  * @param Array $inputParameters Optional array of input parameters
-	  	  * @return True if successful, false on fail
+	  	  * @param array $inputParameters Optional array of input parameters
+	  	  * @return boolean True if successful, false on fail
+	  	  * @throws ORMException
 	  	  * @see http://usphp.com/manual/en/function.PDOStatement-execute.php
 	  	  */
 	  	 public function execute(array $inputParameters = array()) {
@@ -292,8 +294,8 @@ abstract class BaseDialect {
 	  	 /**
 	  	  * Executes an SQL statement and returns the number of rows affected by the query.
 	  	  *
-	  	  * @param $statement The SQL statement to execute.
-	  	  * @return The number of rows affected by the query.
+	  	  * @param string $statement The SQL statement to execute.
+	  	  * @return integer The number of rows affected by the query.
 	  	  * @see http://usphp.com/manual/en/function.PDO-exec.php
 	  	  */
 	  	 public function exec($statement) {
@@ -308,8 +310,8 @@ abstract class BaseDialect {
 		 /**
 	   	  * Executes a raw SQL query
 	   	  *
-	   	  * @param $sql The SQL statement to execute
-	   	  * @return The PDOStatement returned by PDO::query
+	   	  * @param string $sql The SQL statement to execute
+	   	  * @return PDOStatement The PDOStatement returned by PDO::query
 	   	  * @throws ORMException
 	   	  * @see http://usphp.com/manual/en/function.PDO-query.php
 	   	  */
@@ -337,7 +339,7 @@ abstract class BaseDialect {
 	  	/**
 	  	 * Quotes a string so its theoretically safe to pass into a statement
 	  	 *
-	  	 * @param $data The data to quote
+	  	 * @param string $data The data to quote
 	  	 * @return The quoted data
 	  	 * @see http://www.php.net/manual/en/pdo.quote.php
 	  	 */
@@ -349,12 +351,12 @@ abstract class BaseDialect {
 	  	/**
 	   	 * Persists a domain model object
 	     *
-	     * @param $model The domain model object to persist
+	     * @param DomainModel $model The domain model to persist
 	     * @return PDOStatement
 	     * @throws ORMException
 	     * @todo Work out foreign key auto persist/merge logic or drop support?
 	     */
-	    public function persist($model) {
+	    public function persist(DomainModel $model) {
 
 	    	   $this->model = $model;
 
@@ -437,18 +439,22 @@ abstract class BaseDialect {
 			   $sql .= ');';
 
 	   		   $this->prepare($sql);
-	  		   return $this->execute($values);
+	  		   $retval = $this->execute($values);
+
+	  		   IdentityMap::add($model);
+
+	  		   return $retval;
 	    }
 
 	    /**
 	     * Merges/updates a persisted domain model object
 	     *
-	     * @param $model The model object to merge/update
+	     * @param DomainModel $model The domain model object to merge/update
 	     * @return PDOStatement
 	     * @throws ORMException
 	     * @todo Work out foreign key auto persist/merge logic or drop support?
 	     */
-	    public function merge($model) {
+	    public function merge(DomainModel $model) {
 
 	    	   $this->model = $model;
 	    	   $table = $this->getTableByModel($model);
@@ -539,17 +545,21 @@ abstract class BaseDialect {
 			   $sql .= ';';
 
 		       $this->prepare($sql);
-	  	       return $this->execute($values);
+	  	       $retval = $this->execute($values);
+	  	       
+	  	       IdentityMap::add($model);
+
+	  	       return $retval;
 	    }
 
 	    /**
 	     * Deletes a persisted domain model object (ActiveRecord)
 	     *
-	     * @param $model The domain model object to delete
+	     * @param DomainModel $model The domain model object to delete
 	     * @return PDOStatement
 	     * @throws ORMException
 	     */
-	    public function delete($model) {
+	    public function delete(DomainModel $model) {
 
 	      	   $table = $this->getTableByModel($model);
 
@@ -588,138 +598,41 @@ abstract class BaseDialect {
 		       }
 
 		       $this->prepare($sql);
-		       return $this->execute($values);
+		       $retval = $this->execute($values);
+
+		       IdentityMap::remove($model);
+
+		       return $retval;
 	    }
 
 		/**
-	     * Looks up a single record using the primary keys values set in the model.
+	     * Looks up a single record using the primary keys values set in the model. Shorthand for find($model)[0].
 	     *
-	     * @param ActiveRecord $model A domain model object. Any fields which are set in the object are used to filter results.
-	     * @throws ORMException If any primary keys contain null values or any
-	     * 		   errors are encountered executing queries
+	     * @param DomainModel $model A domain model object. Any fields which are set in the object are used to filter results.
+	     * @throws ORMException
 	     */
-	    public function get(ActiveRecord $model) {
+	    public function get(DomainModel $model) {
 
 	           if($m = IdentityMap::get($model)) return $m; 
 
-	    	   $table = $this->getTableByModel($model);
-			   $values = array();
+	    	   $records = $this->find($model);
 
-			   Log::debug('BaseDialect::get Performing get on model \'' . $table->getModel() . '\'.');
-
-	  		   try {
-    	   		 		$where = '';
-    	   		 		$order = $this->getOrderBy();
-    	   	         	$offset = $this->getOffset();
-    	   	         	$groupBy = $this->getGroupBy();
-
-    	   		 		$columns = $table->getColumns();
-						for($i=0; $i<count($columns); $i++) {
-
-						 	 if($columns[$i]->isLazy()) continue;
-
-						 	 $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-					     	 if($model->$accessor() == null) continue;
-
-					     	 $where .= ' ' . $columns[$i]->getName() . ' = ?';
-
-					     	 if(is_object($model->$accessor())) {
-					     	 	 $refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
-
-					     	 	 if($transformer = $columns[$i]->getTransformer())
-					     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
-					     	     else
-			     	 	     	    array_push($values, $model->$accessor()->$refAccessor());
-					     	 }
-					     	 else {
-
-					     	     if($transformer = $columns[$i]->getTransformer())
-					     	        array_push($values, $transformer::transform($model->$accessor()));
-					     	     else
-			     	 	     	    array_push($values, $model->$accessor());
-					     	 }
-					    }
-					    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where . ';';
-
-	   	         	 	$this->prepare($sql);
-    					$this->PDOStatement->setFetchMode(PDO::FETCH_OBJ);
-    					$result = $this->execute($values);
-    
-    					if(!count($result)) {
-    
-    					   Log::debug('BaseDialect::get Empty result set for model \'' . $table->getModel() . '\'.');
-    					   return;
-    					}
-    					elseif(count($result) > 1)
-    					   throw new ORMException('BaseDialect::get located more than one record in the result set');
-
-				 	    $index = 0;
-				 	    $models = array();
-					    foreach($result as $stdClass ) {
-
-					 		  $m = $table->getModelInstance();
-					 	   	  foreach(get_object_vars($stdClass) as $name => $value) {
-
-					 	   	  		   $modelProperty = $this->getPropertyNameForColumn($table, $name);
-
-							 	   	   // Create foreign model instances from foreign values
-						 	 		   foreach($table->getColumns() as $column) {
-
-						 	 		   		    if($column->getName() != $name) continue;
-						 	 		   		    if($column->isLazy()) continue;
-
-						 	 		   		    if($renderer = $column->getRenderer())
-                        				   	       $value = $renderer::render($value);
-
-                        				   	    if(!$value) continue;
-
-						 	 		  		    if($column->isForeignKey()) {
-
-						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
-						 	 		  		   	    $foreignInstance = new $foreignModel();
-
-						 	 		  		   	    $foreignMutator = $this->toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
-						 	 		  		   	    $foreignInstance->$foreignMutator($value);
-
-						 	 		  		   	    $persisted = $this->find($foreignInstance);
-
-						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
-							 	 		  		   	$foreignModelPieces = explode('\\', $foreignModel);
-							 	 		  		   	$foreignClassName = array_pop($foreignModelPieces);
-
-						 	 		  		   	    $instanceMutator = $this->toMutator($modelProperty);
-						 	 		  		   	    $m->$instanceMutator($persisted[0]);
-						 	 		  		    }
-						 	 		  		    else {
-
-						 	 		  		   		$mutator = $this->toMutator($modelProperty);
-					 	   	   		  				$m->$mutator($value);
-						 	 		  		    }
-						 	 		   }
-					 	   	  }
-
-					 	   	  IdentityMap::addModel($m);
-					 	   	  return $m;
-				        }
-
-				        
-	  		 }
-	  		 catch(Exception $e) {
-
-	  		 		throw new ORMException($e->getMessage(), $e->getCode());
-	  		 }
+	    	   if(isset($records[0])) {
+	    	       
+	    	      IdentityMap::add($records[0]);
+	    	      return $records[0];
+	    	   }
 	    }
-	    
+
 	    /**
 	     * Attempts to locate the specified model by values. Any fields set in the object are used
 	     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
 	     * filter results.
 	     *
-	     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
-	     * @throws ORMException If any primary keys contain null values or any
-	     * 		   errors are encountered executing queries
+	     * @param DomainModel $model The domain model object. Any fields which are set in the object are used to filter results.
+	     * @throws ORMException If any primary keys contain null values or any errors are encountered executing queries.
 	     */
-	    public function find($model) {
+	    public function find(DomainModel $model) {
 
 	           //if($m = IdentityMap::get($model)) return array($m);
 
@@ -761,6 +674,7 @@ abstract class BaseDialect {
 						     	 $where .= (count($values) ? ' ' . $this->restrictionsLogic . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->comparisonLogic . ' ?';
 
 						     	 if(is_object($model->$accessor())) {
+
 						     	 	 $refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 
 						     	 	 if($transformer = $columns[$i]->getTransformer())
@@ -846,7 +760,7 @@ abstract class BaseDialect {
 						 	 		   }
 					 	   	  }
 
-					 	   	  IdentityMap::addModel($m);
+					 	   	  IdentityMap::add($m);
 					 	   	  array_push($models, $m);
 					 	   	  $index++;
 					 	   	  if($index == $this->maxResults)  break;
@@ -863,11 +777,11 @@ abstract class BaseDialect {
  	  /**
 	   * Truncates the table for the specified domain model object
 	   *
-	   * @param $model A domain model object
+	   * @param DomainModel $model A domain model object
 	   * @return PDOStatement
 	   * @throws ORMException
 	   */
-	  public function truncate($model) {
+	  public function truncate(DomainModel $model) {
 
 			 $table = $this->getTableByModel();
 			 $sql = 'TRUNCATE TABLE ' . $table->getName() . ';';
@@ -878,10 +792,10 @@ abstract class BaseDialect {
 	  /**
 	   * Returns the total number of records in the specified model.
 	   *
-	   * @param Object $model The domain object to get the count for.
-	   * @return Integer The total number of records in the table.
+	   * @param DomainModel $model The domain object to get the count for.
+	   * @return integer The total number of records in the table.
 	   */
-	  public function count($model) {
+	  public function count(DomainModel $model) {
 
 	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel($model)->getName();
 			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
@@ -907,8 +821,8 @@ abstract class BaseDialect {
 	  /**
 	   * Sets the SQL 'order by' clause.
 	   *
-	   * @param $column The column name to order the result set by
-	   * $param $direction The direction to sort the result set (ASC|DESC).
+	   * @param string $column The column name to order the result set by
+	   * $param string $direction The direction to sort the result set (ASC|DESC).
 	   * @return void
 	   */
 	  public function setOrderBy($column, $direction) {
@@ -922,12 +836,11 @@ abstract class BaseDialect {
 	   * are returned with the name of the column as the index and the direction as the value.
 	   *
 	   * @return An associative array containing the name of the column to sort as the key/index
-	   * 		and the direction of the sort order (ASC|DESC) as the value.
+	   * 		and the direction of the sort order (ASC|DESC) as the value or void if not specified.
 	   */
 	  public function getOrderBy() {
 
-	  		 if(!$this->orderBy)
-	  		 	 return null;
+	  		 if(!$this->orderBy) return;
 
 	  	     return array('column' => $this->orderBy, 'direction' => $this->orderDirection);
 	  }
@@ -935,7 +848,7 @@ abstract class BaseDialect {
 	  /**
 	   * Sets WHERE clause restrictions
 	   *
-	   * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
+	   * @param array $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
 	   * @return void
 	   */
 	  public function setRestrictions(array $restrictions) {
@@ -946,7 +859,7 @@ abstract class BaseDialect {
 	  /**
 	   * Returns the WHERE clause restrictions
 	   *
-	   * @return Array SQL WHERE clause restrictions
+	   * @return array SQL WHERE clause restrictions
 	   */
 	  public function getRestrictions() {
 
@@ -956,8 +869,9 @@ abstract class BaseDialect {
 	  /**
 	   * Sets the restriction operator (and|or) used in SQL WHERE clause.
 	   *
-	   * @param $operator The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.
+	   * @param string $operator The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.
 	   * @return void
+	   * @throws ORMException if the specified restrictions logic operator is not "and", or "or".
 	   */
 	  public function setRestrictionsLogicOperator($operator) {
 
@@ -990,8 +904,9 @@ abstract class BaseDialect {
 	  /**
 	   * Sets the comparison operator (<|>|=|LIKE) used in SQL WHERE clause.
 	   *
-	   * @param $operator The logical comparison operator used is SQL where clauses. Default is '='.
+	   * @param string $operator The logical comparison operator used is SQL where clauses. Default is '='.
 	   * @return void
+	   * @throws ORMException if the specified comparison logic operator is not <, >, =, or LIKE.
 	   */
 	  public function setComparisonLogicOperator($operator) {
 
@@ -1004,7 +919,7 @@ abstract class BaseDialect {
  	  /**
 	   * Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.
 	   *
-	   * @return The formatted SQL string
+	   * @return string The formatted SQL string
 	   */
 	  public function createRestrictSQL() {
 
@@ -1027,14 +942,13 @@ abstract class BaseDialect {
 	  }
 
 	  /**
-	   * Returns the 'Table' object which is mapped to the specified 'Model'.
+	   * Returns the Table object which is mapped to the specified Model.
 	   *
-	   * @param $model The domain model object to retrieve the table element for. Defaults to the model
-	   * 			   currently being managed by the 'ORM'.
-	   * @return The 'Table' object responsible for the model's ORM or null if a table
-	   * 		 could not be located for the specified $model.
+	   * @param DomainModel $model The domain model object to retrieve the table element for. Defaults to the model
+	   * 			               currently being managed by the 'ORM'.
+	   * @return Procedure The Procedure instance responsible for persistence mappings for the specified model.
 	   */
-	  public function getProcedureByModel($model) {
+	  public function getProcedureByModel(DomainModel $model) {
 
 	  		 $class = get_class($model);
 
@@ -1052,6 +966,7 @@ abstract class BaseDialect {
 	   *
 	   * @param string $modelName The name of the model class
 	   * @return Procedure The procedure which maps to the specified model name
+	   * @throws ORMException if the specified procedure model name could not be located in orm.xml
 	   */
 	  public function getProcedureByModelName($modelName) {
 
@@ -1063,14 +978,14 @@ abstract class BaseDialect {
 	  }
 
 	  /**
-	   * Returns the 'Table' object which is mapped to the specified 'Model'.
+	   * Returns the Table object which is mapped to the specified DomainModel.
 	   *
-	   * @param $model The domain model object to retrieve the table element for. Defaults to the model
-	   * 			   currently being managed by the 'ORM'.
-	   * @return The 'Table' object responsible for the model's ORM or null if a table
-	   * 		 could not be located for the specified $model.
+	   * @param DomainModel $model The domain model object to retrieve the table element for. Defaults to the model
+	   * 			        currently being managed by the ORM.
+	   * @return Table The Table object responsible for persistence mappings for the specified model.
+	   * @throws ORMException if the specified model could not be located in orm.xml
 	   */
-	  public function getTableByModel($model = null) {
+	  public function getTableByModel(DomainModel $model = null) {
 
 	  		 try {
 	  	     	   $class = new ReflectionClass((($model == null) ? $this->model : $model));
@@ -1090,11 +1005,12 @@ abstract class BaseDialect {
 	  }
 
 	  /**
-	   * Returns the 'Table' object responsible for the specified $modelName.
+	   * Returns the Table object responsible for the specified $modelName. If the model name
+	   * is defined more than once, the table with the first occurance is returned. 
 	   *
-	   * @param $modelName The name of the model
-	   * @return The 'Table' object responsible for the specified model or
-	   * 		 null if the table could not be found.
+	   * @param string $modelName The name of the model
+	   * @return Table The Table instance responsible for the specified model.
+	   * @throws ORMException if the requested model name could not be located in orm.xml
 	   */
 	  public function getTableByModelName($modelName) {
 
@@ -1106,10 +1022,11 @@ abstract class BaseDialect {
 	  }
 
 	  /**
-	   * Returns a 'Table' object by its name as configured in orm.xml
+	   * Returns a Table object by its name as configured in orm.xml
 	   *
-	   * @param $tableName The value of the table's 'name' attribute
-	   * @return The 'Table' object or null if the table was not found
+	   * @param string $tableName The value of the table name attribute
+	   * @return Table The Table instance responsible for persistence mappings for the specified table.
+	   * @throws ORMException if the requested table name could not be located in orm.xml
 	   */
 	  public function getTableByName($tableName) {
 
@@ -1121,11 +1038,10 @@ abstract class BaseDialect {
 	  }
 
 	  /**
-	   * Returns a 'Table' object representing the table configured in orm.xml as
-	   * the AgilePHP 'Identity' table.
+	   * Returns a Table object representing the table configured in orm.xml as
+	   * the AgilePHP Identity table.
 	   *
-	   * @return The 'Table' object which represents the AgilePHP 'Identity' table, or null
-	   * 		 if an 'Identity' table has not been configured.
+	   * @return Table The Table object which represents the AgilePHP Identity table.
 	   */
 	  public function getIdentityTable() {
 
@@ -1134,16 +1050,13 @@ abstract class BaseDialect {
 		 	  	      if($table->isIdentity())
 		 	  	      	  return $table;
 			 }
-
-			 return null;
 	  }
 
 	  /**
 	   * Returns an instance of the domain model object responsible for AgilePHP
-	   * 'Identity' ORM.
+	   * Identity ORM.
 	   *
-	   * @return An instance of the domain model object responsible for 'Identity'
-	   * 		 ORM.
+	   * @return DomainModel An instance of the domain model object responsible for Identity ORM.
 	   */
 	  public function getIdentityModel() {
 
@@ -1178,16 +1091,13 @@ abstract class BaseDialect {
 	 	  	      	  	   return new $modelName();
 		 	  	      }
 			 }
-
-			 return null;
 	  }
 
-	 /**
+	  /**
 	   * Returns the 'Table' object that represents the table configured in orm.xml as
 	   * an AgilePHP 'SessionScope' session table.
 	   *
-	   * @return The 'Table' object instance containing the 'SessionScope' session table
-	   * 		 or null if a session table has not been configured.
+	   * @return Table The Table instance containing the SessionScope session table.
 	   */
 	  public function getSessionTable() {
 
@@ -1196,16 +1106,13 @@ abstract class BaseDialect {
 		 	  	      if($table->isSession())
 		 	  	      	  return $table;
 			 }
-
-			 return null;
 	  }
 
 	  /**
 	   * Returns an instance of the domain model object responsible for AgilePHP
 	   * 'SessionScope' session ORM.
 	   *
-	   * @return An instance of the model responsible for AgilePHP 'SessionScope'
-	   * 	     sessions.
+	   * @return DomainModel An instance of the model responsible for AgilePHP SessionScope sessions.
 	   */
 	  public function getSessionModel() {
 
@@ -1217,8 +1124,6 @@ abstract class BaseDialect {
  	  	      	  		  return new $modelName();
 		 	  	      }
 			 }
-
-			 return null;
 	  }
 
 	  /**
@@ -1230,7 +1135,7 @@ abstract class BaseDialect {
 	   * @param $table The 'Table' object which contains the column to retrieve the display
 	   * 			   name from.
 	   * @param $columnName The name of the column to get the display name for
-	   * @return Custom display name if configured, otherwise the $columnName is returned
+	   * @return string Custom display name if configured, otherwise the $columnName is returned
 	   */
 	  public function getDisplayNameForColumn($table, $columnName) {
 
@@ -1256,11 +1161,13 @@ abstract class BaseDialect {
 	   * Returns the value of the 'property' attribute configured in orm.xml for the specified $columnName.
 	   * If the property attribute does not exist, the column name is returned instead.
 	   *
-	   * @param $table The 'Table' object containing the 'Column' to search.
+	   * @param Table $table The Table object containing the Column to search.
 	   * @param $columnName The name of the column to retrieve the property attribute value from
-	   * @return The property name. If the property does not exist, the $columnName is returned instead
+	   * @param boolean $caseSensitive Optional flag used to toggle case sensitive column name searching. True to 
+	   *                               enable case sensitive searching, false for case insensitive. Default is case sensitive.
+	   * @return string The property name. If the property does not exist, the $columnName is returned instead
 	   */
-	  public function getPropertyNameForColumn($table, $columnName, $caseSensitive = true) {
+	  public function getPropertyNameForColumn(Table $table, $columnName, $caseSensitive = true) {
 
 	  		 foreach($table->getColumns() as $column) {
 
@@ -1279,12 +1186,12 @@ abstract class BaseDialect {
 	   * name matches the expected $propertyName, the column name is returned. If neither can be matched, null is
 	   * returned instead.
 	   *
-	   * @param $table The 'Table' object containing the 'Column' to search.
-	   * @param $propertyName The name of the property to retrieve the name attribute value from
-	   * @return The column name. If the property does not exist and $propertyName matches a column name, the column
+	   * @param Table $table The Table instance that contains the Column to search.
+	   * @param string $propertyName The name of the property to retrieve the name attribute value from
+	   * @return string The column name. If the property does not exist and $propertyName matches a column name, the column
 	   * 		 name is returned instead. If neither can be matched, null is returned.
 	   */
-	  public function getColumnNameForProperty($table, $propertyName) {
+	  public function getColumnNameForProperty(Table $table, $propertyName) {
 
 	  		 foreach($table->getColumns() as $column) {
 
@@ -1297,15 +1204,13 @@ abstract class BaseDialect {
 	  		 	      if($column->getName() == $propertyName)
 	  		 	      	  return $column->getName();
 	  		 }
-
-	  		 return null;
 	  }
 
 	  /**
 	   * Converts the specified parameter to a bigint.
 	   *
 	   * @param $int The bigint value
-	   * @return bigint
+	   * @return long The 64 bit "bigint"
 	   */
 	  public function toBigInt($number) {
 
@@ -1322,9 +1227,10 @@ abstract class BaseDialect {
 	   * of property values. If the model does not contain any values, it is
 	   * considered empty.
 	   *
-	   * @return True if the model is empty, false if the model contains any property values.
+	   * @param DomainModel $model The domain model instance to inspect.
+	   * @return boolean True if the model is empty, false if the model contains any property values.
 	   */
-	  public function isEmpty($model) {
+	  public function isEmpty(DomainModel $model) {
 
 	  		 $class = new ReflectionClass($model);
 	  		 $properties = $class->getProperties();
@@ -1344,9 +1250,9 @@ abstract class BaseDialect {
 	   * NOTE: This function assumes the model adheres to the property/getter/setter
 	   * 	   model convention.
 	   *
-	   * @param $a The first object
-	   * @param $b The second object
-	   * @return True if the objects test positive, false if the models do not match
+	   * @param object $a The first object
+	   * @param object $b The second object
+	   * @return boolean True if the objects test positive, false if the models do not match
 	   */
 	  public function compare($a, $b) {
 
@@ -1387,8 +1293,8 @@ abstract class BaseDialect {
 	   * will be returned with the prefix 'get' and the first letter of the property
 	   * uppercased.
 	   *
-	   * @param $property The name of the property to convert to an accessor method name
-	   * @return The accessor string
+	   * @param string $property The name of the property to convert to an accessor method name
+	   * @return string The accessor string
 	   */
 	  public function toAccessor($property) {
 
@@ -1400,8 +1306,8 @@ abstract class BaseDialect {
 	   * will be returned with the prefix 'set' and the first letter of the property
 	   * uppercased.
 	   *
-	   * @param $property The name of the property to convert to a mutator method name
-	   * @return The mutator string
+	   * @param string $property The name of the property to convert to a mutator method name
+	   * @return string The mutator string
 	   */
 	  public function toMutator($property) {
 
@@ -1411,11 +1317,11 @@ abstract class BaseDialect {
 	  /**
 	   * Copies the values from object $a to $b.
 	   *
-	   * @param $a The first object
-	   * @param $b The second object
-	   * @return The same instance of object $b with its properties set as defined in object $a
+	   * @param DomainModel $a The first object
+	   * @param DomainModel $b The second object
+	   * @return DomainModel The same instance of object $b with its properties set as defined in object $a
 	   */
-	  private function copy($a, $b) {
+	  private function copy(DomainModel $a, DomainModel $b) {
 
 	  		  $classA = new ReflectionClass($a);
 		  	  $classB = new ReflectionClass($b);
@@ -1441,36 +1347,6 @@ abstract class BaseDialect {
 
 		  	  return $b;
 	  }
-
-		/**
-	     * Performs automation logic for setting all of the foreign keys in the
-	     * current model with the values of its related foreign model ActiveRecord.
-	     *
-	     * @return void
-	     */
-	    private function setForeignKeyValues($model, $foreignModel) {
-
-			   $table = $this->getTableByModel($model);
-			   $foreignTable = $this->getTableByModel($foreignModel);
-
-       	   	   foreach($table->getForeignKeyColumns() as $column) {
-
-       	   	   			// Only process foreign keys for the $foreignModel table
-       	   	   			if($column->getForeignKey()->getReferencedTable() == $foreignTable->getName()) {
-
-       	   	   				// Create accessor and mutator methods for $this->model
-					    	$accessor = 'get' . ucfirst($column->getModelPropertyName());
-					    	$mutator = 'set' . ucfirst($column->getModelPropertyName());
-
-	   	   					// Create accessor method for the foreign model and set the foreign key property value for $this->model
-    		   	   			$fModelAccessor = 'get' . ucfirst($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
-	    	   	   			$foreignModelValue = $foreignModel->$fModelAccessor();
-	   	   	   				$model->$mutator($foreignModelValue);
-       	   	   			}
-	    	   }
-
-	    	   return $model;
-	    }
 
 	  /**
 	   * Validates the domain model object's property values against orm.xml table/column configuration

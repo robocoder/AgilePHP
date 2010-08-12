@@ -1,10 +1,12 @@
 <?php
-class SPauthenticate {
+class SPauthenticate extends DomainModel {
 
 	  private $userId;
 	  private $passwd;
 	  private $result;
 
+	  public function __construct() { }
+	  
 	  public function setUserId($userId) {
 
 	  		 $this->userId = $userId;

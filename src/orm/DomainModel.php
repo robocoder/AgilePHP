@@ -16,19 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.mvc
+ * @package com.makeabyte.agilephp.orm
  */
 
 /**
  * Base implementation for domain models (a model with business logic). Provides
- * helper methods for create/read/update/delete operations.
+ * helper methods for CRUD (create/read/update/delete) operations.
  *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.mvc
+ * @package com.makeabyte.agilephp.orm
  * @abstract
  */
-abstract class DomainModel implements ActiveRecord {
+abstract class DomainModel {
+
+         abstract public function __construct();
 
          /**
           * Persists/saves the DomainModel ActiveRecord state to
@@ -39,7 +41,7 @@ abstract class DomainModel implements ActiveRecord {
           */
          public function persist() {
 
-                ORM::persist($this);
+                ORMFactory::getDialect()->persist($this);
          }
 
 		 /**
@@ -100,7 +102,7 @@ abstract class DomainModel implements ActiveRecord {
           */
          public function merge() {
 
-                ORM::merge($this);
+                ORMFactory::getDialect()->merge($this);
          }
 
 		 /**
@@ -112,7 +114,18 @@ abstract class DomainModel implements ActiveRecord {
           */
          public function delete() {
 
-                ORM::delete($this);
+                ORMFactory::getDialect()->delete($this);
+         }
+
+		 /**
+          * Calls/executes a stored procedure mapped to this DomainModel in orm.xml
+          * 
+          * @return void
+          * @throws ORMException
+          */
+         public function call() {
+
+                ORMFactory::getDialect()->call($this);
          }
 }
 ?>

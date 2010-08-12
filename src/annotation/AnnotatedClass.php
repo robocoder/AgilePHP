@@ -45,7 +45,7 @@ class AnnotatedClass extends ReflectionClass {
                    parent::__construct($class);
 
                    if($cacher = AgilePHP::getCacher()) {
-                       
+
                       $cacheKey = 'AGILEPHP_ANNOTATEDCLASS_' . parent::getName();
                       if($cacher->exists($cacheKey)) {
 
@@ -54,8 +54,12 @@ class AnnotatedClass extends ReflectionClass {
                       }
                    }
 
-                   AnnotationParser::parse(parent::getName());
-                   $this->annotations = AnnotationParser::getClassAnnotations($this);
+                   if(!$this->annotations = AnnotationParser::getClassAnnotations($this)) {
+
+                      AnnotationParser::parse(parent::getName());
+                      $this->annotations = AnnotationParser::getClassAnnotations($this);
+                   }
+
                    if(isset($cacher)) $cacher->set($cacheKey, $this->annotations);
                }
                catch(ReflectionException $e) {

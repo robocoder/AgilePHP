@@ -32,6 +32,8 @@ class InterceptorFilter {
 
 	  public function __construct($class) {
 
+	         AnnotationParser::parse($class);
+
 	  		 // Process class level annotations
 			 $classAnnotations = Annotation::getClassAsArray($class);
 	  	     if(count($classAnnotations)) {

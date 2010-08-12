@@ -44,7 +44,7 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 	  	     $digest = $crypto->getDigest( 'phpunit123' );
 
 	  	     PHPUnit_Framework_Assert::assertEquals( 'phpunit', $phpunit->getUsername(), 'Failed to find persisted username' );
-	  	     PHPUnit_Framework_Assert::assertEquals( $digest, $phpunit->getPassword(), 'Failed to find persisted username' );
+	  	     PHPUnit_Framework_Assert::assertEquals( $digest, $phpunit->getPassword(), 'Failed to find persisted password' );
 	  	     PHPUnit_Framework_Assert::assertEquals( 'phpunit@localhost', $phpunit->getEmail(), 'Failed to find persisted email' );
 	  	     PHPUnit_Framework_Assert::assertEquals( 'No', $phpunit->getEnabled(), 'Failed to find persisted enabled flag' );
 	  	     PHPUnit_Framework_Assert::assertEquals( 'phpunit', $phpunit->getRole()->getName(), 'Failed to find persisted role' );
@@ -178,7 +178,7 @@ class PGSQLTest extends PHPUnit_Framework_TestCase {
 
 	  		 PHPUnit_Framework_Assert::assertNotNull( $table, 'testGetForeignKeyColumns \'getTableByName\' returned null' );
 	  		 PHPUnit_Framework_Assert::assertEquals( 'users', $table->getName(), 'Failed to getForeignKeyColumns' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'roleId', $columns[0]->getName(), 'Failed to locate foreign key column \'roleId\'.' );
+	  		 PHPUnit_Framework_Assert::assertEquals( 'roleid', $columns[0]->getName(), 'Failed to locate foreign key column \'roleid\'.' );
 	  }
 
 	  public function testGetForeignKeys() {

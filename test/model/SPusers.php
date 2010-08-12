@@ -26,7 +26,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.model
  */
-class SPusers {
+class SPusers extends DomainModel {
 
 	  private $username;
 	  private $password;
@@ -36,6 +36,8 @@ class SPusers {
 	  private $enabled;
 	  private $roleId;
 
+	  public function __construct() { }
+	  
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityModel#setUsername($username)

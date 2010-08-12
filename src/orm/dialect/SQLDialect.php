@@ -189,12 +189,13 @@ interface SQLDialect {
 	  	  /**
 	       * Returns the 'Table' object which is mapped to the specified $model.
 	       * 
-	       * @param $model The domain model object to retrieve the table element for. Defaults to the model
-	       * 			   currently being managed by the 'ORM'.
-	       * @return The 'Table' object responsible for the model's ORM or null if a table
+	       * @param DomainModel $model The domain model object to retrieve the table element for. Defaults to the model
+	       * 			   			   currently being managed by the ORM.
+	       * @return Table The Table object responsible for the model's ORM or null if a table
 	       * 		 could not be located for the specified $model.
+	       * @throws ORMException
 	       */
-	      public function getTableByModel($model = null);
+	      public function getTableByModel(DomainModel $model = null);
 
 	      /**
 	       * Returns a 'Table' object representing the table configured in orm.xml as
@@ -264,56 +265,56 @@ interface SQLDialect {
 	  	 /**
 	   	  * Persists a domain model object
 	   	  * 
-		  * @param $model The model object to persist
+		  * @param DomainModel $model The model object to persist
 		  * @return PDOStatement
 		  * @throws ORMException
 		  */
-  	     public function persist($model);
+  	     public function persist(DomainModel $model);
 
 	  	 /**
 	   	  * Merges/updates a persisted domain model object
 	   	  * 
-		  * @param $model The model object to merge/update
+		  * @param DomainModel $model The model object to merge/update
 		  * @return PDOStatement
 		  * @throws ORMException
 		  */
-	  	 public function merge($model);
+	  	 public function merge(DomainModel $model);
 
 		 /**
 		  * Deletes a persisted domain model object
 	   	  * 
-		  * @param $model The domain model object to delete
+		  * @param DomainModel $model The domain model object to delete
 		  * @return PDOStatement
 		  * @throws ORMException
 		  */
-		 public function delete($model);
+		 public function delete(DomainModel $model);
 
 	  	 /**
 	   	  * Truncates the table for the specified domain model object
 	   	  * 
-		  * @param $model A domain model object
+		  * @param DomainModel $model A domain model object
 		  * @return PDOStatement
 		  * @throws ORMException
 		  */
-		 public function truncate($model);
+		 public function truncate(DomainModel $model);
 
 	  	 /**
 	   	  * Attempts to locate the specified model by primary key value.
 	      * 
-	   	  * @param Object $model A domain model object with its primary key field set
+	   	  * @param DomainModel $model A domain model object with its primary key field set
 	      * @return Returns the same model which was passed (populated with the
 	      * 		 database values) or null if a matching record could not be found.
 	      * @throws ORMException
 	      */
-	  	 public function find($model);
+	  	 public function find(DomainModel $model);
 
 	  	 /**
 	  	  * Calls a stored procedure.
 	  	  * 
-	  	  * @param $model ActiveRecord model state representing the stored procedure
+	  	  * @param DomainModel $model ActiveRecord model state representing the stored procedure
 	  	  * @return mixed The stored procedure return value or null if the stored procedure does not return
 	  	  */
-	  	 public function call($model);
+	  	 public function call(DomainModel $model);
 
 	  	 /**
 		  * Reverse engineers the active database and returns a Database object that represents

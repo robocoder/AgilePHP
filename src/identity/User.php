@@ -27,7 +27,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  */
-class User extends DomainModel implements IdentityModel, ActiveRecord {
+class User extends DomainModel implements IdentityModel {
 
 	  private $username;
 	  private $password;
@@ -130,7 +130,8 @@ class User extends DomainModel implements IdentityModel, ActiveRecord {
 	   */
 	  public function setLastLogin($timestamp) {
 
-	  	     $this->lastLogin = date('Y-m-d H:i:s', strtotime($timestamp));
+	         if($timestamp)
+	  	       $this->lastLogin = date('Y-m-d H:i:s', strtotime($timestamp));
 	  }
 
 	  /**

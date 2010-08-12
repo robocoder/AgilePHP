@@ -54,8 +54,13 @@ class AnnotatedMethod extends ReflectionMethod {
                             return;
                          }
                       }
-                      AnnotationParser::parse(parent::getDeclaringClass()->getName());
-                      $this->annotations = AnnotationParser::getMethodAnnotations($this);
+                     
+                      if(!$this->annotations = AnnotationParser::getMethodAnnotations($this)) {
+
+                         AnnotationParser::parse(parent::getDeclaringClass()->getName());
+                         $this->annotations = AnnotationParser::getMethodAnnotations($this);
+                      }
+
                       if(isset($cacher)) $cacher->set($cacheKey, $this->annotations);                      
                }
                catch(ReflectionException $e) {

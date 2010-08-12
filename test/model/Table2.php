@@ -2,7 +2,7 @@
 
 /** AgilePHP generated domain model */
 
-class Table2 extends DomainModel implements ActiveRecord {
+class Table2 extends DomainModel {
 
       public function __construct() { }
     

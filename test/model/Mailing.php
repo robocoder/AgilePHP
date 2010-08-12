@@ -29,7 +29,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.model
  */
-class Mailing extends DomainModel implements ActiveRecord {
+class Mailing extends DomainModel {
 
 	  private $id;
 	  private $name;

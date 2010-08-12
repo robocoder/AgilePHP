@@ -261,7 +261,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
   			       // Single primary key
 	  	           if(strpos($ids, '_') === false) {
-
+	  	               
 		  	          $mutator = $this->toMutator($pkeyColumns[0]->getModelPropertyName());
 	  		 	      $this->getModel()->$mutator($ids);
 	  		 	      return;

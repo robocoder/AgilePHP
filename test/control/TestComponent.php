@@ -1,5 +1,4 @@
 <?php
-
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -59,6 +58,12 @@ class TestComponent extends Component {
       public function table1() {
 
              parent::delegate(new TestComponent\control\Table1Controller());
+
+             /*
+             $parameters = MVC::getParameters();
+             $action = isset($parameters[0]) ? $parameters[0] : 'index';
+             MVC::dispatch('TestComponent\\control\\Table1Controller',  $action);
+             */
       }
 
       /**
@@ -68,7 +73,7 @@ class TestComponent extends Component {
        */
       public function table2() {
 
-             parent::delegate(new TestComponent\control\Table2Controller());
+              parent::delegate(new TestComponent\control\Table2Controller());
       }
 
       /**

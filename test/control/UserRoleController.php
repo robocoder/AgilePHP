@@ -16,24 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package com.makeabyte.agilephp.mvc
+ * @package com.makeabyte.agilephp.test.control
  */
 
 /**
- * Provides implementation requirements for ActiveRecord models used
- * within the ORM. Constructors must accept zero-length parameters.
- * Arguments can still be passed to the constructor as long as they
- * are optional (as this is also a terrific way to allow a
- * "back door" to bypassing interceptors such as #@Id or
- * #@Password if desired).
- *
+ * Responsible for CRUD, search, and pagination logic for UserRole DomainModel.
+ * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
- * @package com.makeabyte.agilephp.mvc
- * @abstract
+ * @package com.makeabyte.agilephp.test.control
  */
-interface ActiveRecord {
+class UserRoleController extends BaseModelActionController {
 
-          public function __construct();
+	  private $model;
+
+	  public function __construct() {
+
+	  		 $this->model = new UserRole();
+	  		 parent::__construct();
+	  }
+
+	  /**
+	   * (non-PHPdoc)
+	   * @see src/mvc/BaseModelController#getModel()
+	   */
+	  public function getModel() {
+
+	  	     return $this->model;
+	  }
 }
 ?>

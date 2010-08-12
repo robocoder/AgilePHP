@@ -2,7 +2,7 @@
 /**
  * Test application Table1 model 
  */
-class Table1 extends DomainModel implements ActiveRecord {
+class Table1 extends DomainModel {
 
       public function __construct() { }
     

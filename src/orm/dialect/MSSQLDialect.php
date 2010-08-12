@@ -71,7 +71,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  		 return $this->connectFlag;
 	  }
 
-	  public function call($model) {
+	  public function call(DomainModel $model) {
 
 	  		 $values = array();
 	  		 $outs = array();
@@ -357,9 +357,9 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/orm/BaseDialect#truncate($model)
+	   * @see src/orm/BaseDialect#truncate(DomainModel $model)
 	   */
-	  public function truncate($model) {
+	  public function truncate(DomainModel $model) {
 
 	  	     $table = $this->getTableByModel($model);
 	  		 $this->query('TRUNCATE table ' . $table->getName() . ';');
@@ -377,11 +377,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  	/**
 	   	 * Persists a domain model object
 	     *
-	     * @param $model The domain model object to persist
+	     * @param DomainModel $model The domain model object to persist
 	     * @return PDOStatement
 	     * @throws ORMException
 	     */
-	    public function persist($model) {
+	    public function persist(DomainModel $model) {
 
 	    	   $this->model = $model;
 
@@ -471,11 +471,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  /**
 	   * Overrides parent find method to provide MSSQL specific syntax.
 	   *
-	   * @param $model A domain model object. Any fields which are set in the object are used to filter results.
+	   * @param DomainModel $model A domain model object. Any fields which are set in the object are used to filter results.
 	   * @throws ORMException If any primary keys contain null values or any
 	   * 		   errors are encountered executing queries
 	   */
-	  public function find($model) {
+	  public function find(DomainModel $model) {
 
 	    	 $table = $this->getTableByModel($model);
 			 $newModel = $table->getModelInstance();
@@ -781,10 +781,10 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  /**
 	   * Returns the total number of records in the specified model.
 	   *
-	   * @param Object $model The domain object to get the count for.
+	   * @param DomainModel $model The domain object to get the count for.
 	   * @return Integer The total number of records in the table.
 	   */
-	  public function count($model) {
+	  public function count(DomainModel $model) {
 
 	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel($model)->getName();
 			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();

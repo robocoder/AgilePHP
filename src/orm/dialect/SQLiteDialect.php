@@ -66,7 +66,7 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	  		 		$this->createTriggers($table);
 	  }
 
-	  public function call($model) { }
+	  public function call(DomainModel $model) { }
 
 	  /**
 	   * (non-PHPdoc)
@@ -202,9 +202,9 @@ final class SQLiteDialect extends BaseDialect implements SQLDialect {
 	  
 	  /**
 	   * (non-PHPdoc)
-	   * @see src/orm/BaseDialect#truncate($model)
+	   * @see src/orm/BaseDialect#truncate(DomainModel $model)
 	   */
-	  public function truncate($model) {
+	  public function truncate(DomainModel $model) {
 
 	  	     $table = $this->getTableByModel($model);
 	  		 $this->query('DELETE FROM ' . $table->getName() . ';');

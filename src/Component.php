@@ -167,24 +167,20 @@ abstract class Component extends BaseController {
 		  	 $it = new RecursiveDirectoryIterator($component);
 			 foreach(new RecursiveIteratorIterator($it) as $file) {
 
-			   	     if(substr($file, -1  != '.' && substr($file, -2) != '..' &&
-			   	        substr($file, -4) != 'view')) {
+		   	     	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
+			 		  if(array_pop($pieces) == $className . '.php') {
 
-			   	     	  $pieces = explode(DIRECTORY_SEPARATOR, $file);
-				 		  if(array_pop($pieces) == $className . '.php') {
+			 		     if($cacher) $cacher->set($key, $file->getPathname());
 
-				 		     if($cacher) $cacher->set($key, $file->getPathname());
+			 		     if(AgilePHP::getConfiguration()->annotations) {
 
-   				 		     if(AgilePHP::getConfiguration()->annotations) {
-
-                                new InterceptorFilter($class);
-                                if(class_exists($class, false)) return;
-                             }
-                             
-			     	 		 require $file->getPathname();
-			     	 		 return;
-				 		  }
-				     }
+                            new InterceptorFilter($class);
+                            if(class_exists($class, false)) return;
+                         }
+                         
+		     	 		 require $file->getPathname();
+		     	 		 return;
+			 		  }
 			 }
 	  }
 
