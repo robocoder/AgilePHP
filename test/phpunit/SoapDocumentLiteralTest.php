@@ -2,16 +2,16 @@
 
 /**
  * This tests the RPC/LITERAL web service type. Note that since use literal removes
- * type information from the WSDL, it is not possible to restore returned objects 
+ * type information from the WSDL, it is not possible to restore returned objects
  * as PHP data types using a SOAPClient classmap. All objects are returned as stdClass
  * when using RPC/LITERAL.
- * 
+ *
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class SoapDocumentLiteralTest extends PHPUnit_Framework_TestCase {
 
-	  
- 	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI/?XDEBUG_SESSION_START=1&KEY=agilephp', 
+
+ 	  private $options = array( 'uri' => 'http://localhost/test/index.php/SoapDocumentLiteralTestAPI/?XDEBUG_SESSION_START=1&KEY=agilephp',
 				  'soapaction' => '',
 				  'trace' => 1,
 				  'exceptions' => 1,
@@ -67,12 +67,12 @@ class SoapDocumentLiteralTest extends PHPUnit_Framework_TestCase {
 	  }
 
 	  public function testShowAvailableMethods() {
-	  	
+
 			 PHPUnit_Framework_Assert::assertEquals( count( $this->client->__getFunctions() ), 10, 'Failed to get all api methods' );
 	  }
 
 	  public function testTest() {
-	  	
+
 	  		 $result = $this->invoke( 'test', null );
 	  		 PHPUnit_Framework_Assert::assertEquals( 'TestAPI works!', $result->return, 'Unexpected test method result' );
 	  }
@@ -159,7 +159,7 @@ class SoapDocumentLiteralTest extends PHPUnit_Framework_TestCase {
 	  		 $o = new arrayOfArraysTest;
 	  		 $o->strings = array( array( 'test1', 'test2' ), array( 'test3', 'test4' ) );
 
-	  		 // THIS WONT WORK FOR DOC/LITERAL 
+	  		 // THIS WONT WORK FOR DOC/LITERAL
 	  		 // $result = $this->invoke( 'arrayOfArraysTest', $o );
 
 			 /*

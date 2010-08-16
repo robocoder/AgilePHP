@@ -132,12 +132,17 @@ abstract class Component extends BaseController {
 	   */
 	  public function autoload($class) {
 
-	         // Use caching if enabled
+	  	     // Use caching if enabled
              if($cacher = AgilePHP::getCacher()) {
 
                 $key = 'AGILEPHP_COMPONENT_AUTOLOAD_' . $class;
                 if($clazz = $cacher->get($key)) {
 
+                   if(AgilePHP::getConfiguration()->annotations) {
+
+                      new InterceptorFilter($class);
+                      if(class_exists($class, false)) return;
+                   }
                    require $clazz;
                    return;
                 }
@@ -177,7 +182,7 @@ abstract class Component extends BaseController {
                             new InterceptorFilter($class);
                             if(class_exists($class, false)) return;
                          }
-                         
+
 		     	 		 require $file->getPathname();
 		     	 		 return;
 			 		  }
@@ -249,7 +254,7 @@ abstract class Component extends BaseController {
 
 	  /**
 	   * Returns the configuration <param>'s for the component
-	   * 
+	   *
 	   * @return array Configuraiton params
 	   */
 	  protected function getParams() {
@@ -267,7 +272,7 @@ abstract class Component extends BaseController {
 	  protected function delegate(BaseController $controller, $action = null) {
 
 	            $parameters = MVC::getParameters();
-	            if($action) return call_user_func_array(array($controller, $action), MVC::getParameters()); 
+	            if($action) return call_user_func_array(array($controller, $action), $parameters);
 
 	            if(isset($parameters[0])) {
 

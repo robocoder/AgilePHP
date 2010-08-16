@@ -42,10 +42,10 @@ class FrameworkException extends Exception {
 
 	         $error = error_get_last();
 
-			 $this->message = $message ? $message : $error['message'];
-	  		 $this->code = $code ? $code : $error['type'];
-	  		 $this->file = $file ? $file : $error['file'];
-  		 	 $this->line = $line ? $line : $error['line'];
+			 $this->message = $message ? (string)$message : (string)$error['message'];
+	  		 $this->code = $code ? (int)$code : (int)$error['type'];
+	  		 $this->file = $file ? (string)$file : (string)$error['file'];
+  		 	 $this->line = $line ? (int)$line : (int)$error['line'];
 	  		 $this->trace = debug_backtrace();
 	  }
 }

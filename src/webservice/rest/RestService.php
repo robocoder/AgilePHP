@@ -82,8 +82,11 @@ class RestService {
 			 				 	   if(!$annote->resource) continue;
 
 			 				 	   // No variables to extract simply invoke the requested resource
-			 				 	   if($annote->resource == $request)
-			 				 	 	   call_user_func(array($service, $method));
+			 				 	   if($annote->resource == $request) {
+
+			 				 	      $ic->setMethod($method);
+			 				 	      return $ic->proceed();
+			 				 	   }
 
 			 				 	   // Create regex based on the #@Path resource definition
 			 				 	   $escapedAnnote = preg_replace('/\//', '\/', $annote->resource);

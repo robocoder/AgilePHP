@@ -35,7 +35,7 @@ abstract class DomainModel {
          /**
           * Persists/saves the DomainModel ActiveRecord state to
           * the data source.
-          * 
+          *
           * @return void
           * @throws ORMException
           */
@@ -47,7 +47,7 @@ abstract class DomainModel {
 		 /**
           * Looks up the ActiveRecord state from the data source using
           * values for fields which map to primary keys.
-          * 
+          *
           * @return void
           * @throws ORMException
           * @throws FrameworkException
@@ -77,7 +77,7 @@ abstract class DomainModel {
 		  		 		 	$context = 'protected';
 		  		 		 else if($property->isPrivate())
 		  		 		  	 $context = 'private';
-	
+
 		  		 		 $value = null;
 		  		 		 if($context != 'public') {
 
@@ -96,7 +96,7 @@ abstract class DomainModel {
 		 /**
           * Merges/updates the data source record mapped by the
           * DomainModel ActiveRecord state.
-          * 
+          *
           * @return void
           * @throws ORMException
           */
@@ -108,7 +108,7 @@ abstract class DomainModel {
 		 /**
           * Deletes/destroys the data source record mapped by the
           * DomainModel ActiveRecord state.
-          * 
+          *
           * @return void
           * @throws ORMException
           */
@@ -119,13 +119,24 @@ abstract class DomainModel {
 
 		 /**
           * Calls/executes a stored procedure mapped to this DomainModel in orm.xml
-          * 
+          *
           * @return void
           * @throws ORMException
           */
          public function call() {
 
                 ORMFactory::getDialect()->call($this);
+         }
+
+         /**
+          * Performs a SELECT * on the mapped table.
+          *
+          * @return array An array of records or an empty array if no records were located
+          */
+         public function find($maxResults = 25) {
+
+                ORMFactory::getDialect()->setMaxResults($maxResults);
+                return ORMFactory::getDialect()->find($this);
          }
 }
 ?>

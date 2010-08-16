@@ -21,13 +21,13 @@
 
 /**
  * Test class used to mimic an API exposing some application logic via SOAP using RPC/Literal WSDL.
- * 
+ *
  * NOTE: The AgilePHP #@WebMethod annotation authorizes a method for inclusion during WSDL generation.
  *
- * 		 The AgilePHP #@WSDL interceptor uses the data types specified in 
+ * 		 The AgilePHP #@WSDL interceptor uses the data types specified in
  *	     the PHP-doc comment blocks (specifically the @param and @return annotations) during
  *	     WSDL generation. If these types are not present, the #@WSDL generator will use xsd:anyType.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
@@ -58,7 +58,7 @@ class SoapRpcLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Tests the TestAPI web service by outputting the string 'TestAPI works!'.
-	   * 
+	   *
 	   * @return string
 	   */
 	  #@WebMethod
@@ -69,7 +69,7 @@ class SoapRpcLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Adds two numbers.
-	   * 
+	   *
 	   * @param int $a Base integer number
 	   * @param int $b The number to add to the base
 	   * @return int The sum
@@ -82,7 +82,7 @@ class SoapRpcLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Subtracts two numbers.
-	   * 
+	   *
 	   * @param int $a Base integer number
 	   * @param int $b The number to subtract from the base
 	   * @return int The difference
@@ -95,7 +95,7 @@ class SoapRpcLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Multiplies two numbers.
-	   * 
+	   *
 	   * @param int $a Base integer number
 	   * @param int $b The number to multiply to the base
 	   * @return int The product
@@ -108,7 +108,7 @@ class SoapRpcLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Divides two numbers.
-	   * 
+	   *
 	   * @param int $a Base integer number
 	   * @param int $b The divisor of the base
 	   * @return int The quotient
@@ -121,60 +121,60 @@ class SoapRpcLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Tests complex data type 'object' parameter.
-	   * 
+	   *
 	   * @param MathTest $MathTest An instance of MathTest
 	   * @return int Returns the sum of both A and B fields in the MathTest object.
 	   */
 	  #@WebMethod
-	  public function objectParameterTest(MathTest $MathTest) {
+	  public function objectParameterTest(stdClass $MathTest) {
 
 	  		 return ($MathTest->a + $MathTest->b);
 	  }
 
 	  /**
 	   * Tests complex data type array parameter.
-	   * 
+	   *
 	   * @param MathTest[] $MathTests An array of MathTest instances
 	   * @return MathTest[] Returns the same array that was passed in.
 	   */
 	  #@WebMethod
-	  public function arrayOfObjectsTest(array $MathTests) {
+	  public function arrayOfObjectsTest(stdClass $MathTests) {
 
 	  		 return $MathTests;
 	  }
 
 	  /**
 	   * Tests the ability to receive and return a simple string array.
-	   * 
+	   *
 	   * @param string[] $strings An array of strings
 	   * @return string[] The same strings that were passed in
 	   */
 	  #@WebMethod
-	  public function arrayStringTest(array $strings) {
+	  public function arrayStringTest(stdClass $strings) {
 
 	  		 return $strings;
 	  }
 
 	  /**
 	   * Tests the ability to receive and return a simple string array.
-	   * 
+	   *
 	   * @param string[][] $strings A multi-dimensional array of strings
 	   * @return string[][] The same multi-dimensional array that was passed in
 	   */
 	  #@WebMethod
-	  public function arrayOfArraysTest(array $strings) {
+	  public function arrayOfArraysTest(stdClass $strings) {
 
 	  		 return $strings;
 	  }
 
 	  /**
 	   * Tests complex data type array of objects parameter.
-	   * 
+	   *
 	   * @param MathTest[] $MathTests An array of MathTest instances
 	   * @return int Adds A and B for each array and returns the sum of all MathTest objects
 	   */
 	  #@WebMethod
-	  public function arrayAddTest(array $MathTests) {
+	  public function arrayAddTest(stdClass $MathTests) {
 
 			 $sum = 0;
 	  		 foreach($MathTests->MathTests as $MathTest)

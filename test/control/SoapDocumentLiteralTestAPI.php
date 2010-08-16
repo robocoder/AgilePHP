@@ -21,16 +21,16 @@
 
 /**
  * Test class used to mimic an API exposing some application logic via SOAP using Document Literal Wrapped WSDL.
- * 
+ *
  * NOTE: The AgilePHP #@WebMethod annotation authorizes a method for inclusion during WSDL generation.
  *
- * 		 The AgilePHP #@WSDL interceptor uses the data types specified in 
+ * 		 The AgilePHP #@WSDL interceptor uses the data types specified in
  *	     the PHP-doc comment blocks (specifically the @param and @return annotations) during
  *	     WSDL generation. If these types are not present, the #@WSDL generator will use xsd:anyType.
  *
  *		 Also note that DocumentLiteral in AgilePHP is really Document Literal WRAPPED! Document literal is
  *		 not used very often since its tough to dispatch calls to multiple methods in the service class.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
@@ -56,7 +56,7 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Tests the TestAPI web service by outputting the string 'TestAPI works!'.
-	   * 
+	   *
 	   * @return string
 	   */
 	  #@WebMethod
@@ -70,27 +70,27 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Adds two numbers.
-	   * 
+	   *
 	   * @param add $addRequest Client add object that holds the a and b properties
 	   * @return int The sum of a and b
 	   */
 	  #@WebMethod
-	  public function add(add $addRequest) {
+	  public function add(stdClass $addRequest) {
 
 	  		 $o = new addResponse;
 	  		 $o->return = $this->MathTest->add($addRequest->a, $addRequest->b);
-	  		 
+
 	  		 return $o;
 	  }
 
 	  /**
 	   * Subtracts two numbers.
-	   * 
+	   *
 	   * @param subtract $subtractRequest Client subtract object holding the a and b properties.
 	   * @return int The difference between a and b
 	   */
 	  #@WebMethod
-	  public function subtract(subtract $subtractRequest) {
+	  public function subtract(stdClass $subtractRequest) {
 
 	  		 $o = new subtractResponse;
 	  		 $o->return = $this->MathTest->subtract($subtractRequest->a, $subtractRequest->b);
@@ -100,12 +100,12 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Multiplies two numbers.
-	   * 
+	   *
 	   * @param multiple $multiplyRequest Client multiply object holding the a and b properties.
 	   * @return int The product of a and b
 	   */
 	  #@WebMethod
-	  public function multiply(multiply $multiplyRequest) {
+	  public function multiply(stdClass $multiplyRequest) {
 
 	  		 $o = new multiplyResponse;
 	  		 $o->return = $this->MathTest->multiply($multiplyRequest->a, $multiplyRequest->b);
@@ -115,12 +115,12 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Divides two numbers.
-	   * 
+	   *
 	   * @param divide $divideRequest Client divide object holding the a and b properties
 	   * @return int The quotient of a and b
 	   */
 	  #@WebMethod
-	  public function divide(divide $divideRequest) {
+	  public function divide(stdClass $divideRequest) {
 
 	  		 $o = new divideResponse;
 	  		 $o->return = $this->MathTest->divide($divideRequest->a, $divideRequest->b);
@@ -130,12 +130,12 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Tests complex data type 'object' parameter.
-	   * 
+	   *
 	   * @param MathTest $MathTest An instance of MathTest
 	   * @return int Returns the sum of both A and B fields in the MathTest object.
 	   */
 	  #@WebMethod
-	  public function objectParameterTest(MathTest $MathTest) {
+	  public function objectParameterTest(stdClass $MathTest) {
 
 	  		 $o = new objectParameterTestResponse();
 	  		 $o->return = ($MathTest->MathTest->a + $MathTest->MathTest->b);
@@ -145,12 +145,12 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Tests complex data type array parameter.
-	   * 
+	   *
 	   * @param MathTest[] $MathTests An array of MathTest instances
 	   * @return MathTest[] Returns the same array ob MathTest objects that were passed in.
 	   */
 	  #@WebMethod
-	  public function arrayOfObjectsTest(array $MathTests) {
+	  public function arrayOfObjectsTest(stdClass $MathTests) {
 
 	  		 $o = new arrayOfObjectsTestResponse;
 	  		 $o->return = $MathTests->MathTests;
@@ -160,12 +160,12 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Tests the ability to receive and return a simple string array.
-	   * 
+	   *
 	   * @param string[] $strings An array of strings
 	   * @return string[] The same strings that were passed in
 	   */
 	  #@WebMethod
-	  public function arrayStringTest(array $strings) {
+	  public function arrayStringTest(stdClass $strings) {
 
 	  	     $o = new arrayStringTestResponse;
 	  	     $o->return = $strings->strings;
@@ -175,12 +175,12 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Tests the ability to receive and return a simple string array.
-	   * 
+	   *
 	   * @param string[][] $strings A multi-dimensional array of strings
 	   * @return string[][] The same multi-dimensional array that was passed in
 	   */
 	  #@WebMethod
-	  public function arrayOfArraysTest(array $strings) {
+	  public function arrayOfArraysTest(stdClass $strings) {
 
 	  		 Log::debug($strings);
 
@@ -192,12 +192,12 @@ class SoapDocumentLiteralTestAPI extends SOAPService {
 
 	  /**
 	   * Tests complex data type array of objects parameter.
-	   * 
+	   *
 	   * @param MathTest[] $MathTests An array of MathTest instances
 	   * @return int Adds A and B for each array and returns the sum of all MathTest objects
 	   */
 	  #@WebMethod
-	  public function arrayAddTest(array $MathTests) {
+	  public function arrayAddTest(stdClass $MathTests) {
 
 			 $sum = 0;
 	  		 foreach($MathTests->MathTests as $MathTest)

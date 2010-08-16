@@ -1,13 +1,11 @@
-- Performance tweaks to annotation package
-- Performance tweaks to orm package
-- Refactored MVC::dispatch to allow parameterized invocation using specified controller/action values.
-- Moved DomainModel from mvc package to orm package
-- Bug fix to User domain model. setLastLogin now ignores null date values.
-- Added DomainModel type casting to ORM persist, merge, delete, find, get, truncate and call.
-- Bug fix to InterceptorProxy when parsing class level annotations in namespaced classes.
-- Bug fix to PGSQLDialect::find when using case sensitive table/column names.
-- Performance optimization to AnnotationParser, AnnotatedMethod and AnnotatedProperty classes.
-- Refactored #@Cache interceptor to use new <caching/> configuration element
-- Added "parameters" and "contentType" attribute values to agilephp.dtd for mvc <cache/> element
+- Added namespaced component front-controller support to #@RestService interceptor
+- Bug fix to Component::autoload caching logic
+- Added find method to DomainModel
+- Added type casting to FrameworkException to avoid "incorrect types for common
+  properties: 'message' and 'file' need to be a string and 'line' needs to be an integer"
+  fatal error when executing unit tests with xdebug 2.2.0-dev.
+- Refactored method type casting in Soap*TestAPI to stdClass to avoid fatal error thrown by
+  xdebug > 2.2.0-dev resulting in "looks like we have no xml document" error when
+  executing unit tests with xdebug 2.2.0-dev.
 
-Backward compatible apidoc: No
+Backward compatible apidoc: Yes
