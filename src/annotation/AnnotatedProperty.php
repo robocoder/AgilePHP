@@ -54,14 +54,8 @@ class AnnotatedProperty extends ReflectionProperty {
                          }
                     }
 
-                    if(!$this->annotations = AnnotationParser::getPropertyAnnotations($this)) {
-
-                         AnnotationParser::parse(parent::getDeclaringClass()->getName());
-                         $this->annotations = AnnotationParser::getPropertyAnnotations($this);
-                    }
-                    
                     $this->annotations = AnnotationParser::getPropertyAnnotations($this);
-                    if(isset($cacher)) $cacher->set($cacheKey, $this->annotations);   
+                    if(isset($cacher)) $cacher->set($cacheKey, $this->annotations);  
              }
              catch(ReflectionException $e) {
 

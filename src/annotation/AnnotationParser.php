@@ -33,7 +33,6 @@ class AnnotationParser {
       private static $methods = array();
       private static $sources = array();
 
-      private static $class;
       private static $filename;
       private static $cacher;
 
@@ -52,7 +51,6 @@ class AnnotationParser {
       public static function parse($class) {
 
              self::$cacher = AgilePHP::getCacher();
-             self::$class = $class;
              self::$filename = $class . '.php';
 
              // First level cache - non-persistent
@@ -75,7 +73,7 @@ class AnnotationParser {
              }
 
              $comments = array();
-             $tokens = token_get_all(self::getSourceCode());
+             $tokens = token_get_all(self::getSourceCode($class));
 
              for($i=0; $i<count($tokens); $i++) {
 
@@ -491,14 +489,15 @@ class AnnotationParser {
       /**
        * Retrieves the raw PHP source code for the file being parsed.
        *
-       * @return String The raw PHP source code for the file being parsed
-       * @static
+       * @param string $class The class name to return the source code for.
+       * @return string The raw PHP source code for the file being parsed
        * @throws AnnotationException if the source could not be retrieved
+       * @static 
        */
-      private static function getSourceCode() {
+      private static function getSourceCode($class) {
 
                 try {
-                      return AgilePHP::getSource(self::$class);
+                      return AgilePHP::getSource($class);
                 }
                 catch(FrameworkException $e) {
 

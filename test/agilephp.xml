@@ -2,8 +2,18 @@
 <!DOCTYPE agilephp SYSTEM "../src/agilephp.dtd">
 
 <agilephp>
+	<!--
+	<mvc>
+	    <cache controller="IndexController" action="index"/>
+		<cache controller="UserController" action="sort" parameters="^.*\z/ASC" ttl="5"/>
+		<cache controller="UserController" action="sort" parameters="^.*\z/DESC" ttl="5"/>
+		<cache controller="SoapDocumentLiteralTestAPI" action="wsdl" contentType="application/xml"/>
+		<cache controller="users" action="index" contentType="HTTP_ACCEPT" ttl="20"/>
+	</mvc>
+    -->
 	<logger level="debug"/>
 	<scope type="session" provider="OrmSessionProvider"/>
 	<crypto algorithm="sha256" iv="1234567890" key="This is a secret key" />
+	<!-- <caching provider="ApcCacheProvider"/> -->
 	<annotations/>
 </agilephp>

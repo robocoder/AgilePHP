@@ -6,5 +6,8 @@
 - Added DomainModel type casting to ORM persist, merge, delete, find, get, truncate and call.
 - Bug fix to InterceptorProxy when parsing class level annotations in namespaced classes.
 - Bug fix to PGSQLDialect::find when using case sensitive table/column names.
+- Performance optimization to AnnotationParser, AnnotatedMethod and AnnotatedProperty classes.
+- Refactored #@Cache interceptor to use new <caching/> configuration element
+- Added "parameters" and "contentType" attribute values to agilephp.dtd for mvc <cache/> element
 
 Backward compatible apidoc: No

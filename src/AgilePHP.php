@@ -565,7 +565,7 @@ final class AgilePHP {
                 return $source;
              }
 
-             // Search web application (one level)
+             // Search web application (one level using namespace as directory delimiter)
              $directories = glob(self::$webroot . DIRECTORY_SEPARATOR . '*', GLOB_ONLYDIR);
              foreach($directories as $directory) {
 
@@ -578,7 +578,7 @@ final class AgilePHP {
                  }
              }
 
-             // Search web application (using namespace)
+             // Search web application (recursively - no namespace by class name)
 		  	 $it = new RecursiveDirectoryIterator(self::$webroot);
 			 foreach(new RecursiveIteratorIterator($it) as $file) {
 
@@ -607,9 +607,6 @@ final class AgilePHP {
 
              // Parse class for AgilePHP interceptors if enabled
              if(!$bypassInterceptors) {
-
-                // Parse the class for the presence of annotations
-	            AnnotationParser::parse($class);
 
 	            // Filter for interceptors
                 new InterceptorFilter($class);

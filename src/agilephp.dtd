@@ -56,3 +56,5 @@
 <!ATTLIST cache controller CDATA #REQUIRED>
 <!ATTLIST cache action CDATA #REQUIRED>
 <!ATTLIST cache ttl CDATA #IMPLIED>
+<!ATTLIST cache parameters CDATA #IMPLIED>
+<!ATTLIST cache contentType CDATA #IMPLIED>

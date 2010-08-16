@@ -185,7 +185,9 @@ final class MVC {
 	  		    $cacheKey = 'AGILEPHP_MVC_' . $path;
 	  		    if($cacher->exists($cacheKey)) {
 
-	  		       echo $cacher->get($cacheKey);
+		           $data = $cacher->get($cacheKey);
+		           if($data['contentType']) header('content-type: ' . $data['contentType']);
+	  		       echo $data['html'];
 	  		       return;
 	  		    }
 	  		 }
@@ -249,20 +251,8 @@ final class MVC {
 		  	    throw new FrameworkException('The specified action \'' . $action . '\' does not exist.', 102);
 
 		  	 // Cache the output if caching is enabled
-		     if(self::$cacheables) {
-
-		        foreach(self::$cacheables as $cacheable) {
-
-		            if($cacheable->attributes()->controller == $controller &&
-		               $cacheable->attributes()->action == $action) {
-
-		                   ob_start();
-              	     	   call_user_func_array(array($oController, $action), $parameters);
-              	     	   $cacher->set($cacheKey, ob_get_flush());
-              	     	   return;
-		               }
-		        }
-		     }
+		     if(isset($cacher) && self::$cacheables)
+		        if(self::cacheDispatch($oController, $cacher, $cacheKey)) return;
 
 		     // Execute the controller action - caching is not enabled
 		     call_user_func_array(array($oController, $action), $parameters);
@@ -324,6 +314,89 @@ final class MVC {
 
 	  	     require_once $path;
 	  	     return new $renderer;
+	  }
+
+	  /**
+	   * Dispatches the request to the appropriate controller/action using output buffering
+	   * to capture and cache the response.
+	   * 
+	   * @param BaseController $oController The controller instance to dispatch the request to
+	   * @param CacheProvider $cacher The cache provider instance responsible for handling the cached data
+	   * @param string $cacheKey The cache key used to store and retrieve the requested data
+	   * @return void
+	   */
+	  private static function cacheDispatch(BaseController $oController, $cacher, $cacheKey) {
+
+	          foreach(self::$cacheables as $cacheable) {
+
+		            if($cacheable->attributes()->controller == self::$controller &&
+		               ($cacheable->attributes()->action == self::$action || $cacheable->attributes()->action == '*')) {
+
+		                   // Cache according to parameter values if configured
+		                   if($parameters = $cacheable->attributes()->parameters) {
+
+		                      $xmlParams = explode('/', $parameters);
+		                      if(count($xmlParams) != count(self::$parameters)) return false;
+
+		                      for($i=0; $i<count(self::$parameters); $i++) {
+
+    		                      // Regex comparison/support
+    		                      if($xmlParams[$i][0] == '^') {
+
+    		                         if(!preg_match('/' . $xmlParams[$i] . '/', self::$parameters[$i]))
+    		                            $return = true;
+    		                         else {
+
+    		                            $return = false;
+    		                            break;
+    		                         }
+
+    		                         continue;
+    		                      }
+    		                      // String literal comparison
+    		                      else {
+
+    		                          if(self::$parameters[$i] != $xmlParams[$i])
+    		                             $return = true;
+    		                          else {
+    		                              
+    		                             $return = false;
+    		                             break;
+    		                          }
+    		                          // $return = (self::$parameters[$i] == $xmlParams[$i]);
+    		                      }
+		                      }
+
+		                      if($return) return false;
+		                   }
+
+		                   // Use content-type header if configured
+		                   if($contentType = (string)$cacheable->attributes()->contentType) {
+
+		                      if($contentType == 'HTTP_ACCEPT') {
+
+                    	  		  $clientMimes = array();
+                    			  foreach(explode(',', $_SERVER['HTTP_ACCEPT']) as $mimeType) {
+                    
+                    					  $item = explode(';', $mimeType);
+                    					  $clientMimes[$item[0]] = floatval(array_key_exists(1, $item) ? substr($item[1], 2) : 1);
+                    			  }
+                    			  arsort($clientMimes);
+                    			  $contentType = array_pop($clientMimes);
+		                      }
+
+		                      header('content-type: ' . $contentType);
+		                   }
+
+		                   $ttl = (int)$cacheable->attributes()->ttl;
+
+		                   ob_start();
+              	     	   call_user_func_array(array($oController, self::$action), self::$parameters);
+              	     	   $data = array('html' => ob_get_flush(), 'contentType' => (isset($contentType) ? $contentType : null));
+              	     	   $cacher->set($cacheKey, $data, $ttl);
+              	     	   return true;
+		               }
+		        }
 	  }
 
 	  /**

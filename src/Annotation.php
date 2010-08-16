@@ -28,7 +28,7 @@ require_once 'annotation/AnnotatedMethod.php';
 require_once 'annotation/AnnotatedProperty.php';
 
 /**
- * Opens up the world of annotations to the PHP programming language :p
+ * Static facade for AgilePHP annotation data types.
  *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc

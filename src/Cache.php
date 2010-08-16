@@ -75,7 +75,7 @@ class Cache {
 	  public function __construct() {
 
 	         $xml = AgilePHP::getConfiguration();
-	         $provider = (isset($xml->cache)) ? (string)$xml->cache->attributes()->provider : 'FileCacheProvider';
+	         $provider = (isset($xml->caching)) ? (string)$xml->caching->attributes()->provider : 'FileCacheProvider';
 	         $this->provider = new $provider();
 	  }
 
