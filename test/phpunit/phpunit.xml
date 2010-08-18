@@ -32,6 +32,14 @@
 		 	<file>test/phpunit/RenderersTest.php</file>
 		</testsuite>
 
+		<testsuite name="18nTest">
+		 	<file>test/phpunit/i18nTest.php</file>
+		</testsuite>
+		
+		<testsuite name="ScopeTests">
+		 	<file>test/phpunit/ScopeTests.php</file>
+		</testsuite>
+
 		<testsuite name="SOAP Web Services">
 			<file>test/phpunit/SoapRpcEncodedTest.php</file>
 		 	<file>test/phpunit/SoapRpcLiteralTest.php</file>

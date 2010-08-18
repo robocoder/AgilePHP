@@ -26,19 +26,19 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.model
  */
-class Config {
+class Config extends DomainModel {
 
 	  private $name;
 	  private $value;
 
-	  public function __construct( $name = null, $value = null ) {
+	  public function __construct($name = null, $value = null) {
 
 	  		 $this->name = $name;
 	  		 $this->value = $value;
 	  }
 
 	  #@Id
-	  public function setName( $name ) {
+	  public function setName($name) {
 	  	
 	  		 $this->name = $name;
 	  }
@@ -48,7 +48,7 @@ class Config {
 	  		 return $this->name;
 	  }
 	  
-	  public function setValue( $value ) {
+	  public function setValue($value) {
 	  	
 	  		 $this->value = $value;
 	  }

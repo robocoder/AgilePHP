@@ -91,6 +91,10 @@ h3 {
 
 	background: url( ../images/tree/16x16/trash.png) no-repeat 0 0 !important;
 }
+.btn-build {
+
+	background: url( ../images/tree/16x16/build.png) no-repeat 0 0 !important;
+}
 .btn-greyed {
 
 	color: #C9C9C9;

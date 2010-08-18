@@ -10,7 +10,7 @@
 			<column name="last_login" property="lastLogin" display="Last Login" type="datetime" validator="DateValidator"/>
 			<column name="roleId" property="Role" type="varchar" length="25" sortable="false">
 				<foreignKey name="FK_UserRoles" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
-	  							 table="roles" column="name" controller="RoleController" select="name"/>
+	  					table="roles" column="name" controller="RoleController" select="name" cascade="none"/>
 			</column>
 	  		<column name="enabled" type="boolean" validator="BooleanValidator" transformer="YesNoToBoolean" renderer="YesNoRenderer"/>
 	 	</table>

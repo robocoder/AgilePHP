@@ -112,5 +112,46 @@ class InterceptorTest extends PHPUnit_Framework_TestCase {
 
              PHPUnit_Framework_Assert::assertEquals('intercepted value', StaticClass::test('test'), 'Static class method interception failed');
       }
+
+	  /**
+	   * @test
+	   * @expectedException ORMException
+	   */
+	  public function transactionalClassRollbackTest() {
+
+	  		 $tc = new TransactionalClass();
+	  		 $tc->doQueryThatResultsInException();
+	  }
+
+	  /**
+	   * @test
+	   */
+	  public function transactionalClassCommitTest() {
+
+	  		 $tc = new TransactionalClass();
+	  		 $tc->doQueryThatCompletes();
+	  }
+
+	  /**
+	   * @test
+	   * @expectedException ORMException
+	   */
+	  public function transactionalMethodRollbackTest() {
+
+	  		 $tm = new TransactionalMethod();
+	  		 $tm->doQueryThatResultsInException();
+	  }
+
+	  /**
+	   * @test
+	   */
+	  public function transactionalMethodCommitTest() {
+
+	  		 $tm = new TransactionalMethod();
+	  		 $tm->doQueryThatCompletes();
+
+	  		 ORM::query('delete from roles where name like "transaction%";');
+	         ORM::query('delete from users where username like "transaction%";');
+	  }
 }
 ?>

@@ -80,10 +80,14 @@ class SQLiteTest extends PHPUnit_Framework_TestCase {
 	  	     PHPUnit_Framework_Assert::assertEquals( 'test', $phpunit2->getRole()->getName(), 'Failed to find merged role' );
 	  	     PHPUnit_Framework_Assert::assertEquals( 'Yes', $phpunit2->getEnabled(), 'Failed to find merged enabled flag' );
 
-	  	     // test delete 
+	  	     // test delete
 	  	     $orm->delete( $user2 );
 	  	     $user3 = $orm->find( $user2 );
 	  	     PHPUnit_Framework_Assert::assertEquals( false, isset( $user3[0] ), 'Failed to delete user3' );
+
+	  	     // make sure the role was deleted since foreign key configured using cascade="delete"
+	  	     $testRole = $orm->get(new Role('test', 'Role used for unit testing'));
+	  	     PHPUnit_Framework_Assert::assertEquals(false, $testRole, 'Failed to cascade delete to test role');
 
 	  	     // test reverse engineer
 	  	     $Database = $orm->reverseEngineer();

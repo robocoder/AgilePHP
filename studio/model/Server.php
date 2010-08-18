@@ -26,7 +26,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.model
  */
-class Server {
+class Server extends DomainModel {
 
 	private $id;
 	private $ip;
@@ -36,22 +36,22 @@ class Server {
 
 	public function __construct() { }
 
-	public function setId( $value ) {
+	public function setId($value) {
 
 		 $this->id = $value;
 	}
 
-	public function setIp( $value ) {
+	public function setIp($value) {
 
 		 $this->ip = $value;
 	}
 
-	public function setHostname( $value ) {
+	public function setHostname($value) {
 
 		 $this->hostname = $value;
 	}
 
-	public function setProfile( $value ) {
+	public function setProfile($value) {
 
 		 $this->profile = $value;
 	}
@@ -76,7 +76,7 @@ class Server {
 		 return $this->profile;
 	}
 
-	public function setServerType( ServerType $st = null ) {
+	public function setServerType(ServerType $st = null) {
 
 		   $this->ServerType = $st;
 	}

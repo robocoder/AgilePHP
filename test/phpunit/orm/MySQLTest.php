@@ -24,7 +24,8 @@ class MySQLTest extends PHPUnit_Framework_TestCase {
 	  	     $role = new Role();
 	  	     $role->setName( 'phpunit' );
 	  	     $role->setDescription( 'Users who are used for phpunit testing' );
-	  	     $orm->persist($role);
+
+	  	     //$orm->persist($role);  not needed since foreign key configured using cascade="all"
 
 	  	     $session = Scope::getSessionScope();
 	  	     $sessionId = $session->getSessionId();

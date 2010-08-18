@@ -26,7 +26,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.model
  */
-class ServerType {
+class ServerType extends DomainModel {
 
 	private $id;
 	private $type;
@@ -35,17 +35,17 @@ class ServerType {
 
 	public function __construct() { }
 
-	public function setId( $value ) {
+	public function setId($value) {
 
 		 $this->id = $value;
 	}
 
-	public function setType( $value ) {
+	public function setType($value) {
 
 		 $this->type = $value;
 	}
 
-	public function setName( $value ) {
+	public function setName($value) {
 
 		 $this->name = $value;
 	}
@@ -65,7 +65,7 @@ class ServerType {
 		 return $this->name;
 	}
 	
-	public function setVendor( $vendor ) {
+	public function setVendor($vendor) {
 		
 		   $this->vendor = $vendor;
 	}

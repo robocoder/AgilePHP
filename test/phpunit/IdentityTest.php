@@ -20,7 +20,7 @@ class IdentityTest extends PHPUnit_Framework_TestCase {
 	  	     Identity::setPassword('phpunit');
 	  	     Identity::setEmail('root@localhost');
 	  	     Identity::setCreated('now');
-	  	     Identity::setRole(new Role('test'));
+	  	     Identity::setRole(new Role('identity-test', 'Role used for unit testing'));
 	  	     Identity::register();
 
 	  	     try {

@@ -1,0 +1,2086 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK REL="stylesheet" TYPE="text/css" TITLE="Style" href="../../../../stylesheet.css">
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td class="bannercell" rowspan="2"><a href="http://phing.info/"><img src="http://phing.info/images/phing.gif" alt="http://phing.info/" align="left" border="0"></a></td>
+<td style="text-align:right"><h2>Source Code Coverage</h2></td>
+</tr>
+<tr><td style="text-align:right">Designed for use with <a href="http://pear.php.net/package/PHPUnit2">PHPUnit2</a>, <a href="http://www.xdebug.org/">Xdebug</a> and <a href="http://phing.info/">Phing</a>.</td></tr>
+</table>
+<hr size="1">
+<table class="log" cellpadding="5" cellspacing="0" width="100%"><tr class="a">
+<td class="small">Methods: 7</td>
+<td class="small">LOC: 407</td>
+<td class="small">Statements: 187</td>
+</tr></table>
+<table class="log" cellpadding="5" cellspacing="0" width="100%"><tbody><tr>
+<td class="legendItem" width="0%">Legend:</td>
+<td class="legendValue" width="100%">
+<span class="legendCovered">executed</span><span class="legendUncovered">not executed</span><span class="legendDeadCode">dead code</span>
+</td>
+</tr></tbody></table>
+<table class="log" cellpadding="5" cellspacing="0" width="100%">
+<tr>
+<th width="100%">Source file</th>
+<th>Statements</th>
+<th>Methods</th>
+<th width="250" colspan="2" nowrap>Total coverage</th>
+</tr>
+<tr class="a">
+<td>InterceptorProxy.php</td>
+<td>1.1%</td>
+<td>0.0%</td>
+<td>1.0%</td>
+<td><table cellspacing="0" cellpadding="0" border="0" width="100%" style="display: inline"><tr>
+<td class="covered" width="2" height="12"> </td>
+<td class="uncovered" width="198" height="12"> </td>
+</tr></table></td>
+</tr>
+</table>
+<table cellspacing="0" cellpadding="0" width="100%">
+<tr>
+<td class="lineCount">1</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">&lt;?php</pre></td>
+</tr>
+<tr>
+<td class="lineCount">2</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">/**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">3</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * AgilePHP Framework :: The Rapid "for developers" PHP5 framework</pre></td>
+</tr>
+<tr>
+<td class="lineCount">4</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * Copyright (C) 2009-2010 Make A Byte, inc</pre></td>
+</tr>
+<tr>
+<td class="lineCount">5</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">6</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * This program is free software: you can redistribute it and/or modify</pre></td>
+</tr>
+<tr>
+<td class="lineCount">7</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * it under the terms of the GNU General Public License as published by</pre></td>
+</tr>
+<tr>
+<td class="lineCount">8</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * the Free Software Foundation, either version 3 of the License, or</pre></td>
+</tr>
+<tr>
+<td class="lineCount">9</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * (at your option) any later version.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">10</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">11</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * This program is distributed in the hope that it will be useful,</pre></td>
+</tr>
+<tr>
+<td class="lineCount">12</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</pre></td>
+</tr>
+<tr>
+<td class="lineCount">13</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</pre></td>
+</tr>
+<tr>
+<td class="lineCount">14</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * GNU General Public License for more details.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">15</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">16</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * You should have received a copy of the GNU General Public License</pre></td>
+</tr>
+<tr>
+<td class="lineCount">17</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">18</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">19</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * @package com.makeabyte.agilephp.interception</pre></td>
+</tr>
+<tr>
+<td class="lineCount">20</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">21</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">22</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">/**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">23</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * Proxy / State Machine responsible for intercepting method calls,</pre></td>
+</tr>
+<tr>
+<td class="lineCount">24</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * invoking interceptors, and maintaining interceptor chain state.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">25</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">26</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * @author Jeremy Hahn</pre></td>
+</tr>
+<tr>
+<td class="lineCount">27</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * @copyright Make A Byte, inc.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">28</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> * @package com.makeabyte.agilephp.interception</pre></td>
+</tr>
+<tr>
+<td class="lineCount">29</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"> */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">30</td>
+<td class="coverageCount"></td>
+<td class="srcLineClassStart"><pre class="srcLine">class InterceptorProxy {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">31</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">32</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  private $interceptedTarget;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">33</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">34</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">35</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * Initalizes the intercepted class by creating a new instance, passing in</pre></td>
+</tr>
+<tr>
+<td class="lineCount">36</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * any constructor arguments as required. Class level interceptors are invoked</pre></td>
+</tr>
+<tr>
+<td class="lineCount">37</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * here, as well as dependancy injections via #@In.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">38</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">39</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @return void</pre></td>
+</tr>
+<tr>
+<td class="lineCount">40</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">41</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function __construct() {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">42</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">43</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 $proxiedClass = get_class($this);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">44</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 $intercepted = get_class($this) . '_Intercepted';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">45</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">46</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 // Create the intercepted class using constructor arguments if we have any</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">47</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 if($args = func_get_args()) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">48</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">49</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 	 $interceptedClass = new \ReflectionClass($intercepted);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">50</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		  		 $this-&gt;interceptedTarget = $interceptedClass-&gt;newInstanceArgs($args);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">51</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">52</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 else</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">53</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		  	 	$this-&gt;interceptedTarget = new $intercepted();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">54</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">55</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  	 	 $class = new \ReflectionClass($this-&gt;interceptedTarget);</pre></td>
+</tr>
+<tr>
+<td class="lineCount">56</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">57</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 foreach(\AgilePHP::getInterceptions() as $interception) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">58</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">59</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 		 // Invoke class level interceptors</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">60</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 if($interception-&gt;getClass() == $proxiedClass &amp;&amp;</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">61</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 	 !$interception-&gt;getMethod() &amp;&amp; !$interception-&gt;getProperty()) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">62</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">63</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 $interceptorClass = new \AnnotatedClass($interception-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">64</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     	 	 	 		 foreach($interceptorClass-&gt;getMethods() as $interceptorMethod) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">65</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">66</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	 	 	      if($interceptorMethod-&gt;hasAnnotation('AroundInvoke')) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">67</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">68</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 	 	 	   	  $invocationCtx = new \InvocationContext($this-&gt;interceptedTarget, null, null, $interception-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">69</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							          $ctx = $interceptorMethod-&gt;invoke($interception-&gt;getInterceptor(), $invocationCtx);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">70</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							          if($ctx instanceof \InvocationContext &amp;&amp; $ctx-&gt;proceed) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">71</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">72</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							          	  $this-&gt;interceptedTarget = $ctx-&gt;getTarget();</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">73</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">								          if($ctx-&gt;getMethod()) $this-&gt;__call($ctx-&gt;getMethod(), $ctx-&gt;getParameters());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">74</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							          }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">75</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 	 	 	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">76</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">77</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">78</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">79</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">		     		 // Execute property/field level interceptors</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">80</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 if($interception-&gt;getClass() == $proxiedClass &amp;&amp; $interception-&gt;getProperty()) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">81</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">82</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 $p = new \ReflectionProperty($this-&gt;interceptedTarget, $interception-&gt;getProperty());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">83</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 if(!$p-&gt;isPublic())</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">84</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 	 throw new \InterceptionException('Property level interceptor requires public context at \'' . $proxiedClass .</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">85</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 	 		 '::' . $interception-&gt;getProperty() . '\'.');</pre></td>
+</tr>
+<tr>
+<td class="lineCount">86</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">87</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 		 	 	 		$interceptorClass = new \AnnotatedClass($interception-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">88</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 		 	 	 		foreach($interceptorClass-&gt;getMethods() as $interceptorMethod) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">89</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">90</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	 	 	     if($interceptorMethod-&gt;hasAnnotation('AroundInvoke')) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">91</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">92</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 	 	 	   	 $invocationCtx = new \InvocationContext($this-&gt;interceptedTarget, null, null, $interception-&gt;getInterceptor(), $interception-&gt;getProperty());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">93</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							         $return = $interceptorMethod-&gt;invoke($interception-&gt;getInterceptor(), $invocationCtx);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">94</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							         $p-&gt;setValue($this-&gt;interceptedTarget, $return);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">95</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 	 	 	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">96</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 		 	 	 				 if($interceptorMethod-&gt;hasAnnotation('AfterInvoke')) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">97</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">98</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	 		  	 	 $invocationCtx = new \InvocationContext($this-&gt;interceptedTarget, null, null, $interception-&gt;getInterceptor(), $interception-&gt;getProperty());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">99</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">					              	 $interceptorMethod-&gt;invoke($interception-&gt;getInterceptor(), $invocationCtx );</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">100</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	 		  	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">101</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">102</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">103</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">104</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">105</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">106</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">107</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * Custom method used to initalize static fields as soon as the class is loaded.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">108</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * This method gets invoked only if static fields are parsed from the intercepted target.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">109</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">110</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @return void</pre></td>
+</tr>
+<tr>
+<td class="lineCount">111</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @static</pre></td>
+</tr>
+<tr>
+<td class="lineCount">112</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">113</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public static function __initstatic() {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">114</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">115</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	         $proxiedClass = get_called_class();</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">116</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 $intercepted = $proxiedClass . '_Intercepted';</pre></td>
+</tr>
+<tr>
+<td class="lineCount">117</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">118</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 foreach(\AgilePHP::getInterceptions() as $interception) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">119</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">120</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 		 // Invoke class level interceptors</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">121</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 if($interception-&gt;getClass() == $proxiedClass &amp;&amp; !$interception-&gt;getMethod() &amp;&amp; !$interception-&gt;getProperty()) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">122</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">123</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 $interceptorClass = new \AnnotatedClass($interception-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">124</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     	 	 	 		 foreach($interceptorClass-&gt;getMethods() as $interceptorMethod) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">125</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">126</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	 	 	      if($interceptorMethod-&gt;hasAnnotation('AroundInvoke')) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">127</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">128</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 	 	 	   	  $invocationCtx = new \InvocationContext($intercepted, null, null, $interception-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">129</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							          $ctx = $interceptorMethod-&gt;invoke($interception-&gt;getInterceptor(), $invocationCtx);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">130</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							          if($ctx instanceof InvocationContext &amp;&amp; $ctx-&gt;proceed) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">131</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">132</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							          	  $intercepted = $ctx-&gt;getTarget();</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">133</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">								          if($ctx-&gt;getMethod()) $this-&gt;__call($ctx-&gt;getMethod(), $ctx-&gt;getParameters());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">134</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							          }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">135</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 	 	 	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">136</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">137</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">138</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">139</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">		     		 // Execute property/field level interceptors</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">140</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 if($interception-&gt;getClass() == $proxiedClass &amp;&amp; $interception-&gt;getProperty()) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">141</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">142</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 $p = new \ReflectionProperty($intercepted, $interception-&gt;getProperty());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">143</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 if(!$p-&gt;isPublic())</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">144</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 	 throw new \InterceptionException('Property level interceptor requires public context at \'' . $proxiedClass .</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">145</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 	 		 '::' . $interception-&gt;getProperty() . '\'.');</pre></td>
+</tr>
+<tr>
+<td class="lineCount">146</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">147</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 		 	 	 		$interceptorClass = new \AnnotatedClass($interception-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">148</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 		 	 	 		foreach($interceptorClass-&gt;getMethods() as $interceptorMethod) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">149</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">150</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	 	 	     if($interceptorMethod-&gt;hasAnnotation('AroundInvoke')) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">151</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">152</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 	 	 	   	 $invocationCtx = new \InvocationContext($intercepted, null, null, $interception-&gt;getInterceptor(), $interception-&gt;getProperty());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">153</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							         $return = $interceptorMethod-&gt;invoke($interception-&gt;getInterceptor(), $invocationCtx);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">154</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">							         $p-&gt;setValue($intercepted, $return);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">155</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 	 	 	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">156</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 		 	 	 				 if($interceptorMethod-&gt;hasAnnotation('AfterInvoke')) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">157</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">158</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	 		  	 	 $invocationCtx = new \InvocationContext($intercepted, null, null, $interception-&gt;getInterceptor(), $interception-&gt;getProperty());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">159</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">					              	 $interceptorMethod-&gt;invoke($interception-&gt;getInterceptor(), $invocationCtx );</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">160</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	 		  	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">161</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">162</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">163</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">164</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">165</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">166</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">167</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * Returns the instance of the intercepted class. This is the original class</pre></td>
+</tr>
+<tr>
+<td class="lineCount">168</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * that was requested, renamed to '&lt;class_name&gt;_Intercepted'.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">169</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">170</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @return The intercepted class instance</pre></td>
+</tr>
+<tr>
+<td class="lineCount">171</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">172</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function getInterceptedInstance() {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">173</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">174</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 return $this-&gt;interceptedTarget;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">175</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">176</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">177</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">178</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * Magic PHP method executor used to intercept static method calls.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">179</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">180</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @param String $method The method being called</pre></td>
+</tr>
+<tr>
+<td class="lineCount">181</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @param Array $args The arguments being passed</pre></td>
+</tr>
+<tr>
+<td class="lineCount">182</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @return The result of the intercepted static method invocation</pre></td>
+</tr>
+<tr>
+<td class="lineCount">183</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @throws InterceptionException</pre></td>
+</tr>
+<tr>
+<td class="lineCount">184</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @static</pre></td>
+</tr>
+<tr>
+<td class="lineCount">185</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">186</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	  public static function __callstatic($method, $args) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">187</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">188</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  	         $className = get_called_class();</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">189</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  	         $interceptedClass = $className . '_Intercepted';</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">190</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  	         $class = new ReflectionClass($className);</pre></td>
+</tr>
+<tr>
+<td class="lineCount">191</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">192</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  	         $sharedContext = null; // Stores an InvocationContext shared among chained interceptors</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">193</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	         $invoked = false;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">194</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">195</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 $interceptors = self::getInterceptorsByMethod($className, $method, $className);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">196</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 $aroundInvokes = $interceptors['AroundInvoke'];</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">197</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 $afterInvokes = $interceptors['AfterInvoke'];</pre></td>
+</tr>
+<tr>
+<td class="lineCount">198</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">199</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 // Execute #@AroundInvoke interceptor methods</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">200</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 for($i=0; $i&lt;count($aroundInvokes); $i++) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">201</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">202</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  		         if(!$sharedContext)</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">203</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  		            $sharedContext = new \InvocationContext($interceptedClass, $method, $args, $aroundInvokes[$i]['interceptor']-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCount">204</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">205</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		     $sharedContext = $aroundInvokes[$i]['method']-&gt;invoke($aroundInvokes[$i]['interceptor']-&gt;getInterceptor(), $sharedContext);</pre></td>
+</tr>
+<tr>
+<td class="lineCount">206</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">207</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">		         // Only execute the intercepted target call if the InvocationContext has had its proceed() method invoked.</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">208</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		         if($sharedContext instanceof \InvocationContext &amp;&amp; $sharedContext-&gt;proceed) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">209</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">210</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">				    $m = $class-&gt;getMethod($sharedContext-&gt;getMethod());</pre></td>
+</tr>
+<tr>
+<td class="lineCount">211</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">212</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">					// Invoke the intercepted call, capturing the return value</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">213</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">					$sharedContext-&gt;setReturn(call_user_func_array(array($interceptedClass, $method), $sharedContext-&gt;getParameters()));</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">214</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		         }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">215</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">		         else {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">216</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">217</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">		            // Interceptors that return a non-null value get the return value returned to the caller.</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">218</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		          	if($sharedContext !== null) return $sharedContext;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">219</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">                }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">220</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">221</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">222</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 // Execute #@AfterInvoke interceptor methods</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">223</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 for($i=0; $i&lt;count($afterInvokes); $i++) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">224</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">225</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		     // If no #@AroundInvoke interceptions occurred, invoke the intercepted call, capturing the return value</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">226</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 	 	   	     if(!$sharedContext) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">227</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">228</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	$sharedContext = new \InvocationContext($interceptedClass, $method, $args, $afterInvokes[$i]['interceptor']-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">229</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	$m = $class-&gt;getMethod($method);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">230</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	$sharedContext-&gt;setReturn(call_user_func_array(array($interceptedClass, $method), $args));</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">231</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">232</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">233</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 $sharedContext = $afterInvokes[$i]['method']-&gt;invoke($afterInvokes[$i]['interceptor']-&gt;getInterceptor(), $sharedContext);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">234</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">				 if($sharedContext instanceof InvocationContext &amp;&amp; $sharedContext-&gt;proceed)</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">235</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 		 	 	    return $sharedContext-&gt;getReturn();</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">236</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">237</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">238</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 if($sharedContext instanceof \InvocationContext)</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">239</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		    return $sharedContext-&gt;getReturn();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">240</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">241</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 // No interceptors present for this method, invoke as it was called.</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">242</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 return call_user_func_array(array($interceptedClass, $method), $args);</pre></td>
+</tr>
+<tr>
+<td class="lineCount">243</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">244</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">245</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">246</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * Magic PHP method executor used to intercept method calls.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">247</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">248</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @param String $method The method being called</pre></td>
+</tr>
+<tr>
+<td class="lineCount">249</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @param Array $args The arguments being passed</pre></td>
+</tr>
+<tr>
+<td class="lineCount">250</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @return The result of the intercepted method invocation</pre></td>
+</tr>
+<tr>
+<td class="lineCount">251</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @throws InterceptionException</pre></td>
+</tr>
+<tr>
+<td class="lineCount">252</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">253</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function __call($method, $args) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">254</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">255</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	         $class = new \ReflectionClass($this-&gt;interceptedTarget);</pre></td>
+</tr>
+<tr>
+<td class="lineCount">256</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">257</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	         $sharedContext = null; // Stores a global InvocationContext that is shared among chained interceptors</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">258</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	         $invoked = false;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">259</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">260</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 $interceptors = $this-&gt;getInterceptorsByMethod($class-&gt;getName(), $method, get_class($this));</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">261</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 $aroundInvokes = $interceptors['AroundInvoke'];</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">262</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 $afterInvokes = $interceptors['AfterInvoke'];</pre></td>
+</tr>
+<tr>
+<td class="lineCount">263</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">264</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 // Execute #@AroundInvoke interceptor methods</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">265</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 for($i=0; $i&lt;count($aroundInvokes); $i++) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">266</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">267</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  		         if(!$sharedContext)</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">268</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  		            $sharedContext = new \InvocationContext($this-&gt;interceptedTarget, $method, $args, $aroundInvokes[$i]['interceptor']-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCount">269</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">270</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		     $sharedContext = $aroundInvokes[$i]['method']-&gt;invoke($aroundInvokes[$i]['interceptor']-&gt;getInterceptor(), $sharedContext);</pre></td>
+</tr>
+<tr>
+<td class="lineCount">271</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">272</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">		         // Only execute the intercepted target call if the InvocationContext has had its proceed() method invoked.</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">273</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		         if($sharedContext instanceof \InvocationContext &amp;&amp; $sharedContext-&gt;proceed) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">274</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">275</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">				    $m = $class-&gt;getMethod($sharedContext-&gt;getMethod());</pre></td>
+</tr>
+<tr>
+<td class="lineCount">276</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">277</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">					// Invoke the intercepted call, capturing the return value</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">278</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">					$sharedContext-&gt;setReturn($args ?</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">279</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">					        $m-&gt;invokeArgs($this-&gt;interceptedTarget, $sharedContext-&gt;getParameters()) : $m-&gt;invoke($this-&gt;interceptedTarget));</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">280</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		         }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">281</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">		         else {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">282</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">283</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">		            // Interceptors that return a non-null value get the return value returned to the caller.</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">284</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		          	if($sharedContext !== null) return $sharedContext;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">285</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">                }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">286</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">287</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">288</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 // Execute #@AfterInvoke interceptor methods</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">289</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 for($i=0; $i&lt;count($afterInvokes); $i++) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">290</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">291</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		     // If no #@AroundInvoke interceptions occurred, invoke the intercepted call, capturing the return value</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">292</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 	 	   	     if(!$sharedContext) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">293</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">294</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	$sharedContext = new \InvocationContext($this-&gt;interceptedTarget, $method, $args, $afterInvokes[$i]['interceptor']-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">295</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	$m = $class-&gt;getMethod($method);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">296</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 	$sharedContext-&gt;setReturn($args ? $m-&gt;invokeArgs($this-&gt;interceptedTarget, $args) : $m-&gt;invoke($this-&gt;interceptedTarget));</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">297</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">298</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">299</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">     		 	 $sharedContext = $afterInvokes[$i]['method']-&gt;invoke($afterInvokes[$i]['interceptor']-&gt;getInterceptor(), $sharedContext);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">300</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">				 if($sharedContext instanceof InvocationContext &amp;&amp; $sharedContext-&gt;proceed)</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">301</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered"> 		 	 	    return $sharedContext-&gt;getReturn();</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">302</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">303</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">304</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		 if($sharedContext instanceof \InvocationContext)</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">305</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		    return $sharedContext-&gt;getReturn();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">306</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">307</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  		 // No interceptors present for this method, invoke as it was called.</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">308</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     $m = $class-&gt;getMethod($method);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">309</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     return $args ? $m-&gt;invokeArgs($this-&gt;interceptedTarget, $args) : $m-&gt;invoke($this-&gt;interceptedTarget, $args);</pre></td>
+</tr>
+<tr>
+<td class="lineCount">310</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">311</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">312</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">313</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * Returns a list of #@AroundInvoke and #@AfterInvoke interceptors that need to be executed for the specified method.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">314</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * This method is declared as static so that it can be shared by both __call and __callstatic, as PHP will generate</pre></td>
+</tr>
+<tr>
+<td class="lineCount">315</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * an E_WARNING if a non-static method is called statically, however, not the other way around (static method is called</pre></td>
+</tr>
+<tr>
+<td class="lineCount">316</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * from within an instance).</pre></td>
+</tr>
+<tr>
+<td class="lineCount">317</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">318</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @param string $class The name of the target/intercepted class</pre></td>
+</tr>
+<tr>
+<td class="lineCount">319</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @param string $method The name of the method to retrieve interceptors for</pre></td>
+</tr>
+<tr>
+<td class="lineCount">320</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @return array An associative array containing AroundInvoke and AfterInvoke interceptor methods to execute</pre></td>
+</tr>
+<tr>
+<td class="lineCount">321</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   * @static</pre></td>
+</tr>
+<tr>
+<td class="lineCount">322</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">323</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	  private static function getInterceptorsByMethod($class, $method, $target) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">324</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">325</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	          // Serve from cache if present</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">326</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		      if($cacher = \AgilePHP::getCacher()) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">327</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">328</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		         $cacheKey = 'AGILEPHP_INTERCEPTORPROXY_GETINTERCEPTORS_' . $class . '_' . $method;</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">329</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	             if($cacher-&gt;exists($cacheKey)) return $cacher-&gt;get($cacheKey);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">330</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		      }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">331</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">332</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">  	          $prehooks = array();</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">333</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		  $posthooks = array();</pre></td>
+</tr>
+<tr>
+<td class="lineCount">334</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">335</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	          // Invoke interceptor if AgilePHP contains an Interception for this method call</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">336</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	  		  $interceptions = \AgilePHP::getInterceptions();</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">337</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		      for($i=0; $i&lt;count($interceptions); $i++) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">338</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">339</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">				  // Phar support</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">340</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">				  if(strpos($interceptions[$i]-&gt;getClass(), 'phar://') !== false) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">341</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">342</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">					 $className = preg_replace('/phar:\/\//', '', $interceptions[$i]-&gt;getClass());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">343</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">				     $nspieces = explode('/', $className);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">344</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">				     array_pop($nspieces);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">345</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">				     $namespace = implode('\\', $nspieces);</pre></td>
+</tr>
+<tr>
+<td class="lineCount">346</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">347</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">			  		 $pieces = explode('/', $className);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">348</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">			  		 $className = array_pop($pieces);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">349</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">			  		 $fqcn = $namespace . '\\' . preg_replace('/\.php/', '', $className);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">350</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">				  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">351</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">352</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">				  // Parse methods annotated with #@AroundInvoke and #@AfterInvoke</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">353</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     	  if(($interceptions[$i]-&gt;getClass() == $target || isset($fqcn) &amp;&amp; $fqcn == $target)</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">354</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     	  			 &amp;&amp; $interceptions[$i]-&gt;getMethod() == $method) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">355</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">356</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     			  $interceptorClass = new \AnnotatedClass($interceptions[$i]-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">357</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	  foreach($interceptorClass-&gt;getMethods() as $interceptorMethod) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">358</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">359</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 	  if($interceptorMethod-&gt;hasAnnotation('AroundInvoke'))</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">360</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 	     array_push($prehooks, array('method' =&gt; $interceptorMethod, 'interceptor' =&gt; $interceptions[$i]));</pre></td>
+</tr>
+<tr>
+<td class="lineCount">361</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">362</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 	  if($interceptorMethod-&gt;hasAnnotation('AfterInvoke'))</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">363</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	 	     array_push($posthooks, array('method' =&gt; $interceptorMethod, 'interceptor' =&gt; $interceptions[$i]));</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">364</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	     		 	 	   }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">365</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">   		  			 }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">366</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">367</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">368</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     $interceptors = array('AroundInvoke' =&gt; $prehooks, 'AfterInvoke' =&gt; $posthooks);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">369</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     if($cacher) $cacher-&gt;set($cacheKey, $interceptors);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">370</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">		     return $interceptors;</pre></td>
+</tr>
+<tr>
+<td class="lineCount">371</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">  	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">372</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">373</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  /**</pre></td>
+</tr>
+<tr>
+<td class="lineCount">374</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * Invokes class level interceptor #@AfterInvoke methods upon destruction.</pre></td>
+</tr>
+<tr>
+<td class="lineCount">375</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   *</pre></td>
+</tr>
+<tr>
+<td class="lineCount">376</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   * @return void</pre></td>
+</tr>
+<tr>
+<td class="lineCount">377</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	   */</pre></td>
+</tr>
+<tr>
+<td class="lineCount">378</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  public function __destruct() {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">379</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">380</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	         try {</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">381</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">        	  		 $proxiedClass = get_class($this);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">382</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">        	  		 foreach(\AgilePHP::getInterceptions() as $interception) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">383</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCount">384</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">        	  		 		  // Invoke class level interceptor #@AfterInvoke</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">385</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">        		     		  if($interception-&gt;getClass() == $proxiedClass &amp;&amp;</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">386</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">        		     		 	      !$interception-&gt;getMethod() &amp;&amp; !$interception-&gt;getProperty()) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">387</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">388</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">        	     		 	 	  $interceptorClass = new \AnnotatedClass($interception-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">389</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">             	 	 	 		  foreach($interceptorClass-&gt;getMethods() as $interceptorMethod) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">390</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">391</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">             	 	 	 				   if($interceptorMethod-&gt;hasAnnotation('AfterInvoke')) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">392</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">393</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">             		 	 	 		  	 	   $invocationCtx = new \InvocationContext($this-&gt;interceptedTarget, null, null, $interception-&gt;getInterceptor());</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">394</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">        					              	   $interceptorMethod-&gt;invoke($interception-&gt;getInterceptor(), $invocationCtx);</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">395</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">             		 	 	 		  	   }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">396</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">        	     		 	 	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">397</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">        		     		  }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">398</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">        	 		}</pre></td>
+</tr>
+<tr>
+<td class="lineCount">399</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	         }</pre></td>
+</tr>
+<tr>
+<td class="lineCountUncovered">400</td>
+<td class="coverageCountUncovered"></td>
+<td class="srcLineUncovered"><pre class="srcLineUncovered">	         catch(\Exception $e) {</pre></td>
+</tr>
+<tr>
+<td class="lineCount">401</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine"></pre></td>
+</tr>
+<tr>
+<td class="lineCountDeadCode">402</td>
+<td class="coverageCountDeadCode"></td>
+<td class="srcLineDeadCode"><pre class="srcLineDeadCode">	               Log::error('InterceptorProxy::__destruct ' . $e-&gt;getMessage());</pre></td>
+</tr>
+<tr>
+<td class="lineCountDeadCode">403</td>
+<td class="coverageCountDeadCode"></td>
+<td class="srcLineDeadCode"><pre class="srcLineDeadCode">	               throw new \InterceptionException($e-&gt;getMessage(), $e-&gt;getCode());</pre></td>
+</tr>
+<tr>
+<td class="lineCount">404</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	         }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">405</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">	  }</pre></td>
+</tr>
+<tr>
+<td class="lineCount">406</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">}</pre></td>
+</tr>
+<tr>
+<td class="lineCount">407</td>
+<td class="coverageCount"></td>
+<td><pre class="srcLine">?&gt;</pre></td>
+</tr>
+</table>
+<br><table width="100%">
+<tr><td><hr noshade size="1"></td></tr>
+<tr><td class="small">Report generated at 2010-08-17T23:12:25-04:00</td></tr>
+</table>
+</body>
+</html>

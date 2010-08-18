@@ -12,10 +12,10 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function getXmlUnauthenticated() {
 
-	  		 $client = new RestClient( $this->endpoint );
+	  		 $client = new RestClient($this->endpoint);
 	  		 $response = $client->get();
 
-	  		 PHPUnit_Framework_Assert::assertEquals( 401, $client->getResponseCode(), 'Failed to get HTTP 401 Unauthorized' );
+	  		 PHPUnit_Framework_Assert::assertEquals(401, $client->getResponseCode(), 'Failed to get HTTP 401 Unauthorized');
 	  }
 
 	  /**
@@ -23,15 +23,15 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function getXml() {
 
-	  		 $client = new RestClient( $this->endpoint );
-	  		 $client->authenticate( 'admin', 'test' );
+	  		 $client = new RestClient($this->endpoint);
+	  		 $client->authenticate('admin', 'test');
 	  		 $response = $client->get();
-	  		 
-	  		 $xml = simplexml_load_string( $response );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $xml, 'Failed to get XML response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertType( 'SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 200, $client->getResponseCode(), 'Failed to get HTTP 200 OK' );
+ 
+	  		 $xml = simplexml_load_string($response);
+	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertNotNull($xml, 'Failed to get XML response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertType('SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement');
+	  		 PHPUnit_Framework_Assert::assertEquals(200, $client->getResponseCode(), 'Failed to get HTTP 200 OK');
 	  }
 
 	  /**
@@ -40,13 +40,13 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function getJson() {
 
-			 $client = new RestClient( $this->endpoint . '/test' );
-			 $client->authenticate( 'admin', 'test' );
-			 $client->setHeaders( array(
+			 $client = new RestClient($this->endpoint . '/test');
+			 $client->authenticate('admin', 'test');
+			 $client->setHeaders(array(
 				'Accept: application/json',
 				'Content-Type: application/json',
 			 ));
-			 $client->put( 'this is some data that should never make it to the server because the service has a #@ProduceMime which we arent accepting.' );
+			 $client->put('this is some data that should never make it to the server because the service has a #@ProduceMime which we arent accepting.');
 	  }
 
 	  /**
@@ -54,9 +54,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function putXMLgetXML() {
 
-	  		 $client = new RestClient( $this->endpoint . '/test' );
-	  		 $client->authenticate( 'admin', 'test' );
-			 $client->setHeaders( array(
+	  		 $client = new RestClient($this->endpoint . '/test');
+	  		 $client->authenticate('admin', 'test');
+			 $client->setHeaders(array(
 				'Accept: application/xml',
 				'Content-Type: application/xml',
 			 ));
@@ -67,48 +67,48 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $password = 'test';
 			 $email = 'root@localhost';
 			 $enabled = true;
-			 $newRole = 'test';
+			 $newRole = 'rest-test';
 			 $created = 'now';
 
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( $password );
-			 $user->setCreated( $created );
-			 $user->setEmail( $email );
+			 $user->setUsername($username);
+			 $user->setPassword($password);
+			 $user->setCreated($created);
+			 $user->setEmail($email);
 
-			 $orm->persist( $user );
+			 $orm->persist($user);
 
 			 // Load the test user
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( 'test2' );
-			 $user->setEmail( 'root@localhost.localdomain' );
-			 $user->setEnabled( false );
+			 $user->setUsername($username);
+			 $user->setPassword('test2');
+			 $user->setEmail('root@localhost.localdomain');
+			 $user->setEnabled(false);
 
 			 // Create new role
 			 $role = new Role();
-			 $role->setName( $newRole );
+			 $role->setName($newRole);
 
 			 // Assign admin role to test account
-			 $user->setRole( $role );
+			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
 			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toXML( $user );
+			 $data = $renderer->toXML($user);
 
-			 $response = $client->put( $data );
+			 $response = $client->put($data);
 
 			 // clean up after unit test
-			 $orm->delete( $user );
+			 $orm->delete($user);
 
-			 $xml = simplexml_load_string( $response );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $xml, 'Failed to get XML response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertType( 'SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $username, (string)$xml->username, 'Expected username \'' . $username . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'root@localhost.localdomain', (string)$xml->email, 'Expected email \'' . $email . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $newRole, (string)$xml->Role->name, 'Expected role \'' . $newRole . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted' );
+			 $xml = simplexml_load_string($response);
+	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertNotNull($xml, 'Failed to get XML response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertType('SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement');
+	  		 PHPUnit_Framework_Assert::assertEquals($username, (string)$xml->username, 'Expected username \'' . $username . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', (string)$xml->email, 'Expected email \'' . $email . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals($newRole, (string)$xml->Role->name, 'Expected role \'' . $newRole . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
 	  }
 
 	  /**
@@ -116,12 +116,12 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function putJSONgetJSON() {
 
-	  		 $client = new RestClient( $this->endpoint . '/test/json' );
-	  		 $client->authenticate( 'admin', 'test' );
-			 $client->setHeaders( array(
+	  		 $client = new RestClient($this->endpoint . '/test/json');
+	  		 $client->authenticate('admin', 'test');
+			 $client->setHeaders(array(
 				'Accept: application/json',
 				'Content-Type: application/json',
-			 ));
+			));
 
 			 $orm = ORM::getDialect();
 
@@ -129,48 +129,48 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $password = 'test';
 			 $email = 'root@localhost';
 			 $enabled = true;
-			 $newRole = 'test';
+			 $newRole = 'rest-test';
 			 $created = 'now';
 
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( $password );
-			 $user->setCreated( $created );
-			 $user->setEmail( $email );
+			 $user->setUsername($username);
+			 $user->setPassword($password);
+			 $user->setCreated($created);
+			 $user->setEmail($email);
 
-			 $orm->persist( $user );
+			 $orm->persist($user);
 
 			 // Load the test user
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( 'test2' );
-			 $user->setEmail( 'root@localhost.localdomain' );
-			 $user->setEnabled( false );
+			 $user->setUsername($username);
+			 $user->setPassword('test2');
+			 $user->setEmail('root@localhost.localdomain');
+			 $user->setEnabled(false);
 
 			 // Create new role
 			 $role = new Role();
-			 $role->setName( $newRole );
+			 $role->setName($newRole);
 
 			 // Assign admin role to test account
-			 $user->setRole( $role );
+			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
 			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toJSON( $user );
+			 $data = $renderer->toJSON($user);
 
-			 $response = $client->put( $data );
+			 $response = $client->put($data);
 
 			 // clean up after unit test
-			 $orm->delete( $user );
+			 $orm->delete($user);
 
-			 $json = json_decode( $response );
-			 PHPUnit_Framework_Assert::assertType( 'stdClass', $json, 'Failed to decode JSON data' );
-			 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $json, 'Failed to get JSON response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $username, $json->User->username, 'Expected username \'' . $username . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'root@localhost.localdomain', $json->User->email, 'Expected email \'' . $email . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $newRole, $json->User->Role->name, 'Expected role \'' . $newRole . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted' );
+			 $json = json_decode($response);
+			 PHPUnit_Framework_Assert::assertType('stdClass', $json, 'Failed to decode JSON data');
+			 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertNotNull($json, 'Failed to get JSON response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertEquals($username, $json->User->username, 'Expected username \'' . $username . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', $json->User->email, 'Expected email \'' . $email . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals($newRole, $json->User->Role->name, 'Expected role \'' . $newRole . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
 	  }
 	  
 	  /**
@@ -178,12 +178,12 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function putJSONgetXML() {
 
-	  		 $client = new RestClient( $this->endpoint . '/test/wildcard' );
-	  		 $client->authenticate( 'admin', 'test' );
-			 $client->setHeaders( array(
+	  		 $client = new RestClient($this->endpoint . '/test/wildcard');
+	  		 $client->authenticate('admin', 'test');
+			 $client->setHeaders(array(
 				'Accept: application/xml',
 				'Content-Type: application/json',
-			 ));
+			));
 
 			 $orm = ORM::getDialect();
 
@@ -191,48 +191,48 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $password = 'test';
 			 $email = 'root@localhost';
 			 $enabled = true;
-			 $newRole = 'test';
+			 $newRole = 'rest-test';
 			 $created = 'now';
 
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( $password );
-			 $user->setCreated( $created );
-			 $user->setEmail( $email );
+			 $user->setUsername($username);
+			 $user->setPassword($password);
+			 $user->setCreated($created);
+			 $user->setEmail($email);
 
-			 $orm->persist( $user );
+			 $orm->persist($user);
 
 			 // Load the test user
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( 'test2' );
-			 $user->setEmail( 'root@localhost.localdomain' );
-			 $user->setEnabled( false );
+			 $user->setUsername($username);
+			 $user->setPassword('test2');
+			 $user->setEmail('root@localhost.localdomain');
+			 $user->setEnabled(false);
 
 			 // Create new role
 			 $role = new Role();
-			 $role->setName( $newRole );
+			 $role->setName($newRole);
 
 			 // Assign admin role to test account
-			 $user->setRole( $role );
+			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
 			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toJSON( $user );
+			 $data = $renderer->toJSON($user);
 
-			 $response = $client->put( $data );
+			 $response = $client->put($data);
 
 			 // clean up after unit test
-			 $orm->delete( $user );
+			 $orm->delete($user);
 
-			 $xml = simplexml_load_string( $response );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $xml, 'Failed to get XML response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertType( 'SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $username, (string)$xml->username, 'Expected username \'' . $username . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'root@localhost.localdomain', (string)$xml->email, 'Expected email \'' . $email . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $newRole, (string)$xml->Role->name, 'Expected role \'' . $newRole . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted' );
+			 $xml = simplexml_load_string($response);
+	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertNotNull($xml, 'Failed to get XML response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertType('SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement');
+	  		 PHPUnit_Framework_Assert::assertEquals($username, (string)$xml->username, 'Expected username \'' . $username . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', (string)$xml->email, 'Expected email \'' . $email . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals($newRole, (string)$xml->Role->name, 'Expected role \'' . $newRole . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
 	  }
 	  
 	  /**
@@ -244,12 +244,12 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function putJSONgetYAML() {
 
-	  		 $client = new RestClient( $this->endpoint . '/test/wildcard' );
-	  		 $client->authenticate( 'admin', 'test' );
-			 $client->setHeaders( array(
+	  		 $client = new RestClient($this->endpoint . '/test/wildcard');
+	  		 $client->authenticate('admin', 'test');
+			 $client->setHeaders(array(
 				'Accept: application/x-yaml',
 				'Content-Type: application/json',
-			 ));
+			));
 
 			 $orm = ORM::getDialect();
 
@@ -257,48 +257,48 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $password = 'test';
 			 $email = 'root@localhost';
 			 $enabled = true;
-			 $newRole = 'test';
+			 $newRole = 'rest-test';
 			 $created = 'now';
 
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( $password );
-			 $user->setCreated( $created );
-			 $user->setEmail( $email );
+			 $user->setUsername($username);
+			 $user->setPassword($password);
+			 $user->setCreated($created);
+			 $user->setEmail($email);
 
-			 $orm->persist( $user );
+			 $orm->persist($user);
 
 			 // Load the test user
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( 'test2' );
-			 $user->setEmail( 'root@localhost.localdomain' );
-			 $user->setEnabled( false );
+			 $user->setUsername($username);
+			 $user->setPassword('test2');
+			 $user->setEmail('root@localhost.localdomain');
+			 $user->setEnabled(false);
 
 			 // Create new role
 			 $role = new Role();
-			 $role->setName( $newRole );
+			 $role->setName($newRole);
 
 			 // Assign admin role to test account
-			 $user->setRole( $role );
+			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
 			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toJSON( $user );
+			 $data = $renderer->toJSON($user);
 
-			 $response = $client->put( $data );
+			 $response = $client->put($data);
 
 			 // clean up after unit test
-			 $orm->delete( $user );
+			 $orm->delete($user);
 
-			 $yaml = yaml_parse( $response );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $yaml, 'Failed to get YAML response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertType( 'User', $yaml, 'Failed to convert response to YAML' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $username, $yaml->getUsername(), 'Expected username \'' . $username . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'root@localhost.localdomain', $yaml->getEmail(), 'Expected email \'' . $email . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $newRole, $yaml->getRole()->getName(), 'Expected role \'' . $newRole . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted' );
+			 $yaml = yaml_parse($response);
+	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertNotNull($yaml, 'Failed to get YAML response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertType('User', $yaml, 'Failed to convert response to YAML');
+	  		 PHPUnit_Framework_Assert::assertEquals($username, $yaml->getUsername(), 'Expected username \'' . $username . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', $yaml->getEmail(), 'Expected email \'' . $email . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals($newRole, $yaml->getRole()->getName(), 'Expected role \'' . $newRole . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
 	  }
 
 	  /**
@@ -308,12 +308,12 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function putYAMLgetXML() {
 
-	  		 $client = new RestClient( $this->endpoint . '/test/wildcard' );
-	  		 $client->authenticate( 'admin', 'test' );
-			 $client->setHeaders( array(
+	  		 $client = new RestClient($this->endpoint . '/test/wildcard');
+	  		 $client->authenticate('admin', 'test');
+			 $client->setHeaders(array(
 				'Accept: application/xml',
 				'Content-Type: application/x-yaml',
-			 ));
+			));
 
 			 $orm = ORM::getDialect();
 
@@ -321,48 +321,48 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $password = 'test';
 			 $email = 'root@localhost';
 			 $enabled = true;
-			 $newRole = 'test';
+			 $newRole = 'rest-test';
 			 $created = 'now';
 
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( $password );
-			 $user->setCreated( $created );
-			 $user->setEmail( $email );
+			 $user->setUsername($username);
+			 $user->setPassword($password);
+			 $user->setCreated($created);
+			 $user->setEmail($email);
 
-			 $orm->persist( $user );
+			 $orm->persist($user);
 
 			 // Load the test user
 			 $user = new User();
-			 $user->setUsername( $username );
-			 $user->setPassword( 'test2' );
-			 $user->setEmail( 'root@localhost.localdomain' );
-			 $user->setEnabled( false );
+			 $user->setUsername($username);
+			 $user->setPassword('test2');
+			 $user->setEmail('root@localhost.localdomain');
+			 $user->setEnabled(false);
 
 			 // Create new role
 			 $role = new Role();
-			 $role->setName( $newRole );
+			 $role->setName($newRole);
 
 			 // Assign admin role to test account
-			 $user->setRole( $role );
+			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
 			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toYAML( $user );
+			 $data = $renderer->toYAML($user);
 
-			 $response = $client->put( $data );
+			 $response = $client->put($data);
 
 			 // clean up after unit test
-			 $orm->delete( $user );
+			 $orm->delete($user);
 
-			 $xml = simplexml_load_string( $response );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $xml, 'Failed to get XML response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertType( 'SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $username, (string)$xml->username, 'Expected username \'' . $username . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'root@localhost.localdomain', (string)$xml->email, 'Expected email \'' . $email . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( $newRole, (string)$xml->Role->name, 'Expected role \'' . $newRole . '\'.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted' );
+			 $xml = simplexml_load_string($response);
+	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertNotNull($xml, 'Failed to get XML response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertType('SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement');
+	  		 PHPUnit_Framework_Assert::assertEquals($username, (string)$xml->username, 'Expected username \'' . $username . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', (string)$xml->email, 'Expected email \'' . $email . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals($newRole, (string)$xml->Role->name, 'Expected role \'' . $newRole . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
 	  }
 
 	  /**
@@ -370,47 +370,47 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function postXMLgetXML() {
 
-	  	     $client = new RestClient( $this->endpoint . '/phpunit2' );
-	  	     $client->authenticate( 'admin', 'test' );
-			 $client->setHeaders( array(
+	  	     $client = new RestClient($this->endpoint . '/phpunit2');
+	  	     $client->authenticate('admin', 'test');
+			 $client->setHeaders(array(
 				'Accept: application/xml',
 				'Content-Type: application/xml',
-			 ));
+			));
 
 			 $orm = ORM::getDialect();
 
 			 $user = new User();
-			 $user->setUsername( 'phpunit2' );
-			 $user->setPassword( 'test' );
-			 $user->setCreated( 'now' );
-			 $user->setEmail( 'root@localhost' );
-			 $user->setEnabled( false );
+			 $user->setUsername('phpunit2');
+			 $user->setPassword('test');
+			 $user->setCreated('now');
+			 $user->setEmail('root@localhost');
+			 $user->setEnabled(false);
 
 			 // Create new role
 			 $role = new Role();
-			 $role->setName( 'test' );
+			 $role->setName('rest-test');
 
 			 // Assign admin role to test account
-			 $user->setRole( $role );
+			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
 			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toXML( $user );
+			 $data = $renderer->toXML($user);
 
-			 $response = $client->post( $data );
+			 $response = $client->post($data);
 
 			 // clean up after unit test
-			 $user->setUsername( 'phpunit2' );
-			 $orm->delete( $user );
+			 $user->setUsername('phpunit2');
+			 $orm->delete($user);
 
-			 $xml = simplexml_load_string( $response );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $response, 'Failed to get a response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertNotNull( $xml, 'Failed to get XML response from the REST service.' );
-	  		 PHPUnit_Framework_Assert::assertType( 'SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'phpunit2', (string)$xml->username, 'Expected username phpunit2.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'root@localhost', (string)$xml->email, 'Expected email root@localhost.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 'test', (string)$xml->Role->name, 'Expected role test.' );
-	  		 PHPUnit_Framework_Assert::assertEquals( 201, $client->getResponseCode(), 'Failed to get HTTP 201 Created' );
+			 $xml = simplexml_load_string($response);
+	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertNotNull($xml, 'Failed to get XML response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertType('SimpleXMLElement', $xml, 'Failed to convert response to SimpleXMLElement');
+	  		 PHPUnit_Framework_Assert::assertEquals('phpunit2', (string)$xml->username, 'Expected username phpunit2.');
+	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost', (string)$xml->email, 'Expected email root@localhost.');
+	  		 PHPUnit_Framework_Assert::assertEquals('rest-test', (string)$xml->Role->name, 'Expected role rest-test.');
+	  		 PHPUnit_Framework_Assert::assertEquals(201, $client->getResponseCode(), 'Failed to get HTTP 201 Created');
 	  }
 
 	  /**
@@ -421,22 +421,22 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  	     $orm = ORM::getDialect();
 
 	  		 $user = new User();
-	  		 $user->setUsername( 'phpunit3' );
-	  		 $user->setPassword( 'test' );
-	  		 $user->setEmail( 'root@localhost' );
-	  		 $user->setCreated( 'now' );
+	  		 $user->setUsername('phpunit3');
+	  		 $user->setPassword('rest-test');
+	  		 $user->setEmail('root@localhost');
+	  		 $user->setCreated('now');
 	  		 
 	  		 $role = new Role();
-	  		 $role->setName( 'test' );
+	  		 $role->setName('rest-test');
 
-	  		 $user->setRole( $role );
-			 $orm->persist( $user );
+	  		 $user->setRole($role);
+			 $orm->persist($user);
 
-	  	     $client = new RestClient( $this->endpoint . '/phpunit3' );
-	  	     $client->authenticate( 'admin', 'test' );
+	  	     $client = new RestClient($this->endpoint . '/phpunit3');
+	  	     $client->authenticate('admin', 'test');
 			 $response = $client->delete();
 
-	  		 PHPUnit_Framework_Assert::assertEquals( 204, $client->getResponseCode(), 'Failed to get HTTP 204 no content' );
+	  		 PHPUnit_Framework_Assert::assertEquals(204, $client->getResponseCode(), 'Failed to get HTTP 204 no content');
 	  }
 
 	  /**
