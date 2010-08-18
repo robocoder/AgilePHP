@@ -52,9 +52,10 @@ CREATE TABLE `mailing` (
 DROP TABLE IF EXISTS `roles`;
 
 CREATE TABLE `roles` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(25) NOT NULL,
   `description` text,
-  PRIMARY KEY (`name`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `roles` */
@@ -84,18 +85,18 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `created` datetime NOT NULL,
   `last_login` datetime DEFAULT NULL,
-  `roleId` varchar(25) DEFAULT NULL,
+  `roleId` int(10) DEFAULT NULL,
   `enabled` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`username`),
   KEY `FK_UserRoles` (`roleId`),
-  CONSTRAINT `FK_UserRoles` FOREIGN KEY (`roleId`) REFERENCES `roles` (`name`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `FK_UserRoles` FOREIGN KEY (`roleId`) REFERENCES `roles` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `users` */
 
 /* NOTE: Passwords are set to 'test' !!!!!!!!!!!!!! */
 
-insert  into `users`(username,password,email,created,last_login,roleId,enabled) values ('admin','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','root@localhost','2009-09-06 15:27:44','2010-01-26 22:27:02','admin','1'),('test','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','test','2010-01-22 19:01:00','2010-01-24 16:26:22','test',NULL);
+insert  into `users`(username,password,email,created,last_login,roleId,enabled) values ('admin','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','root@localhost','2009-09-06 15:27:44','2010-01-26 22:27:02',1,'1'),('test','9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08','test','2010-01-22 19:01:00','2010-01-24 16:26:22',2,NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

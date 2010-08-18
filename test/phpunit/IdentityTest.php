@@ -1,7 +1,7 @@
 <?php
 /**
  * Responsible for Identity package tests
- * 
+ *
  * @package com.makeabyte.agilephp.test.identity
  */
 class IdentityTest extends PHPUnit_Framework_TestCase {
@@ -9,7 +9,7 @@ class IdentityTest extends PHPUnit_Framework_TestCase {
 	  /**
 	   * @test
 	   */
-	  public function defaultConfigurationTests() {
+	  public function defaultIdentityTests() {
 
 	  	     PHPUnit_Framework_Assert::assertType('User', Identity::getModel(), 'Failed to get default \'User\' Identity model');
 
@@ -20,7 +20,7 @@ class IdentityTest extends PHPUnit_Framework_TestCase {
 	  	     Identity::setPassword('phpunit');
 	  	     Identity::setEmail('root@localhost');
 	  	     Identity::setCreated('now');
-	  	     Identity::setRole(new Role('identity-test', 'Role used for unit testing'));
+	  	     Identity::setRole(new Role(null, 'identity-test', 'Role used for unit testing'));
 	  	     Identity::register();
 
 	  	     try {
@@ -48,21 +48,21 @@ class IdentityTest extends PHPUnit_Framework_TestCase {
 	  	     PHPUnit_Framework_Assert::assertEquals('BasicResetPasswdMailer', IdentityManagerFactory::getManager()->getResetPasswdMailer(), 'Failed to get BasicResetPasswdMailer');
 	  	     PHPUnit_Framework_Assert::assertEquals('BasicForgotPasswdMailer', IdentityManagerFactory::getManager()->getForgotPasswdMailer(), 'Failed to get BasicForgotPasswdMailer');
 
-	  	     Identity::addRole(new Role('foo'));
-	  	     Identity::addRole(new Role('bar'));
-	  	     Identity::addRole(new Role('baz'));
+	  	     Identity::addRole(new Role(null, 'foo'));
+	  	     Identity::addRole(new Role(null, 'bar'));
+	  	     Identity::addRole(new Role(null, 'baz'));
 
 	  	     $roles = Identity::getRoles();
 
 	  	     PHPUnit_Framework_Assert::assertEquals('foo', $roles[0]->getName(), 'Failed to add foo role');
 	  	     PHPUnit_Framework_Assert::assertEquals('bar', $roles[1]->getName(), 'Failed to add bar role');
 	  	     PHPUnit_Framework_Assert::assertEquals('baz', $roles[2]->getName(), 'Failed to add baz role');
-	  	     
-	  	     Identity::revokeRole(new Role('bar'));
+
+	  	     Identity::revokeRole(new Role(null, 'bar'));
 
 	  	     PHPUnit_Framework_Assert::assertEquals(2, count(Identity::getRoles()), 'Failed to revoke bar role');
-	  	     
-	  	     PHPUnit_Framework_Assert::assertEquals(true, Identity::hasRole(new Role('foo')), 'Failed to locate added role foo');
+
+	  	     PHPUnit_Framework_Assert::assertEquals(true, Identity::hasRole(new Role(null, 'foo')), 'Failed to locate added role foo');
 	  }
 }
 ?>

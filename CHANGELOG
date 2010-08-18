@@ -1,36 +1,19 @@
-- Added "cascade" attribute option to foreignKey orm.xml configuration element to allow
-  user defined actions to take when encountering parent/child relationships. Supports
-  the following actions "none", "all", "persist-merge", "delete".
-- Refactored orm unit tests so that mysql test uses cascade="all", pgsql uses
-  cascade="persist-merge", sqlite uses cascade="delete" and mssql uses cascade="none".
-- Removed Table::getSelectedColumn. Removed Column::selectable. Not used anymore.
-- Non-static method XmlToModel::convert() should not be called statically bug fix
-- Refactored IdentityTest and UserRestServiceTest to work in alignment with new orm.xml
-  cascade option.
-- Updated test/phpunit/phpunit.xml to include rest and i18n tests
-- Updated test/view/admin_navigation.phtml to include rest and soap tests. removed UserRole
-  many-to-many logic for now - will circle back to implement when have time to update sql
-  files and unit tests.
-- Refactored ORMFactory::getDatabase to static context.
-- Added #@Transactional class/method level interceptor responsible for automatically
-  beginning, comitting, and rolling back transactions.
-- Refactored BaseDialect::commit and BaseDialect::rollback so that debug messages are
-  emitted only after the action has been performed. Commit try/catch now calls rollback()
-  now instead of throwing an ORMException (rollback will attempt to roll back the transaction
-  if left open and then raise the ORMException "there is already an active transaction")
-- Added #@Transactional interceptor to AgilePHP::$classmap
-- Scratched ORM items from TODO list
-- Added hasTransactionInProgress method to SQLDialect and ORM facade.
-- Created test case for new #@Transactional interceptor in test/phpunit/InterceptorTest.php
-- Performance optimizations to AnnotationParser (regexs replaced with str_replace and strpos
-  where possible)
-- Added try/catch to InterceptorProxy::__destruct so that exceptions are sent to the log file
-  rather than dying with an "Unknown stack" error.
+- Bug fix to test/control/users::deleteUser controller #@DELETE
+- Refactored Role; Added id field which is now the primary key instead of name
+- Refactored test/phpunit/UserRestServiceTest to use new ORM, DomainModel, and cascade options.
+- Refactored BaseDialect::persist and BaseDialect::merge to automatically persist foriegn
+  model instances which do not have a primary key value present. This assumes the foreign model
+  primary key is an auto-increment. PDO::getLastInsertId is called after the persist operation
+  and passed to the foriegn model instance primary key mutator.
+- Refactored IdentityTests to work with new ORM API and cascade option
+- Updated SQL schemas to reflect new role design
+- Refactored Identity::setRoles to static contenxt
+- Refactored Identity::addRole to static contenxt
+- Added optional "sequence" attribute to orm.xml column element to handle pgsql sequences.
+- Added getLastInsertId to SQLDialect interface, BaseDialect, and ORM classes.
+- Added logic to BaseDialect::persist and BaseDialect::merge operations to track the "lastInsertId"
+  for parent or child insert statements. Also added logic to support custom/specified pgsql sequence names. 
+- Updated all test/*.sql schemas to reflect new user/role relationship. This is still not complete; Will
+  be refactoring user/role relationship from many-to-one to many-to-many on the next commit.
 
-Backward compatible apidoc: No
-
-
-Studio Updates
---------------
-- Refactored domain models to extend DomainModel
-- Starting working build item into file explorer context menu
+Backward compatible apidoc: Yes

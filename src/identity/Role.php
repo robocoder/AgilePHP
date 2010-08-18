@@ -21,35 +21,58 @@
 
 /**
  * Role associated with an AgilePHP Identity
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  */
 class Role extends DomainModel {
 
+      private $id;
 	  private $name;
 	  private $description;
 
 	  /**
 	   * Creates a new instance of Role.
-	   * 
-	   * @param String $name An optional user friendly name of the role. 
+	   *
+	   * @param String $name An optional user friendly name of the role.
 	   * @return void
 	   */
-	  public function __construct($name = null, $description = null) {
+	  public function __construct($id = null, $name = null, $description = null) {
 
+	         $this->id = $id;
 	  		 $this->name = $name;
 	  		 $this->description = $description;
 	  }
 
 	  /**
-	   * Sets the name of the role
-	   * 
-	   * @param String $name The role name
+	   * Sets the role id/primary key
+	   *
+	   * @param integer $id The role id
 	   * @return void
 	   */
 	  #@Id
+	  public function setId($id) {
+
+	         $this->id = $id;
+	  }
+
+	  /**
+	   * Gets the role id
+	   *
+	   * @return integer The role id
+	   */
+	  public function getId() {
+
+	         return $this->id;
+	  }
+
+	  /**
+	   * Sets the name of the role
+	   *
+	   * @param String $name The role name
+	   * @return void
+	   */
 	  public function setName($name) {
 
 	  		 $this->name = $name;
@@ -57,7 +80,7 @@ class Role extends DomainModel {
 
 	  /**
 	   * Returns the name of the role
-	   * 
+	   *
 	   * @return String The role name
 	   */
 	  public function getName() {
@@ -67,7 +90,7 @@ class Role extends DomainModel {
 
 	  /**
 	   * Sets the description of the role.
-	   * 
+	   *
 	   * @param String $description The role description
 	   * @return void
 	   */
@@ -78,11 +101,11 @@ class Role extends DomainModel {
 
 	  /**
 	   * Returns the role description
-	   * 
+	   *
 	   * @return String The role description
 	   */
 	  public function getDescription() {
-	  	
+
 	  		 return $this->description;
 	  }
 }

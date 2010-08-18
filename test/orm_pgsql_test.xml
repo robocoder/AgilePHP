@@ -8,14 +8,15 @@
 			<column name="email" type="varchar" display="Email" length="255" required="true"/>
 			<column name="created" type="date" required="true" validator="DateValidator"/>
 			<column name="last_login" property="lastLogin" display="Last Login" type="date" validator="DateValidator"/>
-			<column name="roleid" property="Role" type="varchar" length="25" display="Role">
+			<column name="roleid" property="Role" type="int" display="Role">
 				<foreignKey name="FK_UserRoles" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
-	  							 table="roles" column="name" controller="RoleController" select="name" cascade="persist-merge"/>
+	  							 table="roles" column="id" controller="RoleController" select="name" cascade="persist-merge"/>
 			</column>
 	  		<column name="enabled" type="boolean" validator="BooleanValidator" transformer="YesNoToBoolean" renderer="YesNoRenderer"/>
 	 	</table>
 	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
-			<column name="name" type="varchar" length="25" primaryKey="true" required="true" validator="StringValidator"/>
+			<column name="id" type="serial" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
+			<column name="name" type="varchar" length="25" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
 	 	</table>
 		<table name="sessions" display="Session" isSession="true" model="Session" description="User sessions">

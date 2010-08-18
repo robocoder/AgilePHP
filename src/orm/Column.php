@@ -21,7 +21,7 @@
 
 /**
  * Represents a database table column in the AgilePHP ORM component.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.orm
@@ -46,6 +46,7 @@ class Column {
 	  private $validator;
 	  private $renderer;
 	  private $transformer;
+	  private $sequence;
 
 	  private $foreignKey;
 
@@ -71,6 +72,7 @@ class Column {
 		  		 $this->validator = (string)$column->attributes()->validator;
 		  		 $this->renderer = (string)$column->attributes()->renderer;
 		  		 $this->transformer = (string)$column->attributes()->transformer;
+		  		 $this->sequence = (string)$column->attributes()->sequence;
 
 		  		 if($column->foreignKey)
 		  		 	 $this->foreignKey = new ForeignKey($column->foreignKey, $tableName, $this->name);
@@ -79,7 +81,7 @@ class Column {
 
 	  /**
 	   * Sets the name of the column in the physical database
-	   * 
+	   *
 	   * @param String $name The column name in the physical database
 	   * @return void
 	   */
@@ -90,7 +92,7 @@ class Column {
 
 	  /**
 	   * Returns the name of the column in the physical database
-	   * 
+	   *
 	   * @return The name of the column in the physical database
 	   */
 	  public function getName() {
@@ -101,7 +103,7 @@ class Column {
 	  /**
 	   * Sets the data type which describes the type of data which is
 	   * to be stored in the column/field.
-	   *  
+	   *
 	   * @param String $type The data type being stored (varchar|int|text|etc...)
 	   * @return void
 	   */
@@ -113,7 +115,7 @@ class Column {
 	  /**
 	   * Returns the data type which describes the type of data which is
 	   * being stored in the column/field.
-	   * 
+	   *
 	   * @return String The data type
 	   */
 	  public function getType() {
@@ -123,7 +125,7 @@ class Column {
 
 	  /**
 	   * Sets the length of the data being stored in the column
-	   * 
+	   *
 	   * @param $length The maximum length of the data being persisted
 	   * @return void
 	   */
@@ -134,7 +136,7 @@ class Column {
 
 	  /**
 	   * Returns the length of the data being stored in the column
-	   * 
+	   *
 	   * @return String The max length of the data being persisted
 	   */
 	  public function getLength() {
@@ -145,7 +147,7 @@ class Column {
 	  /**
 	   * Sets the friendly description of the column. This is used by visual
 	   * elements to describe the column to the end user or website owner.
-	   * 
+	   *
 	   * @param String $description The friendly description explaining the purpose of the column, etc.
 	   * @return void
 	   */
@@ -156,7 +158,7 @@ class Column {
 
 	  /**
 	   * Returns the friendly description of the column.
-	   * 
+	   *
 	   * @return The description of the column
 	   */
 	  public function getDescription() {
@@ -166,7 +168,7 @@ class Column {
 
 	  /**
 	   * Sets the name of the property in the domain model which the column maps
-	   * 
+	   *
 	   * @param String $property The property name in the domain model that stores the column data
 	   * @return void
 	   */
@@ -177,7 +179,7 @@ class Column {
 
 	  /**
 	   * Returns the name of the property in the domain model which the column maps
-	   * 
+	   *
 	   * @return String The property/field name
 	   */
 	  public function getProperty() {
@@ -188,7 +190,7 @@ class Column {
 	  /**
 	   * Sets the friendly display name of the column. This is used by visual
 	   * elements (such as forms) to show a user friendly name for the column.
-	   * 
+	   *
 	   * @param String $text The friendly name to display
 	   * @return void
 	   */
@@ -199,7 +201,7 @@ class Column {
 
 	  /**
 	   * Returns the friendly display name for the column
-	   * 
+	   *
 	   * @return String The user friendly display name for use with visual elements
 	   */
 	  public function getDisplay() {
@@ -209,7 +211,7 @@ class Column {
 
 	  /**
 	   * Sets the default value of the column data
-	   * 
+	   *
 	   * @param mixed $value The default value if nothing has been assigned
 	   * @return void
 	   */
@@ -221,7 +223,7 @@ class Column {
 	  /**
 	   * Returns the default value assigned to the column data when a value
 	   * has not been specified.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function getDefault() {
@@ -233,7 +235,7 @@ class Column {
 	   * Sets a boolean flag used to toggle the visibility of the column. This
 	   * is used to hide a particular field (such as a primary key) from a form
 	   * when its rendered.
-	   * 
+	   *
 	   * @param bool $boolean The boolean flag indicating whether or not the column
 	   * 				 	  should be rendered. True to render, false to hide.
 	   * @return void
@@ -245,7 +247,7 @@ class Column {
 
 	  /**
 	   * Returns boolean indicator based on the visibility of the column.
-	   *  
+	   *
 	   * @return True if the column is visible, false otherwise
 	   */
 	  public function isVisible() {
@@ -255,7 +257,7 @@ class Column {
 
 	  /**
 	   * Enables/disables sortable column headers,
-	   * 
+	   *
 	   * @param $boolean True to enable sortable column header, false to render
 	   * 				 column header as plain text.
 	   * @return void
@@ -268,7 +270,7 @@ class Column {
 	  /**
 	   * Returns boolean flag indicating whether or not the column
 	   * is sortable.
-	   *  
+	   *
 	   * @return bool True if the column is sortable, false otherwise
 	   */
 	  public function isSortable() {
@@ -278,7 +280,7 @@ class Column {
 
 	  /**
 	   * Boolean flag indicating whether or not the column data is required
-	   * 
+	   *
 	   * @param $boolean True if this column requires a value, false otherwise
 	   * @return void
 	   */
@@ -289,7 +291,7 @@ class Column {
 
 	  /**
 	   * Returns boolean flag indicating whether or not the column data is required
-	   * 
+	   *
 	   * @return bool True if a value is required, false if a value is not required
 	   */
 	  public function isRequired() {
@@ -299,7 +301,7 @@ class Column {
 
 	  /**
 	   * Boolean flag indicating whether or not the column data is an index
-	   * 
+	   *
 	   * @param $boolean True if this column is an index, false otherwise
 	   * @return void
 	   */
@@ -310,7 +312,7 @@ class Column {
 
 	  /**
 	   * Returns boolean flag indicating whether or not the column is an index
-	   * 
+	   *
 	   * @return bool True if the column is indexed, false otherwise
 	   */
 	  public function isIndex() {
@@ -320,7 +322,7 @@ class Column {
 
 	  /**
 	   * Marks this column as a primary key
-	   * 
+	   *
 	   * @param bool $boolean True to mark this column as a primary key, false otherwise
 	   * @return void
 	   */
@@ -331,17 +333,17 @@ class Column {
 
 	  /**
 	   * Returns boolean flag indicating whether or not the column is a primary key
-	   * 
+	   *
 	   * @return bool True if the column is a primary key, false otherwise
 	   */
 	  public function isPrimaryKey() {
 
-	  		 return ($this->primaryKey === true) ? true : false; 
+	  		 return ($this->primaryKey === true) ? true : false;
 	  }
 
 	  /**
-	   * Marks the column as an AUTO_INCREMENT column. 
-	   * 
+	   * Marks the column as an AUTO_INCREMENT column.
+	   *
 	   * @param bool $boolean True if the column contains AUTO_INCREMENT values, false otherwise
 	   * @return void
 	   */
@@ -353,7 +355,7 @@ class Column {
 	  /**
 	   * Returns boolean flag indicating whether or not this column is an
 	   * AUTO_INCREMENT field.
-	   * 
+	   *
 	   * @return bool True if the column is an AUTO_INCREMENT field, false otherwise
 	   */
 	  public function isAutoIncrement() {
@@ -363,7 +365,7 @@ class Column {
 
 	  /**
 	   * Marks the column as a foreign key column.
-	   * 
+	   *
 	   * @param ForeignKey $foreignKey A ForeignKey instance representing the relationship for this column
 	   * @return void
 	   */
@@ -374,7 +376,7 @@ class Column {
 
 	  /**
 	   * Returns boolean indicator based on whether or not the column is a foreign key field.
-	   * 
+	   *
 	   * @return bool True if the column is a foreign key field, false otherwise
 	   */
 	  public function isForeignKey() {
@@ -384,7 +386,7 @@ class Column {
 
 	  /**
 	   * Returns boolean indicator based on whether or not the column is a foreign key field.
-	   * 
+	   *
 	   * @return bool True if the column has a foreign key field, false otherwise
 	   */
 	  public function hasForeignKey() {
@@ -394,7 +396,7 @@ class Column {
 
 	  /**
 	   * Returns boolean indicator based on whether or not the column is a foreign key field.
-	   * 
+	   *
 	   * @return ForeignKey The ForeignKey instance representing the relationship for this column
 	   */
 	  public function getForeignKey() {
@@ -405,7 +407,7 @@ class Column {
 	  /**
 	   * Returns boolean flag indicating whether or not the column is of the data type 'bit'. This
 	   * is a *special* data type which is used to render HTML checkboxes by the presentation tier.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function isBit() {
@@ -415,7 +417,7 @@ class Column {
 
 	  /**
 	   * Boolean flag indicating whether or not to sanitize input using the RequestScope component.
-	   * 
+	   *
 	   * @param boolean $bool
 	   * @return voi
 	   */
@@ -426,7 +428,7 @@ class Column {
 
 	  /**
 	   * Sets the validator responsible for validating the data.
-	   * 
+	   *
 	   * @param string $validator The class name of the Validator responsible for verifying the integrity of the data
 	   * @return void
 	   */
@@ -437,7 +439,7 @@ class Column {
 
 	  /**
 	   * Returns the class name of the Validator responsible for validating the data.
-	   * 
+	   *
 	   * @return string $validator The validator responsible for verifying the integrity of the data
 	   */
 	  public function getValidator() {
@@ -447,7 +449,7 @@ class Column {
 
 	  /**
 	   * Sets the renderer responsible for formatting data for presentation
-	   * 
+	   *
 	   * @param string $renderer The DataRenderer responsible for formatting the column data for presentation
 	   * @return void
 	   */
@@ -458,7 +460,7 @@ class Column {
 
 	  /**
 	   * Returns the DataRenderer responsible for formatting the column data for presentation
-	   * 
+	   *
 	   * @return string $renderer The renderer responsible for formatting the column data for presentation
 	   */
 	  public function getRenderer() {
@@ -468,7 +470,7 @@ class Column {
 
 	  /**
 	   * Sets the DataTransformer responsible for transforming data before committing to the database
-	   * 
+	   *
 	   * @param string $transformer The class name of the DataTransformer responsible for transforming the
 	   *        column data before its committed to the database.
 	   * @return void
@@ -480,7 +482,7 @@ class Column {
 
 	  /**
 	   * Returns the class name of the DataTransformer responsible for transforming data before committing to the database
-	   * 
+	   *
 	   * @return string $transformer The class name of the DataTransformer
 	   */
 	  public function getTransformer() {
@@ -489,8 +491,29 @@ class Column {
 	  }
 
 	  /**
+	   * Sets an optional sequence name used for pgsql serial|bigserial fields
+	   *
+	   * @param string $name The sequence name
+	   * @return void
+	   */
+	  public function setSequence($name) {
+
+	         $this->sequence = $name;
+	  }
+
+	  /**
+	   * Returns an optional sequence name used for pgsql serial|bigserial fields
+	   *
+	   * @return string The pgsql sequence name
+	   */
+	  public function getSequence() {
+
+	         return $this->sequence;
+	  }
+
+	  /**
 	   * Returns boolean flag indicating whether or not this column should have its data sanitized by default.
-	   * 
+	   *
 	   * @return boolean False if orm.xml contains a sanitize="false" for this column, true otherwise.
 	   */
 	  public function getSanitize() {
@@ -500,7 +523,7 @@ class Column {
 
 	  /**
 	   * If enabled, referenced objects are not fetched, persisted, merged, or deleted with child operations.
-	   * 
+	   *
 	   * @param bool $bool True to enable lazy loading, false otherwise. Defaults to true.
 	   * @return void
 	   */
@@ -511,7 +534,7 @@ class Column {
 
 	  /**
 	   * Returns flag indicating whether or not referenced objects are not fetched, persisted, merged, or deleted with child operations.
-	   * 
+	   *
 	   * @return bool True if lazy loading is enabled for this column, false otherwise.
 	   * @return void
 	   */
@@ -524,7 +547,7 @@ class Column {
 	   * Returns the name which is used to access/mutate model properties/fields. If a property
 	   * attribute has been configured in orm.xml for the column, the property value is
 	   * returned, otherwise the column name is returned instead.
-	   * 
+	   *
 	   * @return String Property attribute value in orm.xml for the column if it exists, else
 	   * 		 the column name attribute value is returned instead.
 	   */
@@ -536,7 +559,7 @@ class Column {
 	  /**
 	   * If orm.xml contains a valid 'display' attribute, this value is
 	   * returned, otherwise, the column name is returned.
-	   *   
+	   *
 	   * @return String The orm.xml 'display' attribute value if it exists, otherwise the column name
 	   */
 	  public function getViewDisplayName() {

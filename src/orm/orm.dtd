@@ -72,6 +72,7 @@
 <!ATTLIST column validator CDATA #IMPLIED>
 <!ATTLIST column renderer CDATA #IMPLIED>
 <!ATTLIST column transformer CDATA #IMPLIED>
+<!ATTLIST column sequence CDATA #IMPLIED>
 
 <!ELEMENT foreignKey (#PCDATA)>
 <!ATTLIST foreignKey type ( one-to-one | one-to-many | many-to-one | many-to-many ) #REQUIRED>

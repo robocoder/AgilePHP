@@ -8,14 +8,15 @@
 			<column name="email" type="varchar" display="Email" length="255" required="true" validator="StringValidator"/>
 			<column name="created" type="datetime" required="true" validator="DateValidator"/>
 			<column name="last_login" property="lastLogin" display="Last Login" type="datetime" validator="DateValidator"/>
-			<column name="roleId" property="Role" type="varchar" length="25" sortable="false">
+			<column name="roleId" property="Role" type="int" length="10" sortable="false">
 				<foreignKey name="FK_UserRoles" type="many-to-one" onDelete="SET_NULL" onUpdate="CASCADE"
-	  							 table="roles" column="name" controller="RoleController" select="name" cascade="all"/>
+	  						table="roles" column="id" controller="RoleController" select="name" cascade="all"/>
 			</column>
 	  		<column name="enabled" type="boolean" validator="BooleanValidator" transformer="YesNoToBoolean" renderer="YesNoRenderer"/>
 	 	</table>
 	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
-			<column name="name" type="varchar" length="25" primaryKey="true" required="true" validator="StringValidator"/>
+			<column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
+			<column name="name" type="varchar" length="25" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
 	 	</table>
 		<!-- AgilePHP Session -->

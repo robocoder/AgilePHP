@@ -24,7 +24,7 @@
  * the MVC and REST framework components. Note this class can be used as a standard
  * PHP class or a DAO for example, in conjunction with being a REST service, due to
  * the Aspect Oriented Programming style using interceptors and annotations.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
@@ -109,7 +109,8 @@ class users extends BaseController {
 	  #@Path(resource = '/{username}')
 	  public function deleteUser($username) {
 
-	  		 $user = new User($username);
+	  		 $user = new User();
+	  		 $user->setUsername($username);
 	  		 $user->delete();
 	  }
 }

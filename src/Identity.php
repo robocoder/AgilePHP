@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ *
  * Includes all identity package dependencies
  */
 require_once 'identity/IdentityModel.php';
@@ -33,7 +33,7 @@ require_once 'identity/IdentityManagerFactory.php';
  * web application. The Identity component is responsible for
  * persistence, authentication, roles, sessions, password management
  * and email tasks.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
@@ -126,7 +126,7 @@ class Identity {
 	   * @see src/identity/IdentityManager#getCreated()
 	   */
 	  public static function getCreated() {
-	  	
+
 	  		 return IdentityManagerFactory::getManager()->getCreated();
 	  }
 
@@ -135,7 +135,7 @@ class Identity {
 	   * @see src/identity/IdentityManager#setLastLogin($dateTime)
 	   */
 	  public static function setLastLogin($dateTime) {
-	  	
+
 	  		 IdentityManagerFactory::getManager()->setLastLogin($dateTime);
 	  }
 
@@ -188,7 +188,7 @@ class Identity {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#setRoles()
 	   */
-	  public function setRoles(array $roles) {
+	  public static function setRoles(array $roles) {
 
 	         IdentityManagerFactory::getManager()->setRoles($roles);
 	  }
@@ -206,7 +206,7 @@ class Identity {
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#addRole(Role $role)
 	   */
-	  public function addRole(Role $role) {
+	  public static function addRole(Role $role) {
 
 	         IdentityManagerFactory::getManager()->addRole($role);
 	  }
@@ -247,7 +247,7 @@ class Identity {
 
 	  	     IdentityManagerFactory::getManager()->resetPassword($token, $sessionId);
 	  }
-	  
+
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/identity/IdentityManager#forgotPassword()
@@ -332,7 +332,7 @@ class Identity {
 
 	  /**
 	   * Destructor prints log debug entry notifying that the identity instance has been destroyed.
-	   * 
+	   *
 	   * @return void
 	   */
 	  public function __destruct() {

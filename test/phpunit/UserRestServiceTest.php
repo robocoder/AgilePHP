@@ -26,7 +26,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  		 $client = new RestClient($this->endpoint);
 	  		 $client->authenticate('admin', 'test');
 	  		 $response = $client->get();
- 
+
 	  		 $xml = simplexml_load_string($response);
 	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
 	  		 PHPUnit_Framework_Assert::assertNotNull($xml, 'Failed to get XML response from the REST service.');
@@ -75,12 +75,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setPassword($password);
 			 $user->setCreated($created);
 			 $user->setEmail($email);
+			 $user->persist();
 
-			 $orm->persist($user);
-
-			 // Load the test user
-			 $user = new User();
-			 $user->setUsername($username);
+			 // Update the user that was just created
 			 $user->setPassword('test2');
 			 $user->setEmail('root@localhost.localdomain');
 			 $user->setEnabled(false);
@@ -93,13 +90,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
-			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toXML($user);
+			 $data = XmlRenderer::render($user);
 
 			 $response = $client->put($data);
-
-			 // clean up after unit test
-			 $orm->delete($user);
 
 			 $xml = simplexml_load_string($response);
 	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
@@ -109,6 +102,10 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', (string)$xml->email, 'Expected email \'' . $email . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals($newRole, (string)$xml->Role->name, 'Expected role \'' . $newRole . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
+
+	  		 // clean up after unit test
+	  		 $user->get();    // Loads Role::id so the delete cascades
+			 $user->delete();
 	  }
 
 	  /**
@@ -121,9 +118,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $client->setHeaders(array(
 				'Accept: application/json',
 				'Content-Type: application/json',
-			));
-
-			 $orm = ORM::getDialect();
+			 ));
 
 			 $username = 'phpunit-json';
 			 $password = 'test';
@@ -137,12 +132,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setPassword($password);
 			 $user->setCreated($created);
 			 $user->setEmail($email);
+			 $user->persist();
 
-			 $orm->persist($user);
-
-			 // Load the test user
-			 $user = new User();
-			 $user->setUsername($username);
+			 // Update some values
 			 $user->setPassword('test2');
 			 $user->setEmail('root@localhost.localdomain');
 			 $user->setEnabled(false);
@@ -155,13 +147,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
-			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toJSON($user);
+			 $data = JsonRenderer::render($user);
 
 			 $response = $client->put($data);
-
-			 // clean up after unit test
-			 $orm->delete($user);
 
 			 $json = json_decode($response);
 			 PHPUnit_Framework_Assert::assertType('stdClass', $json, 'Failed to decode JSON data');
@@ -171,8 +159,12 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', $json->User->email, 'Expected email \'' . $email . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals($newRole, $json->User->Role->name, 'Expected role \'' . $newRole . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
+
+	  		 // clean up after unit test
+	  		 $user->get();    // Loads Role::id so the delete cascades
+			 $user->delete();
 	  }
-	  
+
 	  /**
 	   * @test
 	   */
@@ -183,9 +175,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $client->setHeaders(array(
 				'Accept: application/xml',
 				'Content-Type: application/json',
-			));
-
-			 $orm = ORM::getDialect();
+			 ));
 
 			 $username = 'phpunit-json2';
 			 $password = 'test';
@@ -199,12 +189,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setPassword($password);
 			 $user->setCreated($created);
 			 $user->setEmail($email);
+			 $user->persist();
 
-			 $orm->persist($user);
-
-			 // Load the test user
-			 $user = new User();
-			 $user->setUsername($username);
+			 // Update some values
 			 $user->setPassword('test2');
 			 $user->setEmail('root@localhost.localdomain');
 			 $user->setEnabled(false);
@@ -217,13 +204,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
-			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toJSON($user);
+			 $data = JsonRenderer::render($user);
 
 			 $response = $client->put($data);
-
-			 // clean up after unit test
-			 $orm->delete($user);
 
 			 $xml = simplexml_load_string($response);
 	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
@@ -233,13 +216,17 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', (string)$xml->email, 'Expected email \'' . $email . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals($newRole, (string)$xml->Role->name, 'Expected role \'' . $newRole . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
+
+	  		 // clean up after unit test
+	  		 $user->get();    // Loads Role::id so the delete cascades
+			 $user->delete();
 	  }
-	  
+
 	  /**
 	   * Starting to get confusing now... Using /test/wildcard to put JSON and get YAML.
 	   * Since the resource method does not have a #@ConsumeMime or #@ProduceMime, the HTTP
 	   * Accept and Content-Type headers are used to negotiate the data transformation/exchange.
-	   * 
+	   *
 	   * @test
 	   */
 	  public function putJSONgetYAML() {
@@ -249,9 +236,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $client->setHeaders(array(
 				'Accept: application/x-yaml',
 				'Content-Type: application/json',
-			));
-
-			 $orm = ORM::getDialect();
+			 ));
 
 			 $username = 'phpunit-json2';
 			 $password = 'test';
@@ -265,12 +250,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setPassword($password);
 			 $user->setCreated($created);
 			 $user->setEmail($email);
+			 $user->persist();
 
-			 $orm->persist($user);
-
-			 // Load the test user
-			 $user = new User();
-			 $user->setUsername($username);
+			 // Update some user values
 			 $user->setPassword('test2');
 			 $user->setEmail('root@localhost.localdomain');
 			 $user->setEnabled(false);
@@ -283,13 +265,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
-			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toJSON($user);
+			 $data = JsonRenderer::render($user);
 
 			 $response = $client->put($data);
-
-			 // clean up after unit test
-			 $orm->delete($user);
 
 			 $yaml = yaml_parse($response);
 	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
@@ -299,11 +277,15 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', $yaml->getEmail(), 'Expected email \'' . $email . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals($newRole, $yaml->getRole()->getName(), 'Expected role \'' . $newRole . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
+
+	  		 // clean up after unit test
+	  		 $user->get();    // Loads Role::id so the delete cascades
+			 $user->delete();
 	  }
 
 	  /**
 	   * Same confusing story... but this time put YAML and get XML back
-	   * 
+	   *
 	   * @test
 	   */
 	  public function putYAMLgetXML() {
@@ -313,9 +295,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $client->setHeaders(array(
 				'Accept: application/xml',
 				'Content-Type: application/x-yaml',
-			));
-
-			 $orm = ORM::getDialect();
+			 ));
 
 			 $username = 'phpunit-json2';
 			 $password = 'test';
@@ -329,12 +309,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setPassword($password);
 			 $user->setCreated($created);
 			 $user->setEmail($email);
+			 $user->persist();
 
-			 $orm->persist($user);
-
-			 // Load the test user
-			 $user = new User();
-			 $user->setUsername($username);
+			 // Update user values
 			 $user->setPassword('test2');
 			 $user->setEmail('root@localhost.localdomain');
 			 $user->setEnabled(false);
@@ -347,13 +324,8 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
-			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toYAML($user);
-
+			 $data = YamlRenderer::render($user);
 			 $response = $client->put($data);
-
-			 // clean up after unit test
-			 $orm->delete($user);
 
 			 $xml = simplexml_load_string($response);
 	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
@@ -363,6 +335,10 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', (string)$xml->email, 'Expected email \'' . $email . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals($newRole, (string)$xml->Role->name, 'Expected role \'' . $newRole . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
+
+	  		 // clean up after unit test
+	  		 $user->get();    // Loads Role::id so the delete cascades
+			 $user->delete();
 	  }
 
 	  /**
@@ -375,9 +351,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $client->setHeaders(array(
 				'Accept: application/xml',
 				'Content-Type: application/xml',
-			));
-
-			 $orm = ORM::getDialect();
+			 ));
 
 			 $user = new User();
 			 $user->setUsername('phpunit2');
@@ -394,14 +368,8 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 $user->setRole($role);
 
 			 // The server will be expecting XML as indicated in the Content-Type header above
-			 $renderer = new AJAXRenderer();
-			 $data = $renderer->toXML($user);
-
+			 $data = XmlRenderer::render($user);
 			 $response = $client->post($data);
-
-			 // clean up after unit test
-			 $user->setUsername('phpunit2');
-			 $orm->delete($user);
 
 			 $xml = simplexml_load_string($response);
 	  		 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
@@ -411,6 +379,11 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost', (string)$xml->email, 'Expected email root@localhost.');
 	  		 PHPUnit_Framework_Assert::assertEquals('rest-test', (string)$xml->Role->name, 'Expected role rest-test.');
 	  		 PHPUnit_Framework_Assert::assertEquals(201, $client->getResponseCode(), 'Failed to get HTTP 201 Created');
+
+	  		 // clean up after unit test
+	  		 $user = new User();
+	  		 $user->setUsername('phpunit2');
+			 $user->delete();
 	  }
 
 	  /**
@@ -418,19 +391,16 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function deleteXMLgetXML() {
 
-	  	     $orm = ORM::getDialect();
-
 	  		 $user = new User();
 	  		 $user->setUsername('phpunit3');
 	  		 $user->setPassword('rest-test');
 	  		 $user->setEmail('root@localhost');
 	  		 $user->setCreated('now');
-	  		 
+
 	  		 $role = new Role();
 	  		 $role->setName('rest-test');
-
 	  		 $user->setRole($role);
-			 $orm->persist($user);
+			 $user->persist();
 
 	  	     $client = new RestClient($this->endpoint . '/phpunit3');
 	  	     $client->authenticate('admin', 'test');
@@ -462,7 +432,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 
 	  		 PHPUnit_Framework_Assert::assertType('User', $o, 'Failed to transform JSON data to PHP object');
 	  }
-	  
+
 	  /**
 	   * @test
 	   */
