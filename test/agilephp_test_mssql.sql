@@ -38,7 +38,7 @@ CREATE TABLE dbo.users (
   created date NOT NULL,
   last_login date DEFAULT NULL,
   roleId int DEFAULT NULL,
-  enabled boolean DEFAULT NULL,
+  enabled tinyint DEFAULT NULL,
   PRIMARY KEY (username),
   CONSTRAINT FK_UserRoles FOREIGN KEY (roleId) REFERENCES roles (id) ON DELETE SET NULL ON UPDATE CASCADE
 );

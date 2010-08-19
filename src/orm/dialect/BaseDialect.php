@@ -39,12 +39,12 @@ abstract class BaseDialect {
 	     private $orderDirection;			 // The direction to sort the result set (Default is 'ASC')
 	     private $offset;					 // Stores the offset for a LIMIT clause.
 	     private $groupBy;					 // GROUP BY clause
-	     private $lastInsertId;              // SQL generated id for auto-increment field
 
 		 protected $pdo;					 // PHP Data Objects
 	     protected $model;					 // Domain model object (ActiveRecord)
 		 protected $database;				 // Database object
 		 protected $transactionInProgress;	 // True when a transaction is in progress
+		 protected $lastInsertId;              // SQL generated id for auto-increment field
 
 		 /**
 		  * Returns the PDO instance in use by the ORM framework.
@@ -473,8 +473,11 @@ abstract class BaseDialect {
         			   	    		             array_push($values, $transformer::transform($this->lastInsertId));
         			   	    		          else
         			   	    		             array_push($values, $this->lastInsertId);
-
         			   	    		break;
+
+        			   	    		default:
+			   	    		       	  array_push($values, null);
+			   	    		        break;
 			   	    		    }
 			   	    	    }
 			   	    	}

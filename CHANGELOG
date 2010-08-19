@@ -1,19 +1,16 @@
-- Bug fix to test/control/users::deleteUser controller #@DELETE
-- Refactored Role; Added id field which is now the primary key instead of name
-- Refactored test/phpunit/UserRestServiceTest to use new ORM, DomainModel, and cascade options.
-- Refactored BaseDialect::persist and BaseDialect::merge to automatically persist foriegn
-  model instances which do not have a primary key value present. This assumes the foreign model
-  primary key is an auto-increment. PDO::getLastInsertId is called after the persist operation
-  and passed to the foriegn model instance primary key mutator.
-- Refactored IdentityTests to work with new ORM API and cascade option
-- Updated SQL schemas to reflect new role design
-- Refactored Identity::setRoles to static contenxt
-- Refactored Identity::addRole to static contenxt
-- Added optional "sequence" attribute to orm.xml column element to handle pgsql sequences.
-- Added getLastInsertId to SQLDialect interface, BaseDialect, and ORM classes.
-- Added logic to BaseDialect::persist and BaseDialect::merge operations to track the "lastInsertId"
-  for parent or child insert statements. Also added logic to support custom/specified pgsql sequence names. 
-- Updated all test/*.sql schemas to reflect new user/role relationship. This is still not complete; Will
-  be refactoring user/role relationship from many-to-one to many-to-many on the next commit.
+- Windows compatibility testing
+- MSSQLDialect refactoring to work with new cascade option
+  and getLastInsertId.
+- Refactor/bug fixes to agilephp_test_mssql.sql and orm_mssql_test.xml
+
+C:\Inetpub\wwwroot\AgilePHP>phpunit --bootstrap test\phpunit\bootstrap.php test\
+phpunit\orm\MSSQLTest.php
+PHPUnit 3.4.9 by Sebastian Bergmann.
+
+........
+
+Time: 4 seconds, Memory: 7.75Mb
+
+OK (8 tests, 82 assertions)
 
 Backward compatible apidoc: Yes
