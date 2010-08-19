@@ -46,6 +46,7 @@
 <!ATTLIST parameter name CDATA #REQUIRED>
 <!ATTLIST parameter property CDATA #IMPLIED>
 <!ATTLIST parameter mode CDATA #REQUIRED>
+<!ATTLIST parameter references CDATA #IMPLIED>
 
 <!ELEMENT column (foreignKey*)>
 <!ATTLIST column name CDATA #REQUIRED>

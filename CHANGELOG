@@ -1,16 +1,10 @@
-- Windows compatibility testing
-- MSSQLDialect refactoring to work with new cascade option
-  and getLastInsertId.
-- Refactor/bug fixes to agilephp_test_mssql.sql and orm_mssql_test.xml
+- Added "references" attribute to orm.dtd procedure "parameter" elements. This allows
+  references to be made to other stored procedures, where the OUT value in the parent
+  procedure will be passed as an IN parameter to the referenced procedure. This allows
+  associations to be made between stored procedures in a similar fashion as tables/views.
+- Added stored procedure reference support to MySQLDialect. Updated orm.xml and agilephp_test_mysql.sql
+  schema with new "relational stored procedures", created new "SprocTest" test suite. 
 
-C:\Inetpub\wwwroot\AgilePHP>phpunit --bootstrap test\phpunit\bootstrap.php test\
-phpunit\orm\MSSQLTest.php
-PHPUnit 3.4.9 by Sebastian Bergmann.
-
-........
-
-Time: 4 seconds, Memory: 7.75Mb
-
-OK (8 tests, 82 assertions)
+* Still need to finish implementing above functionality into the rest of the SQLDialect classes. 
 
 Backward compatible apidoc: Yes

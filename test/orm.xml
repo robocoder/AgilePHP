@@ -46,5 +46,47 @@
 			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP" validator="DateValidator"/>
 		</table>
 
+		<!-- "Standalone" Stored Procedure -->
+
+		<procedure name="authenticate" model="SPauthenticate" description="Stored procedure responsible for authentication">
+			<parameter name="userid" property="userId" mode="IN"/>
+			<parameter name="passwd" mode="IN"/>
+			<parameter name="authenticate" property="result" mode="OUT"/>
+		</procedure>
+
+	    <procedure name="getroles" model="Role" description="Stored procedure responsible for getting all roles">
+			<parameter name="id" mode="OUT"/>
+			<parameter name="name" mode="OUT"/>
+			<parameter name="description" mode="OUT"/>
+		</procedure>
+
+		<procedure name="getrole" model="Role" description="Stored procedure responsible for getting a specified role">
+			<parameter name="id" mode="INOUT"/>
+			<parameter name="name" mode="OUT"/>
+			<parameter name="description" mode="OUT"/>
+		</procedure>
+
+		<!-- "Relational" Stored Procedure -->
+
+		<procedure name="getusers" model="User" description="Stored procedure responsible for getting all users">
+			<parameter name="username" mode="OUT"/>
+			<parameter name="password" mode="OUT"/>
+			<parameter name="email" mode="OUT"/>
+			<parameter name="created" mode="OUT"/>
+			<parameter name="last_login" property="lastLogin" mode="OUT"/>
+			<parameter name="roleId" property="role" mode="OUT" references="getrole"/>
+			<parameter name="enabled" mode="OUT"/>
+		</procedure>
+
+        <procedure name="getuser" model="User" description="Stored procedure responsible for getting the specified user">
+			<parameter name="username" mode="INOUT"/>
+			<parameter name="password" mode="OUT"/>
+			<parameter name="email" mode="OUT"/>
+			<parameter name="created" mode="OUT"/>
+			<parameter name="last_login" property="lastLogin" mode="OUT"/>
+			<parameter name="roleId" property="role" mode="OUT" references="getrole"/>
+			<parameter name="enabled" mode="OUT"/>
+		</procedure>
+
 	</database>
 </orm>

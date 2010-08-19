@@ -327,7 +327,8 @@ interface SQLDialect {
 	  	  * Calls a stored procedure.
 	  	  *
 	  	  * @param DomainModel $model ActiveRecord model state representing the stored procedure
-	  	  * @return mixed The stored procedure return value or null if the stored procedure does not return
+	  	  * @return mixed The stored procedure return value or null if the stored procedure does not return. It
+	  	  *         is recommended to return a "table" / "record set" which is mapped to a DomainModel.
 	  	  */
 	  	 public function call(DomainModel $model);
 

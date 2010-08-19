@@ -85,10 +85,15 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	  	     $values = array();
 	  		 $outs = array();
 	  		 $params = array();
+	  		 $references = array();
 	  		 $class = get_class($model);
 	  		 $proc = $this->getProcedureByModel($model);
 
+	  		 // Parse IN, OUT, & INOUT parameters
 	  		 foreach($proc->getParameters() as $param) {
+
+	  		         if($ref = $param->getReference())
+	  		            $references[$param->getName()] = $ref;
 
 	  		 		  if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
 
@@ -100,21 +105,25 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	  		 			  $outs[$param->getName()] = $param->getModelPropertyName();
 	  		 }
 
+	  		 // Execute the stored procedure using each of the IN and INOUT variables
+	  		 // in the ordinal position they were specified in orm.xml
 	  		 $query = 'call ' . $proc->getName() . '(';
 	  		 for($i=0; $i<count($params); $i++) {
 
 	  		 		$values[$i] = $params[$i];
-	  		 		$query .= '?' . (($i+1) == count($query) ? ', ': '');
+	  		 		$query .= '?' . (($i+1) < count($params) ? ', ': '');
 	  		 }
 	  		 $query .= ');';
 
 	  		 $this->prepare($query);
-	  		 $stmt = $this->execute($values);
+	  		 $stmt = $this->execute($params);
 	  		 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 	  		 $results = $stmt->fetchAll();
+	  		 $stmt->closeCursor();
 
-	  		 if(!$results) return true;
+	  		 if(!$results) return true;  // The query was successful; sprocs arent required to return
 
+	  		 // Result set has more than one item
 	  		 if(count($results) > 1) {
 
 		  		 $models = array();
@@ -123,8 +132,13 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 		 		 		  $m = new $class;
 		 		 		  foreach($record as $column => $value) {
 
-		 		 		  		   $mutator = $this->toMutator($outs[$column]);
-		  		 		  		   $m->$mutator($value);
+		 		 		          $mutator = $this->toMutator($outs[$column]);
+
+    		 		 		      // References act like table foreign keys - they allow associations to other objects
+		 		 		          if(array_key_exists($column, $references))
+		 		 		             $value = $this->callReference($column, $references, $outs, $value);
+
+		  		 		  		  $m->$mutator($value);
 		 		 		  }
 		 		 		  array_push($models, $m);
 	 		 	 }
@@ -132,16 +146,57 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	 		 	 return $models;
 	  		 }
 
+	  		 // Single item returned in the result set
 	  		 foreach($results as $record) {
 
 	  		 		  $m = new $class;
 		 		 	  foreach($record as $column => $value) {
 
 		 		 		  	   $mutator = $this->toMutator($outs[$column]);
+
+		 		 		  	   // References act like table foreign keys - they allow associations to ther objects
+		 		 		       if(array_key_exists($column, $references))
+		 		 		          $value = $this->callReference($column, $references, $outs, $value);
+
 		  		 		  	   $m->$mutator($value);
 		 		      }
 		 		 	  return $m;
 	  		 }
+	  }
+
+	  /**
+	   * Responsible for executing a "referenced" stored procedure. This behaves in a similar fashion
+	   * to the parent/child associations using tables/foreign keys. When a procedure has an OUT parameter
+	   * configured in orm.xml which defines a "references" attribute, the value returned to the "parent"
+	   * procedure from the database is passed into this method where the referenced procedure is executed
+	   * accordingly, and its return value(s) mapped to its configured DomainModel.
+	   * 
+	   * @param string $column The column name as returned from the stored procedure
+	   * @param array $references Associative array of "referenced" stored procedures
+	   *        where the key represents the value returned from the "parent" procedure
+	   *        and the value represents the procedure name.
+	   * @param array $outs An associative array of OUT variables from the parent procedure
+	   * @param mixed $value The value to pass into the referenced procedure
+	   * @return DomainModel The referenced ActiveRecord instance
+	   */
+	  protected function callReference($column, $references, $outs, $value) {
+
+	            $refAccessor = $this->toMutator($outs[$column]);
+
+	            $procedure = $this->getProcedureByName($references[$column]);
+	            $fModelName = $procedure->getModel();
+	            $fModel = new $fModelName;
+
+	            foreach($procedure->getParameters() as $param) {
+
+	                if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
+
+	                   $refMutator = $this->toMutator($param->getModelPropertyName());
+	                   $fModel->$refMutator($value);
+	                }
+ 	            }
+
+	            return $this->call($fModel);
 	  }
 
 	  /**

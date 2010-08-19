@@ -1028,9 +1028,27 @@ abstract class BaseDialect {
 	  }
 
 	  /**
-	   * Returns the Table object which is mapped to the specified Model.
+	   * Returns the Procedure instance which matches the specified name.
 	   *
-	   * @param DomainModel $model The domain model object to retrieve the table element for. Defaults to the model
+	   * @param string $name The procedure name as it lives in the database engine
+	   * @return Procedure The Procedure instance
+	   * @throws ORMException
+	   */
+	  public function getProcedureByName($name) {
+
+			 foreach($this->database->getProcedures() as $proc) {
+
+			 	  	 if($proc->getName() == $name)
+			 	  	    return $proc;
+			 }
+
+			 throw new ORMException('BaseDialect::getProcedureByName Could not locate the requested procedure \'' . $name . '\' in orm.xml');
+	  }
+	  
+	  /**
+	   * Returns the Procedure instance mapped to the specified Model.
+	   *
+	   * @param DomainModel $model The domain model object to retrieve the procedure element for. Defaults to the model
 	   * 			               currently being managed by the 'ORM'.
 	   * @return Procedure The Procedure instance responsible for persistence mappings for the specified model.
 	   */
@@ -1046,7 +1064,7 @@ abstract class BaseDialect {
 
 			 throw new ORMException('BaseDialect::getProcedureByModel Could not locate the requested model \'' . $class . '\' in orm.xml');
 	  }
-
+	  
 	  /**
 	   * Returns the Procedure responsible for the specified model
 	   *

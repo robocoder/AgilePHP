@@ -31,14 +31,16 @@ class ProcedureParam {
 	  private $name;
 	  private $property;
 	  private $mode;
+	  private $references;
 
-	  public function __construct( SimpleXMLElement $parameter = null) {
+	  public function __construct(SimpleXMLElement $parameter = null) {
 
-	  		 if( $parameter) {
+	  		 if($parameter) {
 
 	  		 	 $this->name =(string)$parameter->attributes()->name;
 		  		 $this->property =(string)$parameter->attributes()->property;
 		  		 $this->mode =(string)$parameter->attributes()->mode;
+		  		 $this->references =(string)$parameter->attributes()->references;
 	  		 }
 	  }
 
@@ -48,7 +50,7 @@ class ProcedureParam {
 	   * @param string $name The parameter name
 	   * @return void
 	   */
-	  public function setName( $name) {
+	  public function setName($name) {
 
 	  		 $this->name = $name;
 	  }
@@ -69,7 +71,7 @@ class ProcedureParam {
 	   * @param string $property The name of the property which the parameter maps
 	   * @return void
 	   */
-	  public function setProperty( $property) {
+	  public function setProperty($property) {
 
 	  		 $this->property = $property;
 	  }
@@ -89,7 +91,7 @@ class ProcedureParam {
 	   * 
 	   * @param string $mode The parameter type(IN|OUT|INOUT)
 	   */
-	  public function setMode( $mode) {
+	  public function setMode($mode) {
 
 	  		 $this->mode = $mode;
 	  }
@@ -104,6 +106,28 @@ class ProcedureParam {
 	  		 return $this->mode;
 	  }
 
+	  /**
+	   * Sets the name of a referenced procedure to execute passing in the value
+	   * coming from the database. 
+	   * 
+	   * @param string $procedure The referenced procedure name
+	   * @return void
+	   */
+	  public function setReference($procedure) {
+
+	         $this->references = $procedure;
+	  }
+
+	  /**
+	   * Returns the referenced procedure
+	   * 
+	   * @return string The referenced procedure name
+	   */
+	  public function getReference() {
+
+	         return $this->references;
+	  }
+	  
 	  /**
 	   * Helper method which provides the name of the parameter property name
 	   * as it exists inside its model. If a property attribute has been set,

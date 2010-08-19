@@ -72,8 +72,17 @@ CREATE PROCEDURE authenticate(
 )
 SELECT enabled FROM users WHERE username = userid AND PASSWORD = passwd INTO authenticate $$
 
+CREATE PROCEDURE getuser(IN userid VARCHAR(150))
+SELECT * FROM users WHERE username = userid $$
+
 CREATE PROCEDURE getusers()
 select * from users $$
+
+CREATE PROCEDURE getroles()
+SELECT * FROM roles $$
+
+CREATE PROCEDURE getrole(IN roleid INT(10))
+SELECT * FROM roles WHERE id = roleid $$
 
 DELIMITER ;
 
