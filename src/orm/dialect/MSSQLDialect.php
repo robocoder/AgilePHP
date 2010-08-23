@@ -498,6 +498,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 			   }
 			   $sql .= '); SELECT SCOPE_IDENTITY() as lastId;';
 
+			   if($persist = $table->getPersist()) $sql = $persist;
+			   // Make sure lastId logic makes it into user defined orm.xml <persist>
+			   if(strpos($sql, ';') === false || strpos($sql, 'SCOPE_IDENTITY()'))
+			      $sql .= '; SELECT SCOPE_IDENTITY() as lastId;';
+
 	   		   $this->prepare($sql);
 	  		   $stmt = $this->execute($values);
 
@@ -576,8 +581,9 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 				     	 	     	    array_push($values, $model->$accessor());
 						     	 }
 						    }
-						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 
+						    $sql = $table->getFind();
+						    if($where) $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 					 }
 
 					 $this->setDistinct(null);

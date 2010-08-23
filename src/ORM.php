@@ -36,6 +36,16 @@ require_once 'orm/dialect/BaseDialect.php';
  */
 final class ORM {
 
+      /**
+       * Returns the orm.xml configuration currently in use by the ORM
+       * 
+       * @return SimpleXMLElement orm.xml configuration
+       */
+      public static function getConfiguration() {
+
+             return ORMFactory::getConfiguration();
+      }
+    
 	  /**
 	   * Connects the ORM to the specified Database
 	   *

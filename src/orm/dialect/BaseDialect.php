@@ -405,8 +405,7 @@ abstract class BaseDialect {
 
 			   		$sql .= $columns[$i]->getName();
 
-			   		if(($i + 1) < $columnCount)
-			   			$sql .= ', ';
+			   		if(($i + 1) < $columnCount) $sql .= ', ';
 			   }
 			   $sql .= ') VALUES (';
 			   for($i=0; $i<$columnCount; $i++) {
@@ -497,6 +496,8 @@ abstract class BaseDialect {
 			   		if(($i + 1) < count($columns)) $sql .= ', ';
 			   }
 			   $sql .= ');';
+
+			   if($persist = $table->getPersist()) $sql = $persist;
 
 	   		   $this->prepare($sql);
 	  		   $retval = $this->execute($values);
@@ -603,7 +604,7 @@ abstract class BaseDialect {
 			   	    array_push($cols, $columns[$i]->getName());
 			   }
 
-			   $sql .= implode($cols, '=?, ') . '=? WHERE ';
+		       $sql .= implode($cols, '=?, ') . '=? WHERE ';
 
 			   $pkeyColumns = $table->getPrimaryKeyColumns();
 			   for($i=0; $i<count($pkeyColumns); $i++) {
@@ -613,19 +614,24 @@ abstract class BaseDialect {
 
 			           $fkAccessor = $this->toAccessor($columns[$i]->getModelPropertyName());
 			           $accessor = $this->toAccessor($pkeyColumns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
-			           $sql .= $columns[$i]->getName() . '=\'' . $model->$fkAccessor()->$accessor() . '\'';
+			           $sql .= $columns[$i]->getName() . '=?';
+
+			           array_push($values, $model->$fkAccessor()->$accessor());
 			        }
 			        else {
 
 					   $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-			           $sql .= $columns[$i]->getName() . '=\'' . $model->$accessor() . '\'';
+			           $sql .= $columns[$i]->getName() . '=?';
+
+			           array_push($values, $model->$accessor());
 			        }
 
-			  		if(($i+1) < count($pkeyColumns))
-			  		    $sql .= ' AND ';
+			  		if(($i+1) < count($pkeyColumns)) $sql .= ' AND ';
 			   }
 
 			   $sql .= ';';
+
+			   if($merge = $table->getMerge()) $sql = $merge;
 
 		       $this->prepare($sql);
 	  	       $retval = $this->execute($values);
@@ -683,6 +689,8 @@ abstract class BaseDialect {
 		   		    }
 		       }
 
+		       if($delete = $table->getDelete()) $sql = $delete;
+
 		       $this->prepare($sql);
 		       $retval = $this->execute($values);
 
@@ -701,8 +709,25 @@ abstract class BaseDialect {
 
 	           if($m = IdentityMap::get($model)) return $m;
 
-	    	   $records = $this->find($model);
+	           $table = $this->getTableByModel($model);
 
+	           Log::debug('BaseDialect::get Performing get on model \'' . $table->getModel() . '\'.');
+
+	           if($sql = $table->getGet()) {
+
+	              $this->prepare($sql);
+	              $records = $this->execute();
+
+	              if(!isset($records[0])) {
+
+	                 Log::debug('Entity not found for model \'' . $table->getModel() . '\' using SQL ' . $sql);
+	                 throw new ORMException('ActiveRecord state for model \'' . $table->getModel() . '\' not found');
+	              }
+
+	              return $records[0];
+	           }
+
+	    	   $records = $this->find($model);
 	    	   if(isset($records[0])) {
 
 	    	      IdentityMap::add($records[0]);
@@ -776,13 +801,19 @@ abstract class BaseDialect {
 				     	 	     	    array_push($values, $model->$accessor());
 						     	 }
 						    }
-						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 
-					 	    $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
-					 	 	$sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
-					 	 	$sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
-					 	 	$sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
-    	   	         	 	$sql .= ';';
+						    // @todo this probably needs refactoring
+						    $sql = $table->getFind();
+						    if($where) {
+
+        					   $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
+
+        				 	   $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
+        				 	   $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
+        				 	   $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
+        				 	   $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
+        	   	         	   $sql .= ';';
+						    }
 	    	   		 }
 
 	    	   		 $this->setDistinct(null);
@@ -1081,6 +1112,41 @@ abstract class BaseDialect {
 			 throw new ORMException('BaseDialect::getProcedureByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml');
 	  }
 
+	  /**
+	   * Responsible for executing a "referenced" stored procedure. This behaves in a similar fashion
+	   * to the parent/child associations using tables/foreign keys. When a procedure has an OUT parameter
+	   * configured in orm.xml which defines a "references" attribute, the value returned to the "parent"
+	   * procedure from the database is passed into this method where the referenced procedure is executed
+	   * accordingly, and its return value(s) mapped to its configured DomainModel.
+	   * 
+	   * @param string $column The column name as returned from the stored procedure
+	   * @param array $references Associative array of "referenced" stored procedures
+	   *        where the key represents the value returned from the "parent" procedure
+	   *        and the value represents the procedure name.
+	   * @param array $outs An associative array of OUT variables from the parent procedure
+	   * @param mixed $value The value to pass into the referenced procedure
+	   * @return DomainModel The referenced ActiveRecord instance
+	   */
+	  protected function callReference($column, $references, $outs, $value) {
+
+	            $refAccessor = $this->toMutator($outs[$column]);
+
+	            $procedure = $this->getProcedureByName($references[$column]);
+	            $fModelName = $procedure->getModel();
+	            $fModel = new $fModelName;
+
+	            foreach($procedure->getParameters() as $param) {
+
+	                if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
+
+	                   $refMutator = $this->toMutator($param->getModelPropertyName());
+	                   $fModel->$refMutator($value);
+	                }
+ 	            }
+
+	            return $this->call($fModel);
+	  }
+	  
 	  /**
 	   * Returns the Table object which is mapped to the specified DomainModel.
 	   *
@@ -1499,7 +1565,7 @@ abstract class BaseDialect {
 	   */
 	  public function __destruct() {
 
-	  		 $this->close();
+	  		 $this->pdo = null;
 	  		 Log::debug('BaseDialect::__destruct');
 	  }
 }

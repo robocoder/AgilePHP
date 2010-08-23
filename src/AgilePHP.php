@@ -796,6 +796,7 @@ final class AgilePHP {
           'ORMFactory' => '/orm/ORMFactory.php',
           'Procedure' => '/orm/Procedure.php',
           'ProcedureParam' =>'/orm/ProcedureParam.php',
+          'StoredProcedure' =>'/orm/StoredProcedure.php',
           'Table' => '/orm/Table.php',
           'ApplicationScope' => '/scope/ApplicationScope.php',
           'OrmSessionProvider' => '/scope/OrmSessionProvider.php',

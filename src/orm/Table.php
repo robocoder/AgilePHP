@@ -35,6 +35,11 @@ class Table {
 	  private $description;
 	  private $isIdentity = false;
 	  private $isSession = false;
+	  private $persist;
+	  private $merge;
+	  private $delete;
+	  private $get;
+	  private $find;	  
 
 	  private $columns = array();
 
@@ -56,9 +61,14 @@ class Table {
 		  		 $this->description = (string)$table->attributes()->description;
 		  		 $this->isIdentity = ($table->attributes()->isIdentity == 'true') ? true : false;
 		  		 $this->isSession = ($table->attributes()->isSession == 'true') ? true : false;
+		  		 $this->persist = (string)$table->persist;
+	  		     $this->merge = (string)$table->merge;
+	  		     $this->delete = (string)$table->delete;
+	  		     $this->get = (string)$table->get;
+	  		     $this->find = (string)$table->find;
 
 		  		 foreach($table->column as $column)
-		  		 		  array_push($this->columns, new Column($column, $this->name));
+	  		 		  array_push($this->columns, new Column($column, $this->name));
 	  		 }
 	  }
 
@@ -267,6 +277,111 @@ class Table {
 	  public function getColumns() {
 
 	  		 return $this->columns;
+	  }
+
+	  /**
+	   * Sets a prepared statement used to override ORM generated INSERT
+	   * 
+	   * @param string $statement A valid SQL INSERT prepared statement
+	   * @return void
+	   */
+	  public function setPersist($statement) {
+	      
+	         $this->persist = $statement;
+	  }
+
+	  /**
+	   * Returns orm.xml <persist> configuration for the table
+	   * 
+	   * @return string <persist> configuration value
+	   */
+	  public function getPersist() {
+	      
+	         return $this->persist;
+	  }
+
+	  /**
+	   * Sets the prepared statement used to override ORM generated UPDATE
+	   * 
+	   * @param string $statement A valid SQL UPDATE prepared statement
+	   * @return void
+	   */
+	  public function setMerge($statement) {
+	      
+	         $this->merge = $statement;
+	  }
+	  
+	  /**
+	   * Returns the orm.xml <merge> configuration for the table
+	   * 
+	   * @return string <merge> configuration value
+	   */
+	  public function getMerge() {
+	      
+	         return $this->merge;
+	  }
+
+	  /**
+	   * Sets a prepared statement used to override ORM generated DELETE
+	   * 
+	   * @param string $statement A valid SQL DELETE prepared statement
+	   * @return void
+	   */
+	  public function setDelete($statement) {
+	      
+	         $this->delete = $statement;
+	  }
+	  
+	  /**
+	   * Returns the orm.xml <delete> configuration for the table
+	   * 
+	   * @return string <delete> configuration value
+	   */
+	  public function getDelete() {
+
+	         return $this->delete;
+	  }
+
+	  /**
+	   * Sets a prepared statement used to override ORM generated SELECT (intended to populate a single ActiveRecord model).
+	   * 
+	   * @param string $statement A valid SQL SELECT prepared statement intended to pull a single record (should contain WHERE id=?)
+	   * @return void
+	   */
+	  public function setGet($statement) {
+	      
+	         $this->get = $statement;
+	  }
+
+	  /**
+	   * Returns the orm.xml <get> configuration for the table
+	   * 
+	   * @return string <get> configuration value
+	   */
+	  public function getGet() {
+
+	         return $this->get;
+	  }
+
+	  /**
+	   * Sets a prepared statement used to override ORM generated SELECT (intended to populate a list view)
+	   * 
+	   * @param string $statement A valid SQL SELECT prepared statement
+	   * @return void
+	   */
+	  public function setFind($statement) {
+	      
+	         $this->find = $statement;
+	  }
+
+	  /**
+	   * Returns the orm.xml <find> configuration for the table
+	   * 
+	   * @return string <find> configuration value
+	   */
+	  public function getFind() {
+	      
+	         return $this->find;
 	  }
 	  
 	  /**

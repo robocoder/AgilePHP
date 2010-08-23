@@ -494,7 +494,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   */
 	  public function persist() {
 
-  		     ORM::persist($this->getModel());
+  		     ORMFactory::getDialect()->persist($this->getModel());
 	  }
 
 	  /**
@@ -503,7 +503,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   */
 	  public function merge() {
 
-	  		 ORM::merge($this->getModel());
+	  		 ORMFactory::getDialect()->merge($this->getModel());
 	  }
 
 	  /**
@@ -512,7 +512,7 @@ class IdentityManagerImpl implements IdentityManager {
 	   */
 	  public function delete() {
 
-  	         ORM::delete($this->getModel());
+  	         ORMFactory::getDialect()->delete($this->getModel());
 	  }
 
 	  /**

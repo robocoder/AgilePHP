@@ -64,12 +64,10 @@ abstract class BaseModelXmlController extends BaseModelController {
 
   			 	   if($this->getModelPersistenceAction() == 'merge') {
 
-  			 	       $models = ORM::find($this->getModel());
-  			 	   	   if(!isset($models[0]))
-  			 	   	   	  throw new FrameworkException('The ActiveRecord state for model \'' . $this->getModelName() . '\' could not be found.');
-
-  			 	   	   $fieldCount = count(ORM::getTableByModel($this->getModel())->getColumns());
-  			 	       $xml .= XmlRenderer::render($models[0], $modelName, $modelName, false, false);
+  			 	       $model = $this->getModel();
+  			 	       $model->get();
+  			 	   	   $fieldCount = count(ORM::getTableByModel($model)->getColumns());
+  			 	       $xml .= XmlRenderer::render($model, $modelName, $modelName, false, false);
   			 	   }
   			 	   else
   			 	       $xml .= XmlRenderer::render($this->getModel(), $modelName, $modelName, false, false);

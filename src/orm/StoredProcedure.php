@@ -20,7 +20,7 @@
  */
 
 /**
- * Base implementation for domain models (a model with business logic). Provides
+ * Base implementation for "business" stored procedures (sprocs with business logic). Provides
  * helper methods for CRUD (create/read/update/delete) operations.
  *
  * @author Jeremy Hahn
@@ -28,12 +28,17 @@
  * @package com.makeabyte.agilephp.orm
  * @abstract
  */
-abstract class DomainModel {
+abstract class StoredProcedure extends DomainModel {
 
-         abstract public function __construct();
+         const ACTION_DEFAULT = NULL;
+         const ACTION_PERSIST = 1;
+         const ACTION_MERGE = 2;
+         const ACTION_DELETE = 3;
+         const ACTION_GET = 4;
+         const ACTION_FIND = 5;
 
          /**
-          * Persists/saves the DomainModel ActiveRecord state to
+          * Persists/saves the StoredProcedure ActiveRecord state to
           * the data source.
           *
           * @return void
@@ -41,7 +46,7 @@ abstract class DomainModel {
           */
          public function persist() {
 
-                return ORMFactory::getDialect()->persist($this);
+                return ORMFactory::getDialect()->call($this, self::ACTION_PERSIST);
          }
 
 		 /**
@@ -54,7 +59,7 @@ abstract class DomainModel {
           */
          public function get() {
 
-                if(!$model = ORMFactory::getDialect()->get($this)) return false;
+                if(!$model = ORMFactory::getDialect()->call($this, self::ACTION_GET)) return false;
 
                 // @todo Interceptors are still being somewhat intrusive to reflection operations
 	  		    if(method_exists($model, 'getInterceptedInstance')) {
@@ -102,45 +107,56 @@ abstract class DomainModel {
           */
          public function merge() {
 
-                return ORMFactory::getDialect()->merge($this);
+                return ORMFactory::getDialect()->call($this, self::ACTION_MERGE);
          }
 
 		 /**
           * Deletes/destroys the data source record mapped by the
-          * DomainModel ActiveRecord state.
+          * StoredProcedure ActiveRecord state.
           *
           * @return void
           * @throws ORMException
           */
          public function delete() {
 
-                return ORMFactory::getDialect()->delete($this);
+                return ORMFactory::getDialect()->call($this, self::ACTION_DELETE);
+         }
+
+		 /**
+          * Calls/executes a stored procedure mapped to this StoredProcedure in orm.xml
+          *
+          * @return void
+          * @throws ORMException
+          */
+         public function call() {
+
+                return ORMFactory::getDialect()->call($this, self::ACTION_DEFAULT);
          }
 
          /**
-          * Performs a SELECT * on the mapped table.
+          * Calls/executes the stored procedure
           *
           * @return array An array of records or an empty array if no records were located
           */
          public function find($maxResults = 25) {
 
                 ORMFactory::getDialect()->setMaxResults($maxResults);
-                return ORMFactory::getDialect()->find($this);
+                return ORMFactory::getDialect()->call($this, self::ACTION_FIND);
          }
 
-         /**
+		 /**
           * Nulls out all model property values
           * 
           * @return void
           */
          public function clear() {
 
-                $table = ORMFactory::getDialect()->getTableByModel($this);
-	  	        $columns = $table->getColumns();
+                $proc = ORMFactory::getDialect()->getProcedureByModel($this);
+	  	        $params = $proc->getParameters();
 
- 			    for($i=0; $i<count($columns); $i++) {
+ 			    for($i=0; $i<count($params); $i++) {
 
-	  	     	    $mutator = 'set' . ucfirst($columns[$i]->getModelPropertyName());
+	  	     	    $mutator = ORMFactory::getDialect()->toMutator($params[$i]->getModelPropertyName());
 	  	     	    $this->$mutator(null);
 	  	        }
          }

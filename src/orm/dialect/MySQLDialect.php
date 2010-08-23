@@ -79,15 +79,125 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#call($model)
+	   * 
+	   * @todo this could use some cleaning up
 	   */
-	  public function call(DomainModel $model) {
+	  public function call(DomainModel $model, $action = null) {
 
 	  	     $values = array();
 	  		 $outs = array();
 	  		 $params = array();
 	  		 $references = array();
 	  		 $class = get_class($model);
+
+	  		 // Assign "default" action
 	  		 $proc = $this->getProcedureByModel($model);
+	  		 $procedureName = $proc->getName();
+	  		 $parameters = $proc->getParameters();
+
+	  		 if($action) {
+
+    	  		 switch($action) {
+    
+    	             case StoredProcedure::ACTION_PERSIST:
+    	                  $xml = ORMFactory::getConfiguration();
+    	                  foreach($xml->database->procedure as $procedure) {
+    	                      if($procedure->attributes()->name == $procedureName) {
+    	                          if($procedure->persist) {
+    	                             if(!$query = (string)$procedure->persist) {
+    	                                 if($reference = $procedure->persist->attributes()->references) {
+           	                                 $proc = $this->getProcedureByName($reference);
+           	                                 $procedureName = $proc->getName();
+          	                                 $parameters = array();
+        	                                 foreach($procedure->persist->parameter as $parameter)
+        	                                   array_push($parameters, new ProcedureParam($parameter));
+    	                                 }
+    	                             }
+    	                          }
+    	                      }
+    	                  }
+    	             break;
+    
+    	             case StoredProcedure::ACTION_MERGE:
+    	                  $xml = ORMFactory::getConfiguration();
+    	                  foreach($xml->database->procedure as $procedure) {
+    	                      if($procedure->attributes()->name == $procedureName) {
+    	                          if($procedure->merge) {
+    	                             if(!$query = (string)$procedure->merge) {
+        	                             if($reference = $procedure->merge->attributes()->references) {
+          	                                 $proc = $this->getProcedureByName($reference);
+           	                                 $procedureName = $proc->getName();
+          	                                 $parameters = array();
+        	                                 foreach($procedure->merge->parameter as $parameter)
+        	                                   array_push($parameters, new ProcedureParam($parameter));
+        	                             }
+        	                         }
+    	                          }
+    	                      }
+    	                  }
+    	             break;
+    
+    	             case StoredProcedure::ACTION_DELETE:
+    	                  $xml = ORMFactory::getConfiguration();
+    	                  foreach($xml->database->procedure as $procedure) {
+    	                      if($procedure->attributes()->name == $procedureName) {
+    	                          if($procedure->delete) {
+    	                             if(!$query = (string)$procedure->delete) {
+    	                                 if($reference = $procedure->delete->attributes()->references) {
+            	                            $proc = $this->getProcedureByName($reference);
+           	                                $procedureName = $proc->getName();
+              	                            $parameters = array();
+            	                            foreach($procedure->delete->parameter as $parameter)
+            	                                array_push($parameters, new ProcedureParam($parameter));
+        	                             }
+    	                             }
+    	                          }
+    	                      }
+    	                  }
+    	             break;
+    
+    	             case StoredProcedure::ACTION_GET:
+    	                  $xml = ORMFactory::getConfiguration();
+    	                  foreach($xml->database->procedure as $procedure) {
+    	                      if($procedure->attributes()->name == $procedureName) {
+    	                          if($procedure->get) {
+    	                             if(!$query = (string)$procedure->get) {
+    	                                 if($reference = $procedure->get->attributes()->references) {
+            	                            $proc = $this->getProcedureByName($reference);
+           	                                $procedureName = $proc->getName();
+              	                            $parameters = array();
+            	                            foreach($procedure->get->parameter as $parameter)
+            	                                array_push($parameters, new ProcedureParam($parameter));
+        	                             }
+    	                             }
+    	                          }
+    	                      }
+    	                  }
+    	             break;
+    	             
+    	             case StoredProcedure::ACTION_FIND:
+    	                  $xml = ORMFactory::getConfiguration();
+    	                  foreach($xml->database->procedure as $procedure) {
+    	                      if($procedure->attributes()->name == $procedureName) {
+    	                          if($procedure->find) {
+    	                             if(!$query = (string)$procedure->find) {
+    	                                 if($reference = $procedure->find->attributes()->references) {
+            	                            $proc = $this->getProcedureByName($reference);
+           	                                $procedureName = $proc->getName();
+              	                            $parameters = array();
+            	                            foreach($procedure->find->parameter as $parameter)
+            	                                array_push($parameters, new ProcedureParam($parameter));
+        	                             }
+    	                             }
+    	                          }
+    	                      }
+    	                  }
+    	             break;
+    
+    	             // default:
+    	             // assigned before switch statement
+    	         }
+	  		 }
 
 	  		 // Parse IN, OUT, & INOUT parameters
 	  		 foreach($proc->getParameters() as $param) {
@@ -95,33 +205,33 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 	  		         if($ref = $param->getReference())
 	  		            $references[$param->getName()] = $ref;
 
-	  		 		  if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
+	  		 		 if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
 
-	  		 			  $accessor = $this->toAccessor($param->getModelPropertyName());
-	  		 			  array_push($params, $model->$accessor());
-	  		 		  }
+	  		 		    $accessor = $this->toAccessor($param->getModelPropertyName());
+	  		 			array_push($params, $model->$accessor());
+	  		 		 }
 
-	  		 		  if($param->getMode() == 'OUT' || $param->getMode() == 'INOUT')
-	  		 			  $outs[$param->getName()] = $param->getModelPropertyName();
+	  		 		 if($param->getMode() == 'OUT' || $param->getMode() == 'INOUT')
+	  		 		    $outs[$param->getName()] = $param->getModelPropertyName();
 	  		 }
 
 	  		 // Execute the stored procedure using each of the IN and INOUT variables
 	  		 // in the ordinal position they were specified in orm.xml
-	  		 $query = 'call ' . $proc->getName() . '(';
-	  		 for($i=0; $i<count($params); $i++) {
+	  		 $paramCount = count($params);
+  		     $query = 'call ' . $procedureName . '(';
+	  		 for($i=0; $i<$paramCount; $i++) {
 
 	  		 		$values[$i] = $params[$i];
-	  		 		$query .= '?' . (($i+1) < count($params) ? ', ': '');
+	  		 		$query .= '?' . (($i+1) < $paramCount ? ', ': '');
 	  		 }
 	  		 $query .= ');';
 
 	  		 $this->prepare($query);
-	  		 $stmt = $this->execute($params);
-	  		 $stmt->setFetchMode(PDO::FETCH_ASSOC);
-	  		 $results = $stmt->fetchAll();
+	  		 $stmt = $this->execute($values);
+	  		 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	  		 $stmt->closeCursor();
 
-	  		 if(!$results) return true;  // The query was successful; sprocs arent required to return
+	  		 if(!$results) return false;  // nothing to return
 
 	  		 // Result set has more than one item
 	  		 if(count($results) > 1) {
@@ -138,6 +248,8 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 		 		 		          if(array_key_exists($column, $references))
 		 		 		             $value = $this->callReference($column, $references, $outs, $value);
 
+		 		 		          if(!$value) continue;
+		 		 		             
 		  		 		  		  $m->$mutator($value);
 		 		 		  }
 		 		 		  array_push($models, $m);
@@ -158,45 +270,12 @@ final class MySQLDialect extends BaseDialect implements SQLDialect {
 		 		 		       if(array_key_exists($column, $references))
 		 		 		          $value = $this->callReference($column, $references, $outs, $value);
 
+		 		 		       if(!$value) continue;
+		 		 		          
 		  		 		  	   $m->$mutator($value);
 		 		      }
 		 		 	  return $m;
 	  		 }
-	  }
-
-	  /**
-	   * Responsible for executing a "referenced" stored procedure. This behaves in a similar fashion
-	   * to the parent/child associations using tables/foreign keys. When a procedure has an OUT parameter
-	   * configured in orm.xml which defines a "references" attribute, the value returned to the "parent"
-	   * procedure from the database is passed into this method where the referenced procedure is executed
-	   * accordingly, and its return value(s) mapped to its configured DomainModel.
-	   * 
-	   * @param string $column The column name as returned from the stored procedure
-	   * @param array $references Associative array of "referenced" stored procedures
-	   *        where the key represents the value returned from the "parent" procedure
-	   *        and the value represents the procedure name.
-	   * @param array $outs An associative array of OUT variables from the parent procedure
-	   * @param mixed $value The value to pass into the referenced procedure
-	   * @return DomainModel The referenced ActiveRecord instance
-	   */
-	  protected function callReference($column, $references, $outs, $value) {
-
-	            $refAccessor = $this->toMutator($outs[$column]);
-
-	            $procedure = $this->getProcedureByName($references[$column]);
-	            $fModelName = $procedure->getModel();
-	            $fModel = new $fModelName;
-
-	            foreach($procedure->getParameters() as $param) {
-
-	                if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
-
-	                   $refMutator = $this->toMutator($param->getModelPropertyName());
-	                   $fModel->$refMutator($value);
-	                }
- 	            }
-
-	            return $this->call($fModel);
 	  }
 
 	  /**

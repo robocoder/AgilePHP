@@ -263,8 +263,13 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 				     	 	     	    array_push($values, $model->$accessor());
 						     	 }
 						    }
-						    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
-						    $sql .= ' LIMIT ' . $this->getMaxResults() . ';';
+
+						    $sql = $table->getFind();
+						    if($where) {
+
+						       $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
+						       $sql .= ' LIMIT ' . $this->getMaxResults() . ';';
+						    }
 	    	   		 }
 
 	    	   		 $this->setDistinct(null);
@@ -367,10 +372,14 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 
 	  		 $outs = array();
 	  		 $params = array();
+	  		 $references = array();
 	  		 $class = get_class($model);
 	  		 $proc = $this->getProcedureByModel($model);
 
 	  		 foreach($proc->getParameters() as $param) {
+
+	  		          if($ref = $param->getReference())
+	  		             $references[$param->getName()] = $ref;
 
 	  		 		  if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
 
@@ -384,10 +393,10 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 
 	  		 $values = array();
 	  		 $query = 'SELECT * FROM ' . $proc->getName() . '(';
-	  		 for($i=0; $i<count($params); $i++) {
+	         for($i=0; $i<count($params); $i++) {
 
 	  		 		$values[$i] = $params[$i];
-	  		 		$query .= '?' . (($i+1) == count($query) ? ', ': '');
+	  		 		$query .= '?' . (($i+1) < count($params) ? ', ': '');
 	  		 }
 	  		 $query .= ');';
 
@@ -395,6 +404,7 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	  		 $stmt = $this->execute($values);
 	  		 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 	  		 $results = $stmt->fetchAll();
+	  		 $stmt->closeCursor();
 
 	  		 if(!$results) return true;
 
@@ -407,6 +417,11 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 		 		 		  foreach($record as $column => $value) {
 
 		 		 		  		   $mutator = $this->toMutator($outs[$column]);
+
+		 		 		  		   // References act like table foreign keys - they allow associations to other objects
+		 		 		           if(array_key_exists($column, $references))
+		 		 		              $value = $this->callReference($column, $references, $outs, $value);
+
 		  		 		  		   $m->$mutator($value);
 		 		 		  }
 		 		 		  array_push($models, $m);
@@ -420,6 +435,11 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 		 		 	  foreach($record as $column => $value) {
 
 		 		 		  	   $mutator = $this->toMutator($outs[$column]);
+
+		 		 		  	   // References act like table foreign keys - they allow associations to ther objects
+		 		 		       if(array_key_exists($column, $references))
+		 		 		          $value = $this->callReference($column, $references, $outs, $value);
+
 		  		 		  	   $m->$mutator($value);
 		 		      }
 		 		 	  return $m;

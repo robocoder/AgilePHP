@@ -84,6 +84,18 @@ SELECT * FROM roles $$
 CREATE PROCEDURE getrole(IN roleid INT(10))
 SELECT * FROM roles WHERE id = roleid $$
 
+CREATE PROCEDURE addrole(rname VARCHAR(25), rdescription TEXT)
+BEGIN
+  INSERT INTO roles(NAME, description) VALUES(rname, rdescription);
+  SELECT LAST_INSERT_ID() AS id;
+END $$
+
+CREATE PROCEDURE updaterole(rid int(10), rname VARCHAR(25), rdescription text)
+UPDATE roles SET name = rname, description = rdescription WHERE id = rid $$
+
+CREATE PROCEDURE deleterole(rid int(10)
+DELETE FROM roles WHERE id = rid $$
+
 DELIMITER ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

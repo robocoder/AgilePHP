@@ -11,6 +11,7 @@
 			<column name="category" type="varchar" length="255" required="true" validator="StringValidator"/>
 			<column name="image" type="blob" required="true"/>
 			<column name="video" type="blob" />
+			<persist>INSERT INTO inventory(name, description, price, category, image, video) VALUES(?,?,?,?,?,?)</persist>
 		</table>
 
 		<table name="mailing" model="Mailing" display="Mailing List" description="People on your mailing list">
@@ -31,12 +32,22 @@
 	  							 table="roles" column="id" controller="RoleController" select="name" cascade="all"/>
 			</column>
 	  		<column name="enabled" type="boolean" validator="BooleanValidator" renderer="YesNoRenderer" transformer="YesNoToBoolean"/>
+			<persist>INSERT INTO users(username, password, email, created, last_login, roleId, enabled) VALUES(?,?,?,?,?,?,?)</persist>
+			<merge>UPDATE users SET password=?, email=?, created=?, last_login=?, roleId=?, enabled=? WHERE username=?</merge>
+			<delete>DELETE FROM users WHERE username=?</delete>
+			<get>SELECT username, password, email, created, last_login, roleId, enabled FROM users WHERE username=?</get>
+			<find>SELECT username, password, email, created, last_login, roleId, enabled FROM users</find>
 	 	</table>
 
 	 	<table name="roles" display="Roles" model="Role" description="Roles within the web application">
-	 	    <column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" validator="NumberValidator"/>
+	 	    <column name="id" type="int" length="10" primaryKey="true" autoIncrement="true" validator="NumberValidator" visible="false"/>
 			<column name="name" type="varchar" length="25" required="true" validator="StringValidator"/>
 			<column name="description" type="text" validator="StringValidator"/>
+			<persist>INSERT INTO roles(name, description) VALUES(?,?)</persist>
+			<merge>UPDATE roles SET name=?, description=? WHERE id=?</merge>
+			<delete>DELETE FROM roles WHERE id=?</delete>
+			<get>SELECT id, name, description FROM roles WHERE id=?</get>
+			<find>SELECT id, name, description FROM roles</find>
 	 	</table>
 
 		<!-- AgilePHP Session -->
@@ -46,7 +57,7 @@
 			<column name="created" type="timestamp" default="CURRENT_TIMESTAMP" validator="DateValidator"/>
 		</table>
 
-		<!-- "Standalone" Stored Procedure -->
+		<!-- "Standalone" Stored Procedures -->
 
 		<procedure name="authenticate" model="SPauthenticate" description="Stored procedure responsible for authentication">
 			<parameter name="userid" property="userId" mode="IN"/>
@@ -54,10 +65,32 @@
 			<parameter name="authenticate" property="result" mode="OUT"/>
 		</procedure>
 
-	    <procedure name="getroles" model="Role" description="Stored procedure responsible for getting all roles">
+	    <procedure name="getroles" model="SPRole" description="Stored procedure responsible for getting all roles">
 			<parameter name="id" mode="OUT"/>
 			<parameter name="name" mode="OUT"/>
 			<parameter name="description" mode="OUT"/>
+			<persist references="addrole"/>
+			<merge references="updaterole"/>
+			<delete references="deleterole"/>
+			<get references="getrole"/>
+			<!-- Not needed since its the default -->
+            <!-- <find references="getroles"/> -->
+		</procedure>
+
+		<procedure name="addrole" model="Role" description="Stored procedure responsible for adding a new role">
+			<parameter name="id" mode="OUT"/>
+			<parameter name="name" mode="IN"/>
+			<parameter name="description" mode="IN"/>
+		</procedure>
+
+		<procedure name="updaterole" model="Role" description="Stored procedure responsible for updating a role">
+			<parameter name="id" mode="IN"/>
+			<parameter name="name" mode="IN"/>
+			<parameter name="description" mode="IN"/>
+		</procedure>
+
+		<procedure name="deleterole" model="Role" description="Stored procedure responsible for deleting a role">
+			<parameter name="id" mode="IN"/>
 		</procedure>
 
 		<procedure name="getrole" model="Role" description="Stored procedure responsible for getting a specified role">
@@ -66,7 +99,7 @@
 			<parameter name="description" mode="OUT"/>
 		</procedure>
 
-		<!-- "Relational" Stored Procedure -->
+		<!-- "Relational" Stored Procedures -->
 
 		<procedure name="getusers" model="User" description="Stored procedure responsible for getting all users">
 			<parameter name="username" mode="OUT"/>

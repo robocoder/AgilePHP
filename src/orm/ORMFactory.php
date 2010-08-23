@@ -32,6 +32,17 @@ abstract class ORMFactory {
 		 private static $dialect;
 
 		 /**
+		  * Returns orm.xml as a SimpleXMLElement
+		  * 
+		  * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
+		  * @return SimpleXMLElement orm.xml configuration
+		  */
+		 public static function getConfiguration($ormXml = null) {
+
+		        return self::getXml($ormXml);
+		 }
+
+		 /**
 		  * Returns a SQLDialect singleton instance. Uses AgilePHP CacheProvider if enabled.
 		  * 
 		  * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
