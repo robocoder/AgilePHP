@@ -182,7 +182,7 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	   		  return $sql;
 	  }
 
-	   /**
+	  /**
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
 	   */
@@ -368,32 +368,138 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#call(DomainModel $model)
 	   */
-	  public function call(DomainModel $model) {
+	  public function call(DomainModel $model, $action = null) {
 
 	  		 $outs = array();
 	  		 $params = array();
+	  		 $values = array();
 	  		 $references = array();
 	  		 $class = get_class($model);
-	  		 $proc = $this->getProcedureByModel($model);
 
+	  		 // Assign "default" action (ACTION_DEFAULT)
+	  		 $proc = $this->getProcedureByModel($model);
+	  		 $procedureName = $proc->getName();
+	  		 $parameters = $proc->getParameters();
+
+	  		 switch($action) {
+
+	             case StoredProcedure::ACTION_PERSIST:
+	                  $xml = ORMFactory::getConfiguration();
+	                  foreach($xml->database->procedure as $procedure) {
+	                      if($procedure->attributes()->name == $procedureName) {
+	                          if($procedure->persist) {
+	                             if(!$query = (string)$procedure->persist) {
+	                                 if($reference = $procedure->persist->attributes()->references) {
+       	                                 $proc = $this->getProcedureByName($reference);
+       	                                 $procedureName = $proc->getName();
+      	                                 $parameters = array();
+    	                                 foreach($procedure->persist->parameter as $parameter)
+    	                                   array_push($parameters, new ProcedureParam($parameter));
+	                                 }
+	                             }
+	                          }
+	                      }
+	                  }
+	             break;
+
+	             case StoredProcedure::ACTION_MERGE:
+	                  $xml = ORMFactory::getConfiguration();
+	                  foreach($xml->database->procedure as $procedure) {
+	                      if($procedure->attributes()->name == $procedureName) {
+	                          if($procedure->merge) {
+	                             if(!$query = (string)$procedure->merge) {
+    	                             if($reference = $procedure->merge->attributes()->references) {
+      	                                 $proc = $this->getProcedureByName($reference);
+       	                                 $procedureName = $proc->getName();
+      	                                 $parameters = array();
+    	                                 foreach($procedure->merge->parameter as $parameter)
+    	                                   array_push($parameters, new ProcedureParam($parameter));
+    	                             }
+    	                         }
+	                          }
+	                      }
+	                  }
+	             break;
+
+	             case StoredProcedure::ACTION_DELETE:
+	                  $xml = ORMFactory::getConfiguration();
+	                  foreach($xml->database->procedure as $procedure) {
+	                      if($procedure->attributes()->name == $procedureName) {
+	                          if($procedure->delete) {
+	                             if(!$query = (string)$procedure->delete) {
+	                                 if($reference = $procedure->delete->attributes()->references) {
+        	                            $proc = $this->getProcedureByName($reference);
+       	                                $procedureName = $proc->getName();
+          	                            $parameters = array();
+        	                            foreach($procedure->delete->parameter as $parameter)
+        	                                array_push($parameters, new ProcedureParam($parameter));
+    	                             }
+	                             }
+	                          }
+	                      }
+	                  }
+	             break;
+
+	             case StoredProcedure::ACTION_GET:
+	                  $xml = ORMFactory::getConfiguration();
+	                  foreach($xml->database->procedure as $procedure) {
+	                      if($procedure->attributes()->name == $procedureName) {
+	                          if($procedure->get) {
+	                             if(!$query = (string)$procedure->get) {
+	                                 if($reference = $procedure->get->attributes()->references) {
+        	                            $proc = $this->getProcedureByName($reference);
+       	                                $procedureName = $proc->getName();
+          	                            $parameters = array();
+        	                            foreach($procedure->get->parameter as $parameter)
+        	                                array_push($parameters, new ProcedureParam($parameter));
+    	                             }
+	                             }
+	                          }
+	                      }
+	                  }
+	             break;
+
+	             case StoredProcedure::ACTION_FIND:
+	                  $xml = ORMFactory::getConfiguration();
+	                  foreach($xml->database->procedure as $procedure) {
+	                      if($procedure->attributes()->name == $procedureName) {
+	                          if($procedure->find) {
+	                             if(!$query = (string)$procedure->find) {
+	                                 if($reference = $procedure->find->attributes()->references) {
+        	                            $proc = $this->getProcedureByName($reference);
+       	                                $procedureName = $proc->getName();
+          	                            $parameters = array();
+        	                            foreach($procedure->find->parameter as $parameter)
+        	                                array_push($parameters, new ProcedureParam($parameter));
+    	                             }
+	                             }
+	                          }
+	                      }
+	                  }
+	             break;
+
+	             // default:
+	             // assigned before switch statement
+	         }
+
+	  		 // Parse IN, OUT, & INOUT parameters
 	  		 foreach($proc->getParameters() as $param) {
 
-	  		          if($ref = $param->getReference())
-	  		             $references[$param->getName()] = $ref;
+	  		         if($ref = $param->getReference())
+	  		            $references[$param->getName()] = $ref;
 
-	  		 		  if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
+	  		 		 if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
 
-	  		 			  $accessor = $this->toAccessor($param->getModelPropertyName());
-	  		 			  array_push($params, $model->$accessor());
-	  		 		  }
+	  		 		    $accessor = $this->toAccessor($param->getModelPropertyName());
+	  		 			array_push($params, $model->$accessor());
+	  		 		 }
 
-	  		 		  if($param->getMode() == 'OUT' || $param->getMode() == 'INOUT')
-	  		 			  $outs[$param->getName()] = $param->getModelPropertyName();
+	  		 		 if($param->getMode() == 'OUT' || $param->getMode() == 'INOUT')
+	  		 		    $outs[$param->getName()] = $param->getModelPropertyName();
 	  		 }
 
-	  		 $values = array();
 	  		 $query = 'SELECT * FROM ' . $proc->getName() . '(';
-	         for($i=0; $i<count($params); $i++) {
+	  		 for($i=0; $i<count($params); $i++) {
 
 	  		 		$values[$i] = $params[$i];
 	  		 		$query .= '?' . (($i+1) < count($params) ? ', ': '');
@@ -406,7 +512,7 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	  		 $results = $stmt->fetchAll();
 	  		 $stmt->closeCursor();
 
-	  		 if(!$results) return true;
+	  		 if(!$results) return false;  // nothing to return
 
 	  		 if(count($results) > 1) {
 
@@ -416,13 +522,16 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 		 		 		  $m = new $class;
 		 		 		  foreach($record as $column => $value) {
 
-		 		 		  		   $mutator = $this->toMutator($outs[$column]);
+		 		 		          if(array_key_exists($column, $outs)) {
 
-		 		 		  		   // References act like table foreign keys - they allow associations to other objects
-		 		 		           if(array_key_exists($column, $references))
-		 		 		              $value = $this->callReference($column, $references, $outs, $value);
+		 		 		             $mutator = $this->toMutator($outs[$column]);
 
-		  		 		  		   $m->$mutator($value);
+		 		 		  		     // References act like table foreign keys - they allow associations to other objects
+		 		 		             if(array_key_exists($column, $references))
+		 		 		                $value = $this->callReference($column, $references, $outs, $value);
+
+		  		 		  		     $m->$mutator($value);
+		 		 		          }
 		 		 		  }
 		 		 		  array_push($models, $m);
 	 		 	 }
@@ -434,13 +543,16 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	  		 		  $m = new $class;
 		 		 	  foreach($record as $column => $value) {
 
-		 		 		  	   $mutator = $this->toMutator($outs[$column]);
+                              if(array_key_exists($column, $outs)) {
 
-		 		 		  	   // References act like table foreign keys - they allow associations to ther objects
-		 		 		       if(array_key_exists($column, $references))
-		 		 		          $value = $this->callReference($column, $references, $outs, $value);
+        	 		 		  	 $mutator = $this->toMutator($outs[$column]);
 
-		  		 		  	   $m->$mutator($value);
+        	 		 		  	 // References act like table foreign keys - they allow associations to other objects
+        	 		 		     if(array_key_exists($column, $references))
+        	 		 		        $value = $this->callReference($column, $references, $outs, $value);
+
+        	  		 		  	 $m->$mutator($value);
+                              }
 		 		      }
 		 		 	  return $m;
 	  		 }

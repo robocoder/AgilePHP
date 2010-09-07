@@ -23,6 +23,7 @@
 <!ATTLIST mvc renderer CDATA #IMPLIED>
 <!ATTLIST mvc action CDATA #IMPLIED>
 <!ATTLIST mvc sanitize CDATA #FIXED "false">
+<!ATTLIST mvc requestBase CDATA #IMPLIED>
 
 <!ELEMENT identity (#PCDATA)>
 <!ATTLIST identity model CDATA #IMPLIED>

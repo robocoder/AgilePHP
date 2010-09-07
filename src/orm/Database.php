@@ -258,9 +258,37 @@ class Database {
 	  		 return $this->tables;
 	  }
 
+	  /**
+	   * Returns an array of Proceudre instances which represent a stored procedure in the
+	   * physical database.
+	   *
+	   * @return array A list of Procedure instances each representing a stored procedure in the physical database.
+	   */
 	  public function getProcedures() {
 
 	  		 return $this->procedures;
+	  }
+
+	  /**
+	   * Adds a new stored procedure
+	   *
+	   * @param Procedure The Procedure instance to push onto the stack
+	   * @return void
+	   */
+	  public function addProcedure(Procedure $procedure) {
+
+	         array_push($this->procedures, $procedure);
+	  }
+
+	  /**
+	   * Sets the stack of Procedures
+	   *
+	   * @param array<Procedure> A list of Procedure instances
+	   * @return void
+	   */
+	  public function setProcedures(array $procedures) {
+
+	         $this->procedures = $procedures;
 	  }
 }
 ?>

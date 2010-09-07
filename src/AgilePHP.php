@@ -36,7 +36,7 @@ final class AgilePHP {
       private static $webroot;                    // The full system path to the web application
       private static $frameworkRoot;              // The full system path to the location of the AgilePHP framework
       private static $documentRoot;               // The relative path to the web app from the server's document root.
-      private static $requestBase;                // The base request URL (used to communicate with MVC component)
+      private static $requestBase;                // The base request URL used to communicate with MVC component (bootstrap)
       private static $debugMode = false;          // Whether or not this component is running in debug mode
       private static $xml;                        // AgilePHP configuration - agilephp.xml
       private static $appName;                    // Name of the AgilePHP application
@@ -101,6 +101,9 @@ final class AgilePHP {
               if(isset($key)) self::$cacher->set($key, self::$xml);
 
               if(self::$xml->mvc) {
+
+                 if($requestBase = self::$xml->mvc->attributes()->requestBase)
+                    self::$requestBase = $requestBase;
 
                   MVC::init((string)self::$xml->mvc->attributes()->controller,
                             (string)self::$xml->mvc->attributes()->action,
@@ -333,7 +336,7 @@ final class AgilePHP {
        */
       public static function setDebugMode($boolean) {
 
-             self::$debugMode = ($boolean === true) ? true : false;
+             self::$debugMode = $boolean;
              if(self::$debugMode) self::setDisplayPhpErrors(true);
       }
 
@@ -385,7 +388,7 @@ final class AgilePHP {
              else {
 
                  $level = 'class';
-                 $from = $interception->getClass(); 
+                 $from = $interception->getClass();
              }
 
              Log::debug('AgilePHP::addInterception Adding ' . $level . ' level #@' . get_class($interception->getInterceptor()) .
@@ -625,7 +628,7 @@ final class AgilePHP {
                    return;
                 }
              }
-             
+
              // Search classmap
              if(isset(self::$classmap[$class])) {
 
