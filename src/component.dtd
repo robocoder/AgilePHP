@@ -28,9 +28,9 @@
 <!ATTLIST param type CDATA #REQUIRED>
 <!ATTLIST param value CDATA #IMPLIED>
 
-<!ELEMENT orm (table+)>
+<!ELEMENT orm (table*, procedure*)>
 
-<!ELEMENT table (column+)>
+<!ELEMENT table (column*, persist?, merge?, delete?, get?, find?)>
 <!ATTLIST table name CDATA #REQUIRED>
 <!ATTLIST table model CDATA #REQUIRED>
 <!ATTLIST table display CDATA #IMPLIED>
@@ -39,15 +39,27 @@
 <!ATTLIST table isIdentity CDATA #FIXED "true">
 <!ATTLIST table isSession CDATA #FIXED "true">
 
+<!ELEMENT procedure (parameter*, persist?, merge?, delete?, get?, find?)>
+<!ATTLIST procedure name CDATA #REQUIRED>
+<!ATTLIST procedure model CDATA #REQUIRED>
+<!ATTLIST procedure display CDATA #IMPLIED>
+<!ATTLIST procedure description CDATA #IMPLIED>
+
+<!ELEMENT parameter (#PCDATA)>
+<!ATTLIST parameter name CDATA #REQUIRED>
+<!ATTLIST parameter property CDATA #IMPLIED>
+<!ATTLIST parameter mode CDATA #REQUIRED>
+<!ATTLIST parameter references CDATA #IMPLIED>
+
 <!ELEMENT column (foreignKey*)>
 <!ATTLIST column name CDATA #REQUIRED>
 <!ATTLIST column type ( boolean | integer | int | bigint | double | decimal | varchar | float | bit | date | datetime | timestamp | blob | text | longtext | password |
-						smallint | tinyint | money | char | varbinary | nvarchar | image | uniqueidentifier | smalldatetime | ntext |
-						abstime | aclitem | bool | bpchar | serial | bigserial | real | numeric | box | bytea | cid | cidr | circle | float4 | float8 | gtsvector |  inet
-						| int2 | int4 | int8 | interval | line | lseg | macaddr | name | oid | path | point | polygon | refcursor | regclass | regconfig | regdictionary
-						| regoper | regoperator | regproc | regprocedure | regtype | reltime | smgr | tid | time | timestamptz | timetz | tinterval | tsquery | tsvector
-						| txid_snapshot | unknown | uuid | varbit | xid | xml | int2vector | oidvector |
-						custom) "varchar">
+ smallint | tinyint | money | char | varbinary | nvarchar | image | uniqueidentifier | smalldatetime | ntext |
+ abstime | aclitem | bool | bpchar | serial | bigserial | real | numeric | box | bytea | cid | cidr | circle | float4 | float8 | gtsvector |  inet
+ | int2 | int4 | int8 | interval | line | lseg | macaddr | name | oid | path | point | polygon | refcursor | regclass | regconfig | regdictionary
+ | regoper | regoperator | regproc | regprocedure | regtype | reltime | smgr | tid | time | timestamptz | timetz | tinterval | tsquery | tsvector
+ | txid_snapshot | unknown | uuid | varbit | xid | xml | int2vector | oidvector |
+ custom) "varchar">
 <!ATTLIST column length CDATA #IMPLIED>
 <!ATTLIST column description CDATA #IMPLIED>
 <!ATTLIST column property CDATA #IMPLIED>
@@ -59,12 +71,12 @@
 <!ATTLIST column autoIncrement CDATA #FIXED "true">
 <!ATTLIST column index CDATA #FIXED "true">
 <!ATTLIST column sortable CDATA #FIXED "false">
-<!ATTLIST column selectable CDATA #FIXED "true">
 <!ATTLIST column sanitize CDATA #FIXED "false">
 <!ATTLIST column lazy CDATA #FIXED "true">
 <!ATTLIST column validator CDATA #IMPLIED>
 <!ATTLIST column renderer CDATA #IMPLIED>
 <!ATTLIST column transformer CDATA #IMPLIED>
+<!ATTLIST column sequence CDATA #IMPLIED>
 
 <!ELEMENT foreignKey (#PCDATA)>
 <!ATTLIST foreignKey type ( one-to-one | one-to-many | many-to-one | many-to-many ) #REQUIRED>
@@ -76,3 +88,19 @@
 <!ATTLIST foreignKey onDelete ( NO_ACTION | RESTRICT | CASCADE | SET_NULL | SET_DEFAULT ) #IMPLIED>
 <!ATTLIST foreignKey description CDATA #IMPLIED>
 <!ATTLIST foreignKey select CDATA #IMPLIED>
+<!ATTLIST foreignKey cascade ( none | all | persist-merge | delete ) "none">
+
+<!ELEMENT persist (#PCDATA)>
+<!ATTLIST persist references CDATA #IMPLIED>
+
+<!ELEMENT merge (#PCDATA)>
+<!ATTLIST merge references CDATA #IMPLIED>
+
+<!ELEMENT delete (#PCDATA)>
+<!ATTLIST delete references CDATA #IMPLIED>
+
+<!ELEMENT get (#PCDATA)>
+<!ATTLIST get references CDATA #IMPLIED>
+
+<!ELEMENT find (#PCDATA)>
+<!ATTLIST find references CDATA #IMPLIED>
