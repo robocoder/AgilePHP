@@ -91,6 +91,13 @@
         </zip>
     </target>
 
+	<target name="phpunit-coverage" depends="clean">
+	 	<exec command="/usr/bin/phpunit --log-junit ${build.dir}/phpunit/logs/phpunit.xml
+	  		--coverage-clover ${build.dir}/phpunit/logs/phpunit.coverage.xml
+	  		--coverage-html ${build.dir}/phpunit/coverage/tests/
+	  		--configuration ${test.dir}/phpunit/phpunit.xml" />
+	</target>
+
     <target name="test" description="Runs PHPUnit test suites">
         <delete dir="${phpunit.reports}" includeemptydirs="true" verbose="true"/>
         <mkdir dir="${phpunit.reports}"/>
