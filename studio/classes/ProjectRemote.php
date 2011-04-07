@@ -197,7 +197,7 @@ class ProjectRemote {
 			  $data .= '<!DOCTYPE orm SYSTEM "AgilePHP/orm/orm.dtd">' . PHP_EOL;
 			  $data .= '<orm>' . PHP_EOL;
 			  $data .= "\t<database name=\"" . ($type == 'sqlite' ? $this->root . '/' . $name . '.sqlite' : $name) . "\"" .
-			  				($type == 'mssql' ? ' driver="' . $db->getDriver() .'"' : '') . PHP_EOL . "\t\t\ttype=\"" . $type . "\" hostname=\"" . $hostname .
+			  				($type == 'mssql' ? ' driver="' . $driver .'"' : '') . PHP_EOL . "\t\t\ttype=\"" . $type . "\" hostname=\"" . $hostname .
 	  		  				"\" username=\"" . $username . "\" password=\"" . $password . "\">" . PHP_EOL . PHP_EOL;
 
 			  if( $identity ) {

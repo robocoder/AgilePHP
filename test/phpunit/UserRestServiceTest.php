@@ -297,7 +297,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 				'Content-Type: application/x-yaml',
 			 ));
 
-			 $username = 'phpunit-json2';
+			 $username = 'phpunit-yaml';
 			 $password = 'test';
 			 $email = 'root@localhost';
 			 $enabled = true;

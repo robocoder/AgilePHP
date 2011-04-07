@@ -38,6 +38,9 @@ class YamlRenderer implements DataRenderer {
 	   */
 	  public static function render($data, $encoding = null, $linebreak = null) {
 
+	  		 if(!function_exists('yaml_emit'))
+	  		    throw new FrameworkException("YAML extension required");
+
 	  		 return yaml_emit($data, $encoding, $linebreak);
 	  }
 }
