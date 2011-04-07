@@ -41,7 +41,9 @@ abstract class DomainModel {
           */
          public function persist() {
 
-                return ORMFactory::getDialect()->persist($this);
+                $dialect = ORMFactory::getDialect(); 
+                $dialect->persist($this);
+                return $dialect->getLastInsertId();
          }
 
 		 /**
@@ -143,6 +145,16 @@ abstract class DomainModel {
 	  	     	    $mutator = 'set' . ucfirst($columns[$i]->getModelPropertyName());
 	  	     	    $this->$mutator(null);
 	  	        }
+         }
+
+         /**
+          * Calls a stored procedure
+          * 
+          * @return mixed Single scalar value or DomainModel instance depending on the return values configured
+          */
+         public function call() {
+
+                return ORMFactory::getDialect()->call($this);
          }
 }
 ?>

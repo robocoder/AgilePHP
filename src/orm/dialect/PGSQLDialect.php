@@ -368,7 +368,7 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	   * (non-PHPdoc)
 	   * @see src/orm/dialect/SQLDialect#call(DomainModel $model)
 	   */
-	  public function call(DomainModel $model, $action = null) {
+	  public function call(DomainModel $model) {
 
 	  		 $outs = array();
 	  		 $params = array();
@@ -376,111 +376,9 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	  		 $references = array();
 	  		 $class = get_class($model);
 
-	  		 // Assign "default" action (ACTION_DEFAULT)
 	  		 $proc = $this->getProcedureByModel($model);
 	  		 $procedureName = $proc->getName();
 	  		 $parameters = $proc->getParameters();
-
-	  		 switch($action) {
-
-	             case StoredProcedure::ACTION_PERSIST:
-	                  $xml = ORMFactory::getConfiguration();
-	                  foreach($xml->database->procedure as $procedure) {
-	                      if($procedure->attributes()->name == $procedureName) {
-	                          if($procedure->persist) {
-	                             if(!$query = (string)$procedure->persist) {
-	                                 if($reference = $procedure->persist->attributes()->references) {
-       	                                 $proc = $this->getProcedureByName($reference);
-       	                                 $procedureName = $proc->getName();
-      	                                 $parameters = array();
-    	                                 foreach($procedure->persist->parameter as $parameter)
-    	                                   array_push($parameters, new ProcedureParam($parameter));
-	                                 }
-	                             }
-	                          }
-	                      }
-	                  }
-	             break;
-
-	             case StoredProcedure::ACTION_MERGE:
-	                  $xml = ORMFactory::getConfiguration();
-	                  foreach($xml->database->procedure as $procedure) {
-	                      if($procedure->attributes()->name == $procedureName) {
-	                          if($procedure->merge) {
-	                             if(!$query = (string)$procedure->merge) {
-    	                             if($reference = $procedure->merge->attributes()->references) {
-      	                                 $proc = $this->getProcedureByName($reference);
-       	                                 $procedureName = $proc->getName();
-      	                                 $parameters = array();
-    	                                 foreach($procedure->merge->parameter as $parameter)
-    	                                   array_push($parameters, new ProcedureParam($parameter));
-    	                             }
-    	                         }
-	                          }
-	                      }
-	                  }
-	             break;
-
-	             case StoredProcedure::ACTION_DELETE:
-	                  $xml = ORMFactory::getConfiguration();
-	                  foreach($xml->database->procedure as $procedure) {
-	                      if($procedure->attributes()->name == $procedureName) {
-	                          if($procedure->delete) {
-	                             if(!$query = (string)$procedure->delete) {
-	                                 if($reference = $procedure->delete->attributes()->references) {
-        	                            $proc = $this->getProcedureByName($reference);
-       	                                $procedureName = $proc->getName();
-          	                            $parameters = array();
-        	                            foreach($procedure->delete->parameter as $parameter)
-        	                                array_push($parameters, new ProcedureParam($parameter));
-    	                             }
-	                             }
-	                          }
-	                      }
-	                  }
-	             break;
-
-	             case StoredProcedure::ACTION_GET:
-	                  $xml = ORMFactory::getConfiguration();
-	                  foreach($xml->database->procedure as $procedure) {
-	                      if($procedure->attributes()->name == $procedureName) {
-	                          if($procedure->get) {
-	                             if(!$query = (string)$procedure->get) {
-	                                 if($reference = $procedure->get->attributes()->references) {
-        	                            $proc = $this->getProcedureByName($reference);
-       	                                $procedureName = $proc->getName();
-          	                            $parameters = array();
-        	                            foreach($procedure->get->parameter as $parameter)
-        	                                array_push($parameters, new ProcedureParam($parameter));
-    	                             }
-	                             }
-	                          }
-	                      }
-	                  }
-	             break;
-
-	             case StoredProcedure::ACTION_FIND:
-	                  $xml = ORMFactory::getConfiguration();
-	                  foreach($xml->database->procedure as $procedure) {
-	                      if($procedure->attributes()->name == $procedureName) {
-	                          if($procedure->find) {
-	                             if(!$query = (string)$procedure->find) {
-	                                 if($reference = $procedure->find->attributes()->references) {
-        	                            $proc = $this->getProcedureByName($reference);
-       	                                $procedureName = $proc->getName();
-          	                            $parameters = array();
-        	                            foreach($procedure->find->parameter as $parameter)
-        	                                array_push($parameters, new ProcedureParam($parameter));
-    	                             }
-	                             }
-	                          }
-	                      }
-	                  }
-	             break;
-
-	             // default:
-	             // assigned before switch statement
-	         }
 
 	  		 // Parse IN, OUT, & INOUT parameters
 	  		 foreach($proc->getParameters() as $param) {

@@ -263,6 +263,19 @@ abstract class Component extends BaseController {
 	  }
 
 	  /**
+	   * Returns the configuration <param> with the specified name
+	   * 
+	   * @param string $name The param name
+	   * @return mixed ComponentParam if the parameter is found, null otherwise
+	   */
+	  protected function getParam($name) {
+
+	            foreach($this->params as $param)
+	               if($param->getName() == $name)
+	                  return $param;
+	  }
+
+	  /**
 	   * Delegates component front controller actions to the specified controller / action.
 	   *
 	   * @param BaseController $controller The controller instance responsible for the delegation.

@@ -2,6 +2,11 @@
 - Added getProcedures, addProcedure and setProcedures methods to Database class.
 - Slight refactoring (polishing) of MySQLDialect::call
 - Added "requestBase" attribute to mvc configuration element in agilephp.xml.
+- Added Component::getParam
+- Bug fix to Form::getForeignKeySelection where the referenced model name was used in lookup rather than orm configured property name
+- Added warning log message in BaseDialect::find when expected foreign key lookup fails
+- Bug fix to BaseDialect::delete when deleting many-to-many relationship where the key is both a primary key and foreign key
+- DomainModel::persist now returns the last insert id
 
 * Still need to finish implementing relational stored procedures into MSSQLDialect 
 

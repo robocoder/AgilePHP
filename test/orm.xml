@@ -69,10 +69,6 @@
 			<parameter name="id" mode="OUT"/>
 			<parameter name="name" mode="OUT"/>
 			<parameter name="description" mode="OUT"/>
-			<persist references="addrole"/>
-			<merge references="updaterole"/>
-			<delete references="deleterole"/>
-			<get references="getrole"/>
 			<!-- Not needed since its the default -->
             <!-- <find references="getroles"/> -->
 		</procedure>

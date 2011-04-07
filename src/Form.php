@@ -373,12 +373,7 @@ class Form {
           	 foreach($foreignModels as $fModel) {
 
           	 		 $fAccessor = 'get' . ucfirst($selectedProperty);
-
-          	 		 // php namespace support
-     	   	   		 $namespace = explode('\\', $foreignKey->getReferencedTableInstance()->getModel());
-     	   	   		 $model = $namespace[count($namespace)-1];
-
-          	 		 $fkInstanceAccessor = 'get' . ucfirst($model);
+          	 		 $fkInstanceAccessor = 'get' . ucfirst($foreignKey->getColumnInstance()->getModelPropertyName());
 
           	 		 if(is_object($this->getModel()->$fkInstanceAccessor()) &&
           	 		  			$this->getModel()->$fkInstanceAccessor()->$fAccessor() == $fModel->$fAccessor()) {

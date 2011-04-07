@@ -18,7 +18,7 @@
 -->
 <!ELEMENT orm (database+)>
 
-<!ELEMENT database (table*, procedure*)>
+<!ELEMENT database (table*, procedure*, query*)>
 <!ATTLIST database name CDATA #REQUIRED>
 <!ATTLIST database type ( mysql | mssql | pgsql | sqlite ) "mysql">
 <!ATTLIST database hostname CDATA #REQUIRED>
@@ -36,7 +36,7 @@
 <!ATTLIST table isIdentity CDATA #FIXED "true">
 <!ATTLIST table isSession CDATA #FIXED "true">
 
-<!ELEMENT procedure (parameter*, persist?, merge?, delete?, get?, find?)>
+<!ELEMENT procedure (parameter*)>
 <!ATTLIST procedure name CDATA #REQUIRED>
 <!ATTLIST procedure model CDATA #REQUIRED>
 <!ATTLIST procedure display CDATA #IMPLIED>
@@ -88,16 +88,11 @@
 <!ATTLIST foreignKey cascade ( none | all | persist-merge | delete ) "none">
 
 <!ELEMENT persist (#PCDATA)>
-<!ATTLIST persist references CDATA #IMPLIED>
-
 <!ELEMENT merge (#PCDATA)>
-<!ATTLIST merge references CDATA #IMPLIED>
-
 <!ELEMENT delete (#PCDATA)>
-<!ATTLIST delete references CDATA #IMPLIED>
-
 <!ELEMENT get (#PCDATA)>
-<!ATTLIST get references CDATA #IMPLIED>
-
 <!ELEMENT find (#PCDATA)>
-<!ATTLIST find references CDATA #IMPLIED>
+
+<!ELEMENT query (#PCDATA)>
+<!ATTLIST query name CDATA #REQUIRED>
+<!ATTLIST query model CDATA #REQUIRED>

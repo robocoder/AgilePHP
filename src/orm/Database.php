@@ -38,6 +38,7 @@ class Database {
 
 	  private $tables = array();
 	  private $procedures = array();
+	  private $queries = array();
 
 	  /**
 	   * Creates a new Database instance with optional database assignment.
@@ -62,6 +63,9 @@ class Database {
 
 		  		foreach($database->procedure as $procedure)
 		  		     array_push($this->procedures, new Procedure($procedure));
+
+		  		foreach($database->query as $query)
+		  		     array_push($this->queries, new NamedQuery($query));
 	  		 }
 	  }
 
@@ -289,6 +293,38 @@ class Database {
 	  public function setProcedures(array $procedures) {
 
 	         $this->procedures = $procedures;
+	  }
+
+	  /**
+	   * Returns a list of NamedQuery instances which represent valid developer defined sql statements
+	   * 
+	   * @return array<NamedQuery> List of NamedQuery instances
+	   */
+	  public function getNamedQueries() {
+
+	         return $this->queries;
+	  }
+
+	  /**
+	   * Adds a new named query
+	   * 
+	   * @param NamedQuery $query The query to push onto the stack
+	   * @return void
+	   */
+	  public function addNamedQuery(NamedQuery $query) {
+	      
+	         array_push($this->queries, $query);
+	  }
+	  
+	  /**
+	   * Sets the stack of named queries
+	   * 
+	   * @param array<NamedQuery> $queries An array of NamedQuery instances
+	   * @return void
+	   */
+	  public function setNamedQueries(array $queries) {
+
+	         $this->queries = $queries;
 	  }
 }
 ?>

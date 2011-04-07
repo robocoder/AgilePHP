@@ -328,7 +328,7 @@ abstract class BaseDialect {
 
 	  		    Log::debug('BaseDialect::exec Executing raw' .
 			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
-			  	     					'PDO::exec query ' . $sql);
+			  	     					'PDO::exec query ' . $statement);
 
 	  		    return $this->pdo->exec($statement);
 	  	 }
@@ -657,6 +657,7 @@ abstract class BaseDialect {
 	    	   $values = array();
 		       $columns = $table->getColumns();
 		       $pkeyCount = count($table->getPrimaryKeyColumns());
+	           $fkeyColumns = $table->getForeignKeyColumns();
 
 		       $sql = 'DELETE FROM ' . $table->getName() . ' WHERE ';
 
@@ -665,7 +666,15 @@ abstract class BaseDialect {
 		   		    if($columns[$i]->isForeignKey()) {
 
 		   		        $fkAccessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-			            $accessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+		                $accessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+
+		                // This is both a foreign key and primary key
+		   		        if($columns[$i]->isPrimaryKey()) {
+
+		                    $sql .= $columns[$i]->getName() . '=?';
+		                    array_push($values, $model->$fkAccessor()->$accessor());
+		                    if(($i+1) < count($fkeyColumns)) $sql .= ' AND ';
+		                }
 
 		                switch($columns[$i]->getForeignKey()->getCascade()) {
 
@@ -861,6 +870,7 @@ abstract class BaseDialect {
 						 	 		  		   	    $foreignInstance->$foreignMutator($value);
 
 						 	 		  		   	    $persisted = $this->find($foreignInstance);
+						 	 		  		   	    if(!isset($persisted[0])) Log::warn('BaseDialect::find Warning about missing record during foreign key lookup on \'' . $table->getModel() . '\::' . $modelProperty . '\' with value \'' . $value . '\'.');
 
 						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
 							 	 		  		   	$foreignModelPieces = explode('\\', $foreignModel);
@@ -1110,6 +1120,58 @@ abstract class BaseDialect {
 			 	  	      return $proc;
 
 			 throw new ORMException('BaseDialect::getProcedureByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml');
+	  }
+
+	  /**
+	   * Returns a NamedQuery instance
+	   *
+	   * @param string $name The query name
+	   * @return NamedQuery
+	   */
+	  public function getQueryByName($name) {
+
+	         foreach($this->database->getNamedQueries() as $namedQuery)
+			  	  if($namedQuery->getName() == $name)
+			 	     return $namedQuery;
+	  }
+
+	  /**
+	   * Executes a NamedQuery instance
+	   * 
+	   * @param string $name The query name
+	   * @return DataModel The model configured for the NamedQuery
+	   */
+	  public function callQueryByName($name, DataModel $model) {
+
+	         if(!$namedQuery = $this->getQueryByName($name))
+	            throw new ORMException('BaseDialect::callQueryByName Could not locate the requested query \'' . $name . '\' in orm.xml');
+
+	         if($namedQuery->isProcedure())
+	             return $this->callProcedure($this->getProcedureByName($name));
+
+	         if($namedQuery->isPrepared()) {
+
+	            $this->prepare($namedQuery->getQuery());
+	            $return = $this->execute($values);
+
+	            if(!$return) {
+
+	                echo 'null';
+	                return null;
+	            }
+
+	            if(is_array($return)) {
+
+	                echo 'array';
+	                print_r($return);
+	                exit;
+	            }
+
+	            // single result
+	            echo 'single result';
+	            print_r($return);
+	            exit;
+	         }
 	  }
 
 	  /**

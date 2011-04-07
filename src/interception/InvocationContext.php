@@ -54,7 +54,7 @@ class InvocationContext {
 
 	  		 $this->target = $target;
 	  		 $this->method = $method;
-	  		 $this->parameters = $parameters;
+	  		 $this->parameters = $parameters ? $parameters : array();
 	  		 $this->interceptor = $interceptor;
 	  		 $this->field = $field;
 

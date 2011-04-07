@@ -21,7 +21,7 @@
 
 /**
  * Transforms data to well formed xml
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.data.renderer
@@ -30,7 +30,7 @@ class XmlRenderer implements DataRenderer {
 
       /**
        * Renders the specified data as XML.
-       * 
+       *
        * @param mixed $data The data to render. (primitive|array|object)
        * @param string $name The root node name
        * @param string $pluralName The plural name to use when children are encountered
@@ -46,18 +46,35 @@ class XmlRenderer implements DataRenderer {
 
 	  	     if(is_array($data)) {
 
-	  	      	if(!isset($data[0])) return '<' . $name . '/>';
+	  	      	if(!count($data)) return '<' . $name . '/>';
 
   	 		  	$xml .= '<' . ((!$isChild) ? $pluralName : $name) . '>';
   	 		  	foreach($data as $key => $val) {
 
-  	 		  	  	if(is_object($val) || is_array($val))
-  	 		  	  	   $xml .= self::render($val, $name, $pluralName, true);
-	 		  	  	else {
+  	 		  	        //if(is_numeric($key)) throw new FrameworkException('XmlRenderer requires associative arrays');
 
-	 		  	  	   $val = mb_convert_encoding($val, 'UTF-8', 'ISO-8859-1');
-  	 		  	  	   $xml .= '<' . $key . '>' . $val . '</' . $key . '>';
-  	 		  	  	}
+  	 		  	        if(is_object($val)) {
+
+		  		 		    $ns = explode('\\', get_class($val));
+		  		 		    $cls = array_pop($ns);
+
+		  		 		    $xml .= self::render($val, $cls, $pluralName, true, false);
+		  		 		 }
+		  		 		 elseif(is_array($val)) {
+
+		  		 		    if(is_object($val[0])) {
+
+		  		 		       $ns = explode('\\', get_class($val[0]));
+		  		 		       $name = array_pop($ns);
+		  		 		    }
+
+		  		 		    $xml .= self::render($val, $name, $pluralName, true, false);
+		  		 		 }
+    	 		  	  	 else {
+
+    	 		  	  	    $val = mb_convert_encoding($val, 'UTF-8', 'ISO-8859-1');
+      	 		  	  	    $xml .= '<' . $key . '>' . $val . '</' . $key . '>';
+      	 		  	  	 }
   	 		  	 }
   	 		  	 $xml .= '</' . ((!$isChild) ? $pluralName : $name) . '>';
 
@@ -73,12 +90,12 @@ class XmlRenderer implements DataRenderer {
 
 		  		  	  $xml .= '<' . $name . '>';
 		  		  	  foreach(get_object_vars($data) as $property => $value) {
-	
+
 		  		 		  if(is_object($value) || is_array($value))
-		  		 		  	 $xml .= self::render($value, $property, $property . 's', true);
+		  		 		  	 $xml .= self::render($value, $property, $property, true, false);
 
 		  		 		  else {
-	
+
 			  		 		  $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
 			  		 		  $xml .= '<' . $property . '>' . $value . '</' . $property . '>';
 		  		 		  }
@@ -99,9 +116,9 @@ class XmlRenderer implements DataRenderer {
 
 	  		     // php namespace support
 			     $namespace = explode('\\', $name);
-			     $className = $namespace[count($namespace)-1];
+			     $className = array_pop($namespace);
 		 	     $namespace = implode('\\', $namespace);
-	  		     
+
 		  		 $xml = '<' . $className . '>';
 		  		 foreach($class->getProperties() as $property) {
 
@@ -112,7 +129,7 @@ class XmlRenderer implements DataRenderer {
 		  		 		 	$context = 'protected';
 		  		 		 else if($property->isPrivate())
 		  		 		  	 $context = 'private';
-	
+
 		  		 		 $value = null;
 		  		 		 if($context != 'public') {
 
@@ -121,15 +138,31 @@ class XmlRenderer implements DataRenderer {
 				  		 	$property->setAccessible(false);
 		  		 		 }
 		  		 		 else {
-	
+
 		  		 		  	$value = $property->getValue($data);
 		  		 		 }
-	
-		  		 		 if(is_object($value) || is_array($value))
-		  		 		 	$xml .= self::render($value, $property->getName());
-		  	
+
+		  		 		 if(is_object($value)) {
+
+		  		 		    $ns = explode('\\', get_class($value));
+		  		 		    $cls = array_pop($ns);
+
+		  		 		    $xml .= self::render($value, $property->getName(), $cls, true, false);
+		  		 		 }
+		  		 		 elseif(is_array($value)) {
+
+		  		 		     if(isset($value[0]) && is_object($value[0])) {
+
+		  		 		        $ns = explode('\\', get_class($value[0]));
+		  		 		        $name = array_pop($ns);
+		  		 		     }
+		  		 		     else
+		  		 		        $name = $property->getName();
+
+		  		 		 	$xml .= self::render($value, $property->getName(), $name, true, false);
+		  		 		 }
 		  		 		 else {
-	
+
 			  		 		$value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
 			  		 		$xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
 		  		 		  }
