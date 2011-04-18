@@ -1,7 +1,26 @@
-- Added "phpunit-coverage" build.xml target to work around broken phing/phpunit integration in current versions
-- Fixed UserRestServiceTest problem resulting in duplicate primary key sql exception
+- Added nchar to orm.dtd and studio NewModelRemote class
+- Bug fix to BaseModelXslController::getModelListXSL. In the case of "one-to-many" or
+  "many-to-one" relationships, the generated XSL expected parent model field name(s)
+  to be named after the foreign model class. Now, all values are looked up from orm.xml
+  to ensure proper mapped names are respected.
+- Minor performance enhancements to IdentityManagerFactory.
+- Bug fix to BaseDialect::merge when persisting a foreign key and 'cascade' is null or set to 'none'.
+- Bug fix to BaseModelActionController::setModelValues when submitting "NULL" foreign key values
+  from HTML select submission
+- Refactored XmlRenderer so that child objects are rendered as the parent field name rather than the
+  child class name. This was refactored to support #2 mentioned above.
+- Bug fix to Interception::getPropertyStubs on windows and mac servers
+- Refactored Identity::setOrderBy to allow for optional "direction" parameter. Defaults to ASC now.
+- Added 'transformer' annotation parameter to #@RequestParam.
+- Refactored abstract Validator class to interface. validate() method is now static.
+- Refactored BaseDialect::validate to work with new Validator API.
+- Created ValidationException class and added its file system path to AgilePHP::classmap.
+- Added optional validator parameter to #@RequestParam interceptor
+- Bug fix to #@Restrict interceptor that was introduced when Role entity was refactored to support an "id" field.
+- Added debug logging in RestUtil::consumeTransform to avoid eatting the root cause exception stack before throwing
 
 Studio Updates
-- Bug fix to ProjectRemote::createORMXML when processing mssql driver attribute 
+- Added MSSQL nchar support to NewModelRemote. Need to come up with a way to dynamically load data types based on DTD.
 
-Backward compatible apidoc: Yes
+Backward compatible apidoc: No
+- Validators are called statically now.

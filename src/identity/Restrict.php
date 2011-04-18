@@ -97,7 +97,7 @@ class Restrict {
 	  		 $message = $ic->getInterceptor()->message ? $ic->getInterceptor()->message : 'Access Denied';
 
 	  		 $requiredRole = $ic->getInterceptor()->role;
-	  	     if(Identity::hasRole(new Role($requiredRole)))
+	  	     if(Identity::hasRole(new Role(null, $requiredRole)))
 	  	     	 return $ic->proceed();
 
 	  	     $roles = $ic->getInterceptor()->roles;

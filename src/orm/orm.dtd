@@ -51,7 +51,7 @@
 <!ELEMENT column (foreignKey*)>
 <!ATTLIST column name CDATA #REQUIRED>
 <!ATTLIST column type ( boolean | integer | int | bigint | double | decimal | varchar | float | bit | date | datetime | timestamp | blob | text | longtext | password |
- smallint | tinyint | money | char | varbinary | nvarchar | image | uniqueidentifier | smalldatetime | ntext |
+ smallint | tinyint | money | char | varbinary | nvarchar | image | uniqueidentifier | smalldatetime | ntext | nchar |
  abstime | aclitem | bool | bpchar | serial | bigserial | real | numeric | box | bytea | cid | cidr | circle | float4 | float8 | gtsvector |  inet
  | int2 | int4 | int8 | interval | line | lseg | macaddr | name | oid | path | point | polygon | refcursor | regclass | regconfig | regdictionary
  | regoper | regoperator | regproc | regprocedure | regtype | reltime | smgr | tid | time | timestamptz | timetz | tinterval | tsquery | tsvector

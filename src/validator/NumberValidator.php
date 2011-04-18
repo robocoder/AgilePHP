@@ -26,18 +26,16 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class NumberValidator extends Validator {
+class NumberValidator implements Validator {
 
 	  /**
-	   * Validates a number by ensuring it is either an int or float.
+	   * Ensures the specified data is numeric
 	   * 
-	   * @param mixed $data The data to validate
-	   * @return bool True if validation is successful, false otherwise
+	   * @see Validator::validate()
 	   */
-	  public function validate() {
+	  public static function validate($data) {
 
-	  		 return is_numeric($this->data);
+	  		 return is_numeric($data);
 	  }
-
 }
 ?>

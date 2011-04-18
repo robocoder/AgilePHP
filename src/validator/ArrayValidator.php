@@ -26,11 +26,16 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class ArrayValidator extends Validator {
+class ArrayValidator implements Validator {
 
-	  public function validate() {
+	  /**
+	   * Ensures the passed data is a PHP array data type
+	   * 
+	   * @see Validator::validate()
+	   */
+	  public static function validate($data) {
 
-	  		 return is_array($this->data);
+	  		 return is_array($data);
 	  }
 }
 ?>

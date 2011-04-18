@@ -27,21 +27,20 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class EmailValidator extends Validator {
+class EmailValidator implements Validator {
 
 	  /**
 	   * Validates an email address by checking its syntax and performing
 	   * and DNS lookup on the domain.
 	   *
-	   * @param String $email The email address to validate
-	   * @return bool True if the email address is considered valid, false otherwise.
+	   * @see Validator::validate()
 	   */
-	  public function validate() {
+	  public static function validate($data) {
 
-	         if(!filter_var($this->data, FILTER_VALIDATE_EMAIL)) return false;
+	         if(!filter_var($data, FILTER_VALIDATE_EMAIL)) return false;
 
-   			 $index = strrpos($this->data, '@');
-   			 $domain = substr($this->data, $index + 1);
+   			 $index = strrpos($data, '@');
+   			 $domain = substr($data, $index + 1);
 
       		 if(!checkdnsrr($domain, "MX") || checkdnsrr($domain, "A")) return false;
 

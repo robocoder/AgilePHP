@@ -26,11 +26,16 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class FloatValidator extends Validator {
+class FloatValidator implements Validator {
 
-	  public function validate() {
+	  /**
+	   * Validates float data type
+	   * 
+	   * @see Validator::validate()
+	   */
+	  public static function validate($data) {
 
-	  		 return is_float($this->data);
+	  		 return is_float($data);
 	  }
 }
 ?>

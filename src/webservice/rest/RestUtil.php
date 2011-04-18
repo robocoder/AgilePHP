@@ -218,7 +218,8 @@ class RestUtil {
 	         }
 	         catch(FrameworkException $e) {
 
-	               throw new RestServiceException(400, $e->getMessage());
+	         	Log::debug('RestUtil::consumeTransform: ' . $e->getMessage());
+	            throw new RestServiceException(400, $e->getMessage());
 	         }
 	  }
 }

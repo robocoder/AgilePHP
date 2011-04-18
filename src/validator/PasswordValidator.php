@@ -26,26 +26,18 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class PasswordValidator extends Validator {
-
-	  protected $size;
+class PasswordValidator implements Validator {
 
 	  /**
-	   * Creates a new PasswordValidator
+	   * Checks to see whether the specified data meets a minimum length requirement.
 	   * 
 	   * @param mixed $data The data to validate
-	   * @param int $size Optional length to require. Defaults to 7.
-	   * @return void
+	   * @param int $length Optional length to require. Defaults to 7.
+	   * @see Validator::validate()
 	   */
-	  public function __construct($data, $size = 7) {
+	  public static function validate($data, $length = 7) {
 
-	  		 $this->data = $data;
-	  		 $this->size = $size;
-	  }
-
-	  public function validate() {
-
-	  		 return ($this->size && (strlen($this->data) < $this->size)) ? false : true;
+	  		 return ($length && (strlen($data) < $length)) ? false : true;
 	  }
 }
 ?>

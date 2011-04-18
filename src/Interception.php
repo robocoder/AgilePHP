@@ -293,7 +293,7 @@ class Interception {
 	           $code = AgilePHP::getSource($this->class);
 
 	           // If more than one class exists in the document, only the first class is parsed
-	           preg_match('/^class\s.*?}.*?\n}\n/ms', $code, $classes);
+	           preg_match('/^class\s.*?}.*?\r?\n\r?}\r?\n\r?/ms', $code, $classes);
 
 	           if($classes[0]) {
 

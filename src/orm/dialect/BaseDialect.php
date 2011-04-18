@@ -585,6 +585,11 @@ abstract class BaseDialect {
 			   	    		              array_push($values, $this->lastInsertId);
 
       			   	    		   break;
+
+      			   	    		   case '':
+			   	    		       case 'none':
+			   	    		       	  array_push($values, $model->$accessor()->$refAccessor());	
+			   	    		       break;
 			   	    		   }
 			   	    		}
 			   	    	}
@@ -1609,8 +1614,7 @@ abstract class BaseDialect {
 			  	       	   // Allow null values for columns that are not required
 			  	       	   if(!$column->isRequired() && $this->model->$accessor() == null) continue;
 
-			  	       	   $o = new $validator($this->model->$accessor());
-			  	       	   if(!$o->validate()) {
+			  	       	   if(!$validator::validate($this->model->$accessor())) {
 
 			  	       	   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype($this->model->$accessor()) . '\' using validator \'' . $validator . '\'.';
 			  	       	   	   Log::debug($message);

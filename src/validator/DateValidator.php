@@ -26,11 +26,16 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class DateValidator extends Validator {
+class DateValidator implements Validator {
 
-	  public function validate() {
+	  /**
+	   * Validates date data type
+	   * 
+	   * @see Validator::validate()
+	   */
+	  public static function validate($data) {
 
-	  		 return (strtotime($this->data) === false) ? false : true;
+	  		 return (strtotime($data) === false) ? false : true;
 	  }
 }
 ?>

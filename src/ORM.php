@@ -334,7 +334,7 @@ final class ORM {
 	   * @return void
 	   * @static
 	   */
-	  public static function setOrderBy($column, $direction) {
+	  public static function setOrderBy($column, $direction = 'ASC') {
 
 	     	 ORMFactory::getDialect()->setOrderBy($column, $direction);
 	  }

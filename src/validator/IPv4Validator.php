@@ -26,16 +26,16 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class IPv4Validator extends Validator {
+class IPv4Validator implements Validator {
 
 	  /**
-	   * Validates the specified data by ensuring it is a valid IP address.
+	   * Validates an IPv4 address.
 	   * 
-	   * @return bool True if the specified data is a valid IP address, false otherwise.
+	   * @see Validator::validate()
 	   */
-	  public function validate() {
+	  public static function validate($data) {
 
-	  		 return filter_var($this->data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+	  		 return filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
 	  }
 }
 ?>

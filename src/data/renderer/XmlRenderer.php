@@ -84,9 +84,10 @@ class XmlRenderer implements DataRenderer {
 	  	      else if(is_object($data)) {
 
 	  	      	  $class = new ReflectionClass($data);
+	  	      	  $clsName = $class->getName();
 
 	  	      	  // stdClass has public properties
-		  		  if($class->getName() == 'stdClass') {
+		  		  if($clsName == 'stdClass') {
 
 		  		  	  $xml .= '<' . $name . '>';
 		  		  	  foreach(get_object_vars($data) as $property => $value) {
@@ -108,18 +109,20 @@ class XmlRenderer implements DataRenderer {
 		  	     // @todo Interceptors are still being somewhat intrusive to reflection operations
 	  		     if(method_exists($data, 'getInterceptedInstance')) {
 
-	  		     	$name = preg_replace('/_Intercepted/', '', $class->getName());
+	  		     	$clsName = preg_replace('/_Intercepted/', '', $class->getName());
 	  		     	$instance = $data->getInterceptedInstance();
 	  		     	$class = new ReflectionClass($instance);
 	  		     	$data = $instance;
 	  		     }
 
 	  		     // php namespace support
-			     $namespace = explode('\\', $name);
+			     $namespace = explode('\\', $clsName);
 			     $className = array_pop($namespace);
 		 	     $namespace = implode('\\', $namespace);
 
-		  		 $xml = '<' . $className . '>';
+		 	     $node = ($name == 'Result') ? $className : $name;
+
+		  		 $xml = '<' . $node . '>';
 		  		 foreach($class->getProperties() as $property) {
 
 		  		 		 $context = null;
@@ -167,7 +170,7 @@ class XmlRenderer implements DataRenderer {
 			  		 		$xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
 		  		 		  }
 		  		 }
-		  		 $xml .= '</' . $className . '>';
+		  		 $xml .= '</' . $node . '>';
 	  		 }
 	  		 return $xml;
       }

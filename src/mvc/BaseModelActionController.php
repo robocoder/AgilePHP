@@ -348,7 +348,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 
   	 	  	       		  if($column->isForeignKey()) {
 
-  	 	  	       			 if(!$value || $value == 'NULL') continue;
+  	 	  	       			 if(!$value || $value == 'NULL') $value = null;
 
   	 	  	        		 $fmodelName = $column->getForeignKey()->getReferencedTableInstance()->getModel();
   	 	  	        		 $fModel = new $fmodelName();

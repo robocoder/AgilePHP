@@ -28,6 +28,14 @@
  */
 interface Authentication {
 
-          public static function authenticate($username, $password);
+	/**
+	 * Authenticates the specified username and password.
+	 * 
+	 * @param String $username The username
+	 * @param String $password The password used to authenticate the login attempt
+	 * @return True if authentication was successful, false otherwise.
+	 * @throws Exception
+	 */
+	public static function authenticate($username, $password);
 }
 ?>

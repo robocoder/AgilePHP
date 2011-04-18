@@ -141,7 +141,7 @@ class NewModelRemote {
 	  		 $types = array();
 	  		 $values = array( 'boolean', 'integer', 'int', 'bigint', 'double', 'decimal', 'varchar', 'float', 'bit', 'date', 'datetime', 'timestamp',  // mysql, sqlite
 	  		 				  'serial', 'bigserial', 'real', 'numeric', 'box', 'bytea', 'cidr', 'circle', 'inet', 'interval', 'line', 'lseg', 'macaddr', 'path', 'point', 'polygon', 'uuid', 'xml', // pgsql
-	                          'blob', 'text', 'password', 'smallint', 'tinyint', 'money', 'char', 'varbinary', 'nvarchar', 'image', 'uniqueidentifier', 'smalldatetime', 'ntext' ); // mssql
+	                          'blob', 'text', 'password', 'smallint', 'tinyint', 'money', 'char', 'varbinary', 'nvarchar', 'image', 'uniqueidentifier', 'smalldatetime', 'ntext', 'nchar' ); // mssql
 
 	  		 foreach( $values as $type ) {
 

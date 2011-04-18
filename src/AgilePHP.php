@@ -823,6 +823,7 @@ final class AgilePHP {
           'PasswordValidator' => '/validator/PasswordValidator.php',
           'StringValidator' => '/validator/StringValidator.php',
           'StrongPasswordValidator' => '/validator/StrongPasswordValidator.php',
+          'ValidationException' => '/validator/ValidationException.php',
           'RemoteMethod' => '/webservice/remoting/RemoteMethod.php',
           'RemotingException' => '/webservice/remoting/RemotingException.php',
           'ConsumeMime' => '/webservice/rest/ConsumeMime.php',

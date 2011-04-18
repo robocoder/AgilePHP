@@ -26,11 +26,16 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class ObjectValidator extends Validator {
+class ObjectValidator implements Validator {
 
-	  public function validate() {
+	  /**
+	   * Checks to see if the specified data is a PHP object
+	   * 
+	   * @see Validator::validate()
+	   */
+	  public static function validate($data) {
 
-	  		 return is_object($this->data);
+	  		 return is_object($data);
 	  }
 }
 ?>

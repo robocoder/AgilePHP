@@ -45,8 +45,8 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	   		  if(!function_exists('sqlsrv_connect'))
 	   		  	  throw new ORMException('Microsoft SQL Server Driver for PHP is not installed on the server.');
 
-	   		  $params = array('Database' => $db->getName(), 'UID' => $db->getUsername(), 'PWD' => $db->getPassword());
-	   		  $noDbParams = array('UID' => $db->getUsername(), 'PWD' => $db->getPassword());
+	   		  $params = array('Database' => $db->getName(), 'UID' => $db->getUsername(), 'PWD' => $db->getPassword(), "ReturnDatesAsStrings" => true);
+	   		  $noDbParams = array('UID' => $db->getUsername(), 'PWD' => $db->getPassword(), "ReturnDatesAsStrings" => true);
 
 	  	      if(!$this->conn = sqlsrv_connect($db->getHostname(), $params)) {
 
@@ -364,6 +364,8 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 	  		 if(!sqlsrv_execute($this->stmt))
 	  		 	 throw new ORMException(print_r(sqlsrv_errors(), true));
+
+	  		 return $this->stmt;
 	  }
 
 	  /**

@@ -27,26 +27,14 @@
  * @package com.makeabyte.agilephp
  * @abstract
  */
-abstract class Validator {
-
-	  protected $data;
-
-	  /**
-	   * Creates a new instance of Validator
-	   * 
-	   * @param mixed $data The data to validate
-	   * @return void
-	   */
-	  public function __construct($data) { 
-
-	  		 $this->data = $data;
-	  }
+interface Validator {
 
 	  /**
 	   * Validates the data passed into the constructor.
 	   * 
+	   * @param $data The data to validate
 	   * @return boolean True if the data is valid, false otherwise. 
 	   */
-	  abstract public function validate();
+	  public static function validate($data);
 }
 ?>

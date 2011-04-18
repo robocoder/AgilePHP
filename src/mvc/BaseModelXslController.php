@@ -193,7 +193,7 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 				 	   	   			      			     	 case 'one-to-one':
 
 				 	   	   			      			     	      $xsl .= '<td>
-				 	   	   			      			     	  		          <xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
+				 	   	   			      			     	  		          <xsl:if test="' . $column->getModelPropertyName() . '/' . $fkey->getReferencedColumn() . ' != \'\'">
 							 	   	   			      			      		       <a href="' . $requestBase . '/' . $fkey->getReferencedController() . '/read/' . $fkeyXslValues . '">' .
 							 	   	   			      			     	  				  $fkey->getReferencedTableInstance()->getViewDisplayName() .  '</a>
 							 	   	   			      			      	      </xsl:if>
@@ -204,9 +204,9 @@ abstract class BaseModelXslController extends BaseModelXmlController {
 						 	   	   			      			 case 'many-to-one':
 
 						 	   	   			      			  	  $xsl .= '<td>
-						 	   	   			      			        			<xsl:if test="' . $fModelName . '/' . $fkey->getReferencedColumn() . ' != \'\'">
+						 	   	   			      			        			<xsl:if test="' . $column->getModelPropertyName() . '/' . $fkey->getReferencedColumnInstance()->getModelPropertyName() . ' != \'\'">
 						 	   	   			      			     	 				<a href="' . $requestBase . '/' . $fkey->getReferencedController() .
-						 	   	   			      			     	 						'/read/{' . $fModelName . '/' . $fkey->getReferencedColumnInstance()->getModelPropertyName() . '}">' .
+						 	   	   			      			     	 						'/read/{' . $column->getModelPropertyName() . '/' . $fkey->getReferencedColumnInstance()->getModelPropertyName() . '}">' .
 						 	   	   			      			     	 						$fkey->getReferencedTableInstance()->getViewDisplayName() . '</a>
 						 	   	   			      			     	 			</xsl:if>
 						 	   	   			      			  	 		  </td>';

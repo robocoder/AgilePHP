@@ -26,15 +26,17 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class BooleanValidator extends Validator {
+class BooleanValidator implements Validator {
 
       /**
        * Validates the data by ensuring its either a boolean true/false value
        * or is a 1/0.
+	   *
+       * @see Validator::validate()
        */
-	  public function validate() {
+	  public static function validate($data) {
 
-	  		 return is_bool($this->data) || $this->data == 1 || $this->data == 0;
+	  		 return is_bool($data) || $data == 1 || $data == 0;
 	  }
 }
 ?>

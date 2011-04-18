@@ -26,18 +26,17 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class StringValidator extends Validator {
+class StringValidator implements Validator {
 
 	  /**
-	   * Returns boolean indicator based on whether or not the specified data
-	   * is a string.
+	   * Checks to see if the specified data is a PHP string data type.
+	   * Empty strings are NOT considered valid!
 	   * 
-	   * @return bool True if the data is a string, false otherwise.
-	   * 			  NOTE: Empty strings are NOT considered valid.
+	   * @see Validator::validate()
 	   */
-	  public function validate() {
+	  public static function validate($data) {
 
-   			 return is_string($this->data);
+   			 return is_string($data);
 	  }
 }
 ?>

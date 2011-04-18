@@ -26,11 +26,19 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class LengthValidator extends Validator {
+class LengthValidator implements Validator {
 
-	  public function validate() {
+	  /**
+	   * Validates the length of a string
+	   * 
+	   * @param $data The data to test
+	   * @param $length Optional length to test. Defaults to 1.
+	   * 
+	   * @see Validator::validate()
+	   */
+	  public static function validate($data, $length = 1) {
 
-	  		 return strlen($this->data) > 0;
+	  		 return strlen($data) >= $length;
 	  }
 }
 ?>
