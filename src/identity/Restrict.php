@@ -104,7 +104,7 @@ class Restrict {
 	  	     if(is_array($roles)) {
 
 	  	     	 foreach($roles as $role)
-	  	     	 	if(Identity::hasRole(new Role($role)))
+	  	     	 	if(Identity::hasRole(new Role(null, $role)))
 	  	     	 		return $ic->proceed();
 	  	     }
 
