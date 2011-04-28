@@ -678,7 +678,7 @@ abstract class BaseDialect {
 
 		                    $sql .= $columns[$i]->getName() . '=?';
 		                    array_push($values, $model->$fkAccessor()->$accessor());
-		                    if(($i+1) < count($fkeyColumns)) $sql .= ' AND ';
+		                    if(($i+1) < $pkeyCount) $sql .= ' AND ';
 		                }
 
 		                switch($columns[$i]->getForeignKey()->getCascade()) {

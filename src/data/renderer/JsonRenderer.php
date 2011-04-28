@@ -49,7 +49,7 @@ class JsonRenderer implements DataRenderer {
 
 	  		  	 if(!isset($data[0])) {
 
-	  		  	  	 $json .= 'null';
+	  		  	  	 $json .= '[]';
 	  		  	  	 return $json;
 	  		  	 }
 	  		  	  
@@ -57,34 +57,44 @@ class JsonRenderer implements DataRenderer {
 	  		  	 foreach($data as $key => $value) {
 
 	  		  	  		$i++;
-	  		  	  	 	$json .= (is_object($value) || is_array($value)) ?
-	  		  	  	 				 self::render($value, $name) :
-	  		  	  	 				 ((is_numeric($key)) ? json_encode($value) : json_encode($value));
+	  		  	  		if(is_object($value)) {
+
+	  		  	  		   $class = new ReflectionClass($value);
+	  		  	  		   $json .= self::render($value, $class->getName());
+	  		  	  		}
+	  		  	  		elseif(is_array($value))
+	  		  	  			$json .= self::render($value, $name);
+
+	  		  	  		else
+	  		  	  	 	   $json .= json_encode($value);
+
 	  		  	  	 	$json .= ($i < count($data)) ? ', ' : '';
 	  		  	  }
 	  		  	  $json .= ' ]';
-	  		  	  if($name && $name != 'stdClass') $json .= ' }';
+	  		  	  //if($name && $name != 'stdClass') $json .= ' }';
 	  		  }
 
 	  		  // Format objects (that have private fields)
 	  		  else if(is_object($data)) {
 
 		  		  $class = new ReflectionClass($data);
+		  		  $className = $class->getName();
 
 		  		  // stdClass has public properties
-		  		  if( $class->getName() == 'stdClass' )
-		  		  	  return json_encode( $data );
-
-		  		  $json .= ($isChild) ? '"' . $class->getName() . '" : { ' : ' { "' . $class->getName() . '" : { ';
+		  		  if($class->getName() == 'stdClass')
+		  		  	 return json_encode($data);
 
 	  		  	  // @todo Interceptors are still being somewhat intrusive to reflection operations
 	  		      if(method_exists($data, 'getInterceptedInstance')) {
 
-	  		     	 $name = preg_replace('/_Intercepted/', '', $class->getName());
+	  		     	 $className = preg_replace('/_Intercepted/', '', $className);
 	  		     	 $data = $data->getInterceptedInstance();
 	  		     	 $class = new ReflectionClass($data);
 	  		      }
 
+	  		      $node = ($name) ? $name : $className;
+	  		      $json .= ($isChild) ? '"' . $node . '" : { ' : ' { "' . $node . '" : { ';
+	  		      
 		  		  $properties = $class->getProperties();
 			  	  for($i=0; $i<count($properties); $i++) {
 	

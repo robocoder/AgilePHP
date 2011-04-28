@@ -258,19 +258,20 @@ final class ORM {
 	  /**
 	   * Executes a raw SQL query using PDO::query
 	   *
-	   * @param $sql The SQL statement to execute
+	   * @param String $sql The SQL statement to execute
+	   * @param array $params Optional list of query paramters for use with MSSQLDialect
 	   * @return PDO::PDOStatement as returned by PDO::query
 	   * @static
 	   */
-	  public static function query($sql) {
+	  public static function query($sql, $params = array()) {
 
-	  	     return ORMFactory::getDialect()->query($sql);
+	  	     return ORMFactory::getDialect()->query($sql, $params);
 	  }
 
       /**
 	   * Sets WHERE clause restrictions
 	   *
-	   * @param $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
+	   * @param String $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
 	   * @return void
 	   * @static
 	   */

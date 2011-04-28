@@ -648,7 +648,7 @@ var AgilePHP = {
 			 * @param parameters {array} An array containing the arguments/parameters to pass into
 			 * @return mixed Void if asynchronous (call will be executed), otherwise the eval'd response from the service
 			 */
-			invoke: function(stub, method, parameters) {
+			invoke: function(stub, method, parameters, callback) {
 
 				 AgilePHP.debug('AgilePHP.Remoting.invoke');
 				 AgilePHP.debug(stub);
@@ -656,7 +656,8 @@ var AgilePHP = {
 				 AgilePHP.debug(parameters);
 
 				 var clazz = stub._class
-				 var callback = stub._callback;
+
+				 if(!callback) callback = stub._callback;
 
 				 delete stub._class;
 				 delete stub._callback;

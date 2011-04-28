@@ -166,11 +166,14 @@ abstract class Remoting extends BaseController {
 		  		 				   for($j=0; $j<count($params); $j++) {
 
 		  		 				 	 	$js .= $params[$j]->getName();
-		  		 				 	 	$js .= (($j+1) < count($params)) ? ', ' : '';
+		  		 				 	 	$js .= (($j+1) < count($params)) ? ', ' : ', callback';
 		  		 				   }
+		  		 				   if(!count($params)) $js .= 'callback';
 		  		 				   $js .= ") {\n\n";
 		  		 				   // function body
-		  		 				   $js .= "\treturn AgilePHP.Remoting.invoke(this, '" . $methods[$i]->getName() . "', arguments);\n";
+		  		 				   $js .= "\tvar args = Array.prototype.slice.call(arguments);\n";
+		  		 				   $js .= "\tif(callback != undefined) callback = args.pop();\n";
+		  		 				   $js .= "\treturn AgilePHP.Remoting.invoke(this, '" . $methods[$i]->getName() . "', args, callback);\n";
 		  		 				   // function closure
 	  		 				 	   $js .= "}\n\n";
 	  		 				   }
