@@ -1,9 +1,6 @@
-- Big fixes to JsonRenderer.
-	- Empty arrays are now rendered as "[]" instead of null.
-	- JSON structure is now created using the actual model structure, instead of using child class name for parent property names.
-- Added additional $params argument to ORM to support MSSQLDialect sqlsrv_query.
-- Bug fix to BaseDialect::delete in the case of a table with multiple primary keys which are also foriegn keys (junction table) 
-- Enhanced Remoting by allowing callbacks to be specified as the last parameter to the remote method call. The 'setCallback' method
-  in the generated javascript stub is still supported.
+- Bug fix to MSSQLDialect::find. When performing recursive 'find' operations on foreign key / child classes, the
+  foreign key lookup was overwriting the parent lookup, causing the returned model to only have one record / row
+  in the result set.
+- Added exception handler support to AgilePHP Remoting.
 
 Backward compatible apidoc: Yes

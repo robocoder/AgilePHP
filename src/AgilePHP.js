@@ -325,7 +325,7 @@ var AgilePHP = {
 			 * @return The XMLHttpRequest response object if XHR.setSynchronous was called. Otherwise
 			 * 		   the callback is executed when the request has completed.
 			 */
-			this.post = function(url, data, callback) {
+			this.post = function(url, data, callback, exceptionHandler) {
 
 				  // Add AgilePHP RequestScope anti-CSFR token to POST requests if present
 				  if(this.getRequestToken())
@@ -345,9 +345,14 @@ var AgilePHP = {
 						 xhr.onreadystatechange = function() {
 		
 							 if(xhr.readyState == 4) {
-
 								 var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
 								 AgilePHP.debug(data);
+
+								 if(data && data.RemotingException && data.RemotingException._class == 'RemotingException' && exceptionHandler) {
+
+									 exceptionHandler(data.RemotingException);
+									 return;
+								 }
 								 if(callback) callback(data);
 							 }
 						}
@@ -355,7 +360,13 @@ var AgilePHP = {
 				  else {
 
 					  	 var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
-						 AgilePHP.debug(data);
+					  	 AgilePHP.debug(data);
+
+					  	 if(data && data.RemotingException && data.RemotingException._class == 'RemotingException' && exceptionHandler) {
+
+							 exceptionHandler(data.RemotingException);
+							 return;
+						 }
 						 return data;
 				  }
 			},
@@ -648,7 +659,7 @@ var AgilePHP = {
 			 * @param parameters {array} An array containing the arguments/parameters to pass into
 			 * @return mixed Void if asynchronous (call will be executed), otherwise the eval'd response from the service
 			 */
-			invoke: function(stub, method, parameters, callback) {
+			invoke: function(stub, method, parameters, callback, exceptionHandler) {
 
 				 AgilePHP.debug('AgilePHP.Remoting.invoke');
 				 AgilePHP.debug(stub);
@@ -673,7 +684,7 @@ var AgilePHP = {
 					 data += '&parameters=' + JSON.stringify(o);
 				 }
 
-				 return AgilePHP.Remoting._send(data, callback);
+				 return AgilePHP.Remoting._send(data, callback, exceptionHandler);
 			},
 
 			/**
@@ -685,7 +696,7 @@ var AgilePHP = {
 			 * @param {function} callback Response callback handler
 			 * @return mixed Void if asynchronous (call will be executed), otherwise the eval'd response from the service
 			 */
-			_send: function(data, callback) {
+			_send: function(data, callback, exceptionHandler) {
 
 				// WebSocket Transport
 				if(AgilePHP.Remoting.getTransport() == 'websocket') {
@@ -725,10 +736,10 @@ var AgilePHP = {
 					 var xhr = new AgilePHP.XHR();
 					 	 xhr.setSynchronous(true);
 
-					 return xhr.post(url, data);
-				 }
+					 return xhr.post(url, data, null, exceptionHandler);
+				}
 
-				 new AgilePHP.XHR().post(url, data, callback);
+				new AgilePHP.XHR().post(url, data, callback, exceptionHandler);
 			},
 
 			/**

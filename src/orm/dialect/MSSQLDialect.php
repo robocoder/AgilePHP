@@ -586,6 +586,13 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 						    $sql = $table->getFind();
 						    if($where) $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
+
+						    /*
+						    if($where) $sql = 'SELECT ' . implode(',', $columnNames) . ' FROM ' .
+						    			'(SELECT ' . implode(',', $columnNames) . ', ROW_NUMBER() OVER (ORDER BY ' . implode(',', $pkeys) . ') AS rownum FROM ' . $table->getName() . ') AS DerivedPagination ' .
+						    		'WHERE (DerivedPagination.rownum BETWEEN ' . $offset . ' AND ' . ($offset + $this->getMaxResults()) . ') AND' . $where;
+							*/
+						    //if($where) $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where . ' OFFSET ' . $this->getOffset() . ' ROWS FETCH NEXT ' . $this->getMaxResults() . ' ROWS ONLY;';
 					 }
 
 					 $this->setDistinct(null);
@@ -633,8 +640,10 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 						 	 		  		   	    $foreignMutator = $this->toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 						 	 		  		   	    $foreignInstance->$foreignMutator($value);
-
-						 	 		  		   	    $persisted = $this->find($foreignInstance);
+						 	 		  		   	    
+						 	 		  		   	    //$persisted = $this->find($foreignInstance);
+						 	 		  		   	    $mssql = new MSSQLDialect($this->database);
+						 	 		  		   	    $persisted = $mssql->find($foreignInstance);
 
 						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
 							 	 		  		   	$foreignModelPieces = explode('\\', $foreignModel);

@@ -166,14 +166,15 @@ abstract class Remoting extends BaseController {
 		  		 				   for($j=0; $j<count($params); $j++) {
 
 		  		 				 	 	$js .= $params[$j]->getName();
-		  		 				 	 	$js .= (($j+1) < count($params)) ? ', ' : ', callback';
+		  		 				 	 	$js .= (($j+1) < count($params)) ? ', ' : ', callback, exceptionHandler';
 		  		 				   }
-		  		 				   if(!count($params)) $js .= 'callback';
+		  		 				   if(!count($params)) $js .= 'callback, exceptionHandler';
 		  		 				   $js .= ") {\n\n";
 		  		 				   // function body
 		  		 				   $js .= "\tvar args = Array.prototype.slice.call(arguments);\n";
+		  		 				   $js .= "\tif(exceptionHandler != undefined) exceptionHandler = args.pop();\n";
 		  		 				   $js .= "\tif(callback != undefined) callback = args.pop();\n";
-		  		 				   $js .= "\treturn AgilePHP.Remoting.invoke(this, '" . $methods[$i]->getName() . "', args, callback);\n";
+		  		 				   $js .= "\treturn AgilePHP.Remoting.invoke(this, '" . $methods[$i]->getName() . "', args, callback, exceptionHandler);\n";
 		  		 				   // function closure
 	  		 				 	   $js .= "}\n\n";
 	  		 				   }
@@ -217,7 +218,7 @@ abstract class Remoting extends BaseController {
 	    	     $methods = $clazz->getMethods();
 	    	     for($i=0; $i<count($methods); $i++)
 	  		 		 if($methods[$i]->getName() == $method && !$methods[$i]->hasAnnotation('RemoteMethod'))
-	  		 		 	 throw new RemotingException('No hacking please...');
+	  		 		 	 throw new RemotingException('Remote calls to this method are not allowed');
 
 	  		     Log::debug('Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
 	  		 	   	 '\', constructorArgs \'' . print_r($constructorArgs, true) . '\', args \'' . print_r($args, true) . '\'.');
