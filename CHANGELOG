@@ -1,6 +1,5 @@
-- Bug fix to MSSQLDialect::find. When performing recursive 'find' operations on foreign key / child classes, the
-  foreign key lookup was overwriting the parent lookup, causing the returned model to only have one record / row
-  in the result set.
-- Added exception handler support to AgilePHP Remoting.
+- Fixed broken pagination query in MSSQLDialect::find.
+- Commented BaseModelActionController::edit call to setPage. (Was throwing off ORM subqueries and causing unnecessary lookup(s) to occur).
+- Bug fix to MSSQLDialect::find when processing createRestrictionsLogic.
 
 Backward compatible apidoc: Yes

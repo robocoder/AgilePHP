@@ -529,26 +529,41 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 			 $newModel = $table->getModelInstance();
 			 $values = array();
 
+			 $offset = $this->getOffset();
+		     if(!$offset) $offset = 0;
+
 			 Log::debug('MSSQLDialect::find Performing find on model \'' . $table->getModel() . '\'.');
 
 	  		 try {
+
+	  		 		$pkeys = array();
 	  		  	    $pkeyColumns = $table->getPrimaryKeyColumns();
 	  		   		if($this->isEmpty($model)) {
 
-	    	   	        $sql = 'SELECT';
+	  		   			$columnNames = array();
+	  		   			foreach($table->getColumns() as $column) {
+
+	  		   				if($column->isPrimaryKey())
+							    array_push($pkeys, $column->getName());
+
+	  		   				array_push($columnNames, $column->getName());
+	  		   			}
+
+	    	   	        $sql = 'SELECT ';
 
 	    	   	        if($this->isDistinct() != null)
-	    	   	        	$sql .= ' DISTINCT ' . $this->isDistinct();
-	    	   	        else
-	    	   	        		$sql .= ($this->getMaxResults() ? ' TOP ' . $this->getMaxResults() . ' *' : '');
+	    	   	        	$sql .= 'DISTINCT ' . $this->isDistinct();
 
-	    	   	        $sql .= ' FROM ' . $table->getName();
+	    	   	        $sql .= implode(',', $columnNames) . ' FROM (SELECT ' . implode(',', $columnNames) . ', ROW_NUMBER() OVER (ORDER BY ' . implode(',', $pkeys) . ') AS rownum FROM ' .
+	    	   	        		 $table->getName() . ') AS DerivedPagination';
+
+	    	   	        $where = '(DerivedPagination.rownum BETWEEN ' . $offset . ' AND ' . ($offset + $this->getMaxResults()) . ')';
 
 	    	   	        $order = $this->getOrderBy();
 	    	   	        $offset = $this->getOffset();
 	    	   	        $groupBy = $this->getGroupBy();
 
-    	   	         	$sql .= ($this->getRestrictions() != null) ? $this->createRestrictSQL() : '';
+    	   	         	$sql .= ($this->getRestrictions() != null) ? $this->createRestrictSQL() . ' AND ' . $where : $where;
 					 	$sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
 					 	$sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
     	   	         	$sql .= ';';
@@ -556,10 +571,17 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	    	   		 else {
 	    	   		 		$where = '';
 
+	    	   		 		$pkeys = array();
+	    	   		 		$columnNames = array();
 	    	   		 		$columns = $table->getColumns();
 							for($i=0; $i<count($columns); $i++) {
 
+								 if($columns[$i]->isPrimaryKey())
+								    array_push($pkeys, $columns[$i]->getName());
+
 								 if($columns[$i]->isLazy()) continue;
+
+								 array_push($columnNames, $columns[$i]->getName());
 
 							 	 $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
 						     	 if($model->$accessor() == null) continue;
@@ -585,14 +607,11 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 						    }
 
 						    $sql = $table->getFind();
-						    if($where) $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
+						    //if($where) $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 
-						    /*
 						    if($where) $sql = 'SELECT ' . implode(',', $columnNames) . ' FROM ' .
 						    			'(SELECT ' . implode(',', $columnNames) . ', ROW_NUMBER() OVER (ORDER BY ' . implode(',', $pkeys) . ') AS rownum FROM ' . $table->getName() . ') AS DerivedPagination ' .
 						    		'WHERE (DerivedPagination.rownum BETWEEN ' . $offset . ' AND ' . ($offset + $this->getMaxResults()) . ') AND' . $where;
-							*/
-						    //if($where) $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where . ' OFFSET ' . $this->getOffset() . ' ROWS FETCH NEXT ' . $this->getMaxResults() . ' ROWS ONLY;';
 					 }
 
 					 $this->setDistinct(null);
@@ -640,10 +659,14 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 
 						 	 		  		   	    $foreignMutator = $this->toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 						 	 		  		   	    $foreignInstance->$foreignMutator($value);
-						 	 		  		   	    
+
 						 	 		  		   	    //$persisted = $this->find($foreignInstance);
 						 	 		  		   	    $mssql = new MSSQLDialect($this->database);
+						 	 		  		   	    $mssql->setOffset(0);
+						 	 		  		   	    //$mssql->setMaxResults($this->getMaxResults());
+						 	 		  		   	    //$mssql->setOffset($this->getOffset());
 						 	 		  		   	    $persisted = $mssql->find($foreignInstance);
+						 	 		  		   	    if(!isset($persisted[0])) continue;
 
 						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
 							 	 		  		   	$foreignModelPieces = explode('\\', $foreignModel);

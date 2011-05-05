@@ -116,7 +116,7 @@ abstract class BaseModelActionController extends BaseModelXslController {
 	     public function edit($ids, $page = 1, $view = 'admin') {
 
 	     		$this->setPrimaryKeys($ids);
-            	$this->setPage($page);
+            	//$this->setPage($page);
             	$this->set('content', $this->getXsltRenderer()->transform($this->getModelFormXSL(), $this->getModelAsFormXML()));
             	$this->render($view);
 	     }
