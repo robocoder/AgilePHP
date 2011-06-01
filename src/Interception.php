@@ -243,7 +243,7 @@ class Interception {
 	  	     // so that keywords such as "extends" and "implements" and their parameters are
 	  	     // preserved. This regex also copies the intercepted target's properties/fields
 	  	     // into the proxy.
-	  		 $code = preg_replace('/class\s.*{/',
+	  	     $code = preg_replace('/class\s.*{/',
 	  		                      $prototype . '{' . PHP_EOL . PHP_EOL . "\t" . implode(PHP_EOL . "\t", $this->getPropertyStubs()),
 	  		                      $code);
 
@@ -271,7 +271,7 @@ class Interception {
 
 	  		 $code = $this->clean($code);
 
-	  		 // Log::debug('Interception::createInterceptorProxy ' . PHP_EOL . $code);
+	  		 //Log::debug('Interception::createInterceptorProxy ' . PHP_EOL . $code);
 
 	  		 if(@eval($code) === false) {
 
@@ -293,12 +293,28 @@ class Interception {
 	           $code = AgilePHP::getSource($this->class);
 
 	           // If more than one class exists in the document, only the first class is parsed
-	           preg_match('/^class\s.*?}.*?\r?\n\r?}\r?\n\r?/ms', $code, $classes);
+	           //preg_match('/^class\s.*?}.*?\r?\n\r?}\r?\n\r?/ms', $code, $classes);
+	           preg_match('/^class\s.*?}.*?\r?\n\r?}/ms', $code, $classes);
 
 	           if($classes[0]) {
 
-	               preg_match_all('/(private|protected|public|[^@]var)\s*(\$.*?;)/sm', $classes[0], $matches);
-	               if(isset($matches[0])) return $matches[0];
+	               //preg_match_all('/(private|protected|public|[^@]var)\s*(\$.*?;)/sm', $classes[0], $matches);
+	               //preg_match_all('/(\/?\*?\*?\s?.*private|\/?\*?\*?\s?.*protected|\/?\*?\*?\s?.*public|[^@]var)\s*(\$.*?;)\s+/sm', $classes[0], $matches);
+
+		           // Try to speed up parsing by truncating the document to the first occurance of a function declaration 
+	           	   $pos = strpos($classes[0], 'function');
+	           	   if($pos !== false) {
+
+	           	   	  $code = substr($classes[0], 0, $pos);
+	           	   	  preg_match_all('/(\/?\*?\*?\s?.*private|\/?\*?\*?\s?.*protected|\/?\*?\*?\s?.*public|[^@]var)\s*(\$.*?;)\s+/sm', $code, $matches);
+	               	  if(isset($matches[0])) return preg_replace('/class.*\{/', '', $matches[0]);
+	           	   }
+	           	   else {
+
+	           	   	  // Didnt find any functions - parse the whole document
+	           	   	  preg_match_all('/(\/?\*?\*?\s?.*private|\/?\*?\*?\s?.*protected|\/?\*?\*?\s?.*public|[^@]var)\s*(\$.*?;)\s+/sm', $classes[0], $matches);
+	               	  if(isset($matches[0])) return preg_replace('/class.*\{/', '', $matches[0]);
+	           	   }
 	           }
 	  }
 	  

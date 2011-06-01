@@ -1,6 +1,5 @@
-- Checking in missing upload component refactorings as part of 0.39.0 checkin / release:
-  o Added support for file type restriction
-  o Added support for file size restriction
-  o Other misc enhancements / refactorings 
+- Checking in missing Interception class refactorings (from 0.39.0 and 0.39.1 builds)
+  o No longer breaks if missing closing php tag from document (?>)
+  o Parsing / creating interceptor proxy now includes fields in stub generation
 
-Backward compatible apidoc: No
+Backward compatible apidoc: Yes
