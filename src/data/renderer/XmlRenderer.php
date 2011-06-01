@@ -62,7 +62,7 @@ class XmlRenderer implements DataRenderer {
 		  		 		 }
 		  		 		 elseif(is_array($val)) {
 
-		  		 		    if(is_object($val[0])) {
+		  		 		    if(isset($val[0]) && is_object($val[0])) {
 
 		  		 		       $ns = explode('\\', get_class($val[0]));
 		  		 		       $name = array_pop($ns);

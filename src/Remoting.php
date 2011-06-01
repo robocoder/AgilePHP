@@ -35,6 +35,7 @@ require_once 'webservice/remoting/RemoteMethod.php';
 abstract class Remoting extends BaseController {
 
 	  	 private $class;
+	  	 private $models = array();
 
 	  	 /**
 	  	  * Initalizes the Remoting instance when the extension class is created.
@@ -44,10 +45,10 @@ abstract class Remoting extends BaseController {
 	  	  */
 	  	 public function __construct() {
 
-	  		    $this->createRenderer('AJAXRenderer');
-
 				set_error_handler('Remoting::ErrorHandler');
 				ob_start(array($this, 'captureErrors'));
+
+				$this->createRenderer('AJAXRenderer');
 	  	 }
 
 		 /**
@@ -67,6 +68,18 @@ abstract class Remoting extends BaseController {
 	  	 		$this->class = $c->getName();
 
 	  	 		$this->createStub();
+	  	 }
+
+	  	 /**
+	  	  * Alias for index method. Clearly indicates what action is taking
+	  	  * place, rather than looking at a call to the 'index' method in
+	  	  * the head of the html page. 
+	  	  *
+	  	  * @param String $class The name of the class to expose via remoting
+	  	  * @return void
+	  	  */
+	  	 public function load($class) {
+	  	 	$this->index($class);
 	  	 }
 
 	  	 /**
@@ -117,6 +130,128 @@ abstract class Remoting extends BaseController {
 	  		    $session->destroy(); 
 	     }
 
+	     /**
+	      * Generates a client-side stub for the specified model
+	      * 
+	      * @param String $class The name of the class to generate the client-side stub for
+	      * @param boolean $typeCast Optional flag which tells the JavaScript generator
+	      *        to type cast constructor fields as defined in the models PHP-doc comment.
+	      * @return void
+	      */
+	     protected function registerModel($class, $typeCast = false) {
+
+	     	// PHP namespace support
+            $namespace = explode('\\', $class);
+            $className = array_pop($namespace);
+            $namespace = implode('.', $namespace);
+
+	     	$js = '';
+
+	     	// Create namespace
+	     	$jsNamespace = '';
+	     	if($namespace) {
+
+	     	   $doDeclare = true;
+	     	   foreach(explode('.', $namespace) as $name) {
+
+	     	   	    $jsNamespace = (!$jsNamespace) ? $name : $jsNamespace . '.' . $name;
+	     	   	    if($jsNamespace) {
+
+	     	   	       // Make sure namespace was not generated from another model
+		     	       foreach($this->models as $model)
+		     	   	      if(strpos($model, "{$jsNamespace} = {};") !== false)
+		     	   	         $dontGenerateNamespace = true;
+
+		     	   	   if(!isset($dontGenerateNamespace)) {
+
+		     	   	      $js .= ($doDeclare) ? "var {$jsNamespace} = {};\n" : "{$jsNamespace} = {};\n";
+		     	   	      $doDeclare = false;
+		     	   	   }
+	     	   	    }
+	     	   }
+	     	   
+	     	   $js .= "\n";
+	     	}
+
+	        // If the requested class has already been generated, abort.
+   			foreach($this->models as $model) {
+
+   			  if( ( ($jsNamespace) ?
+   			        strpos($model, "{$jsNamespace}.{$className} = function") !== false :
+   			        strpos($model, "function {$className}") !== false
+   			      )
+   			  ) return;
+   			}
+
+	     	// Create constructor
+	     	if($jsNamespace) {
+
+	     		$js .= "// {$jsNamespace}.{$className} Model\n";
+	     		$js .= "{$jsNamespace}.{$className} = function() {\n";
+	     	}
+	     	else {
+
+	     		$js .= "// {$className} Model\n";
+	     		$js .= "function {$className}() {\n";
+	     	}
+
+	     	// Create constructor properties
+	     	$clazz = new ReflectionClass($class);
+	     	$properties = $clazz->getProperties();
+	     	foreach($properties as $property) {
+
+	     		if(strpos($property->name, 'interceptedTarget') !== false) continue;
+
+	     		$value = 'null';
+
+	     		if($typeCast) {
+
+	     			$type = DocBlockParser::getPropertyType($property);
+	     			if($type == 'array') $value = '[]';
+	     			if($type == 'object' || DocBlockParser::isUserSpaceObject($type)) {
+
+	     				$value = 'new ' . str_replace('\\', '.', $type) . '()';
+
+	     				// Auto-generate model stub for the object if not already generated
+	     				if(!isset($this->models[0])) $this->registerModel($type, true);
+
+	     				foreach($this->models as $model)
+	     				   if((strpos($model, "function {$type}") === false) ||
+   		         			  (strpos($model, ".{$type} = function") === false))
+	     				      $this->registerModel($type, true);
+	     			}
+	     		}
+
+	     		$js .= "\tthis.{$property->getName()} = {$value};\n";  
+	     	}
+	     	$js .= "};\n";
+
+	     	// Create getters/setters
+	     	foreach($properties as $property) {
+
+	     		$propertyName = $property->getName();
+	     		
+	     		if(strpos($propertyName, 'interceptedTarget') !== false) continue;
+	     		
+	     		$getter = 'get' . ucfirst($propertyName);
+	     		$setter = 'set' . ucfirst($propertyName);
+
+	     		// Setter
+	     		$js .= ($jsNamespace) ?  "{$jsNamespace}.{$className}.prototype.{$setter} = function({$propertyName}) {\n" :
+	     					"{$className}.prototype.{$setter} = function({$propertyName}) {\n";
+	     		$js .= "\tthis.{$propertyName} = {$propertyName};\n";
+	     		$js .= "};\n";
+
+	     		// Getter
+	     		$js .= ($jsNamespace) ? "{$jsNamespace}.{$className}.prototype.{$getter} = function() {\n" :
+	     					"{$className}.prototype.{$getter} = function() {\n";
+	     		$js .= "\treturn this.{$propertyName};\n";
+	     		$js .= "};\n";
+	     	}
+
+	     	array_push($this->models, $js);
+	     }
+
 		 /**
 		  * Creates a dynamic javascript proxy stub/interface used for remoting standard PHP classes.
 		  * The generated code is output to the client in JSON format, intended for consumption from
@@ -133,8 +268,9 @@ abstract class Remoting extends BaseController {
 		  		 		  // Create javascript object w/ matching constructor parameters
 		  		 		  $constructor = $clazz->getConstructor();
 		  		 		  if($constructor) {
-	
-		  		 			  $js = 'function ' . $this->class . '(';
+
+		  		 		  	  $js = '// ' . $this->class . " Service Class\n";
+		  		 			  $js .= 'function ' . $this->class . '(';
 		  		 			  $params = $constructor->getParameters();
 		  		 			  for($i=0; $i<count($params); $i++) {
 		  		 				
@@ -145,20 +281,16 @@ abstract class Remoting extends BaseController {
 		  		 			  for($i=0; $i<count($params); $i++)
 		  		 				   $js .= 'this.' . $params[$i]->getName() . ' = ' . $params[$i]->getName() . ";\n";
 	
-		  		 			  $js .= "}\n\n";
+		  		 			  $js .= "};\n";
 		  		 		  }
 		  		 		  else
-		  		 			  $js = 'function ' . $this->class . "() { }\n\n";
+		  		 			  $js = 'function ' . $this->class . "() { };\n";
 
 		  		 		  // create methods
 		  		 		  $methods = $clazz->getMethods();
 		  		 		  for($i=0; $i<count($methods); $i++) {
 	
 	  		 				   if($methods[$i]->isAnnotated() && $methods[$i]->hasAnnotation('RemoteMethod')) {
-
-	  		 				   	   // Make sure the remote class does not define a setCallback method
-	  		 				   	   if($methods[$i]->getName() == 'setCallback')
-	  		 				   	   	   throw new RemotingException('#@RemoteMethod setCallback is a reserved method and not allowed in class \'' . $this->class . '\'.');
 
 	  		 				   	   // create function
 		  		 				   $js .= $this->class . '.prototype.' . $methods[$i]->getName() . ' = function(';
@@ -169,22 +301,21 @@ abstract class Remoting extends BaseController {
 		  		 				 	 	$js .= (($j+1) < count($params)) ? ', ' : ', callback, exceptionHandler';
 		  		 				   }
 		  		 				   if(!count($params)) $js .= 'callback, exceptionHandler';
-		  		 				   $js .= ") {\n\n";
+		  		 				   $js .= ") {\n";
 		  		 				   // function body
-		  		 				   $js .= "\tvar args = Array.prototype.slice.call(arguments);\n";
-		  		 				   $js .= "\tif(exceptionHandler != undefined) exceptionHandler = args.pop();\n";
-		  		 				   $js .= "\tif(callback != undefined) callback = args.pop();\n";
-		  		 				   $js .= "\treturn AgilePHP.Remoting.invoke(this, '" . $methods[$i]->getName() . "', args, callback, exceptionHandler);\n";
+		  		 				   $js .= "\treturn AgilePHP.Remoting.invoke(this, '" . $methods[$i]->getName() . "', arguments);\n";
 		  		 				   // function closure
-	  		 				 	   $js .= "}\n\n";
+	  		 				 	   $js .= "};\n";
 	  		 				   }
 		  		 		  }
 
-		  		 		  // Remoting internals - store class name and callback hook
-		  		 		  $js .= $this->class . ".prototype._class = '" . $this->class . "';\n";
-	 				 	  $js .= $this->class . ".prototype._callback = null;\n";
-	  		 			  $js .= $this->class . ".prototype.setCallback = function(func) {\n" .
-	  		 			  				"\tthis._callback = func;\n}\n";
+		  		 		  // Remoting internals - store class name
+		  		 		  $js .= $this->class . ".prototype._class = '" . $this->class . "';\n\n";
+
+	  		 			  // Add model stubs
+	  		 			  foreach($this->models as $model)
+	  		 			  	$js .= $model . "\n";
+
 		  		 		  echo $js;
 		  		 }
 		  		 catch(Exception $e) {
@@ -218,7 +349,7 @@ abstract class Remoting extends BaseController {
 	    	     $methods = $clazz->getMethods();
 	    	     for($i=0; $i<count($methods); $i++)
 	  		 		 if($methods[$i]->getName() == $method && !$methods[$i]->hasAnnotation('RemoteMethod'))
-	  		 		 	 throw new RemotingException('Remote calls to this method are not allowed');
+	  		 		 	 throw new RemotingException('No hacking please...');
 
 	  		     Log::debug('Remoting::invoke Invoking class \'' . $class . '\', method \'' . $method .
 	  		 	   	 '\', constructorArgs \'' . print_r($constructorArgs, true) . '\', args \'' . print_r($args, true) . '\'.');
@@ -253,8 +384,8 @@ abstract class Remoting extends BaseController {
 		  		 $js .= "\nAgilePHP.setRequestBase('" . AgilePHP::getRequestBase() . "');";
 		  		 $js .= "\nAgilePHP.Remoting.setController('" . MVC::getController() . "');";
 	
-		  		 header('content-type: application/json');
-		  		 print $js;
+		  		 header('content-type: text/javascript');
+		  		 echo (extension_loaded('jsmin')) ? jsmin($js) : $js;
 		  }
 
 		  /**
@@ -291,7 +422,13 @@ abstract class Remoting extends BaseController {
 				 if(preg_match('/(error<\/b>:)(.+)(<br)/', $buffer, $regs)) {
 	
 				 	 $err = preg_replace("/<.*?>/","",$regs[2]);
-			         $buffer = json_encode(array('_class' => 'RemotingException', 'message' => $err, 'trace' => debug_backtrace()));
+				 	 $o = new stdClass;
+				 	 $o->_class = 'RemotingException';
+				 	 $o->message = $err;
+				 	 $o->trace = debug_backtrace();
+
+			         //$buffer = json_encode(array('_class' => 'RemotingException', 'message' => $err, 'trace' => debug_backtrace()));
+			         $buffer = json_encode($o);
 			     }
 			     return $buffer;
 		  }

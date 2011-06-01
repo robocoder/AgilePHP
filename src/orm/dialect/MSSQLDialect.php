@@ -287,6 +287,9 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  public function beginTransaction() {
 
 	  		 Log::debug('MSSQLDialect::beginTransaction Beginning transaction');
+
+	  		 if(!$this->transactionInProgress)
+	  		    sqlsrv_begin_transaction($this->conn);
 	  }
 
 	  /**
@@ -563,7 +566,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	    	   	        $offset = $this->getOffset();
 	    	   	        $groupBy = $this->getGroupBy();
 
-    	   	         	$sql .= ($this->getRestrictions() != null) ? $this->createRestrictSQL() . ' AND ' . $where : $where;
+    	   	         	$sql .= ($this->getRestrictions() != null) ? $this->createRestrictSQL() . ' AND ' . $where : ' WHERE ' . $where;
 					 	$sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
 					 	$sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
     	   	         	$sql .= ';';
@@ -609,9 +612,18 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 						    $sql = $table->getFind();
 						    //if($where) $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 
-						    if($where) $sql = 'SELECT ' . implode(',', $columnNames) . ' FROM ' .
-						    			'(SELECT ' . implode(',', $columnNames) . ', ROW_NUMBER() OVER (ORDER BY ' . implode(',', $pkeys) . ') AS rownum FROM ' . $table->getName() . ') AS DerivedPagination ' .
-						    		'WHERE (DerivedPagination.rownum BETWEEN ' . $offset . ' AND ' . ($offset + $this->getMaxResults()) . ') AND' . $where;
+						    if($where) {
+
+                               $order = $this->getOrderBy();
+	    	   	               $groupBy = $this->getGroupBy();
+
+						       $sql = 'SELECT ' . implode(',', $columnNames) . ' FROM ' .
+				 		    			   '(SELECT ' . implode(',', $columnNames) . ', @@ROWCOUNT AS rownum FROM ' . $table->getName() . ') AS DerivedPagination
+						    		        WHERE (DerivedPagination.rownum BETWEEN ' . $offset . ' AND ' . ($offset + $this->getMaxResults()) . ') AND' . $where;
+
+						       $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
+						       $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
+						    }
 					 }
 
 					 $this->setDistinct(null);

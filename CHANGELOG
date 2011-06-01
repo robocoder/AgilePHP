@@ -1,5 +1,24 @@
-- Fixed broken pagination query in MSSQLDialect::find.
-- Commented BaseModelActionController::edit call to setPage. (Was throwing off ORM subqueries and causing unnecessary lookup(s) to occur).
-- Bug fix to MSSQLDialect::find when processing createRestrictionsLogic.
+- optimized #@Cache key generation
+- AJAXRenderer: added jsmin support
+- JSONRenderer: added jsmin support
+- MSSQLDialect: missing order by and group by in pagination logic
+                fixed missing begin_transaction
+                Switched from ROW_NUMBER() to @@ROWCOUNT to produce expected pagination results.
+- Created util package
+- Created ModelGenerator utility class
+- Created DocBlockParser utility class
+- Refactored Remoting component:
+	o Added registerModel method, which allows a model to be included in stub generation.
+	o Remoting::registerModel accepts an optional parameter, which if present/true, generates
+	  the JavaScript model constructor with native object {} or array [] default values.
+	o Added minify support if jsmin extension is installed
+    o Changed header from application/json to text/javascript
+- Created mailer package
+    o Added support for plain text, HTML, multipart/alternative and multipart/mixed mime types.
+    o Added multiple attachment support
+    o Added email tracking support
+- Bug fix to XmlRenderer::render when inspecting array element that could be an object - assumed index existed
+
+NOTE: This checkin has not been tested yet!
 
 Backward compatible apidoc: Yes

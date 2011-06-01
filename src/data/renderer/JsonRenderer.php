@@ -52,7 +52,7 @@ class JsonRenderer implements DataRenderer {
 	  		  	  	 $json .= '[]';
 	  		  	  	 return $json;
 	  		  	 }
-	  		  	  
+
 	  		  	 $json .= '[ ';
 	  		  	 foreach($data as $key => $value) {
 

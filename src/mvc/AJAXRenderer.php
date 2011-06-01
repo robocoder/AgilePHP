@@ -50,7 +50,7 @@ class AJAXRenderer extends BaseRenderer {
 	  		 	 Log::debug('AJAXRenderer::render Rendering JSON ' . $json);
 
 	  		 	 header('content-type: application/json');
-	  		 	 die($json);
+	  		 	 die((extension_loaded('jsmin')) ? jsmin($json) : $json);
 	  		 }
 
 	  		 else if($this->output == 'xml') {
@@ -94,7 +94,7 @@ class AJAXRenderer extends BaseRenderer {
 
 	  		 	Log::debug('AJAXRenderer::render Rendering JSON ' . $json);
 
-	  		 	die($json);
+	  		 	 die((extension_loaded('jsmin')) ? jsmin($json) : $json);
 	  		 }
 
 	  		 else if($this->output == 'xml') {
@@ -206,7 +206,8 @@ class AJAXRenderer extends BaseRenderer {
 	   */
 	  public function toJSON($data, $name = null, $isChild = false) {
 
-	  		 return JsonRenderer::render($data, $name, $isChild);
+	         $json = JsonRenderer::render($data, $name, $isChild);
+	         return (extension_loaded('jsmin')) ? jsmin($json) : $json;
 	  }
 
 	  /**
