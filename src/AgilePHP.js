@@ -343,15 +343,22 @@ var AgilePHP = {
 				  if(this.isAsync) {
 
 						 xhr.onreadystatechange = function() {
-		
+
 							 if(xhr.readyState == 4) {
 								 var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
 								 AgilePHP.debug(data);
 
-								 if(data && data.RemotingException && data.RemotingException._class == 'RemotingException' && exceptionHandler) {
+								 // Catch exceptions
+								 var count = 0;
+								 for(var property in data) {
 
-									 exceptionHandler(data.RemotingException);
-									 return;
+									 if(count > 1) break;
+									 if(data[property] && data[property]._class && data[property]._class.indexOf('Exception') !== -1) {
+
+										if(exceptionHandler) exceptionHandler(data[property]);
+										return;
+									 }
+									 count++;
 								 }
 								 if(callback) callback(data);
 							 }
@@ -362,10 +369,18 @@ var AgilePHP = {
 					  	 var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
 					  	 AgilePHP.debug(data);
 
-					  	 if(data && data.RemotingException && data.RemotingException._class == 'RemotingException' && exceptionHandler) {
+					  	 // Catch exceptions
+					  	 var count = 0;
+						 for(var property in data) {
 
-							 exceptionHandler(data.RemotingException);
-							 return;
+							 if(count > 1) break;
+							 if(data[property] && data[property]._class && data[property]._class.indexOf('Exception') !== -1) {
+
+								if(exceptionHandler) exceptionHandler(data[property]);
+								return;	
+							 }
+
+							 count++;
 						 }
 						 return data;
 				  }
@@ -659,23 +674,36 @@ var AgilePHP = {
 			 * @param parameters {array} An array containing the arguments/parameters to pass into
 			 * @return mixed Void if asynchronous (call will be executed), otherwise the eval'd response from the service
 			 */
-			invoke: function(stub, method, parameters, callback, exceptionHandler) {
+			invoke: function(stub, method, parameters) {
 
 				 AgilePHP.debug('AgilePHP.Remoting.invoke');
 				 AgilePHP.debug(stub);
 				 AgilePHP.debug(method);
 				 AgilePHP.debug(parameters);
 
+				 var parameters = Array.prototype.slice.call(parameters);
+				 var exceptionHandler = null;
+				 var callback = null;
 				 var clazz = stub._class
 
-				 if(!callback) callback = stub._callback;
+				 // Exception handler is defined
+				 if(typeof parameters[parameters.length-1] == 'function' &&
+						 ((parameters.length >= 2) && typeof parameters[parameters.length-2] == 'function')) {
+
+					exceptionHandler = parameters.pop();
+					callback = parameters.pop();
+				 }
+				 // Just the callback is defined
+				 else if(typeof parameters[parameters.length-1] == 'function') {
+
+					 callback = parameters.pop();
+				 }
 
 				 delete stub._class;
-				 delete stub._callback;
 
 				 var data = 'class=' + clazz + '&method=' + method + '&constructorArgs=' + JSON.stringify(stub);
 
-				 if(parameters != undefined) {
+				 if(parameters != null) {
 
 					 var o = new Object();
 					 for(var i=0; i<parameters.length; i++)

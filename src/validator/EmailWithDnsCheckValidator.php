@@ -27,7 +27,7 @@
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
-class EmailValidator implements Validator {
+class EmailWithDnsCheckValidator implements Validator {
 
 	  /**
 	   * Validates an email address by checking its syntax and performing
@@ -37,7 +37,14 @@ class EmailValidator implements Validator {
 	   */
 	  public static function validate($data) {
 
-	         return filter_var($data, FILTER_VALIDATE_EMAIL);
+	         if(!filter_var($data, FILTER_VALIDATE_EMAIL)) return false;
+
+   			 $index = strrpos($data, '@');
+   			 $domain = substr($data, $index + 1);
+
+      		 if(!checkdnsrr($domain, "MX") || checkdnsrr($domain, 'A')) return false;
+
+   			 return true;
 	  }
 }
 ?>

@@ -20,50 +20,49 @@
  */
 
 /**
- * Tests the #@RequestParam interceptor (sets the annotated property with the
+ * Tests the #@FormParam interceptor (sets the annotated property with the
  * corresponding form field value).
  * 
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
  */
-class RequestParamController extends BaseController {
+class FormParamController extends BaseController {
 
-	  #@RequestParam
+	  #@FormParam(required = true, displayName = 'First Name', validator = 'AgilePHPNameValidator')
 	  public $name;
 
-	  #@RequestParam( name = 'comments', sanitize = false )
+	  #@FormParam(name = 'email', validator = 'EmailWithDnsCheckValidator')
+	  public $email;
+
+	  #@FormParam(name = 'comments', sanitize = false)
 	  public $comments;
 
 	  #@Logger
 	  public $logger;
 
-	  public function __construct() {
-
-	  		 parent::__construct();
-	  }
 
 	  /**
 	   * (non-PHPdoc)
 	   * @see src/mvc/BaseController#index()
 	   */
 	  public function index() {
-
-	  		 $this->render( 'request-param-example' );
+		   $this->render('form-param-example');
 	  }
 
 	  /**
-	   * Displays the submitted form values set by the #@RequestParam interceptor
+	   * Displays the submitted form values set by the #@FormParam interceptor
 	   * 
 	   * @return void
 	   */
 	  public function process() {
 
 	  		 echo '<hr>';
-	  		 echo 'Name: ' . $this->name . '<br>';
+	  		 echo 'First name: ' . $this->name . '<br>';
+	  		 echo 'Email: ' . $this->email . '<br>';
 	  		 echo 'Comments: ' . $this->comments . '<br>';
 
-	  		 $this->logger->debug('RequestParamController::process Name = ' . $this->name . ', comments: ' . $this->comments);
+	  		 $this->logger->debug('RequestParamController::process Name = ' . $this->name . ', email = ' . $this->email . ', comments: ' . $this->comments);
 	  }
 }
 ?>

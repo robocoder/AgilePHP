@@ -8,6 +8,7 @@
 		<style type="text/css">
 		.label { float: left; }
 		.inputField { margin-left: 100px; }
+		.required { color: #FF0000; }
 		</style>
 	</head>
 
@@ -15,10 +16,13 @@
 
 		<div id="container">
 
-			<form name="frmRequestParmTest" action="<?= AgilePHP::getRequestBase() ?>/RequestParamController/process" method="post">
+			<form name="frmRequestParmTest" action="<?= AgilePHP::getRequestBase() ?>/FormParamController/process" method="post">
 				
-				<div class="label">Name</div>
+				<div class="label">First Name</div>
 				<div class="inputField"><input type="text" name="name" style="margin-left: 75px;"/></div>
+
+				<div class="label required">Email *</div>
+				<div class="inputField"><input type="text" name="email" style="margin-left: 75px;"/></div>
 
 				<div class="label">Comments</div>
 				<div class="inputField"><textarea rows="10" cols="23" name="comments" style="margin-left: 75px;"></textarea></div>

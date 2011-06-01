@@ -35,7 +35,7 @@ PHP 5.3+
 --------------
 ** Building **
 --------------
-http://confluence.makeabyte.com:8090/display/agilephp/Build+From+Source+-+Ubuntu+10.04
+http://confluence.makeabyte.com:8080/display/agilephp/Build+From+Source+-+Ubuntu+10.04
 
 
 ---------------------
@@ -74,16 +74,20 @@ View the online apidoc at http://makeabyte.com/agilephp/apidoc.
 ----------
 ** WIKI **
 ----------
-Visit the WIKI at http://confluence.makeabyte.com for details on installation, configuration, and tutorials.
+Visit the WIKI at http://confluence.makeabyte.com:8080 for details on installation, configuration, and tutorials.
 
 
 ----------------
 ** Repository **
 ----------------
+Currently offline due to migration - will be back shortly!
+
 Visit the FishEye at http://fisheye.makeabyte.com
 
 
 ------------------
 ** Bug Tracking **
 ------------------
+Currently offline due to migration - will be back shortly!
+
 Visit Jira at http://jira.makeabyte.com. Thanks for helping make AgilePHP better!

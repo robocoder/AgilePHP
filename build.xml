@@ -14,7 +14,7 @@
     <property name="test.logs" value="${test.dir}/logs"/>
     <property name="phpunit.reports" value="${build.dir}/reports/phpunit"/>
 
-    <version releasetype="Bugfix" file="VERSION" property="build.version"/>
+    <version releasetype="Minor" file="VERSION" property="build.version"/>
 
     <fileset dir="${src.dir}" id="srcfiles">
         <include name="**"/>

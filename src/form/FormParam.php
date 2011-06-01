@@ -30,21 +30,21 @@
  * class MyFormProcessor {
  * 
  * // Defaults to the name of the property/field
- * #@RequestParam
+ * #@FormParam
  * public $fname;
  * 
  * // Optionally, we can specify the name of the input element
- * #@RequestParam(name = 'email')
+ * #@FormParam(name = 'email')
  * public $emailaddress;
  * 
  * // Optionally, we can also specify no sanitation
- * #@RequestParam(name = 'password', sanitize = false)
+ * #@FormParam(name = 'password', sanitize = false)
  * public $plainTextPassword;
  * 
- * #@RequestParam(transformer = "YesNoToBoolean")
+ * #@FormParam(transformer = "YesNoToBoolean")
  * public $isAdmin;
  *
- * #@RequestParam(validator = "MyCustomFirstnameValidator", displayName = "First Name")
+ * #@FormParam(validator = "MyCustomFirstnameValidator", displayName = "First Name")
  * public $firstName;
  * 
  * public function showEmail() {
@@ -81,7 +81,7 @@
  */
 
 #@Interceptor
-class RequestParam {
+class FormParam {
 
 	  /**
 	   * The HTML input name to grab the value from 
