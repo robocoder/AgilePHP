@@ -1,9 +1,6 @@
-- ran unit tests against yesterdays checkin - passing
-- renamed #@RequestParam to #@FormParam
-- cleaned up README and TODO files
-- refactored test/remoting-example.html to use newly supported callback / exception handler syntax
-- Stripped EmailValidator logic to just check for valid syntax (removed MX and A record check)
-- Created EmailWithDnsCheckValidator that includes syntax checking as well as DNS MX and A record lookups
-  to see if the email domain has valid MX and A records.
+- Checking in missing upload component refactorings as part of 0.39.0 checkin / release:
+  o Added support for file type restriction
+  o Added support for file size restriction
+  o Other misc enhancements / refactorings 
 
 Backward compatible apidoc: No

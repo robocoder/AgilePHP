@@ -28,10 +28,15 @@
  */
 class Upload {
 
-	  private $name;
+	  private $inputName;
+	  private $uploadedFilename;
+	  private $localFilename;
+	  private $contentType;
+	  private $size;
 	  private $directory;
-	  
-	  public function __construct() { }
+	  private $extension;
+	  private $allowedExtensions;
+	  private $maxSize;
 
 	  /**
 	   * Sets the name used in the file form field element.
@@ -39,9 +44,8 @@ class Upload {
 	   * @param String $name The name attribute of the HTML file input element
 	   * @return void
 	   */
-	  public function setName($name) {
-
-	  		 $this->name = $name;
+	  public function setInputName($name) {
+		   $this->inputName = $name;
 	  }
 
 	  /**
@@ -49,9 +53,18 @@ class Upload {
 	   * 
 	   * @return String The name attribute of the HTML file input element
 	   */
-	  public function getName() {
+	  public function getInputName() {
+            return $this->inputName;
+	  }
 
-	  		 return $this->name;
+	  /**
+	   * Total number of bytes which the upload may not exceed
+	   * 
+	   * @param int $bytes Maximum number of bytes
+	   * @return void
+	   */
+	  public function setMaxSize($bytes) {
+	  	   $this->maxSize = $bytes;
 	  }
 
 	  /**
@@ -61,12 +74,57 @@ class Upload {
 	   * @return void
 	   */
 	  public function setDirectory($directory) {
-	  	
-	  		 $this->directory = $directory;
 
-	  		 if(!file_exists($directory))
-	  		 	 if(!mkdir($directory, true))
-	  		 	 	 throw new FrameworkException('Upload directory does not exist and an attempt to create it failed.');
+	  	   $this->directory = $directory;
+
+           if(!file_exists($directory))
+              if(!mkdir($directory, true))
+                 throw new UploadException('Upload directory does not exist and an attempt to create it failed.');
+	  }
+
+	  /**
+	   * Returns the mime content type
+	   * 
+	   * @return String The content type
+	   */
+	  public function getContentType() {
+	  	  return $this->contentType;
+	  }
+
+	  /**
+	   * Returns the extension of the uploaded file
+	   * 
+	   * @return String The uploaded file extension
+	   */
+	  public function getExtension() {
+	  	  return $this->extension;
+	  }
+
+	  /**
+	   * Returns the total size (in bytes) of the upload
+	   * 
+	   * @return int The total number of bytes
+	   */
+	  public function getSize() {
+	  	  return $this->size;
+	  }
+
+	  /**
+	   * Returns the uploaded file name (as it appeared to the user)
+	   * 
+	   * @return String The uploaded file name
+	   */
+	  public function getUploadedFilename() {
+	  	  return $this->uploadedFilename;
+	  }
+
+	  /**
+	   * Returns the file name as it was saved on the local file system
+	   * 
+	   * @return String The local file name
+	   */
+	  public function getLocalFilename() {
+	  	  return $this->localFilename;
 	  }
 
 	  /**
@@ -75,28 +133,62 @@ class Upload {
 	   * @return String The destination directory path
 	   */
 	  public function getDirectory() {
+		    return $this->directory;
+	  }
 
-	  		 return $this->directory;
+	  /**
+	   * Sets the extensions allowed to be uploaded
+	   * 
+	   * @param array $extensions
+	   */
+	  public function setAllowedExtensions(array $extensions) {
+  	        $this->allowedExtensions = $extensions;
 	  }
 
 	  /**
 	   * Saves the upload contained in the $_FILES array for the specified
 	   * file input $name.
-	   * 
+	   *
+	   * @param boolean $overwrite Optional flag used to toggle overwriting. Defaults to false (don't overwrite).
 	   * @param String $filename Optional file name to save the upload as. Defaults to the name of the uploaded file.
 	   * @return String The uploaded file path.
 	   * @throws ORMException if any errors occur
 	   */
-	  public function save($filename = null) {
+	  public function save($overwrite = false, $filename = null) {
 
-	  		 $name = ($filename) ? $filename : $_FILES[ $this->getName() ]['name'];
-			 $target = $this->getDirectory() . DIRECTORY_SEPARATOR . $name;
+	  	    if(!$filename) {
 
-			 Log::debug('Upload::save Saving upload with name \'' . $this->getName() . '\' to target path \'' . $target . '\'.');
+	  	    	$pieces = explode(DIRECTORY_SEPARATOR, $_FILES[$this->inputName]['name']);
+	  	        $filename = $pieces[count($pieces)-1];
+	  	        $this->localFilename = $filename;
+	  	    }
 
-			 if(!move_uploaded_file($_FILES[ $this->getName() ]['tmp_name'], $target)) {
+	  		$pieces = explode('.', $filename);
+	  		if(count($pieces) > 1) $this->extension = $pieces[count($pieces) - 1];
+	  		$this->uploadedFilename = $_FILES[$this->inputName]['name'];
+	  		$this->size = $_FILES[$this->inputName]['size'];
+	  		$this->contentType = $_FILES[$this->inputName]['type'];
 
-			 	 switch($_FILES[ $this->getName() ]['error']) {
+	  		// Check size restriction if present
+	  		if($this->maxSize && $this->size > $this->maxSize)
+	  		   throw new UploadException('File too large. Must not exceed ' . $this->maxSize . ' bytes.');
+
+	  		// Check allowed extension(s) if configured
+	  		if($this->allowedExtensions && $this->extension)
+	  		   if(!in_array(strtolower($this->extension), $this->allowedExtensions))
+	  		      throw new UploadException($this->extension . ' files are not allowed.');
+
+			$target = $this->directory . DIRECTORY_SEPARATOR . $filename;
+
+			// Make sure the file doesn't exist if not overwriting
+			if(file_exists($target) && $overwrite == false)
+			   throw new UploadException('The uploaded file already exists');
+
+			Log::debug('Upload::save Saving upload with input name \'' . $this->inputName . '\' to target path \'' . $target . '\'.');
+
+			if(!move_uploaded_file($_FILES[$this->inputName]['tmp_name'], $target)) {
+
+			 	 switch($_FILES[$this->inputName]['error']) {
 
 			 	 	case 1:
 			 	 		$error = 'The uploaded file exceeds the upload_max_filesize directive in php.ini.';
@@ -129,16 +221,14 @@ class Upload {
 
 			 	 if(!isset($error)) return;
 
-			 	 Log::debug('Upload::save Upload failed with code \'' . $_FILES[ $this->getName() ]['error'] . '\' and message \'' . $error . '\'.');
+			 	 Log::debug('Upload::save Upload failed with code \'' . $_FILES[$this->inputName]['error'] . '\' and message \'' . $error . '\'.');
+			 	 throw new UploadException($error, $_FILES[$this->inputName]['error']);
+			}
 
-			 	 throw new FrameworkException($error, $_FILES[ $this->getName() ]['error']);
-			 }
+			chmod($target, 0755);
+			Log::debug('Upload::save Upload successfully saved');
 
-			 chmod($target, 0755);
-
-			 Log::debug('Upload::save Upload successfully saved');
-
-			 return $target;
+			return $target;
 	  }
 
 	  /**
@@ -148,10 +238,10 @@ class Upload {
 	   */
 	  public function delete() {
 
-	  		 if(!unlink($this->getDirectory() .'/' . $_FILES[ $this->getName() ]['name']))
-	  		 	 Log::debug('Upload::delete Failed to delete upload');
-	  		 else
-	  		 	 Log::debug('Upload::delete Delete successful');
+	  	   if(!unlink($this->directory .'/' . $_FILES[$this->inputName]['name']))
+              Log::debug('Upload::delete Failed to delete upload');
+           else
+              Log::debug('Upload::delete Delete successful');
 	  }
 }
 ?>
