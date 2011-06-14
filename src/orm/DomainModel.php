@@ -28,133 +28,133 @@
  * @package com.makeabyte.agilephp.orm
  * @abstract
  */
-abstract class DomainModel {
+abstract class DomainModel extends DataModel {
 
-         abstract public function __construct();
+    /**
+     * Persists/saves the DomainModel ActiveRecord state to
+     * the data source.
+     *
+     * @return void
+     * @throws ORMException
+     */
+    public function persist() {
 
-         /**
-          * Persists/saves the DomainModel ActiveRecord state to
-          * the data source.
-          *
-          * @return void
-          * @throws ORMException
-          */
-         public function persist() {
+        $dialect = ORMFactory::getDialect();
+        $dialect->persist($this);
+        return $dialect->getLastInsertId();
+    }
 
-                $dialect = ORMFactory::getDialect(); 
-                $dialect->persist($this);
-                return $dialect->getLastInsertId();
-         }
+    /**
+     * Looks up the ActiveRecord state from the data source using
+     * values for fields which map to primary keys.
+     *
+     * @return void
+     * @throws ORMException
+     * @throws FrameworkException
+     */
+    public function get() {
 
-		 /**
-          * Looks up the ActiveRecord state from the data source using
-          * values for fields which map to primary keys.
-          *
-          * @return void
-          * @throws ORMException
-          * @throws FrameworkException
-          */
-         public function get() {
+        if(!$model = ORMFactory::getDialect()->get($this)) return false;
 
-                if(!$model = ORMFactory::getDialect()->get($this)) return false;
+        // @todo Interceptors are still being somewhat intrusive to reflection operations
+        if(method_exists($model, 'getInterceptedInstance')) {
 
-                // @todo Interceptors are still being somewhat intrusive to reflection operations
-	  		    if(method_exists($model, 'getInterceptedInstance')) {
+            $data = $model->getInterceptedInstance();
+            $class = new ReflectionClass($data);
+        }
+        else {
 
-	  		       $data = $model->getInterceptedInstance();
-	  		       $class = new ReflectionClass($data);
-	  		    }
-	  		    else {
+            $class = new ReflectionClass($model);
+            $data = $model;
+        }
 
-	  		       $class = new ReflectionClass($model);
-	  		       $data = $model;
-	  		    }
+        foreach($class->getProperties() as $property) {
 
-                foreach($class->getProperties() as $property) {
+            $context = null;
+            if($property->isPublic())
+               $context = 'public';
 
-		  		 		 $context = null;
-		  		 		 if($property->isPublic())
-		  		 		  	$context = 'public';
-		  		 		 else if($property->isProtected())
-		  		 		 	$context = 'protected';
-		  		 		 else if($property->isPrivate())
-		  		 		  	 $context = 'private';
+            else if($property->isProtected())
+               $context = 'protected';
 
-		  		 		 $value = null;
-		  		 		 if($context != 'public') {
+            else if($property->isPrivate())
+               $context = 'private';
 
-		  		 		  	$property->setAccessible(true);
-				  		 	$value = $property->getValue($data);
-				  		 	$property->setAccessible(false);
-		  		 		 }
-		  		 		 else
-		  		 		  	$value = $property->getValue($data);
+            $value = null;
+            if($context != 'public') {
 
-		  		 		 $mutator = 'set' . ucfirst($property->getName());
-		  		 		 $this->$mutator($value);
-                }
-         }
+               $property->setAccessible(true);
+               $value = $property->getValue($data);
+               $property->setAccessible(false);
+            }
+            else
+               $value = $property->getValue($data);
 
-		 /**
-          * Merges/updates the data source record mapped by the
-          * DomainModel ActiveRecord state.
-          *
-          * @return void
-          * @throws ORMException
-          */
-         public function merge() {
+            $mutator = 'set' . ucfirst($property->getName());
+            $this->$mutator($value);
+        }
+    }
 
-                return ORMFactory::getDialect()->merge($this);
-         }
+    /**
+     * Merges/updates the data source record mapped by the
+     * DomainModel ActiveRecord state.
+     *
+     * @return void
+     * @throws ORMException
+     */
+    public function merge() {
 
-		 /**
-          * Deletes/destroys the data source record mapped by the
-          * DomainModel ActiveRecord state.
-          *
-          * @return void
-          * @throws ORMException
-          */
-         public function delete() {
+        return ORMFactory::getDialect()->merge($this);
+    }
 
-                return ORMFactory::getDialect()->delete($this);
-         }
+    /**
+     * Deletes/destroys the data source record mapped by the
+     * DomainModel ActiveRecord state.
+     *
+     * @return void
+     * @throws ORMException
+     */
+    public function delete() {
 
-         /**
-          * Performs a SELECT * on the mapped table.
-          *
-          * @return array An array of records or an empty array if no records were located
-          */
-         public function find($maxResults = 25) {
+        return ORMFactory::getDialect()->delete($this);
+    }
 
-                ORMFactory::getDialect()->setMaxResults($maxResults);
-                return ORMFactory::getDialect()->find($this);
-         }
+    /**
+     * Performs a SELECT * on the mapped table.
+     *
+     * @return array An array of records or an empty array if no records were located
+     */
+    public function find($maxResults = 25) {
 
-         /**
-          * Nulls out all model property values
-          * 
-          * @return void
-          */
-         public function clear() {
+        ORMFactory::getDialect()->setMaxResults($maxResults);
+        return ORMFactory::getDialect()->find($this);
+    }
 
-                $table = ORMFactory::getDialect()->getTableByModel($this);
-	  	        $columns = $table->getColumns();
+    /**
+     * Nulls out all model property values
+     *
+     * @return void
+     */
+    public function clear() {
+
+        $table = ORMFactory::getDialect()->getTableByModel($this);
+        $columns = $table->getColumns();
 
  			    for($i=0; $i<count($columns); $i++) {
 
-	  	     	    $mutator = 'set' . ucfirst($columns[$i]->getModelPropertyName());
-	  	     	    $this->$mutator(null);
-	  	        }
-         }
+ 			        $mutator = 'set' . ucfirst($columns[$i]->getModelPropertyName());
+ 			        $this->$mutator(null);
+ 			    }
+    }
 
-         /**
-          * Calls a stored procedure
-          * 
-          * @return mixed Single scalar value or DomainModel instance depending on the return values configured
-          */
-         public function call() {
+    /**
+     * Calls a stored procedure
+     *
+     * @return mixed Single scalar value or DomainModel instance depending on the return values configured
+     */
+    public function call() {
 
-                return ORMFactory::getDialect()->call($this);
-         }
+        return ORMFactory::getDialect()->call($this);
+    }
 }
 ?>

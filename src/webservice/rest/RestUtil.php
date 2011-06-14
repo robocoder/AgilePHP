@@ -119,7 +119,7 @@ class RestUtil {
 
 	  		 if(!is_object($data) && !is_array($data)) {
 
-	  		 	Log::debug('RestUtil::serverTransform The specified data must be either an object or array at \'' . $data . '\.');
+	  		 	Log::debug('RestUtil::serverTransform The specified data must be either an object or array.');
 	  		 	throw new RestServiceException(500);
 	  		 }
 
@@ -188,9 +188,10 @@ class RestUtil {
 	   * @param string $data The data being consume from a cilent HTTP request (PUT|POST|DELETE)
 	   * @param string $mime The mime type which describes the data.
 	   * 					 (application/xml|application/json|application/x-yaml|application/xhtml+xml)
+	   * @param string $modelName Optional model name used to transform a JSON object to a native PHP object
 	   * @return void
 	   */
-	  public static function consumeTransform($data, $mime) {
+	  public static function consumeTransform($data, $mime, $modelName = null) {
 
 	         try {
         			 switch($mime) {
@@ -200,7 +201,7 @@ class RestUtil {
         			 	break;
 
         			 	case 'application/json':
-        			 		return JsonToModel::transform($data);
+        			 		return JsonToModel::transform($data, $modelName);
         			 	break;
 
         			 	case 'application/x-yaml':

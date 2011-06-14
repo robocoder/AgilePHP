@@ -91,6 +91,16 @@ class users extends BaseController {
 	  #@Path(resource = '/{username}/json')
 	  #@ConsumeMime(type = 'application/json')
 	  #@ProduceMime(type = 'application/json')
+	  /**
+	   * Updates the specified user. The {username} in the #@Path annotation
+	   * causes the first parameter in the resource URI to be captured and
+	   * passed into the method as the first argument. The second User parameter
+	   * is the transformed JSON data submitted in the body of the HTTP request.
+	   * 
+	   * @param string $username The unique username to update
+	   * @param User $user The data used to update the account
+	   * @return void
+	   */
 	  public function updateUserJSON($username, User $user) {
 
 	  		 $user->merge();
@@ -99,12 +109,39 @@ class users extends BaseController {
 
 	  #@PUT
 	  #@Path(resource = '/{username}/wildcard')
+	  /**
+	   * Updates the specified user using a wildcard.
+	   * 
+	   * @param string $username The unique username to update
+	   * @param User $user The user instance to update
+	   * @return User The modified user instance
+	   */
 	  public function updateUserWildcard($username, User $user) {
 
 	  		 $user->merge();
 	  		 return $user;
 	  }
 
+	  #@POST
+	  #@Path(resource = '/{username}/json')
+	  #@ConsumeMime(type = 'application/json')
+	  #@ProduceMime(type = 'application/json')
+	  /**
+	   * Updates the specified user. The {username} in the #@Path annotation
+	   * causes the first parameter in the resource URI to be captured and
+	   * passed into the method as the first argument. The second User parameter
+	   * is the transformed JSON data submitted in the body of the HTTP request.
+	   * 
+	   * @param string $username The unique username to update
+	   * @param User $user The data used to update the account
+	   * @return void
+	   */
+	  public function updateUserJSON2($username, User $user) {
+
+	  		 $user->merge();
+	  		 return $user;
+	  }
+	  
 	  #@DELETE
 	  #@Path(resource = '/{username}')
 	  public function deleteUser($username) {

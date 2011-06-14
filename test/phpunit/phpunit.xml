@@ -3,7 +3,8 @@
          colors="true"
          stopOnFailure="true"
          syntaxCheck="true"
-		 testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader">
+		 testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
+		 verbose="true">
 
 	<logging>
 		<log type="junit" target="build/reports/phpunit/tests/junit.xml" logIncompleteSkipped="true"/>

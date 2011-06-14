@@ -50,31 +50,131 @@ class PUT {
 	  #@AroundInvoke
 	  public function process(InvocationContext $ic) {
 
+	  	     // Capture errors so they don't end up swallowed with nothing
+	  	     // more than a standard HTTP error code/message to work with.
+	  	     set_error_handler('PUT::errorHandler');
+             ob_start(array($this, 'captureErrors'));
+
 	  		 $callee = $ic->getCallee();
 			 $class = $callee['class'];
+			 $target = $ic->getTarget();
+			 $method = $ic->getMethod();
 
 			 // Get the negotiated mime type thats used to format the response data 
-			 $negotiation = RestUtil::negotiate($class, $ic->getMethod());
+			 $negotiation = RestUtil::negotiate($class, $method);
 			 $ProduceMime = $negotiation['ProduceMime'];
 			 $ConsumeMime = $negotiation['ConsumeMime'];
 
 	  		 // Read the PUT data
 	  		 $data = trim(file_get_contents('php://input'));
 
-	  		 // Transform data if the REST service resource has a #@ConsumeMime annotation
-	  		 if($ConsumeMime) $data = RestUtil::consumeTransform($data, $ConsumeMime);
-
-	  		 // Add the data to the parameters passed into the intercepted REST resource action method
+	  		 // Get the parameters being passed to the method
 	  		 $params = $ic->getParameters();
+
+	  		 // Transform data if the REST service resource has a #@ConsumeMime annotation
+	  		 if($ConsumeMime) {
+
+		  		 // If this is a JSON payload, look up the requested method signature to see
+	  		     // if its parameter data type is defined in a PHP-doc comment. If so and the
+	  		     // data type is user defined, pass the model name into the consumeTransform
+	  		     // call so JsonToModel can unmarshall the data.
+                 if($ConsumeMime == 'application/json') {
+
+	  		        $rMethod = new ReflectionMethod($class, $method);
+	  		        $parameters = $rMethod->getParameters();
+	  		        $parameterCount = count($parameters);
+	  		        $putParameter = $parameters[$parameterCount-1];
+
+	  		        // Check to see if the method defines a data type for the PUT data. By
+	  		        // convention, the PUT data is passed as the last parameter.
+	  		        if($parameterCount == count($params)+1) {
+
+	  		           // PHP-doc comment for the PUT parameter exists. Extract its data type
+	  		           // and check to see if its an object.
+	  		           $type = DocBlockParser::getParameterType($rMethod, $putParameter);
+	  		           $isUserSpaceObject = DocBlockParser::isUserSpaceObject($type);
+
+	  		           if($type == 'array') {
+
+			              if($elementType = DocBlockParser::getParameterArrayType($rMethod, $putParameter))
+
+			                 if(DocBlockParser::isUserSpaceObject($elementType))
+			                    // Transform the array of objects to native PHP array of objects
+			                    $data = RestUtil::consumeTransform($data, $ConsumeMime, $elementType);
+			                 else
+			                    $data = RestUtil::consumeTransform($data, $ConsumeMime);
+			           }
+			           elseif($type == 'object' || $isUserSpaceObject) {
+
+			                if($isUserSpaceObject)
+			                    // Transform the object to a native PHP object
+			                    $data = RestUtil::consumeTransform($data, $ConsumeMime, $type);
+			                else  // Transform to stdClass
+			                    $data = RestUtil::consumeTransform($data, $ConsumeMime);
+			           }
+			           else {
+
+			               // Primitive data type - no transformation
+			               $data = RestUtil::consumeTransform($data, $ConsumeMime);
+			           }
+	  		        }
+                 }
+				 else {
+
+					// The data is not JSON, meta parsing not applicable
+	  		     	$data = RestUtil::consumeTransform($data, $ConsumeMime);
+	  		     }
+	  		 }
+	  		 // Add the data to the parameters passed into the intercepted REST resource action method
 	  		 array_push($params, $data);
 
 	  		 // Execute the REST service resource and store the return value
-	  		 $return = call_user_func_array(array($ic->getTarget(), $ic->getMethod()), $params); 
+	  		 $return = call_user_func_array(array($target, $method), $params);
 
 	  		 // Format the return value according to the negotiated mime type and exit the application.
 	  		 $out = RestUtil::serverTransform($return, $ProduceMime);
 	  		 header('HTTP/1.1 202 Accepted');
 	  		 die($out);
 	  }
+	  
+	  /**
+       * Parses each PHP output buffer for php fatal error and converts to RemotingException if present.
+       *
+       * @param string $buffer PHP output buffer
+       * @return void
+       * throws RemotingException
+       */
+      public function captureErrors($buffer) {
+
+	        $matches = array();
+	        $errors = '';
+	
+	        if(preg_match('/(error<\/b>:)(.+)(<br)/', $buffer, $regs)) {
+	
+	            $err = preg_replace("/<.*?>/","",$regs[2]);
+	            $o = new stdClass;
+	            $o->message = $err;
+	            $o->trace = debug_backtrace();
+
+	            $buffer = json_encode($o);
+	        }
+
+	        return $buffer;
+    }
+
+    /**
+     * Custom error handler used to log errors so they are not swallowed
+     *
+     * @param Integer $errno Error number
+     * @param String $errmsg Error message
+     * @param String $errfile The name of the file that caused the error
+     * @param Integer $errline The line number that caused the error
+     * @return false
+     */
+    public static function errorHandler($errno, $errmsg, $errfile, $errline) {
+
+        Log::error(PHP_EOL . 'Number: ' . $errno . PHP_EOL . 'Message: ' . $errmsg .
+        		PHP_EOL . 'File: ' . $errfile . PHP_EOL . 'Line: ' . $errline);
+    }
 }
 ?>

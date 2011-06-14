@@ -36,9 +36,12 @@ class JsonRenderer implements DataRenderer {
 	   * @param mixed $data An array or object to transform into JSON
 	   * @param string $name An optional class name. Defaults to null
 	   * @param boolean $isChild Used internally for recursion logic
+	   * @param boolean $includeClassNames True to include a '_class' property in rendered
+	   *        JSON that represents the marshalled PHP class name, false to omit the field.
+	   *        Defaults to false (omit the field).
 	   * @return The JSON encoded data
 	   */
-      public static function render($data, $name = null, $isChild = false) {
+      public static function render($data, $name = null, $isChild = false, $includeClassNames = false) {
 
              $json = '';
 
@@ -60,10 +63,10 @@ class JsonRenderer implements DataRenderer {
 	  		  	  		if(is_object($value)) {
 
 	  		  	  		   $class = new ReflectionClass($value);
-	  		  	  		   $json .= self::render($value, $class->getName());
+	  		  	  		   $json .= self::render($value, null, false, $includeClassNames);
 	  		  	  		}
 	  		  	  		elseif(is_array($value))
-	  		  	  			$json .= self::render($value, $name);
+	  		  	  			$json .= self::render($value, $name, $isChild, $includeClassNames);
 
 	  		  	  		else
 	  		  	  	 	   $json .= json_encode($value);
@@ -71,7 +74,6 @@ class JsonRenderer implements DataRenderer {
 	  		  	  	 	$json .= ($i < count($data)) ? ', ' : '';
 	  		  	  }
 	  		  	  $json .= ' ]';
-	  		  	  //if($name && $name != 'stdClass') $json .= ' }';
 	  		  }
 
 	  		  // Format objects (that have private fields)
@@ -93,9 +95,18 @@ class JsonRenderer implements DataRenderer {
 	  		      }
 
 	  		      $node = ($name) ? $name : $className;
-	  		      $json .= ($isChild) ? '"' . $node . '" : { ' : ' { "' . $node . '" : { ';
-	  		      
+	  		      $json .= ($isChild) ? '"' . $node . '" : { ' : ' { ';
+	  		      //$json .= ' { ';
+
 		  		  $properties = $class->getProperties();
+
+		  		  // Include the PHP class name if applicable
+	  		      if($includeClassNames) {
+	  		          
+	  		          $json .= '"_class": "' . $className . '"';
+	  		          if(isset($properties[0])) $json .= ', '; 
+	  		      }
+
 			  	  for($i=0; $i<count($properties); $i++) {
 	
 			  		   $property = $properties[$i];
@@ -123,14 +134,14 @@ class JsonRenderer implements DataRenderer {
 			  		   }
 
 			  		   if(is_object($value) || is_array($value))
-			  		   	  $json .= self::render($value, $property->getName(), true) . ' ';
+			  		   	  $json .= self::render($value, $property->getName(), true, $includeClassNames) . ' ';
 
 			  		   else
 			  		   		$json .= '"' . $property->getName() . '" : ' . json_encode($value);
 
 			  		   $json .= (($i+1) < count($properties)) ? ', ' : '';
 			  	  }
-			  	  $json .= ($isChild) ? '} ' : ' } }';
+			  	  $json .=  ' } ';
 		  	  }
 
 		  	  else

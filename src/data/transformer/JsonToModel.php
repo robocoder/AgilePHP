@@ -20,57 +20,138 @@
  */
 
 /**
- * Transforms JSON string data into a populated domain model.
- * 
+ * Transforms a JSON string data into a populated model. The transformation
+ * process uses PHP-doc comments in the model to unmarshall the data, or the
+ * presence of a _class field in the JSON indicating the name of the PHP class.
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.data.transformer
  */
 class JsonToModel implements DataTransformer {
 
-	  /**
-	   * Transforms the specified data into a populated domain model.
-	   * 
-	   * @param string $data The string data which represents the domain model
-	   * 					 and state to create.
-	   * @return Object The domain model specified in the string $data
-	   * @throws FrameworkException if the json data does not unmarshall to a stdClass object
-	   */
-	  public static function transform($data) {
+    /**
+     * Transforms the specified data into a populated model.
+     *
+     * NOTE: This transformation process expects a field/property named "_class"
+     * to be present in JSON objects to be transformed. If this field is not
+     * present, the object will not be converted to a model instance, but rather
+     * a stdClass object.
+     *
+     * @param string $data The string data which represents the domain model
+     * 					 and state to create.
+     * @param string $modelName Optional model name used to transform a JSON object
+     *        to its native PHP counterpart.
+     * @return Object The model if specified, otherwise a stdClass object
+     * @throws TransformException
+     */
+    public static function transform($data, $modelName = null) {
 
-	  		 $o = json_decode($data);
+        $o = json_decode($data);
 
-	  		 if(!is_object($o)) {
+        if(is_object($o)) {
 
-	  		 	Log::debug('JSONTransformer::transform Received malformed data ' . $data);
-	  		 	throw new FrameworkException('Malformed JSON object');
-	  		 }
+            // No class name - return stdClass instance
+            if(!$modelName) return $o;
 
-	  		 $vars = get_object_vars($o);
-	  		 $modelName = key($vars);
+            // Transform the JSON into an instance of the specified model
+            return self::unmarshall($o, $modelName);
+        }
+        elseif(is_array($o)) {
 
-	  		 return self::convert($modelName, $vars[$modelName]);
-	  }
+            // No class name - nothing to unmarshall
+            if(!$modelName) return $o;
 
-	  /**
-	   * Accepts a model name and a stdClass object and creates a new model
-	   * instance and copies the data from the stdClass into the model instance.
-	   * 
-	   * @param string $modelName The name of the domain model to instantiate
-	   * @param stdClass $oJson A stdClass object which represents a JSON decoded object
-	   */
-	  private static function convert($modelName, $oJson) {
+            // Unmarshall the JSON data to an array of models
+            return self::unmarshallArray($o, $modelName);
+        }
 
-			  $model = new $modelName();
+        throw new TransformException('JsonToModel::transform requires either array or object data type parameter.');
+    }
 
-	  		  $values = get_object_vars($oJson);
-	  		  foreach($values as $field => $value) {
+    /**
+     * Unmarshalls the remoting payload by stripping out the _class field
+     * in JSON objects and convering them to their native PHP counterpart.
+     *
+     * @param stdClass $data The stdClass model to unmarshall
+     * @return DataModel The unmarshalled stdClass instance
+     * @throws RemotingException
+     * @throws ReflectionException
+     */
+    private static function unmarshall($data, $modelName) {
 
-	  		  		  $mutator = 'set' . ucfirst($field);
-	  		  		  $model->$mutator((is_object($value) ? self::convert($field, $value) : $value));
-	  		  }
+        if(!is_object($data))
+           throw new RemotingException('The data passed to unmarshall must be of type object');
 
-	  		  return $model;
-	  }
+        if(!$modelName) return $data;
+
+        $model = new $modelName();
+        $class = new ReflectionClass($model);
+        foreach($class->getProperties() as $property) {
+
+            $propName = $property->name;
+
+            // The client model may have included fields the server model doesn't care about
+            if(!isset($data->$propName)) continue;
+
+            $value = $data->$propName;
+
+            // Create setter method
+            $setter = 'set' . ucfirst($propName);
+
+            // Use introspection to get the setters parameter
+            // from the PHP-doc comment if present  
+            $method = $class->getMethod($setter);
+            $parameters = $method->getParameters();
+            $parameter = $parameters[0]; 
+
+            // Parse the data type from the PHP-doc block
+            $type = DocBlockParser::getParameterType($method, $parameter);
+
+            // stdClass object
+            if($type == 'object') $value = json_decode($value);
+
+            // User defined data type - perform recursive transformation
+            elseif(DocBlockParser::isUserSpaceObject($type))
+                $value = self::unmarshall($value, $type);
+
+            // Parse the data type from the array<GenericType> PHP-doc if present
+            elseif($type == 'array') {
+
+                $elementType = DocBlockParser::getParameterArrayType($method, $parameter);
+                if($type == 'object') $value = json_decode($value);
+                elseif(DocBlockParser::isUserSpaceObject($elementType)) $value = self::unmarshallArray($value, $elementType);
+            }
+
+            // Set the transformed value
+            $model->$setter($value);
+        }
+
+        return $model;
+    }
+
+    /**
+     * Unmarshall array element(s) to model instance(s) if applicable.
+     *
+     * @param array $array The array to unmarshall
+     * @return array The unmarshalled array
+     */
+    private static function unmarshallArray(array $array, $modelName) {
+
+        $newArray = array();
+
+        foreach($array as $element) {
+
+            if(is_object($element))
+               array_push($newArray, self::unmarshall($element, $modelName));
+
+            elseif(is_array($element))
+               array_push($newArray, self::unmarshallArray($element, $modelName));
+
+            else array_push($newArray, $element);
+        }
+
+        return $newArray;
+    }
 }
 ?>

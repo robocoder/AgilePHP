@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>AgilePHP JavaScript Remoting</title>
+		<script type="text/javascript" src="/test/index.php/RemotingController/getBaseJS/true"></script>
+		<script type="text/javascript" src="/test/index.php/CarRemote"></script>
+		<script type="text/javascript">
+
+			// First, note the HTTP response from the CarRemote call in the script tag above.
+			// The service class has registered the top level Car model which caused the Remoting
+			// component to generate client-side models that mirror their server-side counterparts.
+			var carRemote = new CarRemote();  // Create a new instance of the remote service class
+
+			// Override the initialization hook
+			Car.prototype.initialize = function() {
+
+				console.log('My stock car has been constructed. Adding a supercharger...');
+				this.supercharger = true;
+			}
+
+			// Add custom helper methods to the Car prototype chain - all instances will inherit these methods
+			Car.prototype.turnRight = function() {
+				console.log('Turning right...');
+			};
+			Car.prototype.shift = function() {
+
+				if(this.gear == undefined) this.gear = 1;
+				this.gear++;
+
+				console.log((this.gear >= 6) ? 'All out of gears!' : 'Switching to ' + this.gear + ' gear');
+			};
+
+			// Create a new Car model using a custom config object. The config objects properties and
+			// values will be applied to the instantiated object.
+			var ferrari = new Car({
+
+				licensePlate: 'ABC123',
+				supercharger: false
+			});
+			// Note custom fields with their corresponding values as well as
+			// the supercharger that was set to true in the initialize hook.
+			console.log(ferrari);
+
+			// Add a custom helper method to the ferrari model - other Car instances will not be effected
+			ferrari.turnLeft = function() {
+				console.log('Turning left...');
+			};
+			
+			// Notice new instances of Car WILL NOT have a turnLeft method, but WILL have the turnRight method
+			console.log(new Car());
+
+			// Bind some click events for the UI so our user can play around with the car
+			window.onload = function() {
+
+		        var owner = new Owner();
+	            owner.setName('Someone Special');
+	            owner.setDob('01-01-1901');
+
+	            tire1 = new Tire();
+	            tire1.setBrand('Good Year');
+	            tire1.setSize('235 35x19');
+	            tire1.setPlacement('LF');
+	            tire1.setTread('Good');
+
+	            tire2 = new Tire();
+	            tire2.setBrand('Good Year');
+	            tire2.setSize('235 35x19');
+	            tire2.setPlacement('RF');
+	            tire2.setTread('Good');
+
+	            tire3 = new Tire();
+	            tire3.setBrand('Good Year');
+	            tire3.setSize('345 25x20');
+	            tire3.setPlacement('RF');
+	            tire3.setTread('Worn');
+
+	            tire4 = new Tire();
+	            tire4.setBrand('Good Year');
+	            tire4.setSize('345 25x20');
+	            tire4.setPlacement('RR');
+	            tire4.setTread('Worn');
+
+	            ferrari = new Car();
+	            ferrari.setYear(2011);
+	            ferrari.setMake('Lamborghini');
+	            ferrari.setModel('Murcielago');
+	            ferrari.setColor('Yellow');
+	            ferrari.setIsNew(true);
+	            ferrari.setIsCheap(false);
+	            ferrari.setLeasedUntil(null);
+	            ferrari.setOwner(owner);
+	            ferrari.setTires([tire1, tire2, tire3, tire4]);
+
+				document.getElementById('goFast').onclick = function() {
+					carRemote.goFast(ferrari, function(car) {
+						console.log('vrrrrroooooooommmmmm!!!!!');
+						// The remoting framework has converted the
+						// Car back to the native JavaScript Car instance.
+						// All fields and prototypes set on the Car model
+						// are present in the Car response.
+						car.shift();
+						console.log(ferrari);
+					});
+				};
+
+				document.getElementById('stop').onclick = function() {
+					carRemote.stop(ferrari, function(response) {
+						console.log(response);
+					});
+				};
+			};
+		</script>
+	</head>
+	<body>
+	    <h2>Advanced Remoting Techniques</h2>
+	    <p>Open up your browser console (firebug, etc).</p>
+	    <p>Note the generated JavaScript service class and models while you follow along in the remote-example-advanced.html source code comments.</p>
+
+		<button id="goFast">Go Faster!!!</button>
+		<button id="stop">Stop!!!</button>
+	</body>
+</html>

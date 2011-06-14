@@ -11,7 +11,9 @@ class Table1 extends DomainModel {
       private $field2;
        
       private $Table2;
-    
+
+      private $tables = array();
+
       #@Id
       public function setId($value) {
     
@@ -52,5 +54,17 @@ class Table1 extends DomainModel {
     
          return $this->Table2;
       }
+      
+      public function setTables(array $tables) {
+      	   $this->tables = $tables;
+      }
+      
+      public function getTables() {
+      	   return $this->tables;
+      }
+      
+      public function addTable(Table2 $table) {
+      	   array_push($this->tables, $table);
+      } 
 }
 ?>

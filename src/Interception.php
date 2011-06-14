@@ -293,13 +293,9 @@ class Interception {
 	           $code = AgilePHP::getSource($this->class);
 
 	           // If more than one class exists in the document, only the first class is parsed
-	           //preg_match('/^class\s.*?}.*?\r?\n\r?}\r?\n\r?/ms', $code, $classes);
 	           preg_match('/^class\s.*?}.*?\r?\n\r?}/ms', $code, $classes);
 
 	           if($classes[0]) {
-
-	               //preg_match_all('/(private|protected|public|[^@]var)\s*(\$.*?;)/sm', $classes[0], $matches);
-	               //preg_match_all('/(\/?\*?\*?\s?.*private|\/?\*?\*?\s?.*protected|\/?\*?\*?\s?.*public|[^@]var)\s*(\$.*?;)\s+/sm', $classes[0], $matches);
 
 		           // Try to speed up parsing by truncating the document to the first occurance of a function declaration 
 	           	   $pos = strpos($classes[0], 'function');
@@ -334,6 +330,20 @@ class Interception {
 	  		  preg_match_all('/[^static]\s(public\s+function\s+(.*?)(\(.*?\)))\s/sm', $code, $methods);
 	  		  preg_match_all('/(static\s+.*function\s+(.*?)(\(.*\)))\s/', $code, $statics);
 
+  			  // Capture phpDoc comments
+	  		  preg_match_all('/\/\*\*.*?\*\/\\s*#?@?[a-zA-Z0-9_\\s]*\\s*/sm', $code, $comments);
+	  		  
+	  		  $docComments = array();
+			  for($i=0; $i<count($comments[0]); $i++) {
+
+			  	  if(strpos($comments[0][$i], 'function') !== false) {
+
+			  	  	// Strip the comment and method name from the captures text
+			  	  	preg_match('/(\/\*\*.*\*\/).*function\\s*(.*)\\s?/ms', $comments[0][$i], $pieces);
+			  	  	if(isset($pieces[1]) && isset($pieces[2])) $docComments[$pieces[2]] = $pieces[1];
+			  	  }
+			  }
+
 	  		  if(!isset($methods[1]) && !isset($statics[1])) return array();
 
 	  		  $methods[1] = array_merge($methods[1], $statics[1]);
@@ -341,11 +351,18 @@ class Interception {
 	  		  $methods[3] = array_merge($methods[3], $statics[3]);
 
 	  		  // Parameter names are gotten from the method signature
+	  		  $index = 0;
 	  		  foreach($methods[3] as &$params) {
 
 	  		       // Remove type hinting
 	  		       preg_match_all('/\$[a-zA-Z0-9_]+/', $params, $args);
 	  		       $params = '(' . implode(', ', $args[0]) . ')';
+
+	  		       // Create doc comment for the method if it exists
+	  		       if(isset($docComments[$methods[2][$index]]))
+	  		          $methods[1][$index] = $docComments[$methods[2][$index]] . PHP_EOL . "     " . $methods[1][$index];
+
+	  		       $index++;
 	  		  }
 
 	  		  $a['signatures'] = $methods[1];

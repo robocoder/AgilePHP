@@ -20,7 +20,7 @@
  */
 
 /**
- * Utility class / helper class to assist in parsing PHP-doc comments
+ * Utility / helper class to assist in parsing PHP-doc comments
  *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
@@ -28,65 +28,106 @@
  */
 class DocBlockParser {
 
-	/**
-	 * Extracts the data type from the PHP-doc comments block for the specified property
-	 * 
-	 * @param ReflectionProperty $property A PHP ReflectionProperty instance representing
-	 *        the property to extract the data type from.
-	 * @return string The extracted PHP data type
+    /**
+     * Extracts the data type from the PHP-doc comments block for the specified property
+     *
+     * @param ReflectionProperty $property A PHP ReflectionProperty instance representing
+     *        the property to extract the data type from.
+     * @return string The extracted PHP data type
      */
-	public static function getPropertyType(ReflectionProperty $property) {
-	  	preg_match('/@var\\s*([A-Za-z_][A-Za-z0-9_]*)<?.*\\s/', $property->getDocComment(), $matches);
-	  	return (isset($matches[1])) ? trim($matches[1]) : 'undefined';  		  	  
+    public static function getPropertyType(ReflectionProperty $property) {
+        preg_match('/@var\\s*([A-Za-z_][A-Za-z0-9_]*)<?.*\\s/', $property->getDocComment(), $matches);
+        return (isset($matches[1])) ? trim($matches[1]) : 'undefined';
     }
 
 	/**
+     * Extracts an array element data type from the PHP-doc comments block for the specified property
+     * The doc comment is assumed to adhere to the "Java Generics" style - array<DataType>.
+     *
+     * @param ReflectionProperty $property A PHP ReflectionProperty instance representing
+     *        the property to extract the array data type from.
+     * @return string The extracted PHP data type
+     */
+    public static function getPropertyArrayType(ReflectionProperty $property) {
+        preg_match('/@var\\s*array<(.*)>\\s*/i', $property->getDocComment(), $matches);
+        return (isset($matches[1])) ? trim($matches[1]) : 'undefined';
+    }
+
+    /**
      * Extracts the data type from the PHP-doc comments block for the specified method
-     * 
+     *
      * @param ReflectionMethod $method A PHP ReflectionMethod instance representing
      *        the method which has the parameter to extract the data type from
      * @param ReflectionParameter $param A PHP ReflectionMethod instance representing
      *        the parameter to extract the data type from.
-     * @return string The extracted PHP data type 
-	 */
-	public static function getParameterType(ReflectionMethod $method, ReflectionParameter $param) {
-		preg_match('/@param\\s*(.*?\\[?\\]?)\\s*\$' . $param->name . '/i', $method->getDocComment(), $matches);
-	  	return (isset($matches[1])) ? trim($matches[1]) : 'undefined';	  		  	  
-	}
+     * @return string The extracted PHP data type
+     */
+    public static function getParameterType(ReflectionMethod $method, ReflectionParameter $param) {
+        preg_match('/@param\\s*([A-Za-z_][A-Za-z0-9_]*)<?.*\\s\$' . $param->name . '\\s/i', $method->getDocComment(), $matches);
+        return (isset($matches[1])) ? trim($matches[1]) : 'undefined';
+    }
 
-	/**
+    /**
+     * Extracts an array element data type from the PHP-doc comments block for the specified method
+     * parameter. The doc comment is assumed to adhere to the "Java Generics" style - array<DataType>.
+     *
+     * @param ReflectionMethod $method The ReflectionMethod instance representing the method to
+     *        extract the parameter data type from
+     * @param ReflectionParameter $param A PHP ReflectionMethod instance representing
+     *        the parameter to extract the array element data type from.
+     * @return string The extracted PHP data type
+     */
+    public static function getParameterArrayType(ReflectionMethod $method, ReflectionParameter $param) {
+        preg_match('/@param\\s*array<(.*)>\\s*\$' . $param->name . '\\s/i', $method->getDocComment(), $matches);
+        return (isset($matches[1])) ? trim($matches[1]) : 'undefined';
+    }
+
+    /**
      * Extracts the return data type from the PHP-doc comments block for the specified method
-     * 
+     *
      * @param ReflectionMethod $method A PHP ReflectionMethod instance representing the method
      *        to extract the parameter data type from
-     * @return string The extracted PHP data type 
-	 */
-	public function getReturnType(ReflectionMethod $method) {
-		preg_match('/@return\\s*(.*?)\\s/i', $method->getDocComment(), $matches);
-		if(isset($matches[1])) {
+     * @return string The extracted PHP data type
+     */
+    public static function getReturnType(ReflectionMethod $method) {
+        preg_match('/@return\\s*([A-Za-z_][A-Za-z0-9_]*)<?.*\\s/i', $method->getDocComment(), $matches);
+        if(isset($matches[1])) {
 
-			$value = trim($matches[1]);
-			if($value == 'void') return null;
-			return $value;
-		}
-	  	return null;
-	}
+            $value = trim($matches[1]);
+            if($value == 'void') return null;
+            return $value;
+        }
+        return null;
+    }
 
 	/**
-	 * Identifys custom user space object types
-	 *
-	 * @param String $type The PHP data type returned from one of the methods in this class
-	 * @return bool 
-	 */
-	public static function isUserSpaceObject($type) {
+     * Extracts an array element data type from the PHP-doc comments block for the specified method
+     * return value. The doc comment is assumed to adhere to the "Java Generics" style - array<DataType>.
+     *
+     * @param ReflectionMethod $method The ReflectionMethod instance representing the method to
+     *        extract the parameter data type from
+     * @param ReflectionParameter $param A PHP ReflectionMethod instance representing
+     *        the parameter to extract the array element data type from.
+     * @return string The extracted PHP data type
+     */
+    public static function getReturnArrayType(ReflectionMethod $method) {
+        preg_match('/@return\\s*array<(.*)>\\s*/i', $method->getDocComment(), $matches);
+        return (isset($matches[1])) ? trim($matches[1]) : 'undefined';
+    }
 
-		$lowerType = strtolower($type);
-		$phpDataTypes = array('string', 'int', 'integer', 'float',
+    /**
+     * Identifys custom user space object types
+     *
+     * @param String $type The PHP data type returned from one of the methods in this class
+     * @return bool
+     */
+    public static function isUserSpaceObject($type) {
+        $lowerType = strtolower($type);
+        $phpDataTypes = array('string', 'int', 'integer', 'float',
 				'double', 'bool', 'boolean', 'array', 'object', 'resource', 'null',
 				'void');
-		if($lowerType == 'undefined' || in_array($lowerType, $phpDataTypes)) return false;
-
-		return class_exists($type); 
-	}
+        if($lowerType == 'undefined' || in_array($lowerType, $phpDataTypes)) return false;
+        return class_exists($type);
+    }
 }
 ?>

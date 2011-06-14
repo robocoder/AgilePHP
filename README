@@ -30,6 +30,8 @@ PHP 5.3+
 --with-gettext              (i18n Internationalization)
 --with-xsl                  (Controllers involved with XSLT)
 --with-mcrypt               (Crypto encrypt/decrypt methods)
+--enable-soap               (SOAP webservice package)
+--with-curl                 (unit tests)
 
 
 --------------

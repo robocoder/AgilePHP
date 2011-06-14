@@ -2,7 +2,7 @@
 /**
  * @package com.makeabyte.agilephp.test.webservice.rest
  */
-class RestTests extends PHPUnit_Framework_TestCase {
+class UserRestServiceTest extends PHPUnit_Framework_TestCase {
 
 	  private $endpoint = 'http://localhost/test/index.php/users';
 
@@ -155,9 +155,9 @@ class RestTests extends PHPUnit_Framework_TestCase {
 			 PHPUnit_Framework_Assert::assertType('stdClass', $json, 'Failed to decode JSON data');
 			 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
 	  		 PHPUnit_Framework_Assert::assertNotNull($json, 'Failed to get JSON response from the REST service.');
-	  		 PHPUnit_Framework_Assert::assertEquals($username, $json->User->username, 'Expected username \'' . $username . '\'.');
-	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', $json->User->email, 'Expected email \'' . $email . '\'.');
-	  		 PHPUnit_Framework_Assert::assertEquals($newRole, $json->User->Role->name, 'Expected role \'' . $newRole . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals($username, $json->username, 'Expected username \'' . $username . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', $json->email, 'Expected email \'' . $email . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals($newRole, $json->Role->name, 'Expected role \'' . $newRole . '\'.');
 	  		 PHPUnit_Framework_Assert::assertEquals(202, $client->getResponseCode(), 'Failed to get HTTP 202 Accepted');
 
 	  		 // clean up after unit test
@@ -284,7 +284,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  }
 
 	  /**
-	   * Same confusing story... but this time put YAML and get XML back
+	   * Same thing... this time put YAML and get XML back
 	   *
 	   * @test
 	   */
@@ -385,6 +385,65 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  		 $user->setUsername('phpunit2');
 			 $user->delete();
 	  }
+	  
+	  /**
+	   * @test
+	   */
+	  public function postJSONgetJSON() {
+
+	  		 $client = new RestClient($this->endpoint . '/test/json');
+	  		 $client->authenticate('admin', 'test');
+			 $client->setHeaders(array(
+				'Accept: application/json',
+				'Content-Type: application/json',
+			 ));
+
+			 $username = 'phpunit-json3';
+			 $password = 'test';
+			 $email = 'root@localhost';
+			 $enabled = true;
+			 $newRole = 'rest-test';
+			 $created = 'now';
+
+			 $user = new User();
+			 $user->setUsername($username);
+			 $user->setPassword($password);
+			 $user->setCreated($created);
+			 $user->setEmail($email);
+			 $user->persist();
+
+			 // Update some values
+			 $user->setPassword('test2');
+			 $user->setEmail('root@localhost.localdomain');
+			 $user->setEnabled(false);
+
+			 // Create new role
+			 $role = new Role();
+			 $role->setName($newRole);
+
+			 // Assign admin role to test account
+			 $user->setRole($role);
+
+			 // The server will be expecting XML as indicated in the Content-Type header above
+			 $data = JsonRenderer::render($user);
+
+			 $response = $client->post($data);
+
+			 $json = json_decode($response);
+
+			 PHPUnit_Framework_Assert::assertType('stdClass', $json, 'Failed to decode JSON data');
+			 PHPUnit_Framework_Assert::assertType('User', JsonToModel::transform($response, 'User'), 'Failed to transform JSON data to User instance');
+			 PHPUnit_Framework_Assert::assertNotNull($response, 'Failed to get a response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertNotNull($json, 'Failed to get JSON response from the REST service.');
+	  		 PHPUnit_Framework_Assert::assertEquals($username, $json->username, 'Expected username \'' . $username . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals('root@localhost.localdomain', $json->email, 'Expected email \'' . $email . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals($newRole, $json->Role->name, 'Expected role \'' . $newRole . '\'.');
+	  		 PHPUnit_Framework_Assert::assertEquals(201, $client->getResponseCode(), 'Failed to get HTTP 201 Created');
+
+	  		 // clean up after unit test
+	  		 $user->get();    // Loads Role::id so the delete cascades
+			 $user->delete();
+	  }
 
 	  /**
 	   * @test
@@ -415,9 +474,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  public function transformXML() {
 
 	  		 $data = '<User><username>admin</username><password>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</password><email>root@localhost</email><created>2009-09-06 15:27:44</created><lastLogin>1969-12-31 19:00:00</lastLogin><enabled>1</enabled><Role><name>admin</name><description>This is an administrator account</description></Role><Roles></Roles></User>';
-
 			 $o = XmlToModel::transform($data);
-
 			 PHPUnit_Framework_Assert::assertType('User', $o, 'Failed to transform XML data to PHP object');
 	  }
 
@@ -426,10 +483,8 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	   */
 	  public function transformJSON() {
 
-	  		 $data = ' { "User" : { "username" : "admin", "password" : "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "email" : "root@localhost", "created" : "2009-09-06 15:27:44", "lastLogin" : "1969-12-31 19:00:00", "enabled" : "1", "Role" : { "name" : "admin", "description" : "This is an administrator account"}  , "Roles" : null  } }';
-
-	  		 $o = JsonToModel::transform($data);
-
+	  		 $data = ' { "username" : "admin", "password" : "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", "email" : "root@localhost", "created" : "2009-09-06 15:27:44", "lastLogin" : "1969-12-31 19:00:00", "enabled" : "1", "Role" : { "name" : "admin", "description" : "This is an administrator account"}  , "Roles" : null  }';
+	  		 $o = JsonToModel::transform($data, 'User');
 	  		 PHPUnit_Framework_Assert::assertType('User', $o, 'Failed to transform JSON data to PHP object');
 	  }
 
@@ -439,9 +494,7 @@ class RestTests extends PHPUnit_Framework_TestCase {
 	  public function transformYAML() {
 
 	  		 $data = '--- !php/object "O:4:\"User\":1:{s:12:\"\0User\0object\";O:16:\"User_Intercepted\":8:{s:26:\"\0User_Intercepted\0username\";s:5:\"admin\";s:26:\"\0User_Intercepted\0password\";s:64:\"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08\";s:23:\"\0User_Intercepted\0email\";s:14:\"root@localhost\";s:25:\"\0User_Intercepted\0created\";s:19:\"2009-09-06 15:27:44\";s:27:\"\0User_Intercepted\0lastLogin\";s:19:\"1969-12-31 19:00:00\";s:25:\"\0User_Intercepted\0enabled\";s:1:\"1\";s:22:\"\0User_Intercepted\0Role\";O:4:\"Role\":1:{s:12:\"\0Role\0object\";O:16:\"Role_Intercepted\":2:{s:22:\"\0Role_Intercepted\0name\";s:5:\"admin\";s:29:\"\0Role_Intercepted\0description\";s:32:\"This is an administrator account\";}}s:23:\"\0User_Intercepted\0Roles\";N;}}" ...';
-
 	  		 $o = YamlToModel::transform($data);
-
 	  		 PHPUnit_Framework_Assert::assertType('User', $o, 'Failed to transform YAML data to PHP object');
 	  }
 }

@@ -28,85 +28,89 @@
  */
 class Role extends DomainModel {
 
-      private $id;
-	  private $name;
-	  private $description;
+    /**
+     * @var int The unique role identifier
+     */
+    private $id;
+    /**
+     * @var string $name The role name
+     */
+    private $name;
+    /**
+     * @var string $description The description of the role
+     */
+    private $description;
 
-	  /**
-	   * Creates a new instance of Role.
-	   *
-	   * @param String $name An optional user friendly name of the role.
-	   * @return void
-	   */
-	  public function __construct($id = null, $name = null, $description = null) {
+    /**
+     * Creates a new instance of Role.
+     *
+     * @param int $id The unique role identifier
+     * @param String $name An optional user friendly name of the role.
+     * @param string $description The description of the role
+     * @return void
+     */
+    public function __construct($id = null, $name = null, $description = null) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->description = $description;
+    }
 
-	         $this->id = $id;
-	  		 $this->name = $name;
-	  		 $this->description = $description;
-	  }
+    /**
+     * Sets the role id/primary key
+     *
+     * @param integer $id The role id
+     * @return void
+     */
+    #@Id
+    public function setId($id) {
+        $this->id = $id;
+    }
 
-	  /**
-	   * Sets the role id/primary key
-	   *
-	   * @param integer $id The role id
-	   * @return void
-	   */
-	  #@Id
-	  public function setId($id) {
+    /**
+     * Gets the role id
+     *
+     * @return integer The role id
+     */
+    public function getId() {
+        return $this->id;
+    }
 
-	         $this->id = $id;
-	  }
+    /**
+     * Sets the name of the role
+     *
+     * @param String $name The role name
+     * @return void
+     */
+    public function setName($name) {
+        $this->name = $name;
+    }
 
-	  /**
-	   * Gets the role id
-	   *
-	   * @return integer The role id
-	   */
-	  public function getId() {
+    /**
+     * Returns the name of the role
+     *
+     * @return String The role name
+     */
+    public function getName() {
+        return $this->name;
+    }
 
-	         return $this->id;
-	  }
+    /**
+     * Sets the description of the role.
+     *
+     * @param String $description The role description
+     * @return void
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+    }
 
-	  /**
-	   * Sets the name of the role
-	   *
-	   * @param String $name The role name
-	   * @return void
-	   */
-	  public function setName($name) {
-
-	  		 $this->name = $name;
-	  }
-
-	  /**
-	   * Returns the name of the role
-	   *
-	   * @return String The role name
-	   */
-	  public function getName() {
-
-	  		 return $this->name;
-	  }
-
-	  /**
-	   * Sets the description of the role.
-	   *
-	   * @param String $description The role description
-	   * @return void
-	   */
-	  public function setDescription($description) {
-
-	  		 $this->description = $description;
-	  }
-
-	  /**
-	   * Returns the role description
-	   *
-	   * @return String The role description
-	   */
-	  public function getDescription() {
-
-	  		 return $this->description;
-	  }
+    /**
+     * Returns the role description
+     *
+     * @return String The role description
+     */
+    public function getDescription() {
+        return $this->description;
+    }
 }
 ?>

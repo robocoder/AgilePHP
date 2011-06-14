@@ -6,6 +6,7 @@
 		<script type="text/javascript" src="/test/index.php/RemotingController/getBaseJS/true"></script>
 		<script type="text/javascript" src="/test/index.php/RemotingController/load/RMITest"></script>
 		<script type="text/javascript" src="/test/index.php/RemotingController/load/RMITest2"></script>
+		<script type="text/javascript" src="/test/index.php/CarRemote"></script>
 		<script type="text/javascript">
 
 			/** XMLHttpRequest AJAX request with innerHTML update on completion */
@@ -18,7 +19,7 @@
 			/** Classic XMLHttpRequest AJAX form post */
 			function doFormSubmit(form) {
 
-			     var url = AgilePHP.getRequestBase() + '/AJAXController/formSubmit';
+				 var url = AgilePHP.getRequestBase() + '/AJAXController/formSubmit';
 			     new AgilePHP.XHR().formSubmit(url, form, function formSubmitCallback(response) {
 
 					 AgilePHP.debug('formSubmitCallback');
@@ -33,7 +34,7 @@
 			/** AgilePHP Remoting Using XMLHTTPRequest */
 			function doVariousRMITests() {
 
-				    // AgilePHP.Remoting.setTransport('XHR');
+				    AgilePHP.Remoting.setTransport('XHR');
 
 					// Instantiate the remote PHP object and invoke a few #@RemoteMethod's
 					var rmi = new RMITest('arg1', 'arg2', 'arg3');
@@ -88,9 +89,14 @@
 		</script>
 	</head>
 	<body>
+		
+		<h2>Classic AJAX examples</h2>
+
+		<h4>Automatic innerHTML update</h4>
 		<input type="button" value="Test AgilePHP.XHR().updater" onclick="update()"/>
 		<div id="content"></div>
 
+		<h4>AJAX Form Submission</h4>
 		<form name="frmTestAjaxForm" onSubmit="doFormSubmit( this ); return false;">
 			<table border="0">
 				<tr>
@@ -143,10 +149,15 @@
 			<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="this_will_make_the_request_fail___remove me and watch it work!"/>
 			-->
 		</form>
+		<h2>AgilePHP Remoting Examples</h2>
+
+		<h4>XMLHttpRequest Transport</h4>
 		<div id="formSubmitResponse"></div>
 		<div id="variousTests" style="padding-top: 25px;">
 			<input type="button" onclick="javascript:doVariousRMITests()" value="Various Other RMI Tests"/> (watch JavaScript debugger)
 		</div>
+
+		<h4>WebSocket Transport</h4>
 		<div id="websocketTests" style="padding-top: 25px;">
 			<input type="button" onclick="javascript:doWebSocketTests()" value="WebSocket Transport RMI Tests"/> (watch JavaScript debugger)
 		</div>
