@@ -1,18 +1,16 @@
-AgilePHP.Remoting.load( 'DatabaseManagerRemote' );
+AgilePHP.Remoting.load('DatabaseManagerRemote');
 
 AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare = function() {
 
 	// Get list of database servers if this is the first time the window is being created.
-	//if( !AgilePHP.Studio.Window.Tools.DatabaseManager.databases.length ) {
+	//if(!AgilePHP.Studio.Window.Tools.DatabaseManager.databases.length) {
 
-		var stub = AgilePHP.Remoting.getStub( 'DatabaseManagerRemote' );
-			stub.setCallback( AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare.remoteDatabasesHandler );
-
+		var stub = AgilePHP.Remoting.getStub('DatabaseManagerRemote');
 		var dbmr = new DatabaseManagerRemote();
-			dbmr.getServers();
+			dbmr.getServers(AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare.remoteDatabasesHandler);
 	//}
 
-	this.window = new AgilePHP.Studio.Window( 'databaseManagerCompare', 'databaseCompare', 'Database Compare', 600 ); 
+	this.window = new AgilePHP.Studio.Window('databaseManagerCompare', 'databaseCompare', 'Database Compare', 600); 
 
 	this.panel = new Ext.FormPanel({
 
@@ -110,34 +108,34 @@ AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare = function() {
 	    }]
 	});
 
-	AgilePHP.debug( this.window );
-	AgilePHP.debug( this.panel );
+	AgilePHP.debug(this.window);
+	AgilePHP.debug(this.panel);
 
-	this.window.add( this.panel );
-	this.window.window.on( 'maximize', function() {
+	this.window.add(this.panel);
+	this.window.window.on('maximize', function() {
 
-		this.window.window.relayEvents( Ext.getCmp( 'db-manager-compare-window-target-fieldset' ), ['resize'] );
+		this.window.window.relayEvents(Ext.getCmp('db-manager-compare-window-target-fieldset'), ['resize']);
 
-	}, this );
+	}, this);
 
 	return this.window;
 };
 
 AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare.databases = [];
 
-AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare.remoteDatabasesHandler = function( data ) {
+AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare.remoteDatabasesHandler = function(data) {
 
-	 if( data.RemotingException ) {
+	 if(data.RemotingException) {
 
-		 AgilePHP.Studio.error( data.message );
+		 AgilePHP.Studio.error(data.message);
 		 return false;
 	 }
 
 	 AgilePHP.Studio.Menubar.tools.DatabaseManager.Compare.databases = data.servers;
 
-	 var srcCombo = Ext.getCmp( 'db-manager-compare-window-source-combo' );
-	 	 srcCombo.getStore().loadData( data.servers );
+	 var srcCombo = Ext.getCmp('db-manager-compare-window-source-combo');
+	 	 srcCombo.getStore().loadData(data.servers);
 
-	 var tgtCombo = Ext.getCmp( 'db-manager-compare-window-target-combo' );
-	 	 tgtCombo.getStore().loadData( data.servers );
+	 var tgtCombo = Ext.getCmp('db-manager-compare-window-target-combo');
+	 	 tgtCombo.getStore().loadData(data.servers);
 };

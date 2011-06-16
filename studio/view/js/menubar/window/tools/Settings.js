@@ -1,29 +1,29 @@
-AgilePHP.Remoting.load( 'PearPeclRemote' );
+AgilePHP.Remoting.load('PearPeclRemote');
 
 AgilePHP.Studio.Menubar.tools.Settings = function() {
 
 	var id = 'menubar-tools-settings';
-	var win = new AgilePHP.Studio.Window( id, 'toolsSettings', 'Settings', 550, 500 );
+	var win = new AgilePHP.Studio.Window(id, 'toolsSettings', 'Settings', 550, 500);
 
-	var pearPagingMemoryProxy = new Ext.ux.data.PagingMemoryProxy( [] );
-	var peclPagingMemoryProxy = new Ext.ux.data.PagingMemoryProxy( [] );
+	var pearPagingMemoryProxy = new Ext.ux.data.PagingMemoryProxy([]);
+	var peclPagingMemoryProxy = new Ext.ux.data.PagingMemoryProxy([]);
 
 	// Remote PHP class 
 	var pearPeclRemote = new PearPeclRemote();
 
 	 	// Get installed PEAR extensions
-		pearPeclRemote.setCallback( function( response ) {
+		pearPeclRemote.getInstalledExtensions('pear', function(response) {
 
-			if( !response ) return false; // no packages installed
+			if(!response) return false; // no packages installed
 
-			if( response.RemotingException ) {
+			if(response.RemotingException) {
 
-				AgilePHP.Studio.error( response.message );
+				AgilePHP.Studio.error(response.message);
 				return false;
 			}
 
 			var data = [];
-			for( var i=0; i<response.exts.length; i++ ) {
+			for(var i=0; i<response.exts.length; i++) {
 
 				 data.push([ 
 				             response.exts[i][0],
@@ -32,23 +32,22 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 				 ]);
 			}
 			pearPagingMemoryProxy.data = data;
-			Ext.getCmp( id + '-pear-pagingtoolbar' ).doRefresh();
+			Ext.getCmp(id + '-pear-pagingtoolbar').doRefresh();
 		});
-		pearPeclRemote.getInstalledExtensions( 'pear' );
 
 		// Get installed PECL extensions
-		pearPeclRemote.setCallback( function( response ) {
+		pearPeclRemote.getInstalledExtensions('pecl', function(response) {
 
-			if( !response ) return false; // no packages installed
+			if(!response) return false; // no packages installed
 
-			if( response.RemotingException ) {
+			if(response.RemotingException) {
 
-				AgilePHP.Studio.error( response.message );
+				AgilePHP.Studio.error(response.message);
 				return false;
 			}
 
 			var data = [];
-			for( var i=0; i<response.exts.length; i++ ) {
+			for(var i=0; i<response.exts.length; i++) {
 
 				 data.push([ 
 				             response.exts[i][0],
@@ -57,9 +56,8 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 				 ]);
 			}
 			peclPagingMemoryProxy.data = data;
-			Ext.getCmp( id + '-pecl-pagingtoolbar' ).doRefresh();
+			Ext.getCmp(id + '-pecl-pagingtoolbar').doRefresh();
 		});
-		pearPeclRemote.getInstalledExtensions( 'pecl' );
 
 	var pearStore = new Ext.data.Store({
         proxy: pearPagingMemoryProxy,
@@ -104,7 +102,7 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 		        width: 100,
 		        sortable: true
 		      }]
-		    );
+		   );
 		pearModel.defaultSortable = true;
 
 	var peclModel = new Ext.grid.ColumnModel(
@@ -127,7 +125,7 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 			        width: 100,
 			        sortable: true
 			      }]
-			    );
+			   );
 	peclModel.defaultSortable = true;
 
 	var pearGrid =  new AgilePHP.Studio.PagedGridPanel({
@@ -147,30 +145,28 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 					iconCls: 'btn-list-remove',
 					disabled: true,
 					handler: function() {
+		        		pearPeclRemote.uninstall('pear', pearGrid.getSelectionModel().getSelected().json[0], function(response) {
+
+		        			if(!response) return false; // no packages installed
+
+		        			if(response.RemotingException) {
+
+		        				AgilePHP.Studio.error(response.message);
+		        				return false;
+		        			}
+
+		        			var data = [];
+		        			for(var i=0; i<response.exts.length; i++) {
 	
-			        		pearPeclRemote.setCallback( function( response ) {
-
-			        			if( !response ) return false; // no packages installed
-
-			        			if( response.RemotingException ) {
-
-			        				AgilePHP.Studio.error( response.message );
-			        				return false;
-			        			}
-
-			        			var data = [];
-			        			for( var i=0; i<response.exts.length; i++ ) {
-		
-			        				 data.push([ 
-			        				             response.exts[i][0],
-			        				             response.exts[i][1],
-			        				             response.exts[i][2]
-			        				 ]);
-			        			}
-			        			pearPagingMemoryProxy.data = data;
-			        			Ext.getCmp( id + '-pear-pagingtoolbar' ).doRefresh();
-			        		});
-			        		pearPeclRemote.uninstall( 'pear', pearGrid.getSelectionModel().getSelected().json[0] );
+		        				 data.push([ 
+		        				             response.exts[i][0],
+		        				             response.exts[i][1],
+		        				             response.exts[i][2]
+		        				 ]);
+		        			}
+		        			pearPagingMemoryProxy.data = data;
+		        			Ext.getCmp(id + '-pear-pagingtoolbar').doRefresh();
+		        		});
 	        		}
 	        	}, {
 					id: id + '-grid-pear-toolbar-channels',
@@ -201,9 +197,9 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 	        },
 	        listeners: {
 				
-				rowclick: function( grid, rowIndex, e ) {
+				rowclick: function(grid, rowIndex, e) {
 
-					 Ext.getCmp( id + '-grid-pear-toolbar' ).setDisabled( false );
+					 Ext.getCmp(id + '-grid-pear-toolbar').setDisabled(false);
 				}
 			}
 	});
@@ -225,30 +221,28 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 					iconCls: 'btn-list-remove',
 					disabled: true,
 					handler: function() {
+		        		pearPeclRemote.uninstall('pecl', peclGrid.getSelectionModel().getSelected().json[0], function(response) {
+		        			
+		        			if(!response) return false; // no packages installed
 	
-			        		pearPeclRemote.setCallback( function( response ) {
-		
-			        			if( !response ) return false; // no packages installed
-		
-			        			if( response.RemotingException ) {
-		
-			        				AgilePHP.Studio.error( response.message );
-			        				return false;
-			        			}
-		
-			        			var data = [];
-			        			for( var i=0; i<response.exts.length; i++ ) {
-		
-			        				 data.push([ 
-			        				             response.exts[i][0],
-			        				             response.exts[i][1],
-			        				             response.exts[i][2]
-			        				 ]);
-			        			}
-			        			peclPagingMemoryProxy.data = data;
-			        			Ext.getCmp( id + '-pecl-pagingtoolbar' ).doRefresh();
-			        		});
-			        		pearPeclRemote.uninstall( 'pecl', peclGrid.getSelectionModel().getSelected().json[0] );
+		        			if(response.RemotingException) {
+	
+		        				AgilePHP.Studio.error(response.message);
+		        				return false;
+		        			}
+	
+		        			var data = [];
+		        			for(var i=0; i<response.exts.length; i++) {
+	
+		        				 data.push([ 
+		        				             response.exts[i][0],
+		        				             response.exts[i][1],
+		        				             response.exts[i][2]
+		        				 ]);
+		        			}
+		        			peclPagingMemoryProxy.data = data;
+		        			Ext.getCmp(id + '-pecl-pagingtoolbar').doRefresh();
+		        		});
 	        		}
 	        	}, {
 					id: id + '-grid-pecl-toolbar-channels',
@@ -275,9 +269,9 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 	        },
 	        listeners: {
 				
-				rowclick: function( grid, rowIndex, e ) {
+				rowclick: function(grid, rowIndex, e) {
 
-					 Ext.getCmp( id + '-grid-pecl-toolbar' ).setDisabled( false );
+					 Ext.getCmp(id + '-grid-pecl-toolbar').setDisabled(false);
 				}
 			}
 	});
@@ -305,7 +299,7 @@ AgilePHP.Studio.Menubar.tools.Settings = function() {
 	    }]
 	});
 	
-	win.add( tabpanel );
+	win.add(tabpanel);
 	
 	return win;
 };

@@ -48,7 +48,7 @@ AgilePHP.Studio.Properties = function() {
 						    },
 						    listeners: {
 				        		
-			        			click: function( node, e ) {
+			        			click: function(node, e) {
 
 						    		selectedComponent = node.id;
 
@@ -56,12 +56,12 @@ AgilePHP.Studio.Properties = function() {
 						    		var properties = node.attributes.component.properties;
 						    		var types = node.attributes.component.types;
 						    		var value = null;
-						    		for( var property in properties ) {
+						    		for(var property in properties) {
 
-						    			switch( types[property] ) {
+						    			switch(types[property]) {
 						    			
 					    			 		case 'date':
-					    			 			value = new Date(Date.parse( properties[property] ) );
+					    			 			value = new Date(Date.parse(properties[property]));
 					    			 			break;
 
 					    			 		case 'boolean':
@@ -77,7 +77,7 @@ AgilePHP.Studio.Properties = function() {
 						    			}
 				    			 		store[property] = value;
 					    			}
-			                        Ext.getCmp( id + '-grid' ).setSource( store );
+			                        Ext.getCmp(id + '-grid').setSource(store);
 			        			}
 			        		}
 						})
@@ -99,20 +99,12 @@ AgilePHP.Studio.Properties = function() {
 				    source: {},
 				    listeners: {
 				    
-				    	afteredit: function( e ) {
+				    	afteredit: function(e) {
 
 				    		var componentsRemote = new ComponentsRemote();
-				    			componentsRemote.setCallback( function( response ) {
-
-				    				if( !response ) {
-
-				    					AgilePHP.Studio.error( 'Error saving configuration. The server did not reply' );
-				    					return false;
-				    				}
-				    				if( response.RemotingException )
-				    					AgilePHP.Studio.error( response.RemotingException );
+				    			componentsRemote.setProperty(selectedComponent, e.record.data.name, e.record.data.value, null, function(ex) {
+				    				AgilePHP.Studio.error(ex.message);
 				    			});
-				    			componentsRemote.setProperty( selectedComponent, e.record.data.name, e.record.data.value );
 				    	}
 				    }
         		})

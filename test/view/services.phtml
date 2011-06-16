@@ -3,8 +3,8 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<title><?= $title ?></title>
-		<link href="<?= AgilePHP::getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
+		<title><?php echo $title ?></title>
+		<link href="<?php echo AgilePHP::getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
 	</head>
 
 	<body>

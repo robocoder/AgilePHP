@@ -687,7 +687,7 @@ var AgilePHP = {
 
 			// Marshall parameters - Set a _class field on all function object parameters / models
 			//if(parameters) data += '&parameters=' + escape(JSON.stringify(AgilePHP.Remoting.marshall(parameters)));
-			if(parameters) data += '&parameters=' + escape(JSON.stringify(parameters));
+			if(parameters) data += '&parameters=' + encodeURIComponent(JSON.stringify(parameters));
 
 			// Send the data to the server
 			return AgilePHP.Remoting._send(data, callback, exceptionHandler);
@@ -755,31 +755,25 @@ var AgilePHP = {
 
 					if(xhr.readyState == 4) {
 
-						var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
-						AgilePHP.debug(data);
+						var response = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
+						AgilePHP.debug(response);
 
 						// Catch exceptions
-						var count = 0;
-						for(var property in data) {
-
-							if(count > 1) break;
-
-							if(data[property] && data[property]._class && data[property]._class.indexOf('Exception') !== -1) {
-
-							   if(exceptionHandler) exceptionHandler(data[property]);
-							   return;
+						for(var property in response) {
+							if(property == '_class' && response._class.indexOf('Exception') !== -1) {
+								if(exceptionHandler) exceptionHandler(response);
+								   return;
 							}
-							count++;
 						}
-						if(callback) callback(AgilePHP.Remoting.unmarshall(data));
+						if(callback) callback(AgilePHP.Remoting.unmarshall(response));
 					}
 				}
 			} else {
 
-				var data = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
-				AgilePHP.debug(data);
+				var response = (xhr.responseText.length) ? eval('(' + xhr.responseText + ')') : null;
+				AgilePHP.debug(response);
 
-				return AgilePHP.Remoting.unmarshall(data);
+				return AgilePHP.Remoting.unmarshall(response);
 			}
 		},
 

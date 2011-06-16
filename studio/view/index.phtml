@@ -3,39 +3,53 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<title><?= $title ?></title>
-		<link href="<?= AgilePHP::getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
-		<link href="<?= AgilePHP::getDocumentRoot() ?>/view/css/tree-icons.css" type="text/css" rel="stylesheet"/>
-		<link href="<?= AgilePHP::getDocumentRoot() ?>/components/ext/resources/css/ext-all.css" type="text/css" rel="stylesheet"/>
-		<link href="<?= AgilePHP::getDocumentRoot() ?>/components/ext/ux/form/fileuploadfield.css" type="text/css" rel="stylesheet"/>
+		<title><?php echo $title ?></title>
+		<link href="<?php echo AgilePHP::getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
+		<link href="<?php echo AgilePHP::getDocumentRoot() ?>/view/css/tree-icons.css" type="text/css" rel="stylesheet"/>
+		<link href="<?php echo AgilePHP::getDocumentRoot() ?>/components/ext/resources/css/ext-all.css" type="text/css" rel="stylesheet"/>
+		<link href="<?php echo AgilePHP::getDocumentRoot() ?>/components/ext/ux/form/fileuploadfield.css" type="text/css" rel="stylesheet"/>
 		<![if IE]>
-    		<link href="<?= AgilePHP::getDocumentRoot() ?>/view/css/ie.css" rel="stylesheet" type="text/css" />
+    		<link href="<?php echo AgilePHP::getDocumentRoot() ?>/view/css/ie.css" rel="stylesheet" type="text/css" />
 	    <![endif]>
 		<![if !IE]>
-    		<link href="<?= AgilePHP::getDocumentRoot() ?>/view/css/ff.css" rel="stylesheet" type="text/css" />
+    		<link href="<?php echo AgilePHP::getDocumentRoot() ?>/view/css/ff.css" rel="stylesheet" type="text/css" />
 	    <![endif]>
-		<script type="text/javascript" src="<?= AgilePHP::getRequestBase() ?>/RemotingController/getBaseJS/<?= AgilePHP::isInDebugMode() ?>"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getRequestBase() ?>/RemotingController/index/ConfigsRemote"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getDocumentRoot() ?>/components/ext/adapter/ext/ext-base.js"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getDocumentRoot() ?>/components/ext/ext-all.js"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getDocumentRoot() ?>/view/js/Ext.Fx.shake.js"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.js"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.LoginWindow.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getRequestBase() ?>/RemotingController/getBaseJS/<?php echo AgilePHP::isInDebugMode() ? 'true' : '' ?>"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getRequestBase() ?>/RemotingController/index/ConfigsRemote"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/components/ext/adapter/ext/ext-base.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/components/ext/ext-all.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/Ext.Fx.shake.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.LoginWindow.js"></script>
+
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.Window.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.Menubar.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.TabPanel.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.Properties.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.Taskbar.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.Debugger.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.Desktop.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.Plugins.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.Notification.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.FileExplorer.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.Editor.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/view/js/AgilePHP.Studio.PagedGridPanel.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/components/ext/ux/form/FileUploadField.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/components/ext/ux/grid/CheckColumn.js"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/components/ext/ux/PagingMemoryProxy.js"></script>
+
 		<script type="text/javascript">
-			Ext.onReady( function() {
+			Ext.onReady(function() {
 
-					AgilePHP.Studio.setDebug( true );
-					AgilePHP.Remoting.setController( 'RemotingController' );
+				AgilePHP.Studio.setDebug(true);
+				AgilePHP.Remoting.setController('RemotingController');
 
-					Ext.QuickTips.init();
+				Ext.QuickTips.init();
 
-					AgilePHP.Studio.bootstrap();
-					new AgilePHP.Studio.LoginWindow();
+				//AgilePHP.Studio.bootstrap();
+				new AgilePHP.Studio.LoginWindow();
 			});
 		</script>
 	</head>
-
-	<body>
-		
-	</body>
+	<body></body>
 </html>

@@ -3,18 +3,18 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<link href="<?= AgilePHP::getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
-		<script type="text/javascript" src="<?= AgilePHP::getRequestBase() ?>/IndexController/getBaseJS/<?= AgilePHP::isInDebugMode() ?>"></script>
-		<script type="text/javascript" src="<?= AgilePHP::getDocumentRoot() ?>/components/codemirror/js/codemirror.js"></script>
+		<link href="<?php echo AgilePHP::getDocumentRoot() ?>/view/css/style.css" type="text/css" rel="stylesheet"/>
+		<script type="text/javascript" src="<?php echo AgilePHP::getRequestBase() ?>/IndexController/getBaseJS/<?php echo AgilePHP::isInDebugMode() ?>"></script>
+		<script type="text/javascript" src="<?php echo AgilePHP::getDocumentRoot() ?>/components/codemirror/js/codemirror.js"></script>
 	    <title>AgilePHP IDE :: Code Editor</title>
 	  </head>
 	  <body style="width: 100%;">
 		<div style="height: 100%;">
-			<textarea id="code" style="height: 100%;"><?= $code ?></textarea>
+			<textarea id="code" style="height: 100%;"><?php echo $code ?></textarea>
 		</div>
 	    <script type="text/javascript">
 	     var editor = CodeMirror.fromTextArea( 'code', {
-		        id: '<?= $id ?>',
+		        id: '<?php echo $id ?>',
 		        parserfile: ["parsexml.js",
 		     		         "parsecss.js",
 		     		         "tokenizejavascript.js",

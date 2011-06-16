@@ -18,17 +18,14 @@ AgilePHP.Studio.FileExplorer = {
 		highlightedNode: null,
 
 		getWorkspace: function() {
-
 			return AgilePHP.Studio.FileExplorer.workspace;
 		},
 
 		getSelectedProject: function() {
-
 			return AgilePHP.Studio.FileExplorer.selectedProject;
 		},
 
 		getTree: function() {
-
 			return AgilePHP.Studio.FileExplorer.tree;
 		},
 
@@ -59,8 +56,8 @@ AgilePHP.Studio.FileExplorer = {
 				if(designViews.indexOf(extension) !== -1) {
 					editors.push(new AgilePHP.Studio.Editor(id, 'design'));
 					editors.push({
-							    	id: 'previewer-' + id,
-							        title: 'Preview'
+				    	id: 'previewer-' + id,
+				        title: 'Preview'
 					});
 				}
 
@@ -82,15 +79,16 @@ AgilePHP.Studio.FileExplorer = {
 		Panel: function() {
 
 			var configs = new ConfigsRemote();
-				configs.setCallback(function(response) {
+				configs.get('workspace', function(response) {
 
 					var workspace = response.value;
 						workspace = workspace.replace(/\\/g, '|');
 						workspace = workspace.replace(/\//g, '|');
 
 					AgilePHP.Studio.FileExplorer.workspace = workspace;
+				}, function(ex) {
+					AgilePHP.Studio.error(ex.message);
 				});
-				configs.get('workspace');
 
 			AgilePHP.Studio.FileExplorer.panel = new Ext.Panel({
 
@@ -386,68 +384,56 @@ AgilePHP.Studio.FileExplorer = {
 				                			//iconCls: 'databaseManager',
 					                			menu: {
 						                			items: [{
-						                			
 						                				id: 'file-explorer-contextmenu-database-create',
 						                				text: 'Create',
 						                				iconCls: 'btn-new-database',
 						                				handler: function() {
 
+						                					var workspace = AgilePHP.Studio.FileExplorer.getWorkspace();
+						                					var selectedProject = AgilePHP.Studio.FileExplorer.getSelectedProject();
+
 						                					var dbManagerRemote = new DatabaseManagerRemote();
-					                							dbManagerRemote.setCallback(function(response) {
-					                								
-					                								if(response._class == 'RemotingException') {
-
-					                									AgilePHP.Studio.error(response.message)
-					                									return;
-					                								}
-
+					                							dbManagerRemote.create(workspace, selectedProject, function(response) {
 					                								AgilePHP.Studio.info('Database successfully created');
+					                							}, function(ex) {
+					                								AgilePHP.Studio.error(ex.message);
 					                							});
-					                							dbManagerRemote.create(AgilePHP.Studio.FileExplorer.getWorkspace(), AgilePHP.Studio.FileExplorer.getSelectedProject());
 						                				}
 						                			}, {
-						                			
 						                				id: 'file-explorer-contextmenu-database-drop',
 						                				text: 'Drop',
 						                				iconCls: 'btn-trash',
 						                				handler: function() {
 
+						                					var workspace = AgilePHP.Studio.FileExplorer.getWorkspace();
+						                					var selectedProject = AgilePHP.Studio.FileExplorer.getSelectedProject();
+
 							                				var dbManagerRemote = new DatabaseManagerRemote();
-				                								dbManagerRemote.setCallback(function(response) {
-				                								
-				                								if(response._class == 'RemotingException') {
-	
-				                									AgilePHP.Studio.error(response.message)
-				                									return;
-				                								}
-	
-				                								AgilePHP.Studio.info('Database successfully dropped');
-				                							});
-				                							dbManagerRemote.drop(AgilePHP.Studio.FileExplorer.getWorkspace(), AgilePHP.Studio.FileExplorer.getSelectedProject());
+				                								dbManagerRemote.drop(workspace, selectedProject, function(response) {
+
+				                								    AgilePHP.Studio.info('Database successfully dropped');
+				                							    }, function(ex) {
+				                							    	AgilePHP.Studio.error(ex.message);
+				                							    });
 						                				}
 						                			}, {
-						                			
 						                				id: 'file-explorer-contextmenu-database-reverseengineer',
 						                				text: 'Reverse Engineer',
 						                				iconCls: 'btn-reverse-engineer-database',
 						                				handler: function() {
 						                				
-							                				var dbManagerRemote = new DatabaseManagerRemote();
-				                								dbManagerRemote.setCallback(function(response) {
-				                								
-				                								if(response._class == 'RemotingException') {
-		
-				                									AgilePHP.Studio.error(response.message)
-				                									return;
-				                								}
+						                					var workspace = AgilePHP.Studio.FileExplorer.getWorkspace();
+						                					var selectedProject = AgilePHP.Studio.FileExplorer.getSelectedProject();
 
-				                								AgilePHP.Studio.info('orm.xml successfully configured');
-				                							});
-				                							dbManagerRemote.reverseEngineer(AgilePHP.Studio.FileExplorer.getWorkspace(), AgilePHP.Studio.FileExplorer.getSelectedProject());
+							                				var dbManagerRemote = new DatabaseManagerRemote();
+				                								dbManagerRemote.reverseEngineer(workspace, selectedProject, function(response) {
+				                									AgilePHP.Studio.info('orm.xml successfully configured');
+				                								}, function(ex) {
+				                									AgilePHP.Studio.error(ex.message);
+				                								});
 						                				}
 						                			}]
 				                				}
-				                			
 				                		});
 			                		}
 			                	}
@@ -562,6 +548,7 @@ AgilePHP.Studio.FileExplorer = {
 
 					// Keep track of which project is being worked on
 					var workspace = AgilePHP.Studio.FileExplorer.getWorkspace();
+console.log('workspace: ' + workspace);
 					var nodeId = node.id;
 						nodeId = nodeId.replace(workspace, '');
 

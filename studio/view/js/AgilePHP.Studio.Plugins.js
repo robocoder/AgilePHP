@@ -2,22 +2,16 @@ AgilePHP.Studio.Plugins = {
 
 	load: function() {
 
-		var stub = AgilePHP.Remoting.getStub( 'PluginsRemote' );
-			stub.setCallback( AgilePHP.Studio.Plugins.loadHandler );
-
+		var stub = AgilePHP.Remoting.getStub('PluginsRemote');
 		var pr = new PluginsRemote();
-		    pr.getPlugins();
+		    pr.getPlugins(AgilePHP.Studio.Plugins.loadHandler, function(ex) {
+		    	AgilePHP.Studio.error(ex.message);
+		    });
 	},
 
-	loadHandler: function( o ) {
+	loadHandler: function(o) {
 
-		if( typeof o == 'RemotingException' ) {
-
-			AgilePHP.Studio.error( o.message );
-			return false;
-		}
-
-		for( var i=0; i<o.length; i++ )
-			AgilePHP.loadScript( o[i].path );
+		for(var i=0; i<o.length; i++)
+			AgilePHP.loadScript(o[i].path);
 	}
 };

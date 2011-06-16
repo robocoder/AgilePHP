@@ -500,7 +500,17 @@ abstract class Remoting extends BaseController {
 
         Log::debug('Remoting::decode ' . $data);
 
-        $o = json_decode(htmlspecialchars_decode(stripslashes(urldecode($data))));
+        $data = htmlspecialchars_decode(stripslashes(urldecode($data)));
+
+	    $data = str_replace("\b", "\\b", $data);
+        $data = str_replace("\t", "\\t", $data);
+        $data = str_replace("\n", "\\n", $data);
+        $data = str_replace("\f", "\\f", $data);
+        $data = str_replace("\r", "\\r", $data);
+        $data = str_replace("\u", "\\u", $data);
+
+	    $o = json_decode($data);
+
         if(!is_array($o)) throw new RemotingException('Malformed JSON payload');
 
         return $o;

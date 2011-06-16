@@ -1,28 +1,8 @@
-- Checking in missing Interception class refactorings (from 0.39.0 and 0.39.1 builds)
-  o No longer breaks if missing closing php tag from document (?>)
-  o Parsing / creating interceptor proxy now includes fields in stub generation
-- Added escaping to JSON.stringify in AgilePHP.js Remoting.invoke
-- Created WinCacheProvider
-- Refactored Remoting marshall/unmarshall logic so that array elements of type object are not
-  "wrapped" inside a parent object that stores the class name.
-- Bug fix to DocBlockParser::getReturnType -- missing static modifier
-- Bug fix to DocBlockParser::getParameterType when parsing arrays - no longer returning <GenericType> with the array.
-- Created DocBlockParser::getArrayElementType to extract the data type from an array <GenericType> declaration.
-- Created DocBlockParser::getReturnArrayElementType to extract the data type from an array <GenericType> declaration.
-- Updated README required extensions info
-- Changed orm_pgsql_test.xml back to localhost address
-- Added $includeClassNames option to JsonRenderer::render. If true, a "_class" field will be generated in the JSON
-  object with the PHP class name as its value.
-- Refactored JsonToModel to transform JSON objects to native PHP objects based on the presence of a "_class" field. 
-- Added DocBlockParser::getArrayElementType to extract array element data type from PHPdoc using Java Generics style
-  formatting -- array<MyType>
-- Added abstract DataModel class to allow easy rendering of models to any of the supported framework rendering formats.
-- Refactored ORM DomainModel to extend DataModel 
-- Added BaseModel to mvc package to provide a basis for all models in the application
-- Updated AgilePHP::$classmap to include new mailer package, util package, and newly added framework classes 
-- Added PHPdoc comments to User and Role models
-- Refactored Rest JSON-specific operations to include new type casting code
-
-NOTE: This checkin breaks the studio package -- good excuse to get back to development on it
-
-Backward compatible apidoc: No
+- Fixed remoting bugs in Studio as a result of changes from last framework checkin
+- Fixed bug in AgilePHP.js remoting exception handling
+- Fixed unicode line break escaping / encoding bug in Remoting::decode
+- Switched escape call to encodeURIComponent in AgilePHP.js
+- Replaced lots of occurences of <?= $var; ?> style page variables with <?php echo $var; ?> to
+  increase out-of-the-box compatibility with default PHP installations.
+ 
+Backward compatible apidoc: Yes

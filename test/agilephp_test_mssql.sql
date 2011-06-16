@@ -21,7 +21,7 @@ CREATE TABLE dbo.roles (
   id int identity(1,1),
   name varchar(25) NOT NULL,
   description text,
-  PRIMARY KEY (name)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE sessions (

@@ -8,13 +8,13 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
 	var newModelRemote = new NewModelRemote();
 
-	var win = new AgilePHP.Studio.Window( id, 'btn-new-model', 'New Model', false, 330 );
+	var win = new AgilePHP.Studio.Window(id, 'btn-new-model', 'New Model', false, 330);
 
 	var workspace = AgilePHP.Studio.FileExplorer.workspace;
-		workspace = (workspace.indexOf( '|' ) === 0) ? workspace.replace( /\|/g, '/' ) : workspace.replace( /\|/g, '\\' );
+		workspace = (workspace.indexOf('|') === 0) ? workspace.replace(/\|/g, '/') : workspace.replace(/\|/g, '\\');
 	
 	var store = new Ext.data.Store({
-	        proxy: new Ext.data.MemoryProxy( [] ),
+	        proxy: new Ext.data.MemoryProxy([]),
 	        reader: new Ext.data.ArrayReader({}, [
 		               {name: id + '-editorgridpanel-property'},
 		               {name: id + '-editorgridpanel-column'},
@@ -103,21 +103,21 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 		                var mapping = grid.getStore().recordType;
 		                var m = new mapping({});
 		                grid.stopEditing();
-		                store.insert( grid.getStore().getModifiedRecords().length, m );
-		                grid.startEditing( grid.getStore().getModifiedRecords().length, 0 );
+		                store.insert(grid.getStore().getModifiedRecords().length, m);
+		                grid.startEditing(grid.getStore().getModifiedRecords().length, 0);
 		            }
 			    }, {
 		            iconCls: 'btn-list-remove',
 		            handler : function() {
-		                grid.getStore().removeAt( gridSelectedIndex );
+		                grid.getStore().removeAt(gridSelectedIndex);
 		        	}
 		        }, {
 		        	iconCls: 'btn-refresh',
 		        	handler: function() {
 		
-		        		var data = newModelRemote.getTableColumnsMeta( workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable );
+		        		var data = newModelRemote.getTableColumnsMeta(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable);
 				  	  	store.removeAll();
-				  	  	store.loadData( data );
+				  	  	store.loadData(data);
 		        	}
 		        }]
 	    }),
@@ -215,18 +215,18 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 	       	   sanitizeColumn
 	       	],
 	    listeners: {
-			rowclick: function( grid, rowIndex, e ) {
+			rowclick: function(grid, rowIndex, e) {
 
 				gridSelectedIndex = rowIndex;
 			}, 
-			rowdblclick: function( grid, rowIndex, e ) {
+			rowdblclick: function(grid, rowIndex, e) {
 
 			},
-			contextmenu : function( e ) {
+			contextmenu : function(e) {
 	
 				e.preventDefault();
 			},
-			rowcontextmenu: function( grid, rowIndex, e ) {
+			rowcontextmenu: function(grid, rowIndex, e) {
 
 				e.preventDefault();				
 	        }
@@ -258,9 +258,9 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 	      				name: 'type',
 	      				checked: true,
 	      				listeners: {
-	  	            		check: function( radio, checked ) {
-	  	            			Ext.getCmp( id + '-form-name' ).setDisabled( checked == false );
-	  	            			Ext.getCmp( id  + '-form-createtable' ).setDisabled( checked == false );
+	  	            		check: function(radio, checked) {
+	  	            			Ext.getCmp(id + '-form-name').setDisabled(checked == false);
+	  	            			Ext.getCmp(id  + '-form-createtable').setDisabled(checked == false);
 	  	            		}
 	  	            	}
 	  	            }, {
@@ -276,8 +276,8 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 	      				boxLabel: 'Database',
 	      				inputValue: 'database',
 	      				listeners: {
-	  	            		check: function( radio, checked ) {
-	 	            			Ext.getCmp( id + '-form-database-table' ).setDisabled( checked == false );
+	  	            		check: function(radio, checked) {
+	 	            			Ext.getCmp(id + '-form-database-table').setDisabled(checked == false);
 	  	            		}
 	  	            	}
 	  	            }, new Ext.form.ComboBox({
@@ -316,40 +316,30 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
             handler: function() {
 
 	  	    	mode = 1; // user defined model
-	  	    	selectedTable = Ext.getCmp( id + '-form-database-table' ).getValue();
+	  	    	selectedTable = Ext.getCmp(id + '-form-database-table').getValue();
 
-	  	    	if( Ext.getCmp( id + '-form-type-database' ).getValue() ) {
+	  	    	if(Ext.getCmp(id + '-form-type-database').getValue()) {
 
 	  	    		mode = 2; // create from database table
 
-	  	    		newModelRemote.setCallback( function( response ) {
-
-	  	    			if( response.RemotingException ) {
-
-			  	  			AgilePHP.Studio.error( response.RemotingException.message );
-			  	  			return false;
-			  	  		}
-
+	  	    		newModelRemote.removeAll(function(response) {
 	  	    			store.removeAll();
-				  	  	store.loadData( response );
+				  	  	store.loadData(response);
+	  	    		}, function(ex) {
+	  	    			AgilePHP.Studio.error(ex.message);
 	  	    		});
-	  	    		newModelRemote.getTableColumnsMeta( workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable );
+	  	    		newModelRemote.getTableColumnsMeta(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable);
+			  	  	newModelRemote.getTableColumns(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable, function(response) {
 
-			  	  	newModelRemote.setCallback( function( response ) {
+			  	  		if(response) {
 
-				  	  	if( response.RemotingException ) {
-	
-			  	  			AgilePHP.Studio.error( response.RemotingException.message );
-			  	  			return false;
-			  	  		}
-
-			  	  		if( response ) {
-
-			  	  			Ext.getCmp( id + '-editorgridpanel-column-combo' ).getStore().loadData( response );
+			  	  			Ext.getCmp(id + '-editorgridpanel-column-combo').getStore().loadData(response);
 			  	  			return true;
 			  	  		}
+
+			  	  	}, function(ex) {
+			  	  		AgilePHP.Studio.error(ex.message);
 			  	  	});
-			  	  	newModelRemote.getTableColumns( workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable );
 	  	    	}
 
             	return true;
@@ -374,13 +364,13 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
       	    	if(this.initialConfig) return; // Prevents ExtJS "handler" event
 
       	    	var properties = [];
-      	    	var tableName = (selectedTable) ? selectedTable : Ext.getCmp( id + '-form-name' ).getValue();
-      	    	var createTableEl = Ext.getCmp( id  + '-form-createtable' );
+      	    	var tableName = (selectedTable) ? selectedTable : Ext.getCmp(id + '-form-name').getValue();
+      	    	var createTableEl = Ext.getCmp(id  + '-form-createtable');
       	    	var createTableFlag = (createTableEl.disabled == false && createTableEl.getValue()) ? true : false;
 
-      	    	store.each( function( record ) {
+      	    	store.each(function(record) {
 
-      	    		if( mode == 1 ) {
+      	    		if(mode == 1) {
 
 	      	    		properties.push([ record.data[ id + '-editorgridpanel-property'],
 		      	    		              record.data[ id + '-editorgridpanel-column'],
@@ -398,46 +388,44 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 		      	    		              record.data[ id + '-editorgridpanel-sanitize']
 		      	    	]);
       	    		}
-      	    		else if( mode ==2 )
-      	    			properties.push( record.json );
+      	    		else if(mode ==2)
+      	    			properties.push(record.json);
       	    	});
 
-      	    	newModelRemote.setCallback( function( response ) {
-
-      	    		if( response.RemotingException ) {
-
-		  	  			AgilePHP.Studio.error( response.RemotingException.message );
-		  	  			win.show();
-		  	  			return false;
-		  	  		}
-      	    		AgilePHP.Studio.FileExplorer.highlightedNode.reload();
-      	    		win.close();
-      	    	});
-
-      	    	newModelRemote.create( tableName,
+      	    	newModelRemote.create(tableName,
 			 				AgilePHP.Studio.FileExplorer.workspace,
 			 				AgilePHP.Studio.FileExplorer.getSelectedProject(),
 			 				properties,
-			 				Ext.getCmp( id + '-form-orm' ).getValue(),
-			 				createTableFlag );
+			 				Ext.getCmp(id + '-form-orm').getValue(),
+			 				createTableFlag,
+			 				function(response) {
 
-      	    	Ext.getCmp( 'fe-new-model' ).hide();
+			      	    		if(response.RemotingException) {
+			
+					  	  			AgilePHP.Studio.error(response.RemotingException.message);
+					  	  			win.show();
+					  	  			return false;
+					  	  		}
+			      	    		AgilePHP.Studio.FileExplorer.highlightedNode.reload();
+			      	    		win.close();
+
+			      	    	}, function(ex) {
+			      	    		AgilePHP.Studio.error(ex.message);
+			      	    	});
+
+      	    	Ext.getCmp('fe-new-model').hide();
       	    }
     }]);
 
 	// Load database tables according to the selected projects orm.xml configuration
-	newModelRemote.setCallback( function( tables ) {
-
-		Ext.getCmp( id + '-form-database-table' ).getStore().loadData( tables );
+	newModelRemote.getDatabaseTables(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), function(tables) {
+		Ext.getCmp(id + '-form-database-table').getStore().loadData(tables);
 	});
-	newModelRemote.getDatabaseTables( workspace, AgilePHP.Studio.FileExplorer.getSelectedProject() );
 
 	// Load data types according to the selected projects orm.xml configuration
-	newModelRemote.setCallback( function( types ) {
-	
-		Ext.getCmp( id + '-editorgridpanel-type-combo' ).getStore().loadData( types );
+	newModelRemote.getSQLDataTypes(function(types) {
+		Ext.getCmp(id + '-editorgridpanel-type-combo').getStore().loadData(types);
 	});
-	newModelRemote.getSQLDataTypes();
 
 	return wizard;
 };

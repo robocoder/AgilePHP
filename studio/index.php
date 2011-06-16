@@ -16,8 +16,8 @@
 require_once '../src/AgilePHP.php';
 
 try {
-      AgilePHP::init();
 	  AgilePHP::setDefaultTimezone('America/New_York');
+      AgilePHP::init();
 	  AgilePHP::setFrameworkRoot(realpath(dirname(__FILE__) . '/../src'));
 	  AgilePHP::handleErrors();
 

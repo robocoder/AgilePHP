@@ -16,9 +16,9 @@ if (!Array.prototype.map) {
     };
 }
 
-Ext.ns( 'Ext.ux.data' );
+Ext.ns('Ext.ux.data');
 
-Ext.ux.data.RemotingProxy = function( config ) {   
+Ext.ux.data.RemotingProxy = function(config) {   
 
     // Pull out our "data"
     this.config = config;
@@ -32,11 +32,10 @@ Ext.ux.data.RemotingProxy = function( config ) {
  * @extends Ext.data.DataProxy
  * <p>Uses AgilePHP Remoting component to proxy data into ExtJS</p>
  */
-Ext.ux.data.RemotingProxy = Ext.extend( Ext.data.DataProxy, {
+Ext.ux.data.RemotingProxy = Ext.extend(Ext.data.DataProxy, {
 
-    doRequest : function( action, rs, params, reader, callback, scope, options ) {
-
-		this.config.instance.setCallback( function( response ) {
+    doRequest : function(action, rs, params, reader, callback, scope, options) {
+		AgilePHP.Remoting.invoke(this.config.instance, this.config.method, this.config.arguments, function(response) {
 
 			var result;
             try {
@@ -90,9 +89,9 @@ Ext.ux.data.RemotingProxy = Ext.extend( Ext.data.DataProxy, {
                 result.records = result.records.slice(params.start, params.start + params.limit);
             }
             response.callback.call(scope, result, options, true);  
+		}, function(ex) {
+			AgilePHP.Studio.error(ex.message);
 		});
-
-		AgilePHP.Remoting.invoke( this.config.instance, this.config.method, this.config.arguments );
 	},
 
 });
