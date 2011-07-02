@@ -1,8 +1,13 @@
-- Fixed remoting bugs in Studio as a result of changes from last framework checkin
-- Fixed bug in AgilePHP.js remoting exception handling
-- Fixed unicode line break escaping / encoding bug in Remoting::decode
-- Switched escape call to encodeURIComponent in AgilePHP.js
-- Replaced lots of occurences of <?= $var; ?> style page variables with <?php echo $var; ?> to
-  increase out-of-the-box compatibility with default PHP installations.
- 
-Backward compatible apidoc: Yes
+- Removed duplicate $this->model assignment in BaseDialect::merge.
+- Enhanced ModelGenerator
+  o Refactored toCamelCase method from private to public
+  o Class/model name is now passed into toCamelCase method for clean-up
+  o Removed extraneous newline character after last generated method
+- Bug fix to AgilePHP.js when unmarshalling an array of primitive data types 
+- Bug fix to Remoting::invoke; expected constructor in remove service classes
+- Refactored Upload API; removed parseExtension and moved its logic into getExtension
+- Fixed bug in Mailer CC list processing; expected comma so broke with single recipient
+
+Logs of bug fixes in Studio package.
+
+Backward compatible apidoc: No

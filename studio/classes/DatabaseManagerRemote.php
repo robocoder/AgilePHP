@@ -222,36 +222,80 @@ class DatabaseManagerRemote {
 	 */
 	private function createModels($projectPath, $models) {
 
+	    $generator = new ModelGenerator();
+	    $lineBreak = PHP_EOL;
+
 		foreach($models as $model) {
-			 
-			foreach($model as $name => $properties) {
 
-				$class = "class $name {" . PHP_EOL . PHP_EOL;
-				foreach($properties as $values) {
+			foreach($model as $name => $fields) {
 
-					$class .= "\tprivate \$" . $values['name'] . ';' . PHP_EOL;
-				}
-				$class .= PHP_EOL . "\tpublic function __construct() { }" . PHP_EOL . PHP_EOL;
-				foreach($properties as $values) {
-						
-					if($values['interceptor'] !== null)
-					$class .= "\t" . $values['interceptor'] . PHP_EOL;
+			    $className = ucfirst($generator->toCamelCase($name));
+			    
+    			// Create constructor arguments and getters/setters
+        		$constructorArgs = '';
+        		$constructorBody = '';
+        		$setters = array();
+        		$getters = array();
 
-					$class .= "\tpublic function set" . ucfirst($values['name']) . "(\$value) {" . PHP_EOL . PHP_EOL . "\t\t \$this->" . $values['name'] . " = \$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
-				}
-				foreach($properties as $key => $values) {
+			    // Constructor
+       			for($i=0; $i<count($fields); $i++) {
+        
+        			// Convert field to camel case
+        			$field = $generator->toCamelCase($fields[$i]['name']);
+        			$interceptor = $fields[$i]['interceptor'] ? $fields[$i]['interceptor'] : null;
 
-					$class .= "\tpublic function get" . ucfirst($values['name']) . "() {" . PHP_EOL . PHP_EOL . "\t\t return \$this->" . $values['name'] . ";" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
-				}
-				$class .= "}";
+        			$constructorArgs .= '$' . $field . ' = null';
+        			$constructorBody .= "        \$this->{$field} = \${$field};{$lineBreak}";
+        
+        			$setterName = 'set' . ucfirst($field);
+        			$getterName = 'get' . ucfirst($field);
+
+        			$setter = '';
+       			    if($interceptor) $setter .= '    ' . $interceptor . PHP_EOL; 
+
+        			$setter .= "    public function {$setterName}(\$$field) {{$lineBreak}        \$this->{$field} = \$$field;{$lineBreak}    }";
+        
+        			array_push($setters, $setter);
+        			array_push($getters, "    public function {$getterName}() {{$lineBreak}        return \$this->{$field};{$lineBreak}    }");
+        
+        			if(($i+1) < count($fields))
+        			   $constructorArgs .= ', ';
+        		}
+
+        		// Begin class
+        		$code = '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL .
+        		         "class {$className} extends DomainModel {{$lineBreak}";
+
+        		// Fields / properties
+        		foreach($fields as $field) {
+
+        		    $field = $generator->toCamelCase($field['name']);
+        		    $code .= "{$lineBreak}    private \${$field};";
+        		}
+        
+        		// Constructor
+        		$code .= "{$lineBreak}{$lineBreak}    public function __construct({$constructorArgs}) {{$lineBreak}{$constructorBody}    }{$lineBreak}{$lineBreak}"; 
+
+                // Getters and setters
+        		for($i=0; $i<count($setters); $i++) {
+
+        			$code .= $setters[$i] . $lineBreak . $lineBreak;
+        			$code .= $getters[$i] . $lineBreak;
+
+        			if(($i+1) <count($setters))
+        			  $code .= $lineBreak;
+        		}
+
+        		// End class
+        		$code .= '}';
 
 				$file = $projectPath . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . ucfirst($name) . '.php';
 				$h = fopen($file, 'w');
-				fwrite($h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL . $class . PHP_EOL . '?>');
+				fwrite($h, $code . PHP_EOL . '?>');
 				fclose($h);
 
 				if(!file_exists($file))
-				    throw new FrameworkException('Failed to create domain model \'' . ucfirst($name) . '\'.');
+				   throw new FrameworkException('Failed to create domain model \'' . ucfirst($name) . '\'.');
 			}
 		}
 	}
@@ -268,15 +312,13 @@ class DatabaseManagerRemote {
 		$h = fopen($file, 'r');
 		$data = '';
 		while(!feof($h))
-		$data .= fgets($h, 4096);
+		   $data .= fgets($h, 4096);
 		fclose($h);
 
-		$tableXml .= PHP_EOL . "\t</database>" . PHP_EOL . PHP_EOL . '</orm>';
-
-		$data = str_replace('</database>', '', $data);
+		$data = preg_replace('/<table\\s.*<\/table>/ms', $tableXml, $data);
 
 		$h = fopen($file, 'w');
-		fwrite($h, str_replace('</orm>', $tableXml, $data));
+		fwrite($h, $data);
 		fclose($h);
 	}
 

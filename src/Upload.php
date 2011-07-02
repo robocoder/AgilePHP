@@ -29,8 +29,8 @@
 class Upload {
 
 	  private $inputName;
-	  private $uploadedFilename;
-	  private $localFilename;
+	  private $fileName;
+	  private $uploadedFileName;
 	  private $contentType;
 	  private $size;
 	  private $directory;
@@ -83,6 +83,25 @@ class Upload {
 	  }
 
 	  /**
+	   * Sets the name of the file as it exists on the local file system
+	   * 
+	   * @param string $filename The local file name
+	   * @return void
+	   */
+	  public function setFileName($filename) {
+	      $this->fileName = $filename;
+	  }
+
+	  /**
+	   * Returns the file name as it was saved on the local file system
+	   * 
+	   * @return String The local file name
+	   */
+	  public function getFileName() {
+	  	  return $this->fileName;
+	  }
+
+	  /**
 	   * Returns the mime content type
 	   * 
 	   * @return String The content type
@@ -95,8 +114,20 @@ class Upload {
 	   * Returns the extension of the uploaded file
 	   * 
 	   * @return String The uploaded file extension
+	   * @throws UploadException if an inputName has not been defined
 	   */
 	  public function getExtension() {
+
+	      if(!$this->extension) {
+
+    	      if(!$this->inputName)
+    	         throw new UploadException('inputName required');
+
+    	      $name = $_FILES[$this->inputName]['name'];
+    	      $pieces = explode('.', $name);
+    	      $this->extension = array_pop($pieces);
+	      }
+
 	  	  return $this->extension;
 	  }
 
@@ -110,21 +141,12 @@ class Upload {
 	  }
 
 	  /**
-	   * Returns the uploaded file name (as it appeared to the user)
+	   * Returns the actual uploaded file name (as it appeared to the user)
 	   * 
 	   * @return String The uploaded file name
 	   */
-	  public function getUploadedFilename() {
-	  	  return $this->uploadedFilename;
-	  }
-
-	  /**
-	   * Returns the file name as it was saved on the local file system
-	   * 
-	   * @return String The local file name
-	   */
-	  public function getLocalFilename() {
-	  	  return $this->localFilename;
+	  public function getUploadedFileName() {
+	  	  return $this->uploadedFileName;
 	  }
 
 	  /**
@@ -150,22 +172,29 @@ class Upload {
 	   * file input $name.
 	   *
 	   * @param boolean $overwrite Optional flag used to toggle overwriting. Defaults to false (don't overwrite).
-	   * @param String $filename Optional file name to save the upload as. Defaults to the name of the uploaded file.
 	   * @return String The uploaded file path.
 	   * @throws ORMException if any errors occur
 	   */
-	  public function save($overwrite = false, $filename = null) {
+	  public function save($overwrite = false) {
 
-	  	    if(!$filename) {
+	         // If php.ini post_max_size is set to a size less than the data being posted,
+	  	     // the PHP $_POST array will be empty (regardless if POST data is present.
+		     $maxSize = (integer)ini_get('post_max_size') * 1024 * 1024; 
+		     $contentLength = (integer)$_SERVER['CONTENT_LENGTH'];
+		     if($contentLength > $maxSize)
+		 	   throw new UploadException('HTTP Content-Length greater than PHP configuration directive \'post_max_size\' (results in empty $_POST array). Content-Length = \'' . $contentLength . '\', post_max_size = \'' . $maxSize . '\'');
 
-	  	    	$pieces = explode(DIRECTORY_SEPARATOR, $_FILES[$this->inputName]['name']);
-	  	        $filename = $pieces[count($pieces)-1];
-	  	        $this->localFilename = $filename;
-	  	    }
+		 	// Create local file system name if not defined
+            if(!$this->fileName) {
 
-	  		$pieces = explode('.', $filename);
+                $pieces = explode(DIRECTORY_SEPARATOR, $_FILES[$this->inputName]['name']);
+  	            $filename = $pieces[count($pieces)-1];
+  	            $this->fileName = $filename;
+            }
+
+	  		$pieces = explode('.', $this->fileName);
 	  		if(count($pieces) > 1) $this->extension = $pieces[count($pieces) - 1];
-	  		$this->uploadedFilename = $_FILES[$this->inputName]['name'];
+	  		$this->uploadedFileName = $_FILES[$this->inputName]['name'];
 	  		$this->size = $_FILES[$this->inputName]['size'];
 	  		$this->contentType = $_FILES[$this->inputName]['type'];
 
@@ -178,10 +207,10 @@ class Upload {
 	  		   if(!in_array(strtolower($this->extension), $this->allowedExtensions))
 	  		      throw new UploadException($this->extension . ' files are not allowed.');
 
-			$target = $this->directory . DIRECTORY_SEPARATOR . $filename;
+			$target = $this->directory . DIRECTORY_SEPARATOR . $this->fileName;
 
 			// Make sure the file doesn't exist if not overwriting
-			if(file_exists($target) && $overwrite == false)
+			if(file_exists($target) && !$overwrite)
 			   throw new UploadException('The uploaded file already exists');
 
 			Log::debug('Upload::save Saving upload with input name \'' . $this->inputName . '\' to target path \'' . $target . '\'.');

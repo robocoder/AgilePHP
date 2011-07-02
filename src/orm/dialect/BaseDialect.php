@@ -522,10 +522,9 @@ abstract class BaseDialect {
 
 	    	   Log::debug('BaseDialect::merge Performing merge on model \'' . $table->getModel() . '\'.');
 
-	    	   $this->model = $model;
+			   $this->validate($table);
 	  	       $values = array();
 	  	       $cols = array();
-			   $this->validate($table);
 
 			   $sql = 'UPDATE ' . $table->getName() . ' SET ';
 

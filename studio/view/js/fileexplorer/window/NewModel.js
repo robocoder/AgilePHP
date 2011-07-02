@@ -28,7 +28,6 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 		               {name: id + '-editorgridpanel-pkey'},
 		               {name: id + '-editorgridpanel-autoincrement'},
 		               {name: id + '-editorgridpanel-sortable'},
-		               {name: id + '-editorgridpanel-selectable'},
 		               {name: id + '-editorgridpanel-sanitize'}
 		          ])
 	});
@@ -74,13 +73,6 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
         dataIndex: id + '-editorgridpanel-sortable',
         width: 60
     });
-	
-	var selectableColumn = new Ext.ux.grid.CheckColumn({
-   		id: id + '-editorgridpanel-selectable',
-        header: 'Selectable',
-        dataIndex: id + '-editorgridpanel-selectable',
-        width: 60
-    });
 
 	var sanitizeColumn = new Ext.ux.grid.CheckColumn({
    		id: id + '-editorgridpanel-sanitize',
@@ -114,15 +106,17 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 		        }, {
 		        	iconCls: 'btn-refresh',
 		        	handler: function() {
-		
-		        		var data = newModelRemote.getTableColumnsMeta(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable);
-				  	  	store.removeAll();
-				  	  	store.loadData(data);
+
+		        		newModelRemote.getTableColumnsMeta(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable, function(data) {
+
+		        			store.removeAll();
+					  	  	store.loadData(data);
+		        		});
 		        	}
 		        }]
 	    }),
 	    stateId: 'grid',
-	    plugins: [visibleColumn, requiredColumn, indexColumn, pkeyColumn, autoIncrementColumn, sortableColumn, selectableColumn, sanitizeColumn],
+	    plugins: [visibleColumn, requiredColumn, indexColumn, pkeyColumn, autoIncrementColumn, sortableColumn, sanitizeColumn],
 	    columns: [{
 	    		id: id + '-editorgridpanel-property',
 	        	header: 'Property',
@@ -211,7 +205,6 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 	       	   pkeyColumn,
 	       	   autoIncrementColumn,
 	       	   sortableColumn,
-	       	   selectableColumn,
 	       	   sanitizeColumn
 	       	],
 	    listeners: {
@@ -322,17 +315,15 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
 	  	    		mode = 2; // create from database table
 
-	  	    		newModelRemote.removeAll(function(response) {
+	  	    		newModelRemote.getTableColumnsMeta(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable, function(response) {
 	  	    			store.removeAll();
 				  	  	store.loadData(response);
 	  	    		}, function(ex) {
 	  	    			AgilePHP.Studio.error(ex.message);
 	  	    		});
-	  	    		newModelRemote.getTableColumnsMeta(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable);
+
 			  	  	newModelRemote.getTableColumns(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), selectedTable, function(response) {
-
 			  	  		if(response) {
-
 			  	  			Ext.getCmp(id + '-editorgridpanel-column-combo').getStore().loadData(response);
 			  	  			return true;
 			  	  		}
@@ -384,7 +375,6 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 		      	    		              record.data[ id + '-editorgridpanel-pkey'],
 		      	    		              record.data[ id + '-editorgridpanel-autoincrement'],
 		      	    		              record.data[ id + '-editorgridpanel-sortable'],
-		      	    		              record.data[ id + '-editorgridpanel-selectable'],
 		      	    		              record.data[ id + '-editorgridpanel-sanitize']
 		      	    	]);
       	    		}
@@ -396,21 +386,16 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 			 				AgilePHP.Studio.FileExplorer.workspace,
 			 				AgilePHP.Studio.FileExplorer.getSelectedProject(),
 			 				properties,
-			 				Ext.getCmp(id + '-form-orm').getValue(),
-			 				createTableFlag,
+			 				Ext.getCmp(id + '-form-orm').getValue() || 'false',
+			 				createTableFlag ? 'true' : 'false',
 			 				function(response) {
 
-			      	    		if(response.RemotingException) {
-			
-					  	  			AgilePHP.Studio.error(response.RemotingException.message);
-					  	  			win.show();
-					  	  			return false;
-					  	  		}
 			      	    		AgilePHP.Studio.FileExplorer.highlightedNode.reload();
 			      	    		win.close();
 
 			      	    	}, function(ex) {
 			      	    		AgilePHP.Studio.error(ex.message);
+			      	    		win.show();
 			      	    	});
 
       	    	Ext.getCmp('fe-new-model').hide();
@@ -419,6 +404,8 @@ AgilePHP.Studio.FileExplorer.NewModel = function() {
 
 	// Load database tables according to the selected projects orm.xml configuration
 	newModelRemote.getDatabaseTables(workspace, AgilePHP.Studio.FileExplorer.getSelectedProject(), function(tables) {
+		console.log('getDatabaseTables - response');
+		console.log(tables);
 		Ext.getCmp(id + '-form-database-table').getStore().loadData(tables);
 	});
 

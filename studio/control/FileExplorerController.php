@@ -21,736 +21,778 @@
 
 /**
  * Controller responsible for server side processing of the FileExplorer
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.control
  */
 class FileExplorerController extends BaseExtController {
 
-		 private $file;
+    private $file;
+
+    public function __construct() {
+
+        parent::__construct();
+         
+        set_error_handler('FileExplorerController::ErrorHandler');
+        $this->createRenderer('AJAXRenderer');
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/mvc/BaseController::index()
+     */
+    public function index() {
+        throw new FrameworkException('Invalid request');
+    }
+
+    /**
+     * Returns the file contents for the specified file.
+     *
+     * @param $file The file path to load.
+     * @return The contents of the specified file.
+     */
+    private function getContents($file) {
+
+        if(!file_exists($file))
+        throw new FrameworkException('Error loading file \'' . $file . '\'. File does not exist.');
+
+        $content = '';
+        $h = fopen($file, 'r');
+        while(!feof($h))
+        $content .= fgets($h, 2048);
+        fclose($h);
+
+        return trim($content);
+    }
+
+    /**
+     * Loads an editor instance.
+     *
+     * @return void
+     */
+    public function load($type, $id) {
+
+        $code = $this->getContents(str_replace('|', DIRECTORY_SEPARATOR, $id));
+
+
+        switch($type) {
+
+            case 'code':
+
+                $pieces = explode('|', $id);
+                $file = array_pop($pieces);
+                $extPieces = explode('.', $file);
+                $extension = array_pop($extPieces);
+
+                switch($extension) {
+
+                    case 'php':
+                    case 'phtml':
+                        $mode = 'php';
+                    break;
+
+                    case 'js':
+                        $mode = 'javascript';
+                    break;
+
+                    case 'html':
+                    case 'htaccess':
+                        $mode = 'html';
+                    break;
+                    
+                    case 'xsl':
+                    case 'xml':
+                        $mode = 'xml';
+                    break;
+
+                    case 'json':
+                        $mode = 'json';
+                    break;
+
+                    default:
+                        throw new Exception('Unsupported extension \'' . $extension . '\'.');
+                    break;
+                }
+
+                $renderer = new PHTMLRenderer();
+                $renderer->set('id', $id);
+                $renderer->set('code', htmlentities($code));
+                $renderer->set('mode', $mode);
+                $renderer->set('theme', 'eclipse');
+                $renderer->render('editor-ace');
+
+                Log::error($renderer);
+            break;
 
-		 public function __construct() {
+            case 'design':
+
+                $o = new stdClass;
+                $o->id = $id;
+                $o->code = $code;
 
-		 		parent::__construct();
-		 		
-		 		set_error_handler( 'FileExplorerController::ErrorHandler' );
-		 		$this->createRenderer( 'AJAXRenderer' );
-		 }
-
-		 public function index() { 
-
-		 		throw new FrameworkException( 'Invalid request' );
-		 }
+                $this->render($o);
+            break;
 
-	     /**
-	      * Returns the file contents for the specified file.
-	      * 
-	      * @param $file The file path to load.
-	      * @return The contents of the specified file.
-	      */
-	     private function getContents( $file ) {
+            default:
+                throw new Exception('Invalid editor type');
+        }
+    }
 
-	     		 if( !file_exists( $file ) )
-		 		     throw new FrameworkException( 'Error loading file \'' . $file . '\'. File does not exist.' );
-	 		    
-		 		 $content = '';
-		 		 $h = fopen( $file, 'r' );
-		 		 while( !feof( $h ) )
-		 		 	   $content .= fgets( $h, 2048 );
-		 		 fclose( $h );
+    /**
+     * Performs a save operation on behalf of TinyMCE. This method has been modified for
+     * the parkcitiesnews.com site so that it saves required javascript to the published page.
+     *
+     * @param $file The file path where the passed content gets written
+     * @return void
+     */
+    public function save() {
 
-		 		 return trim( $content );
-	     }
+        $request = Scope::getRequestScope();
 
-		 /**
-		  * Loads an editor instance.
-		  * 
-		  * @return void
-		  */
-		 public function load( $type, $id ) {
+        $id = $request->get('id');
 
-		 		$code = $this->getContents( preg_replace( '/\|/', DIRECTORY_SEPARATOR, $id ) );
+        $file = preg_replace('/\|/', DIRECTORY_SEPARATOR, $id);
+        $code = stripslashes(html_entity_decode($_POST['code']));
 
-		 		switch( $type ) {
+        Log::debug($code);
+         
+        $h = fopen($file, 'w');
+        $result = fwrite($h, $code);
+        fclose($h);
 
-		 			case 'code':
+        if($result === false)
+        throw new FrameworkException('Failed to save code');
 
-		 				 //if( $extension == 'phtml' ) {
+        $o = new stdClass;
+        $o->success = true;
 
-			 				 $renderer = new PHTMLRenderer();
-			 				 $renderer->set( 'id', $id );
-			 				 $renderer->set( 'code', htmlentities( $code ) );
-			 				 $renderer->render( 'editor-code' );
+        $this->getRenderer()->render($o);
+    }
 
-			 				 Log::error( $renderer );
-		 				 //}
-		 				 break;
+    /**
+     * Provides a single-level directory/file listing in JSON format to the file explorer. This is
+     * called everytime a node is expanded.
+     *
+     * @return void
+     */
+    public function getTree() {
 
-		 			case 'design':
+        function isProject($path) {
 
-		 				 $o = new stdClass;
-		 				 $o->id = $id; 
-		 				 $o->code = $code;
+            return file_exists($path . DIRECTORY_SEPARATOR . 'agilephp.xml');
+        };
 
-		 				 $this->getRenderer()->render( $o );
-		 				 break;
+        $request = Scope::getRequestScope();
+        $node = $request->getSanitized('node');
+        $path = preg_replace('/\|/', DIRECTORY_SEPARATOR, $node);
 
-		 			default:
-		 				throw new Exception( 'Invalid editor type' );
-		 		}
-		 }
+        if(!$path || $path == '.') {
 
-		 /**
-		  * Performs a save operation on behalf of TinyMCE. This method has been modified for
-		  * the parkcitiesnews.com site so that it saves required javascript to the published page.
-		  * 
-		  * @param $file The file path where the passed content gets written
-		  * @return void
-		  */
-		 public function save() {
+            $config = new Config();
+            $config->setName('workspace');
+            $path = $config->getValue();
+            $isWorkspace = true;
+        }
 
-		 		$request = Scope::getRequestScope();
+        $o = new stdClass();
+        $o->directories = array();
+        $o->files = array();
+        $o->filesystem = array();
 
-		 		$id = $request->get( 'id' );
+        foreach(new DirectoryIterator($path) as $fileInfo) {
 
-		 		$file = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $id );
-		 		$code = stripslashes( html_entity_decode( $_POST['code'] ) );
+            if($fileInfo->isDot()) continue;
 
-		 		Log::debug( $code );
-		 		
-		 		$h = fopen( $file, 'w' );
-		 		$result = fwrite( $h, $code );
-		 		fclose( $h );
+            if(!$fileInfo->isDir()) {
 
-		 		if( $result === false )
-		 		    throw new FrameworkException( 'Failed to save code' );
+                preg_match('/.*\.(.*)/s', $fileInfo->getFilename(), $matches);
+                $extension = ((!count($matches)) ? '' : $matches[1]);
+            }
 
-		 		$o = new stdClass;
-		 		$o->success = true;
+            $serialized_node = preg_replace('/\\' . DIRECTORY_SEPARATOR . '/', '|', $fileInfo->getPathname());
 
-		 		$this->getRenderer()->render( $o );
-		 }
+            $stdClass = new stdClass();
+            $stdClass->id = $serialized_node;
+            $stdClass->text = $fileInfo->getFilename();
+            $stdClass->iconCls = 'mime-' . (($fileInfo->isDir()) ? 'folder' : $extension);
 
-		 /**
-		  * Provides a single-level directory/file listing in JSON format to the file explorer. This is
-		  * called everytime a node is expanded.
-		  * 
-		  * @return void
-		  */
-		 public function getTree() {
+            if(isset($isWorkspace)) {
 
-		 		function isProject( $path ) {
+                // Load only folders containing agilephp.xml file
+                //
+                // if(!isProject($path . DIRECTORY_SEPARATOR . $stdClass->text)) continue;
+                // $stdClass->iconCls = 'app-icon';
 
-		 				 return file_exists( $path . DIRECTORY_SEPARATOR . 'agilephp.xml' );
-		 		};
+                if(isProject($path . DIRECTORY_SEPARATOR . $stdClass->text))
+                $stdClass->iconCls = 'project';
+            }
 
-		 		$request = Scope::getRequestScope();
-		 		$node = $request->getSanitized( 'node' );
-		 		$path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $node );
+            if($fileInfo->isDir())
+            array_push($o->directories, $stdClass);
+            else {
 
-		 		if( !$path || $path == '.' ) {
+                $stdClass->leaf = true;
+                array_push($o->files, $stdClass);
+            }
+        }
 
-		 			$config = new Config();
-		 			$config->setName( 'workspace' );
-		 			$path = $config->getValue();
-		 			$isWorkspace = true;
-		 		}
+        sort($o->directories);
+        sort($o->files);
 
-		 		$o = new stdClass();
-		 		$o->directories = array();
-		 		$o->files = array();
-		 		$o->filesystem = array();
+        foreach($o->directories as $stdClass)
+        array_push($o->filesystem, $stdClass);
 
-				foreach( new DirectoryIterator( $path ) as $fileInfo ) {
+        foreach($o->files as $stdClass)
+        array_push($o->filesystem, $stdClass);
 
-				    	if( $fileInfo->isDot() ) continue;
+        $this->getRenderer()->render($o->filesystem);
+    }
 
-				    	if( !$fileInfo->isDir() ) {
+    /**
+     * Deletes a node or branch from the file explorer tree. If the specified $treePath is a directory
+     * the path is handed off to BaseTinyMCEController::recursiveDelete.
+     *
+     * @param $treePath The path to delete.
+     * @return void
+     */
+    #@RemoteMethod
+    public function delete($treePath) {
 
-				    		preg_match( '/.*\.(.*)/s', $fileInfo->getFilename(), $matches );
-				    		$extension = ( (!count( $matches )) ? '' : $matches[1]);
-				    	}
+        $treePath = preg_replace('/\|/', DIRECTORY_SEPARATOR, $treePath);
 
-				    	$serialized_node = preg_replace( '/\\' . DIRECTORY_SEPARATOR . '/', '|', $fileInfo->getPathname() );
+        Log::debug('FileExplorerController::delete Deleting treePath \'' . $treePath . '\'.');
 
-				    	$stdClass = new stdClass();
-				    	$stdClass->id = $serialized_node;
-				    	$stdClass->text = $fileInfo->getFilename();
-				    	$stdClass->iconCls = 'mime-' . (($fileInfo->isDir()) ? 'folder' : $extension);
+        header('content-type: application/json');
 
-				    	if( isset( $isWorkspace ) ) {
+        print FileUtils::delete($treePath) ? '{success:true}' : '{success:false}';
+    }
 
-				    		// Load only folders containing agilephp.xml file
-				    		//
-				    		// if( !isProject( $path . DIRECTORY_SEPARATOR . $stdClass->text ) ) continue;
-				    		// $stdClass->iconCls = 'app-icon';
+    /**
+     * Event handler for file explorer tree copy. Outputs JSON format for XHR.
+     *
+     * @param $treeSrc The source tree node's id/ file system path (colon substituted for /)
+     * @param $treeDst The destination tree node's id/file system path (colon substituted for /)
+     * @return void
+     */
+    public function copy($treeSrc, $treeDst) {
 
-				    		if( isProject( $path . DIRECTORY_SEPARATOR . $stdClass->text ) )
-				    			$stdClass->iconCls = 'project';
-				    	}
+        Log::debug('FileExplorerController::copy $treeSrc = \'' . $treeSrc . '\', $treeDst = \'' . $treeDst . '\'.');
 
-				    	if( $fileInfo->isDir() )
-				     		array_push( $o->directories, $stdClass );
-				     	else {
+        $srcId = $treeSrc;
+        $dstId = $treeDst;
 
-				     		$stdClass->leaf = true;
-				    		array_push( $o->files, $stdClass );
-				     	}
-				}
+        $treeSrc = preg_replace('/\|/', DIRECTORY_SEPARATOR, $treeSrc);
+        $treeDst = preg_replace('/\|/', DIRECTORY_SEPARATOR, $treeDst);
 
-				sort( $o->directories );
-				sort( $o->files );
+        $array = explode(DIRECTORY_SEPARATOR, $treeSrc);
+        $dstPath = $treeDst . DIRECTORY_SEPARATOR . array_pop($array);
 
-				foreach( $o->directories as $stdClass )
-						 array_push( $o->filesystem, $stdClass );
+        Log::debug('FileExplorerController::copy Copying src \'' . $treeSrc . '\' to destination \'' . $dstPath . '\'.');
 
-				foreach( $o->files as $stdClass )
-						 array_push( $o->filesystem, $stdClass );
+        header('content-type: application/json');
+        FileUtils::copy($treeSrc, $dstPath);
+        print '{success:true, parent: "' . $dstId . '"}';
+    }
 
-				$this->getRenderer()->render( $o->filesystem );
-		 }
+    /**
+     * Event handler for file explorer tree move. Performs a file rename which moves the file from $treeSrc
+     * to $treeDst.
+     *
+     * @param $treeSrc The tree source node / file system path (colons substituted for /)
+     * @param $treeDst The tree destination node / file system path (colons substituted for /)
+     * @return void
+     */
+    public function move($treeSrc, $treeDst) {
 
-		/**
-		 * Deletes a node or branch from the file explorer tree. If the specified $treePath is a directory
-		 * the path is handed off to BaseTinyMCEController::recursiveDelete. 
-		 *  
-		 * @param $treePath The path to delete.
-		 * @return void
-		 */
-		 #@RemoteMethod
-	  	public function delete( $treePath ) {
+        Log::debug('FileExplorerController::move $treeSrc = \'' . $treeSrc . '\'.');
+        Log::debug('FileExplorerController::move $treeDst = \'' . $treeDst . '\'.');
 
-	  		   $treePath = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treePath );
+        $src = preg_replace('/\|/', DIRECTORY_SEPARATOR, $treeSrc);
+        $dst = preg_replace('/\|/', DIRECTORY_SEPARATOR, $treeDst);
 
-	  		   Log::debug( 'FileExplorerController::delete Deleting treePath \'' . $treePath . '\'.' );
+        $array = explode(DIRECTORY_SEPARATOR, $src);
+        $dstPath = $dst . DIRECTORY_SEPARATOR . array_pop($array);
 
-	  		   header( 'content-type: application/json' );
+        Log::debug('FileExplorerController::move Moving src \'' . $src . '\' to destination \'' . $dstPath . '\'.');
 
-	  		   print FileUtils::delete( $treePath ) ? '{success:true}' : '{success:false}';
-	  	}
+        $o = new stdClass;
 
-	  	/**
-	  	 * Event handler for file explorer tree copy. Outputs JSON format for XHR.
-	  	 * 
-	  	 * @param $treeSrc The source tree node's id/ file system path (colon substituted for /)
-	  	 * @param $treeDst The destination tree node's id/file system path (colon substituted for /)
-	  	 * @return void
-	  	 */
-	  	public function copy( $treeSrc, $treeDst ) {
+        if(rename($src, $dstPath)) {
 
-	  		   Log::debug( 'FileExplorerController::copy $treeSrc = \'' . $treeSrc . '\', $treeDst = \'' . $treeDst . '\'.' );
+            $o->success = true;
+            $o->srcId = $treeSrc;
+            $o->newParentId = $treeDst;
 
-	  		   $srcId = $treeSrc;
-	  		   $dstId = $treeDst;
+            $this->getRenderer()->render($o);
+        }
 
-	  		   $treeSrc = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeSrc );
-	  		   $treeDst = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeDst );
+        $o->success = false;
+        $this->getRenderer()->render($o);
+    }
 
-	  		   $array = explode( DIRECTORY_SEPARATOR, $treeSrc );
-	  		   $dstPath = $treeDst . DIRECTORY_SEPARATOR . array_pop( $array );
+    /**
+     * Event handler for file explorer rename context menu item.
+     *
+     * @param $treeSrc The tree source node / file system path (colons substituted for /)
+     * @param $dst The tree destination node / file system path (colons substituted for /)
+     * @return void
+     */
+    public function rename($treeSrc, $dst) {
 
-	  		   Log::debug( 'FileExplorerController::copy Copying src \'' . $treeSrc . '\' to destination \'' . $dstPath . '\'.' );
+        Log::debug('FileExplorerController::rename $treeSrc = \'' . $treeSrc . '\'.');
+        Log::debug('FileExplorerController::rename $dst = \'' . $dst . '\'.');
 
-	  		   header( 'content-type: application/json' );
-  		   	   FileUtils::copy( $treeSrc, $dstPath );
-  		   	   print '{success:true, parent: "' . $dstId . '"}';
-	  	}
+        $src = preg_replace('/\|/', DIRECTORY_SEPARATOR, $treeSrc);
 
-		/**
-		 * Event handler for file explorer tree move. Performs a file rename which moves the file from $treeSrc
-		 * to $treeDst.
-		 * 
-		 * @param $treeSrc The tree source node / file system path (colons substituted for /)
-		 * @param $treeDst The tree destination node / file system path (colons substituted for /)
-		 * @return void
-		 */
-	  	public function move( $treeSrc, $treeDst ) {
+        $array = explode(DIRECTORY_SEPARATOR, $src);
+        array_pop($array);
 
-	  		   Log::debug( 'FileExplorerController::move $treeSrc = \'' . $treeSrc . '\'.' );
-	  		   Log::debug( 'FileExplorerController::move $treeDst = \'' . $treeDst . '\'.' );
+        $parent = implode(DIRECTORY_SEPARATOR, $array);
+        $dstPath = $parent . DIRECTORY_SEPARATOR . $dst;
 
-	  		   $src = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeSrc );
-	  		   $dst = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeDst );
+        Log::debug('FileExplorerController::rename Renaming src \'' . $src . '\' to destination \'' . $dstPath . '\'.');
 
-	  		   $array = explode( DIRECTORY_SEPARATOR, $src );
-	  		   $dstPath = $dst . DIRECTORY_SEPARATOR . array_pop( $array );
+        $o = new stdClass;
 
-	  		   Log::debug( 'FileExplorerController::move Moving src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
+        if(rename($src, $dstPath)) {
 
-	  		   $o = new stdClass;
+            $o->success = true;
+            $o->parentId = preg_replace('/\\' . DIRECTORY_SEPARATOR . '/', '|', $parent);
 
-	  		   if( rename( $src, $dstPath ) ) {
+            $this->getRenderer()->render($o);
+        }
 
-	  		   	   $o->success = true;
-	  		   	   $o->srcId = $treeSrc;
-	  		   	   $o->newParentId = $treeDst;
+        $o->success = false;
+        $this->getRenderer()->render($o);
+    }
 
-	  		   	   $this->getRenderer()->render( $o );
-	  		   }
+    /**
+     * Event handler for file uploads. Saves the chosen file to the specified
+     * $treePath destination.
+     *
+     * @param $treePath The destination path to save the uploaded content.
+     * @return void
+     */
+    public function upload($treePath) {
 
-	  		   $o->success = false;
-	  		   $this->getRenderer()->render( $o );
-	  	}
+        $request = Scope::getRequestScope();
+        $name = $request->get('name');
 
-	    /**
-		 * Event handler for file explorer rename context menu item.
-		 * 
-		 * @param $treeSrc The tree source node / file system path (colons substituted for /)
-		 * @param $dst The tree destination node / file system path (colons substituted for /)
-		 * @return void
-		 */
-	  	public function rename( $treeSrc, $dst ) {
+        $filename = ($name) ? $name : null;
 
-	  		   Log::debug( 'FileExplorerController::rename $treeSrc = \'' . $treeSrc . '\'.' );
-	  		   Log::debug( 'FileExplorerController::rename $dst = \'' . $dst . '\'.' );
+        $path = preg_replace('/\|/', DIRECTORY_SEPARATOR, $treePath);
+        $renderer = MVC::createRenderer('AJAXRenderer');
+        $o = new stdClass();
 
-	  		   $src = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treeSrc );
+        try {
+            $upload = new Upload();
+            $upload->setName('upload');
+            $upload->setDirectory($path);
+            $path = $upload->save($filename);
+        }
+        catch(FrameworkException $e) {
 
-	  		   $array = explode( DIRECTORY_SEPARATOR, $src );
-	  		   array_pop( $array );
+            Log::debug('FileExplorerController::upload Failed to upload file. Error code: ' . $e->getCode() . ', Message: ' . $e->getMessage());
 
-	  		   $parent = implode( DIRECTORY_SEPARATOR, $array );
-	  		   $dstPath = $parent . DIRECTORY_SEPARATOR . $dst; 
+            $o->success = false;
+            $o->file = null;
 
-	  		   Log::debug( 'FileExplorerController::rename Renaming src \'' . $src . '\' to destination \'' . $dstPath . '\'.' );
+            $renderer->renderNoHeader($o);
+        }
 
-	  		   $o = new stdClass;
+        $o->success = true;
+        $o->file = $path;
 
-	  		   if( rename( $src, $dstPath ) ) {
+        $renderer->renderNoHeader($o);
+    }
 
-	  		   	   $o->success = true;
-	  		   	   $o->parentId = preg_replace( '/\\' . DIRECTORY_SEPARATOR . '/', '|', $parent );
+    /**
+     * Creates a new directory.
+     *
+     * @param $path The parent directory path
+     * @param $name The name of the new directory
+     * @return void
+     */
+    public function createDirectory($path, $name) {
 
-	  		   	   $this->getRenderer()->render( $o );
-	  		   }
+        $filename = (str_replace('|', DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR . $name);
+        if($filename == '.') $filename = '.' . DIRECTORY_SEPARATOR;
 
-	  		   $o->success = false;
-	  		   $this->getRenderer()->render( $o );
-	  	}
+        Log::debug('FileExplorerController::createDirectory Creating new file \'' . $filename . '\'.');
 
-	  	/**
-	  	 * Event handler for file uploads. Saves the chosen file to the specified
-	  	 * $treePath destination.
-	  	 * 
-	  	 * @param $treePath The destination path to save the uploaded content.
-	  	 * @return void
-	  	 */
-		public function upload( $treePath ) {
+        $o = new stdClass();
+        $o->success = mkdir($filename) ? true : false;
 
-			   $request = Scope::getRequestScope();
-			   $name = $request->get( 'name' );
+        $this->getRenderer()->render($o);
+    }
 
-			   $filename = ($name) ? $name : null;
+    /**
+     * Creates a new file.
+     *
+     * @param $path The parent directory path
+     * @param $name The name of the new file
+     * @return void
+     */
+    public function createFile($path, $name) {
 
-			   $path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $treePath );
-			   $renderer = MVC::createRenderer( 'AJAXRenderer' );
-			   $o = new stdClass();
+        $filename = str_replace('|', DIRECTORY_SEPARATOR, $path) . DIRECTORY_SEPARATOR . $name;
+        if($filename == '.') $filename = '.' . DIRECTORY_SEPARATOR;
 
-	  		   try {
-		    		   $upload = new Upload();
-		  	    	   $upload->setName( 'upload' );
-		  	    	   $upload->setDirectory( $path );
-		  	    	   $path = $upload->save( $filename );
-	  		   }
-	  		   catch( FrameworkException $e ) {
+        $o = new stdClass();
+        $o->success = touch($filename) ? true : false;
 
-	  		   		  Log::debug( 'FileExplorerController::upload Failed to upload file. Error code: ' . $e->getCode() . ', Message: ' . $e->getMessage() );
-	  		   		  
-	  		   		  $o->success = false;
-	  		   		  $o->file = null;
+        $this->getRenderer()->render($o);
+    }
 
-	  		   		  $renderer->renderNoHeader( $o );
-	  		   }
+    /**
+     * Renders a JSON object which contains a list of domain models which are present in the
+     * specified project, relative to the workspace configuration.
+     *
+     * @param string $projectName The name of the project relative to the workspace root
+     * @return void
+     */
+    public function getModels($projectName) {
 
-	  		   $o->success = true;
-	  		   $o->file = $path;
+        $config = new Config();
+        $config->setName('workspace');
 
-	  		   $renderer->renderNoHeader( $o );
-	  	}
+        $projectPath = $config->getValue() . DIRECTORY_SEPARATOR .
+        Scope::getRequestScope()->sanitize($projectName);
 
-	  	/**
-	  	 * Creates a new directory.
-	  	 * 
-	  	 * @param $path The parent directory path
-	  	 * @param $name The name of the new directory
-	  	 * @return void
-	  	 */
-	  	public function createDirectory( $path, $name ) {
+        $models = array();
 
-	  		   $filename = (str_replace( '|', DIRECTORY_SEPARATOR, $path ) . DIRECTORY_SEPARATOR . $name);
-	  		   if( $filename == '.' ) $filename = '.' . DIRECTORY_SEPARATOR;
+        $i=0;
+        $it = new RecursiveDirectoryIterator($projectPath . DIRECTORY_SEPARATOR . 'model');
+        foreach(new RecursiveIteratorIterator($it) as $file) {
 
-	  		   Log::debug( 'FileExplorerController::createDirectory Creating new file \'' . $filename . '\'.' );
-	  		   
-	  		   $o = new stdClass();
-	  		   $o->success = mkdir( $filename ) ? true : false;
+            if(substr($file, -1) != '.' && substr($file, -2) != '..') {
 
-	  		   $this->getRenderer()->render( $o );
-	  	}
+                $file = str_replace('.php', '', $file->getFilename());
 
-	   /**
-	  	 * Creates a new file.
-	  	 * 
-	  	 * @param $path The parent directory path
-	  	 * @param $name The name of the new file
-	  	 * @return void
-	  	 */
-	  	public function createFile( $path, $name ) {
+                if(substr($file, 0, 4) == '.svn') continue;
 
-	  		   $filename = str_replace( '|', DIRECTORY_SEPARATOR, $path ) . DIRECTORY_SEPARATOR . $name;
-	  		   if( $filename == '.' ) $filename = '.' . DIRECTORY_SEPARATOR;
+                $i++;
 
-	  		   $o = new stdClass();
-	  		   $o->success = touch( $filename ) ? true : false;
+                $model = array();
+                $model[0] = $i;
+                $model[1] = $file;
 
-	  		   $this->getRenderer()->render( $o );
-	  	}
+                array_push($models, $model);
+            }
+        }
 
-	  	/**
-	  	 * Renders a JSON object which contains a list of domain models which are present in the
-	  	 * specified project, relative to the workspace configuration.
-	  	 * 
-	  	 * @param string $projectName The name of the project relative to the workspace root
-	  	 * @return void
-	  	 */
-	    public function getModels( $projectName ) {
+        $o = new stdClass;
+        $o->models = $models;
 
-	    	   $config = new Config();
-	 		   $config->setName( 'workspace' );
+        $this->getRenderer()->render($o);
+    }
 
-	 		   $projectPath = $config->getValue() . DIRECTORY_SEPARATOR .
-	 		   		 			Scope::getRequestScope()->sanitize( $projectName );
+    /**
+     * Prints a list of view templates in JSON format
+     *
+     * @param string $projectName The name of the project relative to the workspace root
+     * @return void
+     */
+    public function getViewTemplates($projectName) {
 
-	  		   $models = array();
+        $supportedViews = array('phtml', 'html', 'js');
+        $views = array();
 
-			   $i=0;
-		  	   $it = new RecursiveDirectoryIterator( $projectPath . DIRECTORY_SEPARATOR . 'model' );
-			   foreach( new RecursiveIteratorIterator( $it ) as $file ) {
+        $i=0;
+        $it = new RecursiveDirectoryIterator('.' . DIRECTORY_SEPARATOR . 'templates' .
+        DIRECTORY_SEPARATOR . 'views');
+        foreach(new RecursiveIteratorIterator($it) as $file) {
 
-			   			if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
+            if(substr($file, -1) != '.' && substr($file, -2) != '..') {
 
-			 		    	$file = str_replace( '.php', '', $file->getFilename() );
+                $file = str_replace('.' . DIRECTORY_SEPARATOR . 'templates' .
+                DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR, '', $file);
 
-				 		    if( substr( $file, 0, 4 ) == '.svn' ) continue;
+                $pieces = explode('.', $file);
+                $extension = array_pop($pieces);
+                if(!in_array($extension, $supportedViews)) continue;
 
-				 		    $i++;
+                $i++;
 
-				 		    $model = array();
-				 		    $model[0] = $i;
-				 		    $model[1] = $file;
+                $view = array();
+                $view[0] = $i;
+                $view[1] = $file;
 
-				 		    array_push( $models, $model );
-				        }
-			   }
+                array_push($views, $view);
+            }
+        }
+         
+        $o = new stdClass;
+        $o->views = $views;
 
-			   $o = new stdClass;
-			   $o->models = $models;
+        $this->getRenderer()->render($o);
+    }
 
-			   $this->getRenderer()->render( $o );
-	  	}
-	  	
-		/**
-	  	 * Prints a list of view templates in JSON format
-	  	 * 
-	  	 * @param string $projectName The name of the project relative to the workspace root
-	  	 * @return void
-	  	 */
-	    public function getViewTemplates( $projectName ) {
+    /**
+     * Prints a list of controller templates in JSON format
+     *
+     * @return void
+     */
+    public function getControllerTemplates() {
 
-	    	   $supportedViews = array( 'phtml', 'html', 'js' );
-	    	   $views = array();
+        $controllers = array();
 
-	  		   $i=0;
-		  	   $it = new RecursiveDirectoryIterator( '.' . DIRECTORY_SEPARATOR . 'templates' .
-		  					DIRECTORY_SEPARATOR . 'views' );
-			   foreach( new RecursiveIteratorIterator( $it ) as $file ) {
+        $i=0;
+        $it = new RecursiveDirectoryIterator('.' . DIRECTORY_SEPARATOR . 'templates' .
+        DIRECTORY_SEPARATOR . 'controllers');
+        foreach(new RecursiveIteratorIterator($it) as $file) {
 
-			   	        if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
+            if(substr($file, -1) != '.' && substr($file, -2) != '..') {
 
-			   	      	    $file = str_replace( '.' . DIRECTORY_SEPARATOR . 'templates' .
-			   	      	  			  DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR, '', $file );
+                $file = str_replace('.' . DIRECTORY_SEPARATOR . 'templates' .
+                DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR, '', $file);
 
-			   	      	  	$pieces = explode( '.', $file );
-			   	      	  	$extension = array_pop( $pieces );
-			   	      	  	if( !in_array( $extension, $supportedViews ) ) continue;
+                if(substr($file, -4) != '.php') continue;
+                if(substr($file, 0, 4) == '.svn') continue;
 
-				 		    $i++;
+                $file = str_replace('.php', '', $file);
 
-				 		    $view = array();
-				 		    $view[0] = $i;
-				 		    $view[1] = $file;
+                $i++;
 
-				 		    array_push( $views, $view );
-				        }
-			   }
-		   
-			   $o = new stdClass;
-			   $o->views = $views;
+                $controller = array();
+                $controller[0] = $i;
+                $controller[1] = $file;
 
-			   $this->getRenderer()->render( $o );
-	  	}
+                array_push($controllers, $controller);
+            }
+        }
+         
+        $o = new stdClass;
+        $o->controllers = $controllers;
 
-	  	/**
-	  	 * Prints a list of controller templates in JSON format
-	  	 * 
-	  	 * @return void
-	  	 */
-	  	public function getControllerTemplates() {
+        $this->getRenderer()->render($o);
+    }
 
-	  		   $controllers = array();
+    /**
+     * Creates a new controller in the specified project
+     *
+     * @param String $projectName The name of the project in the workspace to create the controller for
+     * @return void
+     * @throws FrameworkException
+     */
+    public function createController($projectName) {
 
-	  		   $i=0;
-		  	   $it = new RecursiveDirectoryIterator( '.' . DIRECTORY_SEPARATOR . 'templates' .
-		  					DIRECTORY_SEPARATOR . 'controllers' );
-			   foreach( new RecursiveIteratorIterator( $it ) as $file ) {
+        $config = new Config();
+        $config->setName('workspace');
 
-			   	        if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
+        $projectRoot = $config->getValue() . DIRECTORY_SEPARATOR .
+        Scope::getRequestScope()->sanitize($projectName);
 
-			   	      	    $file = str_replace( '.' . DIRECTORY_SEPARATOR . 'templates' .
-			   	      	  			  DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR, '', $file );
+        $controlDir = $projectRoot .	DIRECTORY_SEPARATOR . 'control';
 
-			   	      	  	if( substr( $file, -4 ) != '.php' ) continue;
-				 		    if( substr( $file, 0, 4 ) == '.svn' ) continue;
+        $request = Scope::getRequestScope();
+        $type = $request->getSanitized('type');
 
-				 		    $file = str_replace( '.php', '', $file );
+        switch($type) {
 
-				 		    $i++;
+            case 'basic':
+                $name = $request->getSanitized('name');
+                $code = file_get_contents('.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR .
+	  		   						'controllers' . DIRECTORY_SEPARATOR . 'BasicController.tpl');
+                $code = preg_replace('/#ClassName#/', $name, $code);
+                $code = preg_replace('/#projectName#/', $projectName, $code);
+                $h = fopen($controlDir . DIRECTORY_SEPARATOR . ucfirst($name) . '.php', 'w');
+                fwrite($h, $code);
+                fclose($h);
+                break;
 
-				 		    $controller = array();
-				 		    $controller[0] = $i;
-				 		    $controller[1] = $file;
+            case 'model':
+                $model = $request->getSanitized('model');
+                $name = $model . 'Controller';
+                $code = file_get_contents('.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR .
+	  		   						'controllers' . DIRECTORY_SEPARATOR . 'ModelController.tpl');
+                $code = preg_replace('/#ClassName#/', $name, $code);
+                $code = preg_replace('/#projectName#/', $projectName, $code);
+                $code = preg_replace('/#model#/', $model, $code);
+                $h = fopen($controlDir . DIRECTORY_SEPARATOR . $name . '.php', 'w');
+                fwrite($h, $code);
+                fclose($h);
+                break;
 
-				 		    array_push( $controllers, $controller );
-				        }
-			   }
-		   
-			   $o = new stdClass;
-			   $o->controllers = $controllers;
+            case 'custom':
+                $controller = $request->getSanitized('controller') . '.php';
+                copy('.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $controller,
+                $controlDir . DIRECTORY_SEPARATOR . $controller);
 
-			   $this->getRenderer()->render( $o );
-	  	}
+                $this->fixLineBreaks($controlDir . DIRECTORY_SEPARATOR . $controller);
+                break;
 
-	  	/**
-	  	 * Creates a new controller in the specified project
-	  	 * 
-	  	 * @param String $projectName The name of the project in the workspace to create the controller for
-	  	 * @return void
-	  	 * @throws FrameworkException
-	  	 */
-	  	public function createController( $projectName ) {
+            default:
+                throw new FrameworkException('Unsupported controller type \'' . $type . '\'.');
+        }
 
-	  		   $config = new Config();
-	 		   $config->setName( 'workspace' );
+        $o = new stdClass;
+        $o->success = true;
+        $o->nodeId = str_replace(DIRECTORY_SEPARATOR, '|', $projectRoot) . '|control';
 
-	 		   $projectRoot = $config->getValue() . DIRECTORY_SEPARATOR .
-	 		   		 			Scope::getRequestScope()->sanitize( $projectName );
+        $this->getRenderer()->render($o);
+    }
 
-	 		   $controlDir = $projectRoot .	DIRECTORY_SEPARATOR . 'control';
+    /**
+     * Creates a new view in the specified project
+     *
+     * @param String $projectName The name of the project in the workspace to create the view for
+     * @return void
+     * @throws FrameworkException
+     */
+    public function createView($projectName) {
 
-	  		   $request = Scope::getRequestScope();
-	  		   $type = $request->getSanitized( 'type' );
+        $config = new Config();
+        $config->setName('workspace');
 
-	  		   switch( $type ) {
+        $projectRoot = $config->getValue() . DIRECTORY_SEPARATOR .
+        Scope::getRequestScope()->sanitize($projectName);
 
-	  		   		case 'basic':
-	  		   			$name = $request->getSanitized( 'name' );
-	  		   			$code = file_get_contents( '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR .
-	  		   						'controllers' . DIRECTORY_SEPARATOR . 'BasicController.tpl' );
-	  		   			$code = preg_replace( '/#ClassName#/', $name, $code );
-	  		   			$code = preg_replace( '/#projectName#/', $projectName, $code );
-	  		   			$h = fopen( $controlDir . DIRECTORY_SEPARATOR . ucfirst( $name ) . '.php', 'w' );
-	  		   			fwrite( $h, $code );
-	  		   			fclose( $h );
-	  		   			break;
+        $viewDir = $projectRoot .	DIRECTORY_SEPARATOR . 'view';
 
-	  		   		case 'model':
-	  		   			$model = $request->getSanitized( 'model' );
-	  		   			$name = $model . 'Controller';
-	  		   			$code = file_get_contents( '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR .
-	  		   						'controllers' . DIRECTORY_SEPARATOR . 'ModelController.tpl' );
-	  		   			$code = preg_replace( '/#ClassName#/', $name, $code );
-	  		   			$code = preg_replace( '/#projectName#/', $projectName, $code );
-	  		   			$code = preg_replace( '/#model#/', $model, $code );
-	  		   			$h = fopen( $controlDir . DIRECTORY_SEPARATOR . $name . '.php', 'w' );
-	  		   			fwrite( $h, $code );
-	  		   			fclose( $h );
-	  		   			break;
+        $request = Scope::getRequestScope();
+        $type = $request->getSanitized('type');
 
-	  		   		case 'custom':
-	  		   			$controller = $request->getSanitized( 'controller' ) . '.php';
-				 	    copy( '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR . $controller,
-				 	    	  $controlDir . DIRECTORY_SEPARATOR . $controller );
+        switch($type) {
 
-		 	 			$this->fixLineBreaks( $controlDir . DIRECTORY_SEPARATOR . $controller );
-	  		   			break;
+            case 'basic':
+                $name = $request->getSanitized('name');
+                $code = file_get_contents('.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR .
+	  		   						'views' . DIRECTORY_SEPARATOR . 'basic-phtml.tpl');
+                $h = fopen($viewDir . DIRECTORY_SEPARATOR .  $name . '.phtml', 'w');
+                fwrite($h, $code);
+                fclose($h);
+                break;
 
-	  		   		default:
-	  		   			throw new FrameworkException( 'Unsupported controller type \'' . $type . '\'.' );
-	  		   }
+            case 'custom':
 
-	  		   $o = new stdClass;
-	  		   $o->success = true;
-	  		   $o->nodeId = str_replace( DIRECTORY_SEPARATOR, '|', $projectRoot ) . '|control';
+                $viewRoot = '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR;
+                $view = $request->getSanitized('view');
 
-	  		   $this->getRenderer()->render( $o );
-	  	}
+                if(file_exists($viewRoot . $view)) {
 
-	  	/**
-	  	 * Creates a new view in the specified project
-	  	 * 
-	  	 * @param String $projectName The name of the project in the workspace to create the view for
-	  	 * @return void
-	  	 * @throws FrameworkException
-	  	 */
-		public function createView( $projectName ) {
+                    copy($viewRoot . $view, $viewDir . DIRECTORY_SEPARATOR . $view);
+                    $this->fixLineBreaks($viewDir . DIRECTORY_SEPARATOR . $view);
+                }
+                break;
 
-	  		   $config = new Config();
-	 		   $config->setName( 'workspace' );
+            default:
+                throw new FrameworkException('Unsupported controller type \'' . $type . '\'.');
+        }
 
-	 		   $projectRoot = $config->getValue() . DIRECTORY_SEPARATOR .
-	 		   		 			Scope::getRequestScope()->sanitize( $projectName );
+        $o = new stdClass;
+        $o->success = true;
+        $o->nodeId = str_replace(DIRECTORY_SEPARATOR, '|', $projectRoot) . '|view';
 
-	 		   $viewDir = $projectRoot .	DIRECTORY_SEPARATOR . 'view';
+        $this->getRenderer()->render($o);
+    }
 
-	  		   $request = Scope::getRequestScope();
-	  		   $type = $request->getSanitized( 'type' );
+    /**
+     * Returns all components for the specified project
+     *
+     * @param $projectName The project name
+     * @return stdClass Object that stores a list of components
+     *
+     * @todo validate xml document
+     */
+    public function getComponents($workspace, $projectName) {
 
-	  		   switch( $type ) {
+        function getConfiguration($path) {
 
-	  		   		case 'basic':
-	  		   			$name = $request->getSanitized( 'name' );
-	  		   			$code = file_get_contents( '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR .
-	  		   						'views' . DIRECTORY_SEPARATOR . 'basic-phtml.tpl' );
-	  		   			$h = fopen( $viewDir . DIRECTORY_SEPARATOR .  $name . '.phtml', 'w' );
-	  		   			fwrite( $h, $code );
-	  		   			fclose( $h );
-	  		   			break;
+            $componentXml = $path . DIRECTORY_SEPARATOR . 'component.xml';
+            if(!file_exists($componentXml))
+            return false;
 
-	  		   		case 'custom':
+            $xml = simplexml_load_file($componentXml);
 
-	  		   			$viewRoot = '.' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR;
-	  		   			$view = $request->getSanitized( 'view' );
+            /*
+             $dom = new DOMDocument();
+             $dom->Load($componentXml);
+             if(!$dom->schemaValidate(AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'component.dtd'));
+             //if(!$dom->validate());
+             throw new ORMException('component.xml Document Object Model validation failed.');
+             */
 
-	  		   			if( file_exists( $viewRoot . $view ) ) {
+            $properties = array();
+            $types = array();
+            foreach($xml->component->param as $param) {
 
-	  		   				copy( $viewRoot . $view, $viewDir . DIRECTORY_SEPARATOR . $view );
-	  		   				$this->fixLineBreaks( $viewDir . DIRECTORY_SEPARATOR . $view );
-	  		   			}
-	  		   			break;
+                $properties[(string)$param->attributes()->name] = (string)$param->attributes()->value;
+                $types[(string)$param->attributes()->name] = (string)$param->attributes()->type;
+            }
 
-	  		   		default:
-	  		   			throw new FrameworkException( 'Unsupported controller type \'' . $type . '\'.' );
-	  		   }
+            $o = new stdClass;
+            $o->name = (string)$xml->component->attributes()->name;
+            $o->version = (string)$xml->component->attributes()->version;
+            $o->language = (string)$xml->component->attributes()->language;
+            $o->properties = $properties;
+            $o->types = $types;
 
-	  		   $o = new stdClass;
-	  		   $o->success = true;
-	  		   $o->nodeId = str_replace( DIRECTORY_SEPARATOR, '|', $projectRoot ) . '|view';
+            return $o;
+        };
 
-	  		   $this->getRenderer()->render( $o );
-	  	}
+        $path = preg_replace('/\|/', DIRECTORY_SEPARATOR, $workspace);
+        $path .= DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'components';
 
-	  	/**
-	  	 * Returns all components for the specified project
-	  	 * 
-	  	 * @param $projectName The project name
-	  	 * @return stdClass Object that stores a list of components
-	  	 * 
-	  	 * @todo validate xml document
-	  	 */
-	  	public function getComponents( $workspace, $projectName ) {
+        if(!file_exists($path)) throw new FrameworkException('Path doesnt exist at \'' . $path . '\'.');
 
-	  		   function getConfiguration( $path ) {
+        $components = array();
 
-	  		   			$componentXml = $path . DIRECTORY_SEPARATOR . 'component.xml';
-		 				if( !file_exists( $componentXml ) )
-		 					return false;
+        foreach(new DirectoryIterator($path) as $fileInfo) {
 
-		 				$xml = simplexml_load_file( $componentXml );
+            if($fileInfo->isDot()) continue;
+            if(!$fileInfo->isDir()) continue;
+            if(!$config = getConfiguration($path . DIRECTORY_SEPARATOR . $fileInfo->getFilename())) continue;
 
-		 				/*
-		 				$dom = new DOMDocument();
-			 			$dom->Load( $componentXml );
-						if( !$dom->schemaValidate( AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'component.dtd' ) );
-						//if( !$dom->validate() );
-						 	throw new ORMException( 'component.xml Document Object Model validation failed.' );
-						*/
+            $serialized_node = preg_replace('/\\' . DIRECTORY_SEPARATOR . '/', '|', $fileInfo->getPathname());
 
-		 				$properties = array();
-		 				$types = array();
-		 				foreach( $xml->component->param as $param ) {
+            $stdClass = new stdClass();
+            $stdClass->id = $serialized_node;
+            $stdClass->text = $fileInfo->getFilename();
+            $stdClass->iconCls = 'btn-new-component';
+            $stdClass->leaf = true;
+            $stdClass->component = $config;
 
-		 						 $properties[(string)$param->attributes()->name] = (string)$param->attributes()->value;
-		 						 $types[(string)$param->attributes()->name] = (string)$param->attributes()->type;
-		 				}
+            array_push($components, $stdClass);
+        }
 
-		 				$o = new stdClass;
-	 					$o->name = (string)$xml->component->attributes()->name;
-	 					$o->version = (string)$xml->component->attributes()->version;
-	 					$o->language = (string)$xml->component->attributes()->language;
-	 					$o->properties = $properties;
-	 					$o->types = $types;
+        sort($components);
 
-		 				return $o;
-		 	   };
+        $this->getRenderer()->render($components);
+    }
 
-		 	   $path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
-		 	   $path .= DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'components';
+    /**
+     * Utility method to replace *nix line breaks with windows line breaks if building on windows.
+     *
+     * @param String $file The fully qualified file path
+     * @return void
+     */
+    private function fixLineBreaks($file) {
 
-		 	   if( !file_exists( $path ) ) throw new FrameworkException( 'Path doesnt exist at \'' . $path . '\'.' );
+        if(substr(getcwd(), 0, 1) != '/') {
 
-		 	   $components = array();
+            $h = fopen($file, 'r');
+            $data = '';
+            while(!feof($h))
+            $data .= fgets($h, 4096);
+            fclose($h);
 
-		 	   foreach( new DirectoryIterator( $path ) as $fileInfo ) {
+            $data = str_replace("\n", PHP_EOL, $data);
 
-				    	if( $fileInfo->isDot() ) continue;
-				    	if( !$fileInfo->isDir() ) continue;
-				    	if( !$config = getConfiguration( $path . DIRECTORY_SEPARATOR . $fileInfo->getFilename() ) ) continue;
+            $h = fopen($file, 'w');
+            fwrite($h, $data);
+            fclose($h);
+        }
+    }
 
-				    	$serialized_node = preg_replace( '/\\' . DIRECTORY_SEPARATOR . '/', '|', $fileInfo->getPathname() );
-
-				    	$stdClass = new stdClass();
-				    	$stdClass->id = $serialized_node;
-				    	$stdClass->text = $fileInfo->getFilename();
-				    	$stdClass->iconCls = 'btn-new-component';
-				    	$stdClass->leaf = true;
-				    	$stdClass->component = $config;
-
-				   		array_push( $components, $stdClass );
-				}
-
-				sort( $components );
-
-				$this->getRenderer()->render( $components );
-	  	}
-
-        /**
-	     * Utility method to replace *nix line breaks with windows line breaks if building on windows.
-	     * 
-	     * @param String $file The fully qualified file path
-	     * @return void
-	     */
-	    private function fixLineBreaks( $file ) {
-
-	  		    if( substr( getcwd(), 0, 1 ) != '/' ) {
-
-	       		    $h = fopen( $file, 'r' );
-	      		    $data = '';
-	      		    while( !feof( $h ) )
-	      		 		   $data .= fgets( $h, 4096 );
-	      		    fclose( $h );
-
-	      		    $data = str_replace( "\n", PHP_EOL, $data );
-
-             	    $h = fopen( $file, 'w' );
-			  	    fwrite( $h, $data );
-			  	    fclose( $h );
-	  		    }
-	    } 
-
-	    public function __destruct() {
-
-	  	 	   restore_error_handler();
-	    }
+    /**
+     * Cleanup
+     * 
+     * @return void
+     */
+    public function __destruct() {
+        restore_error_handler();
+    }
 }
 ?>

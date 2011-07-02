@@ -42,24 +42,20 @@ AgilePHP.Studio.FileExplorer = {
 				var designViews = [ 'html', 'xhtml' ];
 				var codeViews = [ 'xml', 'xsl', 'css', 'html', 'xhtml', 'php', 'phtml', 'js', 'sql', 'htaccess' ];
 				var pieces = text.split('.');
-				var extension = pieces[pieces.length-1];
+				var extension = pieces.pop();
 
 				if(codeViews.indexOf(extension) === -1 && designViews.indexOf(extension) === -1) {
-
 					AgilePHP.Studio.error('Unsupported file type "' + extension + '".');
 					return;
 				}
-
+/*
 				if(codeViews.indexOf(extension) !== -1)
 					editors.push(new AgilePHP.Studio.Editor(id, 'code'));
 
-				if(designViews.indexOf(extension) !== -1) {
+				if(designViews.indexOf(extension) !== -1)
 					editors.push(new AgilePHP.Studio.Editor(id, 'design'));
-					editors.push({
-				    	id: 'previewer-' + id,
-				        title: 'Preview'
-					});
-				}
+*/
+				editors.push(new AgilePHP.Studio.Editor(id, 'code'));
 
 				var tabs = new Ext.TabPanel({
 
@@ -548,7 +544,7 @@ AgilePHP.Studio.FileExplorer = {
 
 					// Keep track of which project is being worked on
 					var workspace = AgilePHP.Studio.FileExplorer.getWorkspace();
-console.log('workspace: ' + workspace);
+
 					var nodeId = node.id;
 						nodeId = nodeId.replace(workspace, '');
 

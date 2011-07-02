@@ -9,9 +9,8 @@ class #ClassName# extends BaseModelActionController {
 	  private $model;
 
 	  public function __construct() {
-
-			 $this->model = new #model#();
-	  		 parent::__construct();
+	      $this->model = new #model#();
+	  	  parent::__construct();
 	  }
 
 	  /**
@@ -19,8 +18,7 @@ class #ClassName# extends BaseModelActionController {
 	   * @see AgilePHP/mvc/BaseModelController#getModel()
 	   */
 	  public function getModel() {
-
-	  	     return $this->model;
+	  	  return $this->model;
 	  }
 }
 ?>

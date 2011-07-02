@@ -915,20 +915,24 @@ var AgilePHP = {
 		 */
 		unmarshallArray: function(theArray) {
 
+			var retval = [];
+
 			for(var i=0; i<theArray.length; i++) {
 
-				if(typeof param == 'object') {
+				if(typeof theArray[i] == 'object') {
 
 					if(AgilePHP.Remoting.Parser.isArray(theArray[i])) {
 
-					   return AgilePHP.Remoting.unmarshallArray(theArray[i]);
+					   retval.push(AgilePHP.Remoting.unmarshallArray(theArray[i]));
 					}
 				    else
-				    	return AgilePHP.Remoting.unmarshall(theArray[i]);
+				    	retval.push(AgilePHP.Remoting.unmarshall(theArray[i]));
 				}
 				else
-					return theArray[i];
+					retval.push(theArray[i]);
 			}
+
+			return retval;
 		},
 
 		/**

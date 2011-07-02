@@ -21,262 +21,296 @@
 
 /**
  * Remoting class responsible for server side processing on behalf of New Model wizard.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.classes
  */
 class NewModelRemote {
 
-	  public function __construct() { }
+    public function __construct() {
+    }
 
-	  /**
-	   * Returns a list of database table names for the current database connection.
-	   * 
-	   * @param stdClass $database A stdClass instance containing client side parameters
-	   */
-	  #@RemoteMethod
-	  public function getDatabaseTables( $workspace, $projectName ) {
+    /**
+     * Returns a list of database table names for the current database connection.
+     *
+     * @param stdClass $database A stdClass instance containing client side parameters
+     */
+    #@RemoteMethod
+    public function getDatabaseTables($workspace, $projectName) {
 
-	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
+        $workspace = preg_replace('/\|/', DIRECTORY_SEPARATOR, $workspace);
 
-	  		 $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
+        $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $orm = ORMFactory::load( $ormXml );
+        $orm = ORMFactory::load($ormXml);
 
-	  		 $tables = array();
+        $tables = array();
 
-	  		 $Database = $orm->reverseEngineer();
+        $Database = $orm->reverseEngineer();
 
-	  		 foreach( $Database->getTables() as $table ) {
+        foreach($Database->getTables() as $table) {
 
-	  		 	$t = array();
-	  		 	$t[0] = $table->getName();
+            $t = array();
+            $t[0] = $table->getName();
 
-	  		 	array_push( $tables, $t );
-	  		 }
+            array_push($tables, $t);
+        }
 
-	  		 return $tables;
-	  }
+        return $tables;
+    }
 
-	  #@RemoteMethod
-	  public function getTableColumns( $workspace, $projectName, $tableName ) {
+    #@RemoteMethod
+    public function getTableColumns($workspace, $projectName, $tableName) {
 
-	  		 $columns = array();
+        $columns = array();
 
-	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
+        $workspace = preg_replace('/\|/', DIRECTORY_SEPARATOR, $workspace);
 
-	  		 $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
+        $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 $orm = ORMFactory::load( $ormXml );
-	  		 
-	  		 $Database = $orm->reverseEngineer();
+        $orm = ORMFactory::load($ormXml);
 
-	  		 foreach( $Database->getTables() as $table ) {
+        $Database = $orm->reverseEngineer();
 
-	  		 	if( $table->getName() == $tableName ) {
+        foreach($Database->getTables() as $table) {
 
-		  		 	foreach( $table->getColumns() as $column ) {
+            if($table->getName() == $tableName) {
 
-		  		 			$c = array();
-		  		 			$c[0] = $column->getName();
+                foreach($table->getColumns() as $column) {
 
-				  		 	array_push( $columns, $c );
-		  		 	}
-	  		 	}
-	  		 }
+                    $c = array();
+                    $c[0] = $column->getName();
 
-	  		 return $columns;
-	  }
+                    array_push($columns, $c);
+                }
+            }
+        }
 
-	  #@RemoteMethod
-	  public function getTableColumnsMeta( $workspace, $projectName, $tableName ) {
+        return $columns;
+    }
 
-	  		 $data = array();
+    #@RemoteMethod
+    public function getTableColumnsMeta($workspace, $projectName, $tableName) {
 
-	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
+        $data = array();
 
-	  		 $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
+        $workspace = preg_replace('/\|/', DIRECTORY_SEPARATOR, $workspace);
 
-	  		 $orm = ORMFactory::load( $ormXml );
-	  		 
-	  		 $Database = $orm->reverseEngineer();
+        $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
 
-	  		 foreach( $Database->getTables() as $table ) {
+        $orm = ORMFactory::load($ormXml);
 
-	  		 	if( $table->getName() == $tableName ) {
+        $Database = $orm->reverseEngineer();
 
-		  		 	foreach( $table->getColumns() as $column ) {
+        foreach($Database->getTables() as $table) {
 
-		  		 		    $display = ucfirst( preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $column->getName() ) ); // create default display name
+            if($table->getName() == $tableName) {
 
-		  		 			$d = array();
-		  		 			$d[0] = strtolower( $column->getName() );
-		  		 			$d[1] = $column->getName();
-		  		 			$d[2] = $column->getDisplay() ? $column->getDisplay() : $display;
-		  		 			$d[3] = $column->getType() ? $column->getType() : "";
-		  		 			$d[4] = $column->getLength() ? $column->getLength() : 0;
-		  		 			$d[5] = $column->getDefault() ? $column->getDefault() : "(null)";
-		  		 			$d[6] = $column->isVisible() ? 1 : 0;
-		  		 			$d[7] = $column->isRequired() ? 1 : 0;
-		  		 			$d[8] = $column->isIndex() ? 1 : 0;
-		  		 			$d[9] = $column->isPrimaryKey() ? 1 : 0;
-		  		 			$d[10] = $column->isAutoIncrement() ? 1 : 0;
-		  		 			$d[11] = 1; // sortable
-		  		 			$d[12] = 0; // selectable
-		  		 			$d[13] = 1; // sanitize
+                foreach($table->getColumns() as $column) {
 
-				  		 	array_push( $data, $d ); 
-		  		 	}
-	  		 	}
-	  		 }
+                    $display = ucfirst(preg_replace('/[_\-\+\!@#\$%\^&\*\(\)]/', '', $column->getName())); // create default display name
 
-	  		 return $data;
-	  }
+                    $d = array();
+                    $d[0] = strtolower($column->getName());
+                    $d[1] = $column->getName();
+                    $d[2] = $column->getDisplay() ? $column->getDisplay() : $display;
+                    $d[3] = $column->getType() ? $column->getType() : "";
+                    $d[4] = $column->getLength() ? $column->getLength() : 0;
+                    $d[5] = $column->getDefault() ? $column->getDefault() : "(null)";
+                    $d[6] = $column->isVisible() ? 1 : 0;
+                    $d[7] = $column->isRequired() ? 1 : 0;
+                    $d[8] = $column->isIndex() ? 1 : 0;
+                    $d[9] = $column->isPrimaryKey() ? 1 : 0;
+                    $d[10] = $column->isAutoIncrement() ? 1 : 0;
+                    $d[11] = 1; // sortable
+                    $d[12] = 1; // sanitize
 
-	  #@RemoteMethod
-	  /** @todo Pass in workspace and project to look at orm.xml database type and only display the data types for the database being manipulated */ 
-	  public function getSQLDataTypes() {
+                    array_push($data, $d);
+                }
+            }
+        }
 
-	  		 $types = array();
-	  		 $values = array( 'boolean', 'integer', 'int', 'bigint', 'double', 'decimal', 'varchar', 'float', 'bit', 'date', 'datetime', 'timestamp',  // mysql, sqlite
+        return $data;
+    }
+
+    #@RemoteMethod
+    // @todo Pass in workspace and project to look at orm.xml database type and only display the data types for the database being manipulated
+    public function getSQLDataTypes() {
+
+        $types = array();
+        $values = array('boolean', 'integer', 'int', 'bigint', 'double', 'decimal', 'varchar', 'float', 'bit', 'date', 'datetime', 'timestamp',  // mysql, sqlite
 	  		 				  'serial', 'bigserial', 'real', 'numeric', 'box', 'bytea', 'cidr', 'circle', 'inet', 'interval', 'line', 'lseg', 'macaddr', 'path', 'point', 'polygon', 'uuid', 'xml', // pgsql
-	                          'blob', 'text', 'password', 'smallint', 'tinyint', 'money', 'char', 'varbinary', 'nvarchar', 'image', 'uniqueidentifier', 'smalldatetime', 'ntext', 'nchar' ); // mssql
+	                          'blob', 'text', 'password', 'smallint', 'tinyint', 'money', 'char', 'varbinary', 'nvarchar', 'image', 'uniqueidentifier', 'smalldatetime', 'ntext', 'nchar'); // mssql
 
-	  		 foreach( $values as $type ) {
+        foreach($values as $type) {
 
-		  		 	$t = array();
-		  		 	$t[0] = $type;
+            $t = array();
+            $t[0] = $type;
 
-		  		 	array_push( $types, $t );
-	  		 }
+            array_push($types, $t);
+        }
 
-	  		 sort( $types );
-	  		 return $types;
-	  }
+        sort($types);
+        return $types;
+    }
 
-	  #@RemoteMethod
-	  public function create( $tableName, $workspace, $projectName, $properties, $updateOrmDotXml, $createTable ) {
-  		 
-	  		 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
-	  		 $modelName = ucfirst( preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $tableName ) );
-	  		 $path = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model';
+    #@RemoteMethod
+    public function create($tableName, $workspace, $projectName, $properties, $updateOrmDotXml, $createTable) {
 
-	  		 $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
-	  		 $orm = ORMFactory::load( $ormXml );
+        $generator = new ModelGenerator();
+	    $lineBreak = PHP_EOL;
 
-	  		 $Table = new Table();
-	  		 $Table->setName( $tableName );
-	  		 $Table->setModel( $modelName );
+        $workspace = preg_replace('/\|/', DIRECTORY_SEPARATOR, $workspace);
+        $modelName = ucfirst(preg_replace('/[\-\+\!@#\$%\^&\*\(\)]/', '', $tableName));
+        $path = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model';
 
-	  		 $class = "class " . $modelName . ' {' . PHP_EOL;
-	  		 $class .= PHP_EOL . "\tpublic function __construct() { }" . PHP_EOL . PHP_EOL;
+        $ormXml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
+        $orm = ORMFactory::load($ormXml);
 
-	  	 	 for( $i=0; $i<count( $properties ); $i++ ) {
+        $Table = new Table();
+        $Table->setName($tableName);
+        $Table->setModel($modelName);
 
-	  		 		  $property = preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $properties[$i][0] );
-      	    		  $default = $properties[$i][5];
-      	    		  $class .= (isset( $default) && $default != '(null)') ? "\tprivate \$$property = \"$default\";" . PHP_EOL : "\tprivate \$$property;" . PHP_EOL;
-	  		 }
+        $className = ucfirst($generator->toCamelCase($modelName));
 
-	  		 $class .= PHP_EOL;
+		// Create constructor arguments and getters/setters
+		$constructorArgs = '';
+		$constructorBody = '';
+		$setters = array();
+		$getters = array();
+	    
+		for($i=0; $i<count($properties); $i++) {
 
-             foreach( $properties as $key => $value ) {
+			// Convert field to camel case
+			$field = $generator->toCamelCase(preg_replace('/[\-\+\!@#\$%\^&\*\(\)]/', '', $properties[$i][0]));
 
-             		  $property = preg_replace( '/[_\-\+\!@#\$%\^&\*\(\)]/', '', $value[0] );
+			// Define interceptors for built-in AgilePHP components
+			$interceptor = null;
+			if($field == 'id') $interceptor = '#@Id';
+			if($field == 'password') $interceptor = '#@Password';
 
-             		  // Add built-in agilephp ORM interceptors
-             		  switch( $property ) {
+			$default = $properties[$i][5];
 
-             		  		case 'id':
-             		  			$class .= "\t#@Id" . PHP_EOL;
-             		  			break;
+			$constructorArgs .= '$' . $field . ' = ' . ($default ? '\'' . $default . '\'' : 'null');
+			$constructorBody .= "        \$this->{$field} = \${$field};{$lineBreak}";
 
-             		  		case 'password':
-             		  			$class .= "\t#@Password" . PHP_EOL;
-             		  			break;
-             		  }
+			$setterName = 'set' . ucfirst($field);
+			$getterName = 'get' . ucfirst($field);
 
-             		  $class .= "\tpublic function set" . ucfirst( $property ) . "( \$value ) {" . PHP_EOL . PHP_EOL . "\t\t \$this->$property = \$value;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
-             		  $class .= "\tpublic function get" . ucfirst( $property ) . "() {" . PHP_EOL . PHP_EOL . "\t\t return \$this->$property;" . PHP_EOL . "\t}" . PHP_EOL . PHP_EOL;
-             }
+			$setter = '';
+		    if(isset($interceptor)) $setter .= '    ' . $interceptor . PHP_EOL; 
 
-      	     $class .= '}';
+			$setter .= "    public function {$setterName}(\$$field) {{$lineBreak}        \$this->{$field} = \$$field;{$lineBreak}    }";
 
-      	     $file = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model' .
-      	     			 DIRECTORY_SEPARATOR . ucfirst( $modelName ) . '.php';
-      	     $h = fopen( $file, 'w' );
-      	     fwrite( $h, '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL . $class . PHP_EOL . '?>' );
-      	     fclose( $h );
+			array_push($setters, $setter);
+			array_push($getters, "    public function {$getterName}() {{$lineBreak}        return \$this->{$field};{$lineBreak}    }");
 
-      	     // Update orm.xml
-      	     if( $updateOrmDotXml ) {
+			if(($i+1) < count($properties))
+			   $constructorArgs .= ', ';
+		}
 
-      	     	 $orm_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
-		  		 if( !file_exists( $orm_xml ) )
-		  		 	 throw new FrameworkException( 'Could not update orm.xml. File does not exist at \'' . $orm_xml . '\'' );
+		// Begin class
+		$code = '<?php' . PHP_EOL . PHP_EOL . '/** AgilePHP generated domain model */' . PHP_EOL . PHP_EOL .
+		         "class {$className} extends DomainModel {{$lineBreak}";
 
-		  	     $xml = simplexml_load_file( $orm_xml );
+		// Fields / properties
+		foreach($properties as $field) {
 
-	      	     foreach( $xml->database->table as $tableXml ) {
+		    $default = $field[5];
+		    $field = $generator->toCamelCase($field[0]);
+		    $code .= "{$lineBreak}    private \${$field}" . ($default ? ' = \'' . $default . '\'' : '') . ";";
+		}
 
-	      		  		  if( (string)$tableXml->attributes()->model == $modelName )
-	      		  		   	   throw new FrameworkException( 'Failed to update orm.xml. Table element already exists for model \'' . $modelName . '\'.' );
-	      		 }
+		// Constructor
+		$code .= "{$lineBreak}{$lineBreak}    public function __construct({$constructorArgs}) {{$lineBreak}{$constructorBody}    }{$lineBreak}{$lineBreak}"; 
 
-	      		 $xml = "\t<table name=\"" . $tableName . "\" model=\"" . $modelName . "\">" . PHP_EOL;
+        // Getters and setters
+		for($i=0; $i<count($setters); $i++) {
 
-      		  	 foreach( $properties as $value ) {
+			$code .= $setters[$i] . $lineBreak . $lineBreak;
+			$code .= $getters[$i] . $lineBreak;
 
-      		  	 		  $Column = new Column( null, $tableName );
-      		  	 		  $Column->setProperty( $value[0] );
-      		  	 		  $Column->setName( $value[1] );
-      		  	 		  $Column->setDisplay( $value[2] );
-      		  	 		  $Column->setType( $value[3] );
-      	    		  	  $Column->setLength( $value[4] );
-      	    		   	  $Column->setDefault( $value[5] );
-      	    		   	  $Column->setVisible( $value[6] );
-      	    		   	  $Column->setRequired( $value[7] );
-      	    		   	  $Column->setIndex( $value[8] );
-      	    		   	  $Column->setPrimaryKey( $value[9] );
-      	    		   	  $Column->setAutoIncrement( $value[10] );
-      	    		   	  $Column->setSortable( $value[11] );
-      	    		   	  $Column->setSelectable( $value[12] );
-      	    		   	  $Column->setSanitize( $value[13] );
+			if(($i+1) <count($setters))
+			  $code .= $lineBreak;
+		}
 
-      	    		   	  $Table->addColumn( $Column );
+		// End class
+		$code .= '}';
+        
 
-      	    		   	  $xml .= "\t\t\t<column name=\"" . $Column->getName() . "\" type=\"" . $Column->getType() . "\" length=\"" . $Column->getLength() . "\"";
+        $file = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'model' .
+                    DIRECTORY_SEPARATOR . $className . '.php';
+        $h = fopen($file, 'w');
+        fwrite($h, $code);
+        fclose($h);
 
-      		  		   	  $xml .= ($Column->getDefault() && $Column->getDefault() != '(null)') ? " default=\"" . $Column->getDefault() . "\"" : '';
-      		  		   	  $xml .= $Column->isRequired() ? " required=\"true\"" : '';
-      		  		   	  $xml .= (!$Column->isVisible()) ? " visible=\"false\"" : '';
-      		  		  	  $xml .= $Column->isIndex() ? " index=\"true\"" : '';
-      		  		   	  $xml .= $Column->isPrimaryKey() ? " primaryKey=\"true\"" : '';
-      		  		   	  $xml .= $Column->isAutoIncrement() ? " autoIncrement=\"true\"" : '';
-      		  		   	  $xml .= (!$Column->isSortable()) ? " sortable=\"false\"" : '';
-      		  		   	  $xml .= $Column->isSelectable() ? " selectable=\"true\"" : '';
-      		  		   	  $xml .= (!$Column->getSanitize()) ? " sanitize=\"false\"" : '';
+        // Update orm.xml
+        if($updateOrmDotXml) {
 
-      		  		   	  $xml .= '/>' . PHP_EOL;
-      		  	 }
+            $orm_xml = $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml';
+            if(!file_exists($orm_xml))
+               throw new FrameworkException('Could not update orm.xml. File does not exist at \'' . $orm_xml . '\'');
 
-      		     $xml .= "\t\t</table>" . PHP_EOL . "\t</database>" . PHP_EOL;
+            $xml = simplexml_load_file($orm_xml);
 
-      		     $h = fopen( $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml', 'r' );
-      		     $data = '';
-      		     while( !feof( $h ) )
-      		  		 $data .= fgets( $h, 4096 );
-      		     fclose( $h );
+            foreach($xml->database->table as $tableXml) {
 
-      		     $h = fopen( $workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR  . 'orm.xml', 'w' );
-      		     fwrite( $h, str_replace( '</database>' . PHP_EOL, $xml, $data ) );
-      		     fclose( $h );
-      	     }
+                if((string)$tableXml->attributes()->model == $modelName)
+                   throw new FrameworkException('Failed to update orm.xml. Table element already exists for model \'' . $modelName . '\'.');
+            }
 
-      	     if( $createTable ) $orm->createTable( $Table );
+            $xml = "\t<table name=\"" . $tableName . "\" model=\"" . $modelName . "\">" . PHP_EOL;
 
-      	     return true;
-	  }
+  		  	foreach($properties as $value) {
+
+  		  	    $Column = new Column(null, $tableName);
+	  	 		$Column->setProperty($value[0]);
+	  	 		$Column->setName($value[1]);
+	  	 		$Column->setDisplay($value[2]);
+	  	 		$Column->setType($value[3]);
+	  	 		$Column->setLength($value[4]);
+	  	 		$Column->setDefault($value[5]);
+	  	 		$Column->setVisible($value[6]);
+	  	 		$Column->setRequired($value[7]);
+	  	 		$Column->setIndex($value[8]);
+	  	 		$Column->setPrimaryKey($value[9]);
+	  	 		$Column->setAutoIncrement($value[10]);
+	  	 		$Column->setSortable($value[11]);
+	  	 		$Column->setSanitize($value[12]);
+
+	  	 		$Table->addColumn($Column);
+
+	  	 		$xml .= "\t\t\t<column name=\"" . $Column->getName() . "\" type=\"" . $Column->getType() . "\" length=\"" . $Column->getLength() . "\"";
+
+	  	 		$xml .= ($Column->getDefault() && $Column->getDefault() != '(null)') ? " default=\"" . $Column->getDefault() . "\"" : '';
+	  	 		$xml .= $Column->isRequired() ? " required=\"true\"" : '';
+	  	 		$xml .= (!$Column->isVisible()) ? " visible=\"false\"" : '';
+	  	 		$xml .= $Column->isIndex() ? " index=\"true\"" : '';
+	  	 		$xml .= $Column->isPrimaryKey() ? " primaryKey=\"true\"" : '';
+	  	 		$xml .= $Column->isAutoIncrement() ? " autoIncrement=\"true\"" : '';
+	  	 		$xml .= (!$Column->isSortable()) ? " sortable=\"false\"" : '';
+	  	 		$xml .= (!$Column->getSanitize()) ? " sanitize=\"false\"" : '';
+
+	  	 		$xml .= '/>' . PHP_EOL;
+  		  	}
+
+      		$xml .= "\t\t</table>" . PHP_EOL . "\t</database>" . PHP_EOL;
+
+  		  	$h = fopen($workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR . 'orm.xml', 'r');
+  		  	$data = '';
+  		  	while(!feof($h))
+  		  	  $data .= fgets($h, 4096);
+  		  	fclose($h);
+
+  		  	$h = fopen($workspace . DIRECTORY_SEPARATOR . $projectName . DIRECTORY_SEPARATOR  . 'orm.xml', 'w');
+  		  	fwrite($h, str_replace('</database>' . PHP_EOL, $xml, $data));
+  		  	fclose($h);
+        }
+
+        if($createTable) $orm->createTable($Table);
+
+        return true;
+    }
 }
 ?>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Ace Editor</title>
+  <script type="text/javascript" src="<?php echo AgilePHP::getRequestBase() ?>/IndexController/getBaseJS/<?php echo AgilePHP::isInDebugMode() ?>"></script>
+  <script src="<?php echo AgilePHP::getDocumentRoot() ?>/components/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="<?php echo AgilePHP::getDocumentRoot() ?>/components/ace/theme-<?php echo $theme; ?>.js" type="text/javascript" charset="utf-8"></script>
+  <script src="<?php echo AgilePHP::getDocumentRoot() ?>/components/ace/mode-<?php echo $mode; ?>.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+  window.onload = function() {
+
+	  var canon = require('pilot/canon')
+
+	  var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/<?php echo $theme; ?>");
+
+      var mode_<?php echo $mode; ?> = require("ace/mode/<?php echo $mode; ?>").Mode;
+      editor.getSession().setMode(new mode_<?php echo $mode; ?>());
+
+      canon.addCommand({
+    	  id: '<?php echo $id ?>',
+          name: "save",
+          bindKey: {
+              win: "Ctrl-S",
+              mac: "Command-S",
+              sender: "editor|cli"
+          },
+          exec: function() {
+        	  var data = 'id=' + this.id + '&code=' + encodeURIComponent(editor.getSession().getValue());
+	    	  var url = AgilePHP.getRequestBase() + '/FileExplorerController/save';
+
+	  		  new AgilePHP.XHR().post(url, data,function(response) {
+
+	  				if(!response || !response.success) {
+
+	  				   window.parent.AgilePHP.Studio.error(response.errors.reason);
+	  				   return false;
+  				    }
+
+	  				window.parent.AgilePHP.Studio.info('Document saved');
+	  			});
+          }
+      });
+
+  };
+
+  </script>
+  <style type="text/css" media="screen">
+    body {
+        overflow: hidden;
+    }
+    #editor { 
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+  </style>
+</head>
+<body>
+
+<pre id="editor"><?php echo $code ?></pre>
+
+</body>
+</html>

@@ -377,37 +377,40 @@ abstract class Remoting extends BaseController {
         // Transform constructor arguments to native PHP types if applicable
         $constructorArgs = $this->decode($request->getSanitized('constructorArgs'));
         $newConstructorArgs = array();
-        $constructor = $clazz->getMethod('__construct');
-        $index = 0;
-        foreach($constructor->getParameters() as $parameter) {
+        if($clazz->hasMethod('__construct')) {
 
-            $type = DocBlockParser::getParameterType($constructor, $parameter);
-            $isUserSpaceObject = DocBlockParser::isUserSpaceObject($type);
-
-            if($type == 'array') {
-
-                if($elementType = DocBlockParser::getParameterArrayType($annotatedMethod, $parameter)) {
-
-                   if(DocBlockParser::isUserSpaceObject($elementType))
-                       // Transform the array of objects to native PHP array of objects
-                       array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index]), $type));
-                   else
-                       array_push($newConstructorArgs, $parameters[$i]);
+            $constructor = $clazz->getMethod('__construct');
+            $index = 0;
+            foreach($constructor->getParameters() as $parameter) {
+    
+                $type = DocBlockParser::getParameterType($constructor, $parameter);
+                $isUserSpaceObject = DocBlockParser::isUserSpaceObject($type);
+    
+                if($type == 'array') {
+    
+                    if($elementType = DocBlockParser::getParameterArrayType($annotatedMethod, $parameter)) {
+    
+                       if(DocBlockParser::isUserSpaceObject($elementType))
+                           // Transform the array of objects to native PHP array of objects
+                           array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index]), $type));
+                       else
+                           array_push($newConstructorArgs, $parameters[$i]);
+                    }
                 }
+                elseif($type == 'object' || $isUserSpaceObject) {
+    
+                    if($isUserSpaceObject)
+                        // Transform the object to a native PHP object
+                        array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index]), $type));
+                    else  // Transform to stdClass
+                        array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index])));
+                }
+                else
+                   // Primitive data type - no transformation
+                   array_push($newConstructorArgs, $constructorArgs[$index]);
+    
+                $index++;
             }
-            elseif($type == 'object' || $isUserSpaceObject) {
-
-                if($isUserSpaceObject)
-                    // Transform the object to a native PHP object
-                    array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index]), $type));
-                else  // Transform to stdClass
-                    array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index])));
-            }
-            else
-               // Primitive data type - no transformation
-               array_push($newConstructorArgs, $constructorArgs[$index]);
-
-            $index++;
         }
 
         // Transform method invocation parameters to native PHP types if applicable.

@@ -52,7 +52,7 @@ class ModelGenerator {
 
 		$namespace = str_replace('.', '\\', $namespace);
 		$this->namespace = $namespace;
-		$this->className = $className;
+		$this->className = $this->toCamelCase($className);
 		$this->fields = $fields;
 		$this->domainModel = $domainModel;
 		$this->includePhpTags = $includePhpTags;
@@ -169,7 +169,10 @@ class ModelGenerator {
 		for($i=0; $i<count($setters); $i++) {
 
 			$code .= $setters[$i] . $lineBreak . $lineBreak;
-			$code .= $getters[$i] . $lineBreak . $lineBreak;
+			$code .= $getters[$i] . $lineBreak;
+
+			if(($i+1) <count($setters))
+        	  $code .= $lineBreak;
 		}
 
 		// End class
@@ -186,7 +189,7 @@ class ModelGenerator {
 	 * @param String $field The field name to convert to camel case
 	 * @return void
 	 */
-	private function toCamelCase($field) {
+	public function toCamelCase($field) {
 
 		$pieces = explode('_', $field);
 	    $pieces = $pieces ? array_map('ucfirst', $pieces) : array($field);

@@ -1,7 +1,7 @@
 AgilePHP.Studio.TabPanel = function() {
 
 	//var tabPanel = new Ext.TabPanel({
-	
+
 	return new Ext.TabPanel({
 
 		id: 'studio-tabpanel',

@@ -21,26 +21,21 @@
 
 /**
  * Default controller. Loads the AgilePHP IDE.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.control
  */
 class IndexController extends BaseController {
 
-	  public function __construct() {
+    /**
+     * (non-PHPdoc)
+     * @see src/mvc/BaseController#index()
+     */
+    public function index() {
 
-	  		 parent::__construct();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/mvc/BaseController#index()
-	   */
-	  public function index() {
-
-	  	     $this->getRenderer()->set( 'title', 'AgilePHP Studio' );
-	  	     $this->getRenderer()->render( 'index' );
-	  }
+        $this->set('title', 'AgilePHP Studio');
+        $this->render('index');
+    }
 }
 ?>

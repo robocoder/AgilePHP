@@ -325,9 +325,14 @@ class Mailer {
 
              if($this->cc) {
 
-                $recipients = implode(',', $this->cc);
-                foreach($recipients as $recipient)
-                   $headers .= "CC: {$recipient}\r\n";
+                if(strpos($this->cc, ',') !== false) {
+
+                    $recipients = implode(',', $this->cc);
+                    foreach($recipients as $recipient)
+                        $headers .= "CC: {$recipient}\r\n";
+                }
+                else
+                    $headers .= "CC: {$this->cc}\r\n";
              }
 
              if($this->bcc) {
