@@ -1,13 +1,16 @@
-- Removed duplicate $this->model assignment in BaseDialect::merge.
-- Enhanced ModelGenerator
-  o Refactored toCamelCase method from private to public
-  o Class/model name is now passed into toCamelCase method for clean-up
-  o Removed extraneous newline character after last generated method
-- Bug fix to AgilePHP.js when unmarshalling an array of primitive data types 
-- Bug fix to Remoting::invoke; expected constructor in remove service classes
-- Refactored Upload API; removed parseExtension and moved its logic into getExtension
-- Fixed bug in Mailer CC list processing; expected comma so broke with single recipient
+- Refactored Remoting.Parser.isArray to take into account null responses
+- Changed ROW_NUMBER() to @@ROWCOUNT in MSSQLDialect::find
+- Added cleansing logic to XSLTRenderer::transform and transformXsl in an
+  effort to fix common non-XML compliant data formatting issues on the fly.
+- Bug fixes to ModelGenerator. Added ucfirst to ModelGenerator::className. Added
+  toCamelCase for class fields.
+- Bug fix to MSSQLDialect::call; Not passing array parameters by reference.
+- Removed erraneous obj reference in AgilePHP.js getInstance method.
+- Added error code argument to RemotingException class constructor
+- Disabled IdentityMap caching in BaseDialect::get for the time being -- needs
+  further examing to ensure stale data is not being returned. May need cache time on
+  orm column to fix. 
+- Added utf8_encoding to JsonRenderer
+- Bug fix to Mailer - was using implode instead of explode on CC and BCC lists
 
-Logs of bug fixes in Studio package.
-
-Backward compatible apidoc: No
+Backward compatible apidoc: Yes

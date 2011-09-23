@@ -82,6 +82,12 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	         return $this->lastInsertId;
 	  }
 
+	  /**
+	   * Executes / calls a stored procedure
+	   * 
+	   * (non-PHPdoc)
+	   * @see AgilePHP/orm/dialect/SQLDialect::call()
+	   */
 	  public function call(DomainModel $model) {
 
 	  		 $values = array();
@@ -105,17 +111,19 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	  		 $query = '{call ' . $proc->getName() . ' (';
 	  		 for($i=0; $i<count($params); $i++) {
 
-	  		 		$values[$i] = $params[$i];
-	  		 		$query .= '?' . (($i+1) == count($query) ? ', ' : '');
+	  		 		$values[$i] = &$params[$i];
+	  		 		$query .= '?' . (($i+1) < count($params) ? ', ': '');
 	  		 }
+	  		 
 	  		 $query .= ') }';
 
 	  		 $models = array();
-	  		 $params = array_merge($params, $outs);
+	  		 $params = array_values($params);
 
 	  		 Log::debug('MSSQLDialect::call ' . $query . ' with params ' . print_r($params, true));
 
-			 $stmt = sqlsrv_query($this->conn, $query, array_merge($params, $outs));
+			 $stmt = sqlsrv_query($this->conn, $query, $params);
+			 if(!$stmt) throw new ORMException(print_r(sqlsrv_errors(), true));
 			 while($record = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 
 			 		$m = new $class;
@@ -129,6 +137,8 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 		 		    }
 		 		 	array_push($models, $m);
 			 }
+
+			 sqlsrv_free_stmt($stmt);
 
 			 return (count($models) == 1) ? $models[0] : $models;
 	  }
@@ -557,7 +567,7 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	    	   	        if($this->isDistinct() != null)
 	    	   	        	$sql .= 'DISTINCT ' . $this->isDistinct();
 
-	    	   	        $sql .= implode(',', $columnNames) . ' FROM (SELECT ' . implode(',', $columnNames) . ', ROW_NUMBER() OVER (ORDER BY ' . implode(',', $pkeys) . ') AS rownum FROM ' .
+	    	   	        $sql .= implode(',', $columnNames) . ' FROM (SELECT ' . implode(',', $columnNames) . ', ROW_NUMBER() OVER(ORDER BY ' . implode(',', $pkeys) . ') as rownum FROM ' .
 	    	   	        		 $table->getName() . ') AS DerivedPagination';
 
 	    	   	        $where = '(DerivedPagination.rownum BETWEEN ' . $offset . ' AND ' . ($offset + $this->getMaxResults()) . ')';
@@ -618,8 +628,8 @@ final class MSSQLDialect extends BaseDialect implements SQLDialect {
 	    	   	               $groupBy = $this->getGroupBy();
 
 						       $sql = 'SELECT ' . implode(',', $columnNames) . ' FROM ' .
-				 		    			   '(SELECT ' . implode(',', $columnNames) . ', @@ROWCOUNT AS rownum FROM ' . $table->getName() . ') AS DerivedPagination
-						    		        WHERE (DerivedPagination.rownum BETWEEN ' . $offset . ' AND ' . ($offset + $this->getMaxResults()) . ') AND' . $where;
+				 		    			   '(SELECT ' . implode(',', $columnNames) . ', ROW_NUMBER() OVER(ORDER BY ' . implode(',', $pkeys) . ') as rownum FROM ' . $table->getName() . ' WHERE ' . $where . ') AS DerivedPagination
+						    		        WHERE (DerivedPagination.rownum BETWEEN ' . $offset . ' AND ' . ($offset + $this->getMaxResults()) . ')';
 
 						       $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
 						       $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';

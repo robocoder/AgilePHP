@@ -52,7 +52,7 @@ class ModelGenerator {
 
 		$namespace = str_replace('.', '\\', $namespace);
 		$this->namespace = $namespace;
-		$this->className = $this->toCamelCase($className);
+		$this->className = ucfirst($this->toCamelCase($className));
 		$this->fields = $fields;
 		$this->domainModel = $domainModel;
 		$this->includePhpTags = $includePhpTags;
@@ -158,9 +158,12 @@ class ModelGenerator {
 			"class {$className} extends DomainModel {{$lineBreak}" :
 			"class {$className} {{$lineBreak}";
 
-		// Fields / properties
-		foreach($fields as $field)
+        // Fields / properties
+		foreach($fields as $field) {
+
+		    $field = $this->toCamelCase($field);
 		    $code .= "{$lineBreak}    private \${$field};";
+		}
 
 		// Constructor
 		$code .= "{$lineBreak}{$lineBreak}    public function __construct({$constructorArgs}) {{$lineBreak}{$constructorBody}    }{$lineBreak}{$lineBreak}"; 

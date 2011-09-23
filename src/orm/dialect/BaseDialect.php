@@ -720,7 +720,7 @@ abstract class BaseDialect {
 	     */
 	    public function get(DomainModel $model) {
 
-	           if($m = IdentityMap::get($model)) return $m;
+	           //if($m = IdentityMap::get($model)) return $m;
 
 	           $table = $this->getTableByModel($model);
 

@@ -210,7 +210,7 @@ var AgilePHP = {
 
 		     else if(window.ActiveXObject != null) {
 
-		    	  for(var i=0; i<this.MS_PROGIDS.length && !obj; i++) {
+		    	  for(var i=0; i<this.MS_PROGIDS.length; i++) {
 
 		    		   try {
 		    			   xhr = new ActiveXObject(this.MS_PROGIDS[i]);
@@ -956,7 +956,7 @@ var AgilePHP = {
 			
 			isArray: function(o) {
 
-				return o.constructor.toString().match(/array/i) !== null;
+				return (o !== null) ? o.constructor.toString().match(/array/i) !== null : false;
 			}
 		}
 	}
