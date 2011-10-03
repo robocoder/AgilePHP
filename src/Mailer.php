@@ -327,9 +327,15 @@ class Mailer {
 
                 if(strpos($this->cc, ',') !== false) {
 
+                    $headers .= "CC: ";
                     $recipients = explode(',', $this->cc);
-                    foreach($recipients as $recipient)
-                        $headers .= "CC: {$recipient}\r\n";
+
+                    for($i=0; $i<count($recipients); $i++) {
+
+                        $headers .= $recipients[$i];
+                        $headers .= (($i+1) < count($recipients)) ? ',' : ''; 
+                    }
+                    $headers .= "\r\n";
                 }
                 else
                     $headers .= "CC: {$this->cc}\r\n";
@@ -337,9 +343,20 @@ class Mailer {
 
              if($this->bcc) {
 
-                $recipients = explode(',', $this->bcc);
-                foreach($recipients as $recipient)
-                   $headers .= "BCC: {$recipient}\r\n";
+                if(strpos($this->bcc, ',') !== false) {
+
+                    $headers .= "BCC: ";
+                    $recipients = explode(',', $this->bcc);
+
+                    for($i=0; $i<count($recipients); $i++) {
+
+                        $headers .= $recipients[$i];
+                        $headers .= (($i+1) < count($recipients)) ? ',' : ''; 
+                    }
+                    $headers .= "\r\n";
+                }
+                else
+                    $headers .= "BCC: {$this->bcc}\r\n";
              }
 
              return $headers;
