@@ -29,154 +29,148 @@
  */
 class SessionScope implements SessionProvider {
 
-	  private static $instance;
-	  private $provider;
+    private static $instance;
+    private $provider;
 
-	  private function __clone() { }
+    private function __clone() { }
 
-	  /**
-	   * Initializes a new SessionScope instance using agilephp.xml configuration
-	   * if present, otherwise PhpSessionProvider is used as the default provider.
-	   *
-	   * @return void
-	   */
-	  private function __construct() {
+    /**
+     * Initializes a new SessionScope instance using agilephp.xml configuration
+     * if present, otherwise PhpSessionProvider is used as the default provider.
+     *
+     * @return void
+     */
+    private function __construct() {
 
-	          $xml = AgilePHP::getConfiguration();
-              for($i=0; $i<count((array)$xml->scope); $i++ ) {
+        $xml = AgilePHP::getConfiguration();
+        for($i=0; $i<count((array)$xml->scope); $i++ ) {
 
-                  if((string)$xml->scope[$i]->attributes()->type == 'session') {
+            if((string)$xml->scope[$i]->attributes()->type == 'session') {
 
-                      $provider = (string)$xml->scope[$i]->attributes()->provider;
-                      $this->provider = $provider ? new $provider : new PhpSessionProvider();
-                      return;
-                  }
-              }
+                $provider = (string)$xml->scope[$i]->attributes()->provider;
+                $this->provider = $provider ? new $provider : new PhpSessionProvider();
+                return;
+            }
+        }
 
-              $this->provider = new PhpSessionProvider();
-	  }
+        $this->provider = new PhpSessionProvider();
+    }
 
-	  /**
-	   * Returns a singleton instance of SessionScope
-	   *
-	   * @return SessionScope Singleton instance of SessionScope
-	   * @static
-	   */
-	  public static function getInstance() {
+    /**
+     * Returns a singleton instance of SessionScope
+     *
+     * @return SessionScope Singleton instance of SessionScope
+     * @static
+     */
+    public static function getInstance() {
 
-	  	     if( self::$instance == null )
-	  	         self::$instance = new self;
+        if( self::$instance == null )
+        self::$instance = new self;
 
-	  	     return self::$instance;
-	  }
+        return self::$instance;
+    }
 
-	  /**
-	   * Returns the SessionProvider responsible for session persistence
-	   * 
-	   * @return SessionProvider The session persistence provider
-	   */
-	  public function getProvider() {
+    /**
+     * Returns the SessionProvider responsible for session persistence
+     *
+     * @return SessionProvider The session persistence provider
+     */
+    public function getProvider() {
+        return $this->provider;
+    }
 
-	         return $this->provider;
-	  }
+    /**
+     * Returns the session domain model object which maintains the id and data for
+     * the current Session's ActiveRecord.
+     *
+     * @return Session The current Session instance
+     */
+    public function getSession() {
+        return $this->provider->getSession();
+    }
 
-	  /**
-	   * Returns the session domain model object which maintains the id and data for
-	   * the current Session's ActiveRecord.
-	   *
-	   * @return Session The current Session instance
-	   */
-	  public function getSession() {
+    /**
+     * Returns the session id for the current Session.
+     *
+     * @return String The session id
+     */
+    public function getSessionId() {
+        return $this->provider->getSessionId();
+    }
 
-	  		 return $this->provider->getSession();
-	  }
+    /**
+     * Sets the session id and restores a previously persisted Session if one exists.
+     *
+     * @return void
+     */
+    public function setSessionId($id) {
+        $this->provider->setSessionId($id);
+    }
 
-	  /**
-	   * Returns the session id for the current Session.
-	   *
-	   * @return String The session id
-	   */
-	  public function getSessionId() {
+    /**
+     * Returns the value corresponding to the specified key stored in the current Session.
+     *
+     * @param String $key The variable's key/name
+     * @return The value if present, otherwise null.
+     */
+    public function get($key) {
+        return $this->provider->get($key);
+    }
 
-	  		 return $this->provider->getSessionId();
-	  }
+    /**
+     * Sets a new Session variable.
+     *
+     * @param String $key The variable name
+     * @param String $value The variable value
+     * @return void
+     */
+    public function set($key, $value) {
+        $this->provider->set($key, $value);
+    }
 
-	  /**
-	   * Sets the session id and restores a previously persisted Session if one exists.
-	   *
-	   * @return void
-	   */
-	  public function setSessionId($id) {
+    /**
+     * Refreshes the session by loading a fresh version from the database
+     *
+     * @return void
+     */
+    public function refresh() {
 
-	  		 $this->provider->setSessionId($id);
-	  }
+        $this->provider->refresh();
+        Log::debug( 'SessionScope::clear Session refreshed' );
+    }
 
-	  /**
-	   * Returns the value corresponding to the specified key stored in the current Session.
-	   *
-	   * @param String $key The variable's key/name
-	   * @return The value if present, otherwise null.
-	   */
-	  public function get($key) {
+    /**
+     * Clears the current Session.
+     *
+     * @return void
+     */
+    public function clear() {
 
-	  		 return $this->provider->get($key);
-	  }
+        $this->provider->clear();
+        Log::debug( 'SessionScope::clear Session cleared' );
+    }
 
-	  /**
-	   * Sets a new Session variable.
-	   *
-	   * @param String $key The variable name
-	   * @param String $value The variable value
-	   * @return void
-	   */
-	  public function set($key, $value) {
+    /**
+     * Clears the SessionScope store and deletes the Session ActiveRecord from the
+     * database.
+     *
+     * @return void
+     */
+    public function destroy() {
 
-	  		 $this->provider->set($key, $value);
-	  }
+        $this->provider->destroy();
+        Log::debug( 'SessionScope::destroy Session destroyed' );
+    }
 
-	  /**
-	   * Refreshes the session by loading a fresh version from the database
-	   *
-	   * @return void
-	   */
-	  public function refresh() {
+    /**
+     * Persists a serialized instance of the current Session.
+     *
+     * @return void
+     */
+    public function persist() {
 
-	          $this->provider->refresh();
-	          Log::debug( 'SessionScope::clear Session refreshed' );
-	  }
-
-	  /**
-	   * Clears the current Session.
-	   *
-	   * @return void
-	   */
-	  public function clear() {
-
-	  		 $this->provider->clear();
-	  		 Log::debug( 'SessionScope::clear Session cleared' );
-	  }
-
-	  /**
-	   * Clears the SessionScope store and deletes the Session ActiveRecord from the
-	   * database.
-	   *
-	   * @return void
-	   */
-	  public function destroy() {
-
-  		 	 $this->provider->destroy();
-  		 	 Log::debug( 'SessionScope::destroy Session destroyed' );
-	  }
-
-	  /**
-	   * Persists a serialized instance of the current Session.
-	   *
-	   * @return void
-	   */
-	  public function persist() {
-
-	  	     $this->provider->persist();
-	  	     Log::debug( 'SessionScope::persist Session persisted' );
-	  }
+        $this->provider->persist();
+        Log::debug( 'SessionScope::persist Session persisted' );
+    }
 }
 ?>

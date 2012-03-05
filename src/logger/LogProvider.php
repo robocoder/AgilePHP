@@ -21,17 +21,17 @@
 
 /**
  * Defines contract for logging provider implementations
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.logger
- */ 
+ */
 interface LogProvider {
 
-	public function __construct();
-	public function info($message);
-	public function warn($message);
-	public function error($message);
-	public function debug($message);
+    public function __construct();
+    public function info($message);
+    public function warn($message);
+    public function error($message);
+    public function debug($message);
 }
 ?>

@@ -22,26 +22,26 @@
 /**
  * Controller responsible for exposing server side PHP classes to AgilePHP client
  * side remoting operations.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.control
  */
 class RemotingController extends Remoting {
 
-	  /**
-	   * Overloads the parent invoke method to require an authenticated session  
-	   * before allowing a client to invoke any remote methods
-	   * 
-	   * @return void
-	   */
-	  public function invoke() {
+    /**
+     * Overloads the parent invoke method to require an authenticated session
+     * before allowing a client to invoke any remote methods
+     *
+     * @return void
+     */
+    public function invoke() {
 
-	  		 // Require authentication for all remote invocations
-	  	     if( !Identity::isLoggedIn() )
-	  		 	 throw new AccessDeniedException( 'You must be logged in to view the requested content.' );
+        // Require authentication for all remote invocations
+        if( !Identity::isLoggedIn() )
+        throw new AccessDeniedException( 'You must be logged in to view the requested content.' );
 
-	  		 parent::invoke();
-	  }
+        parent::invoke();
+    }
 }
 ?>

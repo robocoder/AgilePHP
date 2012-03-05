@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -21,172 +21,172 @@
 
 /**
  * Responsible for OpenAppstore integration
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.classes
- * 
+ *
  * @todo Rename to AppstoreRemote and move setProperty to its own class - ComponentsRemote
  */
 class ComponentsRemote {
 
-	  private $api;
-	  private $platformId;
+    private $api;
+    private $platformId;
 
-	  public function __construct() {
+    public function __construct() {
 
-	  		 $config = new Config();
+        $config = new Config();
 
- 	  		 $config->setName( 'appstore_endpoint' );
- 	  		 $endpoint = $config->getValue();
+        $config->setName('appstore_endpoint');
+        $endpoint = $config->getValue();
 
- 	  		 $config->setName( 'appstore_username' );
- 	  		 $username = $config->getValue();
+        $config->setName('appstore_username');
+        $username = $config->getValue();
 
- 	  		 $config->setName( 'appstore_password' );
- 	  		 $password = $config->getValue();
+        $config->setName('appstore_password');
+        $password = $config->getValue();
 
- 	  		 $config->setName( 'appstore_apikey' );
- 	  		 $apikey = $config->getValue();
+        $config->setName('appstore_apikey');
+        $apikey = $config->getValue();
 
- 	  		 $config->setName( 'appstore_platformId' );
-	  		 $this->platformId = $config->getValue();
+        $config->setName('appstore_platformId');
+        $this->platformId = $config->getValue();
 
-	  		 $this->api = new AppstoreAPI();
-	  		 $this->api->login( $username, $password, $apikey );
-	  }
+        $this->api = new AppstoreAPI();
+        $this->api->login($username, $password, $apikey);
+    }
 
-	  #@RemoteMethod
-	  public function getApps() {
+    #@RemoteMethod
+    public function getApps() {
 
-	  		 $o = new stdClass;
-	  		 $o->apps = $this->api->getAppsByPlatform( $this->platformId );
+        $o = new stdClass;
+        $o->apps = $this->api->getAppsByPlatform($this->platformId);
 
-	  		 return $o;
-	  }
+        return $o;
+    }
 
-	  #@RemoteMethod
-	  public function install( $projectRoot, $id, $appId ) {
+    #@RemoteMethod
+    public function install($projectRoot, $id, $appId) {
 
-	  		 $projectRoot = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $projectRoot );
-	  		 $file = $this->download( $projectRoot, $id, $appId );
+        $projectRoot = preg_replace('/\|/', DIRECTORY_SEPARATOR, $projectRoot);
+        $file = $this->download($projectRoot, $id, $appId);
 
-			 if( !$this->unzip( $projectRoot, $file ) )
-	             throw new FrameworkException( 'Could not extract downloaded component \'' . $file . '\'.' );
+        if(!$this->unzip($projectRoot, $file))
+        throw new FrameworkException('Could not extract downloaded component \'' . $file . '\'.');
 
-	         $this->copyController( $projectRoot, $appId );
+        $this->copyController($projectRoot, $appId);
 
-	         // Load database schema
-	         $component_xml = $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'component.xml';
-	         if( file_exists( $component_xml ) ) {
-	
-	         	 $orm_xml = $projectRoot . DIRECTORY_SEPARATOR . 'orm.xml';
-		  		 $xml = simplexml_load_file( $component_xml );
-	
-		  		 if( isset( $xml->component->orm ) ) {
+        // Load database schema
+        $component_xml = $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'component.xml';
+        if(file_exists($component_xml)) {
 
-		  		 	 foreach( $xml->component->orm->table as $table ) {
+            $orm_xml = $projectRoot . DIRECTORY_SEPARATOR . 'orm.xml';
+            $xml = simplexml_load_file($component_xml);
 
-				  		 	  $Table = new Table( $table );
-				  		 	  ORM::getDialect()->createTable( $table );
-			  		 }
-		  		 }
-	         }
+            if(isset($xml->component->orm)) {
 
-	         return true;
-	  }
+                foreach($xml->component->orm->table as $table) {
 
-	  #@RemoteMethod
-	  public function setProperty( $componentId, $name, $value ) {
+                    $Table = new Table($table);
+                    ORM::getDialect()->createTable($table);
+                }
+            }
+        }
 
-	  		 $path = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $componentId );
-	  		 if( !file_exists( $path ) )
-	  		 	 throw new FrameworkException( 'Component path not found \'' . $path . '\'.' );
+        return true;
+    }
 
-	  		 $file = $path . DIRECTORY_SEPARATOR . 'component.xml';
+    #@RemoteMethod
+    public function setProperty($componentId, $name, $value) {
 
-	  		 $xml = simplexml_load_file( $file );
+        $path = preg_replace('/\|/', DIRECTORY_SEPARATOR, $componentId);
+        if(!file_exists($path))
+        throw new FrameworkException('Component path not found \'' . $path . '\'.');
 
-	  		 foreach( $xml->component->param as $param )
-	  		 	if( $param->attributes()->name == $name )
-	  		 		$param['value'] = $value;
+        $file = $path . DIRECTORY_SEPARATOR . 'component.xml';
 
-	  		 $xml->asXML( $file );
+        $xml = simplexml_load_file($file);
 
-	  		 return true;
-	  }
+        foreach($xml->component->param as $param)
+        if($param->attributes()->name == $name)
+        $param['value'] = $value;
 
-	  /**
-	   * Downloads a component to the web application components directory
-	   * 
-	   * @param $id The id of the application in OpenAppstore
-	   * @param $appId The appId of the application in OpenAppstore
-	   * @return The file path to the downloaded file
-	   */
-	  private function download( $projectRoot, $id, $appId ) {
+        $xml->asXML($file);
 
-	  		  $path = $projectRoot . DIRECTORY_SEPARATOR . 'components';
-	  		  return $this->api->download( $id, $appId, $path );
-	  }
+        return true;
+    }
 
-	  /**
-	   * Unzips a downloaded component
-	   * 
-	   * @param $file The file path of the archive to extract
-	   * @return True if the archive was successfully extracted or false if on failure
-	   */
-	  private function unzip( $projectRoot, $file ) {
+    /**
+     * Downloads a component to the web application components directory
+     *
+     * @param $id The id of the application in OpenAppstore
+     * @param $appId The appId of the application in OpenAppstore
+     * @return The file path to the downloaded file
+     */
+    private function download($projectRoot, $id, $appId) {
 
-			  $zip = new ZipArchive();
+        $path = $projectRoot . DIRECTORY_SEPARATOR . 'components';
+        return $this->api->download($id, $appId, $path);
+    }
 
-              if( $zip->open( $file ) === TRUE ) {
+    /**
+     * Unzips a downloaded component
+     *
+     * @param $file The file path of the archive to extract
+     * @return True if the archive was successfully extracted or false if on failure
+     */
+    private function unzip($projectRoot, $file) {
 
-                   $zip->extractTo( $projectRoot . DIRECTORY_SEPARATOR . 'components' );
-                   $zip->close();
+        $zip = new ZipArchive();
 
-                   unlink( $file );
-                   return true;
-              }
+        if($zip->open($file) === TRUE) {
 
-              // try to unzip using shell as last resort
-              exec( 'cd ' . $projectRoot . DIRECTORY_SEPARATOR . 'components; unzip ' . $file, $output );
-              if( !$output ) return false;
+            $zip->extractTo($projectRoot . DIRECTORY_SEPARATOR . 'components');
+            $zip->close();
 
-              return unlink( $file );
-	  }
+            unlink($file);
+            return true;
+        }
 
-	  /**
-	   * Copies componentcontroller.php to the project/control directory if it exists
-	   * 
-	   * @param string $projectRoot The full file path to the project
-	   * @param string $appId The appId of the component as it lives in the appstore.
-	   * @return void
-	   * @throws FrameworkException
-	   */
-	  private function copyController( $projectRoot, $appId ) {
+        // try to unzip using shell as last resort
+        exec('cd ' . $projectRoot . DIRECTORY_SEPARATOR . 'components; unzip ' . $file, $output);
+        if(!$output) return false;
 
-	  		  $it = new RecursiveDirectoryIterator( $projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $appId );
-		 	  foreach( new RecursiveIteratorIterator( $it ) as $file ) {
+        return unlink($file);
+    }
 
-		   	      	   if( substr( $file, -1 ) != '.' && substr( $file, -2 ) != '..' ) {
+    /**
+     * Copies componentcontroller.php to the project/control directory if it exists
+     *
+     * @param string $projectRoot The full file path to the project
+     * @param string $appId The appId of the component as it lives in the appstore.
+     * @return void
+     * @throws FrameworkException
+     */
+    private function copyController($projectRoot, $appId) {
 
-		   	      	   	   $thisFile = basename( $file );
-				 		   if( $thisFile == $appId . '.phar' ) {
+        $it = new RecursiveDirectoryIterator($projectRoot . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . $appId);
+        foreach(new RecursiveIteratorIterator($it) as $file) {
 
-				 		   		if( !copy( $file, $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.phar' ) )
-				 		   			 throw new FrameworkException( 'Failed to copy phar component to project controller directory.' );
+            if(substr($file, -1) != '.' && substr($file, -2) != '..') {
 
-				 		   		if( !unlink( $file ) ) throw new FrameworkException( 'Failed to clean up downloaded component.' );
-				 		   }
-		   	      	   	   else if( $thisFile == $appId . '.php' ) {
+                $thisFile = basename($file);
+                if($thisFile == $appId . '.phar') {
 
-				 		   		if( !copy( $file, $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.php' ) )
-				 		   			 throw new FrameworkException( 'Failed to copy component controller to project controller directory.' );
+                    if(!copy($file, $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.phar'))
+                    throw new FrameworkException('Failed to copy phar component to project controller directory.');
 
-				 		   		if( !unlink( $file ) ) throw new FrameworkException( 'Failed to clean up downloaded component.' );
-				 		   }
-		   	      	   }
-		 	  }
-	  }
+                    if(!unlink($file)) throw new FrameworkException('Failed to clean up downloaded component.');
+                }
+                else if($thisFile == $appId . '.php') {
+
+                    if(!copy($file, $projectRoot . DIRECTORY_SEPARATOR . 'control' . DIRECTORY_SEPARATOR . $appId . '.php'))
+                    throw new FrameworkException('Failed to copy component controller to project controller directory.');
+
+                    if(!unlink($file)) throw new FrameworkException('Failed to clean up downloaded component.');
+                }
+            }
+        }
+    }
 }
 ?>

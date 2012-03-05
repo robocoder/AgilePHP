@@ -22,60 +22,60 @@
 /**
  * AgilePHP interceptor responsible for populating class properties with
  * HTTP POST variables (gotten from RequestScope).
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.form
  * <code>
  * class MyFormProcessor {
- * 
+ *
  * // Defaults to the name of the property/field
  * #@FormParam
  * public $fname;
- * 
+ *
  * // Optionally, we can specify the name of the input element
  * #@FormParam(name = 'email')
  * public $emailaddress;
- * 
+ *
  * // Optionally, we can also specify no sanitation
  * #@FormParam(name = 'password', sanitize = false)
  * public $plainTextPassword;
- * 
+ *
  * #@FormParam(transformer = "YesNoToBoolean")
  * public $isAdmin;
  *
  * #@FormParam(validator = "MyCustomFirstnameValidator", displayName = "First Name")
  * public $firstName;
- * 
+ *
  * public function showEmail() {
- * 
+ *
  * 		  // Displays the first name entered in <input name="fname"/>
  * 		  echo $this->fname;
- * 
+ *
  * 		  // Displays the email address entered in <input name="email"/>
  * 		  echo $this->emailaddress;
- * 
+ *
  * 		  // Displays a plain text password as entered in <input type="password" name="password"/>
  * 		  echo $this->plainTextPassword;
  * }
- * 
+ *
  * // Optionally, we can also specify a DataTransformer implementation
  * // to transform the data when the form is submitted.
  * public function submit() {
- * 
+ *
  *        if($this->isAdmin === true)
  *           // user is an administrator
  *        else
  *           // user is not an administrator
  * }
- * 
+ *
  * // Or a validator...
- * 
+ *
  * public function getFirstName() {
- * 
+ *
  *        return $this->firstName;  // Already been validated by MyCustomFirstnameValidator
  * }
- * 
+ *
  * }
  * </code>
  */
@@ -83,74 +83,74 @@
 #@Interceptor
 class FormParam {
 
-	  /**
-	   * The HTML input name to grab the value from 
-	   *  
-	   * @var String Optional HTML input name to grab the value from. Defaults to the name of the annotated property.
-	   */
-	  public $name;
-	  
-	  /**
-	   * The friendly name displayed to end users when referring to the form field
-	   * 
-	   * @var String Optional friendly/display name
-	   */
-	  public $displayName = null;
+    /**
+     * The HTML input name to grab the value from
+     *
+     * @var String Optional HTML input name to grab the value from. Defaults to the name of the annotated property.
+     */
+    public $name;
+     
+    /**
+     * The friendly name displayed to end users when referring to the form field
+     *
+     * @var String Optional friendly/display name
+     */
+    public $displayName = null;
 
-	  /**
-	   * Boolean flag indicating whether or not to sanitize the input. (Default is to sanitize all input)
-	   * 
-	   * @var bool True to sanitize the form input, false to grab the raw data. (Default is sanitize)
-	   */
-	  public $sanitize = true;
+    /**
+     * Boolean flag indicating whether or not to sanitize the input. (Default is to sanitize all input)
+     *
+     * @var bool True to sanitize the form input, false to grab the raw data. (Default is sanitize)
+     */
+    public $sanitize = true;
 
-	  /**
-	   * Boolean flag indicating whether or not the field is required. Defaults to false (not required).
-	   * 
-	   * @var bool True if required, false otherwise.
-	   */
-	  public $required = false;
-	  
-	  /**
-	   * Data transformer responsible for transforming the submitted value.
-	   * 
-	   * @var DataTransformer $transformer The trasnformer responsible for transforming the submitted data
-	   */
-	  public $transformer = null;
-	  
-	  /**
-	   * Validator responsible for validating the submitted value.
-	   * 
-	   * @var Validator $validator The validator responsible for validating the data in the parameter
-	   */
-	  public $validator = null;
+    /**
+     * Boolean flag indicating whether or not the field is required. Defaults to false (not required).
+     *
+     * @var bool True if required, false otherwise.
+     */
+    public $required = false;
+     
+    /**
+     * Data transformer responsible for transforming the submitted value.
+     *
+     * @var DataTransformer $transformer The trasnformer responsible for transforming the submitted data
+     */
+    public $transformer = null;
+     
+    /**
+     * Validator responsible for validating the submitted value.
+     *
+     * @var Validator $validator The validator responsible for validating the data in the parameter
+     */
+    public $validator = null;
 
-	  /**
-	   * Sets the annotated property value with the HTML input value
-	   * 
-	   * @param InvocationContext $ic The InvocationContext of the intercepted call
-	   * @return void
-	   */
-	  #@AroundInvoke
-	  public function setFormValue(InvocationContext $ic) {
+    /**
+     * Sets the annotated property value with the HTML input value
+     *
+     * @param InvocationContext $ic The InvocationContext of the intercepted call
+     * @return void
+     */
+    #@AroundInvoke
+    public function setFormValue(InvocationContext $ic) {
 
-	  		 if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	  		 	$request = Scope::getRequestScope();
-	  		 	$name = ($this->name) ? $ic->getInterceptor()->name : $ic->getField();
-	  		 	$displayName = ($this->displayName) ? $this->displayName : $name;
+            $request = Scope::getRequestScope();
+            $name = ($this->name) ? $ic->getInterceptor()->name : $ic->getField();
+            $displayName = ($this->displayName) ? $this->displayName : $name;
 
-	  		 	if($this->required && !$request->get($name))
-	  		 	   throw new FrameworkException($displayName . ' is required');
+            if($this->required && !$request->get($name))
+            throw new FrameworkException($displayName . ' is required');
 
-	  		 	$value = ($ic->getInterceptor()->sanitize) ? $request->getSanitized($name) : $request->get($name);
+            $value = ($ic->getInterceptor()->sanitize) ? $request->getSanitized($name) : $request->get($name);
 
-	  		 	if($validator = $this->validator)
-	  		 	   if(!$validator::validate($value))
-	  		 	      throw new ValidationException('The value entered for \'' . $displayName . '\' is invalid.');
+            if($validator = $this->validator)
+            if(!$validator::validate($value))
+            throw new ValidationException('The value entered for \'' . $displayName . '\' is invalid.');
 
-	  		 	return ($this->transformer == null) ? $value : $this->transformer->transform($value); 
-	  		 }
-	  }
+            return ($this->transformer == null) ? $value : $this->transformer->transform($value);
+        }
+    }
 }
 ?>

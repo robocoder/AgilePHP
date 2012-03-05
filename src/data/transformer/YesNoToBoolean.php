@@ -21,24 +21,24 @@
 
 /**
  * Transforms a "Yes" or "No" string to a SQL bit type
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.data.transformer
  */
 class YesNoToBoolean implements DataTransformer {
 
-	  /**
-	   * Transforms a "Yes" or "No" string to a "1" or "0"
-	   * 
-	   * @param string $data The "Yes" or "No" string
-	   * @return int "1" if the string was "Yes", "0" otherwise
-	   */
-	  public static function transform($data) {
+    /**
+     * Transforms a "Yes" or "No" string to a "1" or "0"
+     *
+     * @param string $data The "Yes" or "No" string
+     * @return int "1" if the string was "Yes", "0" otherwise
+     */
+    public static function transform($data) {
 
-             if($data == 1) return 1;
+        if($data == 1) return 1;
 
-	  		 return (strtolower($data) == 'yes') ? 1 : 0;
-	  }
+        return (strtolower($data) == 'yes') ? 1 : 0;
+    }
 }
 ?>

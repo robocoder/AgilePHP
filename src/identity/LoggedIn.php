@@ -22,27 +22,27 @@
 /**
  * AgilePHP interceptor responsible for throwing an NotLoggedInException if
  * the current request does not have an authenticated Identity session.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  * <code>
  * class MyClass {
- *  
+ *
  * #@LoggedIn
  * public function requiresLoginToInvoke($arg) {
- * 
+ *
  * 		  // Do something here that requires the user to be logged in
  * }
- * 
+ *
  * #@LoggedIn(message = 'My custom exception message')
  * public function requiresLoginToInvoke($arg) {
- * 
+ *
  * 		  // Do something here that requires the user to be logged in
  * }
- * 
+ *
  * public function someMethod() {
- * 
+ *
  * 		  // This can be invoked without being logged in
  * }
  * }
@@ -52,15 +52,15 @@
 #@Interceptor
 class LoggedIn {
 
-	  public $message;
+    public $message;
 
-	  #@AroundInvoke
-	  public function process(InvocationContext $ic) {
+    #@AroundInvoke
+    public function process(InvocationContext $ic) {
 
-	  		 $message = ($this->message) ? $this->message : 'You must be logged in to view the requested content!';
+        $message = ($this->message) ? $this->message : 'You must be logged in to view the requested content!';
 
-	  		 if(!Identity::isLoggedIn())
-	  		 	throw new NotLoggedInException($message);
-	  }
+        if(!Identity::isLoggedIn())
+        throw new NotLoggedInException($message);
+    }
 }
 ?>

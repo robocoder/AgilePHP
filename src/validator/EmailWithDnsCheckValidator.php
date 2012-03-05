@@ -29,22 +29,22 @@
  */
 class EmailWithDnsCheckValidator implements Validator {
 
-	  /**
-	   * Validates an email address by checking its syntax and performing
-	   * and DNS lookup on the domain.
-	   *
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data) {
+    /**
+     * Validates an email address by checking its syntax and performing
+     * and DNS lookup on the domain.
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
 
-	         if(!filter_var($data, FILTER_VALIDATE_EMAIL)) return false;
+        if(!filter_var($data, FILTER_VALIDATE_EMAIL)) return false;
 
-   			 $index = strrpos($data, '@');
-   			 $domain = substr($data, $index + 1);
+        $index = strrpos($data, '@');
+        $domain = substr($data, $index + 1);
 
-      		 if(!checkdnsrr($domain, "MX") || checkdnsrr($domain, 'A')) return false;
+        if(!checkdnsrr($domain, "MX") || checkdnsrr($domain, 'A')) return false;
 
-   			 return true;
-	  }
+        return true;
+    }
 }
 ?>

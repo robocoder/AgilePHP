@@ -28,241 +28,227 @@
  */
 class Form {
 
-	  private $model;
-	  private $id;
-	  private $name;
-	  private $action;
-	  private $enctype;
-	  private $request_token;
+    private $model;
+    private $id;
+    private $name;
+    private $action;
+    private $enctype;
+    private $request_token;
 
-	  private $mode;
+    private $mode;
 
-	  /**
-	   * Creates a new instance of Form.
-	   *
-	   * @param mixed $model Optional domain model instance used to create the form fields
-	   * @param String $id Optional form id
-	   * @param String $name Optional form name
-	   * @param String $action Optional form action
-	   * @param String $enctype Optional form enctype
-	   * @param String $request_token Optional AgilePHP request token
-	   * @return void
-	   */
-	  public function __construct($model = null, $id = null, $name = null,
-	  						$action = null, $enctype = null, $request_token = null) {
+    /**
+     * Creates a new instance of Form.
+     *
+     * @param mixed $model Optional domain model instance used to create the form fields
+     * @param String $id Optional form id
+     * @param String $name Optional form name
+     * @param String $action Optional form action
+     * @param String $enctype Optional form enctype
+     * @param String $request_token Optional AgilePHP request token
+     * @return void
+     */
+    public function __construct($model = null, $id = null, $name = null,
+    $action = null, $enctype = null, $request_token = null) {
 
-	  		 $this->model = $model;
-	  		 $this->id = $id;
-	  		 $this->name = $name;
-	  		 $this->action = $action;
-	  		 $this->enctype = $enctype;
-	  		 $this->request_token = $request_token;
-	  }
+        $this->model = $model;
+        $this->id = $id;
+        $this->name = $name;
+        $this->action = $action;
+        $this->enctype = $enctype;
+        $this->request_token = $request_token;
+    }
 
-	  /**
-	   * Sets the domain model that is used to create the form
-	   *
-	   * @param Object $model The domain model object used to create the form
-	   * @return void
-	   */
-	  public function setModel($model) {
+    /**
+     * Sets the domain model that is used to create the form
+     *
+     * @param Object $model The domain model object used to create the form
+     * @return void
+     */
+    public function setModel($model) {
+        $this->model = $model;
+    }
 
-	  		 $this->model = $model;
-	  }
+    /**
+     * Returns the domain model instance being used to create the form.
+     *
+     * @return Object The domain model instance
+     */
+    public function getModel() {
+        return $this->model;
+    }
 
-	  /**
-	   * Returns the domain model instance being used to create the form.
-	   *
-	   * @return Object The domain model instance
-	   */
-	  public function getModel() {
+    /**
+     * Sets the form presentation mode.
+     *
+     * @param String $mode The presentation mode (persist|merge).
+     * @return void
+     */
+    public function setMode($mode) {
+        $this->mode = $mode;
+    }
 
-	  		 return $this->model;
-	  }
+    /**
+     * Returns the form presentation mode.
+     *
+     * @return String The presentation mode of the form (persist|merge)
+     */
+    public function getMode() {
+        return $this->mode;
+    }
 
-	  /**
-	   * Sets the form presentation mode.
-	   *
-	   * @param String $mode The presentation mode (persist|merge).
-	   * @return void
-	   */
-	  public function setMode($mode) {
+    /**
+     * Sets the HTML id attribute value.
+     *
+     * @param String $id The form's id
+     * @return void
+     */
+    public function setId($id) {
+        $this->id = $id;
+    }
 
-	  		 $this->mode = $mode;
-	  }
+    /**
+     * Returns the form's id attribute value
+     *
+     * @return String The id value
+     */
+    public function getId() {
+        return $this->id;
+    }
 
-	  /**
-	   * Returns the form presentation mode.
-	   *
-	   * @return String The presentation mode of the form (persist|merge)
-	   */
-	  public function getMode() {
+    /**
+     * Sets the HTML name attribute value
+     *
+     * @param String $name The form's name
+     * @return void
+     */
+    public function setName($name) {
+        $this->name = $name;
+    }
 
-	  		 return $this->mode;
-	  }
+    /**
+     * Returns the form's HTML name attribute value
+     *
+     * @return String The form's name
+     */
+    public function getName() {
+        return $this->name;
+    }
 
-	  /**
-	   * Sets the HTML id attribute value.
-	   *
-	   * @param String $id The form's id
-	   * @return void
-	   */
-	  public function setId($id) {
+    /**
+     * Sets the form action attribute value
+     *
+     * @param String $action The form's action
+     * @return void
+     */
+    public function setAction($action) {
+        return $this->action = $action;
+    }
 
-	  		 $this->id = $id;
-	  }
+    /**
+     * Returns the forms action attribute value
+     *
+     * @return String The controller action method
+     */
+    public function getAction() {
+        return $this->action;
+    }
 
-	  /**
-	   * Returns the form's id attribute value
-	   *
-	   * @return String The id value
-	   */
-	  public function getId() {
+    /**
+     * Sets the form's enctype attribute value
+     *
+     * @param String $enctype The form's enctype
+     * @return void
+     */
+    public function setEnctype($enctype) {
+        $this->enctype = $enctype;
+    }
 
-	  		 return $this->id;
-	  }
+    /**
+     * Returns the form's enctype attribute value
+     *
+     * @return String The form's enctype
+     */
+    public function getEnctype() {
+        return $this->enctype;
+    }
 
-	  /**
-	   * Sets the HTML name attribute value
-	   *
-	   * @param String $name The form's name
-	   * @return void
-	   */
-	  public function setName($name) {
+    /**
+     * Sets the anti-CSFR token to render within the form. Note that the CSFR token
+     * should be different on every form!
+     *
+     * @param String $token CSFR token as supplied by RequestScope->getToken().
+     * @return void
+     * @see RequestScope::createToken()
+     */
+    public function setRequestToken($token) {
+        $this->request_token = $token;
+    }
 
-	  		 $this->name = $name;
-	  }
+    /**
+     * Returns the anti-CSFR token
+     *
+     * @return String anti-CSFR token specific to the form
+     */
+    public function getRequestToken() {
+        return $this->request_token;
+    }
 
-	  /**
-	   * Returns the form's HTML name attribute value
-	   *
-	   * @return String The form's name
-	   */
-	  public function getName() {
+    /**
+     * Returns the form in HTML format
+     *
+     * @return String The HTML generated form
+     */
+    public function getHTML($pkeyValues = null, $page = 1) {
 
-	  		 return $this->name;
-	  }
+        if(!is_object($this->getModel())) throw new FrameworkException('Valid domain model required');
 
-	  /**
-	   * Sets the form action attribute value
-	   *
-	   * @param String $action The form's action
-	   * @return void
-	   */
-	  public function setAction($action) {
+        $id = $this->id == null ? '' : ' id="' . $this->id . '" ';
+        $name = $this->name == null ? '' : ' name="' . $this->name . '" ';
+        $action = $this->action == null ? '' : ' action="' . $this->action . '" ';
+        $enctype = $this->enctype == null ? '' : ' enctype="' . $this->enctype . '" ';
 
-	  		 return $this->action = $action;
-	  }
+        $html = '<form ' . $id . $name . $action . $enctype . ' method="post">';
+        $html .= '<table class="agilephpGeneratedTable" border="0">';
 
-	  /**
-	   * Returns the forms action attribute value
-	   *
-	   * @return String The controller action method
-	   */
-	  public function getAction() {
+        $table = ORM::getTableByModel($this->model);
+        foreach($table->getColumns() as $column) {
 
-	  		 return $this->action;
-	  }
+            if(!$column->isVisible()) continue;
 
-	  /**
-	   * Sets the form's enctype attribute value
-	   *
-	   * @param String $enctype The form's enctype
-	   * @return void
-	   */
-	  public function setEnctype($enctype) {
+            $name = $column->getModelPropertyName();
+            $displayName = $column->getViewDisplayName();
+            $accessor = 'get' . ucfirst($name);
+            $value = $this->getModel()->$accessor();
 
-	  		 $this->enctype = $enctype;
-	  }
+            $html .= '<tr>';
 
-	  /**
-	   * Returns the form's enctype attribute value
-	   *
-	   * @return String The form's enctype
-	   */
-	  public function getEnctype() {
+            if(!$column->isVisible()) {
 
-	  		 return $this->enctype;
-	  }
+                if($column->isPrimaryKey())
+                $xsl .= '<input type="hidden" name="' . $name . '" value="' . $value . '"/>';
+            }
 
-	  /**
-	   * Sets the anti-CSFR token to render within the form. Note that the CSFR token
-	   * should be different on every form!
-	   *
-	   * @param String $token CSFR token as supplied by RequestScope->getToken().
-	   * @return void
-	   * @see RequestScope::createToken()
-	   */
-	  public function setRequestToken($token) {
+            // Process foreign keys first
+            else if($column->isForeignKey()) {
 
-	  		 $this->request_token = $token;
-	  }
-
-	  /**
-	   * Returns the anti-CSFR token
-	   *
-	   * @return String anti-CSFR token specific to the form
-	   */
-	  public function getRequestToken() {
-
-	  		 return $this->request_token;
-	  }
-
-	  /**
-	   * Returns the form in HTML format
-	   *
-	   * @return String The HTML generated form
-	   */
-	  public function getHTML($pkeyValues = null, $page = 1) {
-
-	  		 if(!is_object($this->getModel())) throw new FrameworkException('Valid domain model required');
-
-	  	     $id = $this->id == null ? '' : ' id="' . $this->id . '" ';
-	  	     $name = $this->name == null ? '' : ' name="' . $this->name . '" ';
-	  	     $action = $this->action == null ? '' : ' action="' . $this->action . '" ';
-	  	     $enctype = $this->enctype == null ? '' : ' enctype="' . $this->enctype . '" ';
-
-	  		 $html = '<form ' . $id . $name . $action . $enctype . ' method="post">';
-	  		 $html .= '<table class="agilephpGeneratedTable" border="0">';
-
-	  		 $table = ORM::getTableByModel($this->model);
-	  		 foreach($table->getColumns() as $column) {
-
-	  		 		 if(!$column->isVisible()) continue;
-
-			  		  $name = $column->getModelPropertyName();
-			  		  $displayName = $column->getViewDisplayName();
-			  		  $accessor = 'get' . ucfirst($name);
-			  		  $value = $this->getModel()->$accessor();
-
-			  		  $html .= '<tr>';
-
-	  				  if(!$column->isVisible()) {
-
-	  		 		  	 if($column->isPrimaryKey())
-		 	      	  	   $xsl .= '<input type="hidden" name="' . $name . '" value="' . $value . '"/>';
-	  		 		  }
-
-			  		  // Process foreign keys first
-			  		  else if($column->isForeignKey()) {
-
-			  		  	  $html .= '<td>' . $displayName . '</td>
+                $html .= '<td>' . $displayName . '</td>
 			  		  	  		    <td>' . $this->getForeignKeySelection($column->getForeignKey()) . '</td>';
-			  		  }
+            }
 
-  		 	      	  // Primary key during merge is read only
-  		 	      	  else if($column->isPrimaryKey()) {
+            // Primary key during merge is read only
+            else if($column->isPrimaryKey()) {
 
-  		 	      	  	  $html .= '<td>' . $displayName . '</td>';
-  		 	      	      $html .= ($this->getMode() == 'merge') ?
+                $html .= '<td>' . $displayName . '</td>';
+                $html .= ($this->getMode() == 'merge') ?
   		 	      	  	  	  			'<td><input type="text" readonly="true" name="' . $name . '" value="' . $value . '"/></td>'
   		 	      	  	  	  			: '<td><input type="text" name="' . $name . '" value="' . $value . '"/></td>';
-  		 	      	  }
+            }
 
-  		 	      	  // Password field
-  		 	      	  else if($column->getType() == 'password' || $column->getName() == 'password' || $column->getProperty() == 'password') {
+            // Password field
+            else if($column->getType() == 'password' || $column->getName() == 'password' || $column->getProperty() == 'password') {
 
-  		 	      	      $html .= '<td>Password</td>
+                $html .= '<td>Password</td>
   		 	      	      			<td><input type="password" name="password1" value="' . $value . '"/></td>
   		 	      	      		</tr>
   		 	      	      		<tr>
@@ -271,217 +257,217 @@ class Form {
   		 	      	      				<input type="password" name="password2" value="' . $value . '"/>
   		 	      	      				<input type="hidden" name="oldPassword" value="' . $value . '"/>
   		 	      	      			</td>';
-  		 	      	  }
+            }
 
-  		 	      	  // Auto-increment
-  		 	      	  else if($column->isAutoIncrement()) {
+            // Auto-increment
+            else if($column->isAutoIncrement()) {
 
-  		 	      	  	  $html .= '<td>' . $displayName . '</td>';
-						  $html .= ($this->getMode() == 'merge') ?
+                $html .= '<td>' . $displayName . '</td>';
+                $html .= ($this->getMode() == 'merge') ?
   		 	      	  	  	  			'<td><input type="text" readonly="true" name="' . $name . '" value="' . $value . '"/></td>'
   		 	      	  	  	  			: '<td><input type="text" name="' . $name . '" value="' . $value . '"/></td>';
-  		 	      	  }
+            }
 
-  		 	      	  // Checkbox
-					  else if($column->getType() == 'boolean') {
+            // Checkbox
+            else if($column->getType() == 'boolean') {
 
-					  	  $html .= '<td>' . $displayName . '</td>';
-					  	  $html .= ($value == 1) ?
+                $html .= '<td>' . $displayName . '</td>';
+                $html .= ($value == 1) ?
 						                '<td><input type="checkbox" checked="true" name="' . $name . '" value="1"/></td>'
-					  	  	       		: '<td><input type="checkbox" checked="true" name="' . $name . '" value="0"/></td>';
-					  }
+						                : '<td><input type="checkbox" checked="true" name="' . $name . '" value="0"/></td>';
+            }
 
-					  // Textarea
-					  else if($column->getType() == 'text') {
+            // Textarea
+            else if($column->getType() == 'text') {
 
-						  $html .= '<td>' . $displayName . '</td>
+                $html .= '<td>' . $displayName . '</td>
 						  			<td><textarea rows="10" name="' . stripslashes($name) . '"></textarea></td>';
-					  }
+            }
 
-					  // File upload
-					  else if($column->getType() == 'blob') {
+            // File upload
+            else if($column->getType() == 'blob') {
 
-						  $html .= '<td>' . $displayName . '</td>
+                $html .= '<td>' . $displayName . '</td>
 						  			<td><input type="file" name="' . $name . '" value="' . $value . '"/></td>';
-						  continue;
-					  }
+                continue;
+            }
 
-					  // Default element (textfield)
-					  else {
+            // Default element (textfield)
+            else {
 
-		  		  		  $html .= '<td>' . $displayName . '</td>
+                $html .= '<td>' . $displayName . '</td>
 		  		  		  			<td><input type="text" name="' . $name . '" value="' . stripslashes($value) . '"/></td>';
-					  }
+            }
 
-	  		  		  $html .= '</tr>';
-	  		 }
+            $html .= '</tr>';
+        }
 
-	  		 $html .= '<tr>
+        $html .= '<tr>
  						<td> </td>
 						<td>';
-	  		 $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>'
-        							 : '<input type="submit" value="Update"/>
+        $html .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>'
+        : '<input type="submit" value="Update"/>
 									   <input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete(\'' . AgilePHP::getRequestBase() .
         							   '\', \'' . $pkeyValues . '\', \'' . $page . '\', \'delete\')"/>
         							   <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>';
 
-        	 $html .= '</td>
+        $html .= '</td>
 							</tr>';
 
-	  		 if($token = $this->getRequestToken())
-	  		 	$html .= '<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="' . $token . '"/>';
+        if($token = $this->getRequestToken())
+        $html .= '<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="' . $token . '"/>';
 
-	  		 $html .= '</form>';
+        $html .= '</form>';
 
-	  		 return $html;
-	  }
+        return $html;
+    }
 
-	  /**
-	   * Returns an HTML select drop-down which contains a list
-	   * of values for foreign key columns.
-	   *
-	   * @param ForeignKey $foreignKey Foreign key column instance
-	   * @param int $limit Total number of foreign key reference rows to return
-	   * @return String The populated HTML <select> element
-	   */
-	  public function getForeignKeySelection(ForeignKey $foreignKey, $limit = 100000) {
+    /**
+     * Returns an HTML select drop-down which contains a list
+     * of values for foreign key columns.
+     *
+     * @param ForeignKey $foreignKey Foreign key column instance
+     * @param int $limit Total number of foreign key reference rows to return
+     * @return String The populated HTML <select> element
+     */
+    public function getForeignKeySelection(ForeignKey $foreignKey, $limit = 100000) {
 
-	  		 //$selectedColumn = $foreignKey->getSelectedColumnInstance();
-	  		 $selectedProperty = $foreignKey->getSelectedColumnInstance()->getModelPropertyName();
+        //$selectedColumn = $foreignKey->getSelectedColumnInstance();
+        $selectedProperty = $foreignKey->getSelectedColumnInstance()->getModelPropertyName();
 
-   			 // Create an instance of the foreign model
-   			 $foreignInstance = $foreignKey->getReferencedTableInstance()->getModelInstance();
+        // Create an instance of the foreign model
+        $foreignInstance = $foreignKey->getReferencedTableInstance()->getModelInstance();
 
-   			 // Find all foreign models by distinct parent column name
-   			 $maxResults = ORM::getMaxResults();
-   			 ORM::setMaxResults($limit);
-          	 $foreignModels = ORM::find($foreignInstance);
-          	 ORM::setMaxResults($maxResults);
+        // Find all foreign models by distinct parent column name
+        $maxResults = ORM::getMaxResults();
+        ORM::setMaxResults($limit);
+        $foreignModels = ORM::find($foreignInstance);
+        ORM::setMaxResults($maxResults);
 
-          	 // The actual foreign key property name in the child table
-          	 $property = $foreignKey->getColumnInstance()->getModelPropertyName();
+        // The actual foreign key property name in the child table
+        $property = $foreignKey->getColumnInstance()->getModelPropertyName();
 
-          	 if($foreignKey->getColumnInstance()->isPrimaryKey() && $this->getMode() != 'persist')
-          	     $html = '<select name="' . $property . '" disabled="disabled">';
-          	 else
-          	   	 $html = '<select name="' . $property . '">';
+        if($foreignKey->getColumnInstance()->isPrimaryKey() && $this->getMode() != 'persist')
+        $html = '<select name="' . $property . '" disabled="disabled">';
+        else
+        $html = '<select name="' . $property . '">';
 
-          	 $html .= '<option value="NULL">Choose...</option>';
+        $html .= '<option value="NULL">Choose...</option>';
 
-          	 // Create each of the option values. If the foreign key value matches the
-          	 // selected foreign model property value, the item is shown as the default.
-          	 foreach($foreignModels as $fModel) {
+        // Create each of the option values. If the foreign key value matches the
+        // selected foreign model property value, the item is shown as the default.
+        foreach($foreignModels as $fModel) {
 
-          	 		 $fAccessor = 'get' . ucfirst($selectedProperty);
-          	 		 $fkInstanceAccessor = 'get' . ucfirst($foreignKey->getColumnInstance()->getModelPropertyName());
+            $fAccessor = 'get' . ucfirst($selectedProperty);
+            $fkInstanceAccessor = 'get' . ucfirst($foreignKey->getColumnInstance()->getModelPropertyName());
 
-          	 		 if(is_object($this->getModel()->$fkInstanceAccessor()) &&
-          	 		  			$this->getModel()->$fkInstanceAccessor()->$fAccessor() == $fModel->$fAccessor()) {
+            if(is_object($this->getModel()->$fkInstanceAccessor()) &&
+            $this->getModel()->$fkInstanceAccessor()->$fAccessor() == $fModel->$fAccessor()) {
 
-          	 		    // Assign primary key values delimited by underscore _ character
-          	 		    $primaryKeys = $foreignKey->getReferencedTableInstance()->getPrimaryKeyColumns();
-	          	 		$pkeys = '';
-	          	 		for($i=0; $i<count($primaryKeys); $i++) {
+                // Assign primary key values delimited by underscore _ character
+                $primaryKeys = $foreignKey->getReferencedTableInstance()->getPrimaryKeyColumns();
+                $pkeys = '';
+                for($i=0; $i<count($primaryKeys); $i++) {
 
-	          	 		    $idAccessor = 'get' . ucfirst($primaryKeys[$i]->getModelPropertyName());
+                    $idAccessor = 'get' . ucfirst($primaryKeys[$i]->getModelPropertyName());
 
-	          	 		    $pkeys .= $this->getModel()->$fkInstanceAccessor()->$idAccessor();
-	          	 		  	$pkeys .= (((count($primaryKeys)-1) == $i)) ? '' : '_';
-	          	 		}
+                    $pkeys .= $this->getModel()->$fkInstanceAccessor()->$idAccessor();
+                    $pkeys .= (((count($primaryKeys)-1) == $i)) ? '' : '_';
+                }
 
-	          	 		$value = mb_convert_encoding(htmlspecialchars($fModel->$fAccessor()), 'UTF-8', 'ISO-8859-1');
-          	 		  	$html .= '<option value="' . $pkeys . '" selected="yes">' . $value . '</option>';
+                $value = mb_convert_encoding(htmlspecialchars($fModel->$fAccessor()), 'UTF-8', 'ISO-8859-1');
+                $html .= '<option value="' . $pkeys . '" selected="yes">' . $value . '</option>';
 
-          	 		  	// Primary keys should not be altered, however, shown for informational purposes
-          	 		  	if($foreignKey->getColumnInstance()->isPrimaryKey() && $this->getMode() != 'persist') {
+                // Primary keys should not be altered, however, shown for informational purposes
+                if($foreignKey->getColumnInstance()->isPrimaryKey() && $this->getMode() != 'persist') {
 
           	 		  	   $html .= '</select><input type="hidden" name="' . $property . '" value="' . $pkeys . '"/>';
           	 		  	   return $html;
-          	 		  	}
-          	 		}
-          	 		else {
+                }
+            }
+            else {
 
-	          	 		// Assign primary key values delimited by underscore _ character
-          	 		  	$primaryKeys = $foreignKey->getReferencedTableInstance()->getPrimaryKeyColumns();
-	          	 		$pkeys = '';
-	          	 		for($i=0; $i<count($primaryKeys); $i++) {
+                // Assign primary key values delimited by underscore _ character
+                $primaryKeys = $foreignKey->getReferencedTableInstance()->getPrimaryKeyColumns();
+                $pkeys = '';
+                for($i=0; $i<count($primaryKeys); $i++) {
 
-	          	 		  	$idAccessor = 'get' . ucfirst($primaryKeys[$i]->getModelPropertyName());
+                    $idAccessor = 'get' . ucfirst($primaryKeys[$i]->getModelPropertyName());
 
-	          	 			$pkeys .= $fModel->$idAccessor();
-	          	 		  	$pkeys .= (((count($primaryKeys)-1) == $i)) ? '' : '_';
-	          	 		}
+                    $pkeys .= $fModel->$idAccessor();
+                    $pkeys .= (((count($primaryKeys)-1) == $i)) ? '' : '_';
+                }
 
-	          	 		$value = mb_convert_encoding(htmlspecialchars($fModel->$fAccessor()), 'UTF-8', 'ISO-8859-1');
-          	 			$html .= '<option value="' . $pkeys . '">' . $value . '</option>';
-          	 		}
-          	 }
+                $value = mb_convert_encoding(htmlspecialchars($fModel->$fAccessor()), 'UTF-8', 'ISO-8859-1');
+                $html .= '<option value="' . $pkeys . '">' . $value . '</option>';
+            }
+        }
 
-          	 $html .= '</select>';
+        $html .= '</select>';
 
-          	 return $html;
-	  }
+        return $html;
+    }
 
-	  /**
-	   * Returns the form in XSL format
-	   *
-	   * @param String $pkeyValues The primary key values for the ActiveRecord displayed in the form. Multiple
-	   * 						   primary keys must be separated by an underscore _ character. Default is null
-	   * @param Integer $page The list page number to return the user after the form is submitted. Default is 1.
-	   * @return String XSL formatted form
-	   */
-	  public function getXSL($pkeyValues = null, $page = 1) {
+    /**
+     * Returns the form in XSL format
+     *
+     * @param String $pkeyValues The primary key values for the ActiveRecord displayed in the form. Multiple
+     * 						   primary keys must be separated by an underscore _ character. Default is null
+     * @param Integer $page The list page number to return the user after the form is submitted. Default is 1.
+     * @return String XSL formatted form
+     */
+    public function getXSL($pkeyValues = null, $page = 1) {
 
-	 	  	 $id = $this->id == null ? '' : ' id="' . $this->id . '" ';
-	  	     $name = $this->name == null ? '' : ' name="' . $this->name . '" ';
-	  	     $action = $this->action == null ? '' : ' action="' . $this->action . '" ';
-	  	     $enctype = $this->enctype == null ? '' : ' enctype="' . $this->enctype . '" ';
+        $id = $this->id == null ? '' : ' id="' . $this->id . '" ';
+        $name = $this->name == null ? '' : ' name="' . $this->name . '" ';
+        $action = $this->action == null ? '' : ' action="' . $this->action . '" ';
+        $enctype = $this->enctype == null ? '' : ' enctype="' . $this->enctype . '" ';
 
-	  		 $xsl = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+        $xsl = '<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	  		 		 	<xsl:template match="Form">
 	  		 		 		<form ' . $id . $name . $action . $enctype . ' method="post">
 	  		 		 			<table class="agilephpGeneratedTable" border="0">';
 
-						  		 $table = ORM::getTableByModel($this->model);
+        $table = ORM::getTableByModel($this->model);
 
-						  		 $namespace = explode('\\', $table->getModel());
-     		   	   				 $model = array_pop($namespace);
+        $namespace = explode('\\', $table->getModel());
+        $model = array_pop($namespace);
 
-						  		 foreach($table->getColumns() as $column) {
+        foreach($table->getColumns() as $column) {
 
-								  		 $name = $column->getModelPropertyName();
-								  		 $displayName = $column->getViewDisplayName();
-								  		 $accessor = 'get' . ucfirst($name);
-			  		  					 $value = $this->getModel()->$accessor();
+            $name = $column->getModelPropertyName();
+            $displayName = $column->getViewDisplayName();
+            $accessor = 'get' . ucfirst($name);
+            $value = $this->getModel()->$accessor();
 
-								  		  $xsl .= '<tr>';
+            $xsl .= '<tr>';
 
-						  		 		  if(!$column->isVisible()) {
+            if(!$column->isVisible()) {
 
-						  		 		  	 if($column->isPrimaryKey())
-					  		 	      	  	  	$xsl .= '<input type="hidden" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/>';
-						  		 		  }
+                if($column->isPrimaryKey())
+                $xsl .= '<input type="hidden" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/>';
+            }
 
-								  		  // Process foreign keys first
-								  		  else if($column->isForeignKey()) {
+            // Process foreign keys first
+            else if($column->isForeignKey()) {
 
-								  		  	  $xsl .= '<td>' . $displayName . '</td>
+                $xsl .= '<td>' . $displayName . '</td>
 								  		  	  		   <td>' . $this->getForeignKeySelection($column->getForeignKey()) . '</td>';
-								  		  }
+            }
 
-					  		 	      	  // Primary key during merge is read only
-					  		 	      	  else if($column->isPrimaryKey()) {
+            // Primary key during merge is read only
+            else if($column->isPrimaryKey()) {
 
-					  		 	      	  	  $xsl .= '<td>' . $displayName . '</td>';
-					  		 	      	      $xsl .= ($this->getMode() == 'merge') ?
+                $xsl .= '<td>' . $displayName . '</td>';
+                $xsl .= ($this->getMode() == 'merge') ?
 					  		 	      	  	  	  			'<td><input type="text" readonly="true" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>'
 					  		 	      	  	  	  			: '<td><input type="text" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>';
-					  		 	      	  }
+            }
 
-					  		 	      	  // Password field
-					  		 	      	  else if($column->getType() == 'password' || $column->getName() == 'password' || $column->getProperty() == 'password') {
+            // Password field
+            else if($column->getType() == 'password' || $column->getName() == 'password' || $column->getProperty() == 'password') {
 
-					  		 	      	      $xsl .= '<td>Password</td>
+                $xsl .= '<td>Password</td>
 					  		 	      	      		   <td><input type="password" name="password1" value="{/Form/' . $model . '/' . $name . '}"/></td>
 					  		 	      	      		 </tr>
 					  		 	      	      		 <tr>
@@ -490,107 +476,107 @@ class Form {
 					  		 	      	      		    	<input type="password" name="password2" value="{/Form/' . $model . '/' . $name . '}"/>
 					  		 	      	      		    	<input type="hidden" name="oldPassword" value="{/Form/' . $model . '/' . $name . '}"/>
 					  		 	      	      		    </td>';
-					  		 	      	  }
+            }
 
-					  		 	      	  // Auto-increment
-					  		 	      	  else if($column->isAutoIncrement()) {
+            // Auto-increment
+            else if($column->isAutoIncrement()) {
 
-					  		 	      	  	  $xsl .= '<td>' . $displayName . '</td>';
-											  $xsl .= ($this->getMode() == 'merge') ?
+                $xsl .= '<td>' . $displayName . '</td>';
+                $xsl .= ($this->getMode() == 'merge') ?
 					  		 	      	  	  	  			'<td><input type="text" readonly="true" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>'
 					  		 	      	  	  	  			: '<td><input type="text" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>';
-					  		 	      	  }
+            }
 
-					  		 	      	  // Checkbox
-										  else if($column->getType() == 'boolean') {
+            // Checkbox
+            else if($column->getType() == 'boolean') {
 
-										  	  $xsl .= '<td>' . $displayName . '</td>';
+                $xsl .= '<td>' . $displayName . '</td>';
 
-										  	  // enabled
-										  	  $xsl .= '<xsl:if test="/Form/' . $model . '/' . $name . ' = \'Yes\'">';
-										  	  		$xsl .= '<td><input type="checkbox" checked="true" name="' . $name . '" value="1"/></td>';
-										  	  $xsl .= '</xsl:if>';
+                // enabled
+                $xsl .= '<xsl:if test="/Form/' . $model . '/' . $name . ' = \'Yes\'">';
+                $xsl .= '<td><input type="checkbox" checked="true" name="' . $name . '" value="1"/></td>';
+                $xsl .= '</xsl:if>';
 
-										  	  // disabled
-										  	  $xsl .= '<xsl:if test="/Form/' . $model . '/' . $name . ' != \'Yes\'">';
-										  	  		$xsl .= '<td><input type="checkbox" name="' . $name . '" value="1"/></td>';
-										  	  $xsl .= '</xsl:if>';
-										  }
+                // disabled
+                $xsl .= '<xsl:if test="/Form/' . $model . '/' . $name . ' != \'Yes\'">';
+                $xsl .= '<td><input type="checkbox" name="' . $name . '" value="1"/></td>';
+                $xsl .= '</xsl:if>';
+            }
 
-						  		 		  // Textarea
-										  else if($column->getType() == 'text') {
+            // Textarea
+            else if($column->getType() == 'text') {
 
-										  	  $xslValue = mb_convert_encoding(html_entity_decode($value), 'UTF-8', 'ISO-8859-1');
+                $xslValue = mb_convert_encoding(html_entity_decode($value), 'UTF-8', 'ISO-8859-1');
 
-											  $xsl .= '<td>' . $displayName . '</td>
+                $xsl .= '<td>' . $displayName . '</td>
 											  		   <td><textarea rows="10" name="' . $name . '">';
-											  				if(!$xslValue) $xsl .= '<xsl:comment/>';
-											  				$xsl .= '<xsl:value-of select="/Form/' . $model . '/' . $name . '"/></textarea>
+                if(!$xslValue) $xsl .= '<xsl:comment/>';
+                $xsl .= '<xsl:value-of select="/Form/' . $model . '/' . $name . '"/></textarea>
 							  		 				   </td>';
-										  }
+            }
 
-										  // File upload
-										  else if($column->getType() == 'blob') {
+            // File upload
+            else if($column->getType() == 'blob') {
 
-											  $xsl .= '<td>' . $displayName . '</td>';
+                $xsl .= '<td>' . $displayName . '</td>';
 
-											  $xsl .= ($this->getMode() == 'merge') ?
+                $xsl .= ($this->getMode() == 'merge') ?
 											  	           '<td><img border="0" height="30" width="200" src="{/Form/' . $model . '/' . $name . '}"/>
 											  	               <br/>
 											  	  		       <input type="file" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/>
 											  	  		   </td>'
 											  	  		   : '<td><input type="file" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>';
-										  }
+            }
 
-										  // Default element (textfield)
-										  else {
+            // Default element (textfield)
+            else {
 
-							  		  		  $xsl .= '<td>' . $displayName . '</td>
+                $xsl .= '<td>' . $displayName . '</td>
 							  		  		  		   <td><input type="text" name="' . $name . '" value="{/Form/' . $model . '/' . $name . '}"/></td>';
-										  }
+            }
 
-						  		  		  $xsl .= '</tr>';
-						  		 }
+            $xsl .= '</tr>';
+        }
 
-	  		   $xsl .= '<tr>
+        $xsl .= '<tr>
 		 				  <td> </td>
 						  <td>';
-        	              $xsl .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>'
-        				        						 : '<input type="submit" value="Update"/>
+        $xsl .= $this->getMode() == 'persist' ? '<input type="submit" value="Create"/> <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>'
+        : '<input type="submit" value="Update"/>
 															<input type="button" value="Delete" onclick="javascript:AgilePHP.ORM.confirmDelete(\'' . AgilePHP::getRequestBase() .
         													   '\', \'' . $pkeyValues . '\', \'' . $page .
         													   '\', \'{/Form/controller}\', \'delete\')"/>
         													   <input type="button" value="Cancel" onclick="javascript:history.go(-1);"/>';
-			   $xsl .= '  </td>
+        $xsl .= '  </td>
 				        </tr>';
 
-	  		   if($token = $this->getRequestToken())
-	  		 	  $xsl .= '<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="' . $token . '"/>';
+        if($token = $this->getRequestToken())
+        $xsl .= '<input type="hidden" name="AGILEPHP_REQUEST_TOKEN" value="' . $token . '"/>';
 
-	  		   $xsl .= '  </table>
+        $xsl .= '  </table>
 	  		   			 </form>
 		  		        </xsl:template>
 					  </xsl:stylesheet>';
 
-	  		   Log::debug($xsl);
+        Log::debug($xsl);
 
-	  		   return $xsl;
-	  }
+        return $xsl;
+    }
 
-	  /**
-	  public function getJSON() {
+    /**
+     public function getJSON() {
 
-	  		 $js = '{ form : {
-	  		 					"id" : "' . $this->id == null ? '' : $this->id . ',
-	  	     					"name" : "' . $this->name == null ? '' : $this->name . ',
-	  	     					"action" : "' . $this->action == null ? '' : $this->action . ',
-	  	     					"enctype" : "' . $this->enctype == null ? '' : $this->enctype . '
-	  						 }
-	   				}';
+     $js = '{ form : {
+     "id" : "' . $this->id == null ? '' : $this->id . ',
+     "name" : "' . $this->name == null ? '' : $this->name . ',
+     "action" : "' . $this->action == null ? '' : $this->action . ',
+     "enctype" : "' . $this->enctype == null ? '' : $this->enctype . '
+     }
+     }';
 
-	  		 return $js;
+     return $js;
 
-	  }
-	  */
+     }
+     */
 }
 ?>

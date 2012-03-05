@@ -40,304 +40,272 @@ require_once 'identity/IdentityManagerFactory.php';
  */
 class Identity {
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setModel($model)
-	   */
-	  public static function setModel($model) {
-
-	  		 IdentityManagerFactory::getManager()->setModel($model);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getModel()
-	   */
-	  public static function getModel() {
-
-	  		 return IdentityManagerFactory::getManager()->getModel();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setUsername($username)
-	   */
-	  public static function setUsername($username) {
-
-	  		 IdentityManagerFactory::getManager()->setUsername($username);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see  src/identity/IdentityManager#setPassword($password)
-	   */
-	  public static function setPassword($password) {
-
-	  		 IdentityManagerFactory::getManager()->setPassword($password);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getUsername()
-	   */
-	  public static function getUsername() {
-
-	  		 return IdentityManagerFactory::getManager()->getUsername();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getPassword()
-	   */
-	  public static function getPassword() {
-
-	  		 return IdentityManagerFactory::getManager()->getPassword();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setEmail($email)
-	   */
-	  public static function setEmail($email) {
-
-	  		 IdentityManagerFactory::getManager()->setEmail($email);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getEmail()
-	   */
-	  public static function getEmail() {
-
-	  		 return IdentityManagerFactory::getManager()->getEmail();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setCreated($dateTime)
-	   */
-	  public static function setCreated($dateTime) {
-
-	  		 IdentityManagerFactory::getManager()->setCreated($dateTime);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getCreated()
-	   */
-	  public static function getCreated() {
-
-	  		 return IdentityManagerFactory::getManager()->getCreated();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setLastLogin($dateTime)
-	   */
-	  public static function setLastLogin($dateTime) {
-
-	  		 IdentityManagerFactory::getManager()->setLastLogin($dateTime);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getLastLogin()
-	   */
-	  public static function getLastLogin() {
-
-	  		 return IdentityManagerFactory::getManager()->getLastLogin();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setEnabled($value)
-	   */
-	  public static function setEnabled($value) {
-
-	  		 IdentityManagerFactory::getManager()->setEnabled($value);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getEnabled()
-	   */
-	  public static function getEnabled() {
-
-	  		 return IdentityManagerFactory::getManager()->getEnabled();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setRole(Role $role)
-	   */
-	  public static function setRole(Role $role) {
-
-	  		 IdentityManagerFactory::getManager()->setRole($role);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getRole()
-	   */
-	  public static function getRole() {
-
-	  		 return IdentityManagerFactory::getManager()->getRole();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#setRoles()
-	   */
-	  public static function setRoles(array $roles) {
-
-	         IdentityManagerFactory::getManager()->setRoles($roles);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#getRoles()
-	   */
-	  public static function getRoles() {
-
-	         return IdentityManagerFactory::getManager()->getRoles();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#addRole(Role $role)
-	   */
-	  public static function addRole(Role $role) {
-
-	         IdentityManagerFactory::getManager()->addRole($role);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#hasRole(Role $role)
-	   */
-	  public static function hasRole(Role $role) {
-
-	  		 return IdentityManagerFactory::getManager()->hasRole($role);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#revokeRole()
-	   */
-	  public static function revokeRole(Role $role) {
-
-	  		 IdentityManagerFactory::getManager()->revokeRole($role);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#login($username, $password)
-	   * @throws AccessDeniedException
-	   */
-	  public static function login($username, $password) {
-
-	  		 return IdentityManagerFactory::getManager()->login($username, $password);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#resetPassword($token, $sessionId)
-	   */
-	  public static function resetPassword($token, $sessionId) {
-
-	  	     IdentityManagerFactory::getManager()->resetPassword($token, $sessionId);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#forgotPassword()
-	   */
-	  public static function forgotPassword() {
-
-	  	     IdentityManagerFactory::getManager()->forgotPassword();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#register()
-	   */
-	  public static function register() {
-
-	  		 IdentityManagerFactory::getManager()->register();
-	  }
-
-      /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#confirm($token, $sessionId)
-	   */
-	  public static function confirm($token, $sessionId) {
-
-	  		 IdentityManagerFactory::getManager()->confirm($token, $sessionId);
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#logout()
-	   */
-	  public static function logout() {
-
-	  		 Log::debug('Identity::logout');
-	  		 Scope::getSessionScope()->destroy();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#isLoggedIn()
-	   */
-	  public static function isLoggedIn() {
-
-	  		 return IdentityManagerFactory::getManager()->isLoggedIn();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#persist()
-	   */
-	  public static function persist() {
-
-	  		 IdentityManagerFactory::getManager()->persist();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#merge()
-	   */
-	  public static function merge() {
-
-	  		 IdentityManagerFactory::getManager()->merge();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#delete()
-	   */
-	  public static function delete() {
-
-	  	     IdentityManagerFactory::getManager()->delete();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/identity/IdentityManager#refresh()
-	   */
-	  public static function refresh() {
-
-	  		 IdentityManagerFactory::getManager()->refresh();
-	  }
-
-	  /**
-	   * Destructor prints log debug entry notifying that the identity instance has been destroyed.
-	   *
-	   * @return void
-	   */
-	  public function __destruct() {
-
-	  		 Log::debug('Identity::__destruct Instance destroyed');
-	  }
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#setModel($model)
+     */
+    public static function setModel($model) {
+        IdentityManagerFactory::getManager()->setModel($model);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#getModel()
+     */
+    public static function getModel() {
+        return IdentityManagerFactory::getManager()->getModel();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#setUsername($username)
+     */
+    public static function setUsername($username) {
+        IdentityManagerFactory::getManager()->setUsername($username);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see  src/identity/IdentityManager#setPassword($password)
+     */
+    public static function setPassword($password) {
+        IdentityManagerFactory::getManager()->setPassword($password);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#getUsername()
+     */
+    public static function getUsername() {
+        return IdentityManagerFactory::getManager()->getUsername();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#getPassword()
+     */
+    public static function getPassword() {
+        return IdentityManagerFactory::getManager()->getPassword();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#setEmail($email)
+     */
+    public static function setEmail($email) {
+        IdentityManagerFactory::getManager()->setEmail($email);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#getEmail()
+     */
+    public static function getEmail() {
+        return IdentityManagerFactory::getManager()->getEmail();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#setCreated($dateTime)
+     */
+    public static function setCreated($dateTime) {
+        IdentityManagerFactory::getManager()->setCreated($dateTime);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#getCreated()
+     */
+    public static function getCreated() {
+        return IdentityManagerFactory::getManager()->getCreated();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#setLastLogin($dateTime)
+     */
+    public static function setLastLogin($dateTime) {
+        IdentityManagerFactory::getManager()->setLastLogin($dateTime);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#getLastLogin()
+     */
+    public static function getLastLogin() {
+        return IdentityManagerFactory::getManager()->getLastLogin();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#setEnabled($value)
+     */
+    public static function setEnabled($value) {
+        IdentityManagerFactory::getManager()->setEnabled($value);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#getEnabled()
+     */
+    public static function getEnabled() {
+        return IdentityManagerFactory::getManager()->getEnabled();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#setRole(Role $role)
+     */
+    public static function setRole(Role $role) {
+        IdentityManagerFactory::getManager()->setRole($role);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#getRole()
+     */
+    public static function getRole() {
+        return IdentityManagerFactory::getManager()->getRole();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#setRoles()
+     */
+    public static function setRoles(array $roles) {
+        IdentityManagerFactory::getManager()->setRoles($roles);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#getRoles()
+     */
+    public static function getRoles() {
+        return IdentityManagerFactory::getManager()->getRoles();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#addRole(Role $role)
+     */
+    public static function addRole(Role $role) {
+        IdentityManagerFactory::getManager()->addRole($role);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#hasRole(Role $role)
+     */
+    public static function hasRole(Role $role) {
+        return IdentityManagerFactory::getManager()->hasRole($role);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#revokeRole()
+     */
+    public static function revokeRole(Role $role) {
+        IdentityManagerFactory::getManager()->revokeRole($role);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#login($username, $password)
+     * @throws AccessDeniedException
+     */
+    public static function login($username, $password) {
+        return IdentityManagerFactory::getManager()->login($username, $password);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#resetPassword($token, $sessionId)
+     */
+    public static function resetPassword($token, $sessionId) {
+        IdentityManagerFactory::getManager()->resetPassword($token, $sessionId);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#forgotPassword()
+     */
+    public static function forgotPassword() {
+        IdentityManagerFactory::getManager()->forgotPassword();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#register()
+     */
+    public static function register() {
+        IdentityManagerFactory::getManager()->register();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#confirm($token, $sessionId)
+     */
+    public static function confirm($token, $sessionId) {
+        IdentityManagerFactory::getManager()->confirm($token, $sessionId);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#logout()
+     */
+    public static function logout() {
+
+        Log::debug('Identity::logout');
+        Scope::getSessionScope()->destroy();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#isLoggedIn()
+     */
+    public static function isLoggedIn() {
+        return IdentityManagerFactory::getManager()->isLoggedIn();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#persist()
+     */
+    public static function persist() {
+        IdentityManagerFactory::getManager()->persist();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#merge()
+     */
+    public static function merge() {
+        IdentityManagerFactory::getManager()->merge();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#delete()
+     */
+    public static function delete() {
+        IdentityManagerFactory::getManager()->delete();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see src/identity/IdentityManager#refresh()
+     */
+    public static function refresh() {
+        IdentityManagerFactory::getManager()->refresh();
+    }
+
+    /**
+     * Destructor prints log debug entry notifying that the identity instance has been destroyed.
+     *
+     * @return void
+     */
+    public function __destruct() {
+        Log::debug('Identity::__destruct Instance destroyed');
+    }
 }
 ?>

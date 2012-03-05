@@ -21,81 +21,81 @@
 
 /**
  * Responsible for processing all AgilePHP remoting calls.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
  */
 class RemotingController extends Remoting {
 
-	public function test() {
+    public function test() {
 
-		$m2 = new TestModel();
-		$m2->setField1('This is TestModel2 field 1');
-		$m2->setField2('This is TestModel2 field 2');
+        $m2 = new TestModel();
+        $m2->setField1('This is TestModel2 field 1');
+        $m2->setField2('This is TestModel2 field 2');
 
-		$m1 = new TestModel();
-		$m1->setField1('This is TestModel1 field 1');
-		$m1->setField2('This is TestModel1 field 2');
-		$m1->setChild($m2);
+        $m1 = new TestModel();
+        $m1->setField1('This is TestModel1 field 1');
+        $m1->setField2('This is TestModel1 field 2');
+        $m1->setChild($m2);
 
-		$group = new GroupOfModels(array($m1, $m2));
+        $group = new GroupOfModels(array($m1, $m2));
 
-		echo JsonRenderer::render($group);
-	}
+        echo JsonRenderer::render($group);
+    }
 }
 
 class TestModel {
-	
-	private $field1;
-	private $field2;
-	private $child;
-	
-	public function __construct($field1 = null, $field2 = null, TestModel $child = null) {
-		$this->field1 = $field1;
-		$this->field2 = $field2;
-		$this->child = $child;
-	}
 
-	public function setField1($value) {
-		$this->field1 = $value;
-	}
-	
-	public function getField1() {
-		return $this->field1;
-	}
-	
-	public function setField2($value) {
-		$this->field2 = $value;
-	}
-	
-	public function getField2() {
-		return $this->field2;
-	}
-	
-	public function setChild(TestModel $testModel) {
-		$this->child = $testModel;
-	}
+    private $field1;
+    private $field2;
+    private $child;
 
-	public function getChild() {
-		return $this->child;
-	}
+    public function __construct($field1 = null, $field2 = null, TestModel $child = null) {
+        $this->field1 = $field1;
+        $this->field2 = $field2;
+        $this->child = $child;
+    }
+
+    public function setField1($value) {
+        $this->field1 = $value;
+    }
+
+    public function getField1() {
+        return $this->field1;
+    }
+
+    public function setField2($value) {
+        $this->field2 = $value;
+    }
+
+    public function getField2() {
+        return $this->field2;
+    }
+
+    public function setChild(TestModel $testModel) {
+        $this->child = $testModel;
+    }
+
+    public function getChild() {
+        return $this->child;
+    }
 }
 
 class GroupOfModels {
 
-	private $models = array();
+    private $models = array();
 
-	public function __construct(array $models = array()) {
-		$this->models = $models;
-	}
+    public function __construct(array $models = array()) {
+        $this->models = $models;
+    }
 
-	public function setModels(array $models) {
-		$this->models = $models;
-	}
+    public function setModels(array $models) {
+        $this->models = $models;
+    }
 
-	public function getModels() {
-		return $this->models;
-	}
+    public function getModels() {
+        return $this->models;
+    }
 }
 ?>

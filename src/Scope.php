@@ -29,7 +29,7 @@ require_once 'scope/SessionScope.php';
 
 /**
  * Facade for AgilePHP scopes.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
@@ -37,40 +37,37 @@ require_once 'scope/SessionScope.php';
  */
 abstract class Scope {
 
-	     private function __construct() {}
-	     private function __clone() {}
+    private function __construct() {}
+    private function __clone() {}
 
-	  	 /**
-	   	  * Returns a singleton instance of ApplicationScope.
-	   	  * 
-	   	  * @return ApplicationScope A singleton instance of ApplicationScope
-	      * @static
-	      */
-	     public static function getApplicationScope() {
+    /**
+     * Returns a singleton instance of ApplicationScope.
+     *
+     * @return ApplicationScope A singleton instance of ApplicationScope
+     * @static
+     */
+    public static function getApplicationScope() {
+        return ApplicationScope::getInstance();
+    }
 
-	            return ApplicationScope::getInstance();
-	     }
+    /**
+     * Returns a singleton instance of RequestScope.
+     *
+     * @return SessionScope A singleton instance of SessionScope
+     * @static
+     */
+    public static function getSessionScope() {
+        return SessionScope::getInstance();
+    }
 
-	  	 /**
-	   	  * Returns a singleton instance of RequestScope.
-	   	  * 
-	   	  * @return SessionScope A singleton instance of SessionScope
-	   	  * @static
-	   	  */
-	     public static function getSessionScope() {
-
-	            return SessionScope::getInstance();
-	     }
-
-	  	 /**
-	   	  * Returns a singleton instance of RequestScope.
-	   	  * 
-	   	  * @return RequestScope A singleton instance of RequestScope
-	   	  * @static
-	   	  */
-	     public static function getRequestScope() {
-
-	  	        return RequestScope::getInstance(); 
-	     }
+    /**
+     * Returns a singleton instance of RequestScope.
+     *
+     * @return RequestScope A singleton instance of RequestScope
+     * @static
+     */
+    public static function getRequestScope() {
+        return RequestScope::getInstance();
+    }
 }
 ?>

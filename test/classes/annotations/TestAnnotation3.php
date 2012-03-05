@@ -22,15 +22,15 @@
 /**
  * Simple annotation used to demostrate how to create and use an
  * annotation in AgilePHP that accepts three arguments.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes.annotations
  */
 class TestAnnotation3 {
 
-	  public $name;
-	  public $name2;
-	  public $obj1;
+    public $name;
+    public $name2;
+    public $obj1;
 }
 ?>

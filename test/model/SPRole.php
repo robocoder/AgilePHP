@@ -28,84 +28,78 @@
  */
 class SPRole extends StoredProcedure {
 
-      private $id;
-	  private $name;
-	  private $description;
+    private $id;
+    private $name;
+    private $description;
 
-	  /**
-	   * Creates a new instance of Role.
-	   *
-	   * @param String $name An optional user friendly name of the role.
-	   * @return void
-	   */
-	  public function __construct($id = null, $name = null, $description = null) {
+    /**
+     * Creates a new instance of Role.
+     *
+     * @param String $name An optional user friendly name of the role.
+     * @return void
+     */
+    public function __construct($id = null, $name = null, $description = null) {
 
-	         $this->id = $id;
-	  		 $this->name = $name;
-	  		 $this->description = $description;
-	  }
+        $this->id = $id;
+        $this->name = $name;
+        $this->description = $description;
+    }
 
-	  /**
-	   * Sets the role id/primary key
-	   *
-	   * @param integer $id The role id
-	   * @return void
-	   */
-	  public function setId($id) {
+    /**
+     * Sets the role id/primary key
+     *
+     * @param integer $id The role id
+     * @return void
+     */
+    public function setId($id) {
+        $this->id = $id;
+    }
 
-	         $this->id = $id;
-	  }
+    /**
+     * Gets the role id
+     *
+     * @return integer The role id
+     */
+    public function getId() {
+        return $this->id;
+    }
 
-	  /**
-	   * Gets the role id
-	   *
-	   * @return integer The role id
-	   */
-	  public function getId() {
+    /**
+     * Sets the name of the role
+     *
+     * @param String $name The role name
+     * @return void
+     */
+    public function setName($name) {
+        $this->name = $name;
+    }
 
-	         return $this->id;
-	  }
+    /**
+     * Returns the name of the role
+     *
+     * @return String The role name
+     */
+    public function getName() {
+        return $this->name;
+    }
 
-	  /**
-	   * Sets the name of the role
-	   *
-	   * @param String $name The role name
-	   * @return void
-	   */
-	  public function setName($name) {
+    /**
+     * Sets the description of the role.
+     *
+     * @param String $description The role description
+     * @return void
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+    }
 
-	  		 $this->name = $name;
-	  }
-
-	  /**
-	   * Returns the name of the role
-	   *
-	   * @return String The role name
-	   */
-	  public function getName() {
-
-	  		 return $this->name;
-	  }
-
-	  /**
-	   * Sets the description of the role.
-	   *
-	   * @param String $description The role description
-	   * @return void
-	   */
-	  public function setDescription($description) {
-
-	  		 $this->description = $description;
-	  }
-
-	  /**
-	   * Returns the role description
-	   *
-	   * @return String The role description
-	   */
-	  public function getDescription() {
-
-	  		 return $this->description;
-	  }
+    /**
+     * Returns the role description
+     *
+     * @return String The role description
+     */
+    public function getDescription() {
+        return $this->description;
+    }
 }
 ?>

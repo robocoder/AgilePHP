@@ -22,36 +22,36 @@
 /**
  * AgilePHP interceptor responsible for performing Dependency Injection (DI)
  * on class fields/properties.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.interception
  * <code>
  * class MyClass {
- * 
+ *
  * #@In(class = new MyClass2())
  * public $myClasss;
- * 
+ *
  * public function invokeMe() {
- * 
+ *
  * 		  $this->myClass2->someMethod();
  * }
- * 
+ *
  * }
  * </code>
- * 
+ *
  * <code>
  * class MyClass {
- * 
+ *
  * #@In(class = MySingleton::getInstance())
  * public $mySingleton;
- * 
+ *
  * public function invokeMe() {
- * 
+ *
  * 		  $singleton = $this->mySingleton;
  * 		  $singleton::someMethod();
  * }
- * 
+ *
  * }
  * </code>
  */
@@ -59,12 +59,11 @@
 #@Interceptor
 class In {
 
-	  public $class;
+    public $class;
 
-	  #@AroundInvoke
-	  public function setValue(InvocationContext $ic) {
-
-	  		 return $ic->getInterceptor()->class;
-	  }
+    #@AroundInvoke
+    public function setValue(InvocationContext $ic) {
+        return $ic->getInterceptor()->class;
+    }
 }
 ?>

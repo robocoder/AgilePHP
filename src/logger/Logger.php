@@ -22,13 +22,13 @@
 /**
  * Responsible for performing property level #@Logger dependency injections.
  * Shorthand for #@In(class = LogFactory::getLogger())
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.logger
  * <code>
  * class MyClass {
- * 
+ *
  * 		 #@Logger
  * 		 public $logger;  // injected instance of the configured LogProvider
  * }
@@ -37,10 +37,9 @@
 #@Interceptor
 class Logger {
 
-	  #@AroundInvoke
-	  public function inject(InvocationContext $ic) {
-
-	  		 return LogFactory::getLogger();
-	  }
+    #@AroundInvoke
+    public function inject(InvocationContext $ic) {
+        return LogFactory::getLogger();
+    }
 }
 ?>

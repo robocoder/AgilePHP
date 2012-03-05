@@ -28,52 +28,52 @@
  */
 class WinCacheProvider implements CacheProvider {
 
-      /**
-       * Creates a new instance of WindowsCacheProvider
-       *
-       * @return void
-       * @throws CacheException if Windows Cache extension is not installed on the server
-       */
-      public function __construct() {
+    /**
+     * Creates a new instance of WindowsCacheProvider
+     *
+     * @return void
+     * @throws CacheException if Windows Cache extension is not installed on the server
+     */
+    public function __construct() {
 
-             if(!function_exists('wincache_ucache_get'))
-                throw new CacheException('WinCache extension is not installed on the server');
-      }
+        if(!function_exists('wincache_ucache_get'))
+        throw new CacheException('WinCache extension is not installed on the server');
+    }
 
-      /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#set($key, $value, $minutes)
-	   */
-      public function set($key, $value, $minutes = 0) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#set($key, $value, $minutes)
+     */
+    public function set($key, $value, $minutes = 0) {
 
-             return wincache_ucache_set($key, serialize($value), $minutes);
-      }
+        return wincache_ucache_set($key, serialize($value), $minutes);
+    }
 
-      /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#get($key)
-	   */
-      public function get($key) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#get($key)
+     */
+    public function get($key) {
 
-             return unserialize(wincache_ucache_get($key));
-      }
+        return unserialize(wincache_ucache_get($key));
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#get($key)
-	   */
-      public function delete($key) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#get($key)
+     */
+    public function delete($key) {
 
-             return wincache_ucache_delete($key);
-      }
+        return wincache_ucache_delete($key);
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#exists($key)
-	   */
-      public function exists($key) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#exists($key)
+     */
+    public function exists($key) {
 
-             return wincache_ucache_exists($key);
-      }
+        return wincache_ucache_exists($key);
+    }
 }
 ?>

@@ -21,27 +21,27 @@
 
 /**
  * Transforms YAML string data into a populated domain model.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.data.transformer
  */
 class YamlToModel implements DataTransformer {
 
-	  /**
-	   * Transforms the specified data into a populated domain model.
-	   * 
-	   * @param string $data The string data which represents the domain model
-	   * 					 and state to create.
-	   * @return Object The domain model specified in the string $data
-	   * @throws FrameworkException if the specified data could not be parsed
-	   */
-	  public static function transform($data) {
+    /**
+     * Transforms the specified data into a populated domain model.
+     *
+     * @param string $data The string data which represents the domain model
+     * 					 and state to create.
+     * @return Object The domain model specified in the string $data
+     * @throws FrameworkException if the specified data could not be parsed
+     */
+    public static function transform($data) {
 
-	  		 $o = yaml_parse($data);
-	  		 if($o == null) throw new FrameworkException('Malformed YAML data');
+        $o = yaml_parse($data);
+        if($o == null) throw new FrameworkException('Malformed YAML data');
 
-	  		 return $o;
-	  }
+        return $o;
+    }
 }
 ?>

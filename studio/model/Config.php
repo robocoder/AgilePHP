@@ -21,41 +21,37 @@
 
 /**
  * Configuration model
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.model
  */
 class Config extends DomainModel {
 
-	  private $name;
-	  private $value;
+    private $name;
+    private $value;
 
-	  public function __construct($name = null, $value = null) {
+    public function __construct($name = null, $value = null) {
 
-	  		 $this->name = $name;
-	  		 $this->value = $value;
-	  }
+        $this->name = $name;
+        $this->value = $value;
+    }
 
-	  #@Id
-	  public function setName($name) {
-	  	
-	  		 $this->name = $name;
-	  }
-	  
-	  public function getName() {
-	  	
-	  		 return $this->name;
-	  }
-	  
-	  public function setValue($value) {
-	  	
-	  		 $this->value = $value;
-	  }
-	  
-	  public function getValue() {
-	  	
-	  		 return $this->value;
-	  }
+    #@Id
+    public function setName($name) {
+        $this->name = $name;
+    }
+     
+    public function getName() {
+        return $this->name;
+    }
+     
+    public function setValue($value) {
+        $this->value = $value;
+    }
+     
+    public function getValue() {
+        return $this->value;
+    }
 }
 ?>

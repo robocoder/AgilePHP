@@ -32,69 +32,69 @@ require_once 'logger/FileLogger.php';
  */
 final class Log {
 
-	  private function __construct() {}
-	  private function __clone() {}
+    private function __construct() {}
+    private function __clone() {}
 
-	  /**
-	   * Writes a 'debug' log level entry.
-	   *
-	   * @param String $message The debug message to log
-	   * @return void
-	   * @static
-	   */
-	  public static function debug($message) {
+    /**
+     * Writes a 'debug' log level entry.
+     *
+     * @param String $message The debug message to log
+     * @return void
+     * @static
+     */
+    public static function debug($message) {
 
-	         $logger = LogFactory::getLogger();
+        $logger = LogFactory::getLogger();
 
-	         if(LogFactory::getLevel() == 'debug')
-  		 	      $logger->debug($message);
-	  }
+        if(LogFactory::getLevel() == 'debug')
+        $logger->debug($message);
+    }
 
-	  /**
-	   * Writes a 'warn' log level entry.
-	   *
-	   * @param String $message The warning message to log
-	   * @return void
-	   * @static
-	   */
-	  public static function warn($message) {
+    /**
+     * Writes a 'warn' log level entry.
+     *
+     * @param String $message The warning message to log
+     * @return void
+     * @static
+     */
+    public static function warn($message) {
 
-	         $logger = LogFactory::getLogger();
+        $logger = LogFactory::getLogger();
 
-	         if(LogFactory::getLevel() != 'error')
-	  		    $logger->warn($message);
-	  }
+        if(LogFactory::getLevel() != 'error')
+        $logger->warn($message);
+    }
 
-	  /**
-	   * Writes an 'info' log level entry.
-	   *
-	   * @param String $message The informative message to log
-	   * @return void
-	   * @static
-	   */
-	  public static function info($message) {
+    /**
+     * Writes an 'info' log level entry.
+     *
+     * @param String $message The informative message to log
+     * @return void
+     * @static
+     */
+    public static function info($message) {
 
-	         $logger = LogFactory::getLogger();
-	         $level = LogFactory::getLevel();
+        $logger = LogFactory::getLogger();
+        $level = LogFactory::getLevel();
 
-	         if($level == 'info' || $level == 'debug')
-	  		    $logger->info($message);
-	  }
+        if($level == 'info' || $level == 'debug')
+        $logger->info($message);
+    }
 
-	  /**
-	   * Writes an 'error' log level entry.
-	   *
-	   * @param String $message The error message to log.
-	   * @return void
-	   * @static
-	   */
-	  public static function error($message) {
+    /**
+     * Writes an 'error' log level entry.
+     *
+     * @param String $message The error message to log.
+     * @return void
+     * @static
+     */
+    public static function error($message) {
 
-	         $logger = LogFactory::getLogger();
-	         $level = LogFactory::getLevel();
+        $logger = LogFactory::getLogger();
+        $level = LogFactory::getLevel();
 
-	         if($level == 'error' || $level == 'debug')
-	  		    $logger->error($message);
-	  }
+        if($level == 'error' || $level == 'debug')
+        $logger->error($message);
+    }
 }
 ?>

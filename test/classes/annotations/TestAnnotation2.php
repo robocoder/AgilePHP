@@ -22,14 +22,14 @@
 /**
  * Simple annotation used to demostrate how to create and use an
  * annotation in AgilePHP that accepts two arguments.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes.annotations
  */
 class TestAnnotation2 {
 
-	  public $name;
-	  public $name2;
+    public $name;
+    public $name2;
 }
 ?>

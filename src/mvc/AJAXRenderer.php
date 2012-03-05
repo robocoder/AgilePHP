@@ -21,220 +21,220 @@
 
 /**
  * Renders data in JSON or XML, optionally with appropriate content-type header.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.mvc
  */
 class AJAXRenderer extends BaseRenderer {
 
-	  private $output = 'json';
+    private $output = 'json';
 
-	  /**
-	   * Renders the specified PHP data according to $output. The approriate
-	   * content-type to the HTTP response header. After rendering JSON,
-	   * exit() is called.
-	   * 
-	   * (non-PHPdoc)
-	   * @see src/mvc/BaseRenderer#render($view)
-	   */
-	  public function render($data, $name = null) {
+    /**
+     * Renders the specified PHP data according to $output. The approriate
+     * content-type to the HTTP response header. After rendering JSON,
+     * exit() is called.
+     *
+     * (non-PHPdoc)
+     * @see src/mvc/BaseRenderer#render($view)
+     */
+    public function render($data, $name = null) {
 
-	  		 if(!$this->output)
-	  		 	throw new FrameworkException('AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml|yaml)');
+        if(!$this->output)
+        throw new FrameworkException('AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml|yaml)');
 
-	  		 if( $this->output == 'json' ) {
+        if( $this->output == 'json' ) {
 
-	  		 	 $json = $this->toJSON($data, $name);
+            $json = $this->toJSON($data, $name);
 
-	  		 	 Log::debug('AJAXRenderer::render Rendering JSON ' . $json);
+            Log::debug('AJAXRenderer::render Rendering JSON ' . $json);
 
-	  		 	 header('content-type: application/json');
-	  		 	 die((extension_loaded('jsmin')) ? jsmin($json) : $json);
-	  		 }
+            header('content-type: application/json');
+            die((extension_loaded('jsmin')) ? jsmin($json) : $json);
+        }
 
-	  		 else if($this->output == 'xml') {
+        else if($this->output == 'xml') {
 
-	  		 	 if(!$name) $name = 'Result';
+            if(!$name) $name = 'Result';
 
-	  		 	 $xml = $this->toXML($data, $name);
+            $xml = $this->toXML($data, $name);
 
-	  		 	 Log::debug('AJAXRenderer::render Rendering XML ' . $xml);
+            Log::debug('AJAXRenderer::render Rendering XML ' . $xml);
 
-	  		 	 header('content-type: application/xml');
-	  		 	 die($xml);
-	  		 }
+            header('content-type: application/xml');
+            die($xml);
+        }
 
-	  		 else if($this->output == 'yaml') {
+        else if($this->output == 'yaml') {
 
-	  		     $yaml = $this->toYAML($data);
+            $yaml = $this->toYAML($data);
 
-	  		     Log::debug('AJAXRenderer::render Rendering YAML ' . $yaml);
+            Log::debug('AJAXRenderer::render Rendering YAML ' . $yaml);
 
-	  		     header('content-type: application/x-yaml');
-	  		     die($yaml);
-	  		 }
-	  }
+            header('content-type: application/x-yaml');
+            die($yaml);
+        }
+    }
 
-	  /**
-	   * Renders the specified data according to $output without sending
-	   * an HTTP content-type header. After rendering JSON, exit() is called.
-	   * 
-	   * @param Object $data A stdClass object to output as either XML or JSON.
-	   * @return void
-	   */
-	  public function renderNoHeader($data) {
+    /**
+     * Renders the specified data according to $output without sending
+     * an HTTP content-type header. After rendering JSON, exit() is called.
+     *
+     * @param Object $data A stdClass object to output as either XML or JSON.
+     * @return void
+     */
+    public function renderNoHeader($data) {
 
-	 		 if(!$this->output)
-	  		 	 throw new FrameworkException('AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml|yaml)');
+        if(!$this->output)
+        throw new FrameworkException('AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml|yaml)');
 
-	  		 if($this->output == 'json') {
+        if($this->output == 'json') {
 
-	  		 	$json = $this->toJSON($data);
+            $json = $this->toJSON($data);
 
-	  		 	Log::debug('AJAXRenderer::render Rendering JSON ' . $json);
+            Log::debug('AJAXRenderer::render Rendering JSON ' . $json);
 
-	  		 	 die((extension_loaded('jsmin')) ? jsmin($json) : $json);
-	  		 }
+            die((extension_loaded('jsmin')) ? jsmin($json) : $json);
+        }
 
-	  		 else if($this->output == 'xml') {
+        else if($this->output == 'xml') {
 
-	  		 	$xml = $this->toXML($data);
+            $xml = $this->toXML($data);
 
-	  		 	Log::debug('AJAXRenderer::render Rendering XML ' . $xml);
+            Log::debug('AJAXRenderer::render Rendering XML ' . $xml);
 
-	  		 	die($xml);
-	  		 }
-	  		 
-	  		 else if($this->output == 'yaml') {
+            die($xml);
+        }
 
-	  		    $yaml = $this->toYAML($data);
+        else if($this->output == 'yaml') {
 
-	  		    Log::debug('AJAXRenderer::render Rendering YAML ' . $yaml);
+            $yaml = $this->toYAML($data);
 
-	  		    die($yaml);
-	  		 }
-	  }
+            Log::debug('AJAXRenderer::render Rendering YAML ' . $yaml);
 
-	  /**
-	   * Renders the specified raw data without sending it through any of the AJAXRender
-	   * internal formatting/conversion methods. An appropriate HTTP content-type
-	   * header is added to the response.
-	   *  
-	   * @param mixed $data The raw data to render
-	   * @return void
-	   */
-	  public function renderNoFormat($data) {
+            die($yaml);
+        }
+    }
 
-	  	     if(!$this->output)
-	  		 	throw new FrameworkException('AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml|yaml)');
+    /**
+     * Renders the specified raw data without sending it through any of the AJAXRender
+     * internal formatting/conversion methods. An appropriate HTTP content-type
+     * header is added to the response.
+     *
+     * @param mixed $data The raw data to render
+     * @return void
+     */
+    public function renderNoFormat($data) {
 
-	  		 switch($this->output) {
+        if(!$this->output)
+        throw new FrameworkException('AJAXRenderer::render Output mode required. Use AJAXRenderer::setOutputMode to set the desired format (json|xml|yaml)');
 
-			  		 case 'json':
-			  		 case 'JSON':
-			  		 	header('content-type: application/json');
-	  		 	 		break;
+        switch($this->output) {
 
-			  		 case 'xml':
-			  		 case 'XML':
-			  		 	header('content-type: application/xml');
-	  		 	 		break;
+            case 'json':
+            case 'JSON':
+                header('content-type: application/json');
+                break;
 
-			  		 case 'yaml':
-			  		 case 'YAML':
-			  		     header('content-type: application/x-yaml');
-			  		     break;
-	  		 }
+            case 'xml':
+            case 'XML':
+                header('content-type: application/xml');
+                break;
 
-	  		 print $data;
-	  }
+            case 'yaml':
+            case 'YAML':
+                header('content-type: application/x-yaml');
+                break;
+        }
 
-	  /**
-	   * Renders the specified data without sending it through any of the AJAXRenderer
-	   * internal formatting/conversion methods. In addition, no HTTP content-type header
-	   * is added to the response.
-	   * 
-	   * @param Object $data The data to render
-	   * @return void
-	   */
-	  public function renderNoFormatNoHeader($data) {
+        print $data;
+    }
 
-	  		 die($data);
-	  }
+    /**
+     * Renders the specified data without sending it through any of the AJAXRenderer
+     * internal formatting/conversion methods. In addition, no HTTP content-type header
+     * is added to the response.
+     *
+     * @param Object $data The data to render
+     * @return void
+     */
+    public function renderNoFormatNoHeader($data) {
 
-	  /**
-	   * Sets the desired output type.
-	   * 
-	   * @param String $type The data formatting to use during output. (XML|JSON|YAML)
-	   * @return void
-	   * @throws FrameworkException if invalid formatting type is specified
-	   */
-	  public function setOutput($type) {
+        die($data);
+    }
 
-	  		 switch( $type ) {
+    /**
+     * Sets the desired output type.
+     *
+     * @param String $type The data formatting to use during output. (XML|JSON|YAML)
+     * @return void
+     * @throws FrameworkException if invalid formatting type is specified
+     */
+    public function setOutput($type) {
 
-	  		 		 case 'json':
-	  		 		 case 'JSON':
-	  		 		 	$this->output = 'json';
-	  		 		 	break;
+        switch( $type ) {
 
-	  		 		 case 'xml':
-	  		 		 case 'XML':
-	  		 		 	$this->output = 'xml';
-	  		 		 	break;
-	  		 		 	
-	  		 		 case 'yaml':
-	  		 		 case 'YAML':
-	  		 		     $this->output = 'yaml';
-	  		 		     break;
+            case 'json':
+            case 'JSON':
+                $this->output = 'json';
+                break;
 
-	  		 		 throw new FrameworkException('Unsupported output type \'' . $type . '\'.');
-	  		 }
-	  }
+            case 'xml':
+            case 'XML':
+                $this->output = 'xml';
+                break;
 
-	  /**
-	   * Transforms the specified PHP data to JSON. json_encode does not encode
-	   * private fields within objects, so here we make use PHP 5.3+
-	   * ReflectionProperty::setAccessible to access the private/protected properties.
-	   * 
-	   * @param mixed $data An array or object to transform into JSON
-	   * @param string $name An optional class name. Defaults to null
-	   * @param boolean $isChild Used internally for recursion logic
-	   * @return The JSON encoded data
-	   * @deprecated Use JsonRenderer::render instead
-	   */
-	  public function toJSON($data, $name = null, $isChild = false) {
+            case 'yaml':
+            case 'YAML':
+                $this->output = 'yaml';
+                break;
 
-	         $json = JsonRenderer::render($data, $name, $isChild);
-	         return (extension_loaded('jsmin')) ? jsmin($json) : $json;
-	  }
+                throw new FrameworkException('Unsupported output type \'' . $type . '\'.');
+        }
+    }
 
-	  /**
-	   * Recursively transforms the specified PHP data to XML.
-	   * 
-	   * @param mixed $data An array or object to transform into XML
-	   * @param $name Used internally within the method to perform recursion logic
-	   * @return The XML string
-	   * @deprecated Use XmlRenderer::render instead
-	   */
-	  public function toXML($data, $name = 'Result', $pluralName = 'Results', $isChild = false, $declaration = true) {
+    /**
+     * Transforms the specified PHP data to JSON. json_encode does not encode
+     * private fields within objects, so here we make use PHP 5.3+
+     * ReflectionProperty::setAccessible to access the private/protected properties.
+     *
+     * @param mixed $data An array or object to transform into JSON
+     * @param string $name An optional class name. Defaults to null
+     * @param boolean $isChild Used internally for recursion logic
+     * @return The JSON encoded data
+     * @deprecated Use JsonRenderer::render instead
+     */
+    public function toJSON($data, $name = null, $isChild = false) {
 
-	  		 return XmlRenderer::render($data, $name, $pluralName, $isChild, $declaration);
-	  }
+        $json = JsonRenderer::render($data, $name, $isChild);
+        return (extension_loaded('jsmin')) ? jsmin($json) : $json;
+    }
 
-	  /**
-	   * Transforms the specified PHP data to YAML.
-	   * 
-	   * @param mixed $data Data to transform into YAML
-	   * @param $encoding YAML_ANY_ENCODING, YAML_UTF8_ENCODING, YAML_UTF16LE_ENCODING, YAML_UTF16BE_ENCODING. Defaults to YAML_ANY_ENCODING.
-	   * @param $int $linebreak YAML_ANY_BREAK, YAML_CR_BREAK, YAML_LN_BREAK, YAML_CRLN_BREAK. Defaults to YAML_ANY_BREAK
-	   * @return $int string The YAML formatted data.
-	   * @deprecated Use YamlRenderer::render instead
-	   */
-	  public function toYAML($data, $encoding = null, $linebreak = null) {
+    /**
+     * Recursively transforms the specified PHP data to XML.
+     *
+     * @param mixed $data An array or object to transform into XML
+     * @param $name Used internally within the method to perform recursion logic
+     * @return The XML string
+     * @deprecated Use XmlRenderer::render instead
+     */
+    public function toXML($data, $name = 'Result', $pluralName = 'Results', $isChild = false, $declaration = true) {
 
-	  		 return YamlRenderer::render($data, $encoding, $linebreak);
-	  }
+        return XmlRenderer::render($data, $name, $pluralName, $isChild, $declaration);
+    }
+
+    /**
+     * Transforms the specified PHP data to YAML.
+     *
+     * @param mixed $data Data to transform into YAML
+     * @param $encoding YAML_ANY_ENCODING, YAML_UTF8_ENCODING, YAML_UTF16LE_ENCODING, YAML_UTF16BE_ENCODING. Defaults to YAML_ANY_ENCODING.
+     * @param $int $linebreak YAML_ANY_BREAK, YAML_CR_BREAK, YAML_LN_BREAK, YAML_CRLN_BREAK. Defaults to YAML_ANY_BREAK
+     * @return $int string The YAML formatted data.
+     * @deprecated Use YamlRenderer::render instead
+     */
+    public function toYAML($data, $encoding = null, $linebreak = null) {
+
+        return YamlRenderer::render($data, $encoding, $linebreak);
+    }
 }
 ?>

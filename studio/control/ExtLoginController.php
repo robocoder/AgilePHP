@@ -21,60 +21,59 @@
 
 /**
  * Controller for ExtJS form based login related tasks
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.control
  */
 class ExtLoginController extends BaseExtController {
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see AgilePHP/mvc/BaseController#index()
-	   */
-	  public function index() { }
+    /**
+     * (non-PHPdoc)
+     * @see AgilePHP/mvc/BaseController#index()
+     */
+    public function index() { }
 
-	  /**
-	   * Authenticates a user account using AgilePHP Identity and Scope components.
-	   * 
-	   * @return void
-	   */
-	  public function login() {
+    /**
+     * Authenticates a user account using AgilePHP Identity and Scope components.
+     *
+     * @return void
+     */
+    public function login() {
 
-	  		 $request = Scope::getRequestScope();
+        $request = Scope::getRequestScope();
 
-	  		 if( !$username = $request->getSanitized( 'username' ) ) {
+        if(!$username = $request->getSanitized('username')) {
 
-	  		 	$this->getRenderer()->setError( 'Username required' );
-	  		 	$this->getRenderer()->render( false );
-	  		 }
+            $this->getRenderer()->setError('Username required');
+            $this->getRenderer()->render(false);
+        }
 
-	  		 if( !$password = $request->getSanitized( 'password' ) ) {
+        if(!$password = $request->getSanitized('password')) {
 
-	  		 	 $this->getRenderer()->setError( 'Password required' );
-	  		 	 $this->getRenderer()->render( false );
-	  		 }
+            $this->getRenderer()->setError('Password required');
+            $this->getRenderer()->render(false);
+        }
 
-			 if( !Identity::login( $username, $password ) ) {
+        if(!Identity::login($username, $password)) {
 
-			 	 Scope::getRequestScope()->invalidate();
-			 	 $this->getRenderer()->setError( 'Invalid username/password' );
-	  		 	 $this->getRenderer()->render( false );
-			 }
+            Scope::getRequestScope()->invalidate();
+            $this->getRenderer()->setError('Invalid username/password');
+            $this->getRenderer()->render(false);
+        }
 
-			 $this->getRenderer()->set( 'username', Identity::getUsername() );
-			 $this->getRenderer()->set( 'role', Identity::getRole()->getName() );
-	  	     $this->getRenderer()->render( true );
-	  }
+        $this->getRenderer()->set('username', Identity::getUsername());
+        $this->getRenderer()->set('role', Identity::getRole()->getName());
+        $this->getRenderer()->render(true);
+    }
 
-	  /**
-	   * Destroys the session which was created by login()
-	   * 
-	   * @return void
-	   */
-	  public function logout() {
-
-	  	     Identity::logout();
-	  }
+    /**
+     * Destroys the session which was created by login()
+     *
+     * @return void
+     */
+    public function logout() {
+        Identity::logout();
+    }
 }
 ?>

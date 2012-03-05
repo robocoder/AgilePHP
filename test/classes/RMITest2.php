@@ -21,43 +21,43 @@
 
 /**
  * Another simple class exposed to client side javascript via AgilePHP remoting component.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes
  */
 class RMITest2 {
 
-	  public function __construct() { }
+    public function __construct() { }
 
-	  #@RemoteMethod
-	  public function testme($param1 = null, $param2) {
+    #@RemoteMethod
+    public function testme($param1 = null, $param2) {
 
-	  		 $o = new stdClass;
-	  		 $o->param1 = $param1;
-	  		 $o->param2 = $param2;
+        $o = new stdClass;
+        $o->param1 = $param1;
+        $o->param2 = $param2;
 
-	  		 return $o;
-	  }
+        return $o;
+    }
 
-	  #@RemoteMethod
-	  public function testme2($param1 = null, $param2) {
-	  	
-	  		 $o = new stdClass;
-	  		 $o->testme2 = 'this does something 2';
+    #@RemoteMethod
+    public function testme2($param1 = null, $param2) {
 
-	  		 return $o;
-	  }
-	  
-	  #@RemoteMethod
-	  public function testme3() {
+        $o = new stdClass;
+        $o->testme2 = 'this does something 2';
 
-	  		 $o = new stdClass;
-	  		 $o->testme3 = 'this does something else';
+        return $o;
+    }
+     
+    #@RemoteMethod
+    public function testme3() {
 
-	  		 return $o;
-	  }
-	  
-	  public function testme4() { }
+        $o = new stdClass;
+        $o->testme3 = 'this does something else';
+
+        return $o;
+    }
+     
+    public function testme4() { }
 }
 ?>

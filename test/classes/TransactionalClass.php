@@ -21,7 +21,7 @@
 
 /**
  * A class used by the test package to test #@Transacational interceptions.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes
@@ -30,16 +30,16 @@
 #@Transactional
 class TransactionalClass {
 
-      public function doQueryThatResultsInException() {
+    public function doQueryThatResultsInException() {
 
-             ORM::query('INSERT INTO roles(namesssssssss, description) VALUES("transactional-test", "Transactional test users");');
-             ORM::query('INSERT INTO users(username, password, email, created, enabled) VALUES("transactional-test-account", "123", "root@localhost", "' . date('Y m d', strtotime('now')) . '", "1");');
-      }
+        ORM::query('INSERT INTO roles(namesssssssss, description) VALUES("transactional-test", "Transactional test users");');
+        ORM::query('INSERT INTO users(username, password, email, created, enabled) VALUES("transactional-test-account", "123", "root@localhost", "' . date('Y m d', strtotime('now')) . '", "1");');
+    }
 
-      public function doQueryThatCompletes() {
+    public function doQueryThatCompletes() {
 
-             ORM::query('INSERT INTO roles(name, description) VALUES("transactional-test2", "Transactional test users");');
-             ORM::query('INSERT INTO users(username, password, email, created, enabled) VALUES("transactional-test-account2", "123", "root@localhost", "' . date('Y m d', strtotime('now')) . '", "1");');
-      }
+        ORM::query('INSERT INTO roles(name, description) VALUES("transactional-test2", "Transactional test users");');
+        ORM::query('INSERT INTO users(username, password, email, created, enabled) VALUES("transactional-test-account2", "123", "root@localhost", "' . date('Y m d', strtotime('now')) . '", "1");');
+    }
 }
 ?>

@@ -29,24 +29,24 @@
  */
 class FrameworkException extends Exception {
 
-	  /**
-	   * Creates a new instance of FrameworkException.
-	   *
-	   * @param String $message The exception message
-	   * @param Integer $code Optional error code.
-	   * @param String $file Optional file path to the exception
-	   * @param Integer $line The line number the exception / error occurred
-	   * @return void
-	   */
-	  public function __construct($message = null, $code = null, $file = null, $line = null) {
+    /**
+     * Creates a new instance of FrameworkException.
+     *
+     * @param String $message The exception message
+     * @param Integer $code Optional error code.
+     * @param String $file Optional file path to the exception
+     * @param Integer $line The line number the exception / error occurred
+     * @return void
+     */
+    public function __construct($message = null, $code = null, $file = null, $line = null) {
 
-	         $error = error_get_last();
+        $error = error_get_last();
 
-			 $this->message = $message ? (string)$message : (string)$error['message'];
-	  		 $this->code = $code ? (int)$code : (int)$error['type'];
-	  		 $this->file = $file ? (string)$file : (string)$error['file'];
-  		 	 $this->line = $line ? (int)$line : (int)$error['line'];
-	  		 $this->trace = debug_backtrace();
-	  }
+        $this->message = $message ? (string)$message : (string)$error['message'];
+        $this->code = $code ? (int)$code : (int)$error['type'];
+        $this->file = $file ? (string)$file : (string)$error['file'];
+        $this->line = $line ? (int)$line : (int)$error['line'];
+        $this->trace = debug_backtrace();
+    }
 }
 ?>

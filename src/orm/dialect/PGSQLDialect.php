@@ -28,492 +28,490 @@
  */
 final class PGSQLDialect extends BaseDialect implements SQLDialect {
 
-	  private $connectFlag = -1;
+    private $connectFlag = -1;
 
-	  /**
-	   * Initalize PostgreSQLDialect
-	   *
-	   * @param Database $db The Database object representing orm.xml
-	   * @return void
-	   */
-	  public function __construct(Database $db) {
+    /**
+     * Initalize PostgreSQLDialect
+     *
+     * @param Database $db The Database object representing orm.xml
+     * @return void
+     */
+    public function __construct(Database $db) {
 
-	  	     try {
-	  	     		$this->database = $db;
+        try {
+            $this->database = $db;
 
-	  	     		$conn = 'pgsql:' .
-	  	     				(($db->getName()) ? 'dbname=' . $db->getName() . ';': '') .
-	  	  					(($db->getHostname()) ? 'host=' . $db->getHostname() . ';': '') .
-	  	  					(($db->getPort()) ? 'port=' . $db->getPort() . ';' : '') .
-	  	  					(($db->getUsername()) ? 'user=' . $db->getUsername() . ';': '') .
-	  	  					(($db->getPassword()) ? 'password=' . $db->getPassword() . ';' : '');
+            $conn = 'pgsql:' .
+            (($db->getName()) ? 'dbname=' . $db->getName() . ';': '') .
+            (($db->getHostname()) ? 'host=' . $db->getHostname() . ';': '') .
+            (($db->getPort()) ? 'port=' . $db->getPort() . ';' : '') .
+            (($db->getUsername()) ? 'user=' . $db->getUsername() . ';': '') .
+            (($db->getPassword()) ? 'password=' . $db->getPassword() . ';' : '');
 
-	  	  			$this->pdo = new PDO($conn);
-	  	  			$this->connectFlag = 1;
-	  	     }
-	  	     catch(PDOException $pdoe){
+            $this->pdo = new PDO($conn);
+            $this->connectFlag = 1;
+        }
+        catch(PDOException $pdoe){
 
-	  	     	    Log::debug('PostgreSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.');
+            Log::debug('PostgreSQLDialect::__construct Warning about \'' . $pdoe->getMessage() . '\'.');
 
-	  	     		// If the database doesnt exist, try a generic connection to the server. This allows the create() method to
-	  	     		// be invoked to create the database schema.
-	  	     	    if(strpos($pdoe->getMessage(), 'does not exist')) {
+            // If the database doesnt exist, try a generic connection to the server. This allows the create() method to
+            // be invoked to create the database schema.
+            if(strpos($pdoe->getMessage(), 'does not exist')) {
 
-	  	     	    	$conn = 'pgsql:' .
-	  	  					(($db->getHostname()) ? 'host=' . $db->getHostname() . ';': '') .
-	  	  					(($db->getUsername()) ? 'user=' . $db->getUsername() . ';': '') .
-	  	  					(($db->getPassword()) ? 'password=' . $db->getPassword() . ';' : '');
+                $conn = 'pgsql:' .
+                (($db->getHostname()) ? 'host=' . $db->getHostname() . ';': '') .
+                (($db->getUsername()) ? 'user=' . $db->getUsername() . ';': '') .
+                (($db->getPassword()) ? 'password=' . $db->getPassword() . ';' : '');
 
-	  	     	    	$this->pdo = new PDO($conn);
-	  	     	    	$this->connectFlag = 0;
-	  	     	    }
-	  	     	    else {
+                $this->pdo = new PDO($conn);
+                $this->connectFlag = 0;
+            }
+            else {
 
-	  	     	    	$this->connectFlag = -1;
-	  	     	    	throw new ORMException('Failed to create PostgreSQLDialect instance. ' . $pdoe->getMessage());
-	  	     	    }
-	  	     }
+                $this->connectFlag = -1;
+                throw new ORMException('Failed to create PostgreSQLDialect instance. ' . $pdoe->getMessage());
+            }
+        }
 
-	 	     $this->database = $db;
-	  }
+        $this->database = $db;
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/orm/dialect/SQLDialect#isConnected()
-	   */
-	  public function isConnected() {
+    /**
+     * (non-PHPdoc)
+     * @see src/orm/dialect/SQLDialect#isConnected()
+     */
+    public function isConnected() {
 
-	  		 return $this->connectFlag;
-	  }
+        return $this->connectFlag;
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/orm/dialect/SQLDialect#create()
-	   */
-	  public function create() {
+    /**
+     * (non-PHPdoc)
+     * @see src/orm/dialect/SQLDialect#create()
+     */
+    public function create() {
 
-	  		 $this->query('CREATE DATABASE ' . $this->database->getName() . ';');
+        $this->query('CREATE DATABASE ' . $this->database->getName() . ';');
 
-	  		 // Now that the database is present, connect directly to the database.
-	  		 $this->pdo = new PDO('pgsql:host=' . $this->database->getHostname() . ';dbname=' . $this->database->getName(),
-	  		 						 $this->database->getUsername(), $this->database->getPassword());
+        // Now that the database is present, connect directly to the database.
+        $this->pdo = new PDO('pgsql:host=' . $this->database->getHostname() . ';dbname=' . $this->database->getName(),
+        $this->database->getUsername(), $this->database->getPassword());
 
-	  		 $constraintFails = array();
-	  		 foreach($this->database->getTables() as $table) {
+        $constraintFails = array();
+        foreach($this->database->getTables() as $table) {
 
-	  		 		  try {
-	  		 		  	    $sql = $this->toCreateTableSQL($table);
-			   		  		$this->query($sql);
-	  		 		  }
-	  		 		  catch(ORMException $e) {
+            try {
+                $sql = $this->toCreateTableSQL($table);
+                $this->query($sql);
+            }
+            catch(ORMException $e) {
 
-	  		 		  		 if(preg_match('/does not exist/', $e->getMessage())) {
+                if(preg_match('/does not exist/', $e->getMessage())) {
 
-	  		 		  		 	 array_push($constraintFails, $sql);
-	  		 		  		 	 Log::warn('PGSQLDialect::create Failed to create table \'' . $table->getName() . '\'. Will retry after processing all tables in case this is a foreign key constraint issue due to a table listed further down in orm.xml');
-	  		 		  		 	 continue;
-	  		 		  		 }
+                    array_push($constraintFails, $sql);
+                    Log::warn('PGSQLDialect::create Failed to create table \'' . $table->getName() . '\'. Will retry after processing all tables in case this is a foreign key constraint issue due to a table listed further down in orm.xml');
+                    continue;
+                }
 
-	  		 		  		 Log::debug($e->getMessage());
-	  		 		  }
-	  		 }
+                Log::debug($e->getMessage());
+            }
+        }
 
-	  		 // Constraint hack continued
-	  		 if(count($constraintFails))
-	  		 	 foreach($constraintFails as $sql)
-	  		 	 		if(!$this->query($sql))
-		  		 	 		throw new ORMException(print_r($e, true));
-	  }
+        // Constraint hack continued
+        if(count($constraintFails))
+        foreach($constraintFails as $sql)
+        if(!$this->query($sql))
+        throw new ORMException(print_r($e, true));
+    }
 
-	  /**
-	   * Generates SQL CREATE TABLE for the specified table.
-	   *
-	   * @param Table $table The table to generate the CREATE TABLE code for
-	   * @return string The SQL CREATE TABLE code
-	   */
-	  private function toCreateTableSQL(Table $table) {
+    /**
+     * Generates SQL CREATE TABLE for the specified table.
+     *
+     * @param Table $table The table to generate the CREATE TABLE code for
+     * @return string The SQL CREATE TABLE code
+     */
+    private function toCreateTableSQL(Table $table) {
 
-	  		  $defaultKeywords = array('CURRENT_TIMESTAMP');  // Default values that get passed unquoted
+        $defaultKeywords = array('CURRENT_TIMESTAMP');  // Default values that get passed unquoted
 
   	 		  $sql = 'CREATE TABLE ' . $table->getName() . ' (';
 
   	 		  foreach($table->getColumns() as $column) {
 
-  	 				   $sql .= $column->getName() . ' ' . $column->getType() .
-  	 						   (($column->getLength()) ? '(' . $column->getLength() . ')' : '') .
-  	 						   (($column->isRequired() == true && !$column->isAutoIncrement()) ? ' NOT NULL' : '') .
-  	 						   (($column->getDefault()) ? ' DEFAULT ' . (in_array($column->getDefault(),$defaultKeywords) ? $column->getDefault() : '\'' . $column->getDefault() . '\'') . '': '') .
-  	 						   ((!$column->getDefault() && !$column->isRequired() && !$column->isAutoIncrement()) ? ' DEFAULT NULL' : '') . ', ';
+  	 		      $sql .= $column->getName() . ' ' . $column->getType() .
+  	 		      (($column->getLength()) ? '(' . $column->getLength() . ')' : '') .
+  	 		      (($column->isRequired() == true && !$column->isAutoIncrement()) ? ' NOT NULL' : '') .
+  	 		      (($column->getDefault()) ? ' DEFAULT ' . (in_array($column->getDefault(),$defaultKeywords) ? $column->getDefault() : '\'' . $column->getDefault() . '\'') . '': '') .
+  	 		      ((!$column->getDefault() && !$column->isRequired() && !$column->isAutoIncrement()) ? ' DEFAULT NULL' : '') . ', ';
   	 		  }
 
    			  $pkeyColumns = $table->getPrimaryKeyColumns();
    			  if(count($pkeyColumns)) {
 
-   			  	  $sql .= ' PRIMARY KEY (';
-   				  for($i=0; $i<count($pkeyColumns); $i++) {
+   			      $sql .= ' PRIMARY KEY (';
+   			      for($i=0; $i<count($pkeyColumns); $i++) {
 
-   					   $sql .= $pkeyColumns[$i]->getName();
+   			          $sql .= $pkeyColumns[$i]->getName();
 
-   					   if(($i+1) < count($pkeyColumns))
-   						   $sql .= ', ';
-   				  }
-   				  $sql .= ')';
+   			          if(($i+1) < count($pkeyColumns))
+   			          $sql .= ', ';
+   			      }
+   			      $sql .= ')';
    			  }
 
-	   		  if($table->hasForeignKey()) {
+   			  if($table->hasForeignKey()) {
 
-	   		  	  $foreignKeyColumns = $table->getForeignKeyColumns();
-	   		  	  for($i=0; $i<count($foreignKeyColumns); $i++) {
+   			      $foreignKeyColumns = $table->getForeignKeyColumns();
+   			      for($i=0; $i<count($foreignKeyColumns); $i++) {
 
-	   		  	  	   $fk = $foreignKeyColumns[$i]->getForeignKey();
+   			          $fk = $foreignKeyColumns[$i]->getForeignKey();
 
-	   		  	  	   $sql .= ', CONSTRAINT ' . $fk->getName() . ' FOREIGN KEY (' .
-	   		  	  	   				$fk->getColumnInstance()->getName() .
+   			          $sql .= ', CONSTRAINT ' . $fk->getName() . ' FOREIGN KEY (' .
+   			          $fk->getColumnInstance()->getName() .
    	  	  		       	        ') REFERENCES ' . $fk->getReferencedTable() . ' (' .
-   	  	  		    	        $fk->getReferencedColumn() . ') ';
+   			          $fk->getReferencedColumn() . ') ';
 
-     	  		   	   $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '');
-     	  		   	   $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '');
-	   		  	  }
-	   		  }
+   			          $sql .= (($fk->getOnUpdate()) ? ' ON UPDATE ' . $fk->getOnUpdate() : '');
+   			          $sql .= (($fk->getOnDelete()) ? ' ON DELETE ' . $fk->getOnDelete() : '');
+   			      }
+   			  }
 
-			  $sql .= ');';
+   			  $sql .= ');';
 
-	   		  return $sql;
-	  }
+   			  return $sql;
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/orm/dialect/SQLDialect#createTable(Table $table)
-	   */
-	  public function createTable(Table $table) {
+    /**
+     * (non-PHPdoc)
+     * @see src/orm/dialect/SQLDialect#createTable(Table $table)
+     */
+    public function createTable(Table $table) {
+        $this->query($this->toCreateTableSQL($table));
+    }
 
-	  		 $this->query($this->toCreateTableSQL($table));
-	  }
+    /**
+     * (non-PHPdoc)
+     * @see src/orm/dialect/SQLDialect#dropTable(Table $table)
+     */
+    public function dropTable(Table $table) {
+        $this->query('DROP TABLE ' . $table->getName());
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/orm/dialect/SQLDialect#dropTable(Table $table)
-	   */
-	  public function dropTable(Table $table) {
+    /**
+     * Attempts to locate the specified model by values. Any fields set in the object are used
+     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
+     * filter results.
+     *
+     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
+     * @throws ORMException If any primary keys contain null values or any
+     * 		   errors are encountered executing queries
+     */
+    public function find(DomainModel $model) {
 
-	  		 $this->query('DROP TABLE ' . $table->getName());
-	  }
+        $table = $this->getTableByModel($model);
+        $newModel = $table->getModelInstance();
+        $values = array();
 
-		/**
-	     * Attempts to locate the specified model by values. Any fields set in the object are used
-	     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
-	     * filter results.
-	     *
-	     * @param $model A domain model object. Any fields which are set in the object are used to filter results.
-	     * @throws ORMException If any primary keys contain null values or any
-	     * 		   errors are encountered executing queries
-	     */
-	    public function find(DomainModel $model) {
+        Log::debug('BaseDialect::find Performing find on model \'' . $table->getModel() . '\'.');
 
-	    	   $table = $this->getTableByModel($model);
-			   $newModel = $table->getModelInstance();
-			   $values = array();
+        try {
+            if(ClassUtils::isEmpty($model)) {
 
-			   Log::debug('BaseDialect::find Performing find on model \'' . $table->getModel() . '\'.');
+                $sql = 'SELECT ' . (($this->isDistinct() == null) ? '*' : 'DISTINCT ' . $this->isDistinct()) . ' FROM ' . $table->getName();
 
-	  		   try {
-	  		   		 if($this->isEmpty($model)) {
+                $order = $this->getOrderBy();
+                $offset = $this->getOffset();
+                $groupBy = $this->getGroupBy();
 
-	    	   	         $sql = 'SELECT ' . (($this->isDistinct() == null) ? '*' : 'DISTINCT ' . $this->isDistinct()) . ' FROM ' . $table->getName();
+                $sql .= ($this->getRestrictions() != null) ? $this->createRestrictSQL() : '';
+                $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
+                $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
+                $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
+                $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
+                $sql .= ';';
+            }
+            else {
+                $where = '';
 
-	    	   	         $order = $this->getOrderBy();
-	    	   	         $offset = $this->getOffset();
-	    	   	         $groupBy = $this->getGroupBy();
+                $columns = $table->getColumns();
+                for($i=0; $i<count($columns); $i++) {
 
-    	   	         	 $sql .= ($this->getRestrictions() != null) ? $this->createRestrictSQL() : '';
-					 	 $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
-					 	 $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
-					 	 $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
-					 	 $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
-    	   	         	 $sql .= ';';
-	    	   		 }
-	    	   		 else {
-	    	   		 		$where = '';
+                    if($columns[$i]->isLazy()) continue;
 
-	    	   		 		$columns = $table->getColumns();
-							for($i=0; $i<count($columns); $i++) {
+                    $accessor = ClassUtils::toAccessor($columns[$i]->getModelPropertyName());
+                    if($model->$accessor() == null) continue;
 
-							 	 if($columns[$i]->isLazy()) continue;
+                    $where .= (count($values) ? ' ' . $this->getRestrictionsLogicOperator() . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->getComparisonLogicOperator() . ' ?';
 
-							 	 $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-						     	 if($model->$accessor() == null) continue;
+                    if(is_object($model->$accessor())) {
 
-						     	 $where .= (count($values) ? ' ' . $this->getRestrictionsLogicOperator() . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->getComparisonLogicOperator() . ' ?';
+                        $refAccessor = ClassUtils::toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 
-						     	 if(is_object($model->$accessor())) {
+                        if($transformer = $columns[$i]->getTransformer())
+                        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+                        else
+                        array_push($values, $model->$accessor()->$refAccessor());
+                    }
+                    else {
 
-						     	 	 $refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+                        if($transformer = $columns[$i]->getTransformer())
+                        array_push($values, $transformer::transform($model->$accessor()));
+                        else
+                        array_push($values, $model->$accessor());
+                    }
+                }
 
-						     	 	 if($transformer = $columns[$i]->getTransformer())
-						     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
-						     	     else
-				     	 	     	    array_push($values, $model->$accessor()->$refAccessor());
-						     	 }
-						     	 else {
+                $sql = $table->getFind();
+                if($where) {
 
-				     	 	     	 if($transformer = $columns[$i]->getTransformer())
-						     	        array_push($values, $transformer::transform($model->$accessor()));
-						     	     else
-				     	 	     	    array_push($values, $model->$accessor());
-						     	 }
-						    }
+                    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
+                    $sql .= ' LIMIT ' . $this->getMaxResults() . ';';
+                }
+            }
 
-						    $sql = $table->getFind();
-						    if($where) {
+            $this->setDistinct(null);
+            $this->setRestrictions(array());
+            $this->setRestrictionsLogicOperator('AND');
+            $this->setOrderBy(null, 'ASC');
+            $this->setGroupBy(null);
 
-						       $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
-						       $sql .= ' LIMIT ' . $this->getMaxResults() . ';';
-						    }
-	    	   		 }
+            $this->prepare($sql);
+            $this->PDOStatement->setFetchMode(PDO::FETCH_OBJ);
+            $result = $this->execute($values);
 
-	    	   		 $this->setDistinct(null);
-	   	         	 $this->setRestrictions(array());
-	   	         	 $this->setRestrictionsLogicOperator('AND');
-	   	         	 $this->setOrderBy(null, 'ASC');
-	   	         	 $this->setGroupBy(null);
+            if(!count($result)) {
 
-					 $this->prepare($sql);
-					 $this->PDOStatement->setFetchMode(PDO::FETCH_OBJ);
-					 $result = $this->execute($values);
+                Log::debug('BaseDialect::find Empty result set for model \'' . $table->getModel() . '\'.');
+                return null;
+            }
 
-					 if(!count($result)) {
+            $index = 0;
+            $models = array();
+            foreach($result as $stdClass) {
 
-					 	 Log::debug('BaseDialect::find Empty result set for model \'' . $table->getModel() . '\'.');
-					 	 return null;
-					 }
+                $m = $table->getModelInstance();
+                foreach(get_object_vars($stdClass) as $name => $value) {
 
-				 	 $index = 0;
-				 	 $models = array();
-					 foreach($result as $stdClass) {
+                    $modelProperty = $this->getPropertyNameForColumn($table, $name, true);
 
-					 		  $m = $table->getModelInstance();
-					 	   	  foreach(get_object_vars($stdClass) as $name => $value) {
+                    // Create foreign model instances from foreign values
+                    foreach($table->getColumns() as $column) {
 
-					 	   	  		   $modelProperty = $this->getPropertyNameForColumn($table, $name, true);
+                        if($column->getName() != $name) continue;
+                        if($column->isLazy()) continue;
 
-							 	   	   // Create foreign model instances from foreign values
-						 	 		   foreach($table->getColumns() as $column) {
+                        if($renderer = $column->getRenderer())
+                        $value = $renderer::render($value);
 
-						 	 		   		    if($column->getName() != $name) continue;
-						 	 		   		    if($column->isLazy()) continue;
+                        if(!$value) continue;
 
-						 	 		   		    if($renderer = $column->getRenderer())
-                        				   	       $value = $renderer::render($value);
+                        if($column->isForeignKey()) {
 
-                        				   	    if(!$value) continue;
+                            $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
+                            $foreignInstance = new $foreignModel();
 
-						 	 		  		    if($column->isForeignKey()) {
+                            $foreignMutator = ClassUtils::toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+                            $foreignInstance->$foreignMutator($value);
 
-						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
-						 	 		  		   	    $foreignInstance = new $foreignModel();
+                            $persisted = $this->find($foreignInstance);
 
-						 	 		  		   	    $foreignMutator = $this->toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
-						 	 		  		   	    $foreignInstance->$foreignMutator($value);
+                            // php namespace support - remove \ character from fully qualified paths
+                            $foreignModelPieces = explode('\\', $foreignModel);
+                            $foreignClassName = array_pop($foreignModelPieces);
 
-						 	 		  		   	    $persisted = $this->find($foreignInstance);
+                            $instanceMutator = ClassUtils::toMutator($modelProperty);
+                            $m->$instanceMutator($persisted[0]);
+                        }
+                        else {
 
-						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
-							 	 		  		   	$foreignModelPieces = explode('\\', $foreignModel);
-							 	 		  		   	$foreignClassName = array_pop($foreignModelPieces);
+                            $mutator = ClassUtils::toMutator($modelProperty);
+                            $m->$mutator($value);
+                        }
+                    }
+                }
 
-						 	 		  		   	    $instanceMutator = $this->toMutator($modelProperty);
-						 	 		  		   	    $m->$instanceMutator($persisted[0]);
-						 	 		  		    }
-						 	 		  		    else {
+                array_push($models, $m);
+                $index++;
+                if($index == $this->getMaxResults())  break;
+            }
 
-						 	 		  		   		$mutator = $this->toMutator($modelProperty);
-					 	   	   		  				$m->$mutator($value);
-						 	 		  		    }
-						 	 		   }
-					 	   	  }
+            return $models;
+        }
+        catch(Exception $e) {
 
-					 	   	  array_push($models, $m);
-					 	   	  $index++;
-					 	   	  if($index == $this->getMaxResults())  break;
-				     }
+            throw new ORMException($e->getMessage(), $e->getCode());
+        }
+    }
 
-				     return $models;
-	  		 }
-	  		 catch(Exception $e) {
+    /**
+     * (non-PHPdoc)
+     * @see src/orm/dialect/SQLDialect#drop()
+     */
+    public function drop() {
 
-	  		 		throw new ORMException($e->getMessage(), $e->getCode());
-	  		 }
-	    }
+        $this->pdo = null;
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/orm/dialect/SQLDialect#drop()
-	   */
-	  public function drop() {
+        $conn = 'pgsql:dbname=' . $this->database->getUsername() . ';' .
+        (($this->database->getHostname()) ? 'host=' . $this->database->getHostname() . ';': '') .
+        (($this->database->getUsername()) ? 'user=' . $this->database->getUsername() . ';': '') .
+        (($this->database->getPassword()) ? 'password=' . $this->database->getPassword() . ';' : '');
 
-	  		 $this->pdo = null;
-
-	  		 $conn = 'pgsql:dbname=' . $this->database->getUsername() . ';' .
-	  	  					(($this->database->getHostname()) ? 'host=' . $this->database->getHostname() . ';': '') .
-	  	  					(($this->database->getUsername()) ? 'user=' . $this->database->getUsername() . ';': '') .
-	  	  					(($this->database->getPassword()) ? 'password=' . $this->database->getPassword() . ';' : '');
-
-	  	     $p = new PDO($conn);
+        $p = new PDO($conn);
   	 	 	 $p->query('DROP DATABASE ' . $this->database->getName() . ';');
   	 	 	 $p = null;
-	  }
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/orm/dialect/SQLDialect#call(DomainModel $model)
-	   */
-	  public function call(DomainModel $model) {
+    /**
+     * (non-PHPdoc)
+     * @see src/orm/dialect/SQLDialect#call(DomainModel $model)
+     */
+    public function call(DomainModel $model) {
 
-	  		 $outs = array();
-	  		 $params = array();
-	  		 $values = array();
-	  		 $references = array();
-	  		 $class = get_class($model);
+        $outs = array();
+        $params = array();
+        $values = array();
+        $references = array();
+        $class = get_class($model);
 
-	  		 $proc = $this->getProcedureByModel($model);
-	  		 $procedureName = $proc->getName();
-	  		 $parameters = $proc->getParameters();
+        $proc = $this->getProcedureByModel($model);
+        $procedureName = $proc->getName();
+        $parameters = $proc->getParameters();
 
-	  		 // Parse IN, OUT, & INOUT parameters
-	  		 foreach($proc->getParameters() as $param) {
+        // Parse IN, OUT, & INOUT parameters
+        foreach($proc->getParameters() as $param) {
 
-	  		         if($ref = $param->getReference())
-	  		            $references[$param->getName()] = $ref;
+            if($ref = $param->getReference())
+            $references[$param->getName()] = $ref;
 
-	  		 		 if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
+            if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
 
-	  		 		    $accessor = $this->toAccessor($param->getModelPropertyName());
-	  		 			array_push($params, $model->$accessor());
-	  		 		 }
+                $accessor = ClassUtils::toAccessor($param->getModelPropertyName());
+                array_push($params, $model->$accessor());
+            }
 
-	  		 		 if($param->getMode() == 'OUT' || $param->getMode() == 'INOUT')
-	  		 		    $outs[$param->getName()] = $param->getModelPropertyName();
-	  		 }
+            if($param->getMode() == 'OUT' || $param->getMode() == 'INOUT')
+            $outs[$param->getName()] = $param->getModelPropertyName();
+        }
 
-	  		 $query = 'SELECT * FROM ' . $proc->getName() . '(';
-	  		 for($i=0; $i<count($params); $i++) {
+        $query = 'SELECT * FROM ' . $proc->getName() . '(';
+        for($i=0; $i<count($params); $i++) {
 
-	  		 		$values[$i] = $params[$i];
-	  		 		$query .= '?' . (($i+1) < count($params) ? ', ': '');
-	  		 }
-	  		 $query .= ');';
+            $values[$i] = $params[$i];
+            $query .= '?' . (($i+1) < count($params) ? ', ': '');
+        }
+        $query .= ');';
 
-	  		 $this->prepare($query);
-	  		 $stmt = $this->execute($values);
-	  		 $stmt->setFetchMode(PDO::FETCH_ASSOC);
-	  		 $results = $stmt->fetchAll();
-	  		 $stmt->closeCursor();
+        $this->prepare($query);
+        $stmt = $this->execute($values);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $results = $stmt->fetchAll();
+        $stmt->closeCursor();
 
-	  		 if(!$results) return false;  // nothing to return
+        if(!$results) return false;  // nothing to return
 
-	  		 if(count($results) > 1) {
+        if(count($results) > 1) {
 
-		  		 $models = array();
-		 		 foreach($results as $record) {
+            $models = array();
+            foreach($results as $record) {
 
-		 		 		  $m = new $class;
-		 		 		  foreach($record as $column => $value) {
+                $m = new $class;
+                foreach($record as $column => $value) {
 
-		 		 		          if(array_key_exists($column, $outs)) {
+                    if(array_key_exists($column, $outs)) {
 
-		 		 		             $mutator = $this->toMutator($outs[$column]);
+                        $mutator = ClassUtils::toMutator($outs[$column]);
 
-		 		 		  		     // References act like table foreign keys - they allow associations to other objects
-		 		 		             if(array_key_exists($column, $references))
-		 		 		                $value = $this->callReference($column, $references, $outs, $value);
+                        // References act like table foreign keys - they allow associations to other objects
+                        if(array_key_exists($column, $references))
+                        $value = $this->callReference($column, $references, $outs, $value);
 
-		  		 		  		     $m->$mutator($value);
-		 		 		          }
-		 		 		  }
-		 		 		  array_push($models, $m);
-	 		 	 }
-	 		 	 return $models;
-	  		 }
+                        $m->$mutator($value);
+                    }
+                }
+                array_push($models, $m);
+            }
+            return $models;
+        }
 
-	  		 foreach($results as $record) {
+        foreach($results as $record) {
 
-	  		 		  $m = new $class;
-		 		 	  foreach($record as $column => $value) {
+            $m = new $class;
+            foreach($record as $column => $value) {
 
-                              if(array_key_exists($column, $outs)) {
+                if(array_key_exists($column, $outs)) {
 
-        	 		 		  	 $mutator = $this->toMutator($outs[$column]);
+                    $mutator = ClassUtils::toMutator($outs[$column]);
 
-        	 		 		  	 // References act like table foreign keys - they allow associations to other objects
+                    // References act like table foreign keys - they allow associations to other objects
         	 		 		     if(array_key_exists($column, $references))
-        	 		 		        $value = $this->callReference($column, $references, $outs, $value);
+        	 		 		     $value = $this->callReference($column, $references, $outs, $value);
 
         	  		 		  	 $m->$mutator($value);
-                              }
-		 		      }
-		 		 	  return $m;
-	  		 }
-	  }
+                }
+            }
+            return $m;
+        }
+    }
 
-	  /**
-	   * Returns the total number of records in the specified model.
-	   *
-	   * @param Object $model The domain object to get the count for.
-	   * @return Integer The total number of records in the table.
-	   */
-	  public function count(DomainModel $model) {
+    /**
+     * Returns the total number of records in the specified model.
+     *
+     * @param Object $model The domain object to get the count for.
+     * @return Integer The total number of records in the table.
+     */
+    public function count(DomainModel $model) {
 
-	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel($model)->getName();
-			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
-			 $sql .= ';';
+        $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel($model)->getName();
+        $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
+        $sql .= ';';
 
-	     	 $stmt = $this->query($sql);
-  			 $stmt->setFetchMode(PDO::FETCH_OBJ);
-  			 $result = $stmt->fetchAll();
+        $stmt = $this->query($sql);
+        $stmt->setFetchMode(PDO::FETCH_OBJ);
+        $result = $stmt->fetchAll();
 
-  			 return ($result == null) ? 0 : $result[0]->count;
-	  }
+        return ($result == null) ? 0 : $result[0]->count;
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/orm/dialect/SQLDialect#reverseEngineer()
-	   */
-	  public function reverseEngineer() {
+    /**
+     * (non-PHPdoc)
+     * @see src/orm/dialect/SQLDialect#reverseEngineer()
+     */
+    public function reverseEngineer() {
 
-	  		 /**
-	  		  * Organizes table lookup query result set. Result set contains one large
-	  		  * array with all tables and column names. This function creates a new
-	  		  * associative array with the table name as the key which contains all
-	  		  * of its columns underneath.
-	  		  *
-	  		  * @param array $tables Array of stdClass table objects returned from $tstmt
-	  		  * @return array
-	  		  */
- 	         function organizeTables(array $tables) {
+        /**
+         * Organizes table lookup query result set. Result set contains one large
+         * array with all tables and column names. This function creates a new
+         * associative array with the table name as the key which contains all
+         * of its columns underneath.
+         *
+         * @param array $tables Array of stdClass table objects returned from $tstmt
+         * @return array
+         */
+        function organizeTables(array $tables) {
 
-      	     		  $t = array();
+            $t = array();
 
-      	     		  foreach($tables as $table) {
+            foreach($tables as $table) {
 
-      	     		  		if(array_key_exists($table->table_name, $t))
-      	     		  			array_push($t[$table->table_name], $table);
-      	     		  		else
-      	     		  			$t[$table->table_name] = array($table);
-      	     		  }
+                if(array_key_exists($table->table_name, $t))
+                array_push($t[$table->table_name], $table);
+                else
+                $t[$table->table_name] = array($table);
+            }
 
-      	     		  return $t;
-      	     }
+            return $t;
+        }
 
-	  		 $Database = new Database();
-	  		 $Database->setName($this->database->getName());
-	  		 $Database->setType($this->database->getType());
-	  		 $Database->setHostname($this->database->getHostname());
-	  		 $Database->setUsername($this->database->getUsername());
-	  		 $Database->setPassword($this->database->getPassword());
+        $Database = new Database();
+        $Database->setName($this->database->getName());
+        $Database->setType($this->database->getType());
+        $Database->setHostname($this->database->getHostname());
+        $Database->setUsername($this->database->getUsername());
+        $Database->setPassword($this->database->getPassword());
 
-	  		 // Get all primary keys
-	  		 $pstmt = $this->query('SELECT
+        // Get all primary keys
+        $pstmt = $this->query('SELECT
 										tc.table_name,
 										cu.column_name
 									 FROM
@@ -524,11 +522,11 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 									 AND tc.constraint_type = \'PRIMARY KEY\'
 									 AND tc.table_catalog = \'' . $Database->getName() . '\'
 									 AND tc.table_schema = \'public\';');
-	  		 $pstmt->setFetchMode(PDO::FETCH_OBJ);
-	  		 $pkeys = $pstmt->fetchAll();
+        $pstmt->setFetchMode(PDO::FETCH_OBJ);
+        $pkeys = $pstmt->fetchAll();
 
-	  		 // Get all relationships
-	  		 $rstmt = $this->query('SELECT
+        // Get all relationships
+        $rstmt = $this->query('SELECT
 	  		 							rc.constraint_name,
 										tc.table_name,
 										kcu.column_name,
@@ -549,11 +547,11 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 									AND tc.table_catalog = \'' . $Database->getName() . '\'
 									AND tc.table_schema = \'public\';');
 
-	  		 $rstmt->setFetchMode(PDO::FETCH_OBJ);
-	  		 $relationships = $rstmt->fetchAll();
+        $rstmt->setFetchMode(PDO::FETCH_OBJ);
+        $relationships = $rstmt->fetchAll();
 
-	  		 // Get all tables
-	  		 $tstmt = $this->query('SELECT
+        // Get all tables
+        $tstmt = $this->query('SELECT
 	  		 							table_name,
 	  		 							column_name,
 	  		 							is_nullable,
@@ -563,58 +561,58 @@ final class PGSQLDialect extends BaseDialect implements SQLDialect {
 	  		 						WHERE table_schema = \'public\'
 	  		 						AND table_catalog = \'' . $Database->getName() . '\'
 	  		 						ORDER BY table_name, ordinal_position;');
-      	     $tstmt->execute();
-      	     $tstmt->setFetchMode(PDO::FETCH_OBJ);
-      	     $tables = $tstmt->fetchAll();
-      	     $tables = organizeTables($tables);
+        $tstmt->execute();
+        $tstmt->setFetchMode(PDO::FETCH_OBJ);
+        $tables = $tstmt->fetchAll();
+        $tables = organizeTables($tables);
 
-      	     foreach($tables as $name => $columns) {
+        foreach($tables as $name => $columns) {
 
-      	     		  $Table = new Table();
-      	     		  $Table->setName(str_replace(' ', '_', $name));
-      	     		  $Table->setModel(ucfirst($name));
+            $Table = new Table();
+            $Table->setName(str_replace(' ', '_', $name));
+            $Table->setModel(ucfirst($name));
 
-      	      		  foreach($columns as $column) {
+            foreach($columns as $column) {
 
-      	      		  	   $type = ($column->type == 'int4') ? 'serial' : $column->type;
+                $type = ($column->type == 'int4') ? 'serial' : $column->type;
 
-	      	      		   $Column = new Column(null, $Table->getName());
-						   $Column->setName($column->column_name);
-						   $Column->setType($type);
-						   $Column->setLength($column->length);
+                $Column = new Column(null, $Table->getName());
+                $Column->setName($column->column_name);
+                $Column->setType($type);
+                $Column->setLength($column->length);
 
-						   if($column->is_nullable == 'YES') $Column->setRequired(true);
+                if($column->is_nullable == 'YES') $Column->setRequired(true);
 
-						   foreach($pkeys as $pkey)
-						   		if($pkey->table_name == $name && $pkey->column_name == $column->column_name)
-						   			$Column->setPrimaryKey(true);
+                foreach($pkeys as $pkey)
+                if($pkey->table_name == $name && $pkey->column_name == $column->column_name)
+                $Column->setPrimaryKey(true);
 
-						   if($type == 'serial' || $type == 'bigserial')
-						   	   $Column->setAutoIncrement(true);
+                if($type == 'serial' || $type == 'bigserial')
+                $Column->setAutoIncrement(true);
 
-      	      		  	   foreach($relationships as $fkey) {
+                foreach($relationships as $fkey) {
 
-									if($fkey->table_name == $Table->getName() &&
-										$fkey->column_name == $Column->getName()) {
+                    if($fkey->table_name == $Table->getName() &&
+                    $fkey->column_name == $Column->getName()) {
 
-											$ForeignKey = new ForeignKey(null, $fkey->table_name, $fkey->column_name);
-											$ForeignKey->setName($fkey->constraint_name);
-											$ForeignKey->setType('one-to-many');
-											$ForeignKey->setReferencedTable($fkey->referenced_table);
-											$ForeignKey->setReferencedColumn($fkey->referenced_column);
-											$ForeignKey->setReferencedController(ucfirst($fkey->referenced_table) . 'Controller');
-											$ForeignKey->setOnDelete($fkey->delete_rule);
-											$ForeignKey->setOnUpdate($fkey->update_rule);
+                        $ForeignKey = new ForeignKey(null, $fkey->table_name, $fkey->column_name);
+                        $ForeignKey->setName($fkey->constraint_name);
+                        $ForeignKey->setType('one-to-many');
+                        $ForeignKey->setReferencedTable($fkey->referenced_table);
+                        $ForeignKey->setReferencedColumn($fkey->referenced_column);
+                        $ForeignKey->setReferencedController(ucfirst($fkey->referenced_table) . 'Controller');
+                        $ForeignKey->setOnDelete($fkey->delete_rule);
+                        $ForeignKey->setOnUpdate($fkey->update_rule);
 
-											$Column->setForeignKey($ForeignKey);
-											$Column->setProperty(ucfirst($fkey->referenced_table));
-										}
-	      	      		   }
-      	      		  	   $Table->addColumn($Column);
-      	      		   }
-      	      		   $Database->addTable($Table);
-      	      }
-      	      return $Database;
-	  }
+                        $Column->setForeignKey($ForeignKey);
+                        $Column->setProperty(ucfirst($fkey->referenced_table));
+                    }
+                }
+                $Table->addColumn($Column);
+            }
+            $Database->addTable($Table);
+        }
+        return $Database;
+    }
 }
 ?>

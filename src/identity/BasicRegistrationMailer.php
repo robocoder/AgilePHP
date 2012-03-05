@@ -21,28 +21,28 @@
 
 /**
  * Sends plain text registration confirmation email.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
- */ 
+ */
 class BasicRegistrationMailer extends Mailer {
 
-	  public function __construct($token) {
+    public function __construct($token) {
 
-	  	     $url = (@$_SERVER['HTTPS'] != null) ? 'https://' : 'http://';
-	  	     $url .= (@$_SERVER['HTTP_HOST'] != null) ? $_SERVER['HTTP_HOST'] : 'localhost';
-	  	     $url .= AgilePHP::getRequestBase() . '/LoginController/confirm/';
+        $url = (@$_SERVER['HTTPS'] != null) ? 'https://' : 'http://';
+        $url .= (@$_SERVER['HTTP_HOST'] != null) ? $_SERVER['HTTP_HOST'] : 'localhost';
+        $url .= AgilePHP::getRequestBase() . '/LoginController/confirm/';
 
-	  	     $appName = AgilePHP::getAppName();
+        $appName = AgilePHP::getAppName();
 
-	  		 $this->setTo(Identity::getEmail());
-	  		 $this->setToName(Identity::getUsername());
-	  		 $this->setFrom('no-reply@' . $appName);
-	  		 $this->setFromName($appName);
-	  		 $this->setSubject($appName . ' :: Registration Confirmation');
-	  		 $this->setBody('Click on the following link to confirm your registration: ' . PHP_EOL . $url .
-	  		 				 	$token . '/' . Scope::getSessionScope()->getSessionId());
-	  }
+        $this->setTo(Identity::getEmail());
+        $this->setToName(Identity::getUsername());
+        $this->setFrom('no-reply@' . $appName);
+        $this->setFromName($appName);
+        $this->setSubject($appName . ' :: Registration Confirmation');
+        $this->setBody('Click on the following link to confirm your registration: ' . PHP_EOL . $url .
+        $token . '/' . Scope::getSessionScope()->getSessionId());
+    }
 }
 ?>

@@ -21,58 +21,58 @@
 
 /**
  * Transforms XML string data into a populated domain model.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.data.transformer
  */
 class XmlToModel implements DataTransformer {
 
-	  /**
-	   * Transforms the specified data into a populated domain model.
-	   * 
-	   * @param string $data The string data which represents the domain model and state to create.
-	   * @return Object The domain model specified in the string $data
-	   * @throws FrameworkException if the xml data could not be loaded by simplexml
-	   */
-	  public static function transform($data) {
+    /**
+     * Transforms the specified data into a populated domain model.
+     *
+     * @param string $data The string data which represents the domain model and state to create.
+     * @return Object The domain model specified in the string $data
+     * @throws FrameworkException if the xml data could not be loaded by simplexml
+     */
+    public static function transform($data) {
 
-	  		 if(!$xml= @simplexml_load_string($data))
-	  		 	throw new FrameworkException('Malformed xml data');
+        if(!$xml= @simplexml_load_string($data))
+        throw new FrameworkException('Malformed xml data');
 
-	  		 return self::convert($xml);
-	  }
+        return self::convert($xml);
+    }
 
-	  /**
-	   * Accepts a model name and a SimpleXMLElement object and creates a new model
-	   * instance and copies the data from the SimpleXMLElement into the model instance.
-	   * 
-	   * @param SimpleXMLElement $e SimpleXMLElement object which represents a the model
-	   * @return Object The domain model that corresponds to the specified xml data
-	   */
-	  private static function convert(SimpleXMLElement $e) {
+    /**
+     * Accepts a model name and a SimpleXMLElement object and creates a new model
+     * instance and copies the data from the SimpleXMLElement into the model instance.
+     *
+     * @param SimpleXMLElement $e SimpleXMLElement object which represents a the model
+     * @return Object The domain model that corresponds to the specified xml data
+     */
+    private static function convert(SimpleXMLElement $e) {
 
-			  $name = $e->getName();
-			  $model = new $name;
+        $name = $e->getName();
+        $model = new $name;
 
-	  		  $values = get_object_vars($e);
-	  		  foreach($values as $field => $value) {
+        $values = get_object_vars($e);
+        foreach($values as $field => $value) {
 
-	  		  		  $mutator = 'set' . ucfirst($field);
-	  		  		  if($value instanceof SimpleXMLElement) {
+            $mutator = 'set' . ucfirst($field);
+            if($value instanceof SimpleXMLElement) {
 
-						 if(!get_object_vars($value)) {
+                if(!get_object_vars($value)) {
 
-						   	$model->$mutator(null);
-						   	continue;
-						 }
-	  		  		   	 $model->$mutator(self::convert($value));
-	  		  		   }
-	  		  		   else
-	  		  		   	 $model->$mutator($value);   
-	  		  }
+                    $model->$mutator(null);
+                    continue;
+                }
+                $model->$mutator(self::convert($value));
+            }
+            else
+            $model->$mutator($value);
+        }
 
-	  		  return $model;
-	  }
+        return $model;
+    }
 }
 ?>

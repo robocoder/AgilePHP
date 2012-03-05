@@ -28,65 +28,64 @@
  */
 abstract class LogFactory {
 
-         private static $level;
-		 private static $logger;
+    private static $level;
+    private static $logger;
 
-		 /**
-		  * Logging level accessor
-		  *
-		  * @return string The logging level
-		  */
-		 public static function getLevel() {
+    /**
+     * Logging level accessor
+     *
+     * @return string The logging level
+     */
+    public static function getLevel() {
 
-		        return self::$level;
-		 }
+        return self::$level;
+    }
 
-		 /**
-		  * Returns a LogProvider singleton instance
-		  */
-	     public static function getLogger($logger = null) {
+    /**
+     * Returns a LogProvider singleton instance
+     */
+    public static function getLogger($logger = null) {
 
-	     		if(self::$logger == null) {
+        if(self::$logger == null) {
 
-	     		   $xml = AgilePHP::getConfiguration();
-			       if($xml && $xml->logger) {
+            $xml = AgilePHP::getConfiguration();
+            if($xml && $xml->logger) {
 
-			     	  $level = (string)$xml->logger->attributes()->level;
-			     	  self::$level = ($level) ? $level : 'info';
+                $level = (string)$xml->logger->attributes()->level;
+                self::$level = ($level) ? $level : 'info';
 
-			     	  $provider = (string)$xml->logger->attributes()->provider;
-			     	  $provider = ($provider) ? $provider : 'FileLogger';
+                $provider = (string)$xml->logger->attributes()->provider;
+                $provider = ($provider) ? $provider : 'FileLogger';
 
-			     	  // Try to load the specified Logger from the framework/logger directory
-			     	  $path = AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'logger' .
-			     	              DIRECTORY_SEPARATOR . 'FileLogger.php';
-			     	  if(file_exists($path)) require_once $path;
-			       }
-			       else {
+                // Try to load the specified Logger from the framework/logger directory
+                $path = AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'logger' .
+                DIRECTORY_SEPARATOR . 'FileLogger.php';
+                if(file_exists($path)) require_once $path;
+            }
+            else {
 
-			     	  self::$level = 'info';
-			     	  $provider = 'FileLogger';
+                self::$level = 'info';
+                $provider = 'FileLogger';
 
-				  	  require_once AgilePHP::getFrameworkRoot() .
-				  						DIRECTORY_SEPARATOR . 'logger' . DIRECTORY_SEPARATOR . 'FileLogger.php';
-			       }
+                require_once AgilePHP::getFrameworkRoot() .
+                DIRECTORY_SEPARATOR . 'logger' . DIRECTORY_SEPARATOR . 'FileLogger.php';
+            }
 
-			       // Logger type specifically requested
-			       self::$logger = ($logger == null) ? new $provider : new $logger;
-	     		}
+            // Logger type specifically requested
+            self::$logger = ($logger == null) ? new $provider : new $logger;
+        }
 
-	     		return self::$logger;
-	     }
+        return self::$logger;
+    }
 
-	     /**
-	      * Returns a new LogProvider with each call
-	      *
-	      * @param string $logger The name of the LogProvider implementation to create
-	      * @return LogProvider A new instance of the requested LogProvider
-	      */
-	     public static function createLogger($logger) {
-
-				return new $logger;
-	     }
+    /**
+     * Returns a new LogProvider with each call
+     *
+     * @param string $logger The name of the LogProvider implementation to create
+     * @return LogProvider A new instance of the requested LogProvider
+     */
+    public static function createLogger($logger) {
+        return new $logger;
+    }
 }
 ?>

@@ -24,39 +24,39 @@
  * requests to the proper service/action method. "Expression Language (EL)" type syntax
  * can be used in the #@Path::type definition to capture one or more values from
  * the HTTP request. The #@Path::type definition also supports RegEx's for complex
- * pattern matching. 
- * 
+ * pattern matching.
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  * <code>
- * 
+ *
  * #@RestService
  * class MyRestAPI {
- * 
+ *
  * // example 1
  * #@GET
  * #@Path(resource = '/{id}')
  * public function getObject1($id) {
- * 
+ *
  * 	     // request is sent to http://mydomain.com/index.php/MyRestAPI/33
- *       // $id has a value of 33 
+ *       // $id has a value of 33
  * }
- * 
+ *
  * // example 2
  * #@GET
  * #@Path(resource = '/{id}/some/deeper/resource{newId}')
  * public function getObject2($id, $newId) {
- * 
+ *
  * 		  // request is sent to http://mydomain.com/index.php/MyRestAPI/33/some/deeper/resource/55
  * 		  // $id has a value of 33 and $newId has a value of 55
  * }
- * 
+ *
  * // example 3
  * #@GET
  * #@Path(resource = '/{id}/.*regex$')
  * public function getObject3($id) {
- * 
+ *
  * 		  // request is sent to http://mydomain.com/index.php/MyRestAPI/33/some/long/resource/that/you/want/to/match/with/a/regex
  * 		  // $id has a value of 33 and the method gets executed since its regex matches the request
  * }
@@ -64,11 +64,11 @@
  */
 class Path {
 
-	  /**
-	   * The REST resource path which MUST begin with a forward slash (/).
-	   *  
-	   * @var string $resource The REST resource path to match against requests
-	   */
-	  public $resource;
+    /**
+     * The REST resource path which MUST begin with a forward slash (/).
+     *
+     * @var string $resource The REST resource path to match against requests
+     */
+    public $resource;
 }
 ?>

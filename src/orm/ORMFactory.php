@@ -21,7 +21,7 @@
 
 /**
  * Factory responsible for returning a SQLDialect implementation
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.orm
@@ -29,172 +29,170 @@
  */
 abstract class ORMFactory {
 
-		 private static $dialect;
+    private static $dialect;
 
-		 /**
-		  * Returns orm.xml as a SimpleXMLElement
-		  * 
-		  * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
-		  * @return SimpleXMLElement orm.xml configuration
-		  */
-		 public static function getConfiguration($ormXml = null) {
+    /**
+     * Returns orm.xml as a SimpleXMLElement
+     *
+     * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
+     * @return SimpleXMLElement orm.xml configuration
+     */
+    public static function getConfiguration($ormXml = null) {
+        return self::getXml($ormXml);
+    }
 
-		        return self::getXml($ormXml);
-		 }
+    /**
+     * Returns a SQLDialect singleton instance. Uses AgilePHP CacheProvider if enabled.
+     *
+     * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
+     * @return SQLDialect
+     */
+    public static function getDialect($ormXml = null) {
 
-		 /**
-		  * Returns a SQLDialect singleton instance. Uses AgilePHP CacheProvider if enabled.
-		  * 
-		  * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
-		  * @return SQLDialect
-		  */
-	     public static function getDialect($ormXml = null) {
+        if(self::$dialect == null) {
 
-	     		 if(self::$dialect == null) {
+            $xml = self::getXml($ormXml);
+            $db = self::getDatabase($xml);
+            self::$dialect = self::connect($db);
+        }
 
-		    		 $xml = self::getXml($ormXml);
-    	     		 $db = self::getDatabase($xml);
-		     		 self::$dialect = self::connect($db);
-	     		 }
+        return self::$dialect;
+    }
 
-	     		 return self::$dialect;
-	     }
+    /**
+     * Replaces the singleton instance with a new SQLDialect according to the specified orm.xml configuration
+     * and returns the instance.
+     *
+     * @param string $dialect The name of the SQLDialect implementation to create
+     * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
+     * @return SQLDialect
+     */
+    public static function load($ormXml = null) {
 
-	     /**
-	      * Replaces the singleton instance with a new SQLDialect according to the specified orm.xml configuration
-	      * and returns the instance.
-	      * 
-	      * @param string $dialect The name of the SQLDialect implementation to create
-	      * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
-	      * @return SQLDialect
-	      */
-	     public static function load($ormXml = null) {
+        $xml = self::getXml($ormXml, $ormXml == null);
+        $db = new Database($xml->database);
+        self::$dialect = self::connect($db);
 
-	    		 $xml = self::getXml($ormXml, $ormXml == null);
-                 $db = new Database($xml->database);
-                 self::$dialect = self::connect($db);
+        return self::$dialect;
+    }
 
-                 return self::$dialect;
-	     }
+    /**
+     * Replaces the singleton instance with a new SQLDialect according to the specified orm.xml configuration
+     * and returns the instance.
+     *
+     * @param string $dialect The name of the SQLDialect implementation to create
+     * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
+     * @return SQLDialect
+     */
+    public static function createDialect($ormXml = null) {
 
-	     /**
-	      * Replaces the singleton instance with a new SQLDialect according to the specified orm.xml configuration
-	      * and returns the instance.
-	      * 
-	      * @param string $dialect The name of the SQLDialect implementation to create
-	      * @param string $ormXml Optional file path to an ORM XML configuration file. Defaults to approot/orm.xml
-	      * @return SQLDialect
-	      */
-	     public static function createDialect($ormXml = null) {
+        $xml = self::getXml($ormXml, $ormXml == null);
+        $db = new Database($xml->database);
 
-	    		 $xml = self::getXml($ormXml, $ormXml == null);
-                 $db = new Database($xml->database);
+        return self::connect($db);
+    }
 
-                 return self::connect($db);
-	     }
+    /**
+     * Connects to the specified Database.
+     *
+     * @param Database $db The database object to establish a connection with
+     * @return SQLDialect A dialect instance responsible for the specified database
+     */
+    public static function connect(Database $db) {
 
-		 /**
-	      * Connects to the specified Database.
-	      * 
-	      * @param Database $db The database object to establish a connection with
-	      * @return SQLDialect A dialect instance responsible for the specified database
-	      */
-	     public static function connect(Database $db) {
+        $root = AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'orm' .
+        DIRECTORY_SEPARATOR . 'dialect' . DIRECTORY_SEPARATOR;
 
-	     		$root = AgilePHP::getFrameworkRoot() . DIRECTORY_SEPARATOR . 'orm' .
-	     		 				 DIRECTORY_SEPARATOR . 'dialect' . DIRECTORY_SEPARATOR;
+        switch($db->getType()) {
 
-	     		     switch($db->getType()) {
-	
-		  	 			 case 'sqlite':
-	  	     		 	  	  require_once $root . 'SQLiteDialect.php';
-	  	     		 	  	  return new SQLiteDialect($db);
-		  	     		 break;
-	
-		  	     	     case 'mysql':
-		  	     		 	  require_once $root . 'MySQLDialect.php';
-		  	     		 	  return new MySQLDialect($db);
-	  	     		 	 break;
-	
-	  	     		 	 case 'pgsql':
-	  	     		 		  require_once $root . 'PGSQLDialect.php';
-	  	     		 		  return new PGSQLDialect($db);
-	  	     		 	 break;
-	
-	  	     		 	 case 'mssql':
-		  	     	       	  require_once $root . 'MSSQLDialect.php';
-		  	     	     	  return new MSSQLDialect($db);
-	  	     	     	 break;
+            case 'sqlite':
+                require_once $root . 'SQLiteDialect.php';
+                return new SQLiteDialect($db);
+                break;
 
-	  	     		 	 default:
-	  	     		 	 	throw new ORMException('Invalid database type');
-	                 }
-	     }
+            case 'mysql':
+                require_once $root . 'MySQLDialect.php';
+                return new MySQLDialect($db);
+                break;
 
-	     /**
-	      * Destroys the singleton dialect instance.
-	      */
-	     public static function destroy() {
+            case 'pgsql':
+                require_once $root . 'PGSQLDialect.php';
+                return new PGSQLDialect($db);
+                break;
 
-	     		self::$dialect = null;
-	     }
+            case 'mssql':
+                require_once $root . 'MSSQLDialect.php';
+                return new MSSQLDialect($db);
+                break;
 
-	     /**
-	      * Returns orm.xml configuration. Uses AgilePHP CacheProvider if enabled.
-	      * 
-	      * @param string $ormXml File path to the orm.xml file to load
-	      * @return SimpleXMLElement
-	      */
-		 private static function getXml($ormXml, $useCache = true) {
+            default:
+                throw new ORMException('Invalid database type');
+        }
+    }
 
-		 		 $orm_xml =($ormXml) ? $ormXml : AgilePHP::getWebRoot() . '/orm.xml';
+    /**
+     * Destroys the singleton dialect instance.
+     */
+    public static function destroy() {
+        self::$dialect = null;
+    }
 
-		 		 if($useCache && $cacher = AgilePHP::getCacher()) {
+    /**
+     * Returns orm.xml configuration. Uses AgilePHP CacheProvider if enabled.
+     *
+     * @param string $ormXml File path to the orm.xml file to load
+     * @return SimpleXMLElement
+     */
+    private static function getXml($ormXml, $useCache = true) {
 
-		 		    $cacheKey = 'AGILEPHP_ORMFACTORY_XML';
-		 		    if($cacher->exists($cacheKey)) return simplexml_load_string($cacher->get($cacheKey));
-		 		 }
+        $orm_xml =($ormXml) ? $ormXml : AgilePHP::getWebRoot() . '/orm.xml';
 
-                 if(!file_exists($orm_xml))
-                    throw new ORMException('Failed to load orm.xml at \'' . $orm_xml . '\'.');
+        if($useCache && $cacher = AgilePHP::getCacher()) {
 
-                 $xml = simplexml_load_file($orm_xml);
+            $cacheKey = 'AGILEPHP_ORMFACTORY_XML';
+            if($cacher->exists($cacheKey)) return simplexml_load_string($cacher->get($cacheKey));
+        }
 
-                 $dom = new DOMDocument();
-                 $dom->Load($orm_xml);
-                 if(!$dom->validate())
-                     throw new ORMException($ormXml . ' Document Object Model validation failed.');
+        if(!file_exists($orm_xml))
+        throw new ORMException('Failed to load orm.xml at \'' . $orm_xml . '\'.');
 
-                 if(isset($cacher)) $cacher->set($cacheKey, $xml->asXML());
-                 return $xml;
-		 }
+        $xml = simplexml_load_file($orm_xml);
 
-		 /**
-		  * Returns a Database instance which represents orm.xml configuration. Uses AgilePHP
-		  * CacheProvider if enabled.
-		  * 
-		  * @param SimpleXMLElement $xml The Database element from orm.xml
-		  * @return Database A Database instance representing orm.xml configuration
-		  */
-		 private static function getDatabase(SimpleXMLElement $xml) {
-		     
-		         if($cacher = AgilePHP::getCacher()) {
+        $dom = new DOMDocument();
+        $dom->Load($orm_xml);
+        if(!$dom->validate())
+        throw new ORMException($ormXml . ' Document Object Model validation failed.');
 
-    		  	    $cacheKey = 'AGILEPHP_ORM_DATABASE_' . $xml->database->name . $xml->database->type;
-    		  		if($cacher->exists($cacheKey)) {
-    		  		       
-    		  		   $db = $cacher->get($cacheKey);
-    		  		}
-    		  		else {
-    		  		       
-    		  		   $db = new Database($xml->database);
-    		  		   $cacher->set($cacheKey, $db);
-    		  		}
-    		  	 }
-    		  	 else
-    		  	    return new Database($xml->database);
+        if(isset($cacher)) $cacher->set($cacheKey, $xml->asXML());
+        return $xml;
+    }
 
-    		  	 return $db;
-		 }
+    /**
+     * Returns a Database instance which represents orm.xml configuration. Uses AgilePHP
+     * CacheProvider if enabled.
+     *
+     * @param SimpleXMLElement $xml The Database element from orm.xml
+     * @return Database A Database instance representing orm.xml configuration
+     */
+    private static function getDatabase(SimpleXMLElement $xml) {
+         
+        if($cacher = AgilePHP::getCacher()) {
+
+            $cacheKey = 'AGILEPHP_ORM_DATABASE_' . $xml->database->name . $xml->database->type;
+            if($cacher->exists($cacheKey)) {
+                	
+                $db = $cacher->get($cacheKey);
+            }
+            else {
+                	
+                $db = new Database($xml->database);
+                $cacher->set($cacheKey, $db);
+            }
+        }
+        else
+        return new Database($xml->database);
+
+        return $db;
+    }
 }
 ?>

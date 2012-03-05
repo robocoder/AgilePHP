@@ -4,7 +4,7 @@
  */
 class DocBlockParserTest extends PHPUnit_Framework_TestCase {
 
-	/**
+    /**
      * @test
      */
     public function getPropertyType() {
@@ -13,8 +13,8 @@ class DocBlockParserTest extends PHPUnit_Framework_TestCase {
         $type = DocBlockParser::getPropertyType($class->getProperty('year'));
         PHPUnit_Framework_Assert::assertEquals('int', $type, 'Failed to assert Car::year is of type int');
     }
-    
-	/**
+
+    /**
      * @test
      */
     public function getPropertyArrayType() {
@@ -24,7 +24,7 @@ class DocBlockParserTest extends PHPUnit_Framework_TestCase {
         PHPUnit_Framework_Assert::assertEquals('Tire', $type, 'Failed to assert Car::tires is of type Tire');
     }
 
-	/**
+    /**
      * @test
      */
     public function getParameterType() {
@@ -51,7 +51,7 @@ class DocBlockParserTest extends PHPUnit_Framework_TestCase {
 
         PHPUnit_Framework_Assert::assertEquals('Tire', $type, 'Failed to assert Car::setTires array elements are of type Tire');
     }
-    
+
     /**
      * @test
      */
@@ -99,15 +99,15 @@ class DocBlockParserTest extends PHPUnit_Framework_TestCase {
         $type = DocBlockParser::getReturnArrayType($class->getMethod('getTires'));
         PHPUnit_Framework_Assert::assertEquals('Tire', $type, 'Failed to assert Car::getTires return array element type is Tire');
     }
-    
+
     /**
      * @test
      */
     public function getReturnArrayType() {
 
-    	$class = new ReflectionClass(new Car());
-    	$type = DocBlockParser::getReturnArrayType($class->getMethod('getTires'));
-    	PHPUnit_Framework_Assert::assertEquals('Tire', $type, 'Failed to assert Car::getTires array element return type is Tire');
+        $class = new ReflectionClass(new Car());
+        $type = DocBlockParser::getReturnArrayType($class->getMethod('getTires'));
+        PHPUnit_Framework_Assert::assertEquals('Tire', $type, 'Failed to assert Car::getTires array element return type is Tire');
     }
 }
 ?>

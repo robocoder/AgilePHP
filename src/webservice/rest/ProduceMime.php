@@ -26,21 +26,21 @@
  * the client does not list the specified #@ProduceMime::type then a "406 Not Acceptable"
  * is returned to the client. The returned service resource data is transformed and sent
  * to the client based on the specified #@ProduceMime::type as follows:
- * 
+ *
  * 1) application/xml       = Well formed XML		(expects SimpleXMLElement returned)
  * 2) application/json      = Well formed JSON		(any return type supported)
  * 3) application/x-yaml    = Well formed YAML		(any return type supported)
  * 4) application/xhtml+xml = raw data passed from the service resource
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  * <code>
  * #@ProduceMime(type = 'application/xml')
  * public function updateObject($id, $data) {
- * 
+ *
  * 		  // code here to process the request
- * 
+ *
  * 		  return $response; // $response is a SimpleXMLElement that will be transformed to well formed XML
  * }
  * }
@@ -48,16 +48,16 @@
  */
 class ProduceMime {
 
-	  /**
-	   * A supported AgilePHP REST mime type. The following mime types are supported:
-	   * 
-	   * 1) application/xml
-	   * 2) application/json
-	   * 3) application/x-yaml
-	   * 4) application/xhtml+xml
-	   * 
-	   * @var string $type A supported mime type used to produce and transform service return data
-	   */
-	  public $type;
+    /**
+     * A supported AgilePHP REST mime type. The following mime types are supported:
+     *
+     * 1) application/xml
+     * 2) application/json
+     * 3) application/x-yaml
+     * 4) application/xhtml+xml
+     *
+     * @var string $type A supported mime type used to produce and transform service return data
+     */
+    public $type;
 }
 ?>

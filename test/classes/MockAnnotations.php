@@ -21,7 +21,7 @@
 
 /**
  * A trivial class containing annotations that get tested by the AnnotationTest unit test.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes
@@ -32,27 +32,27 @@ require_once 'annotations/TestAnnotation3.php';
 
 /**
  * AgilePHP :: Test :: MockAnnotation
- * 
+ *
  * Here are some class level annotations...
- * 
- * 
+ *
+ *
  * These are some annotations that will not be processed since
  * they are inside of a PHP T_DOC_COMMENT.
- * 
+ *
  * #@Simple
  * #@TestAnnotation1(name = "Name Value")
  */
 
- // These annotations will be processed
+// These annotations will be processed
 
- #@Simple
- #@TestAnnotation1(name = "Name Value")
- #@TestAnnotation1(name = 'Name Value')
- #@TestAnnotation2(name = "Name 1 value", name2 = "Name 2 value")
- #@TestAnnotation2(name = 'Name 1 value', name2 = 'Name 2 value')
-  
- #@TestAnnotation3(name = 'Name value', name2 = 'Name 2 value', obj1 = IdentityManagerFactory::getManager())
- #@TestAnnotation3(name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = IdentityManagerFactory::getManager(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" })
+#@Simple
+#@TestAnnotation1(name = "Name Value")
+#@TestAnnotation1(name = 'Name Value')
+#@TestAnnotation2(name = "Name 1 value", name2 = "Name 2 value")
+#@TestAnnotation2(name = 'Name 1 value', name2 = 'Name 2 value')
+
+#@TestAnnotation3(name = 'Name value', name2 = 'Name 2 value', obj1 = IdentityManagerFactory::getManager())
+#@TestAnnotation3(name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = IdentityManagerFactory::getManager(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" })
 
 /**
  * The classic start of an eclipse file...
@@ -61,40 +61,40 @@ require_once 'annotations/TestAnnotation3.php';
  */
 class MockAnnotations {
 
-	  /**
-	   * This is an annotated property. PHPdoc style comments do not interfere with parsing...
-	   * 
-	   * @var string
-	   */
-	  #@TestAnnotation1(name = "value")
-	  #@TestAnnotation3(name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = IdentityManagerFactory::getManager(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" })
-	  private $foo;
-	  
-	  #@Simple
-	  private $bar;
+    /**
+     * This is an annotated property. PHPdoc style comments do not interfere with parsing...
+     *
+     * @var string
+     */
+    #@TestAnnotation1(name = "value")
+    #@TestAnnotation3(name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = IdentityManagerFactory::getManager(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" })
+    private $foo;
+     
+    #@Simple
+    private $bar;
 
-	  #@Simple
-	  #@TestAnnotation3(name = 'value', name2 = 'value 2', obj1 = new User())
-	  /**
-	   * Constructors can have annotations too. Note that you can annotate above or below
-	   * the PHPdoc.
-	   * 
-	   * @return void
-	   */
-	  public function __construct() { }
+    #@Simple
+    #@TestAnnotation3(name = 'value', name2 = 'value 2', obj1 = new User())
+    /**
+     * Constructors can have annotations too. Note that you can annotate above or below
+     * the PHPdoc.
+     *
+     * @return void
+     */
+    public function __construct() { }
 
-	  #@TestAnnotation1(name = "value")
-	  public function method1() { }
+    #@TestAnnotation1(name = "value")
+    public function method1() { }
 
-	  public function method2() { }
+    public function method2() { }
 
-	  #@Simple
-	  #@TestAnnotation3(name = "value", name2 = "value 2", obj1 = IdentityManagerFactory::getManager())
-	  public function method3() { }
+    #@Simple
+    #@TestAnnotation3(name = "value", name2 = "value 2", obj1 = IdentityManagerFactory::getManager())
+    public function method3() { }
 
-	  #@TestAnnotation2(name = "Name 1 value", name2 = "Name 2 value")
-	  #@TestAnnotation3(name = "value", name2 = "value 2", obj1 = IdentityManagerFactory::getManager())
-	  #@TestAnnotation3(name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = IdentityManagerFactory::getManager(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" })
-	  public function method4() { }
+    #@TestAnnotation2(name = "Name 1 value", name2 = "Name 2 value")
+    #@TestAnnotation3(name = "value", name2 = "value 2", obj1 = IdentityManagerFactory::getManager())
+    #@TestAnnotation3(name = "Name value", name2 = { key1 = "test", "test2", key3 = 'test3' }, obj1 = IdentityManagerFactory::getManager(), array2 = { newKey = "test", newKey2 = 'test again' }, array3 = { "test", "test2" })
+    public function method4() { }
 }
 ?>

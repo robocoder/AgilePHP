@@ -21,24 +21,23 @@
 
 /**
  * Validates values to ensure minimum length requirements are met
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class LengthValidator implements Validator {
 
-	  /**
-	   * Validates the length of a string
-	   * 
-	   * @param $data The data to test
-	   * @param $length Optional length to test. Defaults to 1.
-	   * 
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data, $length = 1) {
-
-	  		 return strlen($data) >= $length;
-	  }
+    /**
+     * Validates the length of a string
+     *
+     * @param $data The data to test
+     * @param $length Optional length to test. Defaults to 1.
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data, $length = 1) {
+        return strlen($data) >= $length;
+    }
 }
 ?>

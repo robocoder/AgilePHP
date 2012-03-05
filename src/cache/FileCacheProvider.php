@@ -28,80 +28,80 @@
  */
 class FileCacheProvider implements CacheProvider {
 
-      private $cache;
-      private $CachedFile;
+    private $cache;
+    private $CachedFile;
 
-      /**
-       * Creates a new FileSystemCache instance
-       *
-       * @return void
-       * @throws CacheException if the .cache directory does not exist
-       *         and can not be created.
-       */
-      public function __construct() {
+    /**
+     * Creates a new FileSystemCache instance
+     *
+     * @return void
+     * @throws CacheException if the .cache directory does not exist
+     *         and can not be created.
+     */
+    public function __construct() {
 
-             $this->cache = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . '.cache';
-             if(!file_exists($this->cache)) {
+        $this->cache = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . '.cache';
+        if(!file_exists($this->cache)) {
 
-                if(!mkdir($this->cache))
-                   throw new CacheException('Failed to create cache directory at \'' . $this->cache . '\'.');
+            if(!mkdir($this->cache))
+            throw new CacheException('Failed to create cache directory at \'' . $this->cache . '\'.');
 
-                chmod($this->cache, 0777);
-             }
-      }
+            chmod($this->cache, 0777);
+        }
+    }
 
-      /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#set($key, $value, $minutes)
-	   */
-      public function set($key, $value, $minutes = 0) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#set($key, $value, $minutes)
+     */
+    public function set($key, $value, $minutes = 0) {
 
-             $CachedFile = new CachedFile($value, $minutes);
+        $CachedFile = new CachedFile($value, $minutes);
 
-             $h = fopen($this->cache . DIRECTORY_SEPARATOR . $key, 'w');
-             fwrite($h, serialize($CachedFile));
-             fclose($h);
-      }
+        $h = fopen($this->cache . DIRECTORY_SEPARATOR . $key, 'w');
+        fwrite($h, serialize($CachedFile));
+        fclose($h);
+    }
 
-      /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#get($key)
-	   */
-      public function get($key) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#get($key)
+     */
+    public function get($key) {
 
-             $file = $this->cache . DIRECTORY_SEPARATOR . $key;
-             if(!file_exists($file)) return false;
+        $file = $this->cache . DIRECTORY_SEPARATOR . $key;
+        if(!file_exists($file)) return false;
 
-             $CachedFile = unserialize(file_get_contents($file));
+        $CachedFile = unserialize(file_get_contents($file));
 
-             if($minutes = $CachedFile->getMinutes()) {
+        if($minutes = $CachedFile->getMinutes()) {
 
-                $minutes = $minutes * 60;
+            $minutes = $minutes * 60;
 
-                if(time() - $minutes < filemtime($file))
-                   return $CachedFile->getData();
-             }
+            if(time() - $minutes < filemtime($file))
+            return $CachedFile->getData();
+        }
 
-             return $CachedFile->getData();
-      }
+        return $CachedFile->getData();
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#get($key)
-	   */
-      public function delete($key) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#get($key)
+     */
+    public function delete($key) {
 
-             unlink($this->cache . DIRECTORY_SEPARATOR . $key);
-      }
+        unlink($this->cache . DIRECTORY_SEPARATOR . $key);
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#exists($key)
-	   */
-      public function exists($key) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#exists($key)
+     */
+    public function exists($key) {
 
-             return file_exists($this->cache . DIRECTORY_SEPARATOR . $key);
-      }
+        return file_exists($this->cache . DIRECTORY_SEPARATOR . $key);
+    }
 }
 
 /**
@@ -113,63 +113,63 @@ class FileCacheProvider implements CacheProvider {
  */
 class CachedFile {
 
-      private $data;
-      private $minutes;
+    private $data;
+    private $minutes;
 
-      /**
-       * Creates a new CachedFile instance
-       *
-       * @param mixed $data The data to cache
-       * @param int $minutes The number of minutes the cached data is considered valid
-       * @return void
-       */
-      public function __construct($data, $minutes = 0) {
+    /**
+     * Creates a new CachedFile instance
+     *
+     * @param mixed $data The data to cache
+     * @param int $minutes The number of minutes the cached data is considered valid
+     * @return void
+     */
+    public function __construct($data, $minutes = 0) {
 
-             $this->data = $data;
-             $this->minutes = $minutes;
-      }
+        $this->data = $data;
+        $this->minutes = $minutes;
+    }
 
-      /**
-       * Sets the data to be cached
-       *
-       * @param mixed $data The data to cache
-       * @return void
-       */
-      public function setData($data) {
+    /**
+     * Sets the data to be cached
+     *
+     * @param mixed $data The data to cache
+     * @return void
+     */
+    public function setData($data) {
 
-             $this->data = $data;
-      }
+        $this->data = $data;
+    }
 
-      /**
-       * Returns the cached data
-       *
-       * @return mixed The cached data
-       * @return void
-       */
-      public function getData() {
+    /**
+     * Returns the cached data
+     *
+     * @return mixed The cached data
+     * @return void
+     */
+    public function getData() {
 
-             return $this->data;
-      }
+        return $this->data;
+    }
 
-      /**
-       * Sets the number of minutes before considering the cached data stale
-       *
-       * @param int $expires The number of minutes to keep data cached
-       * @return void
-       */
-      public function setMinutes($minutes) {
+    /**
+     * Sets the number of minutes before considering the cached data stale
+     *
+     * @param int $expires The number of minutes to keep data cached
+     * @return void
+     */
+    public function setMinutes($minutes) {
 
-             $this->minutes = $minutes;
-      }
+        $this->minutes = $minutes;
+    }
 
-      /**
-       * Retrieves the number of minutes before considering the cached data stale
-       *
-       * @return int The number of minutes to keep data cached
-       */
-      public function getMinutes() {
+    /**
+     * Retrieves the number of minutes before considering the cached data stale
+     *
+     * @return int The number of minutes to keep data cached
+     */
+    public function getMinutes() {
 
-             return $this->minutes;
-      }
+        return $this->minutes;
+    }
 }
 ?>

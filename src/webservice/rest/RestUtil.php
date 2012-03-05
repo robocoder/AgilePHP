@@ -28,200 +28,200 @@
  */
 class RestUtil {
 
-	  /**
-	   * Responsible for negotiating a mime type used to send data from the server
-	   * to the client. This is done by first checking the client preferred mime types
-	   * and ensuring one of the following mimes is supported:
-	   * 1) application/xml
-	   * 2) application/json
-	   * 3) application/xhtml+xml
-	   *
-	   * The first mime type to match according to the clients preferred list is used.
-	   * Finally, the REST service action method is introspected in search of a #@ProduceMime
-	   * annotation. If #@ProduceMime::type is accepted by the client this mime type is returned,
-	   * otherwise a 406 "Not Acceptable" is returned to the client.
-	   *
-	   * @param string $class The service to negotiate with
-	   * @param string $method The service method to negotiate with
-	   * @return string The negotiated mime type
-	   * @static
-	   */
-	  public static function negotiate($class, $method) {
+    /**
+     * Responsible for negotiating a mime type used to send data from the server
+     * to the client. This is done by first checking the client preferred mime types
+     * and ensuring one of the following mimes is supported:
+     * 1) application/xml
+     * 2) application/json
+     * 3) application/xhtml+xml
+     *
+     * The first mime type to match according to the clients preferred list is used.
+     * Finally, the REST service action method is introspected in search of a #@ProduceMime
+     * annotation. If #@ProduceMime::type is accepted by the client this mime type is returned,
+     * otherwise a 406 "Not Acceptable" is returned to the client.
+     *
+     * @param string $class The service to negotiate with
+     * @param string $method The service method to negotiate with
+     * @return string The negotiated mime type
+     * @static
+     */
+    public static function negotiate($class, $method) {
 
-	  		  $supportedMimes = array('application/xml', 'application/json', 'application/x-yaml', 'application/xhtml+xml', '*/*');
+        $supportedMimes = array('application/xml', 'application/json', 'application/x-yaml', 'application/xhtml+xml', '*/*');
 
-			  // Get the mime types the client desires from the HTTP_ACCEPT header.
-	  		  // NOTE: This is very primitive/"light-weight" and does not provide full support for RFC 2616 Accept headers,
-	  		  //       however, does support basic content negotiation none the less.
-	  		  $clientMimes = array();
-			  foreach(explode(',', $_SERVER['HTTP_ACCEPT']) as $mimeType) {
+        // Get the mime types the client desires from the HTTP_ACCEPT header.
+        // NOTE: This is very primitive/"light-weight" and does not provide full support for RFC 2616 Accept headers,
+        //       however, does support basic content negotiation none the less.
+        $clientMimes = array();
+        foreach(explode(',', $_SERVER['HTTP_ACCEPT']) as $mimeType) {
 
-					  $item = explode(';', $mimeType);
-					  $clientMimes[$item[0]] = floatval(array_key_exists(1, $item) ? substr($item[1], 2) : 1);
-			  }
-			  arsort($clientMimes);
+            $item = explode(';', $mimeType);
+            $clientMimes[$item[0]] = floatval(array_key_exists(1, $item) ? substr($item[1], 2) : 1);
+        }
+        arsort($clientMimes);
 
-			  // Find the first preferred client mime type which the REST service supports.
-			  foreach($clientMimes as $mimeType => $index) {
+        // Find the first preferred client mime type which the REST service supports.
+        foreach($clientMimes as $mimeType => $index) {
 
-					  if(in_array($mimeType, $supportedMimes)) {
+            if(in_array($mimeType, $supportedMimes)) {
 
-					     $mime = ($mimeType == '*/*') ? 'application/xml' : $mimeType;
-					 	 break;
-					  }
-			  }
+                $mime = ($mimeType == '*/*') ? 'application/xml' : $mimeType;
+                break;
+            }
+        }
 
-			  // If the client does not accept one of the supported mime types, throw a 406.
-			  if(!isset($mime)) {
+        // If the client does not accept one of the supported mime types, throw a 406.
+        if(!isset($mime)) {
 
-			  	 Log::error('RestUtil::negotiate Client does not accept any of the supported mime types.');
-			  	 throw new RestServiceException(406);
-			  }
+            Log::error('RestUtil::negotiate Client does not accept any of the supported mime types.');
+            throw new RestServiceException(406);
+        }
 
-			  // Store the consume and produce mime values if present. Assume application/xml if the client does not specify content type
-			  $response = array();
-			  $response['ConsumeMime'] = (@$_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : 'application/xml';
+        // Store the consume and produce mime values if present. Assume application/xml if the client does not specify content type
+        $response = array();
+        $response['ConsumeMime'] = (@$_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : 'application/xml';
 
-			  // Parse #@ProduceMime and #@ConsumeMime values from the REST service method if present
-	  		  $annotes = Annotation::getMethodsAsArray($class);
-	  		  foreach($annotes[$method] as $annotation) {
+        // Parse #@ProduceMime and #@ConsumeMime values from the REST service method if present
+        $annotes = Annotation::getMethodsAsArray($class);
+        foreach($annotes[$method] as $annotation) {
 
-	  		 		  if($annotation instanceof ProduceMime) {
+            if($annotation instanceof ProduceMime) {
 
-	  		 		     // If the REST service has a #@ProduceMime::type defined which the client does not accept, send a 406 and exit.
-	  		 		     if(!array_key_exists($annotation->type, $clientMimes)) {
+                // If the REST service has a #@ProduceMime::type defined which the client does not accept, send a 406 and exit.
+                if(!array_key_exists($annotation->type, $clientMimes)) {
 
-	  		 		        Log::error('RestUtil::negotiate Client does not accept mime type defined by #@ProduceMime::type');
-	  		 		   	   	throw new RestServiceException(406);
-	  		 		   	 }
+                    Log::error('RestUtil::negotiate Client does not accept mime type defined by #@ProduceMime::type');
+                    throw new RestServiceException(406);
+                }
 
-	  		 		   	 $mime = $annotation->type;
-	  		 		   }
+                $mime = $annotation->type;
+            }
 
-	  		 		   if($annotation instanceof ConsumeMime)
-	  		 		   	  $response['ConsumeMime'] = $annotation->type;
-	  		  }
+            if($annotation instanceof ConsumeMime)
+            $response['ConsumeMime'] = $annotation->type;
+        }
 
-	  		  $response['ProduceMime'] = $mime;
+        $response['ProduceMime'] = $mime;
 
-	  		  return $response;
-	  }
+        return $response;
+    }
 
-	  /**
-	   * Transforms data being produced by a REST service into a new mime/data type
-	   * for presentation to the client.
-	   *
-	   * @param mixed $data The data produced by the REST service. THIS DATA MUST BE EITHER AN OBJECT OR AN ARRAY!
-	   * @param string $mime The mime type which describes the new data formatting.
-	   * 					 (application/xml|application/json|application/x-yaml|application/xhtml+xml)
-	   */
-	  public static function serverTransform($data, $mime) {
+    /**
+     * Transforms data being produced by a REST service into a new mime/data type
+     * for presentation to the client.
+     *
+     * @param mixed $data The data produced by the REST service. THIS DATA MUST BE EITHER AN OBJECT OR AN ARRAY!
+     * @param string $mime The mime type which describes the new data formatting.
+     * 					 (application/xml|application/json|application/x-yaml|application/xhtml+xml)
+     */
+    public static function serverTransform($data, $mime) {
 
-	  		 if(!is_object($data) && !is_array($data)) {
+        if(!is_object($data) && !is_array($data)) {
 
-	  		 	Log::debug('RestUtil::serverTransform The specified data must be either an object or array.');
-	  		 	throw new RestServiceException(500);
-	  		 }
+            Log::debug('RestUtil::serverTransform The specified data must be either an object or array.');
+            throw new RestServiceException(500);
+        }
 
-	  		 switch($mime) {
+        switch($mime) {
 
-	  		 	case 'application/xml':
-	  		 		 header('content-type: application/xml');
-	  		 	 	 return XmlRenderer::render($data);
- 		 		break;
+            case 'application/xml':
+                header('content-type: application/xml');
+                return XmlRenderer::render($data);
+                break;
 
-	  		 	case 'application/json':
-	  		 		 header('content-type: application/json');
-	  		 		 return JsonRenderer::render($data);
-	  		 	break;
+            case 'application/json':
+                header('content-type: application/json');
+                return JsonRenderer::render($data);
+                break;
 
-	  		 	case 'application/x-yaml':
-	  		 		  header('content-type: application/x-yaml');
-	  		 		  return YamlRenderer::render($data);
-	  		 	break;
+            case 'application/x-yaml':
+                header('content-type: application/x-yaml');
+                return YamlRenderer::render($data);
+                break;
 
-	  		 	case 'application/xhtml+xml':
-	  		 	      if(is_array($data)) {
-	  		 	         if(!isset($data[0])) {
+            case 'application/xhtml+xml':
+                if(is_array($data)) {
+                    if(!isset($data[0])) {
 
-	  		 	            Log::error('RestUtil::serverTransform Received null data');
-	  		 	            throw new RestServiceException(500);
-	  		 	         }
-	  		 	         $className = get_class($data[0]);
-	  		 	      }
-	  		 	      else
-	  		 	         $className = get_class($data);
+                        Log::error('RestUtil::serverTransform Received null data');
+                        throw new RestServiceException(500);
+                    }
+                    $className = get_class($data[0]);
+                }
+                else
+                $className = get_class($data);
 
-	  		 	      $class = new ReflectionClass($className);
+                $class = new ReflectionClass($className);
 
-	  		 	      $namespace = explode('\\', $class->getName());
-                      $className = array_pop($namespace);
+                $namespace = explode('\\', $class->getName());
+                $className = array_pop($namespace);
 
-	  		 		  // Perform XSLT transformation if a model xsl view exists
-	  		 		  $renderer = new XSLTRenderer();
-	  		 		  if(file_exists(AgilePHP::getWebRoot() . '/view/' . $className . '.xsl')) {
-	  		 		  	  return $renderer->transformXsl($className, XmlRenderer::render($data));
-	  		 		  }
-	  		 		  else {
-	  		 		  	  // Otherwise send the response as XML
-	  		 		  	  header('content-type: application/xml');
-	  		 		  	  return XmlRenderer::render($data);
-	  		 		  }
-	  		 	break;
+                // Perform XSLT transformation if a model xsl view exists
+                $renderer = new XSLTRenderer();
+                if(file_exists(AgilePHP::getWebRoot() . '/view/' . $className . '.xsl')) {
+                    return $renderer->transformXsl($className, XmlRenderer::render($data));
+                }
+                else {
+                    // Otherwise send the response as XML
+                    header('content-type: application/xml');
+                    return XmlRenderer::render($data);
+                }
+                break;
 
-	  		 	default:
-	  		 		Log::debug('RestUtil::serverTransform Could not produce unsupported mime type \'' . $mime . '\'.');
-	  		 		throw new RestServiceException(500);
-	  		 }
-	  }
+            default:
+                Log::debug('RestUtil::serverTransform Could not produce unsupported mime type \'' . $mime . '\'.');
+                throw new RestServiceException(500);
+        }
+    }
 
-	  /**
-	   * Transforms the data consumed from the client request into
-	   * an object which represents the specified mime type. This data
-	   * is then presented to the requsted REST service resource.
-	   *
-	   * 1) application/xml       = SimpleXMLElement
-	   * 2) application/json      = JSON unserialized string
-	   * 3) application/x-yaml    = YAML unserialized string
-	   * 4) application/xhtml+xml = Data is returned untouched
-	   *
-	   * @param string $data The data being consume from a cilent HTTP request (PUT|POST|DELETE)
-	   * @param string $mime The mime type which describes the data.
-	   * 					 (application/xml|application/json|application/x-yaml|application/xhtml+xml)
-	   * @param string $modelName Optional model name used to transform a JSON object to a native PHP object
-	   * @return void
-	   */
-	  public static function consumeTransform($data, $mime, $modelName = null) {
+    /**
+     * Transforms the data consumed from the client request into
+     * an object which represents the specified mime type. This data
+     * is then presented to the requsted REST service resource.
+     *
+     * 1) application/xml       = SimpleXMLElement
+     * 2) application/json      = JSON unserialized string
+     * 3) application/x-yaml    = YAML unserialized string
+     * 4) application/xhtml+xml = Data is returned untouched
+     *
+     * @param string $data The data being consume from a cilent HTTP request (PUT|POST|DELETE)
+     * @param string $mime The mime type which describes the data.
+     * 					 (application/xml|application/json|application/x-yaml|application/xhtml+xml)
+     * @param string $modelName Optional model name used to transform a JSON object to a native PHP object
+     * @return void
+     */
+    public static function consumeTransform($data, $mime, $modelName = null) {
 
-	         try {
-        			 switch($mime) {
+        try {
+			 switch($mime) {
 
-        			 	case 'application/xml':
-        			 		return XmlToModel::transform($data);
-        			 	break;
+			     case 'application/xml':
+			         return XmlToModel::transform($data);
+			         break;
 
-        			 	case 'application/json':
-        			 		return JsonToModel::transform($data, $modelName);
-        			 	break;
+			     case 'application/json':
+			         return JsonToModel::transform($data, $modelName);
+			         break;
 
-        			 	case 'application/x-yaml':
-        			 		 return YamlToModel::transform($data);
-        			 	break;
+			     case 'application/x-yaml':
+			         return YamlToModel::transform($data);
+			         break;
 
-        			 	case 'application/xhtml+xml':
-        			 		 return $data;
-        		 		break;
+			     case 'application/xhtml+xml':
+			         return $data;
+			         break;
 
-        			 	default:
-        			 		Log::debug('RestUtil::consumeTransform Could not transform consumed data type \'' . $mime . '\'. Using raw data as last resort.');
-        			 		return $data;
-        			 }
-	         }
-	         catch(FrameworkException $e) {
+			     default:
+			         Log::debug('RestUtil::consumeTransform Could not transform consumed data type \'' . $mime . '\'. Using raw data as last resort.');
+			         return $data;
+			 }
+        }
+        catch(FrameworkException $e) {
 
-	         	Log::debug('RestUtil::consumeTransform: ' . $e->getMessage());
-	            throw new RestServiceException(400, $e->getMessage());
-	         }
-	  }
+            Log::debug('RestUtil::consumeTransform: ' . $e->getMessage());
+            throw new RestServiceException(400, $e->getMessage());
+        }
+    }
 }
 ?>

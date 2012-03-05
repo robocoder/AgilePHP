@@ -28,52 +28,52 @@
  */
 class ApcCacheProvider implements CacheProvider {
 
-      /**
-       * Creates a new instance of ApcCacheProvider
-       *
-       * @return void
-       * @throws CacheException if APC is not installed on the server
-       */
-      public function __construct() {
+    /**
+     * Creates a new instance of ApcCacheProvider
+     *
+     * @return void
+     * @throws CacheException if APC is not installed on the server
+     */
+    public function __construct() {
 
-             if(!function_exists('apc_store'))
-                throw new CacheException('Alternative PHP Cache (APC) is not installed on the server');
-      }
+        if(!function_exists('apc_store'))
+        throw new CacheException('Alternative PHP Cache (APC) is not installed on the server');
+    }
 
-      /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#set($key, $value, $minutes)
-	   */
-      public function set($key, $value, $minutes = 0) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#set($key, $value, $minutes)
+     */
+    public function set($key, $value, $minutes = 0) {
 
-             apc_store($key, serialize($value), $minutes);
-      }
+        apc_store($key, serialize($value), $minutes);
+    }
 
-      /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#get($key)
-	   */
-      public function get($key) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#get($key)
+     */
+    public function get($key) {
 
-             return unserialize(apc_fetch($key));
-      }
+        return unserialize(apc_fetch($key));
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#get($key)
-	   */
-      public function delete($key) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#get($key)
+     */
+    public function delete($key) {
 
-             return apc_delete($key);
-      }
+        return apc_delete($key);
+    }
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/cache/Caching#exists($key)
-	   */
-      public function exists($key) {
+    /**
+     * (non-PHPdoc)
+     * @see src/cache/Caching#exists($key)
+     */
+    public function exists($key) {
 
-             return apc_exists($key);
-      }
+        return apc_exists($key);
+    }
 }
 ?>

@@ -21,21 +21,20 @@
 
 /**
  * Validates object values
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class ObjectValidator implements Validator {
 
-	  /**
-	   * Checks to see if the specified data is a PHP object
-	   * 
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data) {
-
-	  		 return is_object($data);
-	  }
+    /**
+     * Checks to see if the specified data is a PHP object
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
+        return is_object($data);
+    }
 }
 ?>

@@ -39,14 +39,14 @@ require_once 'webservice/soap/WSDL.php';
  */
 class WebService {
 
-	  /**
-	   * @var String The SOAP web service name
-	   */
-	  public $serviceName;
+    /**
+     * @var String The SOAP web service name
+     */
+    public $serviceName;
 
-	  /**
-	   * @var String The target namespace of the web service. This is be the location to your web service. (http://api.example.org/index.php/TestAPI)
-	   */
-	  public $targetNamespace;
+    /**
+     * @var String The target namespace of the web service. This is be the location to your web service. (http://api.example.org/index.php/TestAPI)
+     */
+    public $targetNamespace;
 }
 ?>

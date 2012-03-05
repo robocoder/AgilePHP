@@ -21,338 +21,338 @@
 
 /**
  * Interface for AgilePHP Identity component.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.identity
  */
 interface IdentityManager {
 
-		  /**
-		   * Sets the domain object model which the IdentityManager will manage.
-		   * 
-		   * @param IdentityModel $model The IdentityModel for IdentityManager to manage
-		   * @return void
-		   */
-		  public function setModel(IdentityModel $model);
+    /**
+     * Sets the domain object model which the IdentityManager will manage.
+     *
+     * @param IdentityModel $model The IdentityModel for IdentityManager to manage
+     * @return void
+     */
+    public function setModel(IdentityModel $model);
 
-		  /**
-		   * Returns the domain object model which the IdentityManager is managing.
-		   * 
-		   * @return An instance of the domain object model which IdentityManager is managing
-		   */
-		  public function getModel();
+    /**
+     * Returns the domain object model which the IdentityManager is managing.
+     *
+     * @return An instance of the domain object model which IdentityManager is managing
+     */
+    public function getModel();
 
-		  /**
-		   * Sets the name of the domain model which the IdentityManager is managing
-		   * 
-		   * @param string $name The domain model name
-		   * @return void
-		   */
-		  public function setModelName($name);
+    /**
+     * Sets the name of the domain model which the IdentityManager is managing
+     *
+     * @param string $name The domain model name
+     * @return void
+     */
+    public function setModelName($name);
 
-		  /**
-		   * Gets the domain model name
-		   * 
-		   * @return string The name of the domain model which the IdentityManager is managing
-		   */
-		  public function getModelName();
+    /**
+     * Gets the domain model name
+     *
+     * @return string The name of the domain model which the IdentityManager is managing
+     */
+    public function getModelName();
 
-		  /**
-		   * Sets the username for the identity which IdentityManager is managing.
-		   *   
-		   * @param String $username The username of the identity.
-		   * @return void
-		   */
-		  public function setUsername($username);
+    /**
+     * Sets the username for the identity which IdentityManager is managing.
+     *
+     * @param String $username The username of the identity.
+     * @return void
+     */
+    public function setUsername($username);
 
-		  /**
-		   * Returns the username for the identity which IdentityManager is managing.
-		   * 
-		   * @return The username of the identity
-		   */
-		  public function getUsername();
+    /**
+     * Returns the username for the identity which IdentityManager is managing.
+     *
+     * @return The username of the identity
+     */
+    public function getUsername();
 
-		  /**
-		   * Sets the password for the identity which IdentityManager is managing.
-		   * 
-		   * @param String $password The identity's password
-		   * @return void
-		   */
-		  public function setPassword($password);
+    /**
+     * Sets the password for the identity which IdentityManager is managing.
+     *
+     * @param String $password The identity's password
+     * @return void
+     */
+    public function setPassword($password);
 
-		  /**
-		   * Returns the password for the identity which IdentityManager is managing. Unless
-		   * overwritten, this is the persisted value.
-		   *  
-		   * @return The identity's password
-		   */
-		  public function getPassword();
-		  
-		  /**
-		   * Sets the identity's email address.
-		   * 
-		   * @param String $email A valid email addresss containing for the idenity
-		   * @return void 
-		   */
-		  public function setEmail($email);
+    /**
+     * Returns the password for the identity which IdentityManager is managing. Unless
+     * overwritten, this is the persisted value.
+     *
+     * @return The identity's password
+     */
+    public function getPassword();
 
-		  /**
-		   * Returns the identity's email address
-		   * 
-		   * @return The email address of the identity
-		   */
-		  public function getEmail();
+    /**
+     * Sets the identity's email address.
+     *
+     * @param String $email A valid email addresss containing for the idenity
+     * @return void
+     */
+    public function setEmail($email);
 
-		  /**
-		   * Denotes when the identity was created.
-		   * 
-		   * @param Date $dateTime The dateTime when this identity was created.
-		   * @return void
-		   */
-		  public function setCreated($dateTime);
+    /**
+     * Returns the identity's email address
+     *
+     * @return The email address of the identity
+     */
+    public function getEmail();
 
-		  /**
-		   * Returns the dateTime when the identity was created.
-		   * 
-		   * @return The date indicating when the identity was created.
-		   */
-		  public function getCreated();
+    /**
+     * Denotes when the identity was created.
+     *
+     * @param Date $dateTime The dateTime when this identity was created.
+     * @return void
+     */
+    public function setCreated($dateTime);
 
-		  /**
-		   * Sets the dateTime when this identity last logged in
-		   * 
-		   * @param Date $dateTime The dateTime when the identity last logged in
-		   * @return void
-		   */
-		  public function setLastLogin($dateTime);
+    /**
+     * Returns the dateTime when the identity was created.
+     *
+     * @return The date indicating when the identity was created.
+     */
+    public function getCreated();
 
-		  /**
-		   * Returns the dateTime the identity last logged in
-		   *  
-		   * @return The dateTime the identity last logged in
-		   */
-		  public function getLastLogin();
+    /**
+     * Sets the dateTime when this identity last logged in
+     *
+     * @param Date $dateTime The dateTime when the identity last logged in
+     * @return void
+     */
+    public function setLastLogin($dateTime);
 
-		  /**
-		   * Sets the enabled status of the user
-		   *  
-		   * @param bool True to enable the user account, false to disable. 
-		   * @return void
-		   */
-		  public function setEnabled($value);
+    /**
+     * Returns the dateTime the identity last logged in
+     *
+     * @return The dateTime the identity last logged in
+     */
+    public function getLastLogin();
 
-		  /**
-		   * Gets the enabled status of the user 
-		   * @return boolean
-		   */
-		  public function getEnabled();
+    /**
+     * Sets the enabled status of the user
+     *
+     * @param bool True to enable the user account, false to disable.
+     * @return void
+     */
+    public function setEnabled($value);
 
-		  /**
-		   * Sets the name of the authenticator responsible for performing authentication.
-		   * 
-		   * @param string $authenticator The name of the authenticator responsible for Identity authentication
-		   * @return void
-		   */
-		  public function setAuthenticator($authenticator);
+    /**
+     * Gets the enabled status of the user
+     * @return boolean
+     */
+    public function getEnabled();
 
-		  /**
-		   * Gets the name of the authenticator responsible for performing authentication
-		   * 
-		   * @return string The name of the authenticator responsible for Identity authentication
-		   */
-		  public function getAuthenticator();
-		  
-		  /**
-		   * Sets the Mailer responsible for sending forgot password emails
-		   * 
-		   * @param string $mailer The Mailer responsible for sending forgot password emails
-		   * @return void
-		   */
-		  public function setForgotPasswdMailer($mailer);
+    /**
+     * Sets the name of the authenticator responsible for performing authentication.
+     *
+     * @param string $authenticator The name of the authenticator responsible for Identity authentication
+     * @return void
+     */
+    public function setAuthenticator($authenticator);
 
-		  /**
-		   * Gets the Mailer responsible for sending forgot password emails
-		   * 
-		   * @return string $mailer The Mailer responsible for sending forgot password emails
-		   */
-		  public function getForgotPasswdMailer();
+    /**
+     * Gets the name of the authenticator responsible for performing authentication
+     *
+     * @return string The name of the authenticator responsible for Identity authentication
+     */
+    public function getAuthenticator();
 
-		  /**
-		   * Sets the Mailer responsible for sending emails for reset passwords
-		   * 
-		   * @param string $mailer The Mailer responsible for sending emails for reset passwords
-		   * @return void
-		   */
-		  public function setResetPasswdMailer($mailer);
+    /**
+     * Sets the Mailer responsible for sending forgot password emails
+     *
+     * @param string $mailer The Mailer responsible for sending forgot password emails
+     * @return void
+     */
+    public function setForgotPasswdMailer($mailer);
 
-		  /**
-		   * Returns the Mailer responsible for sending emails for reset passwords
-		   * 
-		   * @return string The Mailer responsible for sending emails for reset passwords
-		   */
-		  public function getResetPasswdMailer();
+    /**
+     * Gets the Mailer responsible for sending forgot password emails
+     *
+     * @return string $mailer The Mailer responsible for sending forgot password emails
+     */
+    public function getForgotPasswdMailer();
 
-		  /**
-		   * Sets the Mailer used to send registration/confirmation emails
-		   * 
-		   * @param string $mailer The Mailer instance responsible for sending registration/confirmation emails. 
-		   * @return void
-		   */
-		  public function setRegistrationMailer($mailer);
+    /**
+     * Sets the Mailer responsible for sending emails for reset passwords
+     *
+     * @param string $mailer The Mailer responsible for sending emails for reset passwords
+     * @return void
+     */
+    public function setResetPasswdMailer($mailer);
 
-		  /**
-		   * Returns the Mailer instance responsible for sending registration/confirmation emails
-		   * 
-		   * @return string The registration/confirmation Mailer
-		   */
-		  public function getRegistrationMailer();
+    /**
+     * Returns the Mailer responsible for sending emails for reset passwords
+     *
+     * @return string The Mailer responsible for sending emails for reset passwords
+     */
+    public function getResetPasswdMailer();
 
-		  /**
-		   * Sends the identity an email to the address stored in the stateful domain object
-		   * model being managed by IdentityManager. Uses the state of the 'email' field
-		   * within the domain object model the IdentityManager is managing.
-		   * 
-		   * @return void
-		   * @throws FrameworkException If there was an error sending the forgotten password email.
-		   */
-		  public function forgotPassword();
+    /**
+     * Sets the Mailer used to send registration/confirmation emails
+     *
+     * @param string $mailer The Mailer instance responsible for sending registration/confirmation emails.
+     * @return void
+     */
+    public function setRegistrationMailer($mailer);
 
-		  /**
-		   * Resets the password to a hashed random string. This operation uses the AgilePHP
-		   * Crypto component to ensure standard hashing across the application. 
-		   * 
-		   * @param String $token A randomly generated token required to reset the password
-		   * @param String $sessionId The sessionId of the user who requested the new password
-		   * @return void
-		   */
-		  public function resetPassword($token, $sessionId);
+    /**
+     * Returns the Mailer instance responsible for sending registration/confirmation emails
+     *
+     * @return string The registration/confirmation Mailer
+     */
+    public function getRegistrationMailer();
 
-		  /**
-		   * Registers a new user account by creating a disabled user and sending
-		   * an activation email to the new user. The activation email calls activate
-		   * to allow the user to enable the account.
-		   *
-		   * @return void
-		   * @throws FrameworkException IF there was an error sending the registration email.
-		   */
-		  public function register();
+    /**
+     * Sends the identity an email to the address stored in the stateful domain object
+     * model being managed by IdentityManager. Uses the state of the 'email' field
+     * within the domain object model the IdentityManager is managing.
+     *
+     * @return void
+     * @throws FrameworkException If there was an error sending the forgotten password email.
+     */
+    public function forgotPassword();
 
-		  /**
-		   * Confirms/activates a pending registration
-		   * 
-		   * @param String $token The confirmation token
-		   * @param String $sessionId The session id used to register
-		   * @return void
-		   * @throws FrameworkException If token is invalid
-		   */
-		  public function confirm($token, $sessionId);
+    /**
+     * Resets the password to a hashed random string. This operation uses the AgilePHP
+     * Crypto component to ensure standard hashing across the application.
+     *
+     * @param String $token A randomly generated token required to reset the password
+     * @param String $sessionId The sessionId of the user who requested the new password
+     * @return void
+     */
+    public function resetPassword($token, $sessionId);
 
-  		  /**
-		   * Sets the identity's role
-		   * 
-		   * @param Role $role A Role domain model object 
-		   * @return void
-		   */
-		  public function setRole(Role $role);
+    /**
+     * Registers a new user account by creating a disabled user and sending
+     * an activation email to the new user. The activation email calls activate
+     * to allow the user to enable the account.
+     *
+     * @return void
+     * @throws FrameworkException IF there was an error sending the registration email.
+     */
+    public function register();
 
-		  /**
-		   * Returns the Role object
-		   * 
-		   * @return The Role object
-		   */
-		  public function getRole();
+    /**
+     * Confirms/activates a pending registration
+     *
+     * @param String $token The confirmation token
+     * @param String $sessionId The session id used to register
+     * @return void
+     * @throws FrameworkException If token is invalid
+     */
+    public function confirm($token, $sessionId);
 
-		  /**
-		   * Adds an array of Role instances to the identity
-		   * 
-		   * @param array $roles An array of Role instances to add
-		   * @return void
-		   */
-		  public function setRoles(array $roles);
+    /**
+     * Sets the identity's role
+     *
+     * @param Role $role A Role domain model object
+     * @return void
+     */
+    public function setRole(Role $role);
 
-		  /**
-		   * Returns an array of Role instances which belong to the identity
-		   * 
-		   * @return mixed An array of Role instances which the current identity belongs
-		   *               or null if no roles exist
-		   */
-		  public function getRoles();
+    /**
+     * Returns the Role object
+     *
+     * @return The Role object
+     */
+    public function getRole();
 
-		  /**
-		   * Adds a new role to the IdentityModel Roles array.
-		   * 
-		   * @param Role $role The new role to assign to the identity
-		   * @return void
-		   */
-		  public function addRole(Role $role);
+    /**
+     * Adds an array of Role instances to the identity
+     *
+     * @param array $roles An array of Role instances to add
+     * @return void
+     */
+    public function setRoles(array $roles);
 
-		  /**
-		   * Checks to see if the identity has the specified role.
-		   *  
-		   * @param String $role The name of a role
-		   * @return True if the identity has the specified role, false otherwise.
-		   */
-		  public function hasRole(Role $role);
+    /**
+     * Returns an array of Role instances which belong to the identity
+     *
+     * @return mixed An array of Role instances which the current identity belongs
+     *               or null if no roles exist
+     */
+    public function getRoles();
 
-		  /**
-		   * Revokes/removes a role from the identity.
-		   *  
-		   * @return void
-		   */
-		  public function revokeRole(Role $role);
+    /**
+     * Adds a new role to the IdentityModel Roles array.
+     *
+     * @param Role $role The new role to assign to the identity
+     * @return void
+     */
+    public function addRole(Role $role);
 
-		  /**
-		   * Authenticates/logs in an identity and returns a boolean response.
-		   * 
-		   * @param String $username The username to authenticate
-		   * @param String $password The password to authenticate
-		   * @return True if the username and password are valid, false otherwise.
-		   */
-		  public function login($username, $password);
+    /**
+     * Checks to see if the identity has the specified role.
+     *
+     * @param String $role The name of a role
+     * @return True if the identity has the specified role, false otherwise.
+     */
+    public function hasRole(Role $role);
 
-		  /**
-		   * Destroys the current session.
-		   * 
-		   * @return void
-		   */
-		  public function logout();
+    /**
+     * Revokes/removes a role from the identity.
+     *
+     * @return void
+     */
+    public function revokeRole(Role $role);
 
-		  /**
-		   * Returns boolean response based on the identity's logged in status.
-		   * 
-		   * @return True if the identity is currently logged in, false otherwise.
-		   */
-		  public function isLoggedIn();
+    /**
+     * Authenticates/logs in an identity and returns a boolean response.
+     *
+     * @param String $username The username to authenticate
+     * @param String $password The password to authenticate
+     * @return True if the username and password are valid, false otherwise.
+     */
+    public function login($username, $password);
 
-		  /**
-		   * Persists a new identity.
-		   * 
-		   * @return void
-		   */
-		  public function persist();
+    /**
+     * Destroys the current session.
+     *
+     * @return void
+     */
+    public function logout();
 
-		  /**
-		   * Updates the identity using the current state of the domain model object
-		   * which the IdentityManager is managing.
-		   * 
-		   * @return void
-		   */
-		  public function merge();
+    /**
+     * Returns boolean response based on the identity's logged in status.
+     *
+     * @return True if the identity is currently logged in, false otherwise.
+     */
+    public function isLoggedIn();
 
-		  /**
-		   * Deletes the domain object model which the IdentityManager is managing.
-		   * 
-		   * @return void
-		   */
-		  public function delete();
+    /**
+     * Persists a new identity.
+     *
+     * @return void
+     */
+    public function persist();
 
-		  /**
-		   * Refreshes an entity by performing a 'find' operation on the domain
-		   * object model which the IdentityManager is managing.
-		   * 
-		   * @return void
-		   */
-		  public function refresh();
+    /**
+     * Updates the identity using the current state of the domain model object
+     * which the IdentityManager is managing.
+     *
+     * @return void
+     */
+    public function merge();
+
+    /**
+     * Deletes the domain object model which the IdentityManager is managing.
+     *
+     * @return void
+     */
+    public function delete();
+
+    /**
+     * Refreshes an entity by performing a 'find' operation on the domain
+     * object model which the IdentityManager is managing.
+     *
+     * @return void
+     */
+    public function refresh();
 }
 ?>

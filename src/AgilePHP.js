@@ -14,7 +14,7 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 /**
  * AgilePHP client side JavaScript library
@@ -24,7 +24,6 @@ var AgilePHP = {
 	author: 'Jeremy Hahn',
 	copyright: 'Make A Byte, inc.',
 	licence: 'GNU General Public License v3',
-	package: 'com.makeabyte.agilephp',
 
 	requestBase: null,
 	documentRoot: null,

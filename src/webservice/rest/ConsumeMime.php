@@ -23,19 +23,19 @@
  * Tells the REST request processing interceptor (#@GET|#@POST|#@PUT|#@DELETE) to
  * transform received HTTP data into a PHP data type before passing into the REST service
  * method. Conversions occur based on the specified #@ConsumeMime::type as follows:
- * 
+ *
  * 1) application/xml       = SimpleXMLElement
  * 2) application/json      = json_decoded data
  * 3) application/x-yaml    = yaml_parsed data
  * 4) application/xhtml+xml = raw data passed from the client
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  * <code>
  * #@ConsumeMime(type = 'application/xml')
  * public function updateObject($id, $data) {
- * 
+ *
  * 	     // $data is a SimpleXMLElement
  * }
  * }
@@ -43,16 +43,16 @@
  */
 class ConsumeMime {
 
-	  /**
-	   * A supported AgilePHP REST mime type. The following mime types are supported:
-	   * 
-	   * 1) application/xml
-	   * 2) application/json
-	   * 3) application/x-yaml
-	   * 4) application/xhtml+xml
-	   * 
-	   * @var string $type A supported mime type used to consume and transform client data
-	   */
-	  public $type;
+    /**
+     * A supported AgilePHP REST mime type. The following mime types are supported:
+     *
+     * 1) application/xml
+     * 2) application/json
+     * 3) application/x-yaml
+     * 4) application/xhtml+xml
+     *
+     * @var string $type A supported mime type used to consume and transform client data
+     */
+    public $type;
 }
 ?>

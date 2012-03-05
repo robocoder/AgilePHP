@@ -22,7 +22,7 @@
 /**
  * Transforms data from one format to another, intended for
  * presentational use.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.data.renderer

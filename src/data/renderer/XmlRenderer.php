@@ -28,151 +28,151 @@
  */
 class XmlRenderer implements DataRenderer {
 
-      /**
-       * Renders the specified data as XML.
-       *
-       * @param mixed $data The data to render. (primitive|array|object)
-       * @param string $name The root node name
-       * @param string $pluralName The plural name to use when children are encountered
-       * @param boolean $isChild Use internally by the method when called recursively
-       * @param boolean $declaration True to include <?xml ... ?> doctype declaration, false to omit
-       * @return string An XML document representing the specified data
-       */
-      public static function render($data, $name = 'Result', $pluralName = 'Results', $isChild = false, $declaration = true) {
+    /**
+     * Renders the specified data as XML.
+     *
+     * @param mixed $data The data to render. (primitive|array|object)
+     * @param string $name The root node name
+     * @param string $pluralName The plural name to use when children are encountered
+     * @param boolean $isChild Use internally by the method when called recursively
+     * @param boolean $declaration True to include <?xml ... ?> doctype declaration, false to omit
+     * @return string An XML document representing the specified data
+     */
+    public static function render($data, $name = 'Result', $pluralName = 'Results', $isChild = false, $declaration = true) {
 
-             if($isChild) $xml = '';
-	  		 else if($declaration) $xml = '<?xml version="1.0" encoding="UTF-8" ?>';
-	  		 else $xml = '';
+        if($isChild) $xml = '';
+        else if($declaration) $xml = '<?xml version="1.0" encoding="UTF-8" ?>';
+        else $xml = '';
 
-	  	     if(is_array($data)) {
+        if(is_array($data)) {
 
-	  	      	if(!count($data)) return '<' . $name . '/>';
+            if(!count($data)) return '<' . $name . '/>';
 
-  	 		  	$xml .= '<' . ((!$isChild) ? $pluralName : $name) . '>';
-  	 		  	foreach($data as $key => $val) {
+            $xml .= '<' . ((!$isChild) ? $pluralName : $name) . '>';
+            foreach($data as $key => $val) {
 
-  	 		  	        //if(is_numeric($key)) throw new FrameworkException('XmlRenderer requires associative arrays');
+                //if(is_numeric($key)) throw new FrameworkException('XmlRenderer requires associative arrays');
 
-  	 		  	        if(is_object($val)) {
+                if(is_object($val)) {
 
-		  		 		    $ns = explode('\\', get_class($val));
-		  		 		    $cls = array_pop($ns);
+                    $ns = explode('\\', get_class($val));
+                    $cls = array_pop($ns);
 
-		  		 		    $xml .= self::render($val, $cls, $pluralName, true, false);
-		  		 		 }
-		  		 		 elseif(is_array($val)) {
+                    $xml .= self::render($val, $cls, $pluralName, true, false);
+                }
+                elseif(is_array($val)) {
 
-		  		 		    if(isset($val[0]) && is_object($val[0])) {
+                    if(isset($val[0]) && is_object($val[0])) {
 
-		  		 		       $ns = explode('\\', get_class($val[0]));
-		  		 		       $name = array_pop($ns);
-		  		 		    }
+                        $ns = explode('\\', get_class($val[0]));
+                        $name = array_pop($ns);
+                    }
 
-		  		 		    $xml .= self::render($val, $name, $pluralName, true, false);
-		  		 		 }
-    	 		  	  	 else {
+                    $xml .= self::render($val, $name, $pluralName, true, false);
+                }
+                else {
 
-    	 		  	  	    $val = mb_convert_encoding($val, 'UTF-8', 'ISO-8859-1');
+                    $val = mb_convert_encoding($val, 'UTF-8', 'ISO-8859-1');
       	 		  	  	    $xml .= '<' . $key . '>' . $val . '</' . $key . '>';
-      	 		  	  	 }
-  	 		  	 }
-  	 		  	 $xml .= '</' . ((!$isChild) ? $pluralName : $name) . '>';
+                }
+            }
+            $xml .= '</' . ((!$isChild) ? $pluralName : $name) . '>';
 
- 	 		  	 return $xml;
-	  	      }
+            return $xml;
+        }
 
-	  	      else if(is_object($data)) {
+        else if(is_object($data)) {
 
-	  	      	  $class = new ReflectionClass($data);
-	  	      	  $clsName = $class->getName();
+            $class = new ReflectionClass($data);
+            $clsName = $class->getName();
 
-	  	      	  // stdClass has public properties
-		  		  if($clsName == 'stdClass') {
+            // stdClass has public properties
+            if($clsName == 'stdClass') {
 
-		  		  	  $xml .= '<' . $name . '>';
-		  		  	  foreach(get_object_vars($data) as $property => $value) {
+                $xml .= '<' . $name . '>';
+                foreach(get_object_vars($data) as $property => $value) {
 
-		  		 		  if(is_object($value) || is_array($value))
-		  		 		  	 $xml .= self::render($value, $property, $property, true, false);
+                    if(is_object($value) || is_array($value))
+                    $xml .= self::render($value, $property, $property, true, false);
 
-		  		 		  else {
+                    else {
 
-			  		 		  $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
-			  		 		  $xml .= '<' . $property . '>' . $value . '</' . $property . '>';
-		  		 		  }
-		  		 	  }
-		  		 	  $xml .= '</' . $name . '>';
+                        $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+                        $xml .= '<' . $property . '>' . $value . '</' . $property . '>';
+                    }
+                }
+                $xml .= '</' . $name . '>';
 
-		  		 	  return $xml;
-	  		     }
+                return $xml;
+            }
 
-		  	     // @todo Interceptors are still being somewhat intrusive to reflection operations
-	  		     if(method_exists($data, 'getInterceptedInstance')) {
+            // @todo Interceptors are still being somewhat intrusive to reflection operations
+            if(method_exists($data, 'getInterceptedInstance')) {
 
-	  		     	$clsName = preg_replace('/_Intercepted/', '', $class->getName());
-	  		     	$instance = $data->getInterceptedInstance();
-	  		     	$class = new ReflectionClass($instance);
-	  		     	$data = $instance;
-	  		     }
+                $clsName = preg_replace('/_Intercepted/', '', $class->getName());
+                $instance = $data->getInterceptedInstance();
+                $class = new ReflectionClass($instance);
+                $data = $instance;
+            }
 
-	  		     // php namespace support
-			     $namespace = explode('\\', $clsName);
-			     $className = array_pop($namespace);
-		 	     $namespace = implode('\\', $namespace);
+            // php namespace support
+            $namespace = explode('\\', $clsName);
+            $className = array_pop($namespace);
+            $namespace = implode('\\', $namespace);
 
-		 	     $node = ($name == 'Result') ? $className : $name;
+            $node = ($name == 'Result') ? $className : $name;
 
-		  		 $xml = '<' . $node . '>';
-		  		 foreach($class->getProperties() as $property) {
+            $xml = '<' . $node . '>';
+            foreach($class->getProperties() as $property) {
 
-		  		 		 $context = null;
-		  		 		 if($property->isPublic())
-		  		 		  	$context = 'public';
-		  		 		 else if($property->isProtected())
-		  		 		 	$context = 'protected';
-		  		 		 else if($property->isPrivate())
-		  		 		  	 $context = 'private';
+                $context = null;
+                if($property->isPublic())
+                $context = 'public';
+                else if($property->isProtected())
+                $context = 'protected';
+                else if($property->isPrivate())
+                $context = 'private';
 
-		  		 		 $value = null;
-		  		 		 if($context != 'public') {
+                $value = null;
+                if($context != 'public') {
 
-		  		 		  	$property->setAccessible(true);
-				  		 	$value = $property->getValue($data);
-				  		 	$property->setAccessible(false);
-		  		 		 }
-		  		 		 else {
+                    $property->setAccessible(true);
+                    $value = $property->getValue($data);
+                    $property->setAccessible(false);
+                }
+                else {
 
-		  		 		  	$value = $property->getValue($data);
-		  		 		 }
+                    $value = $property->getValue($data);
+                }
 
-		  		 		 if(is_object($value)) {
+                if(is_object($value)) {
 
-		  		 		    $ns = explode('\\', get_class($value));
-		  		 		    $cls = array_pop($ns);
+                    $ns = explode('\\', get_class($value));
+                    $cls = array_pop($ns);
 
-		  		 		    $xml .= self::render($value, $property->getName(), $cls, true, false);
-		  		 		 }
-		  		 		 elseif(is_array($value)) {
+                    $xml .= self::render($value, $property->getName(), $cls, true, false);
+                }
+                elseif(is_array($value)) {
 
-		  		 		     if(isset($value[0]) && is_object($value[0])) {
+                    if(isset($value[0]) && is_object($value[0])) {
 
-		  		 		        $ns = explode('\\', get_class($value[0]));
-		  		 		        $name = array_pop($ns);
-		  		 		     }
-		  		 		     else
-		  		 		        $name = $property->getName();
+                        $ns = explode('\\', get_class($value[0]));
+                        $name = array_pop($ns);
+                    }
+                    else
+                    $name = $property->getName();
 
-		  		 		 	$xml .= self::render($value, $property->getName(), $name, true, false);
-		  		 		 }
-		  		 		 else {
+                    $xml .= self::render($value, $property->getName(), $name, true, false);
+                }
+                else {
 
-			  		 		$value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
-			  		 		$xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
-		  		 		  }
-		  		 }
-		  		 $xml .= '</' . $node . '>';
-	  		 }
-	  		 return $xml;
-      }
+                    $value = mb_convert_encoding($value, 'UTF-8', 'ISO-8859-1');
+                    $xml .= '<' . $property->getName() . '>' . $value . '</' . $property->getName() . '>';
+                }
+            }
+            $xml .= '</' . $node . '>';
+        }
+        return $xml;
+    }
 }
 ?>

@@ -30,51 +30,51 @@ interface SessionProvider {
 
     /**
      * Retrieves the Session domain model
-     * 
+     *
      * @return Session The Session domain model
      */
     public function getSession();
-    
+
     /**
      * Sets the session id. Useful for manually restoring a session.
-     * 
+     *
      * @param string $id The id of the session to restore
      * @return void
      */
     public function setSessionId($id);
-    
+
     /**
      * Retrieves the current session id. If a session does not exist
      * it will be created.
-     * 
+     *
      * @return string The current session id
      */
     public function getSessionId();
-    
+
     /**
      * Persists the Session
-     * 
+     *
      * @return void
      */
     public function persist();
-    
+
     /**
      * Refreshes the session by reloading its data from its source
-     * 
+     *
      * @return void
      */
     public function refresh();
-    
+
     /**
      * Clears all variables in the current session
-     * 
+     *
      * @return void
      */
     public function clear();
-    
+
     /**
      * Destroys the current session and its variables
-     * 
+     *
      * @return void
      */
     public function destroy();

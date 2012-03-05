@@ -21,58 +21,50 @@
 
 /**
  * Server type model
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.model
  */
 class ServerType extends DomainModel {
 
-	private $id;
-	private $type;
-	private $name;
-	private $vendor;
+    private $id;
+    private $type;
+    private $name;
+    private $vendor;
 
-	public function __construct() { }
+    public function __construct() { }
 
-	public function setId($value) {
+    public function setId($value) {
+        $this->id = $value;
+    }
 
-		 $this->id = $value;
-	}
+    public function setType($value) {
+        $this->type = $value;
+    }
 
-	public function setType($value) {
+    public function setName($value) {
+        $this->name = $value;
+    }
 
-		 $this->type = $value;
-	}
+    public function getId() {
+        return $this->id;
+    }
 
-	public function setName($value) {
+    public function getType() {
+        return $this->type;
+    }
 
-		 $this->name = $value;
-	}
+    public function getName() {
+        return $this->name;
+    }
 
-	public function getId() {
+    public function setVendor($vendor) {
+        $this->vendor = $vendor;
+    }
 
-		 return $this->id;
-	}
-
-	public function getType() {
-
-		 return $this->type;
-	}
-
-	public function getName() {
-
-		 return $this->name;
-	}
-	
-	public function setVendor($vendor) {
-		
-		   $this->vendor = $vendor;
-	}
-	
-	public function getVendor() {
-
-		   return $this->vendor;
-	}
+    public function getVendor() {
+        return $this->vendor;
+    }
 }
 ?>

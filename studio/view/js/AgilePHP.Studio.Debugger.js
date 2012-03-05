@@ -33,9 +33,9 @@ AgilePHP.Studio.Debugger = function() {
 					    }],
 					    listeners: {
 
-							resize: function( tabPanel ) {
+							resize: function(tabPanel) {
 
-								//tabPanel.setHeight( document.documentElement.clientHeight - 90 )
+								//tabPanel.setHeight(document.documentElement.clientHeight - 90)
 							}
 						}
 					})

@@ -4,137 +4,136 @@
  */
 class FileLoggerTest extends PHPUnit_Framework_TestCase {
 
-	  private $timestamp;
+    private $timestamp;
 
-	  public function setUp() {
+    public function setUp() {
+        $this->timestamp = date('c', strtotime('now'));
+    }
 
-	  		 $this->timestamp = date( 'c', strtotime( 'now' ) );
-	  }
+    /**
+     * @test
+     */
+    public function info() {
 
-	  /**
-	   * @test
-	   */
-	  public function info() {
+        $entry = 'info ' . $this->timestamp;
 
-	  		 $entry = 'info ' . $this->timestamp;
+        $logger = new FileLogger();
+        $logger->info($entry);
 
-	  		 $logger = new FileLogger();
-	  		 $logger->info( $entry );
+        PHPUnit_Framework_Assert::assertTrue($this->exists($entry), 'Failed to find written info entry in log');
+    }
+     
+    /**
+     * @test
+     */
+    public function warn() {
 
-	  		 PHPUnit_Framework_Assert::assertTrue( $this->exists( $entry ), 'Failed to find written info entry in log' );
-	  }
-	  
-	  /**
-	   * @test
-	   */
-	  public function warn() {
+        $entry = 'warn ' . $this->timestamp;
 
-	  		 $entry = 'warn ' . $this->timestamp;
+        $logger = new FileLogger();
+        $logger->warn($entry);
 
-	  		 $logger = new FileLogger();
-	  		 $logger->warn( $entry );
+        PHPUnit_Framework_Assert::assertTrue($this->exists($entry), 'Failed to find written warn entry in log');
+    }
+     
+    /**
+     * @test
+     */
+    public function error() {
 
-	  		 PHPUnit_Framework_Assert::assertTrue( $this->exists( $entry ), 'Failed to find written warn entry in log' );
-	  }
-	  
-	  /**
-	   * @test
-	   */
-	  public function error() {
+        $entry = 'error ' . $this->timestamp;
 
-	  		 $entry = 'error ' . $this->timestamp;
+        $logger = new FileLogger();
+        $logger->error($entry);
 
-	  		 $logger = new FileLogger();
-	  		 $logger->error( $entry );
+        PHPUnit_Framework_Assert::assertTrue($this->exists($entry), 'Failed to find written error entry in log');
+    }
 
-	  		 PHPUnit_Framework_Assert::assertTrue( $this->exists( $entry ), 'Failed to find written error entry in log' );
-	  }
+    /**
+     * @test
+     */
+    public function debug() {
 
-	  /**
-	   * @test
-	   */
-	  public function debug() {
+        $entry = 'debug ' . $this->timestamp;
 
-	  		 $entry = 'debug ' . $this->timestamp;
+        $logger = new FileLogger();
+        $logger->debug($entry);
 
-	  		 $logger = new FileLogger();
-	  		 $logger->debug( $entry );
+        PHPUnit_Framework_Assert::assertTrue($this->exists($entry), 'Failed to find written debug entry in log');
+    }
+     
+    /**
+     * @test
+     */
+    public function singleton_info() {
 
-	  		 PHPUnit_Framework_Assert::assertTrue( $this->exists( $entry ), 'Failed to find written debug entry in log' );
-	  }
-	  
-	  /**
-	   * @test
-	   */
-	  public function singleton_info() {
+        $entry = 'singleton_info ' . $this->timestamp;
 
-	  		 $entry = 'singleton_info ' . $this->timestamp;
+        $logger = LogFactory::getLogger('FileLogger');
+        $logger->info($entry);
 
-	  		 $logger = LogFactory::getLogger( 'FileLogger' );
-	  		 $logger->info( $entry );
+        PHPUnit_Framework_Assert::assertTrue($this->exists($entry), 'Failed to find written singleton_info entry in log');
+    }
+     
+    /**
+     * @test
+     */
+    public function singleton_warn() {
 
-	  		 PHPUnit_Framework_Assert::assertTrue( $this->exists( $entry ), 'Failed to find written singleton_info entry in log' );
-	  }
-	  
-	  /**
-	   * @test
-	   */
-	  public function singleton_warn() {
+        $entry = 'singleton_warn ' . $this->timestamp;
 
-	  		 $entry = 'singleton_warn ' . $this->timestamp;
+        $logger = LogFactory::getLogger('FileLogger');
+        $logger->warn($entry);
 
-	  		 $logger = LogFactory::getLogger( 'FileLogger' );
-	  		 $logger->warn( $entry );
+        PHPUnit_Framework_Assert::assertTrue($this->exists($entry), 'Failed to find written singleton_warn entry in log');
+    }
+     
+    /**
+     * @test
+     */
+    public function singleton_error() {
 
-	  		 PHPUnit_Framework_Assert::assertTrue( $this->exists( $entry ), 'Failed to find written singleton_warn entry in log' );
-	  }
-	  
-	  /**
-	   * @test
-	   */
-	  public function singleton_error() {
+        $entry = 'singleton_error ' . $this->timestamp;
 
-	  		 $entry = 'singleton_error ' . $this->timestamp;
+        $logger = LogFactory::getLogger('FileLogger');
+        $logger->error($entry);
 
-	  		 $logger = LogFactory::getLogger( 'FileLogger' );
-	  		 $logger->error( $entry );
+        PHPUnit_Framework_Assert::assertTrue($this->exists($entry), 'Failed to find written singleton_error entry in log');
+    }
 
-	  		 PHPUnit_Framework_Assert::assertTrue( $this->exists( $entry ), 'Failed to find written singleton_error entry in log' );
-	  }
+    /**
+     * @test
+     */
+    public function singleton_debug() {
 
-	  /**
-	   * @test
-	   */
-	  public function singleton_debug() {
+        $entry = 'singleton_debug ' . $this->timestamp;
 
-	  		 $entry = 'singleton_debug ' . $this->timestamp;
+        $logger = LogFactory::getLogger('FileLogger');
+        $logger->debug($entry);
 
-	  		 $logger = LogFactory::getLogger( 'FileLogger' );
-	  		 $logger->debug( $entry );
+        PHPUnit_Framework_Assert::assertTrue($this->exists($entry), 'Failed to find written singleton_debug entry in log');
+    }
 
-	  		 PHPUnit_Framework_Assert::assertTrue( $this->exists( $entry ), 'Failed to find written singleton_debug entry in log' );
-	  }
+    /**
+     * Unit test helper
+     *
+     * @param string $text The text to search for in the log file
+     */
+    private function exists($text) {
 
-	  /**
-	   * Unit test helper
-	   * 
-	   * @param string $text The text to search for in the log file
-	   */
-	  private function exists( $text ) {
+        $logDirectory = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
 
-	  		 $logDirectory = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
+        if(!file_exists($logDirectory))
+        if(!mkdir($logDirectory))
+        throw new FrameworkException('Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.');
 
-	  	     if( !file_exists( $logDirectory ) )  	      	
-	  	      	 if( !mkdir( $logDirectory ) )
-	  	      	   	 throw new FrameworkException( 'Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.' );
+        if(!is_writable($logDirectory))
+        throw new FrameworkException('Logging directory is not writable. The PHP process requires write access to this directory.');
 
-	  	     if( !is_writable( $logDirectory ) )
-	  	     	 throw new FrameworkException( 'Logging directory is not writable. The PHP process requires write access to this directory.' );
+        $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date("m-d-y") . '.log';
+        $data = file_get_contents($filename);
 
-	  	     $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date( "m-d-y" ) . '.log';
-	  		 $data = file_get_contents( $filename );
-
-	  		 return preg_match( '/' . $text . '/', $data ) ? true : false;
-	  }
+        return preg_match('/' . $text . '/', $data) ? true : false;
+    }
 }
 ?>

@@ -29,15 +29,14 @@
  */
 class EmailValidator implements Validator {
 
-	  /**
-	   * Validates an email address by checking its syntax and performing
-	   * and DNS lookup on the domain.
-	   *
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data) {
-
-	         return filter_var($data, FILTER_VALIDATE_EMAIL);
-	  }
+    /**
+     * Validates an email address by checking its syntax and performing
+     * and DNS lookup on the domain.
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
+        return filter_var($data, FILTER_VALIDATE_EMAIL);
+    }
 }
 ?>

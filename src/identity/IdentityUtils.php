@@ -21,43 +21,43 @@
 
 /**
  * Utility provider for Identity package
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  */
 class IdentityUtils {
 
-	  /**
-	   * Generates a variable length character token used to sign requests.
-	   * 
-	   * @return String Variable length token that must be present in the reset password
-	   * 	     		url in order to successfully complete the process.
-	   */
-	  public static function createToken() {
+    /**
+     * Generates a variable length character token used to sign requests.
+     *
+     * @return String Variable length token that must be present in the reset password
+     * 	     		url in order to successfully complete the process.
+     */
+    public static function createToken() {
 
-			 $numbers = '1234567890';
-			 $lcase = 'abcdefghijklmnopqrstuvwzyz';
-			 $ucase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $numbers = '1234567890';
+        $lcase = 'abcdefghijklmnopqrstuvwzyz';
+        $ucase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-			 $length = rand(1, 20);
+        $length = rand(1, 20);
 
-			 $token = null;
-			 for($i=0; $i<$length; $i++) {
+        $token = null;
+        for($i=0; $i<$length; $i++) {
 
-			  	 if(rand(0, 1)) {
+            if(rand(0, 1)) {
 
-			  	    $cRand = rand(0, 25);
-			  	    $token .= (rand(0, 1)) ? $lcase[$cRand] : $ucase[$cRand];
-			  	 }
-			  	 else {
+                $cRand = rand(0, 25);
+                $token .= (rand(0, 1)) ? $lcase[$cRand] : $ucase[$cRand];
+            }
+            else {
 
-			  	    $nRand = rand(0, 9);
-			  	   	$token .= $numbers[$nRand];
-			  	 }
-			 }
+                $nRand = rand(0, 9);
+                $token .= $numbers[$nRand];
+            }
+        }
 
-	  		 return $token;
-	  }
+        return $token;
+    }
 }
 ?>

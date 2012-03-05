@@ -21,22 +21,21 @@
 
 /**
  * Validates boolean values
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class BooleanValidator implements Validator {
 
-      /**
-       * Validates the data by ensuring its either a boolean true/false value
-       * or is a 1/0.
-	   *
-       * @see Validator::validate()
-       */
-	  public static function validate($data) {
-
-	  		 return is_bool($data) || $data == 1 || $data == 0;
-	  }
+    /**
+     * Validates the data by ensuring its either a boolean true/false value
+     * or is a 1/0.
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
+        return is_bool($data) || $data == 1 || $data == 0;
+    }
 }
 ?>

@@ -1,10 +1,10 @@
 <?php
 /**
  * Tests the util\ModelGenerator class.
- * 
+ *
  * Note that before PHP 5.3.3, the property_exists function used in this test class
  * fails for private properties in base classes (which is fixed in 5.3.3)
- * 
+ *
  * @package com.makeabyte.agilephp.test.util
  */
 class ModelGeneratorTest extends PHPUnit_Framework_TestCase {
@@ -57,7 +57,7 @@ class ModelGeneratorTest extends PHPUnit_Framework_TestCase {
         PHPUnit_Framework_Assert::assertTrue(method_exists($car, 'getTires'), 'Failed to locate generated Car::getTires method');
     }
 
-	/**
+    /**
      * @test
      */
     public function createTire() {
@@ -74,12 +74,12 @@ class ModelGeneratorTest extends PHPUnit_Framework_TestCase {
         $tire = new Tire();
 
         PHPUnit_Framework_Assert::assertType('Tire', $tire, 'Failed to create Tire model');
-        
+
         PHPUnit_Framework_Assert::assertTrue(property_exists('Tire', 'brand'), 'Failed to locate generated Tire::brand property');
         PHPUnit_Framework_Assert::assertTrue(property_exists('Tire', 'size'), 'Failed to locate generated Tire::size property');
         PHPUnit_Framework_Assert::assertTrue(property_exists('Tire', 'placement'), 'Failed to locate generated Tire::placement property');
         PHPUnit_Framework_Assert::assertTrue(property_exists('Tire', 'tread'), 'Failed to locate generated Tire::tread property');
-        
+
         PHPUnit_Framework_Assert::assertTrue(method_exists($tire, '__construct'), 'Failed to locate generated Tire constructor');
         PHPUnit_Framework_Assert::assertTrue(method_exists($tire, 'setBrand'), 'Failed to locate generated Tire::setBrand method');
         PHPUnit_Framework_Assert::assertTrue(method_exists($tire, 'getBrand'), 'Failed to locate generated Tire::getBrand method');
@@ -91,7 +91,7 @@ class ModelGeneratorTest extends PHPUnit_Framework_TestCase {
         PHPUnit_Framework_Assert::assertTrue(method_exists($tire, 'getTread'), 'Failed to locate generated Tire::getTreat method');
     }
 
-	/**
+    /**
      * @test
      */
     public function createOwner() {

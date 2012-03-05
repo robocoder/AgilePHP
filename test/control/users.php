@@ -33,122 +33,121 @@
 #@RestService
 class users extends BaseController {
 
-	  #@GET
-	  public function index() {
+    #@GET
+    public function index() {
+        return ORM::find(new User());
+    }
 
-	  		 return ORM::find(new User());
-	  }
+    #@GET
+    #@Path(resource = '/{username}')
+    #@ProduceMime(type = 'application/xml')
+    public function getUser($username) {
 
-	  #@GET
-	  #@Path(resource = '/{username}')
-	  #@ProduceMime(type = 'application/xml')
-	  public function getUser($username) {
+        $user = new User();
+        $user->setUsername($username);
 
-	  		 $user = new User();
-	  		 $user->setUsername($username);
+        return $user;
+    }
 
-	  		 return $user;
-	  }
+    #@GET
+    #@Path(resource = '/{username}/role')
+    public function getRole($username) {
 
-	  #@GET
-	  #@Path(resource = '/{username}/role')
-	  public function getRole($username) {
+        $user = new User();
+        $user->setUsername($username);
 
-	  		 $user = new User();
-	  		 $user->setUsername($username);
+        return $user->getRole();
+    }
 
-	  		 return $user->getRole();
-	  }
+    #@GET
+    #@Path(resource = '/{username}/session')
+    public function getSession($username) {
 
-	  #@GET
-	  #@Path(resource = '/{username}/session')
-	  public function getSession($username) {
+        return Scope::getSessionScope()->getSession();
+    }
 
-	  		 return Scope::getSessionScope()->getSession();
-	  }
+    #@POST
+    #@Path(resource = '/{username}')
+    #@ConsumeMime(type = 'application/xml')
+    #@ProduceMime(type = 'application/xml')
+    public function createUser($username, User $user) {
 
-	  #@POST
-	  #@Path(resource = '/{username}')
-	  #@ConsumeMime(type = 'application/xml')
-	  #@ProduceMime(type = 'application/xml')
-	  public function createUser($username, User $user) {
+        $user->persist();
+        return $user;
+    }
 
-	  		 $user->persist();
-	  		 return $user;
-	  }
+    #@PUT
+    #@Path(resource = '/{username}')
+    #@ConsumeMime(type = 'application/xml')
+    #@ProduceMime(type = 'application/xml')
+    public function updateUser($username, User $user) {
 
-	  #@PUT
-	  #@Path(resource = '/{username}')
-	  #@ConsumeMime(type = 'application/xml')
-	  #@ProduceMime(type = 'application/xml')
-	  public function updateUser($username, User $user) {
+        $user->merge();
+        return $user;
+    }
 
-	  		 $user->merge();
-	  		 return $user;
-	  }
+    #@PUT
+    #@Path(resource = '/{username}/json')
+    #@ConsumeMime(type = 'application/json')
+    #@ProduceMime(type = 'application/json')
+    /**
+     * Updates the specified user. The {username} in the #@Path annotation
+     * causes the first parameter in the resource URI to be captured and
+     * passed into the method as the first argument. The second User parameter
+     * is the transformed JSON data submitted in the body of the HTTP request.
+     *
+     * @param string $username The unique username to update
+     * @param User $user The data used to update the account
+     * @return void
+     */
+    public function updateUserJSON($username, User $user) {
 
-	  #@PUT
-	  #@Path(resource = '/{username}/json')
-	  #@ConsumeMime(type = 'application/json')
-	  #@ProduceMime(type = 'application/json')
-	  /**
-	   * Updates the specified user. The {username} in the #@Path annotation
-	   * causes the first parameter in the resource URI to be captured and
-	   * passed into the method as the first argument. The second User parameter
-	   * is the transformed JSON data submitted in the body of the HTTP request.
-	   * 
-	   * @param string $username The unique username to update
-	   * @param User $user The data used to update the account
-	   * @return void
-	   */
-	  public function updateUserJSON($username, User $user) {
+        $user->merge();
+        return $user;
+    }
 
-	  		 $user->merge();
-	  		 return $user;
-	  }
+    #@PUT
+    #@Path(resource = '/{username}/wildcard')
+    /**
+     * Updates the specified user using a wildcard.
+     *
+     * @param string $username The unique username to update
+     * @param User $user The user instance to update
+     * @return User The modified user instance
+     */
+    public function updateUserWildcard($username, User $user) {
 
-	  #@PUT
-	  #@Path(resource = '/{username}/wildcard')
-	  /**
-	   * Updates the specified user using a wildcard.
-	   * 
-	   * @param string $username The unique username to update
-	   * @param User $user The user instance to update
-	   * @return User The modified user instance
-	   */
-	  public function updateUserWildcard($username, User $user) {
+        $user->merge();
+        return $user;
+    }
 
-	  		 $user->merge();
-	  		 return $user;
-	  }
+    #@POST
+    #@Path(resource = '/{username}/json')
+    #@ConsumeMime(type = 'application/json')
+    #@ProduceMime(type = 'application/json')
+    /**
+     * Updates the specified user. The {username} in the #@Path annotation
+     * causes the first parameter in the resource URI to be captured and
+     * passed into the method as the first argument. The second User parameter
+     * is the transformed JSON data submitted in the body of the HTTP request.
+     *
+     * @param string $username The unique username to update
+     * @param User $user The data used to update the account
+     * @return void
+     */
+    public function updateUserJSON2($username, User $user) {
 
-	  #@POST
-	  #@Path(resource = '/{username}/json')
-	  #@ConsumeMime(type = 'application/json')
-	  #@ProduceMime(type = 'application/json')
-	  /**
-	   * Updates the specified user. The {username} in the #@Path annotation
-	   * causes the first parameter in the resource URI to be captured and
-	   * passed into the method as the first argument. The second User parameter
-	   * is the transformed JSON data submitted in the body of the HTTP request.
-	   * 
-	   * @param string $username The unique username to update
-	   * @param User $user The data used to update the account
-	   * @return void
-	   */
-	  public function updateUserJSON2($username, User $user) {
+        $user->merge();
+        return $user;
+    }
+     
+    #@DELETE
+    #@Path(resource = '/{username}')
+    public function deleteUser($username) {
 
-	  		 $user->merge();
-	  		 return $user;
-	  }
-	  
-	  #@DELETE
-	  #@Path(resource = '/{username}')
-	  public function deleteUser($username) {
-
-	  		 $user = new User();
-	  		 $user->setUsername($username);
-	  		 $user->delete();
-	  }
+        $user = new User();
+        $user->setUsername($username);
+        $user->delete();
+    }
 }
 ?>

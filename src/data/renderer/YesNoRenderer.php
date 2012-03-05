@@ -21,22 +21,21 @@
 
 /**
  * Transforms data from a SQL boolean type, into the string "Yes" or "No".
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.data.renderer
  */
 class YesNoRenderer implements DataRenderer {
 
-      /**
-       * Transforms the specified data into a YES or NO string
-       * 
-       * @param mixed $data A value to evaluate.
-       * @return "Yes" if the value evaluates to "1", "No" otherwise.
-       */
-      public static function render($data) {
-
-             return ($data) ? 'Yes' : 'No';
-      }
+    /**
+     * Transforms the specified data into a YES or NO string
+     *
+     * @param mixed $data A value to evaluate.
+     * @return "Yes" if the value evaluates to "1", "No" otherwise.
+     */
+    public static function render($data) {
+        return ($data) ? 'Yes' : 'No';
+    }
 }
 ?>

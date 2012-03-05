@@ -28,288 +28,288 @@
  */
 class ProjectRemote {
 
-	  private $projectName;
-	  private $root;
+    private $projectName;
+    private $root;
 
-	  public function __construct() { }
+    public function __construct() { }
 
-	  /**
-	   * Creates a new project
-	   *
-	   * @param array $configs An array of project configuration values
-	   * @return boolean True if the project was created successfully
-	   * @throws FrameworkException
-	   */
-	  #@RemoteMethod
- 	  public function create( $configs ) {
+    /**
+     * Creates a new project
+     *
+     * @param array $configs An array of project configuration values
+     * @return boolean True if the project was created successfully
+     * @throws FrameworkException
+     */
+    #@RemoteMethod
+ 	  public function create($configs) {
 
- 	         // Dynamically assign form names/values as php variable names/values
- 		 	 foreach( $configs as $config ) {
+ 	      // Dynamically assign form names/values as php variable names/values
+ 	      foreach($configs as $config) {
 
- 		 	 	  $name = $config->name;
+ 	          $name = $config->name;
  	  		   	  $$name = $config->value;
 
- 	  		   	  Log::debug( $name . ' = ' . $$name );
- 		 	 }
+ 	  		   	  Log::debug($name . ' = ' . $$name);
+ 	      }
 
- 		 	 $workspace = preg_replace( '/\|/', DIRECTORY_SEPARATOR, $workspace );
+ 	      $workspace = preg_replace('/\|/', DIRECTORY_SEPARATOR, $workspace);
 
- 	  		 if( !isset( $workspace ) )
- 	  		 	 throw new FrameworkException( 'Missing workspace value' );
+ 	      if(!isset($workspace))
+ 	      throw new FrameworkException('Missing workspace value');
 
- 	  		 if( !isset( $projectName ) || !$this->projectName = $projectName )
- 	  		 	 throw new FrameworkException( 'Missing project name' );
+ 	      if(!isset($projectName) || !$this->projectName = $projectName)
+ 	      throw new FrameworkException('Missing project name');
 
- 	  		 if( !file_exists( $workspace ) )
-  		 	 	 throw new FrameworkException( 'Workspace does not exist' );
+ 	      if(!file_exists($workspace))
+ 	      throw new FrameworkException('Workspace does not exist');
 
-  		 	 $this->root = $workspace . DIRECTORY_SEPARATOR . $projectName;
+ 	      $this->root = $workspace . DIRECTORY_SEPARATOR . $projectName;
 
- 	  		 if( file_exists( $this->root ) )
- 	  		 	 throw new FrameworkException( 'Project already exists' );
+ 	      if(file_exists($this->root))
+ 	      throw new FrameworkException('Project already exists');
 
- 	  		 if( !mkdir( $this->root ) )
- 	  		 	 throw new FrameworkException( 'Failed to create project at ' . $this->root );
+ 	      if(!mkdir($this->root))
+ 	      throw new FrameworkException('Failed to create project at ' . $this->root);
 
-  		 	 try {
-		 	  		 $model = $this->root . DIRECTORY_SEPARATOR . 'model';
-			  		 if( !mkdir( $model ) )
-			  		 	 throw new FrameworkException( 'Failed to create project models directory at \'' . $model . '\'.' );
+ 	      try {
+ 	          $model = $this->root . DIRECTORY_SEPARATOR . 'model';
+ 	          if(!mkdir($model))
+ 	          throw new FrameworkException('Failed to create project models directory at \'' . $model . '\'.');
 
-			  		 $view = $this->root . DIRECTORY_SEPARATOR . 'view';
-			  		 if( !mkdir( $view ) )
-			  		 	 throw new FrameworkException( 'Failed to create project view directory at \'' . $view . '\'.' );
+ 	          $view = $this->root . DIRECTORY_SEPARATOR . 'view';
+ 	          if(!mkdir($view))
+ 	          throw new FrameworkException('Failed to create project view directory at \'' . $view . '\'.');
 
-			  		 $css = $this->root . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . 'css';
-			  		 if( !mkdir( $css ) )
-			  		 	 throw new FrameworkException( 'Failed to create project css directory at \'' . $css . '\'.' );
+ 	          $css = $this->root . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . 'css';
+ 	          if(!mkdir($css))
+ 	          throw new FrameworkException('Failed to create project css directory at \'' . $css . '\'.');
 
-			  		 $control = $this->root . DIRECTORY_SEPARATOR . 'control';
-			  		 if( !mkdir( $control ) )
-			  		 	 throw new FrameworkException( 'Failed to create project controllers directory at \'' . $control . '\'.' );
+ 	          $control = $this->root . DIRECTORY_SEPARATOR . 'control';
+ 	          if(!mkdir($control))
+ 	          throw new FrameworkException('Failed to create project controllers directory at \'' . $control . '\'.');
 
-			  		 $logs = $this->root . DIRECTORY_SEPARATOR . 'logs';
-			  		 if( !mkdir( $logs ) )
-			  		 	 throw new FrameworkException( 'Failed to create project logging directory at \'' . $logs . '\'.' );
+ 	          $logs = $this->root . DIRECTORY_SEPARATOR . 'logs';
+ 	          if(!mkdir($logs))
+ 	          throw new FrameworkException('Failed to create project logging directory at \'' . $logs . '\'.');
 
-			  		 if( !chmod( $logs, 0777 ) )
-			  		 	 throw new FrameworkException( 'Failed to change permissions to 077 on project logging directory \'' . $logs . '\'.' );
+ 	          if(!chmod($logs, 0777))
+ 	          throw new FrameworkException('Failed to change permissions to 077 on project logging directory \'' . $logs . '\'.');
 
-			  		 $components = $this->root . DIRECTORY_SEPARATOR . 'components';
-			  		 if( !mkdir( $components ) )
-			  		 	 throw new FrameworkException( 'Failed to create project components directory at \'' . $components . '\'.' );
+ 	          $components = $this->root . DIRECTORY_SEPARATOR . 'components';
+ 	          if(!mkdir($components))
+ 	          throw new FrameworkException('Failed to create project components directory at \'' . $components . '\'.');
 
-			  		 $classes = $this->root . DIRECTORY_SEPARATOR . 'classes';
-			  		 if( !mkdir( $classes ) )
-			  		 	 throw new FrameworkException( 'Failed to create project classes directory at \'' . $classes . '\'.' );
+ 	          $classes = $this->root . DIRECTORY_SEPARATOR . 'classes';
+ 	          if(!mkdir($classes))
+ 	          throw new FrameworkException('Failed to create project classes directory at \'' . $classes . '\'.');
 
-			  		 $agilephp = $this->root . DIRECTORY_SEPARATOR . 'AgilePHP';
-			  		 FileUtils::copy( '..' . DIRECTORY_SEPARATOR . 'src', $agilephp );
+ 	          $agilephp = $this->root . DIRECTORY_SEPARATOR . 'AgilePHP';
+ 	          FileUtils::copy('..' . DIRECTORY_SEPARATOR . 'src', $agilephp);
 
-			  		 if( $databaseEnable )
-				  		 $this->createORMXML( $identityEnable, $sessionProvider, $databaseName, $databaseType,
-				  		 			$databaseHostname, $databaseUsername, $databasePassword, $databaseType /* instead of driver - maybe driver should be passed as hidden */ );
+ 	          if($databaseEnable)
+ 	          $this->createORMXML($identityEnable, $sessionProvider, $databaseName, $databaseType,
+ 	          $databaseHostname, $databaseUsername, $databasePassword, $databaseType /* instead of driver - maybe driver should be passed as hidden */);
 
-				  	 // Create component configuration variables 
-				  	 $crypto = array('algorithm' => $cryptoAlgorithm);
-				  	 if(isset($cryptoIv) && $cryptoIv) $crypto['iv'] = $cryptoIv;
-				  	 if(isset($cryptoKey) && $cryptoKey) {
-				  	     
-				  	     if(!$cryptoKey == $cryptoKeyConfirm)
-				  	        throw new FrameworkException('Crypto keys don\'t match');
+ 	          // Create component configuration variables
+ 	          $crypto = array('algorithm' => $cryptoAlgorithm);
+ 	          if(isset($cryptoIv) && $cryptoIv) $crypto['iv'] = $cryptoIv;
+ 	          if(isset($cryptoKey) && $cryptoKey) {
 
-				  	     $crypto['key'] = $cryptoKey;
-				  	 }
-				  	 $logLevel = isset($logEnable) ? strtolower($logLevel) : false;
+ 	              if(!$cryptoKey == $cryptoKeyConfirm)
+ 	              throw new FrameworkException('Crypto keys don\'t match');
 
-				  	 // Create project
-			  		 $this->createAgilePhpXML( $logLevel, $identityEnable, $crypto, $sessionProvider );
-			  		 $this->createAccessFile( ($databaseType) == 'sqlite' ? true : false, $databaseName );
-			  		 $this->createIndexDotPHP();
-			  		 $this->createStyleSheet();
-			  		 $this->createBuildXml();
+ 	              $crypto['key'] = $cryptoKey;
+ 	          }
+ 	          $logLevel = isset($logEnable) ? strtolower($logLevel) : false;
 
-			  		 if( $ideEnable ) {
+ 	          // Create project
+ 	          $this->createAgilePhpXML($logLevel, $identityEnable, $crypto, $sessionProvider);
+ 	          $this->createAccessFile(($databaseType) == 'sqlite' ? true : false, $databaseName);
+ 	          $this->createIndexDotPHP();
+ 	          $this->createStyleSheet();
+ 	          $this->createBuildXml();
 
-			  		 	 switch( $idePlatform ) {
+ 	          if($ideEnable) {
 
-			  		 	 		 case 'eclipse':
-			  		 	 		 	$this->createEclipse();
-			  		 	 		 	break;
+ 	              switch($idePlatform) {
 
-			  		 	 		 case 'netbeans':
-			  		 	 		 	$this->createNetbeans();
-			  		 	 		 	break;
-			  		 	 }
-			  		 }
+ 	                  case 'eclipse':
+ 	                      $this->createEclipse();
+ 	                      break;
 
-			  		 return true;
-  		 	 }
-  		 	 catch( FrameworkException $e ) {
+ 	                  case 'netbeans':
+ 	                      $this->createNetbeans();
+ 	                      break;
+ 	              }
+ 	          }
 
-  		 	 		if( file_exists( $this->root ) )
-  		 	 			FileUtils::delete( $this->root );
+ 	          return true;
+ 	      }
+ 	      catch(FrameworkException $e) {
 
-  		 	 		throw new FrameworkException( $e->getMessage() );
-  		 	 }
-	  }
+ 	          if(file_exists($this->root))
+ 	          FileUtils::delete($this->root);
 
-	  #@RemoteMethod
-	  public function getCryptoAlgorithms() {
+ 	          throw new FrameworkException($e->getMessage());
+ 	      }
+ 	  }
 
-	         $algorithms = Crypto::getInstance()->getSupportedHashAlgorithms();
-	         $algos = array();
+ 	  #@RemoteMethod
+ 	  public function getCryptoAlgorithms() {
 
-	         foreach($algorithms as $algo)
-	             array_push($algos, array($algo, $algo));
+ 	      $algorithms = Crypto::getInstance()->getSupportedHashAlgorithms();
+ 	      $algos = array();
 
-	         return $algos;
-	             
-	  }
+ 	      foreach($algorithms as $algo)
+ 	      array_push($algos, array($algo, $algo));
 
-	  /**
-	   * Utility method to replace *nix line breaks with windows line breaks if building on windows.
-	   *
-	   * @param String $file The fully qualified file path
-	   * @return void
-	   */
-	  private function fixLineBreaks( $file ) {
+ 	      return $algos;
 
-	  		  if( substr( getcwd(), 0, 1 ) != '/' ) {
+ 	  }
 
-	       		  $h = fopen( $file, 'r' );
-	      		  $data = '';
-	      		  while( !feof( $h ) )
-	      		 		  $data .= fgets( $h, 4096 );
-	      		  fclose( $h );
+ 	  /**
+ 	   * Utility method to replace *nix line breaks with windows line breaks if building on windows.
+ 	   *
+ 	   * @param String $file The fully qualified file path
+ 	   * @return void
+ 	   */
+ 	  private function fixLineBreaks($file) {
 
-	      		  $data = str_replace( "\n", PHP_EOL, $data );
+ 	      if(substr(getcwd(), 0, 1) != '/') {
 
-             	  $h = fopen( $file, 'w' );
-			  	  fwrite( $h, $data );
-			  	  fclose( $h );
-	  		  }
-	  }
+ 	          $h = fopen($file, 'r');
+ 	          $data = '';
+ 	          while(!feof($h))
+ 	          $data .= fgets($h, 4096);
+ 	          fclose($h);
 
-	  private function createORMXML( $identity, $session, $name, $type, $hostname, $username, $password, $driver ) {
+ 	          $data = str_replace("\n", PHP_EOL, $data);
 
-	  		  $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-			  $data .= '<!DOCTYPE orm SYSTEM "AgilePHP/orm/orm.dtd">' . PHP_EOL;
-			  $data .= '<orm>' . PHP_EOL;
-			  $data .= "\t<database name=\"" . ($type == 'sqlite' ? $this->root . '/' . $name . '.sqlite' : $name) . "\"" .
-			  				($type == 'mssql' ? ' driver="' . $driver .'"' : '') . PHP_EOL . "\t\t\ttype=\"" . $type . "\" hostname=\"" . $hostname .
+ 	          $h = fopen($file, 'w');
+ 	          fwrite($h, $data);
+ 	          fclose($h);
+ 	      }
+ 	  }
+
+ 	  private function createORMXML($identity, $session, $name, $type, $hostname, $username, $password, $driver) {
+
+ 	      $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+ 	      $data .= '<!DOCTYPE orm SYSTEM "AgilePHP/orm/orm.dtd">' . PHP_EOL;
+ 	      $data .= '<orm>' . PHP_EOL;
+ 	      $data .= "\t<database name=\"" . ($type == 'sqlite' ? $this->root . '/' . $name . '.sqlite' : $name) . "\"" .
+ 	      ($type == 'mssql' ? ' driver="' . $driver .'"' : '') . PHP_EOL . "\t\t\ttype=\"" . $type . "\" hostname=\"" . $hostname .
 	  		  				"\" username=\"" . $username . "\" password=\"" . $password . "\">" . PHP_EOL . PHP_EOL;
 
-			  if( $identity ) {
+ 	      if($identity) {
 
-			  	  $data .= "\t\t<!-- AgilePHP Identity -->" . PHP_EOL;
-			  	  $data .= "\t\t<table name=\"users\" isIdentity=\"true\" display=\"Users\" model=\"User\" description=\"Actors in the application\">" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"username\" type=\"varchar\" length=\"150\" primaryKey=\"true\" required=\"true\"/>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"password\" type=\"varchar\" length=\"255\" required=\"true\"/>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"email\" type=\"varchar\" length=\"255\" required=\"true\"/>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"created\" type=\"datetime\" required=\"true\"/>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"last_login\" property=\"lastLogin\" display=\"Last Login\" type=\"datetime\"/>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"roleId\" property=\"Role\" type=\"varchar\" length=\"25\">" . PHP_EOL;
-				  $data .= "\t\t\t\t<foreignKey name=\"FK_UserRoles\" type=\"one-to-many\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
+ 	          $data .= "\t\t<!-- AgilePHP Identity -->" . PHP_EOL;
+ 	          $data .= "\t\t<table name=\"users\" isIdentity=\"true\" display=\"Users\" model=\"User\" description=\"Actors in the application\">" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"username\" type=\"varchar\" length=\"150\" primaryKey=\"true\" required=\"true\"/>" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"password\" type=\"varchar\" length=\"255\" required=\"true\"/>" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"email\" type=\"varchar\" length=\"255\" required=\"true\"/>" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"created\" type=\"datetime\" required=\"true\"/>" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"last_login\" property=\"lastLogin\" display=\"Last Login\" type=\"datetime\"/>" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"roleId\" property=\"Role\" type=\"varchar\" length=\"25\">" . PHP_EOL;
+ 	          $data .= "\t\t\t\t<foreignKey name=\"FK_UserRoles\" type=\"one-to-many\" onDelete=\"SET_NULL\" onUpdate=\"CASCADE\"" . PHP_EOL .
 							  		 "\t\t\t\t\ttable=\"roles\" column=\"name\" controller=\"RoleController\" select=\"name\"/>" . PHP_EOL;
-				  $data .= "\t\t\t</column>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"enabled\" type=\"bit\" length=\"1\"/>" . PHP_EOL;
-				  $data .= "\t\t</table>" . PHP_EOL;
-				  $data .= "\t\t<table name=\"roles\" display=\"Roles\" model=\"Role\" description=\"Roles used in the application\">" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"name\" type=\"varchar\" length=\"25\" primaryKey=\"true\" required=\"true\"/>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"description\" type=\"text\"/>" . PHP_EOL;
-				  $data .= "\t\t</table>" . PHP_EOL;
-			  }
+ 	          $data .= "\t\t\t</column>" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"enabled\" type=\"bit\" length=\"1\"/>" . PHP_EOL;
+ 	          $data .= "\t\t</table>" . PHP_EOL;
+ 	          $data .= "\t\t<table name=\"roles\" display=\"Roles\" model=\"Role\" description=\"Roles used in the application\">" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"name\" type=\"varchar\" length=\"25\" primaryKey=\"true\" required=\"true\"/>" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"description\" type=\"text\"/>" . PHP_EOL;
+ 	          $data .= "\t\t</table>" . PHP_EOL;
+ 	      }
 
-			  if( $session == 'ORM' ) {
+ 	      if($session == 'ORM') {
 
-			  	  $data .= "\t\t<!-- AgilePHP Session -->" . PHP_EOL;
-			  	  $data .= "\t\t<table name=\"sessions\" display=\"Session\" isSession=\"true\" model=\"Session\" description=\"User sessions\">" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"id\" type=\"varchar\" length=\"21\" primaryKey=\"true\" description=\"Unique ID\"/>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"data\" type=\"text\" description=\"Name of recipient\"/>" . PHP_EOL;
-				  $data .= "\t\t\t<column name=\"created\" type=\"timestamp\" default=\"CURRENT_TIMESTAMP\"/>" . PHP_EOL;
-				  $data .= "\t\t</table>" . PHP_EOL;
-			  }
+ 	          $data .= "\t\t<!-- AgilePHP Session -->" . PHP_EOL;
+ 	          $data .= "\t\t<table name=\"sessions\" display=\"Session\" isSession=\"true\" model=\"Session\" description=\"User sessions\">" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"id\" type=\"varchar\" length=\"21\" primaryKey=\"true\" description=\"Unique ID\"/>" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"data\" type=\"text\" description=\"Name of recipient\"/>" . PHP_EOL;
+ 	          $data .= "\t\t\t<column name=\"created\" type=\"timestamp\" default=\"CURRENT_TIMESTAMP\"/>" . PHP_EOL;
+ 	          $data .= "\t\t</table>" . PHP_EOL;
+ 	      }
 
-			  $data .= "\t</database>" . PHP_EOL;
-			  $data .= '</orm>';
+ 	      $data .= "\t</database>" . PHP_EOL;
+ 	      $data .= '</orm>';
 
-	  		  $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'orm.xml', 'w' );
-	  		  fwrite( $h, $data );
-	  		  fclose( $h );
+ 	      $h = fopen($this->root . DIRECTORY_SEPARATOR . 'orm.xml', 'w');
+ 	      fwrite($h, $data);
+ 	      fclose($h);
 
-	  		  if( !file_exists( $this->root . DIRECTORY_SEPARATOR . 'orm.xml' ) )
-	  		  	  throw new FrameworkException( 'Could not create default orm.xml file' );
-	  }
+ 	      if(!file_exists($this->root . DIRECTORY_SEPARATOR . 'orm.xml'))
+ 	      throw new FrameworkException('Could not create default orm.xml file');
+ 	  }
 
-	  private function createAgilePhpXML( $logLevel, $identity, $crypto, $sessionProvider ) {
- 
-	  		  $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-	  		  $data .= '<!DOCTYPE agilephp SYSTEM "AgilePHP/agilephp.dtd">' . PHP_EOL;
-	  		  $data .= '<agilephp>' . PHP_EOL;
+ 	  private function createAgilePhpXML($logLevel, $identity, $crypto, $sessionProvider) {
 
-			  if( $logLevel )
-			 	  $data .= "\t<logger level=\"$logLevel\"/>" . PHP_EOL;
+ 	      $data = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+ 	      $data .= '<!DOCTYPE agilephp SYSTEM "AgilePHP/agilephp.dtd">' . PHP_EOL;
+ 	      $data .= '<agilephp>' . PHP_EOL;
 
-			  if($sessionProvider == 'ORM')
-			      $data .= "\t<scope type=\"session\" provider=\"OrmSessionProvider\"/>" . PHP_EOL;
+ 	      if($logLevel)
+ 	      $data .= "\t<logger level=\"$logLevel\"/>" . PHP_EOL;
 
-			  if( $crypto ) {
+ 	      if($sessionProvider == 'ORM')
+ 	      $data .= "\t<scope type=\"session\" provider=\"OrmSessionProvider\"/>" . PHP_EOL;
 
-			 	  $data .= "\t<crypto algorithm=\"" . $crypto['algorithm'] . "\"";
-			 	  $data .= (isset($crypto['iv'])) ? ' iv="' . $crypto['iv'] . '"' : '';
-			 	  $data .= (isset($crypto['key'])) ? ' key="' . $crypto['key'] . '"' : '';
-			 	  $data .= '/>' . PHP_EOL;
-			  }
+ 	      if($crypto) {
 
-			  $data .= '</agilephp>';
+ 	          $data .= "\t<crypto algorithm=\"" . $crypto['algorithm'] . "\"";
+ 	          $data .= (isset($crypto['iv'])) ? ' iv="' . $crypto['iv'] . '"' : '';
+ 	          $data .= (isset($crypto['key'])) ? ' key="' . $crypto['key'] . '"' : '';
+ 	          $data .= '/>' . PHP_EOL;
+ 	      }
 
-			  $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'agilephp.xml', 'w' );
-	  		  fwrite( $h, $data );
-	  		  fclose( $h );
+ 	      $data .= '</agilephp>';
 
-	  		  if( !file_exists( $this->root . DIRECTORY_SEPARATOR . 'agilephp.xml' ) )
-	  		 	  throw new FrameworkException( 'Could not create default agilephp.xml file' );
-	  }
+ 	      $h = fopen($this->root . DIRECTORY_SEPARATOR . 'agilephp.xml', 'w');
+ 	      fwrite($h, $data);
+ 	      fclose($h);
 
-	  private function createAccessFile( $sqlite = false, $dbname = false ) {
+ 	      if(!file_exists($this->root . DIRECTORY_SEPARATOR . 'agilephp.xml'))
+ 	      throw new FrameworkException('Could not create default agilephp.xml file');
+ 	  }
 
-	  		  if( $sqlite && !$dbname )
-	  		  	  throw new FrameworkException( 'dbname parameter required when passing \'sqlite\'.' );
+ 	  private function createAccessFile($sqlite = false, $dbname = false) {
 
-	  		  $data = '<Files .htaccess>' . PHP_EOL;
-	  		  $data .= "\torder deny,allow" . PHP_EOL;
-			  $data .= "\tdeny from all" . PHP_EOL;
-			  $data .= "</Files>" . PHP_EOL;
-			  $data .= "<Files orm.xml>" . PHP_EOL;
-			  $data .= "\torder deny,allow" . PHP_EOL;
-			  $data .= "\tdeny from all" . PHP_EOL;
-			  $data .= "</Files>" . PHP_EOL;
-			  $data .= "<Files agilephp.xml>" . PHP_EOL;
-			  $data .= "\torder deny,allow" . PHP_EOL;
-			  $data .= "\tdeny from all" . PHP_EOL;
-			  $data .= "</Files>";
+ 	      if($sqlite && !$dbname)
+ 	      throw new FrameworkException('dbname parameter required when passing \'sqlite\'.');
 
-			  if( $sqlite ) {
+ 	      $data = '<Files .htaccess>' . PHP_EOL;
+ 	      $data .= "\torder deny,allow" . PHP_EOL;
+ 	      $data .= "\tdeny from all" . PHP_EOL;
+ 	      $data .= "</Files>" . PHP_EOL;
+ 	      $data .= "<Files orm.xml>" . PHP_EOL;
+ 	      $data .= "\torder deny,allow" . PHP_EOL;
+ 	      $data .= "\tdeny from all" . PHP_EOL;
+ 	      $data .= "</Files>" . PHP_EOL;
+ 	      $data .= "<Files agilephp.xml>" . PHP_EOL;
+ 	      $data .= "\torder deny,allow" . PHP_EOL;
+ 	      $data .= "\tdeny from all" . PHP_EOL;
+ 	      $data .= "</Files>";
 
-			  	  $data .= PHP_EOL . "<Files " . $dbname . ">" . PHP_EOL;
-			  	  $data .= "\torder deny,allow" . PHP_EOL;
-			  	  $data .= "\tdeny from all" . PHP_EOL;
-			  	  $data .= "</Files>";
-		  	  }
+ 	      if($sqlite) {
 
-	  		  $htaccess = $this->root . DIRECTORY_SEPARATOR . '.htaccess';
+ 	          $data .= PHP_EOL . "<Files " . $dbname . ">" . PHP_EOL;
+ 	          $data .= "\torder deny,allow" . PHP_EOL;
+ 	          $data .= "\tdeny from all" . PHP_EOL;
+ 	          $data .= "</Files>";
+ 	      }
 
-	  		  $h = fopen( $htaccess, 'w' );
-	  		  fwrite( $h, $data );
-	  		  fclose( $h );
+ 	      $htaccess = $this->root . DIRECTORY_SEPARATOR . '.htaccess';
 
-	  		  chmod( $htaccess, 0600 );
-	  }
+ 	      $h = fopen($htaccess, 'w');
+ 	      fwrite($h, $data);
+ 	      fclose($h);
 
-	  private function createIndexDotPHP() {
+ 	      chmod($htaccess, 0600);
+ 	  }
 
-	  	      $code = '<?php
+ 	  private function createIndexDotPHP() {
+
+ 	      $code = '<?php
 /**
  * AgilePHP Generated Index Page
  * ' . $this->projectName . '
@@ -337,7 +337,7 @@ class ProjectRemote {
 		AgilePHP::setFrameworkRoot(realpath(dirname(__FILE__) . \'/AgilePHP\'));
 		MVC::dispatch();
  }
- catch( Exception $e ) {
+ catch(Exception $e) {
 
   	     Log::error($e->getMessage());
 
@@ -347,14 +347,14 @@ class ProjectRemote {
 		 $renderer->render(\'error\');
  }
 ?>';
-	  	 	  $h = fopen($this->root . '/index.php', 'w');
-	  		  fwrite($h, str_replace("\n", PHP_EOL, $code));
-	  		  fclose($h);
-	  }
+ 	      $h = fopen($this->root . '/index.php', 'w');
+ 	      fwrite($h, str_replace("\n", PHP_EOL, $code));
+ 	      fclose($h);
+ 	  }
 
-	  private function createStyleSheet() {
+ 	  private function createStyleSheet() {
 
-	  		  $style = '@CHARSET "UTF-8";
+ 	      $style = '@CHARSET "UTF-8";
 
 a {
 
@@ -462,15 +462,15 @@ a {
 	font-family: tahoma;
 	font-size: 12px;
 }';
-	  		  $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'view' .
-	  		  			DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'style.css', 'w' );
-	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $style ) );
-	  		  fclose( $h );
-	  }
+ 	      $h = fopen($this->root . DIRECTORY_SEPARATOR . 'view' .
+ 	      DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'style.css', 'w');
+ 	      fwrite($h, str_replace("\n", PHP_EOL, $style));
+ 	      fclose($h);
+ 	  }
 
-	  public function createEclipse() {
+ 	  public function createEclipse() {
 
-	  		  $dotProject = '<?xml version="1.0" encoding="UTF-8"?>
+ 	      $dotProject = '<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>' . $this->projectName . '</name>
 	<comment>AgilePHP Generated Project</comment>
@@ -493,29 +493,29 @@ a {
 	</natures>
 </projectDescription>';
 
-	  		  $h = fopen( $this->root . '/.project', 'w' );
-	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $dotProject ) );
-	  		  fclose( $h );
+ 	      $h = fopen($this->root . '/.project', 'w');
+ 	      fwrite($h, str_replace("\n", PHP_EOL, $dotProject));
+ 	      fclose($h);
 
-	  		  $dotBuildpath = '<?xml version="1.0" encoding="UTF-8"?>
+ 	      $dotBuildpath = '<?xml version="1.0" encoding="UTF-8"?>
 <buildpath>
 	<buildpathentry kind="src" path=""/>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
 </buildpath>';
 
-	  		  $h = fopen( $this->root . '/.buildpath', 'w' );
-	  		  fwrite( $h, str_replace( "\n", PHP_EOL, $dotBuildpath ) );
-	  		  fclose( $h );
-	  }
+ 	      $h = fopen($this->root . '/.buildpath', 'w');
+ 	      fwrite($h, str_replace("\n", PHP_EOL, $dotBuildpath));
+ 	      fclose($h);
+ 	  }
 
-	  public function createNetbeans() {
+ 	  public function createNetbeans() {
 
-	  		 $nbproject = $this->root . '/nbproject';
+ 	      $nbproject = $this->root . '/nbproject';
 
-	  		 if( !mkdir( $nbproject ) )
-	  		 	 throw new FrameworkException( 'Could not create netbeans project directory \'' . $nbproject . '\'.' );
+ 	      if(!mkdir($nbproject))
+ 	      throw new FrameworkException('Could not create netbeans project directory \'' . $nbproject . '\'.');
 
-	  		 $projectDotXml = '<?xml version="1.0" encoding="UTF-8"?>
+ 	      $projectDotXml = '<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.php.project</type>
     <configuration>
@@ -525,38 +525,38 @@ a {
     </configuration>
 </project>';
 
-	  		 $h = fopen( $nbproject . '/project.xml', 'w' );
-	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $projectDotXml ) );
-	  		 fclose( $h );
+ 	      $h = fopen($nbproject . '/project.xml', 'w');
+ 	      fwrite($h, str_replace("\n", PHP_EOL, $projectDotXml));
+ 	      fclose($h);
 
-	  		 $projectDotProperties = 'include.path=${php.global.include.path}
+ 	      $projectDotProperties = 'include.path=${php.global.include.path}
 source.encoding=UTF-8
 src.dir=.
 tags.asp=false
 tags.short=true
 web.root=.';
 
-	  		 $h = fopen( $nbproject . '/project.properties', 'w' );
-	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $projectDotProperties ) );
-	  		 fclose( $h );
+ 	      $h = fopen($nbproject . '/project.properties', 'w');
+ 	      fwrite($h, str_replace("\n", PHP_EOL, $projectDotProperties));
+ 	      fclose($h);
 
-	  		 $privateDotProperties = 'copy.src.files=false
+ 	      $privateDotProperties = 'copy.src.files=false
 copy.src.target=' . $this->root . '
 index.file=index.php' . '
 run.as=LOCAL
 url=http://localhost/index.php';
 
-	  		 if( !mkdir( $nbproject . '/private' ) )
-	  		 	 throw new FrameworkException( 'Could not create netbeans project private directory \'' . $nbproject . '/private\'.' );
+ 	      if(!mkdir($nbproject . '/private'))
+ 	      throw new FrameworkException('Could not create netbeans project private directory \'' . $nbproject . '/private\'.');
 
-	  		 $h = fopen( $nbproject . '/private/private.properties', 'w' );
-	  		 fwrite( $h, str_replace( "\n", PHP_EOL, $privateDotProperties ) );
-	  		 fclose( $h );
-	  }
+ 	      $h = fopen($nbproject . '/private/private.properties', 'w');
+ 	      fwrite($h, str_replace("\n", PHP_EOL, $privateDotProperties));
+ 	      fclose($h);
+ 	  }
 
-	  private function createBuildXml() {
+ 	  private function createBuildXml() {
 
-	          $xml = '<?xml version="1.0" encoding="UTF-8"?>
+ 	      $xml = '<?xml version="1.0" encoding="UTF-8"?>
 
 <project name="' . $this->projectName . '" basedir="." default="main">
 
@@ -685,20 +685,20 @@ url=http://localhost/index.php';
 
 </project>';
 
-	         // Write build.xml
-	         $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'build.xml', 'w' );
-	  		 fwrite( $h, $xml );
-	  		 fclose( $h );
+ 	      // Write build.xml
+ 	      $h = fopen($this->root . DIRECTORY_SEPARATOR . 'build.xml', 'w');
+ 	      fwrite($h, $xml);
+ 	      fclose($h);
 
-	  		 // Write build.properties
-	  		 $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'build.properties', 'w' );
-	  		 fwrite( $h, 'phpunit.styles.dir=/usr/share/php/data/phing/etc' );
-	  		 fclose( $h );
+ 	      // Write build.properties
+ 	      $h = fopen($this->root . DIRECTORY_SEPARATOR . 'build.properties', 'w');
+ 	      fwrite($h, 'phpunit.styles.dir=/usr/share/php/data/phing/etc');
+ 	      fclose($h);
 
-	  		 // Write VERSION
-	  		 $h = fopen( $this->root . DIRECTORY_SEPARATOR . 'VERSION', 'w' );
-	  		 fwrite( $h, '0.0.0' );
-	  		 fclose( $h );
-	  }
+ 	      // Write VERSION
+ 	      $h = fopen($this->root . DIRECTORY_SEPARATOR . 'VERSION', 'w');
+ 	      fwrite($h, '0.0.0');
+ 	      fclose($h);
+ 	  }
 }
 ?>

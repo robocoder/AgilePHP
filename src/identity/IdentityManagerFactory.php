@@ -21,7 +21,7 @@
 
 /**
  * Factory responsible for creating IdentityManager implementations
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
@@ -29,78 +29,78 @@
  */
 abstract class IdentityManagerFactory {
 
-	  private static $manager;
+    private static $manager;
 
-	  /**
-	   * Singleton IdentityManager constructor. Returns the IdentityManager instance
-	   * responsible for the IdentityModel per agilephp.xml.
-	   * 
-	   * @return IdentityManager An IdentityManager implementation
-	   */
-	  public static function getManager() {
+    /**
+     * Singleton IdentityManager constructor. Returns the IdentityManager instance
+     * responsible for the IdentityModel per agilephp.xml.
+     *
+     * @return IdentityManager An IdentityManager implementation
+     */
+    public static function getManager() {
 
-	  		 if(self::$manager == null) {
+        if(self::$manager == null) {
 
-	  		     $agilephp_xml = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
-		  		 $xml = simplexml_load_file($agilephp_xml);
+            $agilephp_xml = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'agilephp.xml';
+            $xml = simplexml_load_file($agilephp_xml);
 
-		  		 // No Identity configuration present - provide working default configuration
-		  		 if(!$xml->identity) {
+            // No Identity configuration present - provide working default configuration
+            if(!$xml->identity) {
 
-		  		 	 self::$manager = new IdentityManagerImpl();
-		  		 	 self::$manager->setModel(new User());
-		  	      	 self::$manager->setModelName('User');
-					 self::$manager->setAuthenticator('DefaultAuthenticator');
-		  	      	 self::$manager->setForgotPasswdMailer('BasicForgotPasswdMailer');
-		  	      	 self::$manager->setResetPasswdMailer('BasicResetPasswdMailer');
-		  	      	 self::$manager->setRegistrationMailer('BasicRegistrationMailer');
-		  		 }
-		  		 else {
+                self::$manager = new IdentityManagerImpl();
+                self::$manager->setModel(new User());
+                self::$manager->setModelName('User');
+                self::$manager->setAuthenticator('DefaultAuthenticator');
+                self::$manager->setForgotPasswdMailer('BasicForgotPasswdMailer');
+                self::$manager->setResetPasswdMailer('BasicResetPasswdMailer');
+                self::$manager->setRegistrationMailer('BasicRegistrationMailer');
+            }
+            else {
 
-			  		 // Configuration provided - Initialize using agilephp.xml configuration
-		  		 	 $manager = ((string)$xml->identity->attributes()->manager) ?
-		  		 	 		 (string)$xml->identity->attributes()->manager : 'IdentityManagerImpl';
-	
-		  		 	 self::$manager = new $manager;
-		  		 	 Log::debug('Identity::__construct Initalizing manager \'' . self::$manager->getModelName() . '\'.');
-	
-		  		 	 $authenticator = ((string)$xml->identity->attributes()->authenticator) ?
-			  		 		(string)$xml->identity->attributes()->authenticator : 'DefaultAuthenticator';
-		  		     self::$manager->setAuthenticator($authenticator);
-	
-			  	     if($model = (string)$xml->identity->attributes()->model) {
-	
-			  	      	 self::$manager->setModel(new $model());
-				  		 self::$manager->setModelName($model);
-			  	     }
-			  	     else {
-	
-			  	      	  self::$manager->setModel(new User());
-			  	      	  self::$manager->setModelName('User');
-			  	     }
-	
-			  	     Log::debug('Identity::__construct Initalizing domain model \'' . self::$manager->getModelName() . '\'.');
-	
-			  		 $forgotPasswdMailer = ((string)$xml->identity->attributes()->forgotPasswdMailer) ?
-			  		 		(string)$xml->identity->attributes()->forgotPasswdMailer : 'BasicForgotPasswdMailer';
-		  		     self::$manager->setForgotPasswdMailer($forgotPasswdMailer);
-	
-		  		     $resetPasswdMailer = ((string)$xml->identity->attributes()->resetPasswdMailer) ?
-			  		 		(string)$xml->identity->attributes()->resetPasswdMailer : 'BasicResetPasswdMailer';
-		  		     self::$manager->setResetPasswdMailer($resetPasswdMailer);
-	
-			  		 $registrationMailer = ((string)$xml->identity->attributes()->registrationMailer) ?
-			  		 		(string)$xml->identity->attributes()->registrationMailer : 'BasicRegistrationMailer';
-		  		     self::$manager->setRegistrationMailer($registrationMailer);
-		  		 }
+                // Configuration provided - Initialize using agilephp.xml configuration
+                $manager = ((string)$xml->identity->attributes()->manager) ?
+                (string)$xml->identity->attributes()->manager : 'IdentityManagerImpl';
 
-		  		 // Initialize Identity from previous session if one exits
-		  		 $session = Scope::getSessionScope();
-	      		 if($model = $session->get('IDENTITY_MODEL'))
-		  		  	self::$manager->setModel($model);
-	  		 }
+                self::$manager = new $manager;
+                Log::debug('Identity::__construct Initalizing manager \'' . self::$manager->getModelName() . '\'.');
 
-	  		 return self::$manager;
-	 }
+                $authenticator = ((string)$xml->identity->attributes()->authenticator) ?
+                (string)$xml->identity->attributes()->authenticator : 'DefaultAuthenticator';
+                self::$manager->setAuthenticator($authenticator);
+
+                if($model = (string)$xml->identity->attributes()->model) {
+
+                    self::$manager->setModel(new $model());
+                    self::$manager->setModelName($model);
+                }
+                else {
+
+                    self::$manager->setModel(new User());
+                    self::$manager->setModelName('User');
+                }
+
+                Log::debug('Identity::__construct Initalizing domain model \'' . self::$manager->getModelName() . '\'.');
+
+                $forgotPasswdMailer = ((string)$xml->identity->attributes()->forgotPasswdMailer) ?
+                (string)$xml->identity->attributes()->forgotPasswdMailer : 'BasicForgotPasswdMailer';
+                self::$manager->setForgotPasswdMailer($forgotPasswdMailer);
+
+                $resetPasswdMailer = ((string)$xml->identity->attributes()->resetPasswdMailer) ?
+                (string)$xml->identity->attributes()->resetPasswdMailer : 'BasicResetPasswdMailer';
+                self::$manager->setResetPasswdMailer($resetPasswdMailer);
+
+                $registrationMailer = ((string)$xml->identity->attributes()->registrationMailer) ?
+                (string)$xml->identity->attributes()->registrationMailer : 'BasicRegistrationMailer';
+                self::$manager->setRegistrationMailer($registrationMailer);
+            }
+
+            // Initialize Identity from previous session if one exits
+            $session = Scope::getSessionScope();
+            if($model = $session->get('IDENTITY_MODEL'))
+            self::$manager->setModel($model);
+        }
+
+        return self::$manager;
+    }
 }
 ?>

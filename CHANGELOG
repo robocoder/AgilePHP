@@ -1,3 +1,14 @@
-Bug fix to Mailer::getCommonHeaders with multiple recipients
+- Removed support for reading <get> ... </get> from orm.xml (currently broken)
+- Added DataException class
+- Added ORM::get method
+- Fixed broken JsonRenderer and JsonToModel (caused by last refactoring of remoting structures)
+- Refactored Logger package write() methods visibility to protected to allow easy extension
+- Source formatting
+- Removed extraneous/erraneous call to car.shift() in remoting-example-advanced.html
+- Removed invalid "package" property name from AgilePHP.js
+- Created util/ClassUtils
+- Moved toAccessor, toMutator, copy, and compare methods from BaseDialect to ClassUtils
+- Removed toAccessor and toMutator from SQLDialect interface
+- Updated CREDITS and README files
 
-Backward compatible apidoc: Yes
+Backward compatible apidoc: No

@@ -35,7 +35,7 @@
 			<persist>INSERT INTO users(username, password, email, created, last_login, roleId, enabled) VALUES(?,?,?,?,?,?,?)</persist>
 			<merge>UPDATE users SET password=?, email=?, created=?, last_login=?, roleId=?, enabled=? WHERE username=?</merge>
 			<delete>DELETE FROM users WHERE username=?</delete>
-			<get>SELECT username, password, email, created, last_login, roleId, enabled FROM users WHERE username=?</get>
+<!--			<get>SELECT username, password, email, created, last_login, roleId, enabled FROM users WHERE username=?</get>-->
 			<find>SELECT username, password, email, created, last_login, roleId, enabled FROM users</find>
 	 	</table>
 

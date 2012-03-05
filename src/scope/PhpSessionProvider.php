@@ -29,168 +29,164 @@
  */
 class PhpSessionProvider implements SessionProvider {
 
-      private $session;
+    private $session;
 
-	  /**
-	   * @return void
-	   */
-	  public function __construct() {
+    /**
+     * @return void
+     */
+    public function __construct() {
 
-	  		 if(!@session_id()) @session_start();
+        if(!@session_id()) @session_start();
 
-	  	     if(isset($_SESSION['AGILEPHP_SESSION'])) {
+        if(isset($_SESSION['AGILEPHP_SESSION'])) {
 
-	  	      	 Log::debug('SessionScope::__construct Initalizing session from previous PHP session.');
+            Log::debug('SessionScope::__construct Initalizing session from previous PHP session.');
 
-	  	      	 $this->session = unserialize($_SESSION['AGILEPHP_SESSION']);
-	  	      	 if(!$this->session) $this->session = new Session();
-	  	      	 $this->session->setId(session_id());
-	  	      }
-	  	      else {
+            $this->session = unserialize($_SESSION['AGILEPHP_SESSION']);
+            if(!$this->session) $this->session = new Session();
+            $this->session->setId(session_id());
+        }
+        else {
 
-  	      	      Log::debug('SessionScope::__construct Initalizing session with new PHP session.');
+            Log::debug('SessionScope::__construct Initalizing session with new PHP session.');
 
-  	      	      $this->session = new Session();
-  	      	      $this->session->setId(session_id());
-  	      	      $_SESSION['AGILEPHP_SESSION'] = serialize($this->session);
-	  	      }
-	  }
+            $this->session = new Session();
+            $this->session->setId(session_id());
+            $_SESSION['AGILEPHP_SESSION'] = serialize($this->session);
+        }
+    }
 
-	  /**
-	   * Returns boolean flag indicating whether or not the current session
-	   * data is persisted.
-	   *
-	   * @return bool True if the session data is persisted, false otherwise
-	   */
-	  public function isPersisted() {
+    /**
+     * Returns boolean flag indicating whether or not the current session
+     * data is persisted.
+     *
+     * @return bool True if the session data is persisted, false otherwise
+     */
+    public function isPersisted() {
+        return $this->persisted == true;
+    }
 
-	  		 return $this->persisted == true;
-	  }
+    /**
+     * Returns the session domain model which maintains the id and data for
+     * the current session.
+     *
+     * @return Session The current Session instance
+     */
+    public function getSession() {
+        return $this->session;
+    }
 
-	  /**
-	   * Returns the session domain model which maintains the id and data for
-	   * the current session.
-	   *
-	   * @return Session The current Session instance
-	   */
-	  public function getSession() {
+    /**
+     * Sets the session id and restores a previously persisted Session if one exists.
+     *
+     * @return void
+     */
+    public function setSessionId($id) {
 
-	  		 return $this->session;
-	  }
+        session_unset();
+        $this->session->setId($id);
+        session_id($id);
+    }
 
-	  /**
-	   * Sets the session id and restores a previously persisted Session if one exists.
-	   *
-	   * @return void
-	   */
-	  public function setSessionId($id) {
+    /**
+     * Returns the session id for the current Session.
+     *
+     * @return String The session id
+     */
+    public function getSessionId() {
+        return $this->session->getId();
+    }
 
-	         session_unset();
-	  		 $this->session->setId($id);
-	  		 session_id($id);
-	  }
+    /**
+     * Returns the value corresponding to the specified key stored in the current Session.
+     *
+     * @param String $key The variable's key/name
+     * @return The value if present, otherwise null.
+     */
+    public function get($key) {
 
-	  /**
-	   * Returns the session id for the current Session.
-	   *
-	   * @return String The session id
-	   */
-	  public function getSessionId() {
+        if(!$this->session->getData()) return;
 
-	  		 return $this->session->getId();
-	  }
+        $store = unserialize($this->session->getData());
+        if(isset($store[$key])) return $store[$key];
+    }
 
-	  /**
-	   * Returns the value corresponding to the specified key stored in the current Session.
-	   *
-	   * @param String $key The variable's key/name
-	   * @return The value if present, otherwise null.
-	   */
-	  public function get($key) {
+    /**
+     * Sets a new Session variable.
+     *
+     * @param String $key The variable name
+     * @param String $value The variable value
+     * @return void
+     */
+    public function set($key, $value) {
 
-	  		 if(!$this->session->getData()) return;
+        $store = unserialize($this->getSession()->getData());
+        $store[$key] = $value;
+        $this->session->setData(serialize($store));
+    }
 
-	  		 $store = unserialize($this->session->getData());
-	  		 if(isset($store[$key])) return $store[$key];
-	  }
+    /**
+     * Clears the current Session.
+     *
+     * @return void
+     */
+    public function clear() {
 
-	  /**
-	   * Sets a new Session variable.
-	   *
-	   * @param String $key The variable name
-	   * @param String $value The variable value
-	   * @return void
-	   */
-	  public function set($key, $value) {
+        $this->session->setId(null);
+        $this->session->setData(array());
+        $_SESSION['AGILEPHP_SESSION'] = serialize(null);
+        Log::debug('SessionScope::clear Session cleared');
+    }
 
-	  		 $store = unserialize($this->getSession()->getData());
-	  		 $store[$key] = $value;
-	  		 $this->session->setData(serialize($store));
-	  }
+    /**
+     * Clears the SessionScope store and deletes the Session ActiveRecord from the
+     * database.
+     *
+     * @return void
+     */
+    public function destroy() {
 
-	  /**
-	   * Clears the current Session.
-	   *
-	   * @return void
-	   */
-	  public function clear() {
+        unset($_SESSION);
+        session_unset();
+    }
 
-	         $this->session->setId(null);
-	  		 $this->session->setData(array());
-	  		 $_SESSION['AGILEPHP_SESSION'] = serialize(null);
-	  		 Log::debug('SessionScope::clear Session cleared');
-	  }
+    /**
+     * Persists a serialized instance of the current Session.
+     *
+     * @return void
+     */
+    public function persist() {
 
-	  /**
-	   * Clears the SessionScope store and deletes the Session ActiveRecord from the
-	   * database.
-	   *
-	   * @return void
-	   */
-	  public function destroy() {
+        Log::debug('SessionScope::persist Persisting session');
+        $_SESSION['AGILEPHP_SESSION'] = serialize($this->session);
+        if(!$this->getSession()->getData()) $this->destroy();
+    }
 
-	         unset($_SESSION);
-  		 	 session_unset();
-	  }
+    /**
+     * Here to make interface happy. Doesn't do anything
+     *
+     * @return void
+     */
+    public function refresh() {
+        session_id($this->session->getId());
+    }
 
-	  /**
-	   * Persists a serialized instance of the current Session.
-	   *
-	   * @return void
-	   */
-	  public function persist() {
+    /**
+     * Persist the Session data state to database just before the object
+     * is destroyed.
+     *
+     * @return void
+     */
+    public function __destruct() {
 
-	  		 Log::debug('SessionScope::persist Persisting session');
-	  	     $_SESSION['AGILEPHP_SESSION'] = serialize($this->session);
-			 if(!$this->getSession()->getData()) $this->destroy();
-	  }
-  
-	  /**
-	   * Here to make interface happy. Doesn't do anything
-	   *
-	   * @return void
-	   */
-	  public function refresh() {
+        try {
+            $this->persist();
+        }
+        catch(Exception $e) {
 
-	         session_id($this->session->getId());
-	  }
-
-	  /**
-	   * Persist the Session data state to database just before the object
-	   * is destroyed.
-	   *
-	   * @return void
-	   */
-	  public function __destruct() {
-
-		  	 try {
-		  		   $this->persist();
-		  	 }
-		  	 catch(Exception $e) {
-
-		  	 	    $message = 'SessionScope::__destruct ' . $e->getMessage();
-		  		    Log::error($message);
-		  	}
-	  }
+            $message = 'SessionScope::__destruct ' . $e->getMessage();
+            Log::error($message);
+        }
+    }
 }
 ?>

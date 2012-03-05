@@ -17,16 +17,16 @@ class SoapDocumentLiteralTest extends PHPUnit_Framework_TestCase {
  	  			  'cache_wsdl' => 0,
  	  			  'style' => SOAP_DOCUMENT,
  	  			  'use' => SOAP_LITERAL
- 	 );
+ 	  );
 
-	  private $client;
-	  private $mt1;
-	  private $mt2;
+ 	  private $client;
+ 	  private $mt1;
+ 	  private $mt2;
 
-	  public function __construct() {
+ 	  public function __construct() {
 
-	  	     // Maps Document/Literal WSDL data types to PHP data types
-	  		 $this->options['classmap'] = array(
+ 	      // Maps Document/Literal WSDL data types to PHP data types
+ 	      $this->options['classmap'] = array(
                                     'test' => 'test',
                                     'testResponse' => 'testResponse',
                                     'add' => 'add',
@@ -51,146 +51,146 @@ class SoapDocumentLiteralTest extends PHPUnit_Framework_TestCase {
                                     'arrayOfArraysTestResponse' => 'arrayOfArraysTestResponse',
                                     'arrayAddTest' => 'arrayAddTest',
                                     'arrayAddTestResponse' => 'arrayAddTestResponse',
-                                  );
+ 	      );
 
-			 parent::__construct();
-	  		 $this->client = new SOAPClient('http://localhost/test/index.php/SoapDocumentLiteralTestAPI/wsdl/?XDEBUG_SESSION_START=1&KEY=agilephp', $this->options);
+ 	      parent::__construct();
+ 	      $this->client = new SOAPClient('http://localhost/test/index.php/SoapDocumentLiteralTestAPI/wsdl/?XDEBUG_SESSION_START=1&KEY=agilephp', $this->options);
 
-	  		 $this->mt1 = new MathTest();
-			 $this->mt1->a = 1;
-			 $this->mt1->b = 2;
+ 	      $this->mt1 = new MathTest();
+ 	      $this->mt1->a = 1;
+ 	      $this->mt1->b = 2;
 
-			 $this->mt2 = new MathTest();
-			 $this->mt2->a = 5;
-			 $this->mt2->b = 10;
-	  }
+ 	      $this->mt2 = new MathTest();
+ 	      $this->mt2->a = 5;
+ 	      $this->mt2->b = 10;
+ 	  }
 
-	  public function testShowAvailableMethods() {
+ 	  public function testShowAvailableMethods() {
 
-			 PHPUnit_Framework_Assert::assertEquals(count($this->client->__getFunctions()), 10, 'Failed to get all api methods');
-	  }
+ 	      PHPUnit_Framework_Assert::assertEquals(count($this->client->__getFunctions()), 10, 'Failed to get all api methods');
+ 	  }
 
-	  public function testTest() {
+ 	  public function testTest() {
 
-	  		 $result = $this->invoke('test', null);
-	  		 PHPUnit_Framework_Assert::assertEquals('TestAPI works!', $result->return, 'Unexpected test method result');
-	  }
+ 	      $result = $this->invoke('test', null);
+ 	      PHPUnit_Framework_Assert::assertEquals('TestAPI works!', $result->return, 'Unexpected test method result');
+ 	  }
 
-	  public function testAdd() {
+ 	  public function testAdd() {
 
-	  		 $o = new add;
-	  		 $o->a = 1;
-	  		 $o->b = 2;
+ 	      $o = new add;
+ 	      $o->a = 1;
+ 	      $o->b = 2;
 
-	  		 $result = $this->invoke('add', $o);
-	  		 PHPUnit_Framework_Assert::assertEquals(3, $result->return, 'Unexpected add method result');
-	  }
+ 	      $result = $this->invoke('add', $o);
+ 	      PHPUnit_Framework_Assert::assertEquals(3, $result->return, 'Unexpected add method result');
+ 	  }
 
-	  public function testSubtract() {
+ 	  public function testSubtract() {
 
-	  		 $o = new subtract;
-	  		 $o->a = 2;
-	  		 $o->b = 1;
+ 	      $o = new subtract;
+ 	      $o->a = 2;
+ 	      $o->b = 1;
 
-	  		 $result = $this->invoke('subtract', $o);
-	  		 PHPUnit_Framework_Assert::assertEquals(1, $result->return, 'Unexpected subtract method result');
-	  }
+ 	      $result = $this->invoke('subtract', $o);
+ 	      PHPUnit_Framework_Assert::assertEquals(1, $result->return, 'Unexpected subtract method result');
+ 	  }
 
-	  public function testMultiply() {
+ 	  public function testMultiply() {
 
-	  		 $o = new multiply;
-	  		 $o->a = 2;
-	  		 $o->b = 2;
+ 	      $o = new multiply;
+ 	      $o->a = 2;
+ 	      $o->b = 2;
 
-	  		 $result = $this->invoke('multiply', $o);
-	  		 PHPUnit_Framework_Assert::assertEquals(4, $result->return, 'Unexpected multiply method result');
-	  }
+ 	      $result = $this->invoke('multiply', $o);
+ 	      PHPUnit_Framework_Assert::assertEquals(4, $result->return, 'Unexpected multiply method result');
+ 	  }
 
-	  public function testDivide() {
+ 	  public function testDivide() {
 
-	  		 $o = new divide;
-	  		 $o->a = 4;
-	  		 $o->b = 2;
+ 	      $o = new divide;
+ 	      $o->a = 4;
+ 	      $o->b = 2;
 
-	  		 $result = $this->invoke('divide', $o);
-	  		 PHPUnit_Framework_Assert::assertEquals(2, $result->return, 'Unexpected divide method result');
-	  }
+ 	      $result = $this->invoke('divide', $o);
+ 	      PHPUnit_Framework_Assert::assertEquals(2, $result->return, 'Unexpected divide method result');
+ 	  }
 
-	  public function testObjectParameterTest() {
+ 	  public function testObjectParameterTest() {
 
-	  		 $o = new objectParameterTest;
-	  		 $o->MathTest = $this->mt1;
+ 	      $o = new objectParameterTest;
+ 	      $o->MathTest = $this->mt1;
 
-			 $result = $this->invoke('objectParameterTest', $o);
-			 PHPUnit_Framework_Assert::assertEquals('3', $result->return, 'objectParameterTest returned unexpected response \'' . $result->return . '\'. Expected 3.');
-	  }
+ 	      $result = $this->invoke('objectParameterTest', $o);
+ 	      PHPUnit_Framework_Assert::assertEquals('3', $result->return, 'objectParameterTest returned unexpected response \'' . $result->return . '\'. Expected 3.');
+ 	  }
 
-	  public function testArrayStringTest() {
+ 	  public function testArrayStringTest() {
 
-	  		 $o = new arrayStringTest;
-	  		 $o->strings = array('test1', 'test2');
+ 	      $o = new arrayStringTest;
+ 	      $o->strings = array('test1', 'test2');
 
-	  		 $result = $this->invoke('arrayStringTest', $o);
+ 	      $result = $this->invoke('arrayStringTest', $o);
 
-			 PHPUnit_Framework_Assert::assertType('array', $result->return, 'Unexpected return value for arrayStringTest');
-			 PHPUnit_Framework_Assert::assertEquals($result->return[0], 'test1', 'Failed get arrayStringTest element 0');
-			 PHPUnit_Framework_Assert::assertEquals($result->return[1], 'test2', 'Failed get arrayStringTest element 1');
-	  }
+ 	      PHPUnit_Framework_Assert::assertInternalType('array', $result->return, 'Unexpected return value for arrayStringTest');
+ 	      PHPUnit_Framework_Assert::assertEquals($result->return[0], 'test1', 'Failed get arrayStringTest element 0');
+ 	      PHPUnit_Framework_Assert::assertEquals($result->return[1], 'test2', 'Failed get arrayStringTest element 1');
+ 	  }
 
-	  public function testArrayOfObjectsTest() {
+ 	  public function testArrayOfObjectsTest() {
 
-	  		 $o = new arrayOfObjectsTest;
-	  		 $o->MathTests = array($this->mt1, $this->mt2);
+ 	      $o = new arrayOfObjectsTest;
+ 	      $o->MathTests = array($this->mt1, $this->mt2);
 
-	  		 $result = $this->invoke('arrayOfObjectsTest', $o);
+ 	      $result = $this->invoke('arrayOfObjectsTest', $o);
 
-			 PHPUnit_Framework_Assert::assertType('array', $result->return, 'Failed assert arrayOfObjectsTest return value is array');
-			 PHPUnit_Framework_Assert::assertType('MathTest', $result->return[0], 'Failed get assert arrayOfObjectsTest element 0 is type stdClass');
-			 PHPUnit_Framework_Assert::assertType('MathTest', $result->return[1], 'Failed get assert arrayOfObjectsTest element 1 is type MathTest');
-			 PHPUnit_Framework_Assert::assertEquals($result->return[0]->getA(), 1, 'Failed get arrayOfObjectsTest element 0 "a" property is 1');
-			 PHPUnit_Framework_Assert::assertEquals($result->return[0]->getB(), 2, 'Failed get arrayOfObjectsTest element 0 "b" property is 2');
-			 PHPUnit_Framework_Assert::assertEquals($result->return[1]->getA(), 5, 'Failed get arrayOfObjectsTest element 1 "a" property is 5');
-			 PHPUnit_Framework_Assert::assertEquals($result->return[1]->getB(), 10, 'Failed get arrayOfObjectsTest element 1 "b" property is 10');
-	  }
+ 	      PHPUnit_Framework_Assert::assertInternalType('array', $result->return, 'Failed assert arrayOfObjectsTest return value is array');
+ 	      PHPUnit_Framework_Assert::assertInstanceOf('MathTest', $result->return[0], 'Failed get assert arrayOfObjectsTest element 0 is type stdClass');
+ 	      PHPUnit_Framework_Assert::assertInstanceOf('MathTest', $result->return[1], 'Failed get assert arrayOfObjectsTest element 1 is type MathTest');
+ 	      PHPUnit_Framework_Assert::assertEquals($result->return[0]->getA(), 1, 'Failed get arrayOfObjectsTest element 0 "a" property is 1');
+ 	      PHPUnit_Framework_Assert::assertEquals($result->return[0]->getB(), 2, 'Failed get arrayOfObjectsTest element 0 "b" property is 2');
+ 	      PHPUnit_Framework_Assert::assertEquals($result->return[1]->getA(), 5, 'Failed get arrayOfObjectsTest element 1 "a" property is 5');
+ 	      PHPUnit_Framework_Assert::assertEquals($result->return[1]->getB(), 10, 'Failed get arrayOfObjectsTest element 1 "b" property is 10');
+ 	  }
 
-	  public function testArrayOfArraysTest() {
+ 	  public function testArrayOfArraysTest() {
 
-	  		 $o = new arrayOfArraysTest;
-	  		 $o->strings = array(array('test1', 'test2'), array('test3', 'test4'));
+ 	      $o = new arrayOfArraysTest;
+ 	      $o->strings = array(array('test1', 'test2'), array('test3', 'test4'));
 
-	  		 // THIS WONT WORK FOR DOC/LITERAL
-	  		 // $result = $this->invoke('arrayOfArraysTest', $o);
+ 	      // THIS WONT WORK FOR DOC/LITERAL
+ 	      // $result = $this->invoke('arrayOfArraysTest', $o);
 
-			 /*
-				 Multi-dimensional arrays, such as this are not supported for the document-literal or RPC-literal formats in the current release.
-				 However, it is possible to work around this limitation by wrapping the array in a PHP value type and then using an array of these
-				 value types.
-			 */
-	  }
+ 	      /*
+ 	       Multi-dimensional arrays, such as this are not supported for the document-literal or RPC-literal formats in the current release.
+ 	       However, it is possible to work around this limitation by wrapping the array in a PHP value type and then using an array of these
+ 	       value types.
+ 	       */
+ 	  }
 
-	  public function testArrayAddTest() {
+ 	  public function testArrayAddTest() {
 
-	  		 $o = new arrayAddTest;
-	  		 $o->MathTests = array($this->mt1, $this->mt2);
+ 	      $o = new arrayAddTest;
+ 	      $o->MathTests = array($this->mt1, $this->mt2);
 
-	  		 $result = $this->invoke('arrayAddTest', $o);
-			 PHPUnit_Framework_Assert::assertEquals($result->return, 18, 'Failed to assert arrayAddTest sum added up to 18');
-	  }
+ 	      $result = $this->invoke('arrayAddTest', $o);
+ 	      PHPUnit_Framework_Assert::assertEquals($result->return, 18, 'Failed to assert arrayAddTest sum added up to 18');
+ 	  }
 
-	  private function invoke($function, $parameters) {
+ 	  private function invoke($function, $parameters) {
 
-	  		  try {
-	  		  	     $result = $this->client->__soapCall($function, array($parameters), $this->options);
-	  		  	     if(is_soap_fault($result))
-	  		  	     	 throw new SoapFault($result);
+ 	      try {
+ 	          $result = $this->client->__soapCall($function, array($parameters), $this->options);
+ 	          if(is_soap_fault($result))
+ 	          throw new SoapFault($result);
 
-	  		  	     return $result;
-			  }
-			  catch(Exception $e) {
+ 	          return $result;
+ 	      }
+ 	      catch(Exception $e) {
 
-					 echo $e->getMessage();
-			  }
-	  }
+ 	          echo $e->getMessage();
+ 	      }
+ 	  }
 }
 
 /**
@@ -202,136 +202,136 @@ class test {
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class testResponse {
-  public $return; // string
+    public $return; // string
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class add {
-  public $a; // int
-  public $b; // int
+    public $a; // int
+    public $b; // int
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class addResponse {
-  public $return; // int
+    public $return; // int
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class subtract {
-  public $a; // int
-  public $b; // int
+    public $a; // int
+    public $b; // int
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class subtractResponse {
-  public $return; // int
+    public $return; // int
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class multiply {
-  public $a; // int
-  public $b; // int
+    public $a; // int
+    public $b; // int
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class multiplyResponse {
-  public $return; // int
+    public $return; // int
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class divide {
-  public $a; // int
-  public $b; // int
+    public $a; // int
+    public $b; // int
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class divideResponse {
-  public $return; // int
+    public $return; // int
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class objectParameterTest {
-  public $MathTest; // MathTest
+    public $MathTest; // MathTest
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class objectParameterTestResponse {
-  public $return; // int
+    public $return; // int
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class MathTestArray {
-  public $MathTests; // MathTest
+    public $MathTests; // MathTest
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayOfObjectsTest {
-  public $MathTests; // MathTestArray
+    public $MathTests; // MathTestArray
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayOfObjectsTestResponse {
-  public $return; // MathTestArray
+    public $return; // MathTestArray
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class stringArray {
-  public $strings; // string
+    public $strings; // string
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayStringTest {
-  public $strings; // stringArray
+    public $strings; // stringArray
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayStringTestResponse {
-  public $return; // stringArray
+    public $return; // stringArray
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class stringArrayArray {
-  public $strings; // stringArray
+    public $strings; // stringArray
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayOfArraysTest {
-  public $strings; // stringArrayArray
+    public $strings; // stringArrayArray
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayOfArraysTestResponse {
-  public $return; // stringArrayArray
+    public $return; // stringArrayArray
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayAddTest {
-  public $MathTests; // MathTestArray
+    public $MathTests; // MathTestArray
 }
 /**
  * @package com.makeabyte.agilephp.test.webservice.soap
  */
 class arrayAddTestResponse {
-  public $return; // int
+    public $return; // int
 }
 ?>

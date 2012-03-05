@@ -25,26 +25,24 @@
  * the transaction when the class is destructed. Likewise, method level annotations begin a
  * transaction just before the method is invoked and commit/rollback the transaction when the
  * method has completed. If an exception is encountered, a ROLLBACK is automatically issued.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.orm
  */
-#@Interceptor 
+#@Interceptor
 class Transactional {
 
-      #@AroundInvoke
-      public function beginTransaction(InvocationContext $ic) {
+    #@AroundInvoke
+    public function beginTransaction(InvocationContext $ic) {
+        ORMFactory::getDialect()->beginTransaction();
+        return $ic->proceed();
+    }
 
-             ORMFactory::getDialect()->beginTransaction();
-             return $ic->proceed();
-      }
-
-      #@AfterInvoke
-      public function commit(InvocationContext $ic) {
-
-             ORMFactory::getDialect()->commit();
-             return $ic->proceed();
-      }
+    #@AfterInvoke
+    public function commit(InvocationContext $ic) {
+        ORMFactory::getDialect()->commit();
+        return $ic->proceed();
+    }
 }
 ?>

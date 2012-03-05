@@ -46,7 +46,7 @@ class JsonToModelTest extends PHPUnit_Framework_TestCase {
 
         $response = JsonToModel::transform($array);
 
-        PHPUnit_Framework_Assert::assertType('array', $response, 'Failed to transform primitive array');
+        PHPUnit_Framework_Assert::assertInternalType('array', $response, 'Failed to transform primitive array');
         PHPUnit_Framework_Assert::assertEquals(4, count($response), 'Failed to transform primitive array elements');
         PHPUnit_Framework_Assert::assertEquals('test', $response[0], 'Failed to transform primitive array element 0');
         PHPUnit_Framework_Assert::assertEquals(1, $response[1], 'Failed to transform primitive array element 1');
@@ -74,7 +74,7 @@ class JsonToModelTest extends PHPUnit_Framework_TestCase {
         $json = ' { "year" : 2011, "make" : "Lamborghini", "model" : "Murcielago", "color" : "Yellow", "isNew" : true, "isCheap" : false, "leasedUntil" : null, "owner" : null, "tires" : null } ';
 
         $model = JsonToModel::transform($json);
-        PHPUnit_Framework_Assert::assertType('stdClass', $model, 'Failed to transform primitive Car object');
+        PHPUnit_Framework_Assert::assertInstanceOf('stdClass', $model, 'Failed to transform primitive Car object');
         PHPUnit_Framework_Assert::assertEquals(2011, $model->year, 'Failed to get transformed Car->year field');
         PHPUnit_Framework_Assert::assertEquals('Lamborghini', $model->make, 'Failed to get transformed Car->make field');
         PHPUnit_Framework_Assert::assertEquals('Murcielago', $model->model, 'Failed to get transformed Car->model field');
@@ -133,7 +133,7 @@ class JsonToModelTest extends PHPUnit_Framework_TestCase {
         $json = ' { "year" : 2011, "make" : "Lamborghini", "model" : "Murcielago", "color" : "Yellow", "isNew" : true, "isCheap" : false, "leasedUntil" : null, "owner" : { "name" : "Someone Special", "dob" : "01-01-1901" }  , "tires" : [  { "brand" : "Good Year", "size" : "235 35x19", "placement" : "LF", "tread" : "Good" } ,  { "brand" : "Good Year", "size" : "235 35x19", "placement" : "RF", "tread" : "Good" } ,  { "brand" : "Good Year", "size" : "345 25x20", "placement" : "LR", "tread" : "Worn" } ,  { "brand" : "Good Year", "size" : "345 25x20", "placement" : "RR", "tread" : "Worn" }  ]  } ';
         $model = JsonToModel::transform($json);
 
-        PHPUnit_Framework_Assert::assertType('stdClass', $model, 'Failed to transform complex array without class name defined');
+        PHPUnit_Framework_Assert::assertInstanceOf('stdClass', $model, 'Failed to transform complex array without class name defined');
         PHPUnit_Framework_Assert::assertEquals(2011, $model->year, 'Failed to get transformed Car->year field');
         PHPUnit_Framework_Assert::assertEquals('Lamborghini', $model->make, 'Failed to get transformed Car->make field');
         PHPUnit_Framework_Assert::assertEquals('Murcielago', $model->model, 'Failed to get transformed Car->model field');
@@ -142,7 +142,7 @@ class JsonToModelTest extends PHPUnit_Framework_TestCase {
         PHPUnit_Framework_Assert::assertEquals(false, $model->isCheap, 'Failed to get transformed Car->isCheap field');
         PHPUnit_Framework_Assert::assertEquals(null, $model->leasedUntil, 'Failed to get transformed Car->leadedUntil field');
 
-        PHPUnit_Framework_Assert::assertType('stdClass', $model->owner, 'Failed to transform complex array element Car->owner');
+        PHPUnit_Framework_Assert::assertInstanceOf('stdClass', $model->owner, 'Failed to transform complex array element Car->owner');
         PHPUnit_Framework_Assert::assertEquals('Someone Special', $model->owner->name, 'Failed to get transformed Car->owner->name field');
         PHPUnit_Framework_Assert::assertEquals('01-01-1901', $model->owner->dob, 'Failed to get transformed Car->owner->dob field');
 
@@ -216,7 +216,7 @@ class JsonToModelTest extends PHPUnit_Framework_TestCase {
         $json = ' { "year" : 2011, "make" : "Lamborghini", "model" : "Murcielago", "color" : "Yellow", "isNew" : true, "isCheap" : false, "leasedUntil" : null, "owner" : { "_class": "Owner", "name" : "Someone Special", "dob" : "01-01-1901" }  , "tires" : [  { "_class": "Tire", "brand" : "Good Year", "size" : "235 35x19", "placement" : "LF", "tread" : "Good" } ,  { "_class": "Tire", "brand" : "Good Year", "size" : "235 35x19", "placement" : "RF", "tread" : "Good" } ,  { "_class": "Tire", "brand" : "Good Year", "size" : "345 25x20", "placement" : "LR", "tread" : "Worn" } ,  { "_class": "Tire", "brand" : "Good Year", "size" : "345 25x20", "placement" : "RR", "tread" : "Worn" }  ]  } ';
         $model = JsonToModel::transform($json, 'Car');
 
-        PHPUnit_Framework_Assert::assertType('Car', $model, 'Failed to render complex array WITH class name to type Car');
+        PHPUnit_Framework_Assert::assertInstanceOf('Car', $model, 'Failed to render complex array WITH class name to type Car');
         PHPUnit_Framework_Assert::assertEquals(2011, $model->getYear(), 'Failed to get transformed Car->year field');
         PHPUnit_Framework_Assert::assertEquals('Lamborghini', $model->getMake(), 'Failed to get transformed Car->make field');
         PHPUnit_Framework_Assert::assertEquals('Murcielago', $model->getModel(), 'Failed to get transformed Car->model field');
@@ -225,7 +225,7 @@ class JsonToModelTest extends PHPUnit_Framework_TestCase {
         PHPUnit_Framework_Assert::assertEquals(false, $model->getIsCheap(), 'Failed to get transformed Car->isCheap field');
         PHPUnit_Framework_Assert::assertEquals(null, $model->getLeasedUntil(), 'Failed to get transformed Car->leadedUntil field');
 
-        PHPUnit_Framework_Assert::assertType('Owner', $model->getOwner(), 'Failed to transform complex array element Car->owner');
+        PHPUnit_Framework_Assert::assertInstanceOf('Owner', $model->getOwner(), 'Failed to transform complex array element Car->owner');
         PHPUnit_Framework_Assert::assertEquals('Someone Special', $model->getOwner()->getName(), 'Failed to get transformed Car->owner->name field');
         PHPUnit_Framework_Assert::assertEquals('01-01-1901', $model->getOwner()->getDob(), 'Failed to get transformed Car->owner->dob field');
 

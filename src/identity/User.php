@@ -63,7 +63,7 @@ class User extends DomainModel implements IdentityModel {
     private $Roles;
 
     public function __construct($username = null, $password = null, $email = null,
-                $created = null, $lastLogin = null, $enabled = null, Role $Role = null) {
+            $created = null, $lastLogin = null, $enabled = null, Role $Role = null) {
 
         $this->username = $username;
         $this->password = $password;

@@ -22,72 +22,70 @@
 /**
  * Responsible for handling all processing and view rendering for the mailing
  * list  module.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
  */
 class MailingController extends BaseModelActionController {
 
-	  protected $model;
+    protected $model;
 
-	  public function __construct() {
+    public function __construct() {
+        $this->model = new Mailing();
+        parent::__construct();
+    }
 
-	  		 $this->model = new Mailing();
-	  	     parent::__construct();
-	  }
-  
-	  public function getModel() {
-	  	
-	  	     return $this->model;
-	  }
+    public function getModel() {
+        return $this->model;
+    }
 
-	  public function mailingBroadcast($process = false) {
+    public function mailingBroadcast($process = false) {
 
-	  	     if($process == true) {
+        if($process == true) {
 
-	  	     	 $request = Scope::getRequestScope();
-	  	     	 $error = null;
-		  		 $message = null;
-		  		 $failed = array();
+            $request = Scope::getRequestScope();
+            $error = null;
+            $message = null;
+            $failed = array();
 
-		  		 Mailer::setFromName('AgilePHP Framework');
-		  		 Mailer::setFrom('root@localhost');
+            Mailer::setFromName('AgilePHP Framework');
+            Mailer::setFrom('root@localhost');
 
-	  	     	 $this->createQuery('SELECT * FROM mailing');
-	  	     	 $this->executeQuery();
-	  	     	 $recipientCount = 0;
+            $this->createQuery('SELECT * FROM mailing');
+            $this->executeQuery();
+            $recipientCount = 0;
 
-	  	     	 foreach($this->getResultListAsModels() as $model) {
+            foreach($this->getResultListAsModels() as $model) {
 
-			  	     	  if(!$model->isEnabled()) continue;
+                if(!$model->isEnabled()) continue;
 
-			  	     	  try {
-				  	     	    Mailer::setToName($model->getName());
-				  	     	    Mailer::setTo($model->getEmail());
-				  	     	    Mailer::setSubject($request->get('subject'));
-				  	     	    Mailer::setBody($request->get('body') . "\n\n" . $request->get('signature'));
-				  	     	    Mailer::send();
+                try {
+                    Mailer::setToName($model->getName());
+                    Mailer::setTo($model->getEmail());
+                    Mailer::setSubject($request->get('subject'));
+                    Mailer::setBody($request->get('body') . "\n\n" . $request->get('signature'));
+                    Mailer::send();
 
-				  	     	    $recipientCount++;
-			  	     	  }
-			  	     	  catch(FrameworkException $e) {
+                    $recipientCount++;
+                }
+                catch(FrameworkException $e) {
 
-			  	     	  		array_push($failed, $model->getEmail());
-			  	     	  }
-	  	     	 }
+                    array_push($failed, $model->getEmail());
+                }
+            }
 
-		  	     if(count($failedArray)) {
-	
-		  	     	$this->set('error', 'Email broadcast failed.');
-		  	     	$this->set('failedEmails', $failed);
-		  	     }
-		  	     else {
-	
-		  	     	 $this->set('message', 'Email broadcast sent to ' . $recipientCount . ' recipients.');
-		  	     }
-	  	     }
+            if(count($failedArray)) {
 
-	  		 $this->render('admin_broadcast');
-	  }
+                $this->set('error', 'Email broadcast failed.');
+                $this->set('failedEmails', $failed);
+            }
+            else {
+
+                $this->set('message', 'Email broadcast sent to ' . $recipientCount . ' recipients.');
+            }
+        }
+
+        $this->render('admin_broadcast');
+    }
 }

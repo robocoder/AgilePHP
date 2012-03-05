@@ -21,85 +21,85 @@
 
 /**
  * A simple class exposed to client side javascript via AgilePHP remoting component.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes
  */
 class RMITest {
 
-	  private $test1;
-	  private $test2;
-	  private $test3;
+    private $test1;
+    private $test2;
+    private $test3;
 
-	  public function __construct($test1, $test2 = null, $test3 = 'test') {
+    public function __construct($test1, $test2 = null, $test3 = 'test') {
 
-	  		 $this->test1 = $test1;
-	  		 $this->test2 = $test2;
-	  		 $this->test3 = $test3;
-	  }
+        $this->test1 = $test1;
+        $this->test2 = $test2;
+        $this->test3 = $test3;
+    }
 
-	  #@RemoteMethod
-	  public function testme($param1 = null, $param2) {
+    #@RemoteMethod
+    public function testme($param1 = null, $param2) {
 
-	  		 $o = new stdClass;
-	  		 $o->test1 = $this->test1;
-	  		 $o->test2 = $this->test2;
-	  		 $o->test3 = $this->test3;
-	  		 $o->param1 = ($param1 ? $param1 : 'null');
-	  		 $o->param2 = $param2;
+        $o = new stdClass;
+        $o->test1 = $this->test1;
+        $o->test2 = $this->test2;
+        $o->test3 = $this->test3;
+        $o->param1 = ($param1 ? $param1 : 'null');
+        $o->param2 = $param2;
 
-	  		 return $o;
-	  }
+        return $o;
+    }
 
-	  #@RemoteMethod
-	  #@Restrict(role = 'foo')
-	  public function testme2($param1 = null, $param2) {
+    #@RemoteMethod
+    #@Restrict(role = 'foo')
+    public function testme2($param1 = null, $param2) {
 
-	  		 $o = new stdClass;
-	  		 $o->testme2 = 'this does something 2 as long as the user is logged in and belongs to role "foo"';
+        $o = new stdClass;
+        $o->testme2 = 'this does something 2 as long as the user is logged in and belongs to role "foo"';
 
-	  		 return $o;
-	  }
+        return $o;
+    }
 
-	  #@RemoteMethod
-	  public function testme3() {
+    #@RemoteMethod
+    public function testme3() {
 
-	  		 $o = new stdClass;
-	  		 $o->testme2 = 'this does something else';
+        $o = new stdClass;
+        $o->testme2 = 'this does something else';
 
-	  		 return $o;
-	  }
+        return $o;
+    }
 
-	  public function testme4() { }
+    public function testme4() { }
 
-	  #@RemoteMethod
-	  public function setTest2($val) {
+    #@RemoteMethod
+    public function setTest2($val) {
 
-	  		 $this->test2 = $val;
+        $this->test2 = $val;
 
-	  		 $o = new stdClass;
-	  		 $o->setTest2 = 'set test2 to: ' . $val;
+        $o = new stdClass;
+        $o->setTest2 = 'set test2 to: ' . $val;
 
-	  		 return $o;
-	  }
-	  
-	  #@RemoteMethod
-	  public function getTest2() {
+        return $o;
+    }
+     
+    #@RemoteMethod
+    public function getTest2() {
 
-	  		 $o = new stdClass;
-	  		 $o->getTest2 = $this->test2;
+        $o = new stdClass;
+        $o->getTest2 = $this->test2;
 
-	  		 return $o;
-	  }
+        return $o;
+    }
 
-	  #@RemoteMethod
-	  public function show() {
+    #@RemoteMethod
+    public function show() {
 
-	  		 $o = new stdClass;
-	  		 $o->show = print_r($this, true);
+        $o = new stdClass;
+        $o->show = print_r($this, true);
 
-	  		 return $o;
-	  }
+        return $o;
+    }
 }
 ?>

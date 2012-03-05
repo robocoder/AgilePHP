@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -21,21 +21,20 @@
 
 /**
  * Validates IPv4 addresses.
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class IPv6Validator implements Validator {
 
-	  /**
-	   * Validates an IPv6 address.
-	   * 
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data) {
-
-	  		 return filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
-	  }
+    /**
+     * Validates an IPv6 address.
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
+        return filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
+    }
 }
 ?>

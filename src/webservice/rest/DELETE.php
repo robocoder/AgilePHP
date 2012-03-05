@@ -21,16 +21,16 @@
 
 /**
  * Responsible for processing DELETE requests for a REST resource.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  * <code>
  * class MyRestAPI {
- * 
+ *
  * #@DELETE
  * public function deleteObject() {
- * 
+ *
  * 		 // This is invoked only when the resource is requested using HTTP DELETE request method.
  * }
  * }
@@ -39,20 +39,20 @@
 #@Interceptor
 class DELETE {
 
-	  /**
-	   * Liason between REST client and service to handle data transformations and providing
-	   * appropriate "204 No Content" HTTP status code header.
-	   * 
-	   * @param InvocationContext $ic The intercepted call state
-	   * @return void
-	   */
-	  #@AroundInvoke
-	  public function process(InvocationContext $ic) {
+    /**
+     * Liason between REST client and service to handle data transformations and providing
+     * appropriate "204 No Content" HTTP status code header.
+     *
+     * @param InvocationContext $ic The intercepted call state
+     * @return void
+     */
+    #@AroundInvoke
+    public function process(InvocationContext $ic) {
 
-	  		 // Execute the REST service resource and return 204
-	  		 call_user_func_array(array($ic->getTarget(), $ic->getMethod()), $ic->getParameters()); 
-	  		 header('HTTP/1.1 204 No Content');
-	  		 exit;
-	  }
+        // Execute the REST service resource and return 204
+        call_user_func_array(array($ic->getTarget(), $ic->getMethod()), $ic->getParameters());
+        header('HTTP/1.1 204 No Content');
+        exit;
+    }
 }
 ?>

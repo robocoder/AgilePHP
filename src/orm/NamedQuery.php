@@ -30,130 +30,120 @@
  */
 class NamedQuery {
 
-      private $name;
-      private $model;
-      private $query;
-      private $prepared;
-      private $procedure;
+    private $name;
+    private $model;
+    private $query;
+    private $prepared;
+    private $procedure;
 
-      /**
-       * Initializes a new NamedQuery instance
-       * 
-       * @param SimpleXMLElement $query The query element as specified in the orm configuration
-       * @return void
-       */
-      public function __construct(SimpleXMLElement $query) {
+    /**
+     * Initializes a new NamedQuery instance
+     *
+     * @param SimpleXMLElement $query The query element as specified in the orm configuration
+     * @return void
+     */
+    public function __construct(SimpleXMLElement $query) {
 
-             $this->name = (string)$query->attributes()->name;
-             $this->model = (string)$query->attributes()->model;
-             $this->prepared = (string)$query->attributes()->prepared;
-             $this->procedure = (string)$query->attributes()->procedure;
-             $this->query = (string)$query;
-      }
+        $this->name = (string)$query->attributes()->name;
+        $this->model = (string)$query->attributes()->model;
+        $this->prepared = (string)$query->attributes()->prepared;
+        $this->procedure = (string)$query->attributes()->procedure;
+        $this->query = (string)$query;
+    }
 
-      /**
-       * Sets the (unique) query name
-       * 
-       * @param string $name The query name
-       * @return void
-       */
-      public function setName($name) {
+    /**
+     * Sets the (unique) query name
+     *
+     * @param string $name The query name
+     * @return void
+     */
+    public function setName($name) {
+        $this->name = $name;
+    }
 
-             $this->name = $name;
-      }
+    /**
+     * Returns the name of the query
+     *
+     * @return string The (unique) query name
+     */
+    public function getName() {
+        return $this->name;
+    }
 
-      /**
-       * Returns the name of the query
-       * 
-       * @return string The (unique) query name
-       */
-      public function getName() {
+    /**
+     * Sets the DataModel used to map variables/return values.
+     *
+     * @param string $model The name of the DataModel responsible for the query variable/return values
+     * @return void
+     */
+    public function setModel($model) {
+        $this->model = $model;
+    }
 
-             return $this->name;
-      }
+    /**
+     * Returns the DataModel used to map variable/return values.
+     *
+     * @return string The model that represents the query variable/return values
+     */
+    public function getModel() {
+        return $this->model;
+    }
 
-      /**
-       * Sets the DataModel used to map variables/return values.
-       * 
-       * @param string $model The name of the DataModel responsible for the query variable/return values
-       * @return void
-       */
-      public function setModel($model) {
+    /**
+     * Sets the SQL query to execute
+     *
+     * @param string $query The SQL query
+     * @return void
+     */
+    public function setQuery($query) {
+        $this->query = $query;
+    }
 
-             $this->model = $model;
-      }
+    /**
+     * Returns the SQL query
+     *
+     * @return void
+     */
+    public function getQuery() {
+        return $this->query;
+    }
 
-      /**
-       * Returns the DataModel used to map variable/return values.
-       * 
-       * @return string The model that represents the query variable/return values
-       */
-      public function getModel() {
+    /**
+     * Sets flag indicating whether or not this is a prepared statement
+     *
+     * @param boolean $prepared True if this is a prepared statement
+     * @return void
+     */
+    public function setPrepared($prepared) {
+        $this->prepared = $prepared;
+    }
 
-             return $this->model;
-      }
+    /**
+     * Returns flag indicating whether or not this is a prepared statement
+     *
+     * @return string True if this is a prepared statement, false otherwise
+     */
+    public function isPrepared() {
+        return $this->prepared ? true : false;
+    }
 
-      /**
-       * Sets the SQL query to execute
-       * 
-       * @param string $query The SQL query
-       * @return void
-       */
-      public function setQuery($query) {
+    /**
+     * Sets flag indicating whether or not this is a stored procedure
+     *
+     * @param boolean $procedure True if this is a stored procedure
+     * @return void
+     */
+    public function setProcedure($procedure) {
+        $this->procedure = $procedure;
+    }
 
-             $this->query = $query;
-      }
-
-      /**
-       * Returns the SQL query
-       * 
-       * @return void
-       */
-      public function getQuery() {
-
-             return $this->query;
-      }
-      
-      /**
-       * Sets flag indicating whether or not this is a prepared statement
-       * 
-       * @param boolean $prepared True if this is a prepared statement
-       * @return void
-       */
-      public function setPrepared($prepared) {
-
-             $this->prepared = $prepared;
-      }
-
-      /**
-       * Returns flag indicating whether or not this is a prepared statement
-       * 
-       * @return string True if this is a prepared statement, false otherwise
-       */
-      public function isPrepared() {
-
-             return $this->prepared ? true : false;
-      }
-
-      /**
-       * Sets flag indicating whether or not this is a stored procedure
-       * 
-       * @param boolean $procedure True if this is a stored procedure
-       * @return void
-       */
-      public function setProcedure($procedure) {
-
-             $this->procedure = $procedure;
-      }
-
-      /**
-       * Returns boolean flag used to indicate whether or not this is a stored procedure
-       * 
-       * @return boolean True if this is a stored procedure, false otherwise
-       */
-      public function isProcedure() {
-
-             return $this->proedure ? true : false;
-      }
+    /**
+     * Returns boolean flag used to indicate whether or not this is a stored procedure
+     *
+     * @return boolean True if this is a stored procedure, false otherwise
+     */
+    public function isProcedure() {
+        return $this->proedure ? true : false;
+    }
 }
 ?>

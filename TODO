@@ -16,3 +16,5 @@
 > Add stored procedure support to component <orm> configurations
 > Figure out how to make unit tests use same dbpg session as phpunit/phing
   so tests that rely on "external" curl requests show up in coverage report.
+> ORM::persist needs to set primary keys on the same model instance that was passed in to avoid having to make
+  a find() or get() operation to access the new id.

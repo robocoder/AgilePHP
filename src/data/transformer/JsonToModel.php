@@ -81,7 +81,7 @@ class JsonToModel implements DataTransformer {
     private static function unmarshall($data, $modelName) {
 
         if(!is_object($data))
-           throw new RemotingException('The data passed to unmarshall must be of type object');
+        throw new RemotingException('The data passed to unmarshall must be of type object');
 
         if(!$modelName) return $data;
 
@@ -100,27 +100,35 @@ class JsonToModel implements DataTransformer {
             $setter = 'set' . ucfirst($propName);
 
             // Use introspection to get the setters parameter
-            // from the PHP-doc comment if present  
+            // from the PHP-doc comment if present
             $method = $class->getMethod($setter);
             $parameters = $method->getParameters();
-            $parameter = $parameters[0]; 
+            $parameter = $parameters[0];
 
             // Parse the data type from the PHP-doc block
             $type = DocBlockParser::getParameterType($method, $parameter);
 
             // stdClass object
-            if($type == 'object') $value = json_decode($value);
+            if($type == 'object')
+            $value = json_decode($value);
 
             // User defined data type - perform recursive transformation
             elseif(DocBlockParser::isUserSpaceObject($type))
-                $value = self::unmarshall($value, $type);
+            $value = self::unmarshall($value, $type);
 
             // Parse the data type from the array<GenericType> PHP-doc if present
             elseif($type == 'array') {
 
                 $elementType = DocBlockParser::getParameterArrayType($method, $parameter);
-                if($type == 'object') $value = json_decode($value);
-                elseif(DocBlockParser::isUserSpaceObject($elementType)) $value = self::unmarshallArray($value, $elementType);
+
+                if($type == 'object')
+                $value = json_decode($value);
+
+                elseif(DocBlockParser::isUserSpaceObject($elementType)) {
+
+                    if(!isset($value[0]) || !is_object($value[0])) continue;
+                    $value = self::unmarshallArray($value, $elementType);
+                }
             }
 
             // Set the transformed value
@@ -143,10 +151,10 @@ class JsonToModel implements DataTransformer {
         foreach($array as $element) {
 
             if(is_object($element))
-               array_push($newArray, self::unmarshall($element, $modelName));
+            array_push($newArray, self::unmarshall($element, $modelName));
 
             elseif(is_array($element))
-               array_push($newArray, self::unmarshallArray($element, $modelName));
+            array_push($newArray, self::unmarshallArray($element, $modelName));
 
             else array_push($newArray, $element);
         }

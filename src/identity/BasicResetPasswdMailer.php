@@ -21,23 +21,23 @@
 
 /**
  * Sends plain text emails which contain newly reset passwords
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  */
 class BasicResetPasswdMailer extends Mailer {
 
-	  public function __construct($username, $password, $email) {
+    public function __construct($username, $password, $email) {
 
-	         $appName = AgilePHP::getAppName();
+        $appName = AgilePHP::getAppName();
 
-	  	     $this->setTo($email);
-	  		 $this->setToName($username);
-	  		 $this->setFrom('no-reply@' . $appName);
-	  		 $this->setFromName($appName);
-	  		 $this->setSubject($appName . ' :: New Password');
-	  		 $this->setBody('Your new password is: ' . $password);
-	  }
+        $this->setTo($email);
+        $this->setToName($username);
+        $this->setFrom('no-reply@' . $appName);
+        $this->setFromName($appName);
+        $this->setSubject($appName . ' :: New Password');
+        $this->setBody('Your new password is: ' . $password);
+    }
 }
 ?>

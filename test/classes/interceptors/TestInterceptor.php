@@ -31,28 +31,28 @@
 #@Interceptor
 class TestInterceptor {
 
-	  /**
-	   * An example using the InvocationContext getMethod in logic criteria
-	   */
-	  #@AroundInvoke
-	  public function property1Setter(InvocationContext $ic) {
+    /**
+     * An example using the InvocationContext getMethod in logic criteria
+     */
+    #@AroundInvoke
+    public function property1Setter(InvocationContext $ic) {
 
-	  		 $method = $ic->getMethod();
+        $method = $ic->getMethod();
 
-	  		 if($method == 'setProperty1' || $method == 'setProperty2' || $method = 'test') {
+        if($method == 'setProperty1' || $method == 'setProperty2' || $method = 'test') {
 
-	  		 	 // these are the original parameters passed into setProperty1
-	  		 	 $params = $ic->getParameters();
+            // these are the original parameters passed into setProperty1
+            $params = $ic->getParameters();
 
-	  		 	 // here we alter the parameter value and update InvocationContext
-	  		 	 $params[0] = 'intercepted value';
-	  		 	 $ic->setParameters($params);
+            // here we alter the parameter value and update InvocationContext
+            $params[0] = 'intercepted value';
+            $ic->setParameters($params);
 
-	  		 	 // return the InvocationContext to the proxied class for invocation
-	  		 	 return $ic->proceed();
-	  		 }
+            // return the InvocationContext to the proxied class for invocation
+            return $ic->proceed();
+        }
 
-	  		 // Note: The interceptor chain stops here since $ic->proceed is not being returned!
-	  }
+        // Note: The interceptor chain stops here since $ic->proceed is not being returned!
+    }
 }
 ?>

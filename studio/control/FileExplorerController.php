@@ -90,29 +90,29 @@ class FileExplorerController extends BaseExtController {
                     case 'php':
                     case 'phtml':
                         $mode = 'php';
-                    break;
+                        break;
 
                     case 'js':
                         $mode = 'javascript';
-                    break;
+                        break;
 
                     case 'html':
                     case 'htaccess':
                         $mode = 'html';
-                    break;
-                    
+                        break;
+
                     case 'xsl':
                     case 'xml':
                         $mode = 'xml';
-                    break;
+                        break;
 
                     case 'json':
                         $mode = 'json';
-                    break;
+                        break;
 
                     default:
                         throw new Exception('Unsupported extension \'' . $extension . '\'.');
-                    break;
+                        break;
                 }
 
                 $renderer = new PHTMLRenderer();
@@ -123,7 +123,7 @@ class FileExplorerController extends BaseExtController {
                 $renderer->render('editor-ace');
 
                 Log::error($renderer);
-            break;
+                break;
 
             case 'design':
 
@@ -132,7 +132,7 @@ class FileExplorerController extends BaseExtController {
                 $o->code = $code;
 
                 $this->render($o);
-            break;
+                break;
 
             default:
                 throw new Exception('Invalid editor type');
@@ -788,7 +788,7 @@ class FileExplorerController extends BaseExtController {
 
     /**
      * Cleanup
-     * 
+     *
      * @return void
      */
     public function __destruct() {

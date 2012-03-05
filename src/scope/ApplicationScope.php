@@ -21,146 +21,142 @@
 
 /**
  * Uses the server temp directory to store PHP application data
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc.
  * @package com.makeabyte.agilephp.scope
  */
 class ApplicationScope {
 
-	  private static $instance;
-	  private static $appName;
+    private static $instance;
+    private static $appName;
 
-	  private $store = array();
+    private $store = array();
 
-	  /**
-	   * Inializes the ApplicationScope. If a file is already present in the servers temp
-	   * directory (determined by HTTP HOST header in filename), the ApplicationScope is
-	   * initalized from the previously serialized state; Otherwise a new file is created
-	   * with a fresh ApplicationScope state.
-	   *   
-	   * @return void
-	   */
-	  private function __construct() {
+    /**
+     * Inializes the ApplicationScope. If a file is already present in the servers temp
+     * directory (determined by HTTP HOST header in filename), the ApplicationScope is
+     * initalized from the previously serialized state; Otherwise a new file is created
+     * with a fresh ApplicationScope state.
+     *
+     * @return void
+     */
+    private function __construct() {
 
-	  	 	  $file = self::getAppTempFile();
+        $file = self::getAppTempFile();
 
-	  	 	  if(file_exists($file) && !count($this->store)) {
+        if(file_exists($file) && !count($this->store)) {
 
-	  	 	  	  $data = null;
-	  	 	  	  $h = fopen($file, 'r');
-	  	 	  	  while(!feof($h))
-	  	 	  	         $data .= fgets($h, filesize($file));
-	  	 	  	  fclose($h);
+            $data = null;
+            $h = fopen($file, 'r');
+            while(!feof($h))
+            $data .= fgets($h, filesize($file));
+            fclose($h);
 
-	  	 	  	  $this->store = unserialize($data);
-	  	 	  } 	   
-	  }
+            $this->store = unserialize($data);
+        }
+    }
 
-	  /**
-	   * Returns a singleton instance of ApplicationScope
-	   * 
-	   * @param String $appName An optional application name. Defaults to the HTTP HOST header.
-	   * @return An instance of ApplicationScope which contains the state for the specified application
-	   * @static
-	   */
-	  public static function getInstance() {
+    /**
+     * Returns a singleton instance of ApplicationScope
+     *
+     * @param String $appName An optional application name. Defaults to the HTTP HOST header.
+     * @return An instance of ApplicationScope which contains the state for the specified application
+     * @static
+     */
+    public static function getInstance() {
 
-	  	     if(self::$instance == null)
-	  	         self::$instance = new self;
+        if(self::$instance == null)
+        self::$instance = new self;
 
-	  	     return self::$instance;
-	  }
+        return self::$instance;
+    }
 
-	  /**
-	   * Returns the value corresponding to the specified key.
-	   * 
-	   * @param String $key The key to retrieve from the ApplicationScope store.
-	   * @return mixed The key value if its present, otherwise null is returned.
-	   */
-	  public function get($key) {
+    /**
+     * Returns the value corresponding to the specified key.
+     *
+     * @param String $key The key to retrieve from the ApplicationScope store.
+     * @return mixed The key value if its present, otherwise null is returned.
+     */
+    public function get($key) {
+        if(isset($this->store[$key]) && !empty($this->store[$key]))
+        return $this->store[$key];
+    }
 
-	  	     if(isset($this->store[$key]) && !empty($this->store[$key]))
-	  	     	 return $this->store[$key];
-	  }
+    /**
+     * Sets an ApplicationScope variable
+     *
+     * @param String $key The variable name
+     * @param mixed $value The variable value
+     * @return void
+     */
+    public function set($key, $value) {
+        $this->store[$key] = $value;
+    }
 
-	  /**
-	   * Sets an ApplicationScope variable
-	   * 
-	   * @param String $key The variable name
-	   * @param mixed $value The variable value
-	   * @return void
-	   */
-	  public function set($key, $value) {
+    /**
+     * Clears the ApplicationScope state
+     *
+     * @return void
+     */
+    public function clear() {
+        $this->store = array();
+    }
 
-	  		 $this->store[$key] = $value;
-	  }
+    /**
+     * Clears the ApplicationScope store and deletes the temp file
+     * associated with the application.
+     *
+     * @return void
+     */
+    public function destroy() {
 
-	  /**
-	   * Clears the ApplicationScope state
-	   * 
-	   * @return void
-	   */
-	  public function clear() {
+        $this->clear();
+        if(file_exists(self::getAppTempFile()))
+        unlink(self::getAppTempFile());
+    }
 
-	  		 $this->store = array();
-	  }
+    /**
+     * Persist the ApplicationScope state to disk
+     *
+     * @return void
+     */
+    public function __destruct() {
+        $this->persist();
+    }
 
-	  /**
-	   * Clears the ApplicationScope store and deletes the temp file
-	   * associated with the application.
-	   * 
-	   * @return void
-	   */
-	  public function destroy() {
+    /**
+     * Persists the ApplicationScope state
+     *
+     * @return void
+     */
+    public function persist() {
 
-	  		 $this->clear();
-	  		 if(file_exists(self::getAppTempFile()))
-	  		    unlink(self::getAppTempFile());
-	  }
+        if(count($this->store)) {
 
-	  /**
-	   * Persist the ApplicationScope state to disk
-	   * 
-	   * @return void
-	   */
-	  public function __destruct() {
+            $h = fopen(self::getAppTempFile(), 'w');
+            fwrite($h, serialize($this->store));
+            fclose($h);
+        }
 
-	  		  $this->persist();
-	  }
+        if(!count($this->store) && file_exists(self::getAppTempFile()))
+        unlink(self::getAppTempFile());
+    }
 
-	  /**
-	   * Persists the ApplicationScope state
-	   * 
-	   * @return void
-	   */
-	  public function persist() {
+    /**
+     * Returns a string representing the full path to the temp file
+     * which stores the ApplicationScope state.
+     *
+     * @return void
+     */
+    private static function getAppTempFile() {
 
-			 if(count($this->store)) {
+        $tmp = tempnam('agilephp', 'agilephp-');
+        $path = dirname($tmp) . '/agilephp-' . AgilePHP::getAppName();
 
-		  	     $h = fopen(self::getAppTempFile(), 'w');
-				 fwrite($h, serialize($this->store));
-				 fclose($h);
-			 }
+        if(file_exists($tmp)) unlink($tmp);
 
-			 if(!count($this->store) && file_exists(self::getAppTempFile()))
-			 	 unlink(self::getAppTempFile());
-	  }
-
-	  /**
-	   * Returns a string representing the full path to the temp file
-	   * which stores the ApplicationScope state.
-	   * 
-	   * @return void
-	   */
-	  private static function getAppTempFile() {
-
-	  	 	  $tmp = tempnam('agilephp', 'agilephp-');
- 			  $path = dirname($tmp) . '/agilephp-' . AgilePHP::getAppName();
-
- 			  if(file_exists($tmp)) unlink($tmp);
-
- 			  return $path;
-	  }
+        return $path;
+    }
 }
 ?>

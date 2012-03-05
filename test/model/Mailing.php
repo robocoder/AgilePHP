@@ -24,64 +24,55 @@
  * state for a specified mailing list item. Note the use of the #@Id interceptor
  * which performs a SQL lookup in the database and populates the ActiveRecord
  * state when the mutator method is called.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.model
  */
 class Mailing extends DomainModel {
 
-	  private $id;
-	  private $name;
-	  private $email;
-	  private $enabled;
-	  
-	  public function __construct() { }
+    private $id;
+    private $name;
+    private $email;
+    private $enabled;
+     
+    public function __construct() { }
 
-	  #@Id
-	  public function setId($id) {
-	  	
-	  	     $this->id = $id;
-	  }
-	  
-	  public function getId() {
-	  	
-	  	     return $this->id;
-	  }
-	  
-	  public function setName($name) {
-	  	
-	  	     $this->name = $name;
-	  }
-	  
-	  public function getName() {
-	  	
-	  	     return $this->name;
-	  }
-	  
-	  public function setEmail($email) {
-	  	
-	  	     $this->email = $email;
-	  }
-	  
-	  public function getEmail() {
-	  	
-	  	     return $this->email;
-	  }
-	  
-	  public function setEnabled($bool) {
-	  	
-	  	     $this->enabled = $bool;
-	  }
-	  
-	  public function getEnabled() {
-
-	  	     return $this->enabled;
-	  }
-	  
-	  public function isEnabled() {
-
-	  	     return $this->enabled == true ? true : false;
-	  }
+    #@Id
+    public function setId($id) {
+        $this->id = $id;
+    }
+     
+    public function getId() {
+        return $this->id;
+    }
+     
+    public function setName($name) {
+        $this->name = $name;
+    }
+     
+    public function getName() {
+        return $this->name;
+    }
+     
+    public function setEmail($email) {
+        $this->email = $email;
+    }
+     
+    public function getEmail() {
+        return $this->email;
+    }
+     
+    public function setEnabled($bool) {
+        $this->enabled = $bool;
+    }
+     
+    public function getEnabled() {
+        return $this->enabled;
+    }
+     
+    public function isEnabled() {
+        return $this->enabled == true ? true : false;
+    }
 }
 ?>

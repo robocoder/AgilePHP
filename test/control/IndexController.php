@@ -29,178 +29,177 @@
  */
 class IndexController extends BaseController {
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/mvc/BaseModelController#getModel()
-	   */
-	  public function getModel() {
+    /**
+     * (non-PHPdoc)
+     * @see src/mvc/BaseModelController#getModel()
+     */
+    public function getModel() {
+        return $this->model;
+    }
 
-	  	     return $this->model;
-	  }
+    /**
+     * (non-PHPdoc)
+     * @see src/mvc/BaseController#index()
+     */
+    public function index() {
 
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/mvc/BaseController#index()
-	   */
-	  public function index() {
+        i18n::getInstance(); // initalizes itself based on http language header
+        // i18n::getInstance()->setLocale('es_ES');   language can also be specified manually
+        $welcome = i18n::translate('Welcome to the demo application');
 
-	  	     i18n::getInstance(); // initalizes itself based on http language header
-	   		 // i18n::getInstance()->setLocale('es_ES');   language can also be specified manually
-	   		 $welcome = i18n::translate('Welcome to the demo application');
+        $this->set('title', 'AgilePHP Framework :: Home');
+        $this->set('content', $welcome . '. This is the default PHTML renderer.');
+        $this->render('index');
+    }
 
-	  	     $this->set('title', 'AgilePHP Framework :: Home');
-	  	     $this->set('content', $welcome . '. This is the default PHTML renderer.');
-	  	     $this->render('index');
-	  }
+    /**
+     * Renders the 'about us' page.
+     *
+     * @return void
+     */
+    public function about() {
 
-	  /**
-	   * Renders the 'about us' page.
-	   *
-	   * @return void
-	   */
-	  public function about() {
+        $this->set('title', 'AgilePHP Framework :: About');
+        $this->render('about');
+    }
 
-	  	     $this->set('title', 'AgilePHP Framework :: About');
-	  	     $this->render('about');
-	  }
+    /**
+     * Renders the 'services' page.
+     *
+     * @return void
+     */
+    public function services() {
 
-	  /**
-	   * Renders the 'services' page.
-	   *
-	   * @return void
-	   */
-	  public function services() {
+        $this->set('title', 'AgilePHP Framework :: Services');
+        $this->render('services');
+    }
 
-	  	     $this->set('title', 'AgilePHP Framework :: Services');
-	  	     $this->render('services');
-	  }
+    /**
+     * Renders the 'contact us' page.
+     *
+     * @return void
+     */
+    public function contact() {
 
-	  /**
-	   * Renders the 'contact us' page.
-	   *
-	   * @return void
-	   */
-	  public function contact() {
+        $this->set('title', 'AgilePHP Framework :: Contact');
+        $this->render('contact');
+    }
 
-	  	     $this->set('title', 'AgilePHP Framework :: Contact');
-	  	     $this->render('contact');
-	  }
+    /**
+     * Handles 'contact us' form submit.
+     *
+     * @return void
+     */
+    public function contactSubmit() {
 
-	  /**
-	   * Handles 'contact us' form submit.
-	   *
-	   * @return void
-	   */
-	  public function contactSubmit() {
+        $request = Scope::getRequestScope();
 
-	  		 $request = Scope::getRequestScope();
+        if(!$name = $request->getSanitized('name'))
+        throw new FrameworkException('Name Required');
 
-	  		 if(!$name = $request->getSanitized('name'))
-	  		    throw new FrameworkException('Name Required');
+        if(!$email = $request->getSanitized('email'))
+        throw new FrameworkException('Email required');
 
-	  		 if(!$email = $request->getSanitized('email'))
-	  		    throw new FrameworkException('Email required');
+        if(!$comments = $request->getSanitized('comments'))
+        throw new FrameworkException('Commentary required');
 
-	  		 if(!$comments = $request->getSanitized('comments'))
-	  		    throw new FrameworkException('Commentary required');
-
-	  	     $body = 'Name: ' . $name .
+        $body = 'Name: ' . $name .
 	  	     		 "\nEmail: " . $email .
 	  	     		 "\nComments: " . $comments;
 
-	  		 try {
-	  	     	    Mailer::setToName('Tester');
-	  	     	    Mailer::setTo('root@localhost');
-	  	     	    Mailer::setFromName('AgilePHP Framework Test Application');
-	  	     	    Mailer::setFrom('agilephp@localhost');
-	  	     	    Mailer::setSubject('AgilePHP Demo Applicaiton :: Contact Form Submission');
-	  	     	    Mailer::setBody($body);
-	  	     	    Mailer::send();
-  	     	  }
-  	     	  catch(FrameworkException $e) {
+        try {
+            Mailer::setToName('Tester');
+            Mailer::setTo('root@localhost');
+            Mailer::setFromName('AgilePHP Framework Test Application');
+            Mailer::setFrom('agilephp@localhost');
+            Mailer::setSubject('AgilePHP Demo Applicaiton :: Contact Form Submission');
+            Mailer::setBody($body);
+            Mailer::send();
+        }
+        catch(FrameworkException $e) {
 
-  	     	  		array_push($failed, $model->getEmail());
-  	     	  }
+            array_push($failed, $model->getEmail());
+        }
 
-  	     	  $result = 'Thank you, ' . $request->getSanitized('name') . '. We have received your comments.';
+        $result = 'Thank you, ' . $request->getSanitized('name') . '. We have received your comments.';
 
-  	     	  $this->set('title', 'AgilePHP Framework :: Contact Us');
-  	     	  $this->set('formResult', $result);
-  	     	  $this->render('contact');
-	  }
+        $this->set('title', 'AgilePHP Framework :: Contact Us');
+        $this->set('formResult', $result);
+        $this->render('contact');
+    }
 
-	  /**
-	   * Demonstrates the ability to easily render and process forms
-	   *
-	   * @return void
-	   */
-	  public function formExample() {
+    /**
+     * Demonstrates the ability to easily render and process forms
+     *
+     * @return void
+     */
+    public function formExample() {
 
-	  	 	 $user = new User();
-	  	 	 $user->setUsername('username');
-	  	 	 $user->setPassword('password');
-	  	 	 $user->setEmail('root@localhost');
-	  	 	 $user->setCreated(date('c', strtotime('now')));
-	  	 	 $user->setLastLogin(date('c', strtotime('now')));
-	  	 	 $user->setRole(new Role('asdfasdf'));
+        $user = new User();
+        $user->setUsername('username');
+        $user->setPassword('password');
+        $user->setEmail('root@localhost');
+        $user->setCreated(date('c', strtotime('now')));
+        $user->setLastLogin(date('c', strtotime('now')));
+        $user->setRole(new Role('asdfasdf'));
 
-	  		 $form = new Form($user, 'frmUserExample', 'frmUserExample', 'formExamplePOST', null, null);
-	  		 $form->setRequestToken(Scope::getRequestScope()->createToken());
+        $form = new Form($user, 'frmUserExample', 'frmUserExample', 'formExamplePOST', null, null);
+        $form->setRequestToken(Scope::getRequestScope()->createToken());
 
-	  		 $this->set('title', 'AgilePHP Framework :: Form Example');
-	  		 $this->set('form', $form->getHTML());
-	  	     $this->render('form-example');
-	  }
+        $this->set('title', 'AgilePHP Framework :: Form Example');
+        $this->set('form', $form->getHTML());
+        $this->render('form-example');
+    }
 
-	  /**
-	   * Shows the array of POST variables and their values.
-	   *
-	   * @return void
-	   */
-	  public function formExamplePOST() {
+    /**
+     * Shows the array of POST variables and their values.
+     *
+     * @return void
+     */
+    public function formExamplePOST() {
 
-	  		 $params = Scope::getRequestScope()->getParameters();
+        $params = Scope::getRequestScope()->getParameters();
 
-	  		 $this->set('title', 'AgilePHP Framework :: Form Example - POSTED!');
-	  		 $this->set('parameters', $params);
-	  		 $this->render('form-example');
-	  }
+        $this->set('title', 'AgilePHP Framework :: Form Example - POSTED!');
+        $this->set('parameters', $params);
+        $this->render('form-example');
+    }
 
-	  /**
-	   * Renders the admin PHTML view
-	   *
-	   * @return void
-	   */
-	  public function admin() {
+    /**
+     * Renders the admin PHTML view
+     *
+     * @return void
+     */
+    public function admin() {
 
-	  		 $this->set('title', 'AgilePHP Framework :: Administration');
-	  	     $this->render('admin');
-	  }
+        $this->set('title', 'AgilePHP Framework :: Administration');
+        $this->render('admin');
+    }
 
-	  /**
-	   * Renders the admin PHTML view displaying phpinfo()
-	   *
-	   * @return void
-	   */
-	  public function info() {
+    /**
+     * Renders the admin PHTML view displaying phpinfo()
+     *
+     * @return void
+     */
+    public function info() {
 
-	  		 $this->set('title', 'AgilePHP Framework :: Administration');
-	  		 $this->set('content', phpinfo());
-	  	     $this->render('admin');
-	  }
+        $this->set('title', 'AgilePHP Framework :: Administration');
+        $this->set('content', phpinfo());
+        $this->render('admin');
+    }
 
-	  /**
-	   * Sets error variable for PHTML renderer and loads system messages view.
-	   *
-	   * @param $message The error message to display
-	   * @return void
-	   */
-	  private function handleError($message) {
+    /**
+     * Sets error variable for PHTML renderer and loads system messages view.
+     *
+     * @param $message The error message to display
+     * @return void
+     */
+    private function handleError($message) {
 
-	  	      $this->set('title', 'AgilePHP Framework :: Error Page');
-	  		  $this->set('error', $message);
-		  	  $this->render('error');
-		  	  exit;
-	  }
+        $this->set('title', 'AgilePHP Framework :: Error Page');
+        $this->set('error', $message);
+        $this->render('error');
+        exit;
+    }
 }
 ?>

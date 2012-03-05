@@ -21,122 +21,124 @@
 
 /**
  * Transforms data to a JSON string
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.data.renderer
  */
 class JsonRenderer implements DataRenderer {
 
-      /**
-	   * Transforms the specified PHP data to JSON. json_encode does not encode
-	   * private fields within objects, so here we make use PHP 5.3+
-	   * ReflectionProperty::setAccessible to access the private/protected properties.
-	   * 
-	   * @param mixed $data An array or object to transform into JSON
-	   * @param string $name An optional class name. Defaults to null
-	   * @param boolean $isChild Used internally for recursion logic
-	   * @return The JSON encoded data
-	   */
-      public static function render($data, $name = null, $isChild = false) {
+    /**
+     * Transforms the specified PHP data to JSON. json_encode does not encode
+     * private fields within objects, so here we make use PHP 5.3+
+     * ReflectionProperty::setAccessible to access the private/protected properties.
+     *
+     * @param mixed $data An array or object to transform into JSON
+     * @param string $name An optional class name. Defaults to null
+     * @param boolean $isChild Used internally for recursion logic
+     * @return The JSON encoded data
+     */
+    public static function render($data, $name = null, $isChild = false) {
 
-             $json = '';
+        $json = '';
 
-	  		  if(is_array($data)) {
+        if(is_array($data)) {
 
-	  		  	 $i=0;
-	  		  	 if($name && $name != 'stdClass') $json .= '"' . $name . '" : ';
+            $i=0;
+            if($name && $name != 'stdClass') $json .= '"' . $name . '" : ';
 
-	  		  	 if(!isset($data[0])) {
+            if(!isset($data[0])) {
 
-	  		  	  	 $json .= '[]';
-	  		  	  	 return $json;
-	  		  	 }
+                $json .= '[]';
+                return $json;
+            }
 
-	  		  	 $json .= '[ ';
-	  		  	 foreach($data as $key => $value) {
+            $json .= '[ ';
+            foreach($data as $key => $value) {
 
-	  		  	  		$i++;
-	  		  	  		if(is_object($value)) {
+                $i++;
+                if(is_object($value)) {
 
-	  		  	  		   $class = new ReflectionClass($value);
-	  		  	  		   $json .= self::render($value, $class->getName());
-	  		  	  		}
-	  		  	  		elseif(is_array($value))
-	  		  	  			$json .= self::render($value, $name);
+                    $class = new ReflectionClass($value);
+                    $json .= self::render($value, $class->getName());
+                }
+                elseif(is_array($value))
+                $json .= self::render($value, $name);
 
-	  		  	  		else
-	  		  	  	 	   $json .= json_encode(utf8_encode($value));
+                else
+                $json .= json_encode(utf8_encode($value));
 
-	  		  	  	 	$json .= ($i < count($data)) ? ', ' : '';
-	  		  	  }
-	  		  	  $json .= ' ]';
-	  		  	  //if($name && $name != 'stdClass') $json .= ' }';
-	  		  }
+                $json .= ($i < count($data)) ? ', ' : '';
+            }
+            $json .= ' ]';
+            //if($name && $name != 'stdClass') $json .= ' }';
+        }
 
-	  		  // Format objects (that have private fields)
-	  		  else if(is_object($data)) {
+        // Format objects (that have private fields)
+        else if(is_object($data)) {
 
-		  		  $class = new ReflectionClass($data);
-		  		  $className = $class->getName();
+            $class = new ReflectionClass($data);
+            $className = $class->getName();
 
-		  		  // stdClass has public properties
-		  		  if($class->getName() == 'stdClass')
-		  		  	 return json_encode($data);
+            // stdClass has public properties
+            if($class->getName() == 'stdClass')
+            return json_encode($data);
 
-	  		  	  // @todo Interceptors are still being somewhat intrusive to reflection operations
-	  		      if(method_exists($data, 'getInterceptedInstance')) {
+            // @todo Interceptors are still being somewhat intrusive to reflection operations
+            if(method_exists($data, 'getInterceptedInstance')) {
 
-	  		     	 $className = preg_replace('/_Intercepted/', '', $className);
-	  		     	 $data = $data->getInterceptedInstance();
-	  		     	 $class = new ReflectionClass($data);
-	  		      }
+                $className = preg_replace('/_Intercepted/', '', $className);
+                $data = $data->getInterceptedInstance();
+                $class = new ReflectionClass($data);
+            }
 
-	  		      $node = ($name) ? $name : $className;
-	  		      $json .= ($isChild) ? '"' . $node . '" : { ' : ' { "' . $node . '" : { ';
-	  		      
-		  		  $properties = $class->getProperties();
-			  	  for($i=0; $i<count($properties); $i++) {
-	
-			  		   $property = $properties[$i];
-	
-			  		   $context = null;
-			  		   if($property->isPublic())
-			  		   	  $context = 'public';
-	
-			  		   else if($property->isProtected())
-		  		 		   	   $context = 'protected';
-	
-		  		 	   else if($property->isPrivate())
-			  		 		  $context = 'private';
+            $node = ($name) ? $name : $className;
+            //$json .= ($isChild) ? '"' . $node . '" : { ' : ' { "' . $node . '" : { ';
+            $json .= ($isChild) ? '"' . $node . '" : { ' : ' { ';
 
-			  		   $value = null;
-			  		   if($context != 'public') {
+            $properties = $class->getProperties();
+            for($i=0; $i<count($properties); $i++) {
 
-	  		 		  	  $property->setAccessible(true);
-			  		 	  $value = $property->getValue($data);
-			  		 	  $property->setAccessible(false);
-			  		   }
-			  		   else {
+                $property = $properties[$i];
 
-			  		   	  $value = $property->getValue($data);
-			  		   }
+                $context = null;
+                if($property->isPublic())
+                $context = 'public';
 
-			  		   if(is_object($value) || is_array($value))
-			  		   	  $json .= self::render($value, $property->getName(), true) . ' ';
+                else if($property->isProtected())
+                $context = 'protected';
 
-			  		   else
-			  		   		$json .= '"' . $property->getName() . '" : ' . json_encode(utf8_encode($value));
+                else if($property->isPrivate())
+                $context = 'private';
 
-			  		   $json .= (($i+1) < count($properties)) ? ', ' : '';
-			  	  }
-			  	  $json .= ($isChild) ? '} ' : ' } }';
-		  	  }
+                $value = null;
+                if($context != 'public') {
 
-		  	  else
-		  	  	  $json = json_encode(utf8_encode($data));
+                    $property->setAccessible(true);
+                    $value = $property->getValue($data);
+                    $property->setAccessible(false);
+                }
+                else {
 
-	  		  return $json;
-      }
+                    $value = $property->getValue($data);
+                }
+
+                if(is_object($value) || is_array($value))
+                $json .= self::render($value, $property->getName(), true) . ' ';
+
+                else
+                $json .= '"' . $property->getName() . '" : ' . json_encode(utf8_encode($value));
+
+                $json .= (($i+1) < count($properties)) ? ', ' : '';
+            }
+            //$json .= ($isChild) ? '} ' : ' } }';
+            $json .= '} ';
+        }
+
+        else
+        $json = json_encode(utf8_encode($data));
+
+        return $json;
+    }
 }
 ?>

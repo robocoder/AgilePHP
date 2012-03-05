@@ -21,46 +21,45 @@
 
 /**
  * Remoting class responsible for getting configuration values from the database.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.classes
  */
 class ConfigsRemote {
 
-	  public function __construct() { }
+    public function __construct() { }
 
-	  #@RemoteMethod
- 	  public function get( $name ) {
+    #@RemoteMethod
+ 	public function get( $name ) {
 
- 	  		 $config = new Config();
- 	  		 $config->setName( $name );
+ 	    $config = new Config();
+ 	    $config->setName( $name );
 
- 	  		 $o = new stdClass;
- 	  		 $o->value = $config->getValue();
+ 	    $o = new stdClass;
+ 	    $o->value = $config->getValue();
 
- 	  		 return $o;
-	  }
+ 	    return $o;
+ 	}
 
-	  #@RemoteMethod
- 	  public function getConfigs() {
+ 	#@RemoteMethod
+ 	public function getConfigs() {
 
- 	  		 $results = array();
+ 	    $results = array();
+ 	    ORM::setMaxResults( 50 );
 
- 	  		 ORM::setMaxResults( 50 );
+ 	    $configs = ORM::find( new Config() );
 
- 	  		 $configs = ORM::find( new Config() );
+ 	    foreach( $configs as $config ) {
 
- 	  		 foreach( $configs as $config ) {
- 	  		 	
- 	  		 	$o = new stdClass;
- 	  		 	$o->name = $config->getName();
- 	  		 	$o->value = $config->getValue();
+ 	        $o = new stdClass;
+ 	        $o->name = $config->getName();
+ 	        $o->value = $config->getValue();
 
- 	  		 	array_push( $results, $o );
- 	  		 }
+ 	        array_push( $results, $o );
+ 	    }
 
- 	  		 return $results;
-	  }
+ 	    return $results;
+ 	}
 }
 ?>

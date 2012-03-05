@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -21,22 +21,21 @@
 
 /**
  * Validates string data
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class StringValidator implements Validator {
 
-	  /**
-	   * Checks to see if the specified data is a PHP string data type.
-	   * Empty strings are NOT considered valid!
-	   * 
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data) {
-
-   			 return is_string($data);
-	  }
+    /**
+     * Checks to see if the specified data is a PHP string data type.
+     * Empty strings are NOT considered valid!
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
+        return is_string($data);
+    }
 }
 ?>

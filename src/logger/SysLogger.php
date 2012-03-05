@@ -21,86 +21,81 @@
 
 /**
  * Responsible for system based logging. SYSLOG on unix or NT Event Log in windows.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.logger
  */
 class SysLogger implements LogProvider {
 
-	  private $log;
+    private $log;
 
-	  /**
-	   * Opens the syslog LOG_USER facility
-	   * 
-	   * @return void
-	   */
-	  public function __construct() {
+    /**
+     * Opens the syslog LOG_USER facility
+     *
+     * @return void
+     */
+    public function __construct() {
+        openlog(AgilePHP::getAppName(), LOG_PID | LOG_PERROR, LOG_USER);
+    }
 
-	  		 openlog(AgilePHP::getAppName(), LOG_PID | LOG_PERROR, LOG_USER);
-  	  }
+    /**
+     * Writes a 'debug' log level entry.
+     *
+     * @param String $message The debug message to log
+     * @return void
+     * @static
+     */
+    public function debug($message) {
+        $this->write($message, LOG_DEBUG);
+    }
 
-	  /**
-	   * Writes a 'debug' log level entry.
-	   * 
-	   * @param String $message The debug message to log
-	   * @return void
-	   * @static
-	   */
-	  public function debug($message) {
+    /**
+     * Writes a 'warn' log level entry.
+     *
+     * @param String $message The warning message to log
+     * @return void
+     */
+    public function warn($message) {
+        $this->write($message, LOG_WARNING);
+    }
 
-  		 	 $this->write($message, LOG_DEBUG);
-	  }
+    /**
+     * Writes an 'info' log level entry.
+     *
+     * @param String $message The informative message to log
+     * @return void
+     */
+    public function info($message) {
+        $this->write($message, LOG_INFO);
+    }
 
-	  /**
-	   * Writes a 'warn' log level entry.
-	   * 
-	   * @param String $message The warning message to log
-	   * @return void
-	   */
-	  public function warn($message) {
+    /**
+     * Writes an 'error' log level entry.
+     *
+     * @param String $message The error message to log.
+     * @return void
+     * @static
+     */
+    public function error($message) {
+        $this->write($message, LOG_ERR);
+    }
 
-	  		 $this->write($message, LOG_WARNING);
-	  }
+    /**
+     * Write the log entry
+     *
+     * @param string $message The log entry message
+     * @return void
+     */
+    protected function write($message, $level) {
 
-	  /**
-	   * Writes an 'info' log level entry.
-	   * 
-	   * @param String $message The informative message to log
-	   * @return void
-	   */
-	  public function info($message) {
+        $requestURI = (isset($_SERVER['REQUEST_URI' ]) ? $_SERVER['REQUEST_URI'] : '/');
+        $header = '[' . $level . ']  ' . AgilePHP::getAppName() . '  ' . date("m-d-y g:i:sa", strtotime('now')) . '  ' . $requestURI;
 
-	  		 $this->write($message, LOG_INFO);
-	  }
+        if(is_object($message) || is_array($message))
+        $message = print_r($message, true);
 
-	  /**
-	   * Writes an 'error' log level entry.
-	   * 
-	   * @param String $message The error message to log.
-	   * @return void
-	   * @static
-	   */
-	  public function error($message) {
-
-	  		 $this->write($message, LOG_ERR);
-	  }
-
-	  /**
-	   * Write the log entry
-	   * 
-	   * @param string $message The log entry message
-	   * @return void
-	   */
-	  private function write($message, $level) {
-
-	  		  $requestURI = (isset($_SERVER['REQUEST_URI' ]) ? $_SERVER['REQUEST_URI'] : '/');
-	  	      $header = '[' . $level . ']  ' . AgilePHP::getAppName() . '  ' . date("m-d-y g:i:sa", strtotime('now')) . '  ' . $requestURI;
-
-	  		  if(is_object($message) || is_array($message))
-	  	      	  $message = print_r($message, true);
-
-	  	      syslog($level, $header . "\t" . $message . PHP_EOL); 
-	  }
+        syslog($level, $header . "\t" . $message . PHP_EOL);
+    }
 }
 ?>

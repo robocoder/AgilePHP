@@ -21,105 +21,101 @@
 
 /**
  * Responsible for disk based file logging to #projectName#/logs
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.logger
  */
 class FileLogger implements LogProvider {
 
-	  private $log;
+    private $log;
 
-	  /**
-	   * Create a log file handle
-	   * 
-	   * @return void
-	   */
-	  public function __construct() {
+    /**
+     * Create a log file handle
+     *
+     * @return void
+     */
+    public function __construct() {
 
-	  		 $logDirectory = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
+        $logDirectory = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'logs';
 
-	  	     if(!file_exists($logDirectory))  	      	
-	  	      	 if(!mkdir($logDirectory))
-	  	      	   	 throw new FrameworkException('Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.');
+        if(!file_exists($logDirectory))
+        if(!mkdir($logDirectory))
+        throw new FrameworkException('Logger component requires non-existent \'logs/\' directory at \'' . $logDirectory . '\'. An attempt to create it failed.');
 
-	  	     if(!is_writable($logDirectory))
-	  	     	 throw new FrameworkException('Logging directory is not writable. The PHP process requires write access to this directory.');
+        if(!is_writable($logDirectory))
+        throw new FrameworkException('Logging directory is not writable. The PHP process requires write access to this directory.');
 
-	  	     $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date("m-d-y") . '.log';
-	  	     if(!file_exists($filename)) {
+        $filename = $logDirectory . DIRECTORY_SEPARATOR . 'agilephp_' . date("m-d-y") . '.log';
+        if(!file_exists($filename)) {
 
-	  	     	 if(!touch($filename))
-	  	     	 	 throw new FrameworkException('Unable to create log file at \'' . $filename . '\'.');
+            if(!touch($filename))
+            throw new FrameworkException('Unable to create log file at \'' . $filename . '\'.');
 
-	  	     	 @chmod($filename, 0777);
-	  	     }
+            @chmod($filename, 0777);
+        }
 
-	  		 $this->log = fopen( $filename, 'a+');
-  	  }
+        $this->log = fopen( $filename, 'a+');
+    }
 
-	  /**
-	   * Writes a 'debug' log level entry.
-	   * 
-	   * @param String $message The debug message to log
-	   * @return void
-	   * @static
-	   */
-	  public function debug($message) {
+    /**
+     * Writes a 'debug' log level entry.
+     *
+     * @param String $message The debug message to log
+     * @return void
+     * @static
+     */
+    public function debug($message) {
+        $this->write($message, 'DEBUG');
+    }
 
-  		 	 $this->write($message, 'DEBUG');
-	  }
+    /**
+     * Writes a 'warn' log level entry.
+     *
+     * @param String $message The warning message to log
+     * @return void
+     */
+    public function warn($message) {
+        $this->write($message, 'WARN');
+    }
 
-	  /**
-	   * Writes a 'warn' log level entry.
-	   * 
-	   * @param String $message The warning message to log
-	   * @return void
-	   */
-	  public function warn($message) {
+    /**
+     * Writes an 'info' log level entry.
+     *
+     * @param String $message The informative message to log
+     * @return void
+     */
+    public function info($message) {
+        $this->write($message, 'INFO');
+    }
 
-	  		 $this->write($message, 'WARN');
-	  }
+    /**
+     * Writes an 'error' log level entry.
+     *
+     * @param String $message The error message to log.
+     * @return void
+     * @static
+     */
+    public function error($message) {
+        $this->write($message, 'ERROR');
+    }
 
-	  /**
-	   * Writes an 'info' log level entry.
-	   * 
-	   * @param String $message The informative message to log
-	   * @return void
-	   */
-	  public function info($message) {
+    /**
+     * Write the log entry
+     *
+     * @param string $message The log entry message
+     * @return void
+     */
+    protected function write($message, $level) {
 
-	  		 $this->write($message, 'INFO');
-	  }
+        $host = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : AgilePHP::getAppName();
+        $requestURI = (isset($_SERVER['REQUEST_URI' ]) ? $_SERVER['REQUEST_URI'] : '/');
+        $header = '[' . $level . ']  ' . $host . '  ' . date("m-d-y g:i:sa", strtotime('now')) . '  ' . $requestURI;
 
-	  /**
-	   * Writes an 'error' log level entry.
-	   * 
-	   * @param String $message The error message to log.
-	   * @return void
-	   * @static
-	   */
-	  public function error($message) {
+        if(is_object($message) || is_array($message))
+        $message = print_r($message, true);
 
-	  		 $this->write($message, 'ERROR');
-	  }
-
-	  /**
-	   * Write the log entry
-	   * 
-	   * @param string $message The log entry message
-	   * @return void
-	   */
-	  private function write($message, $level) {
-
-	  		  $host = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : AgilePHP::getAppName();
-	  		  $requestURI = (isset($_SERVER['REQUEST_URI' ]) ? $_SERVER['REQUEST_URI'] : '/');
-	  	      $header = '[' . $level . ']  ' . $host . '  ' . date("m-d-y g:i:sa", strtotime('now')) . '  ' . $requestURI;
-
-	  		  if(is_object($message) || is_array($message))
-	  	      	  $message = print_r($message, true);
-
-	  	      fputs($this->log, $header . "\t" . $message . PHP_EOL);
-	  }
+        fputs($this->log, $header . "\t" . $message . PHP_EOL);
+    }
 }
 ?>

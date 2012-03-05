@@ -22,28 +22,26 @@
 /**
  * Responsible for processing all business logic and view rendering
  * of the backend application session module.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
  */
 class SessionController extends BaseModelActionController {
 
-	  private $model;
+    private $model;
 
-	  public function __construct() {
+    public function __construct() {
+        $this->model = new Session();
+        parent::__construct();
+    }
 
-	  		 $this->model = new Session();
-	  		 parent::__construct();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/mvc/BaseModelController#getModel()
-	   */
-	  public function getModel() {
-
-	  	     return $this->model;
-	  }
+    /**
+     * (non-PHPdoc)
+     * @see src/mvc/BaseModelController#getModel()
+     */
+    public function getModel() {
+        return $this->model;
+    }
 }
 ?>

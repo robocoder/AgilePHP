@@ -21,21 +21,20 @@
 
 /**
  * Validates floating point decimal values
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class FloatValidator implements Validator {
 
-	  /**
-	   * Validates float data type
-	   * 
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data) {
-
-	  		 return is_float($data);
-	  }
+    /**
+     * Validates float data type
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
+        return is_float($data);
+    }
 }
 ?>

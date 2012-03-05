@@ -13,7 +13,7 @@ class CarRemote extends Remoting {
      * Makes the car go fast - vrooom!
      * 
      * @param Car $car The car to speed up
-     * @return void
+     * @return string
      */
     #@RemoteMethod
     public function goFast($car) {
@@ -23,7 +23,7 @@ class CarRemote extends Remoting {
     /**
      * Makes the car stop - reeerrrrrtttt
      * 
-     * @return void
+     * @return string
      */
     #@RemoteMethod
     public function stop() {

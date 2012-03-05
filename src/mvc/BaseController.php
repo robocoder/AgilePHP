@@ -30,98 +30,92 @@
  */
 abstract class BaseController {
 
-	     protected $renderer = null;
+    protected $renderer = null;
 
-	     /**
-	      * Creates a new instance of default renderer
-	      *
-	      * @return void
-	      */
-	     public function __construct() {
+    /**
+     * Creates a new instance of default renderer
+     *
+     * @return void
+     */
+    public function __construct() {
+        $this->renderer = MVC::createDefaultRenderer();
+    }
 
-	  	        $this->renderer = MVC::createDefaultRenderer();
-	     }
+    /**
+     * Returns the controllers view renderer.
+     *
+     * @return void
+     */
+    protected function getRenderer() {
+        return $this->renderer;
+    }
 
-	     /**
-	      * Returns the controllers view renderer.
-	      *
-	      * @return void
-	      */
-	     protected function getRenderer() {
+    /**
+     * Shorthand / alias for getRenderer()->set
+     *
+     * @return void
+     */
+    public function set($key, $value) {
+        $this->renderer->set($key, $value);
+    }
 
-	     		   return $this->renderer;
-	     }
+    /**
+     * Shorthand / alias for getRenderer()->render
+     *
+     * @return void
+     */
+    public function render($view) {
+        $this->renderer->render($view);
+    }
 
-	     /**
-	      * Shorthand / alias for getRenderer()->set
-	      *
-	      * @return void
-	      */
-	     public function set($key, $value) {
+    /**
+     * Creates an instance of the specified renderer the controller will use to render views.
+     * This renderer is loaded from the AgilePHP framework.
+     *
+     * @param String $renderer The name of a renderer the controller will use to render views
+     * @return void
+     */
+    protected function createRenderer($renderer) {
+        $this->renderer = MVC::createRenderer($renderer);
+    }
 
-	            $this->renderer->set($key, $value);
-	     }
+    /**
+     * Creates an instance of the specified custom renderer the controller will use to render views.
+     * This renderer is loaded from the application 'classes' directory.
+     *
+     * @param String $renderer The name of a custom renderer the controller will use to render views.
+     * 						Use this method to load renderers outside of the framework mvc package.
+     * @return void
+     */
+    protected function createCustomRenderer($renderer) {
+        $this->renderer = MVC::createCustomRenderer($renderer);
+    }
 
-	     /**
-	      * Shorthand / alias for getRenderer()->render
-	      *
-	      * @return void
-	      */
-	     public function render($view) {
+    /**
+     * Returns the raw JavaScript contents of the AgilePHP.js file and pre-configures the library
+     * with a default AgilePHP.debug, AgilePHP.MVC.controller, and AgilePHP.MVC.action value.
+     *
+     * @param bool $debug True to enable client side AgilePHP debugging.
+     * @return void
+     */
+    public function getBaseJS($debug = false) {
 
-	            $this->renderer->render($view);
-	     }
+        $js = file_get_contents(AgilePHP::getFrameworkRoot() . '/AgilePHP.js');
 
-	     /**
-		  * Creates an instance of the specified renderer the controller will use to render views.
-		  * This renderer is loaded from the AgilePHP framework.
-		  *
-		  * @param String $renderer The name of a renderer the controller will use to render views
-		  * @return void
-	      */
-	     protected function createRenderer($renderer) {
+        if($debug) $js .= "\nAgilePHP.setDebug(true);";
 
-	     	       $this->renderer = MVC::createRenderer($renderer);
-	     }
+        $js .= "\nAgilePHP.setRequestBase('" . AgilePHP::getRequestBase() . "');";
+        $js .= "\nAgilePHP.MVC.setController('" . MVC::getController() . "');";
+        $js .= "\nAgilePHP.MVC.setAction('" . MVC::getAction() . "');";
 
-	     /**
-		  * Creates an instance of the specified custom renderer the controller will use to render views.
-		  * This renderer is loaded from the application 'classes' directory.
-		  *
-		  * @param String $renderer The name of a custom renderer the controller will use to render views.
-		  * 						Use this method to load renderers outside of the framework mvc package.
-		  * @return void
-	      */
-	     protected function createCustomRenderer($renderer) {
+        header('content-type: application/json');
+        print $js;
+    }
 
-	     	       $this->renderer = MVC::createCustomRenderer($renderer);
-	     }
-
-	     /**
-	      * Returns the raw JavaScript contents of the AgilePHP.js file and pre-configures the library
-	      * with a default AgilePHP.debug, AgilePHP.MVC.controller, and AgilePHP.MVC.action value.
-	      *
-	      * @param bool $debug True to enable client side AgilePHP debugging.
-	      * @return void
-	      */
-	     public function getBaseJS($debug = false) {
-
-	  		    $js = file_get_contents(AgilePHP::getFrameworkRoot() . '/AgilePHP.js');
-
-	  		    if($debug) $js .= "\nAgilePHP.setDebug(true);";
-
-	  		    $js .= "\nAgilePHP.setRequestBase('" . AgilePHP::getRequestBase() . "');";
-	  		    $js .= "\nAgilePHP.MVC.setController('" . MVC::getController() . "');";
-	  		    $js .= "\nAgilePHP.MVC.setAction('" . MVC::getAction() . "');";
-
-	  		    header('content-type: application/json');
-	  		    print $js;
-	     }
-
-	     /**
-	      * Default controller action method.
-	      *
-	      * @return void
-	      */
-	     abstract public function index();
+    /**
+     * Default controller action method.
+     *
+     * @return void
+     */
+    abstract public function index();
 }

@@ -31,13 +31,13 @@ AgilePHP.Studio.Desktop = {
 				 ]
 			});
 
-			AgilePHP.Studio.Desktop.panel = Ext.getCmp( 'studio-viewport' );
+			AgilePHP.Studio.Desktop.panel = Ext.getCmp('studio-viewport');
 			//AgilePHP.Studio.Plugins.load();
 		},
 
-		add: function( o ) {
+		add: function(o) {
 
-			AgilePHP.Studio.Desktop.panel.add( o );
+			AgilePHP.Studio.Desktop.panel.add(o);
 			AgilePHP.Studio.Desktop.panel.doLayout();
 		},
 
@@ -51,18 +51,18 @@ AgilePHP.Studio.Desktop = {
 
 		destroy: function() {
 
-			//Ext.getCmp( 'studio-viewport' ).getEl().fadeOut({ easing: 'easeOut', duration: 1});
-			//setTimeout( 'Ext.getCmp( "studio-viewport" ).destroy();', 500 );
+			//Ext.getCmp('studio-viewport').getEl().fadeOut({ easing: 'easeOut', duration: 1});
+			//setTimeout('Ext.getCmp("studio-viewport").destroy();', 500);
 
 			// Destroy all window instances
-			Ext.WindowMgr.getBy( function( window ) {
+			Ext.WindowMgr.getBy(function(window) {
 
 				window.destroy();
 				return true;
-			}, this );
+			}, this);
 
-			Ext.getCmp( 'studio-viewport' ).destroy();
-			Ext.getCmp( 'file-explorer-contextmenu' ).destroy();
+			Ext.getCmp('studio-viewport').destroy();
+			Ext.getCmp('file-explorer-contextmenu').destroy();
 		},
 
 		getPanel: function() {
@@ -75,9 +75,9 @@ AgilePHP.Studio.Desktop = {
 			return AgilePHP.Studio.Desktop.menubar;
 		},
 
-		addMenubarButton: function( button ) {
+		addMenubarButton: function(button) {
 
-			AgilePHP.Studio.Desktop.menubar.addButton( button );
+			AgilePHP.Studio.Desktop.menubar.addButton(button);
 			AgilePHP.Studio.Desktop.menubar.doLayout();
 		},
 
@@ -86,14 +86,14 @@ AgilePHP.Studio.Desktop = {
 			return AgilePHP.Studio.Desktop.tabPanel;
 		},
 
-		addTab: function( tab ) {
+		addTab: function(tab) {
 
-			AgilePHP.Studio.Desktop.tabPanel.add( tab );
+			AgilePHP.Studio.Desktop.tabPanel.add(tab);
 			AgilePHP.Studio.Desktop.tabPanel.doLayout();
 		},
 
-		activateTab: function( tabId ) {
+		activateTab: function(tabId) {
 
-			AgilePHP.Studio.Desktop.tabPanel.activate( tabId );
+			AgilePHP.Studio.Desktop.tabPanel.activate(tabId);
 		}
 };

@@ -1,227 +1,252 @@
 <?php
+/**
+ * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
+ * Copyright (C) 2009-2010 Make A Byte, inc
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package com.makeabyte.agilephp.studio.templates.controllers
+ */
 
+/**
+ * Responsible for application login, logout, password reset, and
+ * registration functionality
+ *
+ * @author Jeremy Hahn
+ * @copyright Make A Byte, inc
+ * @package com.makeabyte.agilephp.studio.templates.controllers
+ */
 class LoginController extends BaseController {
 
-	  /**
-	   * Renders the login page if there is no session present. If a session is present
-	   * the admin page is rendered instead.
-	   *
-	   * @return void
-	   */
-	  public function index() {
+    /**
+     * Renders the login page if there is no session present. If a session is present
+     * the admin page is rendered instead.
+     *
+     * @return void
+     */
+    public function index() {
+        Identity::isLoggedIn() ? $this->showAdmin() : $this->showLogin();
+    }
 
-	  	 	 Identity::isLoggedIn() ? $this->showAdmin() : $this->showLogin();
-	  }
+    /**
+     * Registers a new user account.
+     *
+     * @param $username The username to register
+     * @param $email The email address of the user
+     * @param $password The password to authenticate the user
+     * @param $role The role for the user
+     * @return unknown_type
+     */
+    public function register() {
 
-	  /**
-	   * Registers a new user account.
-	   *
-	   * @param $username The username to register
-	   * @param $email The email address of the user
-	   * @param $password The password to authenticate the user
-	   * @param $role The role for the user
-	   * @return unknown_type
-	   */
-	  public function register() {
+        $request = Scope::getRequestScope();
 
-	  		 $request = Scope::getRequestScope();
+        if(!$username = $request->getSanitized('username'))
+        throw new FrameworkException('Username required');
 
-	  		 if(!$username = $request->getSanitized('username'))
-	  		 	throw new FrameworkException('Username required');
+        if(!$password = $request->getSanitized('password'))
+        throw new FrameworkException('Password required');
 
-	  		 if(!$password = $request->getSanitized('password'))
-	  		 	throw new FrameworkException('Password required');
+        if(!$email = $request->getSanitized('email'))
+        throw new FrameworkException('Email required');
 
-	  		 if(!$email = $request->getSanitized('email'))
-	  		 	throw new FrameworkException('Email required');
+        /** @todo remove hard coded role */
+        $role = new Role('test');
 
-	  		 /** @todo remove hard coded role */
-	  		 $role = new Role('test');
+        Identity::setUsername($username);
+        Identity::setPassword($password);
+        Identity::setEmail($email);
+        Identity::setRole($role);
+        Identity::register();
 
-	  		 Identity::setUsername($username);
-	  		 Identity::setPassword($password);
-	  		 Identity::setEmail($email);
-	  		 Identity::setRole($role);
-	  		 Identity::register();
+        $this->set('info', 'Registration successful. Check your email for a confirmation link.');
+        $this->showRegister();
+    }
 
-	  		 $this->set('info', 'Registration successful. Check your email for a confirmation link.');
-	  		 $this->showRegister();
-	  }
+    /**
+     * Confirms a registration
+     *
+     * @param $token Random registration token
+     * @param $sessionId The session id corresponding to the user that registered
+     * @return void
+     */
+    public function confirm( $token, $sessionId ) {
 
-	  /**
-	   * Confirms a registration
-	   *
-	   * @param $token Random registration token
-	   * @param $sessionId The session id corresponding to the user that registered
-	   * @return void
-	   */
-	  public function confirm( $token, $sessionId ) {
+        $request = Scope::getRequestScope();
 
-	  		 $request = Scope::getRequestScope();
+        Identity::confirm($request->sanitize($token), $request->sanitize($sessionId));
 
-	  		 Identity::confirm($request->sanitize($token), $request->sanitize($sessionId));
+        $this->set('info', 'Activation Successful');
+        $this->showLogin();
+    }
 
-	  		 $this->set('info', 'Activation Successful');
-	  		 $this->showLogin();
-	  }
+    /**
+     * Authenticates a user account using AgilePHP Identity and Scope components.
+     * If the login fails the user is taken back to the login page, otherwise
+     * the admin page is rendered.
+     *
+     * @return void
+     */
+    public function login() {
 
-	  /**
-	   * Authenticates a user account using AgilePHP Identity and Scope components.
-	   * If the login fails the user is taken back to the login page, otherwise
-	   * the admin page is rendered.
-	   *
-	   * @return void
-	   */
-	  public function login() {
+        $request = Scope::getRequestScope();
 
-	  		 $request = Scope::getRequestScope();
+        if(!$username = $request->getSanitized('username')) {
 
-	  		 if(!$username = $request->getSanitized('username')) {
+            $this->set('error', 'Username required');
+            $this->showLogin();
+            return;
+        }
 
-	  		 	$this->set('error', 'Username required');
-	  		 	$this->showLogin();
-	  		 	return;
-	  		 }
+        if(!$password = $request->getSanitized('password')) {
 
-	  		 if(!$password = $request->getSanitized('password')) {
+            $this->set('error', 'Password required');
+            $this->showLogin();
+            return;
+        }
 
-	  		 	$this->set('error', 'Password required');
-	  		 	$this->showLogin();
-	  		 	return;
-	  		 }
+        if(!Identity::login($username, $password)) {
 
-			 if(!Identity::login($username, $password)) {
+            $this->set('title', 'Administration :: Home');
+            $this->set('error', 'Invalid username/password');
+            $this->set('request_token', Scope::getRequestScope()->createToken());
+            $this->render('login');
+            return;
+        }
 
-			 	 $this->set('title', 'Administration :: Home');
-	  	      	 $this->set('error', 'Invalid username/password');
-	  	      	 $this->set('request_token', Scope::getRequestScope()->createToken());
-	  	      	 $this->render('login');
-	  	      	 return;
-			 }
+        $this->showAdmin();
+    }
 
-	  	     $this->showAdmin();
-	  }
+    /**
+     * Destorys the session which was created by login() and renders the login page.
+     *
+     * @return void
+     */
+    public function logout() {
 
-	  /**
-	   * Destorys the session which was created by login() and renders the login page.
-	   *
-	   * @return void
-	   */
-	  public function logout() {
+        Identity::logout();
+        $this->showLogin();
+    }
 
-	  	     Identity::logout();
-	  	     $this->showLogin();
-	  }
+    /**
+     * Displays the forgot password form :)
+     *
+     * @return void
+     */
+    public function oops() {
+        $this->showForgotPassword();
+    }
 
-	  /**
-	   * Displays the forgot password form :)
-	   *
-	   * @return void
-	   */
-	  public function oops() {
+    /**
+     * Uses the AgilePHP Identity component to send the user a link
+     * to click which resets their password when clicked.
+     *
+     * @return void
+     */
+    public function forgotPassword() {
 
-	  		 $this->showForgotPassword();
-	  }
+        $request = Scope::getRequestScope();
 
-	  /**
-	   * Uses the AgilePHP Identity component to send the user a link
-	   * to click which resets their password when clicked.
-	   *
-	   * @return void
-	   */
-	  public function forgotPassword() {
+        if(!$username = $request->getSanitized('username' )) {
 
-	  		 $request = Scope::getRequestScope();
+            $this->set('error', 'Username required');
+            $this->showForgotPassword();
+            return;
+        }
 
-	  		 if(!$username = $request->getSanitized('username' )) {
+        if(!$email = $request->getSanitized('email')) {
 
-	  		 	$this->set('error', 'Username required');
-	  		 	$this->showForgotPassword();
-	  		 	return;
-	  		 }
+            $this->set('error', 'Email required');
+            $this->showForgotPassword();
+            return;
+        }
 
-	  		 if(!$email = $request->getSanitized('email')) {
+        Identity::setUsername($username);
+        Identity::setEmail($email);
 
-	  		 	$this->set('error', 'Email required');
-	  		 	$this->showForgotPassword();
-	  		 	return;
-	  		 }
+        try {
+            Identity::forgotPassword();
+        }
+        catch( FrameworkException $e ) {
 
-	  		 Identity::setUsername($username);
-	  		 Identity::setEmail($email);
+            $this->set('error', $e->getMessage());
+            $this->showForgotPassword();
+        }
 
-	  		 try {
-	  		 	   Identity::forgotPassword();
-	  		 }
-	  		 catch( FrameworkException $e ) {
+        $this->set('info', 'Instructions have been sent to your email address.');
+        $this->showForgotPassword();
+    }
 
-	  		 		$this->set('error', $e->getMessage());
-	  		 		$this->showForgotPassword();
-	  		 }
+    /**
+     * Uses the AgilePHP Identity component to reset the users password.
+     *
+     * @param $token The password reset token sent by AgilePHP Identity component
+     * @param $sessionId The session id which created the initial forgot password request
+     * @return void
+     */
+    public function resetPassword($token, $sessionId) {
 
-	  		 $this->set('info', 'Instructions have been sent to your email address.');
-	  		 $this->showForgotPassword();
-	  }
+        Identity::resetPassword($token, $sessionId);
+        $this->set('info', 'Your new password has been sent to your email address.');
+        $this->showLogin();
+    }
 
-	  /**
-	   * Uses the AgilePHP Identity component to reset the users password.
-	   *
-	   * @param $token The password reset token sent by AgilePHP Identity component
-	   * @param $sessionId The session id which created the initial forgot password request
-	   * @return void
-	   */
-	  public function resetPassword($token, $sessionId) {
+    /**
+     * Renders the admin view.
+     *
+     * @return void
+     */
+    private function showAdmin() {
 
-	  		 Identity::resetPassword($token, $sessionId);
-	  		 $this->set('info', 'Your new password has been sent to your email address.');
-	  		 $this->showLogin();
-	  }
+        $this->set('title', 'Administration :: Home');
+        $this->render('admin');
+    }
 
-	  /**
-	   * Renders the admin view.
-	   *
-	   * @return void
-	   */
-	  private function showAdmin() {
+    /**
+     * Renders the register view.
+     *
+     * @return void
+     */
+    public function showRegister() {
 
-	  	      $this->set('title', 'Administration :: Home');
-	  	      $this->render('admin');
-	  }
+        $this->set('title', 'AgilePHP Framework :: Register');
+        $this->set('request_token', Scope::getRequestScope()->createToken());
+        $this->render('register');
+    }
 
-	  /**
-	   * Renders the register view.
-	   *
-	   * @return void
-	   */
-	  public function showRegister() {
+    /**
+     * Renders the login view.
+     *
+     * @return void
+     */
+    private function showLogin() {
 
-	  		 $this->set('title', 'AgilePHP Framework :: Register');
-	  		 $this->set('request_token', Scope::getRequestScope()->createToken());
-	  	     $this->render('register');
-	  }
+        $this->set('title', 'Administration :: Login');
+        $this->set('request_token', Scope::getRequestScope()->createToken());
+        $this->render('login');
+    }
 
-	  /**
-	   * Renders the login view.
-	   *
-	   * @return void
-	   */
-	  private function showLogin() {
+    /**
+     * Renders the forgot password view.
+     *
+     * @return void
+     */
+    private function showForgotPassword() {
 
-	  		 $this->set('title', 'Administration :: Login');
-	  		 $this->set('request_token', Scope::getRequestScope()->createToken());
-	  	     $this->render('login');
-	  }
-
-	  /**
-	   * Renders the forgot password view.
-	   *
-	   * @return void
-	   */
-	  private function showForgotPassword() {
-
-	  		  $this->set('title', 'Administration :: Login :: Forgot Password');
-	  		  $this->set('request_token', Scope::getRequestScope()->createToken());
-	  	      $this->render('forgot_password');
-	  }
+        $this->set('title', 'Administration :: Login :: Forgot Password');
+        $this->set('request_token', Scope::getRequestScope()->createToken());
+        $this->render('forgot_password');
+    }
 }
 ?>

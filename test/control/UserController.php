@@ -22,29 +22,26 @@
 /**
  * Responsible for processing all business logic and view rendering for the
  * backend application user module.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
  */
 class UserController extends BaseModelActionController {
 
-	  private $model;
+    private $model;
 
-	  public function __construct() {
+    public function __construct() {
+        $this->model = new User();
+        parent::__construct();
+    }
 
-	  		 $this->model = new User();
-
-	  		 parent::__construct();
-	  }
-
-	  /**
-	   * (non-PHPdoc)
-	   * @see src/mvc/BaseModelController#getModel()
-	   */
-	  public function getModel() {
-
-	  	     return $this->model;
-	  }
+    /**
+     * (non-PHPdoc)
+     * @see src/mvc/BaseModelController#getModel()
+     */
+    public function getModel() {
+        return $this->model;
+    }
 }
 ?>

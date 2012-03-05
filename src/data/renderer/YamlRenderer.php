@@ -21,27 +21,27 @@
 
 /**
  * Transforms data to YAML
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.data.renderer
  */
 class YamlRenderer implements DataRenderer {
 
-	  /**
-	   * Transforms the specified PHP data to YAML.
-	   * 
-	   * @param mixed $data Data to transform to YAML
-	   * @param int $encoding YAML_ANY_ENCODING, YAML_UTF8_ENCODING, YAML_UTF16LE_ENCODING, YAML_UTF16BE_ENCODING. Defaults to YAML_ANY_ENCODING.
-	   * @param int $linebreak YAML_ANY_BREAK, YAML_CR_BREAK, YAML_LN_BREAK, YAML_CRLN_BREAK. Defaults to YAML_ANY_BREAK
-	   * @return string The YAML formatted data.
-	   */
-	  public static function render($data, $encoding = null, $linebreak = null) {
+    /**
+     * Transforms the specified PHP data to YAML.
+     *
+     * @param mixed $data Data to transform to YAML
+     * @param int $encoding YAML_ANY_ENCODING, YAML_UTF8_ENCODING, YAML_UTF16LE_ENCODING, YAML_UTF16BE_ENCODING. Defaults to YAML_ANY_ENCODING.
+     * @param int $linebreak YAML_ANY_BREAK, YAML_CR_BREAK, YAML_LN_BREAK, YAML_CRLN_BREAK. Defaults to YAML_ANY_BREAK
+     * @return string The YAML formatted data.
+     */
+    public static function render($data, $encoding = null, $linebreak = null) {
 
-	  		 if(!function_exists('yaml_emit'))
-	  		    throw new FrameworkException("YAML extension required");
+        if(!function_exists('yaml_emit'))
+        throw new FrameworkException("YAML extension required");
 
-	  		 return yaml_emit($data, $encoding, $linebreak);
-	  }
+        return yaml_emit($data, $encoding, $linebreak);
+    }
 }
 ?>

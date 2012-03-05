@@ -32,35 +32,35 @@
 #@Interceptor
 class TestInterceptor2 {
 
-	  public $param1;
-	  public $param2 = array();
-	  public $param3;
+    public $param1;
+    public $param2 = array();
+    public $param3;
 
-	  #@AroundInvoke
-	  public function audit(InvocationContext $ic) {
+    #@AroundInvoke
+    public function audit(InvocationContext $ic) {
 
-	  		 $class = new ReflectionClass($ic->getTarget());
-	  		 $message = 'TestInterceptor2::audit @AroundInvoke This is what the InvocationContext interceptor state looks like: ' . print_r($ic->getInterceptor(), true);
- 	  		 Log::debug($message);
+        $class = new ReflectionClass($ic->getTarget());
+        $message = 'TestInterceptor2::audit @AroundInvoke This is what the InvocationContext interceptor state looks like: ' . print_r($ic->getInterceptor(), true);
+        Log::debug($message);
 
- 	  		 return $ic->proceed(); // keeps the interception chain alive
-	  }
+        return $ic->proceed(); // keeps the interception chain alive
+    }
 
-	  /**
-	   * Returns all TestInterceptor2 fields/properties. These are set
-	   * in the annotation declaration. Since this method does not contain
-	   * an #@AroundInvoke annotation, it is never called during the interception.
-	   * You would need to invoke this method yourself if you wanted to use it.
-	   * This shows that really interceptors are still PHP classes at the end
-	   * of the day, with just a little bit of magical seasoning :)
-	   *
-	   * @return TestInterceptor2 fields/properties
-	   */
-	  public function getParams() {
+    /**
+     * Returns all TestInterceptor2 fields/properties. These are set
+     * in the annotation declaration. Since this method does not contain
+     * an #@AroundInvoke annotation, it is never called during the interception.
+     * You would need to invoke this method yourself if you wanted to use it.
+     * This shows that really interceptors are still PHP classes at the end
+     * of the day, with just a little bit of magical seasoning :)
+     *
+     * @return TestInterceptor2 fields/properties
+     */
+    public function getParams() {
 
-	  		 echo "param1 = " . $this->param1 .
+        echo "param1 = " . $this->param1 .
 	  		 	  ", param2 = " . implode(",", $this->param1) .
 	  		 	  ", param3 = " . $this->param3;
-	  }
+    }
 }
 ?>

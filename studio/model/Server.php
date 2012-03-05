@@ -21,69 +21,59 @@
 
 /**
  * Server model
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.model
  */
 class Server extends DomainModel {
 
-	private $id;
-	private $ip;
-	private $hostname;
-	private $profile;
-	private $ServerType;
+    private $id;
+    private $ip;
+    private $hostname;
+    private $profile;
+    private $ServerType;
 
-	public function __construct() { }
+    public function __construct() { }
 
-	public function setId($value) {
+    public function setId($value) {
+        $this->id = $value;
+    }
 
-		 $this->id = $value;
-	}
+    public function setIp($value) {
+        $this->ip = $value;
+    }
 
-	public function setIp($value) {
+    public function setHostname($value) {
+        $this->hostname = $value;
+    }
 
-		 $this->ip = $value;
-	}
+    public function setProfile($value) {
+        $this->profile = $value;
+    }
 
-	public function setHostname($value) {
+    public function getId() {
+        return $this->id;
+    }
 
-		 $this->hostname = $value;
-	}
+    public function getIp() {
+        return $this->ip;
+    }
 
-	public function setProfile($value) {
+    public function getHostname() {
+        return $this->hostname;
+    }
 
-		 $this->profile = $value;
-	}
+    public function getProfile() {
+        return $this->profile;
+    }
 
-	public function getId() {
+    public function setServerType(ServerType $st = null) {
+        $this->ServerType = $st;
+    }
 
-		 return $this->id;
-	}
-
-	public function getIp() {
-
-		 return $this->ip;
-	}
-
-	public function getHostname() {
-
-		 return $this->hostname;
-	}
-
-	public function getProfile() {
-
-		 return $this->profile;
-	}
-
-	public function setServerType(ServerType $st = null) {
-
-		   $this->ServerType = $st;
-	}
-
-	public function getServerType() {
-
-		   return $this->ServerType;
-	}
+    public function getServerType() {
+        return $this->ServerType;
+    }
 }
 ?>

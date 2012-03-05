@@ -21,7 +21,7 @@
 
 /**
  * Annotation that describes the SOAP web service binding style and usage.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.soap
@@ -29,7 +29,7 @@
  * #@WebService(serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI')
  * #@SOAPBinding(style = SOAPStyle::RPC, use = SOAPStyle::ENCODED)
  * class MyAPI {
- * 
+ *
  * 		 // I am a RPC/Encoded SOAP web service and can be easily changed into
  * 		 // RPC/Literal or Document Literal Wrapped by simply changing the #@SOAPBinding
  * 		 // values.
@@ -38,15 +38,15 @@
  */
 class SOAPBinding {
 
-	  /**
-	   * @var String The SOAP style used in the WSDL. (STYLE_DOCUMENT|STYLE_RPC) Default is STYLE_DOCUMENT.
-	   */
-	  public $style = SoapStyle::DOCUMENT;
+    /**
+     * @var String The SOAP style used in the WSDL. (STYLE_DOCUMENT|STYLE_RPC) Default is STYLE_DOCUMENT.
+     */
+    public $style = SoapStyle::DOCUMENT;
 
-	  /**
-	   * @var String Specifies the encoding rules of the SOAP message. (USE_ENCODED|USE_LITERAL). Default is USE_LITERAL.
-	   */
-	  public $use = SoapStyle::LITERAL;
+    /**
+     * @var String Specifies the encoding rules of the SOAP message. (USE_ENCODED|USE_LITERAL). Default is USE_LITERAL.
+     */
+    public $use = SoapStyle::LITERAL;
 }
 
 /**
@@ -58,10 +58,10 @@ class SOAPBinding {
  */
 class SOAPStyle {
 
-	  const RPC = 'rpc';
-	  const DOCUMENT = 'document';
+    const RPC = 'rpc';
+    const DOCUMENT = 'document';
 
-	  const ENCODED = 'encoded';
-	  const LITERAL = 'literal';
+    const ENCODED = 'encoded';
+    const LITERAL = 'literal';
 }
 ?>

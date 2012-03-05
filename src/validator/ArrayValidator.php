@@ -21,21 +21,20 @@
 
 /**
  * Validates array values
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class ArrayValidator implements Validator {
 
-	  /**
-	   * Ensures the passed data is a PHP array data type
-	   * 
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data) {
-
-	  		 return is_array($data);
-	  }
+    /**
+     * Ensures the passed data is a PHP array data type
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
+        return is_array($data);
+    }
 }
 ?>

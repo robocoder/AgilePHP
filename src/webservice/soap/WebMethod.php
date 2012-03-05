@@ -21,17 +21,17 @@
 
 /**
  * Annotation which authorizes a method for inclusion during #@WSDL generation.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.soap
  * <code>
  * #@WebService(serviceName = 'MyAPIService', targetNameSpace = 'http://www.mydomain.com/index.php/MyAPI')
  * class MyAPI {
- * 
+ *
  * 		 #@WSDL
- * 		 public function wsdl() { 
- * 
+ * 		 public function wsdl() {
+ *
  * 				// When this method gets requested the #@WSDL interceptor
  * 				// will reverse engineer this class and output a WSDL
  * 				// file any SOAP client can consume to execute a #@WebMethod.
@@ -39,12 +39,12 @@
  *
  * 		 #@WebMethod
  * 		 public function someMethod() {
- * 
+ *
  * 				// I will get included during WSDL generation
  * 		 }
  *
  * 		 public function someMethod2() {
- * 
+ *
  * 				// I will not get included during WSDL generation
  * 		 }
  * }

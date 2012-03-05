@@ -33,57 +33,55 @@ AgilePHP::import( 'TestComponent.classes.PHTMLRenderer' );
  */
 class TestComponent extends Component {
 
-      /**
-       * (non-PHPdoc)
-       * @see src/mvc/BaseController#index()
-       */
-      public function index() {
+    /**
+     * (non-PHPdoc)
+     * @see src/mvc/BaseController#index()
+     */
+    public function index() {
 
-             $navigation = '<p>
-             				  <a href="' . AgilePHP::getRequestBase() . '/TestComponent/table1">Table 1</a>
-             				  <a href="' . AgilePHP::getRequestBase() . '/TestComponent/table2">Table 2</a>
-             				</p>';
+        $navigation = '<p>
+         				  <a href="' . AgilePHP::getRequestBase() . '/TestComponent/table1">Table 1</a>
+         				  <a href="' . AgilePHP::getRequestBase() . '/TestComponent/table2">Table 2</a>
+         				</p>';
 
-         	 $renderer = new TestComponent\PHTMLRenderer();
-	     	 $renderer->set('title', 'TestComponent :: Home');
-	     	 $renderer->set('content', '<b>Welcome to the TestComponent home page!</b>' . $navigation);
-	     	 $renderer->render('index');
-      }
+        $renderer = new TestComponent\PHTMLRenderer();
+        $renderer->set('title', 'TestComponent :: Home');
+        $renderer->set('content', '<b>Welcome to the TestComponent home page!</b>' . $navigation);
+        $renderer->render('index');
+    }
 
-      /**
-       * Shows TestPhar table1 as configured in component.xml <orm>
-       * 
-       * @return void
-       */
-      public function table1() {
+    /**
+     * Shows TestPhar table1 as configured in component.xml <orm>
+     *
+     * @return void
+     */
+    public function table1() {
 
-             parent::delegate(new TestComponent\control\Table1Controller());
+        parent::delegate(new TestComponent\control\Table1Controller());
 
-             /*
-             $parameters = MVC::getParameters();
-             $action = isset($parameters[0]) ? $parameters[0] : 'index';
-             MVC::dispatch('TestComponent\\control\\Table1Controller',  $action);
-             */
-      }
+        /*
+         $parameters = MVC::getParameters();
+         $action = isset($parameters[0]) ? $parameters[0] : 'index';
+         MVC::dispatch('TestComponent\\control\\Table1Controller',  $action);
+         */
+    }
 
-      /**
-       * Shows TestPhar table2 as configured in component.xml <orm>.
-       * 
-       * @return void
-       */
-      public function table2() {
+    /**
+     * Shows TestPhar table2 as configured in component.xml <orm>.
+     *
+     * @return void
+     */
+    public function table2() {
+        parent::delegate(new TestComponent\control\Table2Controller());
+    }
 
-              parent::delegate(new TestComponent\control\Table2Controller());
-      }
-
-      /**
-       * Shows the component state using print_r($this)
-       * 
-       * @return void
-       */
-      public function debug() {
-
-             print_r($this);
-      }
+    /**
+     * Shows the component state using print_r($this)
+     *
+     * @return void
+     */
+    public function debug() {
+        print_r($this);
+    }
 }
 ?>

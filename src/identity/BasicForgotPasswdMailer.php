@@ -21,28 +21,28 @@
 
 /**
  * Sends plain text forgot password emails
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  */
 class BasicForgotPasswdMailer extends Mailer {
 
-	  public function __construct($username, $email, $token) {
+    public function __construct($username, $email, $token) {
 
-	  		 $url = (@$_SERVER['HTTPS'] != null) ? 'https://' : 'http://';
-	  	     $url .= (@$_SERVER['HTTP_HOST'] != null) ? $_SERVER['HTTP_HOST'] : 'localhost';
-	  		 $url .= AgilePHP::getRequestBase() . '/LoginController/resetPassword/';
+        $url = (@$_SERVER['HTTPS'] != null) ? 'https://' : 'http://';
+        $url .= (@$_SERVER['HTTP_HOST'] != null) ? $_SERVER['HTTP_HOST'] : 'localhost';
+        $url .= AgilePHP::getRequestBase() . '/LoginController/resetPassword/';
 
-	  		 $appName = AgilePHP::getAppName();
+        $appName = AgilePHP::getAppName();
 
-	  	     $this->setTo($email);
-	  		 $this->setToName($username);
-	  		 $this->setFrom('no-reply@' . $appName);
-	  		 $this->setFromName($appName);
-	  		 $this->setSubject($appName . ' :: Reset Password');
-	  		 $this->setBody('Click on the following link to reset your password: ' . PHP_EOL . $url .
-	  		 				 	$token . '/' . Scope::getSessionScope()->getSessionId());
-	  }
+        $this->setTo($email);
+        $this->setToName($username);
+        $this->setFrom('no-reply@' . $appName);
+        $this->setFromName($appName);
+        $this->setSubject($appName . ' :: Reset Password');
+        $this->setBody('Click on the following link to reset your password: ' . PHP_EOL . $url .
+        $token . '/' . Scope::getSessionScope()->getSessionId());
+    }
 }
 ?>

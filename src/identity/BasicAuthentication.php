@@ -51,79 +51,79 @@
 #@Interceptor
 class BasicAuthentication {
 
-	  /**
-	   *  @var string An optional realm. Defaults to the HTTP HOST header.
-	   *  <code>
-	   *  Example:
-	   *  #@BasicAuthentication(realm = 'mydomain.com')
-	   *  </code>
-	   */
-	  public $realm;
+    /**
+     *  @var string An optional realm. Defaults to the HTTP HOST header.
+     *  <code>
+     *  Example:
+     *  #@BasicAuthentication(realm = 'mydomain.com')
+     *  </code>
+     */
+    public $realm;
 
-	  /**
-	   *  @var string An optional method name in the callee that will perform
-	   *  			  authentication logic. The custom authenticator should
-	   *  			  return true if authentication was successful, or false
-	   *  			  for anything else. The interceptor will handle throwing
-	   *  			  an AccessDeniedException if false is returned.
-	   *  <code>
-	   *  Example:
-	   *  #@BasicAuthentication(authenticator = 'myAuthenticator')
-	   *  </code>
-	   */
-	  public $authenticator;
+    /**
+     *  @var string An optional method name in the callee that will perform
+     *  			  authentication logic. The custom authenticator should
+     *  			  return true if authentication was successful, or false
+     *  			  for anything else. The interceptor will handle throwing
+     *  			  an AccessDeniedException if false is returned.
+     *  <code>
+     *  Example:
+     *  #@BasicAuthentication(authenticator = 'myAuthenticator')
+     *  </code>
+     */
+    public $authenticator;
 
-	  /**
-	   * Prompts the user for HTTP basic authentication.
-	   *
-	   * @param InvocationContext $ic The context of the intercepted call
-	   * @return InvocationContext if the authentication was successful.
-	   * @throws AccessDeniedException
-	   */
-	  #@AroundInvoke
-	  public function prompt(InvocationContext $ic) {
+    /**
+     * Prompts the user for HTTP basic authentication.
+     *
+     * @param InvocationContext $ic The context of the intercepted call
+     * @return InvocationContext if the authentication was successful.
+     * @throws AccessDeniedException
+     */
+    #@AroundInvoke
+    public function prompt(InvocationContext $ic) {
 
-	  		 if(isset($_SERVER['PHP_AUTH_USER'])) {
+        if(isset($_SERVER['PHP_AUTH_USER'])) {
 
-	  		 	 if($this->authenticator) {
+            if($this->authenticator) {
 
-	  		 	 	 $callee = $ic->getCallee();
-	  		 	 	 $object = $callee['class'];
-		  	     	 $authenticator = $this->authenticator;
+                $callee = $ic->getCallee();
+                $object = $callee['class'];
+                $authenticator = $this->authenticator;
 
-		  	     	 // Static authenticator
-		  	     	 if(preg_match('/::/' , $authenticator)) {
+                // Static authenticator
+                if(preg_match('/::/' , $authenticator)) {
 
-		  	     	    $pieces = explode('::', $authenticator);
-		  	     	    $class = array_shift($pieces);
-		  	     	    $method = array_shift($pieces);
+                    $pieces = explode('::', $authenticator);
+                    $class = array_shift($pieces);
+                    $method = array_shift($pieces);
 
-		  	     	    if($class::$method($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']))
-		  	     	       return $ic->proceed();
+                    if($class::$method($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']))
+                    return $ic->proceed();
 
-		  	     	    header('HTTP/1.0 401 Unauthorized');
-		  	     	    throw new AccessDeniedException('Invalid username/password');
-		  	     	 }
+                    header('HTTP/1.0 401 Unauthorized');
+                    throw new AccessDeniedException('Invalid username/password');
+                }
 
-		  	     	 // Use authenticator method defined inside of the intercepted target class
-		  	     	 if($object->$authenticator($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']))
-		  	     	 	return $ic->proceed();
+                // Use authenticator method defined inside of the intercepted target class
+                if($object->$authenticator($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']))
+                return $ic->proceed();
 
-		  	     	 header('HTTP/1.0 401 Unauthorized');
-		  	     	 throw new AccessDeniedException('Invalid username/password');
-	  		 	 }
+                header('HTTP/1.0 401 Unauthorized');
+                throw new AccessDeniedException('Invalid username/password');
+            }
 
-	  		 	 if(Identity::login($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']))
-	  		 	 	return $ic->proceed();
+            if(Identity::login($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']))
+            return $ic->proceed();
 
-	  		 	 header('HTTP/1.0 401 Unauthorized');
-	  		 	 throw new AccessDeniedException('Invalid username/password');
-	  		 }
+            header('HTTP/1.0 401 Unauthorized');
+            throw new AccessDeniedException('Invalid username/password');
+        }
 
-	  		 $realm = ($this->realm == null) ? $_SERVER['HTTP_HOST'] : $this->realm;
-	  		 header('HTTP/1.0 401 Unauthorized');
-	  		 header('WWW-Authenticate: Basic realm=' . $realm);
-		     throw new AccessDeniedException('Unauthorized');
-	  }
+        $realm = ($this->realm == null) ? $_SERVER['HTTP_HOST'] : $this->realm;
+        header('HTTP/1.0 401 Unauthorized');
+        header('WWW-Authenticate: Basic realm=' . $realm);
+        throw new AccessDeniedException('Unauthorized');
+    }
 }
 ?>

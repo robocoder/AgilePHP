@@ -21,68 +21,63 @@
 
 /**
  * A test class used by the CacheController to test caching in AgilePHP.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.classes
  */
 class MockCacher {
 
-	  private $markup;
+    private $markup;
 
-	  public function __construct() {
+    public function __construct() {
 
-	  		 $this->resetMarkup();
-	  }
+        $this->resetMarkup();
+    }
 
-	  /**
-	   * Outputs the value of the markup property with a 1 second cache expiry time. 
-	   * 
-	   */
-	  #@Cache(minutes = 1)
-	  public function expires() {
+    /**
+     * Outputs the value of the markup property with a 1 second cache expiry time.
+     *
+     */
+    #@Cache(minutes = 1)
+    public function expires() {
+        return $this->getMarkup();
+    }
 
-	  		 return $this->getMarkup();
-	  }
+    /**
+     * Outputs the value of the markup property with a cache time of 'never expire'.
+     */
+    #@Cache
+    public function neverExpires() {
+        return $this->getMarkup();
+    }
 
-	  /**
-	   * Outputs the value of the markup property with a cache time of 'never expire'.
-	   */
-	  #@Cache
-	  public function neverExpires() {
+    /**
+     * Sets the markup property used as an output value from the cached method.
+     *
+     * @param mixed $value The value to have the cached method output
+     * @return void
+     */
+    public function setMarkup($value) {
+        $this->markup = $value;
+    }
 
-	  		 return $this->getMarkup();
-	  }
+    /**
+     * Returns the value of the markup property.
+     *
+     * @return mixed The value of the markup property.
+     */
+    public function getMarkup() {
+        return $this->markup;
+    }
 
-	  /**
-	   * Sets the markup property used as an output value from the cached method.
-	   * 
-	   * @param mixed $value The value to have the cached method output
-	   * @return void
-	   */
-	  public function setMarkup($value) {
-
-	  		 $this->markup = $value;
-	  }
-
-	  /**
-	   * Returns the value of the markup property.
-	   * 
-	   * @return mixed The value of the markup property.
-	   */
-	  public function getMarkup() {
-
-	  		 return $this->markup;
-	  }
-
-	  /**
-	   * Resets the markup property back to default value.
-	   * 
-	   * @return void
-	   */
-	  public function resetMarkup() {
-
-	  		 $this->markup = "This is some default output to get cached.\n";
-	  }
+    /**
+     * Resets the markup property back to default value.
+     *
+     * @return void
+     */
+    public function resetMarkup() {
+        $this->markup = "This is some default output to get cached.\n";
+    }
 }
 ?>

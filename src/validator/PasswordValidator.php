@@ -21,23 +21,22 @@
 
 /**
  * Validates password values to ensure they meet minimum password policy.
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class PasswordValidator implements Validator {
 
-	  /**
-	   * Checks to see whether the specified data meets a minimum length requirement.
-	   * 
-	   * @param mixed $data The data to validate
-	   * @param int $length Optional length to require. Defaults to 7.
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data, $length = 7) {
-
-	  		 return ($length && (strlen($data) < $length)) ? false : true;
-	  }
+    /**
+     * Checks to see whether the specified data meets a minimum length requirement.
+     *
+     * @param mixed $data The data to validate
+     * @param int $length Optional length to require. Defaults to 7.
+     * @see Validator::validate()
+     */
+    public static function validate($data, $length = 7) {
+        return ($length && (strlen($data) < $length)) ? false : true;
+    }
 }
 ?>

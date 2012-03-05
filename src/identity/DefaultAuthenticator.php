@@ -21,40 +21,40 @@
 
 /**
  * Default authentication handler.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.identity
  */
 class DefaultAuthenticator implements Authentication {
 
-	  public static function authenticate($username, $password) {
+    public static function authenticate($username, $password) {
 
-	  		 $model = Identity::getModel();
-	  		 
-	  		 if(method_exists($model, 'getInterceptedInstance')) {
+        $model = Identity::getModel();
 
-	  		    if(!$model->getInterceptedInstance() instanceof IdentityModel)
-	  		       throw new FrameworkException('Model must implement IdentityModel interface');
-	  		 }
-	  		 else
-	  		    if(!$model instanceof IdentityModel)
-	  		       throw new FrameworkException('Model must implement IdentityModel interface');
+        if(method_exists($model, 'getInterceptedInstance')) {
 
-	  	     Log::debug('DefaultAuthenticator::authenticate Authenticating username \'' . $username . '\' with password \'' . $password . '\'.');
+            if(!$model->getInterceptedInstance() instanceof IdentityModel)
+            throw new FrameworkException('Model must implement IdentityModel interface');
+        }
+        else
+        if(!$model instanceof IdentityModel)
+        throw new FrameworkException('Model must implement IdentityModel interface');
 
-	  		 $model->setUsername($username); // #@Id interceptor populates ActiveRecord state
+        Log::debug('DefaultAuthenticator::authenticate Authenticating username \'' . $username . '\' with password \'' . $password . '\'.');
 
-	  		 if(!$model->getPassword()) return false;
+        $model->setUsername($username); // #@Id interceptor populates ActiveRecord state
 
-	  		 $crypto = new Crypto();
-	  		 $hashed = $crypto->getDigest($password);
+        if(!$model->getPassword()) return false;
 
-			 if(!preg_match('/' . $hashed . '/', $model->getPassword())) return false;
+        $crypto = new Crypto();
+        $hashed = $crypto->getDigest($password);
 
-	  		 if($model->getEnabled() == 'No') throw new AccessDeniedException('Account Disabled');
+        if(!preg_match('/' . $hashed . '/', $model->getPassword())) return false;
 
-			 return $model;
-	  }
+        if($model->getEnabled() == 'No') throw new AccessDeniedException('Account Disabled');
+
+        return $model;
+    }
 }
 ?>

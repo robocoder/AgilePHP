@@ -29,1609 +29,1464 @@
  */
 abstract class BaseDialect {
 
-		 protected $PDOStatement;			 // Internally used PDO::Statement
-		 private $maxResults = 25;			 // Used during a call to 'find'
-		 private $distinct;					 // Sets SQL DISTINCT clause
-		 private $restrictions;				 // WHERE clause restrictions
-	     private $restrictionsLogic = 'AND'; // Logic operator to use in WHERE clause (and|or)
-	     private $comparisonLogic = '=';	 // Logic operator to use in WHERE clause (=|<|>|LIKE)
-	     private $orderBy;					 // Stores the column name to sort the result set by
-	     private $orderDirection;			 // The direction to sort the result set (Default is 'ASC')
-	     private $offset;					 // Stores the offset for a LIMIT clause.
-	     private $groupBy;					 // GROUP BY clause
+    private $maxResults = 25;			 // Used during a call to 'find'
+    private $distinct;					 // Sets SQL DISTINCT clause
+    private $restrictions;				 // WHERE clause restrictions
+    private $restrictionsLogic = 'AND';  // Logic operator to use in WHERE clause (and|or)
+    private $comparisonLogic = '=';	     // Logic operator to use in WHERE clause (=|<|>|LIKE)
+    private $orderBy;					 // Stores the column name to sort the result set by
+    private $orderDirection;			 // The direction to sort the result set (Default is 'ASC')
+    private $offset;					 // Stores the offset for a LIMIT clause.
+    private $groupBy;					 // GROUP BY clause
 
-		 protected $pdo;					 // PHP Data Objects
-	     protected $model;					 // Domain model object (ActiveRecord)
-		 protected $database;				 // Database object
-		 protected $transactionInProgress;	 // True when a transaction is in progress
-		 protected $lastInsertId;              // SQL generated id for auto-increment field
+    protected $pdo;					     // PHP Data Objects
+    protected $model;					 // Domain model object (ActiveRecord)
+    protected $database;				 // Database object
+    protected $transactionInProgress;	 // True when a transaction is in progress
+    protected $lastInsertId;             // SQL generated id for auto-increment field
+    protected $PDOStatement;			 // Internally used PDO::Statement
 
-		 /**
-		  * Returns the PDO instance in use by the ORM framework.
-		  *
-		  * @return PDO The PDO instance in use by the framework.
-		  */
-		 public function getPDO() {
+    /**
+     * Returns the PDO instance in use by the ORM framework.
+     *
+     * @return PDO The PDO instance in use by the framework.
+     */
+    public function getPDO() {
+        return $this->pdo;
+    }
 
-		 		return $this->pdo;
-		 }
+    /**
+     * Returns the Database instance the ORM is currently managing.
+     *
+     * @return Database The Database object representation of orm.xml
+     */
+    public function getDatabase() {
+        return $this->database;
+    }
 
-		 /**
-		  * Returns the Database instance the ORM is currently managing.
-		  *
-		  * @return Database The Database object representation of orm.xml
-		  */
-		 public function getDatabase() {
+    /**
+     * Adds an SQL distinct clause to 'find' operation.
+     *
+     * @param string $columnName The column name to get the distinct values for
+     * @return void
+     */
+    public function setDistinct($columnName) {
+        $this->distinct = $columnName;
+    }
 
-		 		return $this->database;
-		 }
+    /**
+     * Returns the 'distinct' column to use in an SQL SELECT statement
+     * if one has been defined.
+     *
+     * @return string The DISTINCT column name or null if a column name has not been defined.
+     */
+    public function isDistinct() {
+        return $this->distinct;
+    }
 
-		 /**
-		  * Adds an SQL distinct clause to 'find' operation.
-		  *
-		  * @param string $columnName The column name to get the distinct values for
-		  * @return void
-		  */
-		 public function setDistinct($columnName) {
+    /**
+     * Sets the maxResults property value which is used during
+     * find operations which contain an empty model.
+     *
+     * @param integer $maxResults Optional number of records to return in result sets. Defaults to 25.
+     * @return void
+     */
+    public function setMaxResults($maxResults = 25) {
+        $this->maxResults = $maxResults;
+    }
 
-		 		$this->distinct = $columnName;
-		 }
+    /**
+     * Returns the 'maxResults' property value which is used during
+     * a 'find' operation which contains an empty model.
+     *
+     * @return integer The total number of records to return in a result set.
+     */
+    public function getMaxResults() {
+        return $this->maxResults;
+    }
 
-		 /**
-		  * Returns the 'distinct' column to use in an SQL SELECT statement
-		  * if one has been defined.
-		  *
-		  * @return string The DISTINCT column name or null if a column name has not been defined.
-		  */
-		 public function isDistinct() {
+    /**
+     * Sets the offset used in a SQL LIMIT clause.
+     *
+     * @param integer $offset The limit offset.
+     * @return void
+     */
+    public function setOffset($offset) {
+        $this->offset = $offset;
+    }
 
-		 		return $this->distinct;
-		 }
+    /**
+     * Returns the SQL LIMIT offset value.
+     *
+     * @return Integer The LIMIT offset.
+     */
+    public function getOffset() {
+        return $this->offset;
+    }
 
-		 /**
-		  * Sets the maxResults property value which is used during
-		  * find operations which contain an empty model.
-		  *
-		  * @param integer $maxResults Optional number of records to return in result sets. Defaults to 25.
-		  * @return void
-		  */
-		 public function setMaxResults($maxResults = 25) {
+    /**
+     * Sets the SQL 'group by' clause.
+     *
+     * @param string $column The column name to group the result set by
+     * @return void
+     */
+    public function setGroupBy($column) {
+        $this->groupBy = $column;
+    }
 
-		 		$this->maxResults = $maxResults;
-		 }
+    /**
+     * Returns SQL GROUP BY clause.
+     *
+     * @return String GROUP BY value
+     */
+    public function getGroupBy() {
+        return $this->groupBy;
+    }
 
-		 /**
-		  * Returns the 'maxResults' property value which is used during
-		  * a 'find' operation which contains an empty model.
-		  *
-		  * @return integer The total number of records to return in a result set.
-		  */
-		 public function getMaxResults() {
+    /**
+     * Returns the last "id" generated by the database engine.
+     *
+     * @param string $name An optional pgsql sequence name. Defaults to null.
+     * @return mixed The id value generated by the database engine during the last INSERT
+     */
+    public function getLastInsertId($name = null) {
+        return $this->lastInsertId ? $this->lastInsertId : $this->pdo->lastInsertId($name);
+    }
 
-		 		return $this->maxResults;
-		 }
+    /**
+     * Returns boolean flag indicating whether or not a transaction is in progress.
+     *
+     * @return bool True if a transaction is in progress, false otherwise.
+     */
+    public function hasTransactionInProgress() {
+        return $this->transactionInProgress;
+    }
 
-		 /**
-		  * Sets the offset used in a SQL LIMIT clause.
-		  *
-		  * @param integer $offset The limit offset.
-		  * @return void
-		  */
-		 public function setOffset($offset) {
+    /**
+     * Begins a transaction
+     *
+     * @return void
+     * @throws ORMException
+     * @see http://us2.php.net/manual/en/pdo.transactions.php
+     * @see http://usphp.com/manual/en/function.PDO-beginTransaction.php
+     */
+    public function beginTransaction() {
 
-		 		$this->offset = $offset;
-		 }
+        Log::debug('BaseDialect::beginTransaction Beginning transaction');
 
-		 /**
-		  * Returns the SQL LIMIT offset value.
-		  *
-		  * @return Integer The LIMIT offset.
-		  */
-		 public function getOffset() {
+        try {
+            $this->pdo->beginTransaction();
+            $this->transactionInProgress = true;
+        }
+        catch(PDOException $e) {
 
-		 		return $this->offset;
-		 }
+            throw new ORMException($e->getMessage(), $e->getCode());
+        }
+    }
 
-		 /**
-	      * Sets the SQL 'group by' clause.
-	      *
-	      * @param string $column The column name to group the result set by
-	      * @return void
-	      */
-	     public function setGroupBy($column) {
+    /**
+     * Commits an already started transaction.
+     *
+     * @return void
+     * @throws ORMException
+     * @see http://us2.php.net/manual/en/pdo.transactions.php
+     * @see http://usphp.com/manual/en/function.PDO-commit.php
+     */
+    public function commit() {
 
-	     		   $this->groupBy = $column;
-	     }
+        if(!$this->transactionInProgress) {
 
-	     /**
-	      * Returns SQL GROUP BY clause.
-	      *
-	      * @return String GROUP BY value
-	      */
-	     public function getGroupBy() {
+            Log::warn('BaseDialect::commit Warning about commit() without an active transaction. Aborting commit!');
+            return false;
+        }
 
-	     		return $this->groupBy;
-	     }
+        try {
+            $this->pdo->commit();
+            $this->transactionInProgress = false;
+            Log::debug('BaseDialect::commit Transaction successfully committed');
+        }
+        catch(PDOException $e) {
 
-	     /**
-	      * Returns the last "id" generated by the database engine.
-	      *
-	      * @param string $name An optional pgsql sequence name. Defaults to null.
-	      * @return mixed The id value generated by the database engine during the last INSERT
-	      */
-	     public function getLastInsertId($name = null) {
+            $this->rollback($e->getMessage(), $e->getCode());
+        }
+    }
 
-	            return $this->lastInsertId ? $this->lastInsertId : $this->pdo->lastInsertId($name);
-	     }
+    /**
+     * Rolls back a transaction.
+     *
+     * @param string $message Error/reason why the transaction was rolled back
+     * @param integer $code An error/reason code
+     * @return void
+     * @throws ORMException
+     * @see http://us2.php.net/manual/en/pdo.transactions.php
+     * @see http://usphp.com/manual/en/function.PDO-rollBack.php
+     */
+    public function rollBack($message = null, $code = 0) {
 
-	     /**
-	      * Returns boolean flag indicating whether or not a transaction is in progress.
-	      *
-	      * @return bool True if a transaction is in progress, false otherwise.
-	      */
-	     public function hasTransactionInProgress() {
+        try {
+            $this->pdo->rollBack();
+            $this->transactionInProgress = false;
+            Log::debug('BaseDialect::rollBack' . (($message == null) ? '' : ' ' . $message));
+        }
+        catch(PDOException $e) {
 
-	            return $this->transactionInProgress;
-	     }
+            throw new ORMException($e->getMessage(), $e->getCode());
+        }
 
-	  	 /**
-	  	  * Begins a transaction
-	  	  *
-	  	  * @return void
-	  	  * @throws ORMException
-	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
-	  	  * @see http://usphp.com/manual/en/function.PDO-beginTransaction.php
-	  	  */
-	  	 public function beginTransaction() {
+        if($message) throw new ORMException($message, $code);
+    }
 
-	  		    Log::debug('BaseDialect::beginTransaction Beginning transaction');
+    /**
+     * Prepares an SQL prepared statement
+     *
+     * @param string $statement The SQL statement to prepare
+     * @return boolean False if the statement could not execute successfully
+     * @throws ORMException
+     * @see http://usphp.com/manual/en/function.PDO-prepare.php
+     */
+    public function prepare($statement) {
 
-	  		    try {
-	  		   	 	  $this->pdo->beginTransaction();
-	  		   	 	  $this->transactionInProgress = true;
-	  		    }
-	  		    catch(PDOException $e) {
-
-	  		   		   throw new ORMException($e->getMessage(), $e->getCode());
-	  		    }
-	  	 }
-
-	  	 /**
-	  	  * Commits an already started transaction.
-	  	  *
-	  	  * @return void
-	  	  * @throws ORMException
-	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
-	  	  * @see http://usphp.com/manual/en/function.PDO-commit.php
-	  	  */
-	  	 public function commit() {
-
-	  	        if(!$this->transactionInProgress) {
-
-	  	           Log::warn('BaseDialect::commit Warning about commit() without an active transaction. Aborting commit!');
-	  	           return false;
-	  	        }
-
-	  		    try {
-	  		   		  $this->pdo->commit();
-	  		   		  $this->transactionInProgress = false;
-	  		   		  Log::debug('BaseDialect::commit Transaction successfully committed');
-	  		    }
-	  		    catch(PDOException $e) {
-
-	  		          $this->rollback($e->getMessage(), $e->getCode());
-	  		    }
-	  	 }
-
-	  	 /**
-	  	  * Rolls back a transaction.
-	  	  *
-	  	  * @param string $message Error/reason why the transaction was rolled back
-	  	  * @param integer $code An error/reason code
-	  	  * @return void
-	  	  * @throws ORMException
-	  	  * @see http://us2.php.net/manual/en/pdo.transactions.php
-	  	  * @see http://usphp.com/manual/en/function.PDO-rollBack.php
-	  	  */
-	  	 public function rollBack($message = null, $code = 0) {
-
-	  		    try {
-	  		    	  $this->pdo->rollBack();
-	  		    	  $this->transactionInProgress = false;
-	  		    	  Log::debug('BaseDialect::rollBack' . (($message == null) ? '' : ' ' . $message));
-	  		    }
-	  		    catch(PDOException $e) {
-
-	  		   		   throw new ORMException($e->getMessage(), $e->getCode());
-	  		    }
-
-	  		    if($message) throw new ORMException($message, $code);
-	  	 }
-
-	  	 /**
-		  * Prepares an SQL prepared statement
-		  *
-		  * @param string $statement The SQL statement to prepare
-		  * @return boolean False if the statement could not execute successfully
-		  * @throws ORMException
-		  * @see http://usphp.com/manual/en/function.PDO-prepare.php
-	  	  */
-	  	 public function prepare($statement) {
-
-	  		    Log::debug('BaseDialect::prepare Preparing' .
-			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
+        Log::debug('BaseDialect::prepare Preparing' .
+        (($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'statement ' . $statement);
 
-				try {
-						if(!$this->PDOStatement = $this->pdo->prepare($statement)) {
+        try {
+            if(!$this->PDOStatement = $this->pdo->prepare($statement)) {
 
-					  	  	$info = $this->pdo->errorInfo();
+                $info = $this->pdo->errorInfo();
 
-					  	  	if($this->transactionInProgress)
-			  	 		    	$this->rollBack($info[2], $info[1]);
+                if($this->transactionInProgress)
+                $this->rollBack($info[2], $info[1]);
 
-						  	throw new ORMException($info[2], $info[1]);
-					    }
-				}
-				catch(PDOException $e) {
+                throw new ORMException($info[2], $info[1]);
+            }
+        }
+        catch(PDOException $e) {
 
-					   throw new ORMException($e->getMessage(), $e->getCode());
-				}
+            throw new ORMException($e->getMessage(), $e->getCode());
+        }
 
-	  		    return $this->PDOStatement;
-	  	 }
+        return $this->PDOStatement;
+    }
 
-	  	 /**
-	  	  * Executes a prepared statement with optional parameters
-	  	  *
-	  	  * @param array $inputParameters Optional array of input parameters
-	  	  * @return boolean True if successful, false on fail
-	  	  * @throws ORMException
-	  	  * @see http://usphp.com/manual/en/function.PDOStatement-execute.php
-	  	  */
-	  	 public function execute(array $inputParameters = array()) {
+    /**
+     * Executes a prepared statement with optional parameters
+     *
+     * @param array $inputParameters Optional array of input parameters
+     * @return boolean True if successful, false on fail
+     * @throws ORMException
+     * @see http://usphp.com/manual/en/function.PDOStatement-execute.php
+     */
+    public function execute(array $inputParameters = array()) {
 
-	  		    Log::debug('BaseDialect::execute Executing' .
-			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
+        Log::debug('BaseDialect::execute Executing' .
+        (($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'prepared statement with $inputParameters ' . print_r($inputParameters, true));
 
-			  	try {
-					  	if(!$this->PDOStatement->execute($inputParameters)) {
+        try {
+            if(!$this->PDOStatement->execute($inputParameters)) {
 
-						    $info = $this->PDOStatement->errorInfo();
+                $info = $this->PDOStatement->errorInfo();
 
-					        if($this->transactionInProgress)
-					  			$this->rollBack($info[2], $info[1]);
+                if($this->transactionInProgress)
+                $this->rollBack($info[2], $info[1]);
 
-						  	throw new ORMException($info[2], $info[1]);
-					    }
-			  	}
-			  	catch(PDOException $e) {
+                throw new ORMException($info[2], $info[1]);
+            }
+        }
+        catch(PDOException $e) {
 
-			  		   if($this->transactionInProgress)
-					  	   $this->rollBack();
+            if($this->transactionInProgress)
+            $this->rollBack();
 
-			  		   throw new ORMException($e->getMessage(), $e->getCode());
-			  	}
+            throw new ORMException($e->getMessage(), $e->getCode());
+        }
 
-			    return $this->PDOStatement;
-	  	 }
+        return $this->PDOStatement;
+    }
 
-	  	 /**
-	  	  * Executes an SQL statement and returns the number of rows affected by the query.
-	  	  *
-	  	  * @param string $statement The SQL statement to execute.
-	  	  * @return integer The number of rows affected by the query.
-	  	  * @see http://usphp.com/manual/en/function.PDO-exec.php
-	  	  */
-	  	 public function exec($statement) {
+    /**
+     * Executes an SQL statement and returns the number of rows affected by the query.
+     *
+     * @param string $statement The SQL statement to execute.
+     * @return integer The number of rows affected by the query.
+     * @see http://usphp.com/manual/en/function.PDO-exec.php
+     */
+    public function exec($statement) {
 
-	  		    Log::debug('BaseDialect::exec Executing raw' .
-			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
+        Log::debug('BaseDialect::exec Executing raw' .
+        (($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'PDO::exec query ' . $statement);
 
-	  		    return $this->pdo->exec($statement);
-	  	 }
+        return $this->pdo->exec($statement);
+    }
 
-		 /**
-	   	  * Executes a raw SQL query
-	   	  *
-	   	  * @param string $sql The SQL statement to execute
-	   	  * @return PDOStatement The PDOStatement returned by PDO::query
-	   	  * @throws ORMException
-	   	  * @see http://usphp.com/manual/en/function.PDO-query.php
-	   	  */
-	  	 public function query($sql) {
+    /**
+     * Executes a raw SQL query
+     *
+     * @param string $sql The SQL statement to execute
+     * @return PDOStatement The PDOStatement returned by PDO::query
+     * @throws ORMException
+     * @see http://usphp.com/manual/en/function.PDO-query.php
+     */
+    public function query($sql) {
 
-	  		    Log::debug('BaseDialect::query Executing' .
-			  	     					(($this->transactionInProgress) ? ' (transactional) ' : ' ') .
+        Log::debug('BaseDialect::query Executing' .
+        (($this->transactionInProgress) ? ' (transactional) ' : ' ') .
 			  	     					'raw PDO::query ' . $sql);
 
-	  		    $stmt = $this->pdo->query($sql);
+        $stmt = $this->pdo->query($sql);
 
-	  	        if($this->pdo->errorCode() > 0) {
+        if($this->pdo->errorCode() > 0) {
 
-                    $info = $this->pdo->errorInfo();
+            $info = $this->pdo->errorInfo();
 
-                    if($this->transactionInProgress)
-			  			$this->rollBack($info[2], $info[1]);
+            if($this->transactionInProgress)
+            $this->rollBack($info[2], $info[1]);
 
-	  	     	    throw new ORMException($info[2], $this->pdo->errorCode());
-	  	        }
+            throw new ORMException($info[2], $this->pdo->errorCode());
+        }
 
-	  	        return $stmt;
-	  	}
+        return $stmt;
+    }
 
-	  	/**
-	  	 * Quotes a string so its theoretically safe to pass into a statement
-	  	 *
-	  	 * @param string $data The data to quote
-	  	 * @return The quoted data
-	  	 * @see http://www.php.net/manual/en/pdo.quote.php
-	  	 */
-	  	public function quote($data) {
+    /**
+     * Quotes a string so its theoretically safe to pass into a statement
+     *
+     * @param string $data The data to quote
+     * @return The quoted data
+     * @see http://www.php.net/manual/en/pdo.quote.php
+     */
+    public function quote($data) {
+        return $this->pdo->quote($data);
+    }
 
-	  		   return $this->pdo->quote($data);
-	  	}
+    /**
+     * Persists a domain model object
+     *
+     * @param DomainModel $model The domain model to persist
+     * @return PDOStatement
+     * @throws ORMException
+     * @todo Work out foreign key auto persist/merge logic or drop support?
+     */
+    public function persist(DomainModel $model) {
 
-	  	/**
-	   	 * Persists a domain model object
-	     *
-	     * @param DomainModel $model The domain model to persist
-	     * @return PDOStatement
-	     * @throws ORMException
-	     * @todo Work out foreign key auto persist/merge logic or drop support?
-	     */
-	    public function persist(DomainModel $model) {
+        $this->model = $model;
 
-	    	   $this->model = $model;
+        $values = array();
+        $table = $this->getTableByModel($model);
 
-	   		   $values = array();
-			   $table = $this->getTableByModel($model);
+        Log::debug('BaseDialect::persist Performing persist on model \'' . $table->getModel() . '\'.');
 
-			   Log::debug('BaseDialect::persist Performing persist on model \'' . $table->getModel() . '\'.');
+        $this->validate($table, true);
 
-	   		   $this->validate($table, true);
+        $columns = $table->getColumns();
+        $columnCount = count($columns);
 
-	   		   $columns = $table->getColumns();
-			   $columnCount = count($columns);
+        $sql = 'INSERT INTO ' . $table->getName() . '(';
 
-			   $sql = 'INSERT INTO ' . $table->getName() . '(';
+        for($i=0; $i<$columnCount; $i++) {
 
-			   for($i=0; $i<$columnCount; $i++) {
+            if($columns[$i]->isAutoIncrement()) continue;
+            if($columns[$i]->isLazy()) continue;
 
-			   		if($columns[$i]->isAutoIncrement()) continue;
-			   		if($columns[$i]->isLazy()) continue;
+            $sql .= $columns[$i]->getName();
 
-			   		$sql .= $columns[$i]->getName();
+            if(($i + 1) < $columnCount) $sql .= ', ';
+        }
+        $sql .= ') VALUES (';
+        for($i=0; $i<$columnCount; $i++) {
 
-			   		if(($i + 1) < $columnCount) $sql .= ', ';
-			   }
-			   $sql .= ') VALUES (';
-			   for($i=0; $i<$columnCount; $i++) {
+            if($columns[$i]->isAutoIncrement()) continue;
+            if($columns[$i]->isLazy()) continue;
 
-			   		if($columns[$i]->isAutoIncrement()) continue;
-			   		if($columns[$i]->isLazy()) continue;
+            $sql .= '?';
 
-			   		$sql .= '?';
+            $accessor = ClassUtils::toAccessor($columns[$i]->getModelPropertyName());
+            if($columns[$i]->isForeignKey()) {
 
-			   	    $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-			   	    if($columns[$i]->isForeignKey()) {
+                if(is_object($model->$accessor())) {
 
-			   	    	if(is_object($model->$accessor())) {
+                    $refAccessor = ClassUtils::toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 
-			   	    		$refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+                    if($model->$accessor()->$refAccessor() != null) {
 
-			   	    		if($model->$accessor()->$refAccessor() != null) {
+                        switch($columns[$i]->getForeignKey()->getCascade()) {
 
-			   	    		   switch($columns[$i]->getForeignKey()->getCascade()) {
+                            case 'all':
+                            case 'persist-merge':
 
-			   	    		       case 'all':
-			   	    		       case 'persist-merge':
+                                try {
+                                    // Try to persist the referenced entity first
+                                    $this->persist($model->$accessor());
+                                }
+                                catch(Exception $e) {
 
-  		   			   	    			try {
-        			   	    				  // Try to persist the referenced entity first
-        					   	    		  $this->persist($model->$accessor());
-          			   	    			}
-        			   	    			catch(Exception $e) {
+                                    // The referenced entity already exists - merge instead
+                                    if(preg_match('/duplicate/i', $e->getMessage()))
+                                    $this->merge($model->$accessor());
+                                }
+                                break;
+                        }
 
-        			   	    				   // The referenced entity already exists - merge instead
-        			   	    				   if(preg_match('/duplicate/i', $e->getMessage()))
-        			   	    				   	  $this->merge($model->$accessor());
-        			   	    			}
-        			   	    		break;
-			   	    		   }
+                        if($transformer = $columns[$i]->getTransformer())
+                        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+                        else
+                        array_push($values, $model->$accessor()->$refAccessor());
+                    }
+                    else {
 
-			   	    		   if($transformer = $columns[$i]->getTransformer())
-			   	    		      array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
-			   	    		   else
-	   	    		              array_push($values, $model->$accessor()->$refAccessor());
-			   	    		}
-			   	    	    else {
+                        // Assuming this is a foreign key that has an auto-increment column as its primary key
+                        switch($columns[$i]->getForeignKey()->getCascade()) {
 
-			   	    		    // Assuming this is a foreign key that has an auto-increment column as its primary key
-			   	    		    switch($columns[$i]->getForeignKey()->getCascade()) {
+                            case 'all':
+                            case 'persist-merge':
 
-			   	    		       case 'all':
-			   	    		       case 'persist-merge':
+                                // Try to persist the referenced entity first
+                                $this->persist($model->$accessor());
 
-        			   	    				  // Try to persist the referenced entity first
-        					   	    		  $this->persist($model->$accessor());
+                                if(!$this->lastInsertId = $this->pdo->lastInsertId()) {
 
-        					   	    		  if(!$this->lastInsertId = $this->pdo->lastInsertId()) {
+                                    // pgsql sequence
+                                    if(!$sequence = $columns[$i]->getSequence())
+                                    $sequence = $columns[$i]->getForeignKey()->getReferencedTableInstance()->getName() . '_id_seq';
 
-        					   	    		     // pgsql sequence
-        					   	    		     if(!$sequence = $columns[$i]->getSequence())
-        					   	    		         $sequence = $columns[$i]->getForeignKey()->getReferencedTableInstance()->getName() . '_id_seq';
+                                    $this->lastInsertId = $this->pdo->lastInsertId($sequence);
+                                }
 
-        					   	    		     $this->lastInsertId = $this->pdo->lastInsertId($sequence);
-        					   	    		  }
+                                // Use the new id as the foreign key value
+                                if($transformer = $columns[$i]->getTransformer())
+                                array_push($values, $transformer::transform($this->lastInsertId));
+                                else
+                                array_push($values, $this->lastInsertId);
+                                break;
 
-        					   	    		  // Use the new id as the foreign key value
-        			   	    		          if($transformer = $columns[$i]->getTransformer())
-        			   	    		             array_push($values, $transformer::transform($this->lastInsertId));
-        			   	    		          else
-        			   	    		             array_push($values, $this->lastInsertId);
-        			   	    		break;
+                            default:
+                                array_push($values, null);
+                                break;
+                        }
+                    }
+                }
+                else {
 
-        			   	    		default:
-			   	    		       	  array_push($values, null);
-			   	    		        break;
-			   	    		    }
-			   	    	    }
-			   	    	}
-			   	    	else {
+                    array_push($values, null);
+                }
+            }
+            else { // No foreign key
 
-			   	    		array_push($values, null);
-			   	    	}
-			   	    }
-			   	    else { // No foreign key
+                if($transformer = $columns[$i]->getTransformer())
+                array_push($values, $transformer::transform((($model->$accessor() == '') ? NULL : $model->$accessor())));
+                else
+                array_push($values, (($model->$accessor() == '') ? NULL : $model->$accessor()));
+            }
 
-			   	        if($transformer = $columns[$i]->getTransformer())
-					   	   array_push($values, $transformer::transform((($model->$accessor() == '') ? NULL : $model->$accessor())));
-					   	else
-					   	   array_push($values, (($model->$accessor() == '') ? NULL : $model->$accessor()));
-			   	    }
+            if(($i + 1) < count($columns)) $sql .= ', ';
+        }
+        $sql .= ');';
 
-			   		if(($i + 1) < count($columns)) $sql .= ', ';
-			   }
-			   $sql .= ');';
+        if($persist = $table->getPersist()) $sql = $persist;
 
-			   if($persist = $table->getPersist()) $sql = $persist;
+        $this->prepare($sql);
+        $retval = $this->execute($values);
 
-	   		   $this->prepare($sql);
-	  		   $retval = $this->execute($values);
+        IdentityMap::add($model);
 
-	  		   IdentityMap::add($model);
+        return $retval;
+    }
 
-	  		   return $retval;
-	    }
+    /**
+     * Merges/updates a persisted domain model object
+     *
+     * @param DomainModel $model The domain model object to merge/update
+     * @return PDOStatement
+     * @throws ORMException
+     * @todo Work out foreign key auto persist/merge logic or drop support?
+     */
+    public function merge(DomainModel $model) {
 
-	    /**
-	     * Merges/updates a persisted domain model object
-	     *
-	     * @param DomainModel $model The domain model object to merge/update
-	     * @return PDOStatement
-	     * @throws ORMException
-	     * @todo Work out foreign key auto persist/merge logic or drop support?
-	     */
-	    public function merge(DomainModel $model) {
+        $this->model = $model;
+        $table = $this->getTableByModel($model);
 
-	    	   $this->model = $model;
-	    	   $table = $this->getTableByModel($model);
+        Log::debug('BaseDialect::merge Performing merge on model \'' . $table->getModel() . '\'.');
 
-	    	   Log::debug('BaseDialect::merge Performing merge on model \'' . $table->getModel() . '\'.');
+        $this->validate($table);
+        $values = array();
+        $cols = array();
 
-			   $this->validate($table);
-	  	       $values = array();
-	  	       $cols = array();
+        $sql = 'UPDATE ' . $table->getName() . ' SET ';
 
-			   $sql = 'UPDATE ' . $table->getName() . ' SET ';
+        $columns = $table->getColumns();
+        $naCount = 0;
+        for($i=0; $i<count($columns); $i++) {
 
-	  		   $columns = $table->getColumns();
-	  		   $naCount = 0;
-			   for($i=0; $i<count($columns); $i++) {
+            if($columns[$i]->isPrimaryKey() || $columns[$i]->isAutoIncrement()) continue;
+            if($columns[$i]->isLazy()) continue;
 
-			   	    if($columns[$i]->isPrimaryKey() || $columns[$i]->isAutoIncrement()) continue;
-			   		if($columns[$i]->isLazy()) continue;
+            $accessor = ClassUtils::toAccessor($columns[$i]->getModelPropertyName());
+            // Extract foreign key value from the referenced column
+            if($columns[$i]->isForeignKey()) {
 
-			   		$accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-			   		// Extract foreign key value from the referenced column
-			   	    if($columns[$i]->isForeignKey()) {
+                if(is_object($model->$accessor())) {
 
-			   	    	if(is_object($model->$accessor())) {
+                    $refAccessor = ClassUtils::toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+                    if($model->$accessor()->$refAccessor() != null) {
 
-			   	    		$refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
-			   	    		if($model->$accessor()->$refAccessor() != null) {
+                        switch($columns[$i]->getForeignKey()->getCascade()) {
 
-			   	    		   switch($columns[$i]->getForeignKey()->getCascade()) {
+                            case 'all':
+                            case 'persist-merge':
+                                $this->merge($model->$accessor());
+                                break;
+                        }
 
-			   	    		       case 'all':
-			   	    		       case 'persist-merge':
-  		   			   	    			$this->merge($model->$accessor());
-      			   	    		   break;
-			   	    		   }
+                        if($transformer = $columns[$i]->getTransformer())
+                        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+                        else
+                        array_push($values, $model->$accessor()->$refAccessor());
+                    }
+                    else {
 
-			   	    		   if($transformer = $columns[$i]->getTransformer())
-   			   	    			  array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
-   			   	    		   else
-   			   	    			  array_push($values, $model->$accessor()->$refAccessor());
-			   	    		}
-			   	    		else {
+                        // Assuming this is a foreign key that has an auto-increment column as its primary key
+                        switch($columns[$i]->getForeignKey()->getCascade()) {
 
-			   	    		   // Assuming this is a foreign key that has an auto-increment column as its primary key
-			   	    		   switch($columns[$i]->getForeignKey()->getCascade()) {
+                            case 'all':
+                            case 'persist-merge':
 
-			   	    		       case 'all':
-			   	    		       case 'persist-merge':
+                                // Persist the referenced model instance, and use its new id as the foreign key value
+                                $this->persist($model->$accessor());
 
-			   	    		           // Persist the referenced model instance, and use its new id as the foreign key value
-			   	    		           $this->persist($model->$accessor());
+                                if(!$this->lastInsertId = $this->pdo->lastInsertId()) {
 
-			   	    		           if(!$this->lastInsertId = $this->pdo->lastInsertId()) {
+                                    // pgsql sequence
+                                    if(!$sequence = $columns[$i]->getSequence())
+                                    $sequence = $columns[$i]->getForeignKey()->getReferencedTableInstance()->getName() . '_id_seq';
 
-			   	    		               // pgsql sequence
-      					   	    		   if(!$sequence = $columns[$i]->getSequence())
-        					   	    		   $sequence = $columns[$i]->getForeignKey()->getReferencedTableInstance()->getName() . '_id_seq';
+                                    $this->lastInsertId = $this->pdo->lastInsertId($sequence);
+                                }
 
-        					   	    	   $this->lastInsertId = $this->pdo->lastInsertId($sequence);
-        					   	       }
+                                // Use the new id as the foreign key value
+                                if($transformer = $columns[$i]->getTransformer())
+                                array_push($values, $transformer::transform($this->lastInsertId));
+                                else
+                                array_push($values, $this->lastInsertId);
 
-			   	    		           // Use the new id as the foreign key value
-			   	    		           if($transformer = $columns[$i]->getTransformer())
-			   	    		              array_push($values, $transformer::transform($this->lastInsertId));
-			   	    		           else
-			   	    		              array_push($values, $this->lastInsertId);
+                                break;
 
-      			   	    		   break;
+                            case '':
+                            case 'none':
+                                array_push($values, $model->$accessor()->$refAccessor());
+                                break;
+                        }
+                    }
+                }
+                else {
 
-      			   	    		   case '':
-			   	    		       case 'none':
-			   	    		       	  array_push($values, $model->$accessor()->$refAccessor());	
-			   	    		       break;
-			   	    		   }
-			   	    		}
-			   	    	}
-			   	    	else {
+                    array_push($values, null);
+                }
+            }
+            else { // not a foreign key
 
-			   	        	array_push($values, null);
-			   	        }
-			   	    }
-			   	    else { // not a foreign key
+                if($transformer = $columns[$i]->getTransformer())
+                array_push($values, $transformer::transform($model->$accessor()));
+                else
+                array_push($values, $model->$accessor());
+            }
 
-			   	        if($transformer = $columns[$i]->getTransformer())
-				   	       array_push($values, $transformer::transform($model->$accessor()));
-				   	    else
-				   	       array_push($values, $model->$accessor());
-			   	    }
+            array_push($cols, $columns[$i]->getName());
+        }
 
-			   	    array_push($cols, $columns[$i]->getName());
-			   }
+        $sql .= implode($cols, '=?, ') . '=? WHERE ';
 
-		       $sql .= implode($cols, '=?, ') . '=? WHERE ';
+        $pkeyColumns = $table->getPrimaryKeyColumns();
+        for($i=0; $i<count($pkeyColumns); $i++) {
 
-			   $pkeyColumns = $table->getPrimaryKeyColumns();
-			   for($i=0; $i<count($pkeyColumns); $i++) {
+            // Primary keys which are also foreign keys are many-to-many
+            if($pkeyColumns[$i]->isForeignKey()) {
 
-			        // Primary keys which are also foreign keys are many-to-many
-			        if($pkeyColumns[$i]->isForeignKey()) {
+                $fkAccessor = ClassUtils::toAccessor($columns[$i]->getModelPropertyName());
+                $accessor = ClassUtils::toAccessor($pkeyColumns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+                $sql .= $columns[$i]->getName() . '=?';
 
-			           $fkAccessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-			           $accessor = $this->toAccessor($pkeyColumns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
-			           $sql .= $columns[$i]->getName() . '=?';
+                array_push($values, $model->$fkAccessor()->$accessor());
+            }
+            else {
 
-			           array_push($values, $model->$fkAccessor()->$accessor());
-			        }
-			        else {
+                $accessor = ClassUtils::toAccessor($columns[$i]->getModelPropertyName());
+                $sql .= $columns[$i]->getName() . '=?';
 
-					   $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-			           $sql .= $columns[$i]->getName() . '=?';
+                array_push($values, $model->$accessor());
+            }
 
-			           array_push($values, $model->$accessor());
-			        }
+            if(($i+1) < count($pkeyColumns)) $sql .= ' AND ';
+        }
 
-			  		if(($i+1) < count($pkeyColumns)) $sql .= ' AND ';
-			   }
+        $sql .= ';';
 
-			   $sql .= ';';
+        if($merge = $table->getMerge()) $sql = $merge;
 
-			   if($merge = $table->getMerge()) $sql = $merge;
+        $this->prepare($sql);
+        $retval = $this->execute($values);
 
-		       $this->prepare($sql);
-	  	       $retval = $this->execute($values);
+        IdentityMap::add($model);
 
-	  	       IdentityMap::add($model);
+        return $retval;
+    }
 
-	  	       return $retval;
-	    }
+    /**
+     * Deletes a persisted domain model object (ActiveRecord)
+     *
+     * @param DomainModel $model The domain model object to delete
+     * @return PDOStatement
+     * @throws ORMException
+     */
+    public function delete(DomainModel $model) {
 
-	    /**
-	     * Deletes a persisted domain model object (ActiveRecord)
-	     *
-	     * @param DomainModel $model The domain model object to delete
-	     * @return PDOStatement
-	     * @throws ORMException
-	     */
-	    public function delete(DomainModel $model) {
+        $table = $this->getTableByModel($model);
 
-	      	   $table = $this->getTableByModel($model);
+        Log::debug('BaseDialect::delete Performing delete on model \'' . $table->getModel() . '\'.');
 
-	      	   Log::debug('BaseDialect::delete Performing delete on model \'' . $table->getModel() . '\'.');
+        $values = array();
+        $columns = $table->getColumns();
+        $pkeyCount = count($table->getPrimaryKeyColumns());
+        $fkeyColumns = $table->getForeignKeyColumns();
 
-	    	   $values = array();
-		       $columns = $table->getColumns();
-		       $pkeyCount = count($table->getPrimaryKeyColumns());
-	           $fkeyColumns = $table->getForeignKeyColumns();
+        $sql = 'DELETE FROM ' . $table->getName() . ' WHERE ';
 
-		       $sql = 'DELETE FROM ' . $table->getName() . ' WHERE ';
+        for($i=0; $i<count($columns); $i++) {
 
-		       for($i=0; $i<count($columns); $i++) {
+            if($columns[$i]->isForeignKey()) {
 
-		   		    if($columns[$i]->isForeignKey()) {
+                $fkAccessor = ClassUtils::toAccessor($columns[$i]->getModelPropertyName());
+                $accessor = ClassUtils::toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 
-		   		        $fkAccessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-		                $accessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+                // This is both a foreign key and primary key
+                if($columns[$i]->isPrimaryKey()) {
 
-		                // This is both a foreign key and primary key
-		   		        if($columns[$i]->isPrimaryKey()) {
+                    $sql .= $columns[$i]->getName() . '=?';
+                    array_push($values, $model->$fkAccessor()->$accessor());
+                    if(($i+1) < $pkeyCount) $sql .= ' AND ';
+                }
 
-		                    $sql .= $columns[$i]->getName() . '=?';
-		                    array_push($values, $model->$fkAccessor()->$accessor());
-		                    if(($i+1) < $pkeyCount) $sql .= ' AND ';
-		                }
+                switch($columns[$i]->getForeignKey()->getCascade()) {
 
-		                switch($columns[$i]->getForeignKey()->getCascade()) {
+                    case 'all':
+                    case 'delete':
+                        if(is_object($model->$fkAccessor()))
+                        $this->delete($model->$fkAccessor());
+                        break;
+                }
+            }
+            elseif($columns[$i]->isPrimaryKey()) {
 
-		   	    		       case 'all':
-		   	    		       case 'delete':
-		   	    		            if(is_object($model->$fkAccessor()))
-		   			   	    		   $this->delete($model->$fkAccessor());
-      			   	    	   break;
-			   	    	}
-		   		    }
-		   		    elseif($columns[$i]->isPrimaryKey()) {
-
-    		   		        $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
+                $accessor = ClassUtils::toAccessor($columns[$i]->getModelPropertyName());
     		   			    $sql .= '' . $columns[$i]->getName() . '=?';
     		   			    $sql .= ($i+1) < $pkeyCount ? ' AND ' : ';';
 
     		   			    if($transformer = $columns[$i]->getTransformer())
-    				   	       array_push($values, $transformer::transform($model->$accessor()));
+    		   			    array_push($values, $transformer::transform($model->$accessor()));
     				   	    else
-    				   	       array_push($values, $model->$accessor());
-		   		    }
-		       }
+    				   	    array_push($values, $model->$accessor());
+            }
+        }
 
-		       if($delete = $table->getDelete()) $sql = $delete;
+        if($delete = $table->getDelete()) $sql = $delete;
 
-		       $this->prepare($sql);
-		       $retval = $this->execute($values);
+        $this->prepare($sql);
+        $retval = $this->execute($values);
 
-		       IdentityMap::remove($model);
+        IdentityMap::remove($model);
 
-		       return $retval;
-	    }
+        return $retval;
+    }
 
-		/**
-	     * Looks up a single record using the primary keys values set in the model. Shorthand for find($model)[0].
-	     *
-	     * @param DomainModel $model A domain model object. Any fields which are set in the object are used to filter results.
-	     * @throws ORMException
-	     */
-	    public function get(DomainModel $model) {
+    /**
+     * Looks up a single record using the primary keys values set in the model. Shorthand for find($model)[0].
+     *
+     * @param DomainModel $model A domain model object. Any fields which are set in the object are used to filter results.
+     * @throws ORMException
+     */
+    public function get(DomainModel $model) {
 
-	           //if($m = IdentityMap::get($model)) return $m;
+        //if($m = IdentityMap::get($model)) return $m;
 
-	           $table = $this->getTableByModel($model);
+        $table = $this->getTableByModel($model);
 
-	           Log::debug('BaseDialect::get Performing get on model \'' . $table->getModel() . '\'.');
+        Log::debug('BaseDialect::get Performing get on model \'' . $table->getModel() . '\'.');
 
-	           if($sql = $table->getGet()) {
+        if($sql = $table->getGet()) {
 
-	              $this->prepare($sql);
-	              $records = $this->execute();
+            // @todo Need to parse WHERE clause to ensure the query gets executed correctly!
+            throw new Exception('BaseDialect::get Not yet supported...');
 
-	              if(!isset($records[0])) {
+            $this->prepare($sql);
+            $records = $this->execute();
 
-	                 Log::debug('Entity not found for model \'' . $table->getModel() . '\' using SQL ' . $sql);
-	                 throw new ORMException('ActiveRecord state for model \'' . $table->getModel() . '\' not found');
-	              }
+            if(!isset($records[0])) {
 
-	              return $records[0];
-	           }
+                Log::debug('Entity not found for model \'' . $table->getModel() . '\' using SQL ' . $sql);
+                throw new ORMException('ActiveRecord state for model \'' . $table->getModel() . '\' not found');
+            }
 
-	    	   $records = $this->find($model);
-	    	   if(isset($records[0])) {
+            return $records[0];
+        }
 
-	    	      IdentityMap::add($records[0]);
-	    	      return $records[0];
-	    	   }
-	    }
+        $records = $this->find($model);
+        if(isset($records[0])) {
 
-	    /**
-	     * Attempts to locate the specified model by values. Any fields set in the object are used
-	     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
-	     * filter results.
-	     *
-	     * @param DomainModel $model The domain model object. Any fields which are set in the object are used to filter results.
-	     * @throws ORMException If any primary keys contain null values or any errors are encountered executing queries.
-	     */
-	    public function find(DomainModel $model) {
+            IdentityMap::add($records[0]);
+            return $records[0];
+        }
+    }
 
-	           //if($m = IdentityMap::get($model)) return array($m);
+    /**
+     * Attempts to locate the specified model by values. Any fields set in the object are used
+     * in search criteria. Alternatively, setRestrictions and setOrderBy methods can be used to
+     * filter results.
+     *
+     * @param DomainModel $model The domain model object. Any fields which are set in the object are used to filter results.
+     * @throws ORMException If any primary keys contain null values or any errors are encountered executing queries.
+     */
+    public function find(DomainModel $model) {
 
-	    	   $table = $this->getTableByModel($model);
-			   $values = array();
+        //if($m = IdentityMap::get($model)) return array($m);
 
-			   Log::debug('BaseDialect::find Performing find on model \'' . $table->getModel() . '\'.');
+        $table = $this->getTableByModel($model);
+        $values = array();
 
-	  		   try {
-	  		   		 if($this->isEmpty($model)) {
+        Log::debug('BaseDialect::find Performing find on model \'' . $table->getModel() . '\'.');
 
-	    	   	         $sql = 'SELECT ' . (($this->isDistinct() == null) ? '*' : 'DISTINCT ' . $this->isDistinct()) . ' FROM ' . $table->getName();
+        try {
+            if(ClassUtils::isEmpty($model)) {
 
-	    	   	         $order = $this->getOrderBy();
-	    	   	         $offset = $this->getOffset();
-	    	   	         $groupBy = $this->getGroupBy();
+                $sql = 'SELECT ' . (($this->isDistinct() == null) ? '*' : 'DISTINCT ' . $this->isDistinct()) . ' FROM ' . $table->getName();
 
-    	   	         	 $sql .= ($this->restrictions != null) ? $this->createRestrictSQL() : '';
-					 	 $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
-					 	 $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
-					 	 $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
-					 	 $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
-    	   	         	 $sql .= ';';
-	    	   		 }
-	    	   		 else {
-	    	   		 		$where = '';
-	    	   		 		$order = $this->getOrderBy();
-	    	   	         	$offset = $this->getOffset();
-	    	   	         	$groupBy = $this->getGroupBy();
+                $order = $this->getOrderBy();
+                $offset = $this->getOffset();
+                $groupBy = $this->getGroupBy();
 
-	    	   		 		$columns = $table->getColumns();
-							for($i=0; $i<count($columns); $i++) {
+                $sql .= ($this->restrictions != null) ? $this->createRestrictSQL() : '';
+                $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
+                $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
+                $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
+                $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
+                $sql .= ';';
+            }
+            else {
+                $where = '';
+                $order = $this->getOrderBy();
+                $offset = $this->getOffset();
+                $groupBy = $this->getGroupBy();
 
-							 	 if($columns[$i]->isLazy()) continue;
+                $columns = $table->getColumns();
+                for($i=0; $i<count($columns); $i++) {
 
-							 	 $accessor = $this->toAccessor($columns[$i]->getModelPropertyName());
-						     	 if($model->$accessor() == null) continue;
+                    if($columns[$i]->isLazy()) continue;
 
-						     	 $where .= (count($values) ? ' ' . $this->restrictionsLogic . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->comparisonLogic . ' ?';
+                    $accessor = ClassUtils::toAccessor($columns[$i]->getModelPropertyName());
+                    if($model->$accessor() == null) continue;
 
-						     	 if(is_object($model->$accessor())) {
+                    $where .= (count($values) ? ' ' . $this->restrictionsLogic . ' ' : ' ') . $columns[$i]->getName() . ' ' . $this->comparisonLogic . ' ?';
 
-						     	 	 $refAccessor = $this->toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+                    if(is_object($model->$accessor())) {
 
-						     	 	 if($transformer = $columns[$i]->getTransformer())
-						     	        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
-						     	     else
-				     	 	     	    array_push($values, $model->$accessor()->$refAccessor());
-						     	 }
-						     	 else {
+                        $refAccessor = ClassUtils::toAccessor($columns[$i]->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
 
-						     	     if($transformer = $columns[$i]->getTransformer())
-						     	        array_push($values, $transformer::transform($model->$accessor()));
-						     	     else
-				     	 	     	    array_push($values, $model->$accessor());
-						     	 }
-						    }
+                        if($transformer = $columns[$i]->getTransformer())
+                        array_push($values, $transformer::transform($model->$accessor()->$refAccessor()));
+                        else
+                        array_push($values, $model->$accessor()->$refAccessor());
+                    }
+                    else {
 
-						    // @todo this probably needs refactoring
-						    $sql = $table->getFind();
-						    if($where) {
+                        if($transformer = $columns[$i]->getTransformer())
+                        array_push($values, $transformer::transform($model->$accessor()));
+                        else
+                        array_push($values, $model->$accessor());
+                    }
+                }
 
-        					   $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
+                // @todo this probably needs refactoring
+                $sql = $table->getFind();
+                if($where) {
 
-        				 	   $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
-        				 	   $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
-        				 	   $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
-        				 	   $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
-        	   	         	   $sql .= ';';
-						    }
-	    	   		 }
+                    $sql = 'SELECT * FROM ' . $table->getName() . ' WHERE' . $where;
 
-	    	   		 $this->setDistinct(null);
-	   	         	 $this->setRestrictions(array());
-	   	         	 $this->setRestrictionsLogicOperator('AND');
-	   	         	 $this->setOrderBy(null, 'ASC');
-	   	         	 $this->setGroupBy(null);
+                    $sql .= ($order != null) ? ' ORDER BY ' . $order['column'] . ' ' . $order['direction'] : '';
+                    $sql .= ($groupBy)? ' GROUP BY ' . $this->getGroupBy() : '';
+                    $sql .= ($offset && $this->getMaxResults()) ? ' LIMIT ' . $offset . ', ' . $this->getMaxResults() : '';
+                    $sql .= (!$offset && $this->getMaxResults()) ? ' LIMIT ' . $this->getMaxResults() : '';
+                    $sql .= ';';
+                }
+            }
 
-					 $this->prepare($sql);
-					 $this->PDOStatement->setFetchMode(PDO::FETCH_OBJ);
-					 $result = $this->execute($values);
+            $this->setDistinct(null);
+            $this->setRestrictions(array());
+            $this->setRestrictionsLogicOperator('AND');
+            $this->setOrderBy(null, 'ASC');
+            $this->setGroupBy(null);
 
-					 if(!count($result)) {
+            $this->prepare($sql);
+            $this->PDOStatement->setFetchMode(PDO::FETCH_OBJ);
+            $result = $this->execute($values);
 
-					 	 Log::debug('BaseDialect::find Empty result set for model \'' . $table->getModel() . '\'.');
-					 	 return;
-					 }
+            if(!count($result)) {
 
-				 	 $index = 0;
-				 	 $models = array();
-					 foreach($result as $stdClass ) {
+                Log::debug('BaseDialect::find Empty result set for model \'' . $table->getModel() . '\'.');
+                return;
+            }
 
-					 		  $m = $table->getModelInstance();
-					 	   	  foreach(get_object_vars($stdClass) as $name => $value) {
+            $index = 0;
+            $models = array();
+            foreach($result as $stdClass ) {
 
-					 	   	  		   $modelProperty = $this->getPropertyNameForColumn($table, $name);
+                $m = $table->getModelInstance();
+                foreach(get_object_vars($stdClass) as $name => $value) {
 
-							 	   	   // Create foreign model instances from foreign values
-						 	 		   foreach($table->getColumns() as $column) {
+                    $modelProperty = $this->getPropertyNameForColumn($table, $name);
 
-						 	 		   		    if($column->getName() != $name) continue;
-						 	 		   		    if($column->isLazy()) continue;
+                    // Create foreign model instances from foreign values
+                    foreach($table->getColumns() as $column) {
 
-						 	 		   		    if($renderer = $column->getRenderer())
-                        				   	       $value = $renderer::render($value);
+                        if($column->getName() != $name) continue;
+                        if($column->isLazy()) continue;
 
-                        				   	    if(!$value) continue;
+                        if($renderer = $column->getRenderer())
+                        $value = $renderer::render($value);
 
-						 	 		  		    if($column->isForeignKey()) {
+                        if(!$value) continue;
 
-						 	 		  		   	    $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
-						 	 		  		   	    $foreignInstance = new $foreignModel();
+                        if($column->isForeignKey()) {
 
-						 	 		  		   	    $foreignMutator = $this->toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
-						 	 		  		   	    $foreignInstance->$foreignMutator($value);
+                            $foreignModel = $column->getForeignKey()->getReferencedTableInstance()->getModel();
+                            $foreignInstance = new $foreignModel();
 
-						 	 		  		   	    $persisted = $this->find($foreignInstance);
-						 	 		  		   	    if(!isset($persisted[0])) Log::warn('BaseDialect::find Warning about missing record during foreign key lookup on \'' . $table->getModel() . '\::' . $modelProperty . '\' with value \'' . $value . '\'.');
+                            $foreignMutator = ClassUtils::toMutator($column->getForeignKey()->getReferencedColumnInstance()->getModelPropertyName());
+                            $foreignInstance->$foreignMutator($value);
 
-						 	 		  		   	    // php namespace support - remove \ character from fully qualified paths
-							 	 		  		   	$foreignModelPieces = explode('\\', $foreignModel);
-							 	 		  		   	$foreignClassName = array_pop($foreignModelPieces);
+                            $persisted = $this->find($foreignInstance);
+                            if(!isset($persisted[0])) Log::warn('BaseDialect::find Warning about missing record during foreign key lookup on \'' . $table->getModel() . '\::' . $modelProperty . '\' with value \'' . $value . '\'.');
 
-						 	 		  		   	    $instanceMutator = $this->toMutator($modelProperty);
-						 	 		  		   	    $m->$instanceMutator($persisted[0]);
-						 	 		  		    }
-						 	 		  		    else {
+                            // php namespace support - remove \ character from fully qualified paths
+                            $foreignModelPieces = explode('\\', $foreignModel);
+                            $foreignClassName = array_pop($foreignModelPieces);
 
-						 	 		  		   		$mutator = $this->toMutator($modelProperty);
-					 	   	   		  				$m->$mutator($value);
-						 	 		  		    }
-						 	 		   }
-					 	   	  }
+                            $instanceMutator = ClassUtils::toMutator($modelProperty);
+                            $m->$instanceMutator($persisted[0]);
+                        }
+                        else {
 
-					 	   	  IdentityMap::add($m);
-					 	   	  array_push($models, $m);
-					 	   	  $index++;
-					 	   	  if($index == $this->maxResults)  break;
-				     }
+                            $mutator = ClassUtils::toMutator($modelProperty);
+                            $m->$mutator($value);
+                        }
+                    }
+                }
 
-				     return $models;
-	  		 }
-	  		 catch(Exception $e) {
+                IdentityMap::add($m);
+                array_push($models, $m);
+                $index++;
+                if($index == $this->maxResults)  break;
+            }
 
-	  		 		throw new ORMException($e->getMessage(), $e->getCode());
-	  		 }
-	  }
+            return $models;
+        }
+        catch(Exception $e) {
+
+            throw new ORMException($e->getMessage(), $e->getCode());
+        }
+    }
 
  	  /**
-	   * Truncates the table for the specified domain model object
-	   *
-	   * @param DomainModel $model A domain model object
-	   * @return PDOStatement
-	   * @throws ORMException
-	   */
-	  public function truncate(DomainModel $model) {
+ 	   * Truncates the table for the specified domain model object
+ 	   *
+ 	   * @param DomainModel $model A domain model object
+ 	   * @return PDOStatement
+ 	   * @throws ORMException
+ 	   */
+    public function truncate(DomainModel $model) {
 
-			 $table = $this->getTableByModel();
-			 $sql = 'TRUNCATE TABLE ' . $table->getName() . ';';
-			 $this->prepare($sql);
-		     return $this->execute();
-	  }
+        $table = $this->getTableByModel();
+        $sql = 'TRUNCATE TABLE ' . $table->getName() . ';';
+        $this->prepare($sql);
+        return $this->execute();
+    }
 
-	  /**
-	   * Returns the total number of records in the specified model.
-	   *
-	   * @param DomainModel $model The domain object to get the count for.
-	   * @return integer The total number of records in the table.
-	   */
-	  public function count(DomainModel $model) {
+    /**
+     * Returns the total number of records in the specified model.
+     *
+     * @param DomainModel $model The domain object to get the count for.
+     * @return integer The total number of records in the table.
+     */
+    public function count(DomainModel $model) {
 
-	  		 $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel($model)->getName();
-			 $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
-			 $sql .= ';';
+        $sql = 'SELECT count(*) as count FROM ' . $this->getTableByModel($model)->getName();
+        $sql .= ($this->createRestrictSQL() == null) ? '' : $this->createRestrictSQL();
+        $sql .= ';';
 
-	     	 $stmt = $this->query($sql);
-  			 $stmt->setFetchMode(PDO::FETCH_OBJ);
-  			 $result = $stmt->fetchAll();
+        $stmt = $this->query($sql);
+        $stmt->setFetchMode(PDO::FETCH_OBJ);
+        $result = $stmt->fetchAll();
 
-  			 return ($result == null) ? 0 : $result[0]->count;
-	  }
+        return ($result == null) ? 0 : $result[0]->count;
+    }
 
-	  /**
-	   * Closes the connection to the database.
-	   *
-	   * @return void
-	   */
-	  public function close() {
+    /**
+     * Closes the connection to the database.
+     *
+     * @return void
+     */
+    public function close() {
+        $this->pdo = null;
+    }
 
-	  	     $this->pdo = null;
-	  }
+    /**
+     * Sets the SQL 'order by' clause.
+     *
+     * @param string $column The column name to order the result set by
+     * $param string $direction The direction to sort the result set (ASC|DESC).
+     * @return void
+     */
+    public function setOrderBy($column, $direction) {
+        $this->orderBy = $column;
+        $this->orderDirection = $direction;
+    }
 
-	  /**
-	   * Sets the SQL 'order by' clause.
-	   *
-	   * @param string $column The column name to order the result set by
-	   * $param string $direction The direction to sort the result set (ASC|DESC).
-	   * @return void
-	   */
-	  public function setOrderBy($column, $direction) {
+    /**
+     * Returns an associative array containing the current 'orderBy' clause. The results
+     * are returned with the name of the column as the index and the direction as the value.
+     *
+     * @return An associative array containing the name of the column to sort as the key/index
+     * 		and the direction of the sort order (ASC|DESC) as the value or void if not specified.
+     */
+    public function getOrderBy() {
+        if(!$this->orderBy) return;
+        return array('column' => $this->orderBy, 'direction' => $this->orderDirection);
+    }
 
-	         $this->orderBy = $column;
-	     	 $this->orderDirection = $direction;
-	  }
+    /**
+     * Sets WHERE clause restrictions
+     *
+     * @param array $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
+     * @return void
+     */
+    public function setRestrictions(array $restrictions) {
+        $this->restrictions = $restrictions;
+    }
 
-	  /**
-	   * Returns an associative array containing the current 'orderBy' clause. The results
-	   * are returned with the name of the column as the index and the direction as the value.
-	   *
-	   * @return An associative array containing the name of the column to sort as the key/index
-	   * 		and the direction of the sort order (ASC|DESC) as the value or void if not specified.
-	   */
-	  public function getOrderBy() {
+    /**
+     * Returns the WHERE clause restrictions
+     *
+     * @return array SQL WHERE clause restrictions
+     */
+    public function getRestrictions() {
+        return $this->restrictions;
+    }
 
-	  		 if(!$this->orderBy) return;
+    /**
+     * Sets the restriction operator (and|or) used in SQL WHERE clause.
+     *
+     * @param string $operator The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.
+     * @return void
+     * @throws ORMException if the specified restrictions logic operator is not "and", or "or".
+     */
+    public function setRestrictionsLogicOperator($operator) {
 
-	  	     return array('column' => $this->orderBy, 'direction' => $this->orderDirection);
-	  }
+        if(strtolower($operator) !== 'and' && strtolower($operator) !== 'or')
+        throw new ORMException('Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.');
 
-	  /**
-	   * Sets WHERE clause restrictions
-	   *
-	   * @param array $restrictions An associative array containing WHERE clause restrictions. (For example: array('id' => 21))
-	   * @return void
-	   */
-	  public function setRestrictions(array $restrictions) {
+        $this->restrictionsLogic = $operator;
+    }
 
-	   		 $this->restrictions = $restrictions;
-	  }
+    /**
+     * Returns restriction logic operator used to filter SELECT / find operations.
+     *
+     * @return string Retrictions logic operator (AND|OR)
+     */
+    public function getRestrictionsLogicOperator() {
+        return $this->restrictionsLogic;
+    }
 
-	  /**
-	   * Returns the WHERE clause restrictions
-	   *
-	   * @return array SQL WHERE clause restrictions
-	   */
-	  public function getRestrictions() {
+    /**
+     * Returns the comparison logic operator.
+     *
+     * @return string Comparison logic operator (LIKE|<|>|?|=)
+     */
+    public function getComparisonLogicOperator() {
+        return $this->comparisonLogic;
+    }
 
-	  		 return $this->restrictions;
-	  }
+    /**
+     * Sets the comparison operator (<|>|=|LIKE) used in SQL WHERE clause.
+     *
+     * @param string $operator The logical comparison operator used is SQL where clauses. Default is '='.
+     * @return void
+     * @throws ORMException if the specified comparison logic operator is not <, >, =, or LIKE.
+     */
+    public function setComparisonLogicOperator($operator) {
 
-	  /**
-	   * Sets the restriction operator (and|or) used in SQL WHERE clause.
-	   *
-	   * @param string $operator The logical operator 'and'/'or' to be used in SQL WHERE clause. Default is 'AND'.
-	   * @return void
-	   * @throws ORMException if the specified restrictions logic operator is not "and", or "or".
-	   */
-	  public function setRestrictionsLogicOperator($operator) {
+        if(strtolower($operator) != 'like' && $operator !== '<' && $operator !== '>' && $operator !== '=')
+        throw new ORMException('Comparison logic operator must be \'>\', \'<\', \'=\', or \'LIKE\'. Found \'' . $operator . '\'.');
 
-	   	     if(strtolower($operator) !== 'and' && strtolower($operator) !== 'or')
-	     	     throw new ORMException('Restrictions logic operator must be either \'and\' or \'or\'. Found \'' . $operator . '\'.');
-
-	     	 $this->restrictionsLogic = $operator;
-	  }
-
-	  /**
-	   * Returns restriction logic operator used to filter SELECT / find operations.
-	   *
-	   * @return string Retrictions logic operator (AND|OR)
-	   */
-	  public function getRestrictionsLogicOperator() {
-
-	  			return $this->restrictionsLogic;
-	  }
-
-	  /**
-	   * Returns the comparison logic operator.
-	   *
-	   * @return string Comparison logic operator (LIKE|<|>|?|=)
-	   */
-	  public function getComparisonLogicOperator() {
-
-				return $this->comparisonLogic;
-	  }
-
-	  /**
-	   * Sets the comparison operator (<|>|=|LIKE) used in SQL WHERE clause.
-	   *
-	   * @param string $operator The logical comparison operator used is SQL where clauses. Default is '='.
-	   * @return void
-	   * @throws ORMException if the specified comparison logic operator is not <, >, =, or LIKE.
-	   */
-	  public function setComparisonLogicOperator($operator) {
-
-	  		 if(strtolower($operator) != 'like' && $operator !== '<' && $operator !== '>' && $operator !== '=')
-	     	     throw new ORMException('Comparison logic operator must be \'>\', \'<\', \'=\', or \'LIKE\'. Found \'' . $operator . '\'.');
-
-	     	 $this->comparisonLogic = $operator;
-	  }
+        $this->comparisonLogic = $operator;
+    }
 
  	  /**
-	   * Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.
-	   *
-	   * @return string The formatted SQL string
-	   */
-	  public function createRestrictSQL() {
-
-	     	 $restricts = null;
-			 if(count($this->restrictions)) {
-
-			  	 $restricts = ' WHERE ';
-				 $index = 0;
-				 foreach($this->restrictions as $key => $val) {
-
-				   		  $index++;
-				   		  $restricts .= $key . ' ' . $this->comparisonLogic . ' \'' . addslashes($val) . '\'';
-
-				   		  if($index < count($this->restrictions))
-				   			  $restricts .= ' ' . $this->restrictionsLogic . ' ';
-				 }
-			 }
-
-			 return $restricts;
-	  }
-
-	  /**
-	   * Returns the Procedure instance which matches the specified name.
-	   *
-	   * @param string $name The procedure name as it lives in the database engine
-	   * @return Procedure The Procedure instance
-	   * @throws ORMException
-	   */
-	  public function getProcedureByName($name) {
-
-			 foreach($this->database->getProcedures() as $proc) {
-
-			 	  	 if($proc->getName() == $name)
-			 	  	    return $proc;
-			 }
-
-			 throw new ORMException('BaseDialect::getProcedureByName Could not locate the requested procedure \'' . $name . '\' in orm.xml');
-	  }
-	  
-	  /**
-	   * Returns the Procedure instance mapped to the specified Model.
-	   *
-	   * @param DomainModel $model The domain model object to retrieve the procedure element for. Defaults to the model
-	   * 			               currently being managed by the 'ORM'.
-	   * @return Procedure The Procedure instance responsible for persistence mappings for the specified model.
-	   */
-	  public function getProcedureByModel(DomainModel $model) {
-
-	  		 $class = get_class($model);
-
-			 foreach($this->database->getProcedures() as $proc) {
-
-			 	  	  if($proc->getModel() == $class)
-			 	  	      return $proc;
-			 }
-
-			 throw new ORMException('BaseDialect::getProcedureByModel Could not locate the requested model \'' . $class . '\' in orm.xml');
-	  }
-	  
-	  /**
-	   * Returns the Procedure responsible for the specified model
-	   *
-	   * @param string $modelName The name of the model class
-	   * @return Procedure The procedure which maps to the specified model name
-	   * @throws ORMException if the specified procedure model name could not be located in orm.xml
-	   */
-	  public function getProcedureByModelName($modelName) {
-
-			 foreach($this->database->getProcedures() as $proc)
-			  	  	  if($proc->getModel() == $modelName)
-			 	  	      return $proc;
-
-			 throw new ORMException('BaseDialect::getProcedureByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml');
-	  }
-
-	  /**
-	   * Returns a NamedQuery instance
-	   *
-	   * @param string $name The query name
-	   * @return NamedQuery
-	   */
-	  public function getQueryByName($name) {
-
-	         foreach($this->database->getNamedQueries() as $namedQuery)
-			  	  if($namedQuery->getName() == $name)
-			 	     return $namedQuery;
-	  }
-
-	  /**
-	   * Executes a NamedQuery instance
-	   * 
-	   * @param string $name The query name
-	   * @return DataModel The model configured for the NamedQuery
-	   */
-	  public function callQueryByName($name, DataModel $model) {
-
-	         if(!$namedQuery = $this->getQueryByName($name))
-	            throw new ORMException('BaseDialect::callQueryByName Could not locate the requested query \'' . $name . '\' in orm.xml');
-
-	         if($namedQuery->isProcedure())
-	             return $this->callProcedure($this->getProcedureByName($name));
-
-	         if($namedQuery->isPrepared()) {
-
-	            $this->prepare($namedQuery->getQuery());
-	            $return = $this->execute($values);
-
-	            if(!$return) {
-
-	                echo 'null';
-	                return null;
-	            }
-
-	            if(is_array($return)) {
-
-	                echo 'array';
-	                print_r($return);
-	                exit;
-	            }
-
-	            // single result
-	            echo 'single result';
-	            print_r($return);
-	            exit;
-	         }
-	  }
-
-	  /**
-	   * Responsible for executing a "referenced" stored procedure. This behaves in a similar fashion
-	   * to the parent/child associations using tables/foreign keys. When a procedure has an OUT parameter
-	   * configured in orm.xml which defines a "references" attribute, the value returned to the "parent"
-	   * procedure from the database is passed into this method where the referenced procedure is executed
-	   * accordingly, and its return value(s) mapped to its configured DomainModel.
-	   * 
-	   * @param string $column The column name as returned from the stored procedure
-	   * @param array $references Associative array of "referenced" stored procedures
-	   *        where the key represents the value returned from the "parent" procedure
-	   *        and the value represents the procedure name.
-	   * @param array $outs An associative array of OUT variables from the parent procedure
-	   * @param mixed $value The value to pass into the referenced procedure
-	   * @return DomainModel The referenced ActiveRecord instance
-	   */
-	  protected function callReference($column, $references, $outs, $value) {
-
-	            $refAccessor = $this->toMutator($outs[$column]);
-
-	            $procedure = $this->getProcedureByName($references[$column]);
-	            $fModelName = $procedure->getModel();
-	            $fModel = new $fModelName;
-
-	            foreach($procedure->getParameters() as $param) {
-
-	                if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
-
-	                   $refMutator = $this->toMutator($param->getModelPropertyName());
-	                   $fModel->$refMutator($value);
-	                }
- 	            }
-
-	            return $this->call($fModel);
-	  }
-	  
-	  /**
-	   * Returns the Table object which is mapped to the specified DomainModel.
-	   *
-	   * @param DomainModel $model The domain model object to retrieve the table element for. Defaults to the model
-	   * 			        currently being managed by the ORM.
-	   * @return Table The Table object responsible for persistence mappings for the specified model.
-	   * @throws ORMException if the specified model could not be located in orm.xml
-	   */
-	  public function getTableByModel(DomainModel $model = null) {
-
-	  		 try {
-	  	     	   $class = new ReflectionClass((($model == null) ? $this->model : $model));
-	  		 }
-	  		 catch(ReflectionException $re) {
-
-	  		 		throw new ORMException('BaseDialect::getTableByModel Could not get table because \'' . $re->getMessage() . '\'.');
-	  		 }
-
-			 foreach($this->database->getTables() as $table) {
-
-			 	  	  if($table->getModel() == $class->getName())
-			 	  	      return $table;
-			 }
-
-			 throw new ORMException('BaseDialect::getTableByModel Could not locate the requested model \'' . $class->getName() . '\' in orm.xml');
-	  }
-
-	  /**
-	   * Returns the Table object responsible for the specified $modelName. If the model name
-	   * is defined more than once, the table with the first occurance is returned.
-	   *
-	   * @param string $modelName The name of the model
-	   * @return Table The Table instance responsible for the specified model.
-	   * @throws ORMException if the requested model name could not be located in orm.xml
-	   */
-	  public function getTableByModelName($modelName) {
-
-			 foreach($this->database->getTables() as $table)
-			  	  	  if($table->getModel() == $modelName)
-			 	  	      return $table;
-
-			 throw new ORMException('BaseDialect::getTableByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml');
-	  }
-
-	  /**
-	   * Returns a Table object by its name as configured in orm.xml
-	   *
-	   * @param string $tableName The value of the table name attribute
-	   * @return Table The Table instance responsible for persistence mappings for the specified table.
-	   * @throws ORMException if the requested table name could not be located in orm.xml
-	   */
-	  public function getTableByName($tableName) {
-
-	  		 foreach($this->database->getTables() as $table)
-	  		 		  if($table->getName() == $tableName)
-	  		 		  	  return $table;
-
-	  		 throw new ORMException('BaseDialect::getTableByName Could not locate the requested table \'' . $tableName . '\' in orm.xml');
-	  }
-
-	  /**
-	   * Returns a Table object representing the table configured in orm.xml as
-	   * the AgilePHP Identity table.
-	   *
-	   * @return Table The Table object which represents the AgilePHP Identity table.
-	   */
-	  public function getIdentityTable() {
-
-			 foreach($this->database->getTables() as $table) {
-
-		 	  	      if($table->isIdentity())
-		 	  	      	  return $table;
-			 }
-	  }
-
-	  /**
-	   * Returns an instance of the domain model object responsible for AgilePHP
-	   * Identity ORM.
-	   *
-	   * @return DomainModel An instance of the domain model object responsible for Identity ORM.
-	   */
-	  public function getIdentityModel() {
-
-	  		 foreach($this->database->getTables() as $table) {
-
-		 	  	      if($table->isIdentity()) {
-
-						  $modelName = $table->getModel();
-		 	  	      	  $rc = new ReflectionClass($modelName);
-
-		 	  	      	  if(!$rc->getInterfaces())
-		 	  	      	      throw new ORMException('BaseDialect::getIdentityModel IdentityModel must implement IdentityModel interface.');
-
-	 	  	      	  	   return new $modelName();
-		 	  	      }
-			 }
-	  }
-
-	  /**
-	   * Returns the 'Table' object that represents the table configured in orm.xml as
-	   * an AgilePHP 'SessionScope' session table.
-	   *
-	   * @return Table The Table instance containing the SessionScope session table.
-	   */
-	  public function getSessionTable() {
-
-			 foreach($this->database->getTables() as $table) {
-
-		 	  	      if($table->isSession())
-		 	  	      	  return $table;
-			 }
-	  }
-
-	  /**
-	   * Returns an instance of the domain model object responsible for AgilePHP
-	   * 'SessionScope' session ORM.
-	   *
-	   * @return DomainModel An instance of the model responsible for AgilePHP SessionScope sessions.
-	   */
-	  public function getSessionModel() {
-
-	  		 foreach($this->database->getTables() as $table) {
-
-		 	  	      if($table->isSession()) {
-
-		 	  	      	  $modelName = $table->getModel();
- 	  	      	  		  return new $modelName();
-		 	  	      }
-			 }
-	  }
-
-	  /**
-	   * Returns a custom display name as configured in orm.xml 'display' attribute
-	   * for the specified column name. If the 'Column' name can not be matched, it is then
-	   * compared against the 'Column' 'property' attribute value. If neither can be matched,
-	   * the $columnName is returned.
-	   *
-	   * @param $table The 'Table' object which contains the column to retrieve the display
-	   * 			   name from.
-	   * @param $columnName The name of the column to get the display name for
-	   * @return string Custom display name if configured, otherwise the $columnName is returned
-	   */
-	  public function getDisplayNameForColumn($table, $columnName) {
-
-	  		 foreach($table->getColumns() as $column) {
-
-	  		 	      if($column->getName() == $columnName) {
-
-	  		 	      	  if($column->getDisplay())
-	  		 	          	  return ucfirst($column->getDisplay());
-	  		 	      }
-
-	  		 		  if($column->getProperty() == $columnName) {
-
-	  		 	      	  if($column->getDisplay())
-	  		 	          	  return ucfirst($column->getDisplay());
-					  }
-	  		 }
-
-	  		 return ucfirst($columnName);
-	  }
-
-	  /**
-	   * Returns the value of the 'property' attribute configured in orm.xml for the specified $columnName.
-	   * If the property attribute does not exist, the column name is returned instead.
-	   *
-	   * @param Table $table The Table object containing the Column to search.
-	   * @param $columnName The name of the column to retrieve the property attribute value from
-	   * @param boolean $caseSensitive Optional flag used to toggle case sensitive column name searching. True to
-	   *                               enable case sensitive searching, false for case insensitive. Default is case sensitive.
-	   * @return string The property name. If the property does not exist, the $columnName is returned instead
-	   */
-	  public function getPropertyNameForColumn(Table $table, $columnName, $caseSensitive = true) {
-
-	  		 foreach($table->getColumns() as $column) {
-
-	  		 		  $col = ($caseSensitive) ? $column->getName() : strtolower($column->getName());
-	  		 	      if($col == $columnName)
-	  		 	      	  if($column->getProperty())
-	  		 	      	  	  return $column->getProperty();
-	  		 }
-
-	  		 return $columnName;
-	  }
-
-	  /**
-	   * Returns the value of the 'name' attribute configured in orm.xml for the specified $propertyName.
-	   * If the property attribute does not exist, a match is attempted against the column name. If the column
-	   * name matches the expected $propertyName, the column name is returned. If neither can be matched, null is
-	   * returned instead.
-	   *
-	   * @param Table $table The Table instance that contains the Column to search.
-	   * @param string $propertyName The name of the property to retrieve the name attribute value from
-	   * @return string The column name. If the property does not exist and $propertyName matches a column name, the column
-	   * 		 name is returned instead. If neither can be matched, null is returned.
-	   */
-	  public function getColumnNameForProperty(Table $table, $propertyName) {
-
-	  		 foreach($table->getColumns() as $column) {
-
-	  		 	      if($column->getProperty() == $propertyName)
-	  		 	      	  return $column->getName();
-	  		 }
-
-	  		 foreach($table->getColumns() as $column) {
-
-	  		 	      if($column->getName() == $propertyName)
-	  		 	      	  return $column->getName();
-	  		 }
-	  }
-
-	  /**
-	   * Converts the specified parameter to a bigint.
-	   *
-	   * @param $int The bigint value
-	   * @return long The 64 bit "bigint"
-	   */
-	  public function toBigInt($number) {
-
-	  			$precision = ini_get('precision');
-				@ini_set('precision', 16);
-				$bigint = sprintf('%.0f', $number);
-				@ini_set('precision', $precision);
-
-				return $bigint;
-	  }
-
-	  /**
-	   * Checks the model in use by the ORM framework for the presence
-	   * of property values. If the model does not contain any values, it is
-	   * considered empty.
-	   *
-	   * @param DomainModel $model The domain model instance to inspect.
-	   * @return boolean True if the model is empty, false if the model contains any property values.
-	   */
-	  public function isEmpty(DomainModel $model) {
-
-	  		 $class = new ReflectionClass($model);
-	  		 $properties = $class->getProperties();
-	  		 foreach($properties as $property) {
-
-	  		     if($property->name == 'interceptedTarget') continue;
-	  		     $accessor = $this->toAccessor($property->name);
-	  		     if($model->$accessor()) return false;
-	  		 }
-
-	  		 return true;
-	  }
-
-	  /**
-	   * Compares domain model object $a with $b.
-	   *
-	   * NOTE: This function assumes the model adheres to the property/getter/setter
-	   * 	   model convention.
-	   *
-	   * @param object $a The first object
-	   * @param object $b The second object
-	   * @return boolean True if the objects test positive, false if the models do not match
-	   */
-	  public function compare($a, $b) {
-
-	  		  try {
-		  		    $classA = new ReflectionClass($a);
-		  		    $classB = new ReflectionClass($b);
-
-		  		    if($classA->getName() !== $classB->getName())
-		  		  	    throw new Exception('model class names dont match');
-
-		  		    $propsA = $classA->getProperties();
-		  		    $propsB = $classB->getProperties();
-
-		  		    if(!count($propsA) || !count($propsB))
-		  		  	    throw new Exception('model property count doesnt match');
-
-		  		    for($i=0; $i<count($propsA); $i++) {
-
-		  		  	     if($propsA[$i]->name !== $propsB[$i]->name)
-		  		  	         throw new Exception('model property names dont match');
-
-		  		  	   	 $accessor = 'get' . ucfirst($propsA[$i]->name);
-		  		  	     if($a->$accessor() !== $b->$accessor())
-		  		  	   	     throw new Exception('model property values dont match');
-		  		  	}
-	  		  }
-	  		  catch(Exception $e) {
-
-	  		  		 Log::debug('BaseDialect::compare ' . $e->getMessage());
-	  		  		 return false;
-	  		  }
-
-	  		  return true;
-	  }
-
-	  /**
-	   * Creates an accessor method from the $property parameter. The $property
-	   * will be returned with the prefix 'get' and the first letter of the property
-	   * uppercased.
-	   *
-	   * @param string $property The name of the property to convert to an accessor method name
-	   * @return string The accessor string
-	   */
-	  public function toAccessor($property) {
-
-	   		 return 'get' . ucfirst($property);
-	  }
-
-	  /**
-	   * Creates a mutator method from the $property parameter. The $property
-	   * will be returned with the prefix 'set' and the first letter of the property
-	   * uppercased.
-	   *
-	   * @param string $property The name of the property to convert to a mutator method name
-	   * @return string The mutator string
-	   */
-	  public function toMutator($property) {
-
-	  	     return 'set' . ucfirst($property);
-	  }
-
-	  /**
-	   * Copies the values from object $a to $b.
-	   *
-	   * @param DomainModel $a The first object
-	   * @param DomainModel $b The second object
-	   * @return DomainModel The same instance of object $b with its properties set as defined in object $a
-	   */
-	  private function copy(DomainModel $a, DomainModel $b) {
-
-	  		  $classA = new ReflectionClass($a);
-		  	  $classB = new ReflectionClass($b);
-
-		  	  if($classA->getName() !== $classB->getName())
-		  	      throw new Exception('model class names dont match');
-
-		  	  $propsA = $classA->getProperties();
-		  	  $propsB = $classB->getProperties();
-
-		  	  if(!count($propsA) || !count($propsB))
-		  	      throw new Exception('model property count doesnt match');
-
-		      for($i=0; $i<count($propsA); $i++) {
-
-		  		   if($propsA[$i]->name !== $propsB[$i]->name)
-		  		       throw new Exception('model property names dont match');
-
-		  		   $accessor = 'get' . ucfirst($propsA[$i]->name);
-		  		   $mutator = 'set' . ucfirst($propsB[$i]->name);
-		  		   $b->$mutator($a->$accessor());
-		  	  }
-
-		  	  return $b;
-	  }
-
-	  /**
-	   * Validates the domain model object's property values against orm.xml table/column configuration
-	   *
-	   * @param $table The Table object representing the table in orm.xml configuration to validate.
-	   * @param $isInsert True if validating a persist operation
-	   * @return void
-	   */
-	  protected function validate(Table $table, $isPersist = false) {
-
-	  	        if($table->getValidate() == false) return;
-
-			    foreach($table->getColumns() as $column) {
-
-			  	       $accessor = 'get' . ucfirst($column->getModelPropertyName());
-
-			  	       if($isPersist == true && $column->isPrimaryKey() || $column->isAutoIncrement())
-			  	       	   continue;
-
-			  	       // Verify length
-			  	       if($length = $column->getLength() && !is_object($this->model->$accessor())) {
-
-			  	       	   $dataLen = strlen($this->model->$accessor());
-			  	       	   if($dataLen > $length) {
-
-			  	       	   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Length defined in orm.xml as \'' . $column->getLength() . '\' but the has a length of \'' . $dataLen . '\'.';
-			  	       	   	   Log::debug($message);
-			  	       	   	   throw new ORMException($message);
-			  	       	   }
-			  	       }
-
-			  	       // Verify required fields contain data
-			  		   if($column->isRequired() && $this->model->$accessor() === null) {
-
-			  		       // Allow file uploads to be null on updates that way the user isnt forced to re-upload data
-			  		       if(!$isPersist && $column->getType() == 'blob') continue;
-
-			  		   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Required field contains null value.';
-			  		   	   Log::debug($message);
-			  		       throw new ORMException($message);
-			  		   }
-
-			  		   // Use specified validator to verify data integrity
-			  	       if($validator = $column->getValidator()) {
-
-			  	       	   // Allow null values for columns that are not required
-			  	       	   if(!$column->isRequired() && $this->model->$accessor() == null) continue;
-
-			  	       	   if(!$validator::validate($this->model->$accessor())) {
-
-			  	       	   	   $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype($this->model->$accessor()) . '\' using validator \'' . $validator . '\'.';
-			  	       	   	   Log::debug($message);
-			  	       	   	   throw new ORMException($message);
-			  	       	   }
-			  	       }
-			  }
-	  }
-
-	  /**
-	   * Closes the connection to the database.
-	   *
-	   * @return void
-	   */
-	  public function __destruct() {
-
-	  		 $this->pdo = null;
-	  		 Log::debug('BaseDialect::__destruct');
-	  }
+ 	   * Returns an SQL formatted string containing a WHERE clause built from setRestrictions and setRestrictionsLogicOperator.
+ 	   *
+ 	   * @return string The formatted SQL string
+ 	   */
+    public function createRestrictSQL() {
+
+        $restricts = null;
+        if(count($this->restrictions)) {
+
+            $restricts = ' WHERE ';
+            $index = 0;
+            foreach($this->restrictions as $key => $val) {
+
+                $index++;
+                $restricts .= $key . ' ' . $this->comparisonLogic . ' \'' . addslashes($val) . '\'';
+
+                if($index < count($this->restrictions))
+                $restricts .= ' ' . $this->restrictionsLogic . ' ';
+            }
+        }
+
+        return $restricts;
+    }
+
+    /**
+     * Returns the Procedure instance which matches the specified name.
+     *
+     * @param string $name The procedure name as it lives in the database engine
+     * @return Procedure The Procedure instance
+     * @throws ORMException
+     */
+    public function getProcedureByName($name) {
+
+        foreach($this->database->getProcedures() as $proc) {
+
+            if($proc->getName() == $name)
+            return $proc;
+        }
+
+        throw new ORMException('BaseDialect::getProcedureByName Could not locate the requested procedure \'' . $name . '\' in orm.xml');
+    }
+     
+    /**
+     * Returns the Procedure instance mapped to the specified Model.
+     *
+     * @param DomainModel $model The domain model object to retrieve the procedure element for. Defaults to the model
+     * 			               currently being managed by the 'ORM'.
+     * @return Procedure The Procedure instance responsible for persistence mappings for the specified model.
+     */
+    public function getProcedureByModel(DomainModel $model) {
+
+        $class = get_class($model);
+
+        foreach($this->database->getProcedures() as $proc) {
+
+            if($proc->getModel() == $class)
+            return $proc;
+        }
+
+        throw new ORMException('BaseDialect::getProcedureByModel Could not locate the requested model \'' . $class . '\' in orm.xml');
+    }
+     
+    /**
+     * Returns the Procedure responsible for the specified model
+     *
+     * @param string $modelName The name of the model class
+     * @return Procedure The procedure which maps to the specified model name
+     * @throws ORMException if the specified procedure model name could not be located in orm.xml
+     */
+    public function getProcedureByModelName($modelName) {
+
+        foreach($this->database->getProcedures() as $proc)
+        if($proc->getModel() == $modelName)
+        return $proc;
+
+        throw new ORMException('BaseDialect::getProcedureByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml');
+    }
+
+    /**
+     * Returns a NamedQuery instance
+     *
+     * @param string $name The query name
+     * @return NamedQuery
+     */
+    public function getQueryByName($name) {
+
+        foreach($this->database->getNamedQueries() as $namedQuery)
+        if($namedQuery->getName() == $name)
+        return $namedQuery;
+    }
+
+    /**
+     * Executes a NamedQuery instance
+     *
+     * @param string $name The query name
+     * @return DataModel The model configured for the NamedQuery
+     */
+    public function callQueryByName($name, DataModel $model) {
+
+        if(!$namedQuery = $this->getQueryByName($name))
+        throw new ORMException('BaseDialect::callQueryByName Could not locate the requested query \'' . $name . '\' in orm.xml');
+
+        if($namedQuery->isProcedure())
+        return $this->callProcedure($this->getProcedureByName($name));
+
+        if($namedQuery->isPrepared()) {
+
+            $this->prepare($namedQuery->getQuery());
+            $return = $this->execute($values);
+
+            if(!$return) {
+
+                echo 'null';
+                return null;
+            }
+
+            if(is_array($return)) {
+
+                echo 'array';
+                print_r($return);
+                exit;
+            }
+
+            // single result
+            echo 'single result';
+            print_r($return);
+            exit;
+        }
+    }
+
+    /**
+     * Responsible for executing a "referenced" stored procedure. This behaves in a similar fashion
+     * to the parent/child associations using tables/foreign keys. When a procedure has an OUT parameter
+     * configured in orm.xml which defines a "references" attribute, the value returned to the "parent"
+     * procedure from the database is passed into this method where the referenced procedure is executed
+     * accordingly, and its return value(s) mapped to its configured DomainModel.
+     *
+     * @param string $column The column name as returned from the stored procedure
+     * @param array $references Associative array of "referenced" stored procedures
+     *        where the key represents the value returned from the "parent" procedure
+     *        and the value represents the procedure name.
+     * @param array $outs An associative array of OUT variables from the parent procedure
+     * @param mixed $value The value to pass into the referenced procedure
+     * @return DomainModel The referenced ActiveRecord instance
+     */
+    protected function callReference($column, $references, $outs, $value) {
+
+        $refAccessor = ClassUtils::toMutator($outs[$column]);
+
+        $procedure = $this->getProcedureByName($references[$column]);
+        $fModelName = $procedure->getModel();
+        $fModel = new $fModelName;
+
+        foreach($procedure->getParameters() as $param) {
+
+            if($param->getMode() == 'IN' || $param->getMode() == 'INOUT') {
+
+                $refMutator = ClassUtils::toMutator($param->getModelPropertyName());
+                $fModel->$refMutator($value);
+            }
+        }
+
+        return $this->call($fModel);
+    }
+     
+    /**
+     * Returns the Table object which is mapped to the specified DomainModel.
+     *
+     * @param DomainModel $model The domain model object to retrieve the table element for. Defaults to the model
+     * 			        currently being managed by the ORM.
+     * @return Table The Table object responsible for persistence mappings for the specified model.
+     * @throws ORMException if the specified model could not be located in orm.xml
+     */
+    public function getTableByModel(DomainModel $model = null) {
+
+        try {
+            $class = new ReflectionClass((($model == null) ? $this->model : $model));
+        }
+        catch(ReflectionException $re) {
+
+            throw new ORMException('BaseDialect::getTableByModel Could not get table because \'' . $re->getMessage() . '\'.');
+        }
+
+        foreach($this->database->getTables() as $table) {
+
+            if($table->getModel() == $class->getName())
+            return $table;
+        }
+
+        throw new ORMException('BaseDialect::getTableByModel Could not locate the requested model \'' . $class->getName() . '\' in orm.xml');
+    }
+
+    /**
+     * Returns the Table object responsible for the specified $modelName. If the model name
+     * is defined more than once, the table with the first occurance is returned.
+     *
+     * @param string $modelName The name of the model
+     * @return Table The Table instance responsible for the specified model.
+     * @throws ORMException if the requested model name could not be located in orm.xml
+     */
+    public function getTableByModelName($modelName) {
+
+        foreach($this->database->getTables() as $table)
+        if($table->getModel() == $modelName)
+        return $table;
+
+        throw new ORMException('BaseDialect::getTableByModelName Could not locate the requested model \'' . $modelName . '\' in orm.xml');
+    }
+
+    /**
+     * Returns a Table object by its name as configured in orm.xml
+     *
+     * @param string $tableName The value of the table name attribute
+     * @return Table The Table instance responsible for persistence mappings for the specified table.
+     * @throws ORMException if the requested table name could not be located in orm.xml
+     */
+    public function getTableByName($tableName) {
+
+        foreach($this->database->getTables() as $table)
+        if($table->getName() == $tableName)
+        return $table;
+
+        throw new ORMException('BaseDialect::getTableByName Could not locate the requested table \'' . $tableName . '\' in orm.xml');
+    }
+
+    /**
+     * Returns a Table object representing the table configured in orm.xml as
+     * the AgilePHP Identity table.
+     *
+     * @return Table The Table object which represents the AgilePHP Identity table.
+     */
+    public function getIdentityTable() {
+
+        foreach($this->database->getTables() as $table) {
+
+            if($table->isIdentity())
+            return $table;
+        }
+    }
+
+    /**
+     * Returns an instance of the domain model object responsible for AgilePHP
+     * Identity ORM.
+     *
+     * @return DomainModel An instance of the domain model object responsible for Identity ORM.
+     */
+    public function getIdentityModel() {
+
+        foreach($this->database->getTables() as $table) {
+
+            if($table->isIdentity()) {
+
+                $modelName = $table->getModel();
+                $rc = new ReflectionClass($modelName);
+
+                if(!$rc->getInterfaces())
+                throw new ORMException('BaseDialect::getIdentityModel IdentityModel must implement IdentityModel interface.');
+
+                return new $modelName();
+            }
+        }
+    }
+
+    /**
+     * Returns the 'Table' object that represents the table configured in orm.xml as
+     * an AgilePHP 'SessionScope' session table.
+     *
+     * @return Table The Table instance containing the SessionScope session table.
+     */
+    public function getSessionTable() {
+
+        foreach($this->database->getTables() as $table) {
+
+            if($table->isSession())
+            return $table;
+        }
+    }
+
+    /**
+     * Returns an instance of the domain model object responsible for AgilePHP
+     * 'SessionScope' session ORM.
+     *
+     * @return DomainModel An instance of the model responsible for AgilePHP SessionScope sessions.
+     */
+    public function getSessionModel() {
+
+        foreach($this->database->getTables() as $table) {
+
+            if($table->isSession()) {
+
+                $modelName = $table->getModel();
+                return new $modelName();
+            }
+        }
+    }
+
+    /**
+     * Returns a custom display name as configured in orm.xml 'display' attribute
+     * for the specified column name. If the 'Column' name can not be matched, it is then
+     * compared against the 'Column' 'property' attribute value. If neither can be matched,
+     * the $columnName is returned.
+     *
+     * @param $table The 'Table' object which contains the column to retrieve the display
+     * 			   name from.
+     * @param $columnName The name of the column to get the display name for
+     * @return string Custom display name if configured, otherwise the $columnName is returned
+     */
+    public function getDisplayNameForColumn($table, $columnName) {
+
+        foreach($table->getColumns() as $column) {
+
+            if($column->getName() == $columnName) {
+
+                if($column->getDisplay())
+                return ucfirst($column->getDisplay());
+            }
+
+            if($column->getProperty() == $columnName) {
+
+                if($column->getDisplay())
+                return ucfirst($column->getDisplay());
+            }
+        }
+
+        return ucfirst($columnName);
+    }
+
+    /**
+     * Returns the value of the 'property' attribute configured in orm.xml for the specified $columnName.
+     * If the property attribute does not exist, the column name is returned instead.
+     *
+     * @param Table $table The Table object containing the Column to search.
+     * @param $columnName The name of the column to retrieve the property attribute value from
+     * @param boolean $caseSensitive Optional flag used to toggle case sensitive column name searching. True to
+     *                               enable case sensitive searching, false for case insensitive. Default is case sensitive.
+     * @return string The property name. If the property does not exist, the $columnName is returned instead
+     */
+    public function getPropertyNameForColumn(Table $table, $columnName, $caseSensitive = true) {
+
+        foreach($table->getColumns() as $column) {
+
+            $col = ($caseSensitive) ? $column->getName() : strtolower($column->getName());
+            if($col == $columnName)
+            if($column->getProperty())
+            return $column->getProperty();
+        }
+
+        return $columnName;
+    }
+
+    /**
+     * Returns the value of the 'name' attribute configured in orm.xml for the specified $propertyName.
+     * If the property attribute does not exist, a match is attempted against the column name. If the column
+     * name matches the expected $propertyName, the column name is returned. If neither can be matched, null is
+     * returned instead.
+     *
+     * @param Table $table The Table instance that contains the Column to search.
+     * @param string $propertyName The name of the property to retrieve the name attribute value from
+     * @return string The column name. If the property does not exist and $propertyName matches a column name, the column
+     * 		 name is returned instead. If neither can be matched, null is returned.
+     */
+    public function getColumnNameForProperty(Table $table, $propertyName) {
+
+        foreach($table->getColumns() as $column) {
+
+            if($column->getProperty() == $propertyName)
+            return $column->getName();
+        }
+
+        foreach($table->getColumns() as $column) {
+
+            if($column->getName() == $propertyName)
+            return $column->getName();
+        }
+    }
+
+    /**
+     * Converts the specified parameter to a bigint.
+     *
+     * @param $int The bigint value
+     * @return long The 64 bit "bigint"
+     */
+    public function toBigInt($number) {
+
+        $precision = ini_get('precision');
+        @ini_set('precision', 16);
+        $bigint = sprintf('%.0f', $number);
+        @ini_set('precision', $precision);
+
+        return $bigint;
+    }
+
+    /**
+     * Validates the domain model object's property values against orm.xml table/column configuration
+     *
+     * @param $table The Table object representing the table in orm.xml configuration to validate.
+     * @param $isInsert True if validating a persist operation
+     * @return void
+     */
+    protected function validate(Table $table, $isPersist = false) {
+
+        if($table->getValidate() == false) return;
+
+        foreach($table->getColumns() as $column) {
+
+            $accessor = 'get' . ucfirst($column->getModelPropertyName());
+
+            if($isPersist == true && $column->isPrimaryKey() || $column->isAutoIncrement())
+            continue;
+
+            // Verify length
+            if($length = $column->getLength() && !is_object($this->model->$accessor())) {
+
+                $dataLen = strlen($this->model->$accessor());
+                if($dataLen > $length) {
+
+                    $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Length defined in orm.xml as \'' . $column->getLength() . '\' but the has a length of \'' . $dataLen . '\'.';
+                    Log::debug($message);
+                    throw new ORMException($message);
+                }
+            }
+
+            // Verify required fields contain data
+            if($column->isRequired() && $this->model->$accessor() === null) {
+
+                // Allow file uploads to be null on updates that way the user isnt forced to re-upload data
+                if(!$isPersist && $column->getType() == 'blob') continue;
+
+                $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Required field contains null value.';
+                Log::debug($message);
+                throw new ORMException($message);
+            }
+
+            // Use specified validator to verify data integrity
+            if($validator = $column->getValidator()) {
+
+                // Allow null values for columns that are not required
+                if(!$column->isRequired() && $this->model->$accessor() == null) continue;
+
+                if(!$validator::validate($this->model->$accessor())) {
+
+                    $message = 'BaseDialect::validate ORM validation failed on \'' . $table->getModel() . '::' . $column->getModelPropertyName() . '\'. Expected data \'' . $this->model->$accessor() . '\' to be type \'' . $column->getType() . '\' but found \'' . gettype($this->model->$accessor()) . '\' using validator \'' . $validator . '\'.';
+                    Log::debug($message);
+                    throw new ORMException($message);
+                }
+            }
+        }
+    }
+
+    /**
+     * Closes the connection to the database.
+     *
+     * @return void
+     */
+    public function __destruct() {
+        $this->pdo = null;
+        Log::debug('BaseDialect::__destruct');
+    }
 }
 ?>

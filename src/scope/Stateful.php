@@ -22,18 +22,18 @@
 /**
  * Responsible for managing the state of a class which is annotated with
  * #@Stateful.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.scope
  * <code>
  * #@Stateful
  * class MyStatefulClass {
- * 
+ *
  * 		 private $foo;		// retains value between page hits
- * 
+ *
  * 		 public function __construct() { }
- * 
+ *
  * 		 // ......
  * }
  * </code>
@@ -41,38 +41,38 @@
 #@Interceptor
 class Stateful {
 
-	  /**
-	   * Loads the class from the current session if it exists, otherwise a new
-	   * instance is created and stored in the current session.
-	   * 
-	   * @param InvocationContext $ic The context of the intercepted call
-	   * @return InvocationContext if the authentication was successful.
-	   * @throws FrameworkException
-	   */
-	  #@AroundInvoke
-	  public function restore(InvocationContext $ic) {
+    /**
+     * Loads the class from the current session if it exists, otherwise a new
+     * instance is created and stored in the current session.
+     *
+     * @param InvocationContext $ic The context of the intercepted call
+     * @return InvocationContext if the authentication was successful.
+     * @throws FrameworkException
+     */
+    #@AroundInvoke
+    public function restore(InvocationContext $ic) {
 
-	  		 $reflector = new ReflectionClass($ic->getTarget());
-	  		 $className = $reflector->getName();
+        $reflector = new ReflectionClass($ic->getTarget());
+        $className = $reflector->getName();
 
-	  		 $session = Scope::getSessionScope();
-	  		 $instance = $session->get('STATEFUL_' . $className);
+        $session = Scope::getSessionScope();
+        $instance = $session->get('STATEFUL_' . $className);
 
-	  		 if($instance) {
+        if($instance) {
 
-	  		 	 $ic->setTarget($instance);
-	  		 	 return $ic->proceed();
-	  		 }
-	  }
+            $ic->setTarget($instance);
+            return $ic->proceed();
+        }
+    }
 
-	  #@AfterInvoke
-	  public function persist(InvocationContext $ic) {
+    #@AfterInvoke
+    public function persist(InvocationContext $ic) {
 
-	  		 $reflector = new ReflectionClass($ic->getTarget());
-	  		 $className = $reflector->getName();
+        $reflector = new ReflectionClass($ic->getTarget());
+        $className = $reflector->getName();
 
-	  		 $session = Scope::getSessionScope();
-	  		 $session->set('STATEFUL_' . $className, $ic->getTarget());
-	  }
+        $session = Scope::getSessionScope();
+        $session->set('STATEFUL_' . $className, $ic->getTarget());
+    }
 }
 ?>

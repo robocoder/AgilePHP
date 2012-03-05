@@ -21,21 +21,20 @@
 
 /**
  * Validates data to ensure the specified value is either a whole number or floating decimal.
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class NumberValidator implements Validator {
 
-	  /**
-	   * Ensures the specified data is numeric
-	   * 
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data) {
-
-	  		 return is_numeric($data);
-	  }
+    /**
+     * Ensures the specified data is numeric
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
+        return is_numeric($data);
+    }
 }
 ?>

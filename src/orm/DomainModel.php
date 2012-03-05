@@ -72,23 +72,23 @@ abstract class DomainModel extends DataModel {
 
             $context = null;
             if($property->isPublic())
-               $context = 'public';
+            $context = 'public';
 
             else if($property->isProtected())
-               $context = 'protected';
+            $context = 'protected';
 
             else if($property->isPrivate())
-               $context = 'private';
+            $context = 'private';
 
             $value = null;
             if($context != 'public') {
 
-               $property->setAccessible(true);
-               $value = $property->getValue($data);
-               $property->setAccessible(false);
+                $property->setAccessible(true);
+                $value = $property->getValue($data);
+                $property->setAccessible(false);
             }
             else
-               $value = $property->getValue($data);
+            $value = $property->getValue($data);
 
             $mutator = 'set' . ucfirst($property->getName());
             $this->$mutator($value);
@@ -103,7 +103,6 @@ abstract class DomainModel extends DataModel {
      * @throws ORMException
      */
     public function merge() {
-
         return ORMFactory::getDialect()->merge($this);
     }
 
@@ -115,7 +114,6 @@ abstract class DomainModel extends DataModel {
      * @throws ORMException
      */
     public function delete() {
-
         return ORMFactory::getDialect()->delete($this);
     }
 
@@ -125,7 +123,6 @@ abstract class DomainModel extends DataModel {
      * @return array An array of records or an empty array if no records were located
      */
     public function find($maxResults = 25) {
-
         ORMFactory::getDialect()->setMaxResults($maxResults);
         return ORMFactory::getDialect()->find($this);
     }
@@ -153,7 +150,6 @@ abstract class DomainModel extends DataModel {
      * @return mixed Single scalar value or DomainModel instance depending on the return values configured
      */
     public function call() {
-
         return ORMFactory::getDialect()->call($this);
     }
 }

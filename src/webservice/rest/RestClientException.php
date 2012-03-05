@@ -22,7 +22,7 @@
 /**
  * Accepts a valid RFC 2616 response code and throws a PHP Exception containing
  * its RFC 2616 status code and message.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
@@ -30,22 +30,22 @@
  * @throws FrameworkException if the specified error code is not
  * 		   a valid RFC 2616 status code.
  */
-class RestClientException extends RestServiceException { 
+class RestClientException extends RestServiceException {
 
-	  /**
-	   * Accepts a valid RFC 2616 HTTP status code and thows an Exception
-	   * which contains the corresponding code and status message.
-	   * 
-	   * @param Integer $code The HTTP status code to send.
-	   * @return void
-	   */
-	  public function __construct($code) {
+    /**
+     * Accepts a valid RFC 2616 HTTP status code and thows an Exception
+     * which contains the corresponding code and status message.
+     *
+     * @param Integer $code The HTTP status code to send.
+     * @return void
+     */
+    public function __construct($code) {
 
-	  		 if(!array_key_exists($code, $this->codes))
-	  		 	 throw new FrameworkException('Invalid HTTP Response code \'' . $code . '\'.');
+        if(!array_key_exists($code, $this->codes))
+        throw new FrameworkException('Invalid HTTP Response code \'' . $code . '\'.');
 
-			 $this->code = $code;
-			 $this->message = $code . ' ' . $this->codes[$code];
-	  }
+        $this->code = $code;
+        $this->message = $code . ' ' . $this->codes[$code];
+    }
 }
 ?>

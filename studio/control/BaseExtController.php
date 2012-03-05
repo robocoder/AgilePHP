@@ -21,33 +21,31 @@
 
 /**
  * Base controller class for ExtJS applications
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.control
  */
 abstract class BaseExtController extends BaseController {
 
-		 public function __construct() {
+    public function __construct() {
+        parent::__construct();
+        parent::createRenderer( 'ExtFormRenderer' );
+    }
 
-		  	    parent::__construct();
-		  	    parent::createRenderer( 'ExtFormRenderer' );
-		 }
-
-		 /**
-		  * Custom PHP error handling function which throws an FrameworkException instead of reporting
-		  * a PHP warning.
-		  * 
-		  * @param Integer $errno Error number
-		  * @param String $errmsg Error message
-		  * @param String $errfile The name of the file that caused the error
-		  * @param Integer $errline The line number that caused the error
-		  * @return void
-		  * @throws FrameworkException
-		  */
-	 	  public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
-
-	    	     throw new FrameworkException( $errmsg, $errno );
-		  }
+    /**
+     * Custom PHP error handling function which throws an FrameworkException instead of reporting
+     * a PHP warning.
+     *
+     * @param Integer $errno Error number
+     * @param String $errmsg Error message
+     * @param String $errfile The name of the file that caused the error
+     * @param Integer $errline The line number that caused the error
+     * @return void
+     * @throws FrameworkException
+     */
+    public static function ErrorHandler( $errno, $errmsg, $errfile, $errline ) {
+        throw new FrameworkException( $errmsg, $errno );
+    }
 }
 ?>

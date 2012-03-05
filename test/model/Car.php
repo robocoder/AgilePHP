@@ -42,7 +42,7 @@ class Car extends DataModel {
     private $tires;
 
     public function __construct($year = null, $make = null, $model = null, $color = null,
-             $isNew = null, $isCheap = null, $leasedUtil = null, Owner $owner = null, array $tires = array()) {
+            $isNew = null, $isCheap = null, $leasedUtil = null, Owner $owner = null, array $tires = array()) {
 
         $this->year = $year;
         $this->make = $make;
@@ -57,7 +57,7 @@ class Car extends DataModel {
 
     /**
      * Sets the year the car was manufactured
-     * 
+     *
      * @param int $year The year of the car
      * @return void
      */
@@ -67,7 +67,7 @@ class Car extends DataModel {
 
     /**
      * Get the year the car was manufactured
-     * 
+     *
      * @return int The manufactuer date
      */
     public function getYear() {
@@ -76,7 +76,7 @@ class Car extends DataModel {
 
     /**
      * The make of the car
-     * 
+     *
      * @param string $make The make of the car
      * @return void
      */
@@ -86,7 +86,7 @@ class Car extends DataModel {
 
     /**
      * Gets the make of the car
-     * 
+     *
      * @return string The make of the car
      */
     public function getMake() {
@@ -95,7 +95,7 @@ class Car extends DataModel {
 
     /**
      * Sets the model of the car
-     * 
+     *
      * @param string $model The car model
      * @return void
      */
@@ -105,7 +105,7 @@ class Car extends DataModel {
 
     /**
      * Gets the model of car
-     * 
+     *
      * @return string The car model
      */
     public function getModel() {
@@ -114,7 +114,7 @@ class Car extends DataModel {
 
     /**
      * The color of the car
-     * 
+     *
      * @param string $color The car color
      * @return void
      */
@@ -124,7 +124,7 @@ class Car extends DataModel {
 
     /**
      * Gets the color of the car
-     * 
+     *
      * @return string The color of the car
      */
     public function getColor() {
@@ -133,7 +133,7 @@ class Car extends DataModel {
 
     /**
      * Flag used to indicate whether the car is new or used
-     * 
+     *
      * @param boolean $isNew True if the car is new, false if used
      * @return void
      */
@@ -143,7 +143,7 @@ class Car extends DataModel {
 
     /**
      * Whether or not the car is new
-     * 
+     *
      * @return boolean True if the car is new, false otherwise
      */
     public function getIsNew() {
@@ -152,7 +152,7 @@ class Car extends DataModel {
 
     /**
      * Sets a boolean flag used to indicate whether the car is cheap or not
-     * 
+     *
      * @param boolean $isCheap True if the car is cheap, false otherwise
      * @return void
      */
@@ -162,7 +162,7 @@ class Car extends DataModel {
 
     /**
      * Whether or not the car is cheap
-     * 
+     *
      * @return boolean True of the car is cheap, false otherwise
      */
     public function getIsCheap() {
@@ -171,7 +171,7 @@ class Car extends DataModel {
 
     /**
      * Sets the date the lease is up
-     * 
+     *
      * @param string $leasedUtil The date when the lease is up
      * @return void
      */
@@ -181,7 +181,7 @@ class Car extends DataModel {
 
     /**
      * Gets the lease expiration date
-     * 
+     *
      * @return string The date when the lease is up
      */
     public function getLeasedUntil() {
@@ -200,7 +200,7 @@ class Car extends DataModel {
 
     /**
      * Gets the owner of the car
-     * 
+     *
      * @return Owner The owner of the car
      */
     public function getOwner() {
@@ -209,7 +209,7 @@ class Car extends DataModel {
 
     /**
      * Sets the tires on the car
-     * 
+     *
      * @param array<Tire> $tires The car tires
      * @return void
      */
@@ -219,7 +219,7 @@ class Car extends DataModel {
 
     /**
      * Gets the tires on the car
-     * 
+     *
      * @return array<Tire> The tires on the car
      */
     public function getTires() {

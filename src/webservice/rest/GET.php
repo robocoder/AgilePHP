@@ -21,16 +21,16 @@
 
 /**
  * Responsible for processing REST GET requests
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.rest
  * <code>
  * class MyRestAPI {
- * 
+ *
  * #@GET
  * public function getObject() {
- * 
+ *
  * 		  // This is invoked only when the resource is requested using HTTP GET request method.
  * }
  * }
@@ -39,32 +39,32 @@
 #@Interceptor
 class GET {
 
-	  /**
-	   * Liason between REST client and service to handle data transformations and providing
-	   * appropriate "200 OK" HTTP status code header.
-	   * 
-	   * @param InvocationContext $ic The intercepted call state
-	   * @return void
-	   */
-	  #@AroundInvoke
-	  public function invoke(InvocationContext $ic) {
+    /**
+     * Liason between REST client and service to handle data transformations and providing
+     * appropriate "200 OK" HTTP status code header.
+     *
+     * @param InvocationContext $ic The intercepted call state
+     * @return void
+     */
+    #@AroundInvoke
+    public function invoke(InvocationContext $ic) {
 
-	  	     $callee = $ic->getCallee();
-	  		 $class = $callee['class'];
-	  		 $target = $ic->getTarget();
-	  		 $method = $ic->getMethod();
-	  		 $parameters = $ic->getParameters();
+        $callee = $ic->getCallee();
+        $class = $callee['class'];
+        $target = $ic->getTarget();
+        $method = $ic->getMethod();
+        $parameters = $ic->getParameters();
 
-	  		 $return = ($parameters) ? call_user_func_array(array($target, $method), $parameters):
-	  		  				call_user_func(array($target, $method));
+        $return = ($parameters) ? call_user_func_array(array($target, $method), $parameters):
+        call_user_func(array($target, $method));
 
-	  		 $negotiation = RestUtil::negotiate($class, $ic->getMethod());
-			 $ProduceMime = $negotiation['ProduceMime'];
+        $negotiation = RestUtil::negotiate($class, $ic->getMethod());
+        $ProduceMime = $negotiation['ProduceMime'];
 
-			 // Format the return value according to the negotiated mime type and exit the application.
-	  		 $out = RestUtil::serverTransform($return, $ProduceMime);
-	  		 header('HTTP/1.1 200 OK');
-	  		 die($out);
-	  }
+        // Format the return value according to the negotiated mime type and exit the application.
+        $out = RestUtil::serverTransform($return, $ProduceMime);
+        header('HTTP/1.1 200 OK');
+        die($out);
+    }
 }
 ?>

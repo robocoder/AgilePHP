@@ -11,7 +11,7 @@ function ExamplePlugin() {
 		});
 
 		// Set the active desktop tab to this plugin
-		//AgilePHP.Studio.Desktop.activateTab( 'tabExamplePlugin' );
+		//AgilePHP.Studio.Desktop.activateTab('tabExamplePlugin');
 
 		// Add a new button to the toolbar
 		AgilePHP.Studio.Desktop.addToolbarButton({
@@ -30,11 +30,11 @@ function ExamplePlugin() {
 // Add a method to the ExamplePlugin object that creates a new window when clicked
 ExamplePlugin.prototype.testMethod = function() {
 
-	  var ExamplePluginWindow = new AgilePHP.Studio.Window( 'examplePlugin', 'fileExport', 'Example Plugin' );
-	  	  ExamplePluginWindow.setHTML( 'ExamplePlugin works!' );
+	  var ExamplePluginWindow = new AgilePHP.Studio.Window('examplePlugin', 'fileExport', 'Example Plugin');
+	  	  ExamplePluginWindow.setHTML('ExamplePlugin works!');
 		  ExamplePluginWindow.show();
 
-	  new AgilePHP.Studio.Notification( 'Example Plugin', 'ExamplePlugin works!' );
+	  new AgilePHP.Studio.Notification('Example Plugin', 'ExamplePlugin works!');
 }
 
 // Create the new instance of ExamplePlugin

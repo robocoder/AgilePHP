@@ -21,40 +21,37 @@
 
 /**
  * Remoting class responsible for server side processing of plugins.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.classes
  */
-/**
- * "Remote" class responsbile for answering client side requests in regards to plugins 
- */
 class PluginsRemote {
 
-	  #@RemoteMethod
+      #@RemoteMethod
  	  public function getPlugins() {
 
-	  		 $plugins = array();
-	  		 $path = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'view' .
-	  		 		 DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'plugins';
+ 	      $plugins = array();
+ 	      $path = AgilePHP::getWebRoot() . DIRECTORY_SEPARATOR . 'view' .
+ 	      DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'plugins';
 
-	  		 $h = opendir( $path );
-			 while( $file = readdir( $h ) ) {
+ 	      $h = opendir($path);
+ 	      while($file = readdir($h)) {
 
-			 	if( $file != '.' && $file != '..' ) {
+ 	          if($file != '.' && $file != '..') {
 
-			 		$pieces = explode( '.', $file );
-			 		if( strtolower( array_pop( $pieces ) ) == 'js' ) {
+ 	              $pieces = explode('.', $file);
+ 	              if(strtolower(array_pop($pieces)) == 'js') {
 
-			 			$o = new stdClass;
-			 			$o->path = AgilePHP::getDocumentRoot() . '/view/js/plugins/' . $file;
-			 			array_push( $plugins, $o );
-			 		}
-			 	}
-			 }
-			 closedir( $h );
+ 	                  $o = new stdClass;
+ 	                  $o->path = AgilePHP::getDocumentRoot() . '/view/js/plugins/' . $file;
+ 	                  array_push($plugins, $o);
+ 	              }
+ 	          }
+ 	      }
+ 	      closedir($h);
 
-			 return $plugins;
-	  }
+ 	      return $plugins;
+ 	  }
 }
 ?>

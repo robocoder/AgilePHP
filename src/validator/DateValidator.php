@@ -21,21 +21,20 @@
 
 /**
  * Validates date values
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.validator
  */
 class DateValidator implements Validator {
 
-	  /**
-	   * Validates date data type
-	   * 
-	   * @see Validator::validate()
-	   */
-	  public static function validate($data) {
-
-	  		 return (strtotime($data) === false) ? false : true;
-	  }
+    /**
+     * Validates date data type
+     *
+     * @see Validator::validate()
+     */
+    public static function validate($data) {
+        return (strtotime($data) === false) ? false : true;
+    }
 }
 ?>

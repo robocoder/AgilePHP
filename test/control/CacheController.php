@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -21,23 +21,23 @@
 
 /**
  * Test controller responsible for displaying cached content
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.test.control
  */
 class CacheController {
 
-	  public function testExpires() {
+    public function testExpires() {
 
-	  		 $c = new MockCacher();
-	  		 echo $c->expires();
-	  }
-	  
-	  public function testNeverExpires() {
+        $c = new MockCacher();
+        echo $c->expires();
+    }
+     
+    public function testNeverExpires() {
 
-	  		 $c = new MockCacher();
-	  		 echo $c->neverExpires();
-	  }
+        $c = new MockCacher();
+        echo $c->neverExpires();
+    }
 }
 ?>

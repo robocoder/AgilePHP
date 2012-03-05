@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * AgilePHP Framework :: The Rapid "for developers" PHP5 framework
  * Copyright (C) 2009-2010 Make A Byte, inc
@@ -21,87 +21,87 @@
 
 /**
  * File system utilities class. Recursive copy and delete.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.studio.classes
  */
 class FileUtils {
 
-	  /**
-	   * Performs a recursive delete
-	   * 
-	   * @param $src The source path to delete
-	   * @return void
-	   * @throws FrameworkException
-	   */
-	  public static function delete( $src ) {
+    /**
+     * Performs a recursive delete
+     *
+     * @param $src The source path to delete
+     * @return void
+     * @throws FrameworkException
+     */
+    public static function delete($src) {
 
-	  		 Log::debug( 'FileUtils::delete Performing recursive delete on source \'' . $src . '\'.' );
+        Log::debug('FileUtils::delete Performing recursive delete on source \'' . $src . '\'.');
 
-	  		 if( is_file( $src ) ) {
+        if(is_file($src)) {
 
-	  		 	 if( !unlink( $src ) )
-			         throw new FrameworkException( 'Failed to delete file ' . $src );
+            if(!unlink($src))
+            throw new FrameworkException('Failed to delete file ' . $src);
 
-			     return true;
-	  		 }
+            return true;
+        }
 
-	  		 $dir = opendir( $src );
-			 while( false !== ( $file = readdir( $dir ) ) ) {
+        $dir = opendir($src);
+        while(false !== ($file = readdir($dir))) {
 
-			     	if( $file != '.' && $file != '..') {
+            if($file != '.' && $file != '..') {
 
-			            if( is_dir( $src . DIRECTORY_SEPARATOR . $file ) )
-			                FileUtils::delete( $src . DIRECTORY_SEPARATOR . $file );
-			            else
-			            	if( !unlink( $src . DIRECTORY_SEPARATOR . $file ) )
-			                	throw new FrameworkException( 'Failed to delete file ' . $src . DIRECTORY_SEPARATOR . $file );
-			        }
-			 }
-			 closedir( $dir );
-			 if( !rmdir( $src ) )
-			 	 throw new FrameworkException( 'Failed to delete directory ' . $src . DIRECTORY_SEPARATOR . $file );
+                if(is_dir($src . DIRECTORY_SEPARATOR . $file))
+                FileUtils::delete($src . DIRECTORY_SEPARATOR . $file);
+                else
+                if(!unlink($src . DIRECTORY_SEPARATOR . $file))
+                throw new FrameworkException('Failed to delete file ' . $src . DIRECTORY_SEPARATOR . $file);
+            }
+        }
+        closedir($dir);
+        if(!rmdir($src))
+        throw new FrameworkException('Failed to delete directory ' . $src . DIRECTORY_SEPARATOR . $file);
 
-			 return true;
-	  }
+        return true;
+    }
 
-	  /**
-	   * Performs recursive copy
-	   * 
-	   * @param $src The source to copy
-	   * @param $dst The destination
-	   * @return void
-	   */
-	  public static function copy( $src, $dst ) {
+    /**
+     * Performs recursive copy
+     *
+     * @param $src The source to copy
+     * @param $dst The destination
+     * @return void
+     */
+    public static function copy($src, $dst) {
 
-	  		 Log::debug( 'FileUtils::delete Performing recursive copy from source \'' . $src . '\' to destination \'' . $dst . '\'.' );
+        Log::debug('FileUtils::delete Performing recursive copy from source \'' . $src . '\' to destination \'' . $dst . '\'.');
 
-	  		 if( is_file( $src ) ) {
+        if(is_file($src)) {
 
-	  		 	 if( !copy( $src, $dst ) )
-	  		 	 	 throw new FrameworkException( 'Failed to copy ' . $src . ' to ' . $dst );
+            if(!copy($src, $dst))
+            throw new FrameworkException('Failed to copy ' . $src . ' to ' . $dst);
 
-	  		 	 return true;
-	  		 }
+            return true;
+        }
 
-		     $dir = opendir( $src );
+        $dir = opendir($src);
 
-			 if( !mkdir( $dst ) )
-			 	 throw new FrameworkException( 'Failed to create directory ' . $dst );
+        if(!mkdir($dst))
+        throw new FrameworkException('Failed to create directory ' . $dst);
 
-			 while( false !== ( $file = readdir( $dir ) ) ) {
+        while(false !== ($file = readdir($dir))) {
 
-			      	if( $file != '.' && $file != '..' && substr( $file, 0, 4 ) != '.svn' )
-			            if( is_dir( $src . DIRECTORY_SEPARATOR . $file ) )
-			             	FileUtils::copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file );
-			            else
-			             	if( !copy( $src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file ) )			             		
-			                	throw new FrameworkException( 'Failed to copy ' . $src . ' to ' . $dst );
-			 }
-			 closedir( $dir );
+            if($file != '.' && $file != '..' && substr($file, 0, 4) != '.svn')
+            if(is_dir($src . DIRECTORY_SEPARATOR . $file))
+            FileUtils::copy($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file);
+            else
+            if(!copy($src . DIRECTORY_SEPARATOR . $file, $dst . DIRECTORY_SEPARATOR . $file))
+            throw new FrameworkException('Failed to copy ' . $src . ' to ' . $dst);
+        }
+        closedir($dir);
 
-			 return true;
-	  }
+        return true;
+    }
 }
 ?>

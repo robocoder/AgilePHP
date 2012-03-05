@@ -135,7 +135,7 @@ abstract class Remoting extends BaseController {
      * @return void
      */
     protected function registerModel($class, $typeCast = true) {
-        
+
         // PHP namespace support
         $namespace = explode('\\', $class);
         $className = array_pop($namespace);
@@ -173,9 +173,9 @@ abstract class Remoting extends BaseController {
         foreach($this->models as $model) {
 
             if( ($jsNamespace ?
-                     strpos($model, "{$jsNamespace}.{$className} = function") !== false :
-                     strpos($model, "function {$className}") !== false
-                ))return;
+            strpos($model, "{$jsNamespace}.{$className} = function") !== false :
+            strpos($model, "function {$className}") !== false
+            ))return;
         }
 
         // Create constructor
@@ -208,21 +208,21 @@ abstract class Remoting extends BaseController {
 
                     if($elementType = DocBlockParser::getPropertyArrayType($property)) {
 
-                       if(DocBlockParser::isUserSpaceObject($elementType)) {
+                        if(DocBlockParser::isUserSpaceObject($elementType)) {
 
-                           // Auto-generate model stub for the array element data typeif not already generated
-                           if(!isset($this->models[0])) {
+                            // Auto-generate model stub for the array element data typeif not already generated
+                            if(!isset($this->models[0])) {
 
-                               $this->registerModel($elementType, true);
-                               $js .= "\tthis.{$property->getName()} = {$value};\n";
-                               continue;
-                           }
-        
-                           foreach($this->models as $model)
-                               if((strpos($model, "function {$elementType}") === false) || 
-                                  (strpos($model, ".{$elementType} = function") === false))
-                                       $this->registerModel($elementType, true);
-                       }
+                                $this->registerModel($elementType, true);
+                                $js .= "\tthis.{$property->getName()} = {$value};\n";
+                                continue;
+                            }
+
+                            foreach($this->models as $model)
+                            if((strpos($model, "function {$elementType}") === false) ||
+                            (strpos($model, ".{$elementType} = function") === false))
+                            $this->registerModel($elementType, true);
+                        }
                     }
                 }
                 if($type == 'object' || DocBlockParser::isUserSpaceObject($type)) {
@@ -238,9 +238,9 @@ abstract class Remoting extends BaseController {
                     }
 
                     foreach($this->models as $model)
-                       if((strpos($model, "function {$type}") === false) || 
-                          (strpos($model, ".{$type} = function") === false))
-                               $this->registerModel($type, true);
+                    if((strpos($model, "function {$type}") === false) ||
+                    (strpos($model, ".{$type} = function") === false))
+                    $this->registerModel($type, true);
                 }
             }
 
@@ -328,7 +328,7 @@ abstract class Remoting extends BaseController {
                     $js .= $this->class . '.prototype.' . $methods[$i]->getName() . ' = function(';
                     $params = $methods[$i]->getParameters();
                     for($j=0; $j<count($params); $j++)
-                        $js .= $params[$j]->getName();
+                    $js .= $params[$j]->getName();
 
                     $js .= ") {\n";
                     // function body
@@ -343,7 +343,7 @@ abstract class Remoting extends BaseController {
 
             // Add model stubs
             foreach($this->models as $model)
-               $js .= $model . "\n";
+            $js .= $model . "\n";
 
             echo $js;
         }
@@ -372,7 +372,7 @@ abstract class Remoting extends BaseController {
         $clazz = new AnnotatedClass($class);
         $annotatedMethod = $clazz->getMethod($method);
         if($annotatedMethod->getName() == $method && !$annotatedMethod->hasAnnotation('RemoteMethod'))
-           throw new RemotingException('The requested method invocation is not allowed.');
+        throw new RemotingException('The requested method invocation is not allowed.');
 
         // Transform constructor arguments to native PHP types if applicable
         $constructorArgs = $this->decode($request->getSanitized('constructorArgs'));
@@ -382,33 +382,33 @@ abstract class Remoting extends BaseController {
             $constructor = $clazz->getMethod('__construct');
             $index = 0;
             foreach($constructor->getParameters() as $parameter) {
-    
+
                 $type = DocBlockParser::getParameterType($constructor, $parameter);
                 $isUserSpaceObject = DocBlockParser::isUserSpaceObject($type);
-    
+
                 if($type == 'array') {
-    
+
                     if($elementType = DocBlockParser::getParameterArrayType($annotatedMethod, $parameter)) {
-    
-                       if(DocBlockParser::isUserSpaceObject($elementType))
-                           // Transform the array of objects to native PHP array of objects
-                           array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index]), $type));
-                       else
-                           array_push($newConstructorArgs, $parameters[$i]);
+
+                        if(DocBlockParser::isUserSpaceObject($elementType))
+                        // Transform the array of objects to native PHP array of objects
+                        array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index]), $type));
+                        else
+                        array_push($newConstructorArgs, $parameters[$i]);
                     }
                 }
                 elseif($type == 'object' || $isUserSpaceObject) {
-    
+
                     if($isUserSpaceObject)
-                        // Transform the object to a native PHP object
-                        array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index]), $type));
+                    // Transform the object to a native PHP object
+                    array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index]), $type));
                     else  // Transform to stdClass
-                        array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index])));
+                    array_push($newConstructorArgs, JsonToModel::transform(json_encode($constructorArgs[$index])));
                 }
                 else
-                   // Primitive data type - no transformation
-                   array_push($newConstructorArgs, $constructorArgs[$index]);
-    
+                // Primitive data type - no transformation
+                array_push($newConstructorArgs, $constructorArgs[$index]);
+
                 $index++;
             }
         }
@@ -428,24 +428,24 @@ abstract class Remoting extends BaseController {
 
                 if($elementType = DocBlockParser::getParameterArrayType($annotatedMethod, $parameter)) {
 
-                   if(DocBlockParser::isUserSpaceObject($elementType))
-                       // Transform the array of objects to native PHP array of objects
-                       array_push($newParameters, JsonToModel::transform(json_encode($parameters[$index]), $elementType));
-                   else
-                       array_push($newParameters, $parameters[$index]);
+                    if(DocBlockParser::isUserSpaceObject($elementType))
+                    // Transform the array of objects to native PHP array of objects
+                    array_push($newParameters, JsonToModel::transform(json_encode($parameters[$index]), $elementType));
+                    else
+                    array_push($newParameters, $parameters[$index]);
                 }
             }
             elseif($type == 'object' || $isUserSpaceObject) {
 
                 if($isUserSpaceObject)
-                    // Transform the object to a native PHP object
-                    array_push($newParameters, JsonToModel::transform(json_encode($parameters[$index]), $type));
+                // Transform the object to a native PHP object
+                array_push($newParameters, JsonToModel::transform(json_encode($parameters[$index]), $type));
                 else  // Transform to stdClass
-                    array_push($newParameters, JsonToModel::transform(json_encode($parameters[$index])));
+                array_push($newParameters, JsonToModel::transform(json_encode($parameters[$index])));
             }
             else
-               // Primitive data type - no transformation
-               array_push($newParameters, $parameters[$index]);
+            // Primitive data type - no transformation
+            array_push($newParameters, $parameters[$index]);
 
             $index++;
         }
@@ -458,7 +458,7 @@ abstract class Remoting extends BaseController {
             // Invoke the requested operation
             $instance = $constructorArgs ? $clazz->newInstanceArgs((array)$newConstructorArgs) : $clazz->newInstance();
             $response = isset($newParameters[0]) ? $annotatedMethod->invokeArgs($instance, $newParameters) :
-                     $annotatedMethod->invoke($instance);
+            $annotatedMethod->invoke($instance);
 
             // Marshall the response and send it onto the client
             die(JsonRenderer::render($response, null, false, true));
@@ -505,14 +505,14 @@ abstract class Remoting extends BaseController {
 
         $data = htmlspecialchars_decode(stripslashes(urldecode($data)));
 
-	    $data = str_replace("\b", "\\b", $data);
+        $data = str_replace("\b", "\\b", $data);
         $data = str_replace("\t", "\\t", $data);
         $data = str_replace("\n", "\\n", $data);
         $data = str_replace("\f", "\\f", $data);
         $data = str_replace("\r", "\\r", $data);
         $data = str_replace("\u", "\\u", $data);
 
-	    $o = json_decode($data);
+        $o = json_decode($data);
 
         if(!is_array($o)) throw new RemotingException('Malformed JSON payload');
 

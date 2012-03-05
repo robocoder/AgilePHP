@@ -21,7 +21,7 @@
 
 /**
  * Base implementation for validators
- *  
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp
@@ -29,12 +29,12 @@
  */
 interface Validator {
 
-	  /**
-	   * Validates the data passed into the constructor.
-	   * 
-	   * @param $data The data to validate
-	   * @return boolean True if the data is valid, false otherwise. 
-	   */
-	  public static function validate($data);
+    /**
+     * Validates the data passed into the constructor.
+     *
+     * @param $data The data to validate
+     * @return boolean True if the data is valid, false otherwise.
+     */
+    public static function validate($data);
 }
 ?>

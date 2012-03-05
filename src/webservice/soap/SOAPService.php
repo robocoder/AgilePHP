@@ -23,7 +23,7 @@
  * Exposes PHP classes via SOAP. This may be replaced in the future with
  * #@WebMethod interceptor. Currently #@WebMethod is just an annotation
  * that causes the method to be included during WSDL generation.
- * 
+ *
  * @author Jeremy Hahn
  * @copyright Make A Byte, inc
  * @package com.makeabyte.agilephp.webservice.soap
@@ -31,61 +31,61 @@
  */
 abstract class SOAPService extends BaseController {
 
-		 /**
-		  * Invokes the requested SOAP method.
-		  * 
-		  * @return void
-		  * @see src/mvc/BaseController#index()
-		  */
-		 public function index() {
+    /**
+     * Invokes the requested SOAP method.
+     *
+     * @return void
+     * @see src/mvc/BaseController#index()
+     */
+    public function index() {
 
-		 		$wsdlMethod = 'wsdl';
+        $wsdlMethod = 'wsdl';
 
-		 		$class = new AnnotatedClass($this);
+        $class = new AnnotatedClass($this);
 
-		 		// Provide default targetNamespace in case #@WebService annotation is missing
-		 		$targetNamespace = 'http://' . $_SERVER['HTTP_HOST'] . AgilePHP::getRequestBase() . '/' . MVC::getController();
-	  		    $annotations = Annotation::getClassAsArray($class->getName());
+        // Provide default targetNamespace in case #@WebService annotation is missing
+        $targetNamespace = 'http://' . $_SERVER['HTTP_HOST'] . AgilePHP::getRequestBase() . '/' . MVC::getController();
+        $annotations = Annotation::getClassAsArray($class->getName());
 
-		  		// Initalize web service configuration from #@WebService annotation if present
-	  		 	if(count($annotations)) {
+        // Initalize web service configuration from #@WebService annotation if present
+        if(count($annotations)) {
 
-		  		 	foreach($annotations as $annotation) {
+            foreach($annotations as $annotation) {
 
-		  		 	 	if($annotation instanceof WebService) {
+                if($annotation instanceof WebService) {
 
-		  		 	 		if($annotation->serviceName)
-		  		 	 			$serviceName = $annotation->serviceName;
+                    if($annotation->serviceName)
+                    $serviceName = $annotation->serviceName;
 
-		  		 	 		if($annotation->targetNamespace)
-		  		 	 			$targetNamespace = $annotation->targetNamespace;
-	  		 	 		}
-		  		 	}
-	  		 	}
+                    if($annotation->targetNamespace)
+                    $targetNamespace = $annotation->targetNamespace;
+                }
+            }
+        }
 
-	  		 	// Get method annotated with WSDL interceptor
-	  		 	$methods = $class->getMethods();
-	  		 	foreach($methods as $method) {
+        // Get method annotated with WSDL interceptor
+        $methods = $class->getMethods();
+        foreach($methods as $method) {
 
-	  		 		foreach($method->getAnnotations() as $annotes) {
+            foreach($method->getAnnotations() as $annotes) {
 
-	  		 			foreach($annotes as $annote) {
+                foreach($annotes as $annote) {
 
-	  		 				if($annote instanceof WSDL) {
+                    if($annote instanceof WSDL) {
 
-	  		 					$wsdlMethod = $method->getName();
-	  		 					break;
-	  		 				}
-	  		 			}
-	  		 		}
-	  		 	}
+                        $wsdlMethod = $method->getName();
+                        break;
+                    }
+                }
+            }
+        }
 
-		 		if(AgilePHP::isInDebugMode())
-					ini_set('soap.wsdl_cache_enabled', '0');
+        if(AgilePHP::isInDebugMode())
+        ini_set('soap.wsdl_cache_enabled', '0');
 
-				$server = new SoapServer($targetNamespace . '/' . $wsdlMethod);
-				$server->setClass($class->getName());
-				$server->handle();
-		 }
+        $server = new SoapServer($targetNamespace . '/' . $wsdlMethod);
+        $server->setClass($class->getName());
+        $server->handle();
+    }
 }
 ?>
